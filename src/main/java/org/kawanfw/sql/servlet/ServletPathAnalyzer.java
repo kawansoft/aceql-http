@@ -1,0 +1,243 @@
+/*
+ * This file is part of AceQL HTTP.
+ * AceQL HTTP: SQL Over HTTP                                     
+ * Copyright (C) 2017,  KawanSoft SAS
+ * (http://www.kawansoft.com). All rights reserved.                                
+ *                                                                               
+ * AceQL HTTP is free software; you can redistribute it and/or                 
+ * modify it under the terms of the GNU Lesser General Public                    
+ * License as published by the Free Software Foundation; either                  
+ * version 2.1 of the License, or (at your option) any later version.            
+ *                                                                               
+ * AceQL HTTP is distributed in the hope that it will be useful,               
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of                
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU             
+ * Lesser General Public License for more details.                               
+ *                                                                               
+ * You should have received a copy of the GNU Lesser General Public              
+ * License along with this library; if not, write to the Free Software           
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  
+ * 02110-1301  USA
+ * 
+ * Any modifications to this file must keep this entire header
+ * intact.
+ */
+package org.kawanfw.sql.servlet;
+
+import java.util.Date;
+
+import org.apache.commons.lang3.StringUtils;
+import org.kawanfw.sql.util.FrameworkDebug;
+
+/**
+ * @author Nicolas de Pomereu
+ *
+ */
+public class ServletPathAnalyzer {
+
+    private static boolean DEBUG = FrameworkDebug.isSet(ServletPathAnalyzer.class);
+	    
+    /**
+     * 
+     */
+    public ServletPathAnalyzer() {
+    }
+
+    private String connectionModifierOrReader = null;
+    private String sqlStatement = null;
+    private String blobAction = null;
+    
+    private String actionValue = null;
+    private String session = null;
+    
+    
+    public  boolean isConnectionModifierOrReader(String urlContent) {
+	
+	if (urlContent == null) {
+	    throw new NullPointerException("urlContent is null");
+	}
+	
+	if (urlContent.endsWith("/disconnect")) {
+	    connectionModifierOrReader = "disconnect";
+	    return true;
+	}
+	
+	if (urlContent.endsWith("/commit")) {
+	    connectionModifierOrReader = "commit";
+	    return true;
+	}
+
+	if (urlContent.endsWith("/rollback")) {
+	    connectionModifierOrReader = "rollback";
+	    return true;
+	}
+	
+	if (urlContent.endsWith("/set_auto_commit/true") || urlContent.endsWith("/set_auto_commit/false")) {
+	    connectionModifierOrReader = "set_auto_commit";
+	    actionValue = StringUtils.substringAfterLast(urlContent, "/");
+	    return true;
+	}
+	
+	if (urlContent.endsWith("/set_read_only/true") || urlContent.endsWith("/set_read_only/false")) {
+	    connectionModifierOrReader = "set_read_only";
+	    actionValue = StringUtils.substringAfterLast(urlContent, "/");
+	    return true;
+	}
+	
+	if (urlContent.contains("/set_transaction_isolation_level/")) {
+	    connectionModifierOrReader = "set_transaction_isolation_level";
+	    actionValue = StringUtils.substringAfterLast(urlContent, "/");
+	    return true;
+	}
+	
+	if (urlContent.contains("/set_holdability/")) {
+	    connectionModifierOrReader = "set_holdability";
+	    actionValue = StringUtils.substringAfterLast(urlContent, "/");
+	    return true;
+	}
+	
+	if (urlContent.endsWith("/get_auto_commit")) {
+	    connectionModifierOrReader = "get_auto_commit";
+	    return true;
+	}
+	
+	if (urlContent.endsWith("/is_read_only")) {
+	    connectionModifierOrReader = "is_read_only";
+	    return true;
+	}
+
+	if (urlContent.endsWith("/get_holdability")) {
+	    connectionModifierOrReader = "get_holdability";
+	    return true;
+	}
+	
+	if (urlContent.endsWith("/get_transaction_isolation_level")) {
+	    connectionModifierOrReader = "get_transaction_isolation_level";
+	    return true;
+	}
+	
+	return false;
+	
+    }
+    
+    public boolean isVersionAction(String urlContent) {
+	if (urlContent == null) {
+	    throw new NullPointerException("urlContent is null");
+	}
+	
+	if (urlContent.endsWith("/get_version")) {
+	    return true;
+	}
+	else {
+	    return false;
+	}
+    }
+    
+    public boolean isBlobAction(String urlContent) {
+	if (urlContent == null) {
+	    throw new NullPointerException("urlContent is null");
+	}
+	
+	if (urlContent.endsWith("/blob_upload")) {
+	    blobAction = "blob_upload";
+	    return true;
+	}
+	
+	if (urlContent.endsWith("/blob_download")) {
+	    blobAction = "blob_download";
+	    return true;
+	}
+	
+	if (urlContent.endsWith("/get_blob_length")) {
+	    blobAction = "get_blob_length";
+	    return true;
+	}
+	
+	return false;
+
+    }
+    
+    public String getBlobAction() {
+	if (blobAction == null) {
+	    throw new NullPointerException("blobAction is null. Call isBlobAction() before");
+	}
+        return blobAction;
+    }
+
+    
+    public String getConnectionModifierOrReader() {
+	
+	if (connectionModifierOrReader == null) {
+	    throw new NullPointerException("connectionModifierOrReader is null. Call isConnectionModifier() before");
+	}
+        return connectionModifierOrReader;
+    }
+    
+    public boolean isExecuteUpdateOrQueryStatement(String urlContent) {
+	if (urlContent == null) {
+	    throw new NullPointerException("urlContent is null");
+	}
+	
+	if (urlContent.endsWith("/execute_update")) {
+	    sqlStatement = "execute_update";
+	    return true;
+	}
+	
+	if (urlContent.endsWith("/execute_query")) {
+	    sqlStatement = "execute_query";
+	    return true;
+	}
+
+	return false;
+	
+    }
+
+    public void buildElements(String servletName, String urlContent) {
+		
+	if (urlContent == null) {
+	    throw new NullPointerException("urlContent is null");
+	}
+
+	if (! urlContent.contains("/session/")) {
+	    throw new IllegalArgumentException("Request does not contain /session/ subpath in path");
+	}
+	
+	session = StringUtils.substringBetween(urlContent, "/session/", "/");
+
+	if (session == null) {
+	    throw new IllegalArgumentException("Request does not contain session id");
+	}
+	
+    }
+
+    public String getSession() {
+        return session;
+    }
+
+
+    public String getSqlStatement() {
+        return sqlStatement;
+    }
+
+    public String getActionValue() {
+        return actionValue;
+    }
+
+
+    /**
+     * Debug
+     */
+    public static void debug(String s) {
+	if (DEBUG) {
+	    System.out.println(new Date() + " " + s);
+	}
+    }
+
+
+
+    
+    
+    
+    
+
+}

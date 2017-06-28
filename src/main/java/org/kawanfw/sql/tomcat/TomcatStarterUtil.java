@@ -1,0 +1,393 @@
+/*
+ * This file is part of AceQL HTTP.
+ * AceQL HTTP: SQL Over HTTP                                     
+ * Copyright (C) 2017,  KawanSoft SAS
+ * (http://www.kawansoft.com). All rights reserved.                                
+ *                                                                               
+ * AceQL HTTP is free software; you can redistribute it and/or                 
+ * modify it under the terms of the GNU Lesser General Public                    
+ * License as published by the Free Software Foundation; either                  
+ * version 2.1 of the License, or (at your option) any later version.            
+ *                                                                               
+ * AceQL HTTP is distributed in the hope that it will be useful,               
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of                
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU             
+ * Lesser General Public License for more details.                               
+ *                                                                               
+ * You should have received a copy of the GNU Lesser General Public              
+ * License along with this library; if not, write to the Free Software           
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  
+ * 02110-1301  USA
+ * 
+ * Any modifications to this file must keep this entire header
+ * intact.
+ */
+package org.kawanfw.sql.tomcat;
+
+import static org.kawanfw.sql.servlet.ServerSqlManager.DATABASE_CONFIGURATOR_CLASS_NAME;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.DatagramSocket;
+import java.net.ServerSocket;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.HashSet;
+import java.util.Properties;
+import java.util.Set;
+
+import org.apache.commons.io.IOUtils;
+import org.apache.tomcat.jdbc.pool.DataSource;
+import org.apache.tomcat.jdbc.pool.PoolProperties;
+import org.kawanfw.sql.api.server.DatabaseConfigurationException;
+import org.kawanfw.sql.api.util.SqlUtil;
+import org.kawanfw.sql.servlet.ServerSqlManager;
+import org.kawanfw.sql.servlet.sql.DbVendorManager;
+import org.kawanfw.sql.tomcat.util.LinkedProperties;
+import org.kawanfw.sql.util.SqlTag;
+
+/**
+ * @author Nicolas de Pomereu
+ *
+ *         Utility classes called at Tomcat startup
+ */
+public class TomcatStarterUtil {
+    
+    private static final String ERROR_MESSAGE = "D" + "b"+ " V" + "e" + "n" + "d" + "or"+ " is" + " " + "no" + "t" +  " sup" + "po" + "rt" + "ed" +  " in" +  " this " +  "ver" + "si" + "on: ";
+
+    /**
+     * protected constructor
+     */
+    protected TomcatStarterUtil() {
+
+    }
+
+    /**
+     * If the user has created a driverClassName property in the properties
+     * file: we create a Tomcat JDBC Pool from the properties
+     * 
+     * @param properties
+     *            properties extracted from the properties file
+     * @throws DatabaseConfigurationException
+     */
+    public static void createAndStoreDataSources(Properties properties) throws DatabaseConfigurationException {
+	
+	if (properties == null) {
+	    throw new IllegalArgumentException("properties is null");
+	}
+	
+	Set<String> databases = getDatabaseNames(properties);
+	
+	for (String database : databases) {
+	    createAndStoreDataSource(properties, database.trim()); 
+	}
+
+    }
+    
+    /**
+     * Returns the database names from the properties
+     * @param properties
+     * @return the database names
+     * @throws DatabaseConfigurationException
+     */
+    public static Set<String> getDatabaseNames(Properties properties) throws DatabaseConfigurationException {
+	
+	if (properties == null) {
+	    throw new IllegalArgumentException("properties is null");
+	}
+	
+	String databases = properties.getProperty("databases");
+	
+	if (databases == null || databases.isEmpty()) {
+	    throw new DatabaseConfigurationException("the databases property is not set in properties file. " + SqlTag.PLEASE_CORRECT);
+	}
+	
+	String []databaseArray = databases.split(",");
+	
+	Set<String> databaseSet = new HashSet<>();
+	for (int i = 0; i < databaseArray.length; i++) {
+	    databaseSet.add(databaseArray[i].trim());
+	}
+	return databaseSet;
+    }
+    
+    /**
+     * If the user has created a driverClassName property in the properties
+     * file: we create a Tomcat JDBC Pool from the properties
+     * 
+     * @param properties
+     *            properties extracted from the properties file
+     * @param database the database name for which to set the properties
+     * @throws DatabaseConfigurationException
+     */
+    public static void createAndStoreDataSource(Properties properties, String database) throws DatabaseConfigurationException {
+	
+	if (properties == null) {
+	    throw new IllegalArgumentException("properties is null");
+	}
+	
+	if (database == null) {
+	    throw new IllegalArgumentException("database is null");
+	}
+	
+	database = database.trim();
+	String driverClassName = properties.getProperty("driverClassName" + "." + database);
+	
+	if (driverClassName == null || driverClassName.isEmpty()) {
+	    System.out
+		    .println(SqlTag.SQL_PRODUCT_START
+			    + " WARNING: driverClassName"
+			    + " property not found for database "
+			    + database + "! ");
+	    System.out
+		    .println(SqlTag.SQL_PRODUCT_START
+			    + "          Connection management must be defined in DatabaseConfigurator.getConnection(String database)");
+	    return;
+	}
+
+	String url = properties.getProperty("url" + "." + database);
+
+	if ((url == null) || url.isEmpty()) {
+	    throw new DatabaseConfigurationException(
+		    "the url property is not set in properties file for driverClassName "
+			    + driverClassName + ". " + SqlTag.PLEASE_CORRECT);
+	}
+
+	String username = properties.getProperty("username" + "." + database);
+	if ((username == null) || username.isEmpty()) {
+	    throw new DatabaseConfigurationException(
+		    "the username property is not set in properties file for driverClassName "
+			    + driverClassName + ". " + SqlTag.PLEASE_CORRECT);
+	}
+
+	String password = properties.getProperty("password" + "." + database);
+	if ((password == null) || password.isEmpty()) {
+	    throw new DatabaseConfigurationException(
+		    "the password property is not set in properties file for driverClassName "
+			    + driverClassName + ". " + SqlTag.PLEASE_CORRECT);
+	}
+
+	System.out.println(SqlTag.SQL_PRODUCT_START
+		+ " Setting Tomcat JDBC Pool attributes for "
+		+ database + " database:");
+
+	// OK! create and test the DataSource
+	PoolPropertiesCreator poolPropertiesCreator = new PoolPropertiesCreator(
+		properties, database);
+	PoolProperties poolProperties = null;
+
+	try {
+	    poolProperties = poolPropertiesCreator.create();
+	} catch (Exception e) {
+	    throw new DatabaseConfigurationException(e.getMessage());
+	}
+
+	DataSource dataSource = new DataSource();
+	dataSource.setPoolProperties(poolProperties);
+
+	Connection connection = null;
+
+	try {
+	    try {
+		System.out.println(SqlTag.SQL_PRODUCT_START
+			+ " Testing DataSource.getConnection() for "
+			+ database + " database:");
+		connection = dataSource.getConnection();
+
+		// Connection connection2 = dataSource.getConnection();
+		// System.out.println("dataSource.getActive()): " +
+		// dataSource.getActive());
+		// connection2.close();
+
+		if (connection == null) {
+		    throw new DatabaseConfigurationException(
+			    "Connection is null. Please verify all the values in properties file.");
+		}
+
+		// Checks that DB Vendor is supported
+		boolean isOk = DbVendorManager.checkDbVendor(properties, connection);
+		
+		if (! isOk) {
+		    SqlUtil sqlUtil = new SqlUtil(connection);
+		    System.err.println(ERROR_MESSAGE + sqlUtil.getDatabaseProductName());
+		    TomcatSqlModeStore.setDataSource(database, null);
+		    return;
+		}
+		
+		System.out.println(SqlTag.SQL_PRODUCT_START
+			+ "  -> Connection OK!");
+		
+	    } catch (SQLException e) {
+		throw new DatabaseConfigurationException(e.getMessage() + " "
+			+ e.getCause());
+	    }
+	} finally {
+	    if (connection != null) {
+		try {
+		    connection.close();
+		} catch (Exception e) {
+		    e.printStackTrace();
+		}
+	    }
+	}
+
+	TomcatSqlModeStore.setDataSource(database, dataSource);
+
+    }
+
+    
+    /**
+     * Returns the Properties extracted from a file.
+     * 
+     * @param file
+     *            the file containing the properties
+     * @return the Properties extracted from the file
+     * 
+     * @throws IOException
+     * @throws DatabaseConfigurationException
+     */
+    public static Properties getProperties(File file) throws IOException,
+	    DatabaseConfigurationException {
+
+	if (file == null) {
+	    throw new IllegalArgumentException("file can not be null!");
+	}
+
+	if (!file.exists()) {
+	    throw new DatabaseConfigurationException("properties file not found: "
+		    + file);
+	}
+
+	// Get the properties with order of position in file:
+	Set<String> linkedProperties = LinkedProperties
+		.getLinkedPropertiesName(file);
+
+	InputStream in = null;
+
+	// Create the ordered properties
+	Properties properties;
+	try {
+	    in = new FileInputStream(file);
+	    properties = new LinkedProperties(linkedProperties);
+	    properties.load(in);
+	} finally {
+	    IOUtils.closeQuietly(in);
+	}
+	return properties;
+    }
+
+    /**
+     * Set the servlet parameters store with the values extracted from the
+     * Properties.
+     * 
+     * @param properties
+     *            Properties extracted from the server-sql.properties files
+     * @throws IllegalArgumentException
+     */
+    public static void setInitParametersInStore(Properties properties) throws IllegalArgumentException {
+
+	
+	String serverSqlManagerServletName = properties
+		.getProperty("serverSqlManagerServletName");
+
+	ServletParametersStore.setServletName(serverSqlManagerServletName);
+	Set<String> databases = getDatabaseNames(properties);
+
+	ServletParametersStore.setDatabaseNames(databases);
+	
+	for (String database : databases) {
+	    // Set the configurator to use for this database
+	    String databaseConfiguratorClassName = TomcatStarterUtil
+		    .trimSafe(properties
+			    .getProperty(DATABASE_CONFIGURATOR_CLASS_NAME 
+			    + "."
+			    + database));
+
+	    if (databaseConfiguratorClassName != null
+		    && !databaseConfiguratorClassName.isEmpty()) {
+		ServletParametersStore.setInitParameter(database,
+			new InitParamNameValuePair(DATABASE_CONFIGURATOR_CLASS_NAME,
+				databaseConfiguratorClassName));
+
+	    }
+	}
+	
+	String blobDownloadConfiguratorClassName = TomcatStarterUtil
+		.trimSafe(properties
+			.getProperty(ServerSqlManager.BLOB_DOWNLOAD_CONFIGURATOR_CLASS_NAME));
+	ServletParametersStore
+		.setBlobDownloadConfiguratorClassName(blobDownloadConfiguratorClassName);
+
+	
+	String blobUploadConfiguratorClassName = TomcatStarterUtil
+		.trimSafe(properties
+			.getProperty(ServerSqlManager.BLOB_UPLOAD_CONFIGURATOR_CLASS_NAME));
+	ServletParametersStore
+		.setBlobUploadConfiguratorClassName(blobUploadConfiguratorClassName);
+	
+	String sessionConfiguratorClassName = TomcatStarterUtil
+		.trimSafe(properties
+			.getProperty(ServerSqlManager.SESSION_CONFIGURATOR_CLASS_NAME));
+	ServletParametersStore
+	.setSessionConfiguratorClassName(sessionConfiguratorClassName);
+
+	String jwtSessionConfiguratorSecretValue = TomcatStarterUtil
+		.trimSafe(properties
+			.getProperty(ServerSqlManager.JWT_SESSION_CONFIGURATOR_SECRET));
+	
+	ServletParametersStore.setJwtSessionConfiguratorSecretValue(jwtSessionConfiguratorSecretValue);
+    }
+
+    /**
+     * Safely trim a String
+     * 
+     * @param s
+     *            the String to trim
+     * @return
+     */
+    public static String trimSafe(String s) {
+	if (s != null) {
+	    s = s.trim();
+	}
+
+	return s;
+    }
+
+    /**
+     * Checks to see if a specific port is available.
+     * 
+     * @param port
+     *            the port to check for availability
+     */
+    public static boolean available(int port) {
+
+	ServerSocket ss = null;
+	DatagramSocket ds = null;
+	try {
+	    ss = new ServerSocket(port);
+	    ss.setReuseAddress(true);
+	    ds = new DatagramSocket(port);
+	    ds.setReuseAddress(true);
+	    return true;
+	} catch (IOException e) {
+	    // e.printStackTrace();
+	} finally {
+	    if (ds != null) {
+		ds.close();
+	    }
+
+	    if (ss != null) {
+		try {
+		    ss.close();
+		} catch (IOException e) {
+		    /* should not be thrown */
+		}
+	    }
+	}
+
+	return false;
+    }
+
+}
