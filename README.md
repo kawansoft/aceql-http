@@ -23,6 +23,6 @@ MariaDB/MySQL and PostrgeSQL.
 
 Go to the <a href="https://www.aceql.com/aceql-download-page-lgpl.html">Installation page</a>. 
 
-## Using AceQ LHTTP ##
+## Using AceQL HTTP ##
 
 Go to the <a href="https://www.aceql.com/documentation">Documentation page</a>. 
