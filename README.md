@@ -21,7 +21,7 @@ MariaDB/MySQL and PostrgeSQL.
 
 ## Installation  ##
 
-Go to the <a href="https://www.aceql.com/aceql-download-page-lgpl.html">Installation page</a>. 
+Go to the <a href="https://www.aceql.com/aceql-download-page.html">Installation page</a>. 
 
 ## Using AceQL HTTP ##
 
