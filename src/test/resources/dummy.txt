@@ -1,0 +1,1 @@
+Required for adding src/test/resources to Git index.
