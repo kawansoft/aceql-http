@@ -1,7 +1,7 @@
 # AceQL HTTP
 <img src="https://www.aceql.com/favicon.png" alt=""/>
 
-AceQL HTTP is a library of REST like http APIs that allow to access to 
+<a href="https://www.aceql.com">AceQL HTTP</a> is a library of REST like http APIs that allow to access to 
 remote SQL databases over http from any device that supports HTTP. 
 
 AceQL HTTP is provided with two client SDK.
@@ -21,7 +21,7 @@ MariaDB/MySQL and PostrgeSQL.
 
 ## Installation  ##
 
-Go to the <a href="https://www.aceql.com/aceql-download-page-lgpl.html">Installation page</a>. 
+Go to the <a href="https://www.aceql.com/aceql-download-page.html">Installation page</a>. 
 
 ## Using AceQL HTTP ##
 
