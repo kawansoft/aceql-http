@@ -20,10 +20,5 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
-	<classpathentry kind="lib" path="lib/db2jcc_license_cu.jar"/>
-	<classpathentry kind="lib" path="lib/db2jcc.jar"/>
-	<classpathentry kind="lib" path="lib/mysql-connector-java-5.1.17-bin.jar"/>
-	<classpathentry kind="lib" path="lib/ojdbc6.jar"/>
-	<classpathentry kind="lib" path="lib/sqljdbc41.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
