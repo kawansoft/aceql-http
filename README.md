@@ -10,8 +10,11 @@ AceQL HTTP is provided with two client SDK.
 * The AceQL C# Client SDK allows to wrap the HTTP APIs using Microsoft SQL 
   Server like calls in their code, just like they would for a local database.
 
+The SDKs are licensed under Apache 2.0: you can use them in your commercial 
+software freely and without any constraint.
+
 Security has been taken into account from the design: It as allowed to specify 
-and code strong security rules in order to protect the databases. 
+and code strong security rules in order to protect the databases.
 
 AceQL HTTP Open Source Edition is licensed through the GNU Lesser General
 Public License (LGPL v2.1).
