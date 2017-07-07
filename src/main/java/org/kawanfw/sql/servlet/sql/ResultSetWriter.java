@@ -173,7 +173,7 @@ public class ResultSetWriter {
     public void write(ResultSet resultSet) throws SQLException, IOException {
 	try {
 	    if (resultSet == null) {
-		throw new SQLException("SQL Connection is null!");
+		throw new SQLException("resultSet is null!");
 	    }
 
 	    String productName = getDatabaseProductName(resultSet);
@@ -229,7 +229,7 @@ public class ResultSetWriter {
 
 	    JsonGeneratorFactory jf = JsonUtil
 		    .getJsonGeneratorFactory(doPrettyPrinting);
-
+	    
 	    JsonGenerator gen = jf.createGenerator(out);
 	    gen.writeStartObject().write("status", "OK");
 	   
@@ -382,6 +382,7 @@ public class ResultSetWriter {
 	    //NO! IOUtils.closeQuietly(out);
 	}
     }
+        
 
     private boolean isDateTime(int columnType) {
 	if (columnType == Types.DATE || columnType == Types.TIME 

@@ -24,15 +24,9 @@
  */
 package org.kawanfw.sql.servlet.sql;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.StringWriter;
 import java.sql.Connection;
@@ -59,11 +53,9 @@ import org.kawanfw.sql.servlet.ServerSqlManager;
 import org.kawanfw.sql.servlet.connection.ConnectionStore;
 import org.kawanfw.sql.servlet.sql.json_return.JsonErrorReturn;
 import org.kawanfw.sql.servlet.sql.json_return.JsonSecurityMessage;
-import org.kawanfw.sql.servlet.sql.json_return.JsonStatementFailure;
 import org.kawanfw.sql.servlet.sql.json_return.JsonUtil;
 import org.kawanfw.sql.util.FrameworkDebug;
 import org.kawanfw.sql.util.FrameworkFileUtil;
-
 
 /**
  * @author KawanSoft S.A.S
@@ -93,7 +85,8 @@ public class ServerStatement {
      * 
      * @param request
      *            the http request
-     * @param response the http servlet response
+     * @param response
+     *            the http servlet response
      * @param databaseConfigurator
      * @param connection
      * @param sqlOrderAndParmsStore
@@ -101,14 +94,16 @@ public class ServerStatement {
      */
 
     public ServerStatement(HttpServletRequest request,
-	    HttpServletResponse response, DatabaseConfigurator databaseConfigurator, Connection connection)
-	    throws SQLException {
+	    HttpServletResponse response,
+	    DatabaseConfigurator databaseConfigurator, Connection connection)
+		    throws SQLException {
 	this.request = request;
 	this.response = response;
 	this.databaseConfigurator = databaseConfigurator;
 	this.connection = connection;
-	
-	String prettyPrinting = request.getParameter(HttpParameter.PRETTY_PRINTING);
+
+	String prettyPrinting = request
+		.getParameter(HttpParameter.PRETTY_PRINTING);
 	doPrettyPrinting = new Boolean(prettyPrinting);
     }
 
@@ -118,67 +113,45 @@ public class ServerStatement {
      * @param out
      * @throws FileNotFoundException
      * @throws IOException
-     * @throws SQLException 
+     * @throws SQLException
      */
     public void executeQueryOrUpdate(OutputStream out)
 	    throws FileNotFoundException, IOException, SQLException {
 
-	File tempFileForResultSet = null;
-	OutputStream outTemp = null;
+	// Get the GZIP Stream if necessary
+	OutputStream outFinal = null;
 
 	try {
 
-	    if (isExecuteUpdate()) {
-		outTemp = new ByteArrayOutputStream();
+	    outFinal = getFinalOutputStream(out);
+	    
+	    // Execute it
+	    if (isPreparedStatement()) {
+		executePrepStatement(outFinal);
 	    } else {
-		tempFileForResultSet = ServerStatement
-			.createTempFileForResultSet();
-		try {
-		    outTemp = getOutputStream(tempFileForResultSet);
-		} catch (IllegalArgumentException e) {
-		    JsonErrorReturn errorReturn = new JsonErrorReturn(
-			    response, HttpServletResponse.SC_BAD_REQUEST, JsonErrorReturn.ERROR_ACEQL_ERROR, e.getMessage());
-		    ServerSqlManager.writeLine(out, errorReturn.build());
-		    return;
-		}
+		executeStatement(outFinal);
 	    }
+	} catch (SecurityException e) {
+	    JsonErrorReturn errorReturn = new JsonErrorReturn(response,
+		    HttpServletResponse.SC_UNAUTHORIZED,
+		    JsonErrorReturn.ERROR_ACEQL_UNAUTHORIZED, e.getMessage());
+	    ServerSqlManager.writeLine(outFinal, errorReturn.build());
+	} catch (SQLException e) {
+	    JsonErrorReturn errorReturn = new JsonErrorReturn(response,
+		    HttpServletResponse.SC_BAD_REQUEST,
+		    JsonErrorReturn.ERROR_JDBC_ERROR, e.getMessage());
+	    ServerSqlManager.writeLine(outFinal, errorReturn.build());
+	} catch (Exception e) {
+	    JsonErrorReturn errorReturn = new JsonErrorReturn(response,
+		    HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+		    JsonErrorReturn.ERROR_ACEQL_FAILURE, e.getMessage(),
+		    ExceptionUtils.getStackTrace(e));
+	    ServerSqlManager.writeLine(outFinal, errorReturn.build());
+	}
+	finally {
 
-	    try {
-		// Execute it
-		if (isPreparedStatement()) {
-		    executePrepStatement(outTemp);
-		} else {
-		    executeStatement(outTemp);
-		}
-	    } catch (SecurityException e) {
-		JsonErrorReturn errorReturn = new JsonErrorReturn(
-			response,
-			HttpServletResponse.SC_UNAUTHORIZED, JsonErrorReturn.ERROR_ACEQL_UNAUTHORIZED, e.getMessage());
-		ServerSqlManager.writeLine(outTemp, errorReturn.build());
-	    } catch (SQLException e) {
-		JsonErrorReturn errorReturn = new JsonErrorReturn(
-			response, HttpServletResponse.SC_BAD_REQUEST, JsonErrorReturn.ERROR_JDBC_ERROR, e.getMessage());
-		ServerSqlManager.writeLine(outTemp, errorReturn.build());
-	    } catch (Exception e) {
-		JsonErrorReturn errorReturn = new JsonErrorReturn(
-			response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-			JsonErrorReturn.ERROR_ACEQL_FAILURE, e.getMessage(), ExceptionUtils.getStackTrace(e));
-		ServerSqlManager.writeLine(outTemp, errorReturn.build());
-	    }
-		
-	    if (isExecuteUpdate()) {
-
-		String outString = outTemp.toString();
-		ServerSqlManager.writeLine(out, outString);
-	    } else {
-		
-		// Underlying outTemp has been close by JsonGenerator.close()...
-		IOUtils.closeQuietly(outTemp);
-		dumpFileOnServletOutStream(tempFileForResultSet, out);
-	    }
-
-	} finally {
-
+	    IOUtils.closeQuietly(outFinal);
+	    
 	    String username = request.getParameter(HttpParameter.USERNAME);
 	    String sessionId = request.getParameter(HttpParameter.SESSION_ID);
 
@@ -187,10 +160,7 @@ public class ServerStatement {
 		ConnectionCloser.freeConnection(connection,
 			databaseConfigurator);
 	    }
-
-	    IOUtils.closeQuietly(outTemp);
 	}
-
     }
 
     /**
@@ -201,43 +171,25 @@ public class ServerStatement {
      * @throws FileNotFoundException
      * @throws IOException
      */
-    private OutputStream getOutputStream(File file)
+    private OutputStream getFinalOutputStream(OutputStream out)
 	    throws FileNotFoundException, IOException {
 
 	String gzipResult = request.getParameter(HttpParameter.GZIP_RESULT);
 	boolean doGzip = Boolean.parseBoolean(gzipResult);
 
+	// No GZIP if execute update
+	if (isExecuteUpdate()) {
+	    doGzip = false;
+	}
+
 	if (doGzip) {
-	    GZIPOutputStream out = new GZIPOutputStream(
-		    new BufferedOutputStream(new FileOutputStream(file)));
-	    return out;
+	    GZIPOutputStream gZipOut = new GZIPOutputStream(out);
+	    return gZipOut;
 	} else {
-	    OutputStream out = new BufferedOutputStream(new FileOutputStream(
-		    file));
-	    return out;
+	    OutputStream outFinal = out;
+	    return outFinal;
 
 	}
-    }
-
-    private void dumpFileOnServletOutStream(File file, OutputStream out)
-	    throws FileNotFoundException, IOException {
-
-	InputStream in = new BufferedInputStream(new FileInputStream(file));
-
-	try {
-	    IOUtils.copy(in, out);
-	    // Add a final blank line because JsonGenerator does not do it
-	    ServerSqlManager.writeLine(out);
-	} finally {
-	    IOUtils.closeQuietly(in);
-	    IOUtils.closeQuietly(out);
-	    
-	    if (!DEBUG) {
-		file.delete();
-	    }
-
-	}
-
     }
 
     private boolean isPreparedStatement() {
@@ -263,7 +215,7 @@ public class ServerStatement {
      * @throws SQLException
      */
     private void executePrepStatement(OutputStream out) throws SQLException,
-	    IOException {
+    IOException {
 
 	String username = request.getParameter(HttpParameter.USERNAME);
 	String sqlOrder = request.getParameter(HttpParameter.SQL);
@@ -290,8 +242,9 @@ public class ServerStatement {
 	    try {
 		serverPreparedStatementParameters.setParameters();
 	    } catch (IllegalArgumentException e) {
-		JsonErrorReturn errorReturn = new JsonErrorReturn(
-			response, HttpServletResponse.SC_BAD_REQUEST, JsonErrorReturn.ERROR_ACEQL_ERROR, e.getMessage());
+		JsonErrorReturn errorReturn = new JsonErrorReturn(response,
+			HttpServletResponse.SC_BAD_REQUEST,
+			JsonErrorReturn.ERROR_ACEQL_ERROR, e.getMessage());
 		ServerSqlManager.writeLine(out, errorReturn.build());
 		return;
 	    }
@@ -304,13 +257,14 @@ public class ServerStatement {
 		    .getDatabaseConfigurator(database);
 
 	    boolean isAllowed = true;
-	    
+
 	    String ipAddress = request.getRemoteAddr();
-	    
+
 	    boolean isAllowedAfterAnalysis = databaseConfigurator
 		    .allowStatementAfterAnalysis(username, connection,
-			    ipAddress, sqlOrder, serverPreparedStatementParameters
-				    .getParameterValues());
+			    ipAddress, sqlOrder,
+			    serverPreparedStatementParameters
+			    .getParameterValues());
 
 	    if (!isAllowedAfterAnalysis) {
 		isAllowed = false;
@@ -329,10 +283,9 @@ public class ServerStatement {
 			.prepStatementNotAllowedBuild(sqlOrder,
 				"Prepared Statement not allowed",
 				serverPreparedStatementParameters
-					.getParameterTypes(),
+				.getParameterTypes(),
 				serverPreparedStatementParameters
-					.getParameterValues(),
-				doPrettyPrinting);
+				.getParameterValues(), doPrettyPrinting);
 		throw new SecurityException(message);
 	    }
 
@@ -347,29 +300,30 @@ public class ServerStatement {
 			    databaseConfigurator, username, connection,
 			    ipAddress, sqlOrder,
 			    serverPreparedStatementParameters
-				    .getParameterValues());
+			    .getParameterValues());
 
 		    String message = JsonSecurityMessage
 			    .prepStatementNotAllowedBuild(
 				    sqlOrder,
 				    "Prepared Statement not allowed for executeUpdate",
 				    serverPreparedStatementParameters
-					    .getParameterTypes(),
+				    .getParameterTypes(),
 				    serverPreparedStatementParameters
-					    .getParameterValues(),
+				    .getParameterValues(),
 				    doPrettyPrinting);
-			
+
 		    throw new SecurityException(message);
 		}
 
 		int rc = preparedStatement.executeUpdate();
 
 		StringWriter sw = new StringWriter();
-		JsonGeneratorFactory jf = JsonUtil.getJsonGeneratorFactory(JsonUtil.DEFAULT_PRETTY_PRINTING);
+		JsonGeneratorFactory jf = JsonUtil
+			.getJsonGeneratorFactory(JsonUtil.DEFAULT_PRETTY_PRINTING);
 		JsonGenerator gen = jf.createGenerator(sw);
 
 		gen.writeStartObject().write("status", "OK")
-			.write("row_count", rc).writeEnd();
+		.write("row_count", rc).writeEnd();
 		gen.close();
 
 		ServerSqlManager.write(out, sw.toString());
@@ -394,13 +348,13 @@ public class ServerStatement {
 		}
 	    }
 	} catch (SQLException e) {
-	    
-	    String message = JsonStatementFailure.prepStatementFailureBuild(
+
+	    String message = StatementFailure.prepStatementFailureBuild(
 		    sqlOrder, e.toString(),
 		    serverPreparedStatementParameters.getParameterTypes(),
 		    serverPreparedStatementParameters.getParameterValues(),
 		    doPrettyPrinting);
-	    
+
 	    LoggerUtil.log(request, e, message);
 	    throw e;
 	} finally {
@@ -435,8 +389,8 @@ public class ServerStatement {
      * @throws SQLException
      */
     private void executeStatement(OutputStream out) throws SQLException,
-	    IOException {
-	
+    IOException {
+
 	String username = request.getParameter(HttpParameter.USERNAME);
 	String sqlOrder = request.getParameter(HttpParameter.SQL);
 	debug("sqlOrder   : " + sqlOrder);
@@ -452,7 +406,7 @@ public class ServerStatement {
 	    if (sqlOrder == null || sqlOrder.isEmpty()) {
 		throw new SQLException("A 'sql' statement is required.");
 	    }
-	    
+
 	    statement = connection.prepareStatement(sqlOrder);
 	    // Throws a SQL exception if the order is not authorized:
 	    debug("before new SqlSecurityChecker()");
@@ -466,9 +420,9 @@ public class ServerStatement {
 	    if (!statementClassAllowed) {
 		isAllowed = false;
 	    }
-	    
+
 	    String ipAddress = request.getRemoteAddr();
-	    
+
 	    boolean isAllowedAfterAnalysis = databaseConfigurator
 		    .allowStatementAfterAnalysis(username, connection,
 			    ipAddress, sqlOrder, new Vector<Object>());
@@ -514,12 +468,13 @@ public class ServerStatement {
 		rc = statement.executeUpdate(sqlOrder);
 
 		StringWriter sw = new StringWriter();
-		
-		JsonGeneratorFactory jf = JsonUtil.getJsonGeneratorFactory(JsonUtil.DEFAULT_PRETTY_PRINTING);
+
+		JsonGeneratorFactory jf = JsonUtil
+			.getJsonGeneratorFactory(JsonUtil.DEFAULT_PRETTY_PRINTING);
 		JsonGenerator gen = jf.createGenerator(sw);
 
 		gen.writeStartObject().write("status", "OK")
-			.write("row_count", rc).writeEnd();
+		.write("row_count", rc).writeEnd();
 		gen.close();
 
 		ServerSqlManager.write(out, sw.toString());
@@ -547,9 +502,9 @@ public class ServerStatement {
 	    }
 	} catch (SQLException e) {
 
-	    String message = JsonStatementFailure.statementFailureBuild(
+	    String message = StatementFailure.statementFailureBuild(
 		    sqlOrder, e.toString(), doPrettyPrinting);
-		
+
 	    LoggerUtil.log(request, e, message);
 	    throw e;
 

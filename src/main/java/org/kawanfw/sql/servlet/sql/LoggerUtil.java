@@ -44,8 +44,8 @@ public class LoggerUtil {
 		.getDatabaseConfigurator(database);
 	
 	Logger logger = databaseConfigurator.getLogger();	
-	logger.log(Level.WARNING, "SQLException errorMessage: " + aceQLErrorMessage);
-	logger.log(Level.WARNING, "SQLException: " + sqlException);
+	logger.log(Level.WARNING, aceQLErrorMessage);
+	logger.log(Level.WARNING, sqlException.toString());
 	
     }
 

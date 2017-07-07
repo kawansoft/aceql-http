@@ -1,0 +1,50 @@
+
+                     AceQL HTTP
+                 Version 1.0-beta-2
+                    Release Notes
+
+
+Introduction
+------------
+
+AceQL HTTP is a library of REST like http APIs that allow to access to 
+remote SQL databases over http from any device that supports http. 
+
+AceQL HTTP is provided with two client SDK.
+- The AceQL Java Client SDK allows to wrap the HTTP APIs using JDBC calls 
+  in their code, just like they would for a local database.
+- The AceQL C# Client SDK allows to wrap the HTTP APIs using Microsoft SQL 
+  Server like calls in their code, just like they would for a local database.
+
+Security has been taken into account from the design: It as allowed to specify 
+and code strong security rules in order to protect the databases. 
+
+AceQL HTTP Open Source Edition is licensed through the GNU Lesser General
+Public License (LGPL v2.1).
+
+AceQL HTTP Professional Edition is licensed through:
+ - 30 day Trial License
+ - Single Server AceQL License 
+ - Single Site AceQL License
+    
+See AceQL HTTP Use Guide for more info about AceQL licenses.
+
+
+AceQL HTTP Version 1.0-beta-2 - 07-jul-2017
+-------------------------------------------
+
+What's New:
+- Server Result Sets were dumped into an intermediary file. Result Sets are now
+  dumped directly on servlet output stream.
+ 
+Bugs fixed:
+- A SQLException logging message could throw an Exception. This has been fixed.
+
+
+AceQL HTTP Version 1.0-beta-1 - 27-jun-2017
+-------------------------------------------
+
+What's New:
+- First release.
+
+
