@@ -229,7 +229,7 @@ public class DefaultDatabaseConfigurator implements DatabaseConfigurator {
      */
     @Override
     public int getConnectionMaxAge() throws IOException, SQLException {
-	return 60 * 12;
+	return 720;
     }
 
     /**

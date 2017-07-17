@@ -47,8 +47,8 @@ import java.util.logging.Logger;
  * ares allowed for connection.</li>
  * <li>Define the directories where the Blobs/Clobs are located for upload &
  * download.</li>
- * <li>Define the maximum number of minutes a <Code>Connection</code> can live
- * before it's closed and released in the pool.</li>
+ * <li>Define the maximum number of minutes a Statefull <Code>Connection</code>
+ * can live in AceQL memory before it's closed and released in the pool.</li>
  * <li>Define some Java code to execute before/after a
  * <code>Connection.close()</code>.
  * <li>Define if a client user has the right to call a
@@ -118,14 +118,16 @@ public interface DatabaseConfigurator {
     public Connection getConnection(String database) throws SQLException;
 
     /**
-     * Allows to define the maximum number of minutes a <code>Connection</code>
-     * can live before it's released and closed. <br>
-     * This concerns connections that were not correctly closed by the client
-     * side with <code>Connection.close()</code>. <br>
-     * 0 means connections are never released and closed.
-     * 
-     * @return the maximum number of minutes a <code>Connection </code> can live
-     *         before it's released and closed.
+     * Allows to define the maximum number of minutes a Statefull
+     * <code>Connection</code> can live in AceQL memory before before they are forced
+     * to be closed and release in the pool.<br>
+     * This concerns connections:
+     * <ul>
+     * <li>that are active because SQL code in is still on execution.
+     * <li>that were not correctly closed by the client side with
+     * <code>Connection.close()</code>. <br>
+     * 0 means connections are never released and closed.</li>
+     * </ul>
      * 
      * @throws IOException
      *             if an IOException occurs

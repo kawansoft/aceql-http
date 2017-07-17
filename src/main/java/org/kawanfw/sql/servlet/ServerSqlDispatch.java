@@ -271,7 +271,7 @@ public class ServerSqlDispatch {
 			sessionId);
 		connection = connectionStore.get();
 
-		if (connection == null) {
+		if (connection == null || connection.isClosed()) {
 		    JsonErrorReturn errorReturn = new JsonErrorReturn(response,
 			    HttpServletResponse.SC_NOT_FOUND,
 			    JsonErrorReturn.ERROR_ACEQL_ERROR,
@@ -456,6 +456,7 @@ public class ServerSqlDispatch {
 
     private boolean isConnectionReader(String action) {
 	if (action.equals(HttpParameter.GET_AUTO_COMMIT)
+		|| action.equals(HttpParameter.GET_CATALOG)
 		|| action.equals(HttpParameter.GET_HOLDABILITY)
 		|| action.equals(HttpParameter.IS_READ_ONLY)
 		|| action.equals(HttpParameter.GET_TRANSACTION_ISOLATION_LEVEL)) {

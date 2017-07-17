@@ -47,11 +47,17 @@ public class ConnectionUtil {
      * @throws SQLException	if any SQL Exception occurs
      */
     public static void connectionInit(Connection connection) throws SQLException {
-	// Make sure Connection extracted from the pool is in autocommit mode
+		
+	// Make sure Connection extracted from the pool is always on autocommit mode
+	// This avoid for client side to send a connection.getAutoCommit() before 
+	// starting working.
+	// This is anyway mandatory for C# as all Connections are per default
+	// auto commit mode.
 	if (!connection.getAutoCommit()) {
 	    connection.rollback();
 	    connection.setAutoCommit(true);
 	}
+	
 	// Make sure we are not in read only. Don't trap Exception because of
 	// Drivers not supporting this call
 	if (connection.isReadOnly()) {

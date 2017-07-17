@@ -120,7 +120,7 @@ public class ConnectionStoreCleaner extends Thread {
 			debug("Connection age     : " + age);
 
 			Connection connection = connectionStore.get();
-			connectionStore.remove();
+			connectionStore.clean();
 			debug("Store size         : " + connectionStore.size());
 
 			ConnectionCloser.freeConnection(connection,

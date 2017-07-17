@@ -153,27 +153,20 @@ public class ServerLoginActionSql extends HttpServlet {
 	    String sessionId = sessionConfigurator.generateSessionId(username, database);
 
 	    String stateless = request.getParameter(HttpParameter.STATELESS);
-
 	    Boolean isStateless = new Boolean(stateless);
-
+	    
 	    if (!isStateless) {
-		ConnectionStore.setStateless(username, sessionId, isStateless);
 		ConnectionStore connectionStore = new ConnectionStore(username,
 			sessionId);
 		Connection connection = databaseConfigurator
 			.getConnection(database);
 		
-		// Make sure we are in auto-commit mode when user starts session
-		// Clear as it prevents it to send a query on the state
+		// Make sure we are in auto-commit mode when user starts sessione
 		ConnectionUtil.connectionInit(connection);
-		
 		connectionStore.put(connection);
-	    } else {
-		ConnectionStore.setStateless(username, sessionId, isStateless);
 	    }
 
 	    Trace.sessionId("sessionId: " + sessionId);
-
 	    out.println(JsonOkReturn.build("session_id", sessionId));
 
 	} catch (Exception e) {

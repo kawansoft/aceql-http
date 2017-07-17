@@ -39,6 +39,7 @@ import org.apache.catalina.LifecycleException;
 import org.apache.catalina.Wrapper;
 import org.apache.catalina.connector.Connector;
 import org.apache.catalina.startup.Tomcat;
+import org.apache.coyote.http2.Http2Protocol;
 import org.kawanfw.sql.api.server.DatabaseConfigurationException;
 import org.kawanfw.sql.servlet.ServerSqlManager;
 import org.kawanfw.sql.tomcat.util.PortSemaphoreFile;
@@ -147,6 +148,9 @@ public class TomcatStarter {
 	// Set the supplementary default connector values
 	tomcatConnectorsUpdater.setConnectorValues();
 
+	//HACK HTTP2
+	tomcat.getConnector().addUpgradeProtocol(new Http2Protocol());
+	
 	// Set the supplementary ssl connector values
 	Connector httpsConnector = tomcatConnectorsUpdater
 		.setSslConnectorValues();
@@ -158,6 +162,8 @@ public class TomcatStarter {
 	if (httpsConnector != null) {
 	    sslScheme = httpsConnector.getScheme();
 	    sslPort = httpsConnector.getPort();
+	    //HACK HTTP2
+	    httpsConnector.addUpgradeProtocol(new Http2Protocol());
 	}
 
 	// Set up context,
@@ -207,6 +213,8 @@ public class TomcatStarter {
 	System.out.println(SqlTag.SQL_PRODUCT_START
 		+ " From command line, use [Ctrl]+[C] to abort abruptly");
 
+	//tomcat.getServer().await();
+	
 	// Loop to serve requests
 	while (true) {
 
@@ -278,7 +286,7 @@ public class TomcatStarter {
 	rootCtx.addServletMapping("/"+serverSqlManagerServletName + "/*",
 		serverSqlManagerServletName);
 	*/
-	rootCtx.addServletMapping("/*",
+	rootCtx.addServletMappingDecoded("/*",
 		serverSqlManagerServletName);
     }
 

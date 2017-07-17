@@ -73,7 +73,6 @@ public class ConnectionStore {
     /** The map of RowIds */
     private static Map<ConnectionKey, Set<RowId>> rowIdMap = new HashMap<>();
 
-    private static Map<ConnectionKey, Boolean> states = new HashMap<>();
 
     /**
      * Constructor
@@ -95,29 +94,18 @@ public class ConnectionStore {
 
     }
 
-    /**
-     * Stores if pair (Username, connectionId) is stateless
-     * 
-     * @param username
-     * @param connectionId
-     * @param stateless
-     */
-    public static void setStateless(String username, String connectionId,
-	    boolean stateless) {
-	ConnectionKey connectionKey = new ConnectionKey(username, connectionId);
-	states.put(connectionKey, stateless);
-    }
 
     /**
-     * Says if pair (Username, connectionId) is stateless
+     * Says if pair (Username, connectionId) is Stateless or Statefull
+     * It it Statefull id the connectionMap contains en entry
      * 
      * @param username
      * @param connectionId
      * @return
      */
     public static boolean isStateless(String username, String connectionId) {
-	ConnectionKey connectionKey = new ConnectionKey(username, connectionId);
-	boolean isStateless = states.get(connectionKey);
+	ConnectionKey connectionKey = new ConnectionKey(username, connectionId);	
+	boolean isStateless = (connectionMap.containsKey(connectionKey)) ? false: true;
 	return isStateless;
     }
 
@@ -408,14 +396,30 @@ public class ConnectionStore {
     public Connection get() {
 	return connectionMap.get(connectionKey);
     }
+    
 
     /**
-     * Remove the Connection associated to username + connectionId
+     * Remove all stored instances in the ConnectionStore.
+     * This must be done only in a Logout stage ({@code Connection#close()}).
      */
     public void remove() {
 	debug("Removing a Connection for user: " + connectionKey);
-
+	clean();
 	connectionMap.remove(connectionKey);
+    }
+    
+    /**
+     * Remove the Connection info associated to username + connectionId.
+     * <br>
+     * But keeps the entry in connectionMap do that program knows if client user is in
+     * Statefull mode or not.
+     */
+    public void clean() {
+	debug("Cleaning a Connection for user: " + connectionKey);
+
+	//NO: says the connection is statefull
+	//connectionMap.remove(connectionKey);
+	
 	connectionAge.remove(connectionKey);
 	savepointMap.remove(connectionKey);
 	arrayMap.remove(connectionKey);
@@ -469,5 +473,7 @@ public class ConnectionStore {
 	    System.out.println(new Date() + " " + s);
 	}
     }
+
+
 
 }

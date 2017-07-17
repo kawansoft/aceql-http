@@ -48,10 +48,9 @@ import org.kawanfw.sql.util.FrameworkDebug;
 public class ServerLogout {
 
     private static boolean DEBUG = FrameworkDebug.isSet(ServerLogout.class);;
-    
+
     // A space
     public static final String SPACE = " ";
-    
 
     public static void logout(HttpServletRequest request,
 	    HttpServletResponse response,
@@ -74,11 +73,10 @@ public class ServerLogout {
 			sessionId);
 		Connection connection = connectionStore.get();
 
-		if (connection != null) {
-		    connectionStore.remove();
-		    ConnectionCloser.freeConnection(connection,
-			    databaseConfigurator);
-		}
+		connectionStore.remove();
+		ConnectionCloser.freeConnection(connection,
+			databaseConfigurator);
+
 	    } else {
 		// Nothing to do for stateless connection as no connection
 		// created at this point

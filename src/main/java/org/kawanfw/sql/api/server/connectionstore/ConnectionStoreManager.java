@@ -112,10 +112,12 @@ public class ConnectionStoreManager {
 
 	// Get the Connection before removing it from the store..
 	Connection connection = connectionStore.get();
-	connectionStore.remove();
-
+	
 	// Release the Connection into the pool
-	ConnectionCloser.freeConnection(connection, databaseConfigurator);
+	connectionStore.remove();
+	ConnectionCloser.freeConnection(connection, databaseConfigurator);	
+
+
     }
 
     /**

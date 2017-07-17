@@ -60,6 +60,9 @@ public class HttpParameter {
     // Version action
     public static final Object GET_VERSION = "get_version";
     
+    // Meta action
+    public static final Object GET_CATALOG = "get_catalog";
+    
     // Connections modifiers & Getters Action & values
     public static final String COMMIT = "commit";
     public static final String ROLLBACK = "rollback";

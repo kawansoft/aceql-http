@@ -66,6 +66,11 @@ public class ServletPathAnalyzer {
 	    connectionModifierOrReader = "commit";
 	    return true;
 	}
+	
+	if (urlContent.endsWith("/get_catalog")) {
+	    connectionModifierOrReader = "get_catalog";
+	    return true;
+	}
 
 	if (urlContent.endsWith("/rollback")) {
 	    connectionModifierOrReader = "rollback";
@@ -133,6 +138,7 @@ public class ServletPathAnalyzer {
 	}
     }
     
+  
     public boolean isBlobAction(String urlContent) {
 	if (urlContent == null) {
 	    throw new NullPointerException("urlContent is null");

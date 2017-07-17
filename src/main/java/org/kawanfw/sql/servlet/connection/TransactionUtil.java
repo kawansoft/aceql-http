@@ -130,25 +130,34 @@ public class TransactionUtil {
 
 	try {
 	    if (action.equals(HttpParameter.GET_AUTO_COMMIT)) {
-	        boolean autoCommit = connection.getAutoCommit();
-	        ServerSqlManager.writeLine(out, JsonOkReturn.build("result", "" + autoCommit));
+		boolean autoCommit = connection.getAutoCommit();
+		ServerSqlManager.writeLine(out,
+			JsonOkReturn.build("result", "" + autoCommit));
 	    } else if (action.equals(HttpParameter.IS_READ_ONLY)) {
-	        boolean readOnly = connection.isReadOnly();
-	        ServerSqlManager.writeLine(out, JsonOkReturn.build("result", "" + readOnly));
+		boolean readOnly = connection.isReadOnly();
+		ServerSqlManager.writeLine(out,
+			JsonOkReturn.build("result", "" + readOnly));
+	    } else if (action.equals(HttpParameter.GET_CATALOG)) {
+		String catalog = connection.getCatalog();
+		ServerSqlManager.writeLine(out,
+			JsonOkReturn.build("result", catalog));
+
+	    } else if (action.equals(HttpParameter.GET_HOLDABILITY)) {
+		int holdability = connection.getHoldability();
+		String strHoldability = getHoldabilityAsString(holdability);
+		ServerSqlManager.writeLine(out,
+			JsonOkReturn.build("result", "" + strHoldability));
 	    } else if (action
-	    	.equals(HttpParameter.GET_HOLDABILITY)) {
-	        int holdability = connection.getHoldability();
-	        String strHoldability = getHoldabilityAsString(holdability);
-	        ServerSqlManager.writeLine(out, JsonOkReturn.build("result", "" + strHoldability));
-	    }  else if (action
-	    	.equals(HttpParameter.GET_TRANSACTION_ISOLATION_LEVEL)) {
-	        int transactionIsolation = connection.getTransactionIsolation();
-	        String strTransactionIsolation = getTransactionIsolationAsString(transactionIsolation);
-	        ServerSqlManager.writeLine(out, JsonOkReturn.build("result", "" + strTransactionIsolation));
-	    }else {
-	        throw new IllegalArgumentException(
-	    	    "Invalid Sql Action: "
-	    		    + action);
+		    .equals(HttpParameter.GET_TRANSACTION_ISOLATION_LEVEL)) {
+		int transactionIsolation = connection.getTransactionIsolation();
+		String strTransactionIsolation = getTransactionIsolationAsString(transactionIsolation);
+		ServerSqlManager.writeLine(
+			out,
+			JsonOkReturn.build("result", ""
+				+ strTransactionIsolation));
+	    } else {
+		throw new IllegalArgumentException("Invalid Sql Action: "
+			+ action);
 	    }
 	} catch (IllegalArgumentException e) {
 	    JsonErrorReturn errorReturn = new JsonErrorReturn(

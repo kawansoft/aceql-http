@@ -508,7 +508,6 @@ public class ServerSqlManager extends HttpServlet {
 	    if (urlContent.endsWith("/connect")) {
 		action = "connect";
 
-		
 		if (!urlContent.contains("/" + servletName + "/database/")) {
 		    throw new IllegalArgumentException(
 			    "Request does not contain /database/ subpath in path");
