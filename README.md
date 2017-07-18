@@ -1,8 +1,8 @@
 # AceQL HTTP
 <img src="https://www.aceql.com/favicon.png" alt=""/>
 
-<a href="https://www.aceql.com">AceQL HTTP</a> is a library of REST like http APIs that allow to access to 
-remote SQL databases over http from any device that supports HTTP. 
+<a href="https://www.aceql.com">AceQL HTTP</a> is a library of REST like HTTP APIs that allow to access to 
+remote SQL databases over HTTP from any device that supports HTTP. 
 
 AceQL HTTP is provided with two client SDK:
 
