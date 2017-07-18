@@ -19,7 +19,7 @@ and code strong security rules in order to protect the databases.
 AceQL HTTP Open Source Edition is licensed through the GNU Lesser General
 Public License (LGPL v2.1).
 
-AceQL HTTP Open Source Edition allows to access main open source databases:
+AceQL HTTP Professional Edition allows to access main open source databases:
 MariaDB/MySQL and PostrgeSQL.
 
 ## Installation  ##
