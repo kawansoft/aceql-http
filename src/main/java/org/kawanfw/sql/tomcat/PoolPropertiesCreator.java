@@ -131,14 +131,13 @@ public class PoolPropertiesCreator {
 		propertyValue = propertyValue.trim();
 	    }
 
+	    propertyName = propertyName.trim();
+	    
 	    // Test that the property is a field of PoolProperties
-	    // Property name must end with "", or ".2, ".3", etc.
-	    if (propertyName.endsWith(database)) {
+	    if (propertyName.startsWith(database + ".")) {
 
-		propertyName = StringUtils.substringBeforeLast(propertyName,
-			database);
-
-		propertyName = StringUtils.substringBeforeLast(propertyName, ".");
+		propertyName = StringUtils.substringAfter(propertyName,database + ".");
+	
 		debug("property.name: " + propertyName);
 		
 		if (fields.contains(propertyName)) {

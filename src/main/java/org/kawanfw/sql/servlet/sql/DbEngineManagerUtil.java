@@ -24,75 +24,57 @@
  */
 package org.kawanfw.sql.servlet.sql;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.Properties;
+import org.apache.commons.lang3.StringUtils;
 
-import org.kawanfw.sql.api.server.DatabaseConfigurationException;
-import org.kawanfw.sql.api.util.SqlUtil;
 
 /**
  * 
- * Helper class for treatment depending on DB Vendor.
+ * Utility classes for DbVendorManager
  * 
  * @author Nicolas de Pomereu
  *
  */
-/*
- * 
- * This class needs an oracle driver jar to compile. (Example: ojdbc6.jar with
- * Oracle Database 11g.)
- * 
- * If you don't use Oracle, just comment the code between the two tags: // BEGIN
- * COMMENT & // END COMMENT to allow compilation.
- */
+public class DbEngineManagerUtil {
 
-public class DbVendorManager {
-    
     /**
-     * No constructor
+     * Protected constructor, no instanciation
      */
-    protected DbVendorManager() {
-
+    protected DbEngineManagerUtil() {
     }
 
-    public static String addLmt1(String sqlOrder, Connection connection)
-	    throws SQLException {
-
-	sqlOrder = sqlOrder.replace('\t', ' ');
-	sqlOrder = sqlOrder.trim();
-
-	if (!sqlOrder.toLowerCase().startsWith("select ")) {
-	    return sqlOrder;
-	}
-
-	if (DbVendorManagerUtil.containsWord(sqlOrder, "l" + "i" + "m" + "i" +"t")) {
-	    return sqlOrder;
-	}
-
-	sqlOrder = DbVendorManagerUtil.removeSemicolon(sqlOrder);
-
-	sqlOrder += " L" + "I" + "M" + "I" +"T 1";
-	return sqlOrder;
+    /**
+     * Says if the SQL order contains a word surrounded with spaces
+     * 
+     * @param sqlOrder
+     *            the SQL order
+     * @param word
+     *            the word to contain surrounded by spaces
+     * @return true if the SQL order contains the word surrounded with spaces
+     */
+    public static boolean containsWord(String sqlOrder, String word) {
+        String s = sqlOrder;
+    
+        s = s.replace('\t', ' ');
+    
+        if (s.toLowerCase().contains(" " + word.toLowerCase() + " ")) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
-    public static boolean checkDbVendor(Properties properties,
-	    Connection connection) throws DatabaseConfigurationException {
-
-	SqlUtil sqlUtil = null;
-	
-	try {
-	    sqlUtil = new SqlUtil(connection);
-	    
-	    if (sqlUtil.isH2() || sqlUtil.isHSQLDB() || sqlUtil.isMySQL() || sqlUtil.isPostgreSQL()) {
-		return true;
-	    } 
-	    
-	} catch (SQLException e) {
-	    throw new DatabaseConfigurationException(e.getMessage());
-	}
-	
-	return false;	
+    /**
+     * Remove ";" from trailing SQL order
+     * 
+     * @param sqlOrder
+     * @return sqlOrder without trailing ";"
+     */
+    public static String removeSemicolon(String sqlOrder) {
+        while (sqlOrder.trim().endsWith(";")) {
+            sqlOrder = sqlOrder.trim();
+            sqlOrder = StringUtils.removeEnd(sqlOrder, ";");
+        }
+        return sqlOrder;
     }
 
 }

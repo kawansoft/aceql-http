@@ -47,14 +47,14 @@ import com.auth0.jwt.interfaces.DecodedJWT;
  * <br>
  * Advantage of JWT is that no session info is stored on the server.
  * <br>
- * Disadvantage of JWT is that the token are much longer and thus generate more http traffic and are less convenient to use "manually" (with cURL, etc.)
+ * Disadvantage of JWT is that the token are much longer and thus generate more HTTP traffic and are less convenient to use "manually" (with cURL, etc.)
  * <br>
  * <br>
  * Implementation is coded with the <a href="https://github.com/auth0/java-jwt">java-jwt</a> library. 
  * <br><br>
  * Note that:
  * <ul>
- * <li>A secret valued must be defined using the {@code JwtSessionConfiguratorSecret} property in {@code aceql-server.properties}.</li>
+ * <li>A secret valued must be defined using the {@code jwtSessionConfiguratorSecret} property in {@code aceql-server.properties}.</li>
  * <li>The JWT lifetime value used is {@link DefaultSessionConfigurator#getSessionTimelife()} value.
  * </ul>
  * @author Nicolas de Pomereu
@@ -160,9 +160,9 @@ public class JwtSessionConfigurator implements SessionConfigurator {
      * @see org.kawanfw.sql.api.server.session.SessionConfigurator#verifySessionId(java.lang.String)
      */
     /**
-     * Perform the verification against the given JWT Token, using any previous configured options.
+     * Performs the verification against the given JWT Token, using any previous configured options.
      * <br>
-     * Also verifies that the token is not expired, i.e is lifetime is shorter than {@code getSessionTimelife()}
+     * Also verifies that the token is not expired, i.e. its lifetime is shorter than {@code getSessionTimelife()}
      */
     @Override
     public boolean verifySessionId(String sessionId) {

@@ -35,9 +35,9 @@ import java.util.logging.Logger;
 /**
  * 
  * Interface that defines the database and security configurations for AceQL
- * REST.
+ * HTTP.
  * <p>
- * The implemented methods will be called by AaceQL when a client program,
+ * The implemented methods will be called by AceQL when a client program,
  * referred by a user username, asks for a JDBC operation from the Client side.
  * <p>
  * A concrete implementation should be developed on the server side in order to:
@@ -47,7 +47,7 @@ import java.util.logging.Logger;
  * ares allowed for connection.</li>
  * <li>Define the directories where the Blobs/Clobs are located for upload &
  * download.</li>
- * <li>Define the maximum number of minutes a Statefull <Code>Connection</code>
+ * <li>Define the maximum number of minutes a Stateful <Code>Connection</code>
  * can live in AceQL memory before it's closed and released in the pool.</li>
  * <li>Define some Java code to execute before/after a
  * <code>Connection.close()</code>.
@@ -77,17 +77,17 @@ import java.util.logging.Logger;
 public interface DatabaseConfigurator {
 
     /**
-     * Allows to authenticate the remote {@code (usernname, password)} couple
+     * Allows to authenticate the remote {@code (username, password)} couple
      * sent by the client side.
      * <p>
-     * The KawanSoft Server will call the method in order to grant or not client
+     * The AceQL HTTP Server will call the method in order to grant or not client
      * access.
      * <p>
      * Typical usage would be to check the (username, password) couple against a
      * table in a SQL database or against a LDAP, etc.
      * 
      * It's possible to use current Connection with a database by calling
-     * {@code this.getConnection(databaseNsame)}.
+     * {@link #getConnection(String)}.
      * 
      * @param username
      *            the username sent by the client login
@@ -118,9 +118,10 @@ public interface DatabaseConfigurator {
     public Connection getConnection(String database) throws SQLException;
 
     /**
-     * Allows to define the maximum number of minutes a Statefull
-     * <code>Connection</code> can live in AceQL memory before before they are forced
-     * to be closed and release in the pool.<br>
+     * Allows to define the maximum number of minutes a Stateful
+     * <code>Connection</code> can live in AceQL memory before they are forced
+     * to be closed and released in the pool.<br>
+     * <br>
      * This concerns connections:
      * <ul>
      * <li>that are active because SQL code in is still on execution.
@@ -203,7 +204,7 @@ public interface DatabaseConfigurator {
 	    throws IOException, SQLException;
 
     /**
-     * Allows, for the passed client username and it's IP adress, to analyze the
+     * Allows, for the passed client username and its IP address, to analyze the
      * string representation of the SQL statement that is received on the
      * server. <br>
      * If the analysis defined by the method returns false, the SQL statement

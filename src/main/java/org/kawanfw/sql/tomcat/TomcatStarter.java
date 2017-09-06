@@ -39,7 +39,6 @@ import org.apache.catalina.LifecycleException;
 import org.apache.catalina.Wrapper;
 import org.apache.catalina.connector.Connector;
 import org.apache.catalina.startup.Tomcat;
-import org.apache.coyote.http2.Http2Protocol;
 import org.kawanfw.sql.api.server.DatabaseConfigurationException;
 import org.kawanfw.sql.servlet.ServerSqlManager;
 import org.kawanfw.sql.tomcat.util.PortSemaphoreFile;
@@ -111,9 +110,26 @@ public class TomcatStarter {
      * @throws ConnectException
      * @throws DatabaseConfigurationException
      */
-    public void start() throws IOException, LifecycleException,
+    public void startTomcat() throws IOException, LifecycleException,
 	    ConnectException, DatabaseConfigurationException {
 
+	Tomcat tomcat = new Tomcat();
+	try {
+	    startTomcat(tomcat);
+	} finally {
+	    try {
+		tomcat.stop();
+		tomcat.destroy();
+	    } catch (Exception e) {
+		e.printStackTrace(System.out);
+		e.printStackTrace();
+	    }
+	}
+
+    }
+
+    private void startTomcat(Tomcat tomcat) throws IOException, ConnectException,
+	    LifecycleException, MalformedURLException {
 	System.out.println(SqlTag.SQL_PRODUCT_START + " Starting "
 		+ Version.PRODUCT.NAME + " Web Server...");
 
@@ -130,13 +146,18 @@ public class TomcatStarter {
 	// Says to server that we are in a standalone mode:
 	TomcatSqlModeStore.setTomcatEmbedded(true);
 
-	// Define Tomcat instance
-	Tomcat tomcat = new Tomcat();
+	// Define Tomcat instance properties
 	tomcat.setSilent(true);
 	tomcat.setBaseDir(getBaseDir().getAbsolutePath());
 	tomcat.setHostname(host);
 	tomcat.setPort(port);
 
+	TomcatStarterUtil.testConfigurators(properties);
+	
+	// Very important to allow port reuse without System.exit() 
+	// See https://stackoverflow.com/questions/16526027/port-not-getting-free-on-removing-connector-in-embedded-tomcat-7
+	tomcat.getConnector().setProperty("bindOnInit", "false"); // HACK
+	
 	// Set the System properties
 	SystemPropUpdater systemPropUpdater = new SystemPropUpdater(properties);
 	systemPropUpdater.update();
@@ -148,70 +169,65 @@ public class TomcatStarter {
 	// Set the supplementary default connector values
 	tomcatConnectorsUpdater.setConnectorValues();
 
-	//HACK HTTP2
-	tomcat.getConnector().addUpgradeProtocol(new Http2Protocol());
+	//HTTP2 - Futur usage
+	//tomcat.getConnector().addUpgradeProtocol(new Http2Protocol());
 	
-	// Set the supplementary ssl connector values
-	Connector httpsConnector = tomcatConnectorsUpdater
-		.setSslConnectorValues();
+	// Set the supplementary ssl connector values on the default connector
+	tomcatConnectorsUpdater
+		.setDefaultConnectorSslValues();
 
-	// Get the new scheme and port if SSL is on
-	String sslScheme = null;
-	int sslPort = -1;
-
-	if (httpsConnector != null) {
-	    sslScheme = httpsConnector.getScheme();
-	    sslPort = httpsConnector.getPort();
-	    //HACK HTTP2
-	    httpsConnector.addUpgradeProtocol(new Http2Protocol());
-	}
-
+        //HTTP2 - Futur usage
+        //httpsConnector.addUpgradeProtocol(new Http2Protocol());
+	
+	// Code to redirect http to https
+        //tomcat.getConnector().setRedirectPort(sslPort);
+	
 	// Set up context,
 	// "" indicates the path of the ROOT context
 	Context rootCtx = tomcat.addContext("", getBaseDir().getAbsolutePath());
 		
-	// Setthe Context 
-	TomcatContextUpdater tomcatContextUpdater = new TomcatContextUpdater(
-		rootCtx, properties);
-	tomcatContextUpdater.setContextvalues();
+	// Set the Context 
+	//TomcatContextUpdater tomcatContextUpdater = new TomcatContextUpdater(
+	//	rootCtx, properties);
+	//tomcatContextUpdater.setContextvalues();
 	
+	//Code to force https	
+//        SecurityConstraint securityConstraint = new SecurityConstraint();
+//        securityConstraint.setUserConstraint("CONFIDENTIAL");
+//        SecurityCollection collection = new SecurityCollection();
+//        collection.addPattern("/*");
+//        securityConstraint.addCollection(collection);
+//        rootCtx.addConstraint(securityConstraint);
 	
 	// Add first servlet with no index
-	addServlet(properties, rootCtx);
-
+	addAceqlServlet(properties, rootCtx);
+	
 	// Create the dataSources if necessary
 	TomcatStarterUtil.createAndStoreDataSources(properties);
+	
+	TomcatStarterUtil.addServlets(properties, rootCtx);
 	
 	// ..and we are good to go
 	tomcat.start();
 
 	//System.out.println(SqlTag.SQL_PRODUCT_START);
+	Connector defaultConnector = tomcat.getConnector();
 	@SuppressWarnings("unused")
-	String result = testServlet(properties, sslScheme,
-		sslPort);
-
-//	if (serverSqlManagerstatus == null
-//		|| !serverSqlManagerstatus.startsWith("<!--OK-->")) {
-//	    throw new DatabaseConfigurationException(serverSqlManagerstatus);
-//	}
+	String result = testServlet(properties, defaultConnector.getScheme());
 
 	String runningMessage = SqlTag.SQL_PRODUCT_START + " "
 		+ Version.PRODUCT.NAME + " Web Server OK. Running on port "
 		+ port;
 
-	if (sslScheme != null && sslScheme.equals("https") && sslPort != port) {
-	    runningMessage += " & port " + sslPort + " for SSL.";
-	} else {
-	    runningMessage += ".";
-	}
-
 	System.out.println(runningMessage);
-	System.out
-		.println(SqlTag.SQL_PRODUCT_START
-			+ " To close normally: java org.kawanfw.sql.WebServer -stop -port "
-			+ port);
-	System.out.println(SqlTag.SQL_PRODUCT_START
-		+ " From command line, use [Ctrl]+[C] to abort abruptly");
+	
+//	System.out
+//		.println(SqlTag.SQL_PRODUCT_START
+//			+ " To close normally: java org.kawanfw.sql.WebServer -stop -port "
+//			+ port);
+	
+	//System.out.println(SqlTag.SQL_PRODUCT_START
+	//	+ " From command line, use [Ctrl]+[C] to abort abruptly");
 
 	//tomcat.getServer().await();
 	
@@ -230,9 +246,7 @@ public class TomcatStarter {
 	    if (! portSemaphoreFile.exists()) {
 		return;
 	    }
-
 	}
-
     }
 
 
@@ -244,36 +258,23 @@ public class TomcatStarter {
      * @param rootCtx
      *            the tomcat root context
      */
-    public void addServlet(Properties properties, Context rootCtx) {
+    public void addAceqlServlet(Properties properties, Context rootCtx) {
 
 	if (properties == null) {
 	    throw new IllegalArgumentException("properties can not be null");
 	}
 
 
-	String serverSqlManagerServletName = properties
-		.getProperty("serverSqlManagerServletName");
-
-	if (serverSqlManagerServletName == null
-		|| serverSqlManagerServletName.isEmpty()) {
-	    throw new DatabaseConfigurationException(
-		    "serverSqlManagerServletName property is null. "
-			    + SqlTag.PLEASE_CORRECT);
-	}
-
-	if (serverSqlManagerServletName.contains("/")) {
-	    throw new DatabaseConfigurationException(
-		    "serverSqlManagerServletName property can not contain \"/\" separator. "
-			    + SqlTag.PLEASE_CORRECT);
-	}
-	
-	serverSqlManagerServletName = serverSqlManagerServletName.trim();
+	String aceQLManagerServletCallName = TomcatStarterUtil.getAceQLManagerSevletName(properties);
 
 	// Add the ServerSqlManager servlet to the context
 	@SuppressWarnings("unused")
 	Wrapper wrapper = Tomcat.addServlet(rootCtx,
-		serverSqlManagerServletName, new ServerSqlManager());
+		aceQLManagerServletCallName, new ServerSqlManager());
 
+	rootCtx.addServletMappingDecoded("/*",
+		aceQLManagerServletCallName);
+	
 	TomcatStarterUtil.setInitParametersInStore(properties);
 
 	// Unecessary because we must start at / because of ou Rest API
@@ -282,72 +283,42 @@ public class TomcatStarter {
 //	    serverSqlManagerUrlPattern = "/" + serverSqlManagerUrlPattern;
 //	}
 	
-	/*
-	rootCtx.addServletMapping("/"+serverSqlManagerServletName + "/*",
-		serverSqlManagerServletName);
-	*/
-	rootCtx.addServletMappingDecoded("/*",
-		serverSqlManagerServletName);
     }
 
-    /**
-     * Test the servlet specified by the index.
+
+     /**
+     * Test the servlet
      * 
      * @param properties
      *            the properties than contain all servlet & configurators info
      * @param sslScheme
      *            the ssl scheme
-     * @param sslPort
-     *            the ssl port
      * @return the status
      * 
      * @throws MalformedURLException
      * @throws IOException
      */
-    public String testServlet(Properties properties, String sslScheme,
-	    int sslPort) throws MalformedURLException,
+    public String testServlet(Properties properties, String scheme) throws MalformedURLException,
 	    IOException {
 
-	String serverSqlManagerServletName = properties
-		.getProperty("serverSqlManagerServletName");
+	String aceQLManagerServletCallName = TomcatStarterUtil.getAceQLManagerSevletName(properties);
 
-	String serverSqlManagerUrlPattern = serverSqlManagerServletName;
+	String serverSqlManagerUrlPattern = aceQLManagerServletCallName;
 	serverSqlManagerUrlPattern = serverSqlManagerUrlPattern.trim();
 
 	if (!serverSqlManagerUrlPattern.startsWith("/")) {
 	    serverSqlManagerUrlPattern = "/" + serverSqlManagerUrlPattern;
 	}
 
-	// If we are in SSL, thing are different
-	String scheme = "http";
 	String url = scheme + "://" + host + ":" + port
-		+ serverSqlManagerUrlPattern;
-	String urlSsl = sslScheme + "://" + host + ":" + sslPort
 		+ serverSqlManagerUrlPattern;
 
 	// Call the ServerSqlManagerServlet to test everything is OK.
 	String serverSqlManagerstatus = callServerSqlManagerServlet(url);
-
-	if (sslScheme != null && sslScheme.equals("https") && sslPort != port) {
-	    serverSqlManagerstatus = callServerSqlManagerServlet(url);
-	}
-	
-	// URLs are now prefixed by jdbc:aceql:
-	// url = JdbcParms.JDBC_URL_HEADER + url;
-	// urlSsl = JdbcParms.JDBC_URL_HEADER + urlSsl;
-
-	//url = JdbcUrlHeader.prefixUrlWithJdbcProductName(url);
-	//urlSsl = JdbcUrlHeader.prefixUrlWithJdbcProductName(urlSsl);
-
+		
 	if (serverSqlManagerstatus.contains("\"OK\"")) {
 	    System.out.println(SqlTag.SQL_PRODUCT_START
-		    + " URL for client side         : " + url);
-
-	    if (sslScheme != null && sslScheme.equals("https")
-		    && sslPort != port) {
-		System.out.println(SqlTag.SQL_PRODUCT_START
-			+ " URL for client side with SSL: " + urlSsl);
-	    }
+		    + " URL for client side: " + url);
 	}
 
 	return serverSqlManagerstatus;

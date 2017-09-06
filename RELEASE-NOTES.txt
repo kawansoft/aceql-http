@@ -1,6 +1,6 @@
 
                      AceQL HTTP
-                 Version 1.0-beta-3
+                 Version 1.0-beta-4
                     Release Notes
 
 
@@ -30,6 +30,35 @@ AceQL HTTP Professional Edition is licensed through:
 See AceQL HTTP Use Guide for more info about AceQL licenses.
 
 
+AceQL HTTP Version 1.0-beta-4 - 04-sep-2017
+-------------------------------------------
+
+What's New:
+- In aceql-server.properties files: database is now the prefix for all 
+  properties (instead of being the trailer in previous versions.)
+    
+- Windows version has now a clean installer and all configuration is done 
+  through a provided Window interface.
+  
+- Windows: Server run may be configured as a Windows service. Configuration
+  & start/stop is done through the provided Windows interface.
+  
+- Linux: AceQL HTTP Web Server run may be configured as an /etc/init.d 
+  service. A documented and ready to use script is provided.
+  
+- It is now possible to add servlets that can interact with JDBC pools
+  when server is running. See conf/aceql-server.properties file.
+  
+- A default servlet is provided for JDBC pools query and update while server 
+  is running. See conf/aceql-server.properties file.
+
+Bugs fixed:
+- The bound Web port was not correctly released at AceQL server stop for reuse
+  in the same JVM. This has been fixed.
+- There was a missing carriage return line feed after execute_update 
+  and execute_query APIs. This has been fixed. 
+
+  
 AceQL HTTP Version 1.0-beta-3 - 17-jul-2017
 -------------------------------------------
 
@@ -37,8 +66,8 @@ What's New:
 - AceQL uses now embedded Tomcat version 8.5.
 - ConnectionStore has been cleaned & simplified 
   (no more Map to store if a Connection is Stateless/Statefull).
-  
-  
+    
+    
 AceQL HTTP Version 1.0-beta-2 - 07-jul-2017
 -------------------------------------------
 
@@ -46,7 +75,6 @@ What's New:
 - Server Result Sets were dumped into an intermediary file. 
   Result Sets are now dumped directly on servlet output stream.
 
- 
 Bugs fixed:
 - A SQLException logging message could throw an Exception. This has been fixed.
 

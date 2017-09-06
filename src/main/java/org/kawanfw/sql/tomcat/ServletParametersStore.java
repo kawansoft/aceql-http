@@ -25,6 +25,7 @@
 package org.kawanfw.sql.tomcat;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -39,22 +40,22 @@ import java.util.TreeSet;
  */
 public class ServletParametersStore {
 
-  
     /** The database names */
-    private static Set<String> databaseSet= null;
-    
+    private static Set<String> databaseSet = null;
+
     /** The (Database name, DataSource) Map */
     private static Map<String, Set<InitParamNameValuePair>> initParameterseMap = new HashMap<String, Set<InitParamNameValuePair>>();
-    
+
     private static String servletName = null;
-    
+
     private static String blobDownloadConfiguratorClassName = null;
     private static String blobUploadConfiguratorClassName = null;
 
     private static String sessionConfiguratorClassName = null;
 
     private static String jwtSessionConfiguratorSecretValue = null;
-    
+
+    private static Set<String> userServlets = new HashSet<>();
     /**
      * no instantiation
      */
@@ -62,24 +63,36 @@ public class ServletParametersStore {
 
     }
 
+    public static void init() {
+	databaseSet = null;
+	initParameterseMap = new HashMap<>();
+	servletName = null;
+	blobDownloadConfiguratorClassName = null;
+	blobUploadConfiguratorClassName = null;
+	sessionConfiguratorClassName = null;
+	jwtSessionConfiguratorSecretValue = null;
+	userServlets = new HashSet<>();
+
+    }
+
     /**
      * Gets the servlet name that will be the /servlet name starting path
+     * 
      * @return
      */
     public static String getServletName() {
-        return servletName;
+	return servletName;
     }
 
     /**
      * Sets the servlet name that will the /servlet name starting path
+     * 
      * @param servletName
      */
     public static void setServletName(String servletName) {
-        ServletParametersStore.servletName = servletName;
+	ServletParametersStore.servletName = servletName;
     }
 
-    
-    
     /**
      * Stores an init parameter name and value for a specified database.
      * 
@@ -112,8 +125,7 @@ public class ServletParametersStore {
      *            the init parameter name
      * @return the init parameter value
      */
-    public static String getInitParameter(String database,
-	    String initParamName) {
+    public static String getInitParameter(String database, String initParamName) {
 	Set<InitParamNameValuePair> initParamNameValuePairSet = initParameterseMap
 		.get(database);
 
@@ -133,7 +145,9 @@ public class ServletParametersStore {
 
     /**
      * Store the database names
-     * @param databases	the databases to store
+     * 
+     * @param databases
+     *            the databases to store
      */
     public static void setDatabaseNames(Set<String> databases) {
 	databaseSet = databases;
@@ -141,51 +155,61 @@ public class ServletParametersStore {
 
     /**
      * Returns the Set of database names
+     * 
      * @return
      */
     public static Set<String> getDatabaseNames() {
-        return databaseSet;
+	return databaseSet;
     }
-    
+
     /**
      * Returns the BlobDownloadConfigurator class name
+     * 
      * @return the BlobDownloadConfigurator class name
      */
     public static String getBlobDownloadConfiguratorClassName() {
-        return blobDownloadConfiguratorClassName;
+	return blobDownloadConfiguratorClassName;
     }
 
     /**
      * Sets the BlobDownloadConfigurator class name
-     * @param blobDownloadConfiguratorClassName BlobDownloadConfigurator class name
+     * 
+     * @param blobDownloadConfiguratorClassName
+     *            BlobDownloadConfigurator class name
      */
     public static void setBlobDownloadConfiguratorClassName(
-    	String blobDownloadConfiguratorClassName) {
-        ServletParametersStore.blobDownloadConfiguratorClassName = blobDownloadConfiguratorClassName;
+	    String blobDownloadConfiguratorClassName) {
+	ServletParametersStore.blobDownloadConfiguratorClassName = blobDownloadConfiguratorClassName;
     }
 
     /**
      * Returns the BlobUploadConfigurator class name
+     * 
      * @return the BlobUploadConfigurator class name
      */
     public static String getBlobUploadConfiguratorClassName() {
-        return blobUploadConfiguratorClassName;
+	return blobUploadConfiguratorClassName;
     }
 
     /**
      * Sets the BlobUploadConfigurator class name
-     * @param blobUploadConfiguratorClassName BlobUploadConfigurator class name
+     * 
+     * @param blobUploadConfiguratorClassName
+     *            BlobUploadConfigurator class name
      */
     public static void setBlobUploadConfiguratorClassName(
-    	String blobUploadConfiguratorClassName) {
-        ServletParametersStore.blobUploadConfiguratorClassName = blobUploadConfiguratorClassName;
+	    String blobUploadConfiguratorClassName) {
+	ServletParametersStore.blobUploadConfiguratorClassName = blobUploadConfiguratorClassName;
     }
 
     /**
      * Sets the SessionConfigurator class name
-     * @param SessionConfigurator class name
+     * 
+     * @param SessionConfigurator
+     *            class name
      */
-    public static void setSessionConfiguratorClassName(String sessionConfiguratorClassName) {
+    public static void setSessionConfiguratorClassName(
+	    String sessionConfiguratorClassName) {
 	ServletParametersStore.sessionConfiguratorClassName = sessionConfiguratorClassName;
     }
 
@@ -193,7 +217,7 @@ public class ServletParametersStore {
      * @return the SessionConfigurator class name
      */
     public static String getSessionConfiguratorClassName() {
-        return sessionConfiguratorClassName;
+	return sessionConfiguratorClassName;
     }
 
     /**
@@ -202,18 +226,30 @@ public class ServletParametersStore {
      */
     public static void setJwtSessionConfiguratorSecretValue(
 	    String jwtSessionConfiguratorSecretValue) {
-	ServletParametersStore.jwtSessionConfiguratorSecretValue  = jwtSessionConfiguratorSecretValue;
-	
+	ServletParametersStore.jwtSessionConfiguratorSecretValue = jwtSessionConfiguratorSecretValue;
+
     }
 
     /**
      * @return the jwtSessionConfiguratorSecretValue
      */
     public static String getJwtSessionConfiguratorSecretValue() {
-        return jwtSessionConfiguratorSecretValue;
+	return jwtSessionConfiguratorSecretValue;
     }
-    
-    
-   
 
+    /**
+     * @return the userServlets
+     */
+    public static Set<String> getUserServlets() {
+        return userServlets;
+    }
+
+    /**
+     * @param userServlets the userServlets to set
+     */
+    public static void setUserServlets(Set<String> userServlets) {
+        ServletParametersStore.userServlets = userServlets;
+    }
+
+    
 }

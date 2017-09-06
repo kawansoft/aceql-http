@@ -36,15 +36,15 @@ public class SqlTag {
 
     }
 
-    public static String SQL_PRODUCT_START = "["
+    public static final String SQL_PRODUCT_START = "["
 	    + Version.PRODUCT.NAME.toUpperCase() + " START]";
-    public static String SQL_PRODUCT_START_FAILURE = "["
+    public static final String SQL_PRODUCT_START_FAILURE = "["
 	    + Version.PRODUCT.NAME.toUpperCase() + " START FAILURE]";
 
-    public static String USER_CONFIGURATION_FAILURE = "[USER CONFIGURATION]";
-    public static String SQL_PRODUCT_LICENSE_FAILURE = "["
+    public static final String USER_CONFIGURATION_FAILURE = "[USER CONFIGURATION]";
+    public static final String SQL_PRODUCT_LICENSE_FAILURE = "["
 	    + Version.PRODUCT.NAME.toUpperCase() + " - LICENSE FAILURE]";
 
-    public static String PLEASE_CORRECT = "Please correct and retry.";
+    public static final String PLEASE_CORRECT = "Please correct and retry.";
 
 }

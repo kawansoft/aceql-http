@@ -22,67 +22,59 @@
  * Any modifications to this file must keep this entire header
  * intact.
  */
-package org.kawanfw.sql.tomcat;
+package org.kawanfw.sql.api.server;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
-import javax.sql.DataSource;
-
+import org.apache.tomcat.jdbc.pool.DataSource;
+import org.kawanfw.sql.tomcat.ServletParametersStore;
+import org.kawanfw.sql.tomcat.TomcatSqlModeStore;
 
 /**
- * Class that store the mode in which we run Tomcat: nativ or embedded. <br>
- * Includes also the data source set/get.
+ * 
+ * Allows to retrieve for each database the {@code org.apache.tomcat.jdbc.pool.DataSource} 
+ * corresponding to the Tomcat JDBC Pool created at AceQL Web server startup.
+ * <br>
+ * (Pools are defined in aceql-server.properties file, Tomcat JDBC Connection Pool Section).
  * 
  * @author Nicolas de Pomereu
- * 
+ *
  */
-public class TomcatSqlModeStore {
+public class DataSourceStore {
 
-    /** Value that says we are in stand alone Server with Tomcat Embed */
-    private static boolean tomcatEmbedded = false;
-    
-    /** The (Database name Name, DataSource) Map */
-    private static Map<String, DataSource> dataSourceMap = new HashMap<String, DataSource>();
-    
     /**
-     * no instantiation
+     * Protected Constructor
      */
-    private TomcatSqlModeStore() {
-
+    protected DataSourceStore() {
+	
     }
 
     /**
-     * @return the tomcatEmbedded
+     * Method to be called by users servlets to get info on the JDBC Pool DataSources created for each database.
+     * <br><br>
+     * The {@link DefaultPoolsInfo} servlet with url-pattern {@code /default_pools_info} is provided to query some info
+     * for of each database {@code DataSource}.
+     * <br>
+     * @return the the {@code Map} of {@code org.apache.tomcat.jdbc.pool.DataSource} per database
      */
-    public static boolean isTomcatEmbedded() {
-        return tomcatEmbedded;
-    }
-
-    /**
-     * @param tomcatEmbedded the tomcatEmbedded to set
-     */
-    public static void setTomcatEmbedded(boolean tomcatEmbedded) {
-        TomcatSqlModeStore.tomcatEmbedded = tomcatEmbedded;
-    }
+    public static Map<String, DataSource> getDataSources() {
+        Set<String> databases = ServletParametersStore.getDatabaseNames();
         
+        Map<String, DataSource> dataSourceSet = new HashMap<>();
         
-    /**
-     * Stores a DataSource for a specified database.
-     * @param database the database to store the DataSource for
-     * @param dataSource the dataSource to set.
-     */
-    public static void setDataSource(String database, DataSource dataSource) {
-       dataSourceMap.put(database, dataSource);
-    }    
+        if (databases == null || databases.isEmpty()) {
+            return dataSourceSet;
+        }
+        
+        for (String database : databases) {
+            dataSourceSet.put(database, (org.apache.tomcat.jdbc.pool.DataSource)TomcatSqlModeStore.getDataSource(database));
+        }
+        return dataSourceSet;
+    }
     
-    /**
-     * Returns the DataSource associated to a database.
-     * @param database the database to store the DataSource for
-     * @return the dataSource	corresponding to the database
-     */
-    public static DataSource getDataSource(String database) {
-        return dataSourceMap.get(database);
-    }    
     
+    
+
 }

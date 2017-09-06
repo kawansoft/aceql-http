@@ -49,12 +49,15 @@ public class JsonErrorReturn {
     public static final String OPERATION_NOT_ALLOWED_IN_STATELESS_MODE = "Operation not allowed in stateless mode: ";
     public static final String UNABLE_TO_GET_A_CONNECTION = "Unable to get a Connection.";
     public static final String UNKNOWN_SQL_ACTION = "Unknown SQL action or not supported by software";
-
+    public static final String NO_DATASOURCES_DEFINED = "No databases have been defined in \"Tomcat JDBC Connection Pool Section\" in properties file.";
+    public static final String UNKNOWN_SERVLET = "This servlet is unknown and has not been declared in properties file: ";
     
     public static final int ERROR_JDBC_ERROR = 1;
     public static final int ERROR_ACEQL_ERROR = 2;
     public static final int ERROR_ACEQL_UNAUTHORIZED = 3;
     public static final int ERROR_ACEQL_FAILURE = 4;
+
+
     
     /*
      {  

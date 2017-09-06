@@ -31,7 +31,7 @@ import org.kawanfw.sql.api.server.util.Ssh;
 /**
  * A concrete {@code DatabaseConfigurator} that extends
  * {@code DefaultDatabaseConfigurator} and allows zero-code client
- * {@code (usernname, password)} authentication using SSH.
+ * {@code (username, password)} authentication using SSH.
  * 
  * @author Nicolas de Pomereu
  * 
@@ -40,11 +40,11 @@ public class SshAuthDatabaseConfigurator extends DefaultDatabaseConfigurator
 	implements DatabaseConfigurator {
 
     /**
-     * Allows using SSH to authenticate the remote {@code (usernname, password)}
+     * Allows using SSH to authenticate the remote {@code (username, password)}
      * couple sent by the client side.
      * <ul>
      * <li>If the {@code user.home/.kawansoft/sshAuth.properties} file exists: <br>
-     * the {@code (usernname, password)} couple is checked against the SSH
+     * the {@code (username, password)} couple is checked against the SSH
      * server of the host defined with the properties {@code host} for the hostname and
      * {@code port} for the port in the
      * {@code user.home/.kawansoft/sshAuth.properties} file.</li>

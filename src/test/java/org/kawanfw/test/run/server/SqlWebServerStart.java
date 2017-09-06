@@ -25,7 +25,6 @@
 package org.kawanfw.test.run.server;
 
 import org.kawanfw.sql.WebServer;
-import org.kawanfw.sql.api.server.web.WebServerApi;
 
 /**
  * @author Nicolas de Pomereu
@@ -46,12 +45,14 @@ public class SqlWebServerStart {
      */
     public static void main(String[] args) throws Exception {
 	
+	/*
 	try {
 	    WebServerApi webServerApi = new WebServerApi();
 	    webServerApi.stopServer();
 	} catch (Exception e) {
 	    // Ignore
 	}    
+	*/
 	
 	WebServer.main(new String[] { "-start", "-host", "localhost",
 		"-properties",

@@ -4,14 +4,16 @@
 
   <groupId>com.aceql</groupId>
   <artifactId>aceql-http</artifactId>
-  <version>1.0-beta-3</version>
+  <version>1.0-beta-4</version>
   <packaging>jar</packaging>
 
   <name>AceQL HTTP</name>
   <url>http://www.aceql.com</url>
 
   <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.build.sourceEncoding>ISO-8859-1</project.build.sourceEncoding>
+    <maven.compiler.source>1.7</maven.compiler.source>
+    <maven.compiler.target>1.7</maven.compiler.target>
   </properties>
 
   <dependencies>
@@ -24,7 +26,7 @@
     <dependency>
         <groupId>org.postgresql</groupId>
         <artifactId>postgresql</artifactId>
-        <version>9.4-1204-jdbc4</version>
+        <version>42.1.4.jre7</version>
     </dependency>
     <dependency>
         <groupId>commons-cli</groupId>
@@ -65,6 +67,11 @@
         <groupId>org.apache.tomcat</groupId>
         <artifactId>tomcat-jdbc</artifactId>
         <version>8.5.16</version>
+    </dependency>
+    <dependency>
+    	<groupId>commons-codec</groupId>
+    	<artifactId>commons-codec</artifactId>
+    	<version>1.10</version>
     </dependency>
   </dependencies>
   <organization>

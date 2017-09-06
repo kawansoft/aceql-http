@@ -96,8 +96,8 @@ public class ConnectionStore {
 
 
     /**
-     * Says if pair (Username, connectionId) is Stateless or Statefull
-     * It it Statefull id the connectionMap contains en entry
+     * Says if pair (Username, connectionId) is Stateless or Stateful
+     * It it Stateful id the connectionMap contains en entry
      * 
      * @param username
      * @param connectionId
@@ -412,12 +412,12 @@ public class ConnectionStore {
      * Remove the Connection info associated to username + connectionId.
      * <br>
      * But keeps the entry in connectionMap do that program knows if client user is in
-     * Statefull mode or not.
+     * Stateful mode or not.
      */
     public void clean() {
 	debug("Cleaning a Connection for user: " + connectionKey);
 
-	//NO: says the connection is statefull
+	//NO: says the connection is stateful
 	//connectionMap.remove(connectionKey);
 	
 	connectionAge.remove(connectionKey);

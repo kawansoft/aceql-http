@@ -81,7 +81,7 @@ public class ServerSqlManager extends HttpServlet {
     public static final String BLOB_DOWNLOAD_CONFIGURATOR_CLASS_NAME = "blobDownloadConfiguratorClassName";
     public static final String BLOB_UPLOAD_CONFIGURATOR_CLASS_NAME = "blobUploadConfiguratorClassName";
     public static final String SESSION_CONFIGURATOR_CLASS_NAME = "sessionConfiguratorClassName";
-    public static final String JWT_SESSION_CONFIGURATOR_SECRET = "JwtSessionConfiguratorSecret";
+    public static final String JWT_SESSION_CONFIGURATOR_SECRET = "jwtSessionConfiguratorSecret";
 
     /** The map of (database, DatabaseConfigurator) */
     private static Map<String, DatabaseConfigurator> databaseConfigurators = new HashMap<>();
@@ -108,16 +108,6 @@ public class ServerSqlManager extends HttpServlet {
 
     /** The SessionConfigurator instance */
     private static SessionConfigurator sessionConfigurator = null;
-
-    /**
-     * Return the databases in use
-     * 
-     * @return the databases
-     */
-    public static Set<String> getDatabases() {
-	Set<String> databases = databaseConfigurators.keySet();
-	return databases;
-    }
 
     /**
      * Getter to used in all classes to get the DatabaseConfigurator for the
@@ -228,7 +218,7 @@ public class ServerSqlManager extends HttpServlet {
 		}
 		
 		System.out.println(SqlTag.SQL_PRODUCT_START + " " + database
-			+ " Configurators:");
+			+ " Database Configurator:");
 		System.out.println(SqlTag.SQL_PRODUCT_START
 			+ "  -> databaseConfiguratorClassName: ");
 		System.out.println(SqlTag.SQL_PRODUCT_START
@@ -308,7 +298,7 @@ public class ServerSqlManager extends HttpServlet {
 		System.out.println(SqlTag.SQL_PRODUCT_START
 			+ " sessionManagerConfiguratorClassName: ");
 		System.out.println(SqlTag.SQL_PRODUCT_START
-			+ " " + sessionManagerConfiguratorClassName);
+			+ "  -> " + sessionManagerConfiguratorClassName);
 	    }
 
 	} catch (ClassNotFoundException e) {
@@ -484,13 +474,30 @@ public class ServerSqlManager extends HttpServlet {
 	if (!urlContent.startsWith("/" + servletName)
 		&& !servletPath.startsWith("/" + servletName)) {
 	    PrintWriter out = response.getWriter();
-	    JsonErrorReturn errorReturn = new JsonErrorReturn(response,
-		    HttpServletResponse.SC_BAD_REQUEST,
-		    JsonErrorReturn.ERROR_ACEQL_ERROR,
-		    JsonErrorReturn.ACEQL_SERVLET_NOT_FOUND_IN_PATH
-			    + servletName);
-	    out.println(errorReturn.build());
-	    return;
+	    
+	    //System.out.println("servletPath:" + servletPath);
+	    //System.out.println("urlContent :" + urlContent);
+	    
+	    if (urlContent.equals("/")) {
+		JsonErrorReturn errorReturn = new JsonErrorReturn(response,
+			HttpServletResponse.SC_BAD_REQUEST,
+			JsonErrorReturn.ERROR_ACEQL_ERROR,
+			JsonErrorReturn.ACEQL_SERVLET_NOT_FOUND_IN_PATH
+			+ servletName);
+		out.println(errorReturn.build());
+		return;
+	    }
+	    else {
+		String servlet = urlContent.substring(1);
+		JsonErrorReturn errorReturn = new JsonErrorReturn(response,
+			HttpServletResponse.SC_BAD_REQUEST,
+			JsonErrorReturn.ERROR_ACEQL_ERROR,
+			JsonErrorReturn.UNKNOWN_SERVLET
+			+ servlet);
+		out.println(errorReturn.build());
+		return;
+	    }
+
 	}
 
 	// Display version if we just call the servlet
@@ -653,7 +660,7 @@ public class ServerSqlManager extends HttpServlet {
      * @throws IOException
      */
     public static void write(OutputStream out, String s) throws IOException {
-	out.write(s.getBytes("UTF-8"));
+	out.write((s + CR_LF).getBytes("UTF-8"));
     }
 
     /**

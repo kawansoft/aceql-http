@@ -114,11 +114,7 @@ public class WebServer {
 
 	options.addOption("version", false, "print version");
 
-	String propertiesOptionMesssage = "properties file to use for this SQL Web server session. "
-		+ "Defaults to ACEQL_HOME"
-		+ File.separator
-		+ "conf"
-		+ File.separator + "aceql-server.properties";
+	String propertiesOptionMesssage = getPropertiesOptionMessage();
 
 	@SuppressWarnings("static-access")
 	Option propertiesOption = OptionBuilder.withArgName("file").hasArg()
@@ -141,6 +137,18 @@ public class WebServer {
 	options.addOption(portOption);
 
 	return options;
+    }
+
+    private static String getPropertiesOptionMessage() {
+
+	String message = "properties file to use for this SQL Web server session. ";
+
+	File propertiesFile = getDefaultPropertiesFile();
+	if (propertiesFile != null) {
+	    message += "Defaults to " + propertiesFile;
+	}
+	
+	return message;
     }
 
     /**
@@ -227,21 +235,9 @@ public class WebServer {
 
 	    if (!cmd.hasOption("properties")) {
 
-		String aceqlHome = System.getenv("ACEQL_HOME");
+		propertiesFile = getDefaultPropertiesFile();
 
-		if (aceqlHome != null) {
-
-		    // Remove surrounding " if present
-		    aceqlHome = aceqlHome.replaceAll("\"", "");
-
-		    if (aceqlHome.endsWith(File.separator)) {
-			aceqlHome = StringUtils.substringBeforeLast(aceqlHome,
-				File.separator);
-		    }
-		    propertiesFile = new File(aceqlHome + File.separator
-			    + "conf" + File.separator
-			    + "aceql-server.properties");
-		} else {
+		if (propertiesFile == null) {
 		    displayErrorAndExit("Missing properties option.", options);
 		}
 
@@ -252,10 +248,15 @@ public class WebServer {
 	    WebServerApi webServerApi = new WebServerApi();
 	    try {
 		webServerApi.startServer(host, port, propertiesFile);
-	    } catch (DatabaseConfigurationException e) {
+	    } catch (IllegalArgumentException e) {
 		System.err.println(SqlTag.SQL_PRODUCT_START_FAILURE + " "
 			+ SqlTag.USER_CONFIGURATION_FAILURE + " "
 			+ e.getMessage());
+		if (e.getCause() == null) {
+		    //e.printStackTrace();
+		} else {
+		    e.getCause().printStackTrace();
+		}
 		System.err.println();
 		System.exit((-1));
 	    }
@@ -263,6 +264,7 @@ public class WebServer {
 	    catch (ConnectException e) {
 		System.err.println(SqlTag.SQL_PRODUCT_START_FAILURE + " "
 			+ e.getMessage());
+		e.printStackTrace();
 		System.err.println();
 		System.exit((-1));
 	    }
@@ -277,10 +279,11 @@ public class WebServer {
 			    + e.getMessage());
 		}
 
-		if (e.getCause() != null) {
+		if (e.getCause() == null) {
 		    e.printStackTrace();
+		} else {
+		    e.getCause().printStackTrace();
 		}
-
 		System.err.println();
 		System.exit(-1);
 	    } catch (Exception e) {
@@ -322,6 +325,35 @@ public class WebServer {
 	    }
 	}
 
+    }
+
+    /**
+     * if ACEQL_HOME is set by calling script, we have a default properties
+     * files
+     * 
+     * @return ACEQL_HOME/conf/aceql-server.properties if ACEQL_HOME env var is
+     *         set, else null
+     */
+    private static File getDefaultPropertiesFile() {
+
+	File defaultPropertiesFile = null;
+
+	String aceqlHome = System.getenv("ACEQL_HOME");
+
+	if (aceqlHome != null) {
+
+	    // Remove surrounding " if present
+	    aceqlHome = aceqlHome.replaceAll("\"", "");
+
+	    if (aceqlHome.endsWith(File.separator)) {
+		aceqlHome = StringUtils.substringBeforeLast(aceqlHome,
+			File.separator);
+	    }
+	    defaultPropertiesFile = new File(aceqlHome + File.separator
+		    + "conf" + File.separator + "aceql-server.properties");
+	}
+
+	return defaultPropertiesFile;
     }
 
     /**

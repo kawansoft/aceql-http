@@ -110,8 +110,6 @@ public class DefaultDatabaseConfigurator implements DatabaseConfigurator {
 
 	if (dataSource == null) {
 
-	    // SQL Software
-
 	    dataSource = TomcatSqlModeStore.getDataSource(database);
 
 	    if (dataSource == null) {
@@ -282,5 +280,6 @@ public class DefaultDatabaseConfigurator implements DatabaseConfigurator {
 	return ACEQL_LOGGER;
 
     }
+    
 
 }

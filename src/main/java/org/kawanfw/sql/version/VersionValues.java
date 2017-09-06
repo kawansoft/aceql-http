@@ -28,8 +28,8 @@ package org.kawanfw.sql.version;
  */
 
 public class VersionValues {
-    public static final String VERSION = "v1.0-beta-3";
-    public static final String DATE = "17-jul-2017"; 
+    public static final String VERSION = "v1.0-beta-4";
+    public static final String DATE = "04-sep-2017"; 
 }
 
 // End

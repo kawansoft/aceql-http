@@ -146,7 +146,8 @@ public class WebServerApi {
 	TomcatStarter tomcatStarter = new TomcatStarter(host, port,
 		propertiesFile);
 
-	tomcatStarter.start();
+	
+	tomcatStarter.startTomcat();
 
     }
 

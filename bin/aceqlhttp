@@ -1,0 +1,70 @@
+#!/bin/sh
+# Start AceQL HTTP Server as a service
+
+# Add Path to Java Home
+JAVA_HOME=/usr/local/java
+
+# Define AceQL Home and the AceQL host & port
+ACEQL_HOME=/home/admin/aceql-http-1.0-beta-4
+ACEQL_HOST=www.aceql.com
+ACEQL_PORT=9090
+
+export JAVA_HOME
+export CLASSPATH
+export ACEQL_HOME
+
+# Classpath for Configurator classes (optional)
+CLASSPATH=$ACEQL_home/classes
+
+# Name of the service & PID & output log
+SERVICE_NAME=aceqlhttp
+PID_PATH_NAME=/tmp/$SERVICE_NAME.-pid
+LOG_PATH_NAME=/var/log/$SERVICE_NAME.out
+
+case $1 in
+    start)
+        echo "Starting $SERVICE_NAME ..."
+        if [ ! -f $PID_PATH_NAME ]; then
+	    nohup $JAVA_HOME/bin/java -Xms128m -Xmx256m -classpath \
+    	          "$ACEQL_HOME/lib-server/*":"$ACEQL_HOME/lib-jdbc/*":$CLASSPATH \
+	          org.kawanfw.sql.WebServer -start -host \
+	          $ACEQL_HOST –port $ACEQL_PORT \
+	    >> $LOG_PATH_NAME 2>&1&
+            echo $! > $PID_PATH_NAME
+            echo "$SERVICE_NAME started ..."
+        else
+            echo "$SERVICE_NAME is already running ..."
+        fi
+    ;;
+    stop)
+        if [ -f $PID_PATH_NAME ]; then
+            PID=$(cat $PID_PATH_NAME);
+            echo "$SERVICE_NAME stoping ..."
+            kill $PID;
+            echo "$SERVICE_NAME stopped ..."
+            rm $PID_PATH_NAME
+        else
+            echo "$SERVICE_NAME is not running ..."
+        fi
+    ;;
+    restart)
+        if [ -f $PID_PATH_NAME ]; then
+            PID=$(cat $PID_PATH_NAME);
+            echo "$SERVICE_NAME stopping ...";
+            kill $PID;
+            echo "$SERVICE_NAME stopped ...";
+            rm $PID_PATH_NAME
+            echo "$SERVICE_NAME starting ..."
+            sleep 3s
+            nohup $JAVA_HOME/bin/java -Xms128m -Xmx256m -classpath \
+                  "$ACEQL_HOME/lib-server/*":"$ACEQL_HOME/lib-jdbc/*":$CLASSPATH \
+                  org.kawanfw.sql.WebServer -start -host \
+                  $ACEQL_HOST –port $ACEQL_PORT \
+            >> $LOG_PATH_NAME 2>&1&
+            echo $! > $PID_PATH_NAME
+            echo "$SERVICE_NAME started ..."
+        else
+            echo "$SERVICE_NAME is not running ..."
+        fi
+    ;;
+esac

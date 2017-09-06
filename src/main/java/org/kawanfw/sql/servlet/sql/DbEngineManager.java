@@ -24,57 +24,67 @@
  */
 package org.kawanfw.sql.servlet.sql;
 
-import org.apache.commons.lang3.StringUtils;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.Properties;
 
+import org.kawanfw.sql.api.server.DatabaseConfigurationException;
+import org.kawanfw.sql.api.util.SqlUtil;
 
 /**
  * 
- * Utility classes for DbVendorManager
+ * Helper class for treatment depending on DB seller.
  * 
  * @author Nicolas de Pomereu
  *
  */
-public class DbVendorManagerUtil {
 
+public class DbEngineManager {
+    
     /**
-     * Protected constructor, no instanciation
+     * No constructor
      */
-    protected DbVendorManagerUtil() {
+    protected DbEngineManager() {
+
     }
 
-    /**
-     * Says if the SQL order contains a word surrounded with spaces
-     * 
-     * @param sqlOrder
-     *            the SQL order
-     * @param word
-     *            the word to contain surrounded by spaces
-     * @return true if the SQL order contains the word surrounded with spaces
-     */
-    public static boolean containsWord(String sqlOrder, String word) {
-        String s = sqlOrder;
-    
-        s = s.replace('\t', ' ');
-    
-        if (s.toLowerCase().contains(" " + word.toLowerCase() + " ")) {
-            return true;
-        } else {
-            return false;
-        }
+    public static String addLmt1(String sqlOrder, Connection connection)
+	    throws SQLException {
+
+	sqlOrder = sqlOrder.replace('\t', ' ');
+	sqlOrder = sqlOrder.trim();
+
+	if (!sqlOrder.toLowerCase().startsWith("select ")) {
+	    return sqlOrder;
+	}
+
+	if (DbEngineManagerUtil.containsWord(sqlOrder, "l" + "i" + "m" + "i" +"t")) {
+	    return sqlOrder;
+	}
+
+	sqlOrder = DbEngineManagerUtil.removeSemicolon(sqlOrder);
+
+	sqlOrder += " L" + "I" + "M" + "I" +"T 1";
+	return sqlOrder;
     }
 
-    /**
-     * Remove ";" from trailing SQL order
-     * 
-     * @param sqlOrder
-     * @return sqlOrder without trailing ";"
-     */
-    public static String removeSemicolon(String sqlOrder) {
-        while (sqlOrder.trim().endsWith(";")) {
-            sqlOrder = sqlOrder.trim();
-            sqlOrder = StringUtils.removeEnd(sqlOrder, ";");
-        }
-        return sqlOrder;
+    public static boolean checkDb(Properties properties,
+	    Connection connection) throws DatabaseConfigurationException {
+
+	SqlUtil sqlUtil = null;
+	
+	try {
+	    sqlUtil = new SqlUtil(connection);
+	    
+	    if (sqlUtil.isH2() || sqlUtil.isHSQLDB() || sqlUtil.isMySQL() || sqlUtil.isPostgreSQL()) {
+		return true;
+	    } 
+	    
+	} catch (SQLException e) {
+	    throw new DatabaseConfigurationException(e.getMessage());
+	}
+	
+	return false;	
     }
 
 }

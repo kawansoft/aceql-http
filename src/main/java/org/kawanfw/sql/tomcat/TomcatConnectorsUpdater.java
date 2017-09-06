@@ -29,7 +29,6 @@ import java.net.ConnectException;
 import java.util.Enumeration;
 import java.util.Properties;
 
-import org.apache.catalina.Service;
 import org.apache.catalina.connector.Connector;
 import org.apache.catalina.startup.Tomcat;
 import org.apache.commons.lang3.StringUtils;
@@ -74,7 +73,7 @@ public class TomcatConnectorsUpdater {
 
 	if (enumeration.hasMoreElements()) {
 	    System.out.println(SqlTag.SQL_PRODUCT_START
-		    + " Setting Default Connector attribute values:");
+		    + " Setting Default Connector base attributes:");
 	}
 
 	while (enumeration.hasMoreElements()) {
@@ -100,11 +99,9 @@ public class TomcatConnectorsUpdater {
     }
 
     /**
-     * If there are some SSL Connector properties, set them on Tomcat instance
-     * 
-     * @return the setted Connector
+     * If there are some SSL Connector properties, set them on Tomcat instance default Connector
      */
-    public Connector setSslConnectorValues() throws DatabaseConfigurationException,
+    public void setDefaultConnectorSslValues() throws DatabaseConfigurationException,
 	    ConnectException {
 
 	String sslConnectorSSLEnabled = properties
@@ -114,40 +111,19 @@ public class TomcatConnectorsUpdater {
 	    sslConnectorSSLEnabled = sslConnectorSSLEnabled.trim();
 	}
 
-	Connector sslConnector = null;
 
 	// Do we have to add an SSL Connector?
 	if (sslConnectorSSLEnabled == null
 		|| !sslConnectorSSLEnabled.trim().equals("true")) {
-	    return sslConnector;
+	    return;
 	}
-
-	// Ok, set the connector properties
-	sslConnector = new Connector();
-
+	
 	// Scheme is mandatory
 	String scheme = getMandatoryPropertyValue("sslConnector.scheme");
 	if (!scheme.equals("https")) {
 	    throw new DatabaseConfigurationException(
 		    "The property sslConnector.https value must be \"https\" in properties file. "
 			    + SqlTag.PLEASE_CORRECT);
-	}
-
-	String portStr = getMandatoryPropertyValue("sslConnector.port");
-
-	int port = -1;
-	try {
-	    port = Integer.parseInt(portStr);
-	} catch (NumberFormatException e) {
-	    throw new DatabaseConfigurationException(
-		    "The property sslConnector.port is not numeric: " + portStr
-			    + " in properties file.");
-	}
-
-	if (!TomcatStarterUtil.available(port)) {
-	    throw new ConnectException("The port for SSL " + port
-		    + " is not available for starting Web server. "
-		    + SqlTag.PLEASE_CORRECT);
 	}
 
 	// Testing the keystore file
@@ -160,30 +136,29 @@ public class TomcatConnectorsUpdater {
 			    + keystoreFile + ". " + SqlTag.PLEASE_CORRECT);
 	}
 
-	// Testing taht keystore & keyPass password are set
+	// Testing that keystore & keyPass password are set
 	@SuppressWarnings("unused")
 	String keystorePass = getMandatoryPropertyValue("sslConnector.keystorePass");
 	@SuppressWarnings("unused")
 	String keyPass = getMandatoryPropertyValue("sslConnector.keyPass");
 
-	sslConnector.setScheme(scheme);
-	sslConnector.setPort(port);
-	sslConnector.setSecure(true);
+	Connector defaultConnector = tomcat.getConnector();
+	defaultConnector.setScheme(scheme);
+	defaultConnector.setSecure(true);
 
 	// Set the SSL connector
 	Enumeration<?> enumeration = properties.propertyNames();
 
 	if (enumeration.hasMoreElements()) {
 	    System.out.println(SqlTag.SQL_PRODUCT_START
-		    + " Setting SSL Connector attribute values:");
+		    + " Setting Default Connector SSL attributes:");
 	}
 
 	while (enumeration.hasMoreElements()) {
 	    String property = (String) enumeration.nextElement();
 
 	    if (property.startsWith("sslConnector.")
-		    && !property.equals("sslConnector.scheme")
-		    && !property.equals("sslConnector.port")) {
+		    && !property.equals("sslConnector.scheme")) {
 
 		String theValue = properties.getProperty(property);
 		String tomcatProperty = StringUtils.substringAfter(property,
@@ -192,7 +167,7 @@ public class TomcatConnectorsUpdater {
 		if (theValue != null && !theValue.isEmpty()) {
 
 		    theValue = theValue.trim();
-		    sslConnector.setProperty(tomcatProperty, theValue);
+		    defaultConnector.setProperty(tomcatProperty, theValue);
 
 		    if (property.equals("sslConnector.keyPass")
 			    || property.equals("sslConnector.keystorePass")) {
@@ -206,10 +181,9 @@ public class TomcatConnectorsUpdater {
 	    }
 	}
 
-	Service service = tomcat.getService();
-	service.addConnector(sslConnector); // Add the connector
+	//Service service = tomcat.getService();
+	//service.addConnector(sslConnector); // Add the connector
 
-	return sslConnector;
 
     }
 

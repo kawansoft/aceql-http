@@ -373,10 +373,13 @@ public class ResultSetWriter {
 	    
 	    gen.write("row_count", row_count);
 	    gen.writeEnd(); // .write("status", "OK")
-	    
+	    	    
 	    gen.flush();
+	    
+	    ServerSqlManager.writeLine(out);
+	    
 	    gen.close();
-
+	    
 	} finally {
 	    resultSet.close();
 	    //NO! IOUtils.closeQuietly(out);

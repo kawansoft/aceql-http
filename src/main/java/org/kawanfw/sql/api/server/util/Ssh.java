@@ -55,7 +55,7 @@ public class Ssh {
      * <p>
      * <ul>
      * <li>If the {@code user.home/.kawansoft/sshAuth.properties} file exists: <br>
-     * the {@code (usernname, password)} couple is checked against the SSH
+     * the {@code (username, password)} couple is checked against the SSH
      * server of the host defined with the properties {@code host} for the hostname and
      * {@code port} for the port in the
      * {@code user.home/.kawansoft/sshAuth.properties} file.</li>
