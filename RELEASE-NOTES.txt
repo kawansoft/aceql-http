@@ -57,7 +57,7 @@ Bugs fixed:
   in the same JVM. This has been fixed.
 - There was a missing carriage return line feed after execute_update 
   and execute_query APIs. This has been fixed. 
-
+ 
   
 AceQL HTTP Version 1.0-beta-3 - 17-jul-2017
 -------------------------------------------
