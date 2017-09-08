@@ -28,7 +28,7 @@ case $1 in
 	    nohup $JAVA_HOME/bin/java -Xms128m -Xmx256m -classpath \
     	          "$ACEQL_HOME/lib-server/*":"$ACEQL_HOME/lib-jdbc/*":$CLASSPATH \
 	          org.kawanfw.sql.WebServer -start -host \
-	          $ACEQL_HOST –port $ACEQL_PORT \
+	          $ACEQL_HOST -port $ACEQL_PORT \
 	    >> $LOG_PATH_NAME 2>&1&
             echo $! > $PID_PATH_NAME
             echo "$SERVICE_NAME started ..."
@@ -59,7 +59,7 @@ case $1 in
             nohup $JAVA_HOME/bin/java -Xms128m -Xmx256m -classpath \
                   "$ACEQL_HOME/lib-server/*":"$ACEQL_HOME/lib-jdbc/*":$CLASSPATH \
                   org.kawanfw.sql.WebServer -start -host \
-                  $ACEQL_HOST –port $ACEQL_PORT \
+                  $ACEQL_HOST -port $ACEQL_PORT \
             >> $LOG_PATH_NAME 2>&1&
             echo $! > $PID_PATH_NAME
             echo "$SERVICE_NAME started ..."
