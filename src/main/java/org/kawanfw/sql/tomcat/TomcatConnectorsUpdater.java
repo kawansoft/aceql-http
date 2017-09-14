@@ -142,6 +142,10 @@ public class TomcatConnectorsUpdater {
 	@SuppressWarnings("unused")
 	String keyPass = getMandatoryPropertyValue("sslConnector.keyPass");
 
+	// Testing that key alias is set
+	@SuppressWarnings("unused")
+	String keyAlias = getMandatoryPropertyValue("sslConnector.keyAlias");
+	
 	Connector defaultConnector = tomcat.getConnector();
 	defaultConnector.setScheme(scheme);
 	defaultConnector.setSecure(true);
@@ -203,7 +207,7 @@ public class TomcatConnectorsUpdater {
 	String properteyValue = properties.getProperty(propertyName);
 	if (properteyValue == null || properteyValue.isEmpty()) {
 	    throw new DatabaseConfigurationException(
-		    "property "
+		    "SSL activation. Property "
 			    + propertyName
 			    + " name is not defined or has empty value in properties file. "
 			    + SqlTag.PLEASE_CORRECT);

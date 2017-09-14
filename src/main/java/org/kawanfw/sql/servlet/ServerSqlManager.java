@@ -409,8 +409,6 @@ public class ServerSqlManager extends HttpServlet {
 	    HttpServletResponse response) throws UnsupportedEncodingException,
 	    IOException {
 	request.setCharacterEncoding("UTF-8");
-	// Store the host info in RequestInfoStore
-	RequestInfoStore.init(request);
 
 	// Web Display if no Servlet path
 	/*

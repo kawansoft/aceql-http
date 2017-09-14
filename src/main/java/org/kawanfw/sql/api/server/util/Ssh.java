@@ -28,6 +28,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.InetAddress;
 import java.util.Properties;
 
 import org.apache.commons.io.IOUtils;
@@ -42,7 +43,7 @@ import com.jcraft.jsch.Session;
 /**
  * 
  * This class provides static methods for SSH authentication to be used directly
- * in {@link DatabaseConfigurator#login(String, char[])} implementations.
+ * in {@link DatabaseConfigurator#login(String, char[], String, String) implementations.
  * 
  * @see org.kawanfw.sql.api.server.SshAuthDatabaseConfigurator
  * 
@@ -50,6 +51,11 @@ import com.jcraft.jsch.Session;
  */
 public class Ssh {
 
+    private static final String UNKNOWN_IP_ADDRESS = "unknown_ip_address";
+    
+    /** The IP address */
+    private static String ipAddress = null;
+    
     /**
      * Tries to open a SSH session on a host for authentication.
      * <p>
@@ -124,10 +130,10 @@ public class Ssh {
 	    port = Integer.parseInt(portStr);
 
 	} else {
-	    host = ServerInfo.getIpAddress();
+	    host = getIpAddress();
 	    port = 22;
 
-	    if (host.equals(ServerInfo.UNKNOWN_IP_ADDRESS)) {
+	    if (host.equals(UNKNOWN_IP_ADDRESS)) {
 		throw new IOException(Tag.PRODUCT
 			+ " Can not retrieve IP address of the host.");
 	    }
@@ -191,4 +197,25 @@ public class Ssh {
 	return connected;
     }
 
+    /**
+     * Returns the computer IP address in 192.168.1.146 format.
+     * 
+     * @return the name or <b><code>unknown_ip_address</code></b> if the IP address cannot
+     *         be found
+     */
+
+    public static String getIpAddress() {
+	try {
+	    if (ipAddress == null) {
+		InetAddress ip = InetAddress.getLocalHost();
+
+		ipAddress = ip.getHostAddress();
+	    }
+	} catch (Exception e) {
+	    ipAddress = UNKNOWN_IP_ADDRESS;
+	    e.printStackTrace(System.out);
+	}
+
+	return ipAddress;
+    }
 }

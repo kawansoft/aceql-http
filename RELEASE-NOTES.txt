@@ -1,6 +1,6 @@
 
                      AceQL HTTP
-                 Version 1.0-beta-4
+                 Version 1.0-beta-5
                     Release Notes
 
 
@@ -35,10 +35,47 @@ See AceQL HTTP Use Guide for more info about AceQL licenses.
 * beta program (ends October 30, 2017).                          *
 ******************************************************************
 
+
+AceQL HTTP Version 1.0-beta-5 - 13-sep-2017
+-------------------------------------------
+
+What's New:
+
+- The signature of DatabaseConfigurator.login method has been changed 
+  and has 2 more parameters: database and ipAddress.
+  This allows implementation code to know to which database the 
+  client wants to connect and to get IP address of client if
+  necessary for security reasons.
+  
+- Thus, the previous 1.0-beta-4 DatabaseConfigurator implementations 
+  are  not compatible with this 1.0-beta-5 version: the login method 
+  signature must be changed.
+
+- The org.kawanfw.sql.api.server.util.HttpServletRequestStore and 
+  org.kawanfw.sql.api.server.util.ServerInfo have been suppressed.
+  The methods were useless.
+  
+- The Tomcat dependencies have been updated to in order to use last 
+  8.5.20 version.
+  
+- The property sslConnector.keyAlias must now be defined for SSL 
+  activation. This is imposed by Tomcat version 8.5.20.
+
+- Windows version: the JDBC Drivers installation is now done with 
+  a "Browse" or paste/copy of files.
+  
+Bugs fixed:
+
+- Windows version: the console could display warnings and hang.
+  This has been fixed.
+- Miscellaneous Javadoc errors.
+
+  
 AceQL HTTP Version 1.0-beta-4 - 04-sep-2017
 -------------------------------------------
 
 What's New:
+
 - In aceql-server.properties files: database is now the prefix for all 
   properties (instead of being the trailer in previous versions.)
     
@@ -58,6 +95,7 @@ What's New:
   is running. See conf/aceql-server.properties file.
 
 Bugs fixed:
+
 - The bound Web port was not correctly released at AceQL server stop for reuse
   in the same JVM. This has been fixed.
 - There was a missing carriage return line feed after execute_update 
@@ -68,6 +106,7 @@ AceQL HTTP Version 1.0-beta-3 - 17-jul-2017
 -------------------------------------------
 
 What's New:
+
 - AceQL uses now embedded Tomcat version 8.5.
 - ConnectionStore has been cleaned & simplified 
   (no more Map to store if a Connection is Stateless/Stateful).
@@ -77,10 +116,12 @@ AceQL HTTP Version 1.0-beta-2 - 07-jul-2017
 -------------------------------------------
 
 What's New:
+
 - Server Result Sets were dumped into an intermediary file. 
   Result Sets are now dumped directly on servlet output stream.
 
 Bugs fixed:
+
 - A SQLException logging message could throw an Exception. This has been fixed.
 
 

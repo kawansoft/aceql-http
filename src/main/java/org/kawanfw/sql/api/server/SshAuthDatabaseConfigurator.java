@@ -57,7 +57,11 @@ public class SshAuthDatabaseConfigurator extends DefaultDatabaseConfigurator
      *            the username sent by the client login
      * @param password
      *            the password to connect to the server
-     * 
+     * @param database
+     *            the database name to which the client wants to connect
+     * @param ipAddress
+     *            the IP address of the client user
+     *            
      * @return <code>true</code> if the (login, password) couple is
      *         correct/valid as a SSH user on this host. If false, the client
      *         side will not be authorized to send any command.
@@ -66,7 +70,7 @@ public class SshAuthDatabaseConfigurator extends DefaultDatabaseConfigurator
      *             Exception.
      */
     @Override
-    public boolean login(String username, char[] password) throws IOException {
+    public boolean login(String username, char[] password, String database, String ipAddress) throws IOException {
 	return Ssh.login(username, password);
     }
 

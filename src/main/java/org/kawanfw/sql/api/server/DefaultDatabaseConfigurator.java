@@ -76,20 +76,19 @@ public class DefaultDatabaseConfigurator implements DatabaseConfigurator {
     public DefaultDatabaseConfigurator() {
 
     }
-
+    
     /**
      * @return <code>true</code>. (Client is always granted access).
      */
     @Override
-    public boolean login(String username, char[] password) throws IOException,
-	    SQLException {
-
+    public boolean login(String username, char[] password, String database,
+	    String ipAddress) throws IOException, SQLException {
 	return true;
     }
 
     /**
      * Returns a {@code Connection} from <a
-     * href="http://tomcat.apache.org/tomcat-7.0-doc/jdbc-pool.html" >Tomcat
+     * href="http://tomcat.apache.org/tomcat-8.5-doc/jdbc-pool.html" >Tomcat
      * JDBC Connection Pool</a>.<br>
      * <br>
      * the {@code Connection} is extracted from the {@code DataSource} created
@@ -280,6 +279,9 @@ public class DefaultDatabaseConfigurator implements DatabaseConfigurator {
 	return ACEQL_LOGGER;
 
     }
+
+
+
     
 
 }

@@ -97,7 +97,7 @@ public class ConfiguratorMethodsTester {
 		debug("In commonsConfigurator.login.");
 
 		isOk = databaseConfigurator
-			.login("dummy", "dummy".toCharArray());
+			.login("dummy", "dummy".toCharArray(), "dummy", "127.0.0.1");
 
 		debug("After new commonsConfigurator.login.");
 

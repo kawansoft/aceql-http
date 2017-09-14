@@ -4,7 +4,7 @@
 
   <groupId>com.aceql</groupId>
   <artifactId>aceql-http</artifactId>
-  <version>1.0-beta-4</version>
+  <version>1.0-beta-5</version>
   <packaging>jar</packaging>
 
   <name>AceQL HTTP</name>
@@ -61,12 +61,12 @@
     <dependency>
         <groupId>org.apache.tomcat.embed</groupId>
         <artifactId>tomcat-embed-core</artifactId>
-        <version>8.5.16</version>
+        <version>8.5.20</version>
     </dependency>
     <dependency>
         <groupId>org.apache.tomcat</groupId>
         <artifactId>tomcat-jdbc</artifactId>
-        <version>8.5.16</version>
+        <version>8.5.20</version>
     </dependency>
     <dependency>
     	<groupId>commons-codec</groupId>
@@ -112,7 +112,7 @@
     <url>https://github.com/kawansoft/aceql-http</url>
     <developerConnection>https://github.com/kawansoft/aceql-http</developerConnection>
   </scm>
-  <description>AceQL HTTP is a library of REST like http APIs that allow to access to remote SQL databases over http from any device that supports http. 
+  <description>AceQL HTTP is a framework of REST like http APIs that allow to access to remote SQL databases over http from any device that supports http. 
 
 AceQL HTTP is provided with two client SDK.
 - The AceQL Java Client SDK allows to wrap the HTTP APIs using JDBC calls in their code, just like they would for a local database.

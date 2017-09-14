@@ -129,8 +129,9 @@ public class ServerLoginActionSql extends HttpServlet {
 		return;
 	    }
 
+	    String ipAddress = request.getRemoteAddr();
 	    boolean isOk = databaseConfigurator.login(username,
-		    password.toCharArray());
+		    password.toCharArray(), database, ipAddress);
 
 	    debug("login isOk: " + isOk + " (login: " + username + ")");
 

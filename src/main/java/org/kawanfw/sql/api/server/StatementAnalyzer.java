@@ -38,6 +38,7 @@ import org.kawanfw.sql.util.Tag;
  * Analysis methods include:
  * <ul>
  * <li>Says if a statement contains SQL comments.</li>
+ * <li>Says if a statement contains semicolons (statement separator) that are not trailing.</li>
  * <li>Extract the statement type:
  * <code>DELETE / INSERT / SELECT / UPDATE, CREATE / ALTER / DROP...</code></li>
  * <li>Says if the statement is a DML statement (exclusively:
@@ -135,10 +136,10 @@ public class StatementAnalyzer {
     }
 
     /**
-     * Says if a statement contains Semicolons (';') that are not trailing. Use
+     * Says if a statement contains semicolons (';') that are not trailing. Use
      * this to prevent attacks when a statement is multi-statements.
      * 
-     * @return true if the SQL statement contains SQL comments
+     * @return true if the SQL statement contains semicolons that are not trailing.
      */
     public boolean isWithSemicolons() {
 	String localSql = sql;
