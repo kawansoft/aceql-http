@@ -27,13 +27,14 @@ package org.kawanfw.sql.api.server.session;
  * Interface that defines how to generate and verify session id for (username, database) sessions.
  * <br>
  * <br>
- * Interface implementation allows to:
+ * Interface implementation allows to:<p>
  * <ul>
  * <li>Define how to generate a session id after client /connect call.</li>
  * <li>Define the sessions lifetime.</li>
  * <li>Define how to verify that the stored session is valid and not expired.</li>
  * </ul>
- * Two implementations are provided:
+ * <p>
+ * Two implementations are provided:<p>
  * <ul>
  * <li>The {@link DefaultSessionConfigurator} default implementation stores user info
  * on the server.</li>

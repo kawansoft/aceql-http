@@ -29,7 +29,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Default implementation of session management:
+ * Default implementation of session management:<p>
  * <ul>
  * <li>Session id are generated using a {@code SecureRandom} with the
  * {@link SessionIdentifierGenerator} class.</li>
@@ -39,6 +39,7 @@ import java.util.Map;
  * the {@code HashMap} contains the username and that the session is not expired to
  * grant access to the APIexecution.</li>
  * </ul>
+ * <p>
  * It is not required nor recommended to extend this class or to develop another
  * {@code SessionConfigurator} implementation. <br>
  * Do it if you want to implement you own session mechanism and/or want to

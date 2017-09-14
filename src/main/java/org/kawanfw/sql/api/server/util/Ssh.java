@@ -43,7 +43,7 @@ import com.jcraft.jsch.Session;
 /**
  * 
  * This class provides static methods for SSH authentication to be used directly
- * in {@link DatabaseConfigurator#login(String, char[], String, String) implementations.
+ * in {@link DatabaseConfigurator#login(String, char[], String, String)} implementations.
  * 
  * @see org.kawanfw.sql.api.server.SshAuthDatabaseConfigurator
  * 
