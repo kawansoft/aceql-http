@@ -43,7 +43,7 @@ What's new:
 
 - An item menu has been added in Help Menu to display Release Notes.
 - Standard Mode: useless & annoying Tomcat red warnings messages 
-  are not anymore displayed at server startup
+  are not anymore displayed at server startup.
 - Jar icons are displayed.
 
 
