@@ -36,6 +36,17 @@ See AceQL HTTP Use Guide for more info about AceQL licenses.
 ******************************************************************
 
 
+WINDOWS VERSION ONLY - AceQL HTTP Version 1.0-beta-5.1 - 20-sep-2017
+--------------------------------------------------------------------
+
+What's new:
+
+- An item menu has been added in Help Menu to display Release Notes.
+- Standard Mode: useless & annoying Tomcat red warnings messages 
+  are not anymore displayed at server startup
+- Jar icons are displayed.
+
+
 AceQL HTTP Version 1.0-beta-5 - 13-sep-2017
 -------------------------------------------
 
