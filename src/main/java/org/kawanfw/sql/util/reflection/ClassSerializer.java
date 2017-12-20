@@ -30,8 +30,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import org.apache.commons.io.IOUtils;
-import org.bouncycastle.crypto.tls.SessionParameters;
 import org.kawanfw.sql.util.Base64;
 
 /**
@@ -74,17 +72,15 @@ public class ClassSerializer<E> {
 	String serializedBase64 = null;
 
 	ByteArrayOutputStream bos = new ByteArrayOutputStream();
-	ObjectOutputStream oos = null;
+	
 
-	try {
-	    oos = new ObjectOutputStream(bos);
+	try (ObjectOutputStream oos = new ObjectOutputStream(bos);){
+	    
 	    oos.writeObject(element);
 	    oos.flush();
 	    byte[] byteArray = bos.toByteArray();
 	    serializedBase64 = Base64.byteArrayToBase64(byteArray);
 
-	} finally {
-	    IOUtils.closeQuietly(oos);
 	}
 
 	return serializedBase64;
@@ -112,14 +108,11 @@ public class ClassSerializer<E> {
 	byte[] byteArray = Base64.base64ToByteArray(serializedBase64);
 
 	ByteArrayInputStream bis = new ByteArrayInputStream(byteArray);
-	ObjectInputStream ois = null;
 
-	try {
-	    ois = new ObjectInputStream(bis);
+	try (ObjectInputStream ois = new ObjectInputStream(bis); ){
+	    
 	    element = (E) ois.readObject();
 	    return element;
-	} finally {
-	    IOUtils.closeQuietly(ois);
 	}
     }
 

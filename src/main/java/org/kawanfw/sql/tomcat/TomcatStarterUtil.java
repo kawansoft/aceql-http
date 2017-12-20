@@ -30,6 +30,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Constructor;
 import java.net.DatagramSocket;
 import java.net.ServerSocket;
 import java.sql.Connection;
@@ -43,7 +44,6 @@ import javax.servlet.Servlet;
 import org.apache.catalina.Context;
 import org.apache.catalina.Wrapper;
 import org.apache.catalina.startup.Tomcat;
-import org.apache.commons.io.IOUtils;
 import org.apache.tomcat.jdbc.pool.DataSource;
 import org.apache.tomcat.jdbc.pool.PoolProperties;
 import org.kawanfw.sql.api.server.DatabaseConfigurationException;
@@ -61,7 +61,7 @@ public class TomcatStarterUtil {
 
     /** Universal and clean line separator */
     private static String CR_LF = System.getProperty("line.separator");
-    
+
     private static final String ERROR_MESSAGE = "D" + "b" + " V" + "e" + "n"
 	    + "d" + "or" + " is" + " " + "no" + "t" + " sup" + "po" + "rt"
 	    + "ed" + " in" + " this " + "ver" + "si" + "on " + "fo" + "r Dr"
@@ -103,28 +103,27 @@ public class TomcatStarterUtil {
 	    throw new IllegalArgumentException("properties is null");
 	}
 
-	System.out
-		.println(SqlTag.SQL_PRODUCT_START + " Testing Declared Configurators:");
+	System.out.println(
+		SqlTag.SQL_PRODUCT_START + " Testing Declared Configurators:");
 
 	Set<String> databases = getDatabaseNames(properties);
 	for (String database : databases) {
 	    // Database configurator
-	    String databaseConfiguratorClassName = properties
-		    .getProperty(database + "."
-			    + DATABASE_CONFIGURATOR_CLASS_NAME);
+	    String databaseConfiguratorClassName = properties.getProperty(
+		    database + "." + DATABASE_CONFIGURATOR_CLASS_NAME);
 
 	    if (databaseConfiguratorClassName != null) {
 		loadInstance(databaseConfiguratorClassName);
 
-		System.out.println(SqlTag.SQL_PRODUCT_START + "  -> "
-			+ database + " Database Configurator " + CR_LF 
-			+ SqlTag.SQL_PRODUCT_START + "     " + databaseConfiguratorClassName + " OK.");
+		System.out.println(SqlTag.SQL_PRODUCT_START + "  -> " + database
+			+ " Database Configurator " + CR_LF
+			+ SqlTag.SQL_PRODUCT_START + "     "
+			+ databaseConfiguratorClassName + " OK.");
 	    }
 	}
 
-
-	String className = properties
-		.getProperty(ServerSqlManager.BLOB_DOWNLOAD_CONFIGURATOR_CLASS_NAME);
+	String className = properties.getProperty(
+		ServerSqlManager.BLOB_DOWNLOAD_CONFIGURATOR_CLASS_NAME);
 
 	if (className != null) {
 	    loadInstance(className);
@@ -133,8 +132,8 @@ public class TomcatStarterUtil {
 		    + className + " OK.");
 	}
 
-	className = properties
-		.getProperty(ServerSqlManager.BLOB_UPLOAD_CONFIGURATOR_CLASS_NAME);
+	className = properties.getProperty(
+		ServerSqlManager.BLOB_UPLOAD_CONFIGURATOR_CLASS_NAME);
 
 	if (className != null) {
 	    loadInstance(className);
@@ -160,13 +159,19 @@ public class TomcatStarterUtil {
 
 	try {
 	    c = Class.forName(configuratorClassName);
+
+	    // @SuppressWarnings("unused")
+	    // Object theObject = c.newInstance();
+	    Constructor<?> constructor = c.getConstructor();
 	    @SuppressWarnings("unused")
-	    Object theObject = c.newInstance();
+	    Object theObject = (Object) constructor.newInstance();
+
 	} catch (Exception e) {
 	    throw new IllegalArgumentException(
 		    "Exception when loading Configurator "
-			    + configuratorClassName + ": " + e.toString()
-			    + ". " + SqlTag.PLEASE_CORRECT, e);
+			    + configuratorClassName + ": " + e.toString() + ". "
+			    + SqlTag.PLEASE_CORRECT,
+		    e);
 	}
 
     }
@@ -187,19 +192,19 @@ public class TomcatStarterUtil {
 
 	for (String servlet : servlets) {
 
-	    String servletClassName = properties.getProperty(servlet + "."
-		    + "class");
+	    String servletClassName = properties
+		    .getProperty(servlet + "." + "class");
 
 	    if (servletClassName == null || servletClassName.isEmpty()) {
-		throw new IllegalArgumentException(servlet + ".class"
-			+ " property not found for servlet " + servlet + ". "
-			+ SqlTag.PLEASE_CORRECT);
+		throw new IllegalArgumentException(
+			servlet + ".class" + " property not found for servlet "
+				+ servlet + ". " + SqlTag.PLEASE_CORRECT);
 	    }
 
 	    servletClassName = servletClassName.trim();
 
-	    String servletUrl = properties.getProperty(servlet + "."
-		    + "url-pattern");
+	    String servletUrl = properties
+		    .getProperty(servlet + "." + "url-pattern");
 
 	    if (servletUrl == null || servletUrl.isEmpty()) {
 		throw new IllegalArgumentException(servlet + ".url-pattern"
@@ -214,7 +219,11 @@ public class TomcatStarterUtil {
 
 	    try {
 		c = Class.forName(servletClassName);
-		servletInstance = (Servlet) c.newInstance();
+
+		// servletInstance = (Servlet) c.newInstance();
+		Constructor<?> constructor = c.getConstructor();
+		servletInstance = (Servlet) constructor.newInstance();
+
 	    } catch (Exception e) {
 		throw new IllegalArgumentException("Exception when loading "
 			+ servletClassName + " (servlet " + servlet + "): "
@@ -311,16 +320,15 @@ public class TomcatStarterUtil {
 	}
 
 	database = database.trim();
-	String driverClassName = properties.getProperty(database + "."
-		+ "driverClassName");
+	String driverClassName = properties
+		.getProperty(database + "." + "driverClassName");
 
 	if (driverClassName == null || driverClassName.isEmpty()) {
 	    System.err.println(SqlTag.SQL_PRODUCT_START
 		    + " WARNING: driverClassName"
 		    + " property not found for database " + database + "! ");
-	    System.err
-		    .println(SqlTag.SQL_PRODUCT_START
-			    + "          Connection management must be defined in DatabaseConfigurator.getConnection(String database)");
+	    System.err.println(SqlTag.SQL_PRODUCT_START
+		    + "          Connection management must be defined in DatabaseConfigurator.getConnection(String database)");
 	    return;
 	}
 
@@ -392,12 +400,12 @@ public class TomcatStarterUtil {
 		    return;
 		}
 
-		System.out.println(SqlTag.SQL_PRODUCT_START
-			+ "  -> Connection OK!");
+		System.out.println(
+			SqlTag.SQL_PRODUCT_START + "  -> Connection OK!");
 
 	    } catch (SQLException e) {
-		throw new DatabaseConfigurationException(e.getMessage() + " "
-			+ e.getCause());
+		throw new DatabaseConfigurationException(
+			e.getMessage() + " " + e.getCause());
 	    }
 	} finally {
 	    if (connection != null) {
@@ -423,8 +431,8 @@ public class TomcatStarterUtil {
      * @throws IOException
      * @throws DatabaseConfigurationException
      */
-    public static Properties getProperties(File file) throws IOException,
-	    DatabaseConfigurationException {
+    public static Properties getProperties(File file)
+	    throws IOException, DatabaseConfigurationException {
 
 	if (file == null) {
 	    throw new IllegalArgumentException("file can not be null!");
@@ -439,17 +447,15 @@ public class TomcatStarterUtil {
 	Set<String> linkedProperties = LinkedProperties
 		.getLinkedPropertiesName(file);
 
-	InputStream in = null;
-
 	// Create the ordered properties
 	Properties properties;
-	try {
-	    in = new FileInputStream(file);
+
+	try (InputStream in = new FileInputStream(file);) {
+
 	    properties = new LinkedProperties(linkedProperties);
 	    properties.load(in);
-	} finally {
-	    IOUtils.closeQuietly(in);
 	}
+	
 	return properties;
     }
 
@@ -477,8 +483,8 @@ public class TomcatStarterUtil {
 	for (String database : databases) {
 	    // Set the configurator to use for this database
 	    String databaseConfiguratorClassName = TomcatStarterUtil
-		    .trimSafe(properties.getProperty(database + "."
-			    + DATABASE_CONFIGURATOR_CLASS_NAME));
+		    .trimSafe(properties.getProperty(
+			    database + "." + DATABASE_CONFIGURATOR_CLASS_NAME));
 
 	    if (databaseConfiguratorClassName != null
 		    && !databaseConfiguratorClassName.isEmpty()) {
@@ -490,29 +496,29 @@ public class TomcatStarterUtil {
 	}
 
 	String blobDownloadConfiguratorClassName = TomcatStarterUtil
-		.trimSafe(properties
-			.getProperty(ServerSqlManager.BLOB_DOWNLOAD_CONFIGURATOR_CLASS_NAME));
-	ServletParametersStore
-		.setBlobDownloadConfiguratorClassName(blobDownloadConfiguratorClassName);
+		.trimSafe(properties.getProperty(
+			ServerSqlManager.BLOB_DOWNLOAD_CONFIGURATOR_CLASS_NAME));
+	ServletParametersStore.setBlobDownloadConfiguratorClassName(
+		blobDownloadConfiguratorClassName);
 
 	String blobUploadConfiguratorClassName = TomcatStarterUtil
-		.trimSafe(properties
-			.getProperty(ServerSqlManager.BLOB_UPLOAD_CONFIGURATOR_CLASS_NAME));
-	ServletParametersStore
-		.setBlobUploadConfiguratorClassName(blobUploadConfiguratorClassName);
+		.trimSafe(properties.getProperty(
+			ServerSqlManager.BLOB_UPLOAD_CONFIGURATOR_CLASS_NAME));
+	ServletParametersStore.setBlobUploadConfiguratorClassName(
+		blobUploadConfiguratorClassName);
 
 	String sessionConfiguratorClassName = TomcatStarterUtil
-		.trimSafe(properties
-			.getProperty(ServerSqlManager.SESSION_CONFIGURATOR_CLASS_NAME));
+		.trimSafe(properties.getProperty(
+			ServerSqlManager.SESSION_CONFIGURATOR_CLASS_NAME));
 	ServletParametersStore
 		.setSessionConfiguratorClassName(sessionConfiguratorClassName);
 
 	String jwtSessionConfiguratorSecretValue = TomcatStarterUtil
-		.trimSafe(properties
-			.getProperty(ServerSqlManager.JWT_SESSION_CONFIGURATOR_SECRET));
+		.trimSafe(properties.getProperty(
+			ServerSqlManager.JWT_SESSION_CONFIGURATOR_SECRET));
 
-	ServletParametersStore
-		.setJwtSessionConfiguratorSecretValue(jwtSessionConfiguratorSecretValue);
+	ServletParametersStore.setJwtSessionConfiguratorSecretValue(
+		jwtSessionConfiguratorSecretValue);
     }
 
     /**

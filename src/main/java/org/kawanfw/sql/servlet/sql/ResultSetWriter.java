@@ -76,7 +76,7 @@ import org.kawanfw.sql.util.SqlReturnCode;
  * 
  */
 public class ResultSetWriter {
-    
+
     private static final String NULL_STREAM = "NULL_STREAM";
 
     private static boolean DEBUG = FrameworkDebug.isSet(ResultSetWriter.class);
@@ -114,7 +114,7 @@ public class ResultSetWriter {
 
     private Boolean doPrettyPrinting = false;
     private Boolean doColumnTypes = false;
-    
+
     /**
      * @param request
      *            the http request
@@ -134,13 +134,15 @@ public class ResultSetWriter {
 
 	this.request = request;
 
-	String prettyPrinting = request.getParameter(HttpParameter.PRETTY_PRINTING);
-	doPrettyPrinting = new Boolean(prettyPrinting);
-	
+	String prettyPrinting = request
+		.getParameter(HttpParameter.PRETTY_PRINTING);
+	// doPrettyPrinting = new Boolean(prettyPrinting);
+	doPrettyPrinting = Boolean.parseBoolean(prettyPrinting);
+
 	String columnTypes = request.getParameter(HttpParameter.COLUMN_TYPES);
-	doColumnTypes= new Boolean(columnTypes);
-	
-	
+	// doColumnTypes= new Boolean(columnTypes);
+	doColumnTypes = Boolean.parseBoolean(columnTypes);
+
 	debug("JoinResultSetMetaData: " + JoinResultSetMetaData);
 
     }
@@ -198,8 +200,8 @@ public class ResultSetWriter {
 		columnTypeNameList.add(meta.getColumnTypeName(i));
 
 		if (isPostgreSQL) {
-		    columnTableList.add(PostgreSqlUtil.getTableName(resultSet,
-			    i));
+		    columnTableList
+			    .add(PostgreSqlUtil.getTableName(resultSet, i));
 		} else {
 		    columnTableList.add(meta.getTableName(i));
 		}
@@ -229,10 +231,10 @@ public class ResultSetWriter {
 
 	    JsonGeneratorFactory jf = JsonUtil
 		    .getJsonGeneratorFactory(doPrettyPrinting);
-	    
+
 	    JsonGenerator gen = jf.createGenerator(out);
 	    gen.writeStartObject().write("status", "OK");
-	   
+
 	    if (doColumnTypes) {
 		gen.writeStartArray("column_types");
 		for (int i = 0; i < columnTypeList.size(); i++) {
@@ -274,22 +276,22 @@ public class ResultSetWriter {
 			columnValueStr = formatBinaryColumn(resultSet,
 				columnIndex, columnType, columnName,
 				columnTable);
-			debug("isBinaryColumn:columnValueStr: " + columnValueStr);
+			debug("isBinaryColumn:columnValueStr: "
+				+ columnValueStr);
 		    } else if (isNStringColumn(columnType)) {
 			columnValueStr = resultSet.getNString(columnIndex);
-			//columnValueStr = HtmlConverter.toHtml(columnValueStr);
+			// columnValueStr =
+			// HtmlConverter.toHtml(columnValueStr);
 		    } else if (isClobColumn(columnType)) {
 			columnValueStr = formatClobColumn(resultSet,
 				columnIndex);
 		    } else if (columnType == Types.ARRAY) {
 			columnValueStr = formatArrayColumn(resultSet,
 				columnIndex);
-		    }
-		    else if (isDateTime(columnType)) {
-			columnValueStr = formatDateTimeColumn(resultSet, columnType,
-				columnIndex);
-		    }
-		    else if (columnType == Types.ROWID) {
+		    } else if (isDateTime(columnType)) {
+			columnValueStr = formatDateTimeColumn(resultSet,
+				columnType, columnIndex);
+		    } else if (columnType == Types.ROWID) {
 			columnValueStr = formatRowIdColumn(resultSet,
 				columnIndex);
 		    } else {
@@ -304,12 +306,13 @@ public class ResultSetWriter {
 			    debug("columnTypeName: "
 				    + columnTypeNameList.get(i));
 			    debug("columnName    : " + columnName);
-			    throw new SQLException(columnType
-				    + "Type/TypeName/ColName "
-				    + columnTypeNameList.get(i) + " "
-				    + columnName, e);
+			    throw new SQLException(
+				    columnType + "Type/TypeName/ColName "
+					    + columnTypeNameList.get(i) + " "
+					    + columnName,
+				    e);
 			}
-			
+
 			if (resultSet.wasNull()) {
 			    columnValueStr = "NULL";
 			} else if (columnValue == null) {
@@ -319,7 +322,6 @@ public class ResultSetWriter {
 			}
 
 		    }
-
 
 		    debug("columnValueStr : " + columnValueStr);
 
@@ -338,25 +340,44 @@ public class ResultSetWriter {
 
 		    if (StringUtils.isNumeric(columnValueStr)) {
 
+			// if (columnValue instanceof Integer) {
+			// gen.write(columnName, new
+			// Integer(columnValueStr).intValue());
+			// } else if (columnValue instanceof Double) {
+			// gen.write(columnName, new
+			// Double(columnValueStr).doubleValue());
+			// } else if (columnValue instanceof Float) {
+			// gen.write(columnName, new
+			// Float(columnValueStr).floatValue());
+			// } else if (columnValue instanceof Long) {
+			// gen.write(columnName, new
+			// Long(columnValueStr).longValue());
+			// } else if (columnValue instanceof BigDecimal) {
+			// gen.write(columnName, new
+			// BigDecimal(columnValueStr));
+			// } else {
+			// gen.write(columnName, columnValueStr);
+			// }
+
 			if (columnValue instanceof Integer) {
 			    gen.write(columnName,
-				    new Integer(columnValueStr).intValue());
+				    Integer.parseInt(columnValueStr));
 			} else if (columnValue instanceof Double) {
 			    gen.write(columnName,
-				    new Double(columnValueStr).doubleValue());
+				    Double.parseDouble(columnValueStr));
 			} else if (columnValue instanceof Float) {
 			    gen.write(columnName,
-				    new Float(columnValueStr).floatValue());
+				    Float.parseFloat(columnValueStr));
 			} else if (columnValue instanceof Long) {
 			    gen.write(columnName,
-				    new Long(columnValueStr).longValue());
-			} 			
-			else if (columnValue instanceof BigDecimal) {
+				    Long.parseLong(columnValueStr));
+			} else if (columnValue instanceof BigDecimal) {
 			    gen.write(columnName,
 				    new BigDecimal(columnValueStr));
-			}else {
+			} else {
 			    gen.write(columnName, columnValueStr);
 			}
+
 		    } else {
 			gen.write(columnName, columnValueStr);
 		    }
@@ -370,51 +391,56 @@ public class ResultSetWriter {
 
 	    gen.writeEnd(); // .writeStartObject();
 	    gen.writeEnd(); // .writeStartArray("query_rows")
-	    
+
 	    gen.write("row_count", row_count);
 	    gen.writeEnd(); // .write("status", "OK")
-	    	    
+
 	    gen.flush();
-	    
+
 	    ServerSqlManager.writeLine(out);
-	    
+
 	    gen.close();
-	    
+
 	} finally {
 	    resultSet.close();
-	    //NO! IOUtils.closeQuietly(out);
+	    // NO! IOUtils.closeQuietly(out);
 	}
     }
-        
 
     private boolean isDateTime(int columnType) {
-	if (columnType == Types.DATE || columnType == Types.TIME 
+	if (columnType == Types.DATE || columnType == Types.TIME
 		|| columnType == Types.TIMESTAMP) {
 	    return true;
 	} else {
 	    return false;
 	}
     }
-    
+
     private String formatDateTimeColumn(ResultSet rs, int columnType,
 	    int columnIndex) throws SQLException {
 	if (columnType == Types.DATE) {
 	    Date date = rs.getDate(columnIndex);
 	    long milliseconds = date.getTime();
-	    return new Long(milliseconds).toString();
-	}
-	else if (columnType == Types.TIME) {
+
+	    // return new Long(milliseconds).toString();
+	    return Long.toString(milliseconds);
+
+	} else if (columnType == Types.TIME) {
 	    Time time = rs.getTime(columnIndex);
 	    long milliseconds = time.getTime();
-	    return new Long(milliseconds).toString();
+
+	    // return new Long(milliseconds).toString();
+	    return Long.toString(milliseconds);
 	}
 	if (columnType == Types.TIMESTAMP) {
 	    Timestamp time = rs.getTimestamp(columnIndex);
 	    long milliseconds = time.getTime();
-	    return new Long(milliseconds).toString();
-	}
-	else {
-	    throw new IllegalArgumentException("columnType is not a Time/Timestamp: " + columnType);
+
+	    // return new Long(milliseconds).toString();
+	    return Long.toString(milliseconds);
+	} else {
+	    throw new IllegalArgumentException(
+		    "columnType is not a Time/Timestamp: " + columnType);
 	}
     }
 
@@ -437,24 +463,24 @@ public class ResultSetWriter {
 
     }
 
-//    /**
-//     * @param columnValueStr
-//     * @throws UnsupportedEncodingException
-//     */
-//    public void debugStringType(String columnValueStr)
-//	    throws UnsupportedEncodingException {
-//	if (DEBUG) {
-//	    byte[] utf8 = columnValueStr.getBytes("UTF-8");
-//	    String hexString = CodecHex.encodeHexString(utf8);
-//	    String sBase64 = Base64.byteArrayToBase64(utf8);
-//
-//	    System.out.println();
-//	    System.out.println("columnValueStr    : " + columnValueStr);
-//	    System.out.println("columnValueStrHtml: " + columnValueStr);
-//	    System.out.println("hexString         : " + hexString);
-//	    System.out.println("sBase64           : " + sBase64);
-//	}
-//    }
+    // /**
+    // * @param columnValueStr
+    // * @throws UnsupportedEncodingException
+    // */
+    // public void debugStringType(String columnValueStr)
+    // throws UnsupportedEncodingException {
+    // if (DEBUG) {
+    // byte[] utf8 = columnValueStr.getBytes("UTF-8");
+    // String hexString = CodecHex.encodeHexString(utf8);
+    // String sBase64 = Base64.byteArrayToBase64(utf8);
+    //
+    // System.out.println();
+    // System.out.println("columnValueStr : " + columnValueStr);
+    // System.out.println("columnValueStrHtml: " + columnValueStr);
+    // System.out.println("hexString : " + hexString);
+    // System.out.println("sBase64 : " + sBase64);
+    // }
+    // }
 
     /**
      * Says if a column is N Type
@@ -484,26 +510,25 @@ public class ResultSetWriter {
     private String formatArrayColumn(ResultSet resultSet, int columnIndex)
 	    throws SQLException, IOException {
 	Array array = resultSet.getArray(columnIndex);
-	
-	Object[] objects = (Object[]) array.getArray();	
-	String arrayStr = "{"; 
+
+	Object[] objects = (Object[]) array.getArray();
+	String arrayStr = "{";
 	for (int i = 0; i < objects.length; i++) {
 	    arrayStr += objects[i] + ",";
 	}
-		
+
 	if (arrayStr.contains(",")) {
 	    arrayStr = StringUtils.substringBeforeLast(arrayStr, ",");
 	}
-	
+
 	arrayStr += "}";
 	return arrayStr;
-	    
+
 	/*
-	ArrayHttp arrayHttp = new ArrayHttp(array);
-	ArrayTransporter arrayTransporter = new ArrayTransporter();
-	String base64 = arrayTransporter.toBase64(arrayHttp);
-	return base64;
-	*/
+	 * ArrayHttp arrayHttp = new ArrayHttp(array); ArrayTransporter
+	 * arrayTransporter = new ArrayTransporter(); String base64 =
+	 * arrayTransporter.toBase64(arrayHttp); return base64;
+	 */
     }
 
     /**
@@ -534,11 +559,12 @@ public class ResultSetWriter {
 	}
 
 	return rowId.toString();
-//	RowIdHttp rowIdHttp = new RowIdHttp(rowId.hashCode(), rowId.getBytes());
-//
-//	RowIdTransporter rowIdTransporter = new RowIdTransporter();
-//	String base64 = rowIdTransporter.toBase64(rowIdHttp);
-//	return base64;
+	// RowIdHttp rowIdHttp = new RowIdHttp(rowId.hashCode(),
+	// rowId.getBytes());
+	//
+	// RowIdTransporter rowIdTransporter = new RowIdTransporter();
+	// String base64 = rowIdTransporter.toBase64(rowIdHttp);
+	// return base64;
     }
 
     /**
@@ -556,8 +582,8 @@ public class ResultSetWriter {
 	    URL url = resultSet.getURL(columnIndex);
 	    if (url != null) {
 		// Its an URL!
-		//UrlTransporter urlTransporter = new UrlTransporter();
-		//columnValueStr = urlTransporter.toBase64(url);
+		// UrlTransporter urlTransporter = new UrlTransporter();
+		// columnValueStr = urlTransporter.toBase64(url);
 		columnValueStr = url.toString();
 	    }
 
@@ -632,7 +658,7 @@ public class ResultSetWriter {
 	String columnValueStr;
 
 	String fileName = FrameworkFileUtil.getUniqueId() + ".blob";
-	
+
 	// Maybe null, we want to keep the info
 	InputStream in = null;
 	if (isTerradata) {
@@ -645,20 +671,17 @@ public class ResultSetWriter {
 	    in = resultSet.getBinaryStream(columnIndex);
 	}
 
-	OutputStream outStream = null;
 	String hostFileName = null;
-	try {
 
-	    String database = request.getParameter(HttpParameter.DATABASE);
-	    DatabaseConfigurator databaseConfigurator = ServerSqlManager
-		    .getDatabaseConfigurator(database);
-	    hostFileName = databaseConfigurator.getBlobsDirectory(username)
-		    + File.separator + fileName;
+	String database = request.getParameter(HttpParameter.DATABASE);
+	DatabaseConfigurator databaseConfigurator = ServerSqlManager
+		.getDatabaseConfigurator(database);
+	hostFileName = databaseConfigurator.getBlobsDirectory(username)
+		+ File.separator + fileName;
+	debug("formatBinaryColumn:outStream: " + hostFileName);
 
-	    outStream = new BufferedOutputStream(new FileOutputStream(
-		    hostFileName));
-
-	    debug("formatBinaryColumn:outStream: " + hostFileName);
+	try (OutputStream outStream = new BufferedOutputStream(
+		new FileOutputStream(hostFileName));) {
 
 	    if (in == null) {
 		debug("formatBinaryColumn: in == null");
@@ -672,8 +695,17 @@ public class ResultSetWriter {
 	} catch (IOException e) {
 	    throw new SQLException(e);
 	} finally {
-	    IOUtils.closeQuietly(in); //NOT DONE. Why? // HACK
-	    IOUtils.closeQuietly(outStream);
+	    // IOUtils.closeQuietly(in); // NOT DONE. Why? // HACK
+
+	    if (in != null) {
+		try {
+		    in.close();
+		} catch (Exception e) {
+		    // e.printStackTrace();
+		}
+	    }
+
+	    // IOUtils.closeQuietly(outStream);
 	}
 
 	// The column value is a file name with a tag for identification
@@ -681,7 +713,6 @@ public class ResultSetWriter {
 
 	return columnValueStr;
     }
-
 
     /**
      * return true if the column is a binary type
@@ -697,8 +728,8 @@ public class ResultSetWriter {
      * @return true if it's a binary type
      */
     private boolean isBinaryColumn(ResultSet resultSet, int columnType,
-	    String columnName, String columnTable) throws SQLException,
-	    IOException {
+	    String columnName, String columnTable)
+	    throws SQLException, IOException {
 	if (columnType == Types.BINARY || columnType == Types.VARBINARY
 		|| columnType == Types.LONGVARBINARY
 		|| columnType == Types.BLOB) {
@@ -714,8 +745,8 @@ public class ResultSetWriter {
 			    .getTypeBigIntColumnNames(connection);
 		}
 
-		if (typeBigIntColumnNames.contains(columnName.trim()
-			.toLowerCase())) {
+		if (typeBigIntColumnNames
+			.contains(columnName.trim().toLowerCase())) {
 		    return true;
 		}
 	    }
@@ -762,13 +793,11 @@ public class ResultSetWriter {
 	debug("formatClobColumn:writer: " + hostFileName);
 
 	if (reader == null) {
-	    Writer writer = null;
-	    try {
-		writer = new BufferedWriter(new FileWriter(hostFileName));
+
+	    try (Writer writer = new BufferedWriter(
+		    new FileWriter(hostFileName));) {
 		debug("formatClobColumn.reader == null");
 		writer.write(NULL_STREAM + CR_LF);
-	    } finally {
-		IOUtils.closeQuietly(writer);
 	    }
 	} else {
 
@@ -792,10 +821,8 @@ public class ResultSetWriter {
     private void writeClobFile(BufferedReader br, String hostFileName)
 	    throws IOException {
 
-	Writer writer = null;
-
-	try {
-	    writer = new BufferedWriter(new FileWriter(hostFileName));
+	try (Writer writer = new BufferedWriter(
+		new FileWriter(hostFileName));) {
 
 	    String line = null;
 	    while ((line = br.readLine()) != null) {
@@ -806,9 +833,6 @@ public class ResultSetWriter {
 
 		writer.write(line + CR_LF);
 	    }
-
-	} finally {
-	    IOUtils.closeQuietly(writer);
 	}
 
     }

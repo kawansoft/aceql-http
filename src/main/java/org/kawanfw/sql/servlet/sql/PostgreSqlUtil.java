@@ -238,12 +238,11 @@ public class PostgreSqlUtil {
 
 	// Open the large object for writing
 	LargeObject obj = lobj.open(oid, LargeObjectManager.WRITE);
-
-	OutputStream out = obj.getOutputStream();
-	try {
+	
+	try (OutputStream out = obj.getOutputStream();){
 	    IOUtils.copy(in, out);
 	} finally {
-	    IOUtils.closeQuietly(out);
+	    //IOUtils.closeQuietly(out);
 	    // Close the large object
 	    obj.close();
 	}

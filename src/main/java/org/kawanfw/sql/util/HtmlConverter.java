@@ -38,6 +38,7 @@ import org.apache.commons.lang3.text.translate.NumericEntityEscaper;
  * 
  */
 
+@SuppressWarnings("deprecation")
 public class HtmlConverter {
     
     private static boolean DO_NOTHING = false;
@@ -71,7 +72,7 @@ public class HtmlConverter {
 
     /**
      * Converts special characters to their HTML values. <br>
-     * Example : "ï¿½" is converted to "&amp;eacute;"
+     * Example : "é" is converted to "&amp;eacute;"
      * <p>
      * 
      * @param string
@@ -85,7 +86,7 @@ public class HtmlConverter {
 		
 	if (DO_NOTHING) return string;
 	
-	string = org.apache.commons.lang3.StringEscapeUtils.ESCAPE_HTML4.with(NumericEntityEscaper.between(0x7f, Integer.MAX_VALUE) ).translate(string); 
+	string = StringEscapeUtils.ESCAPE_HTML4.with(NumericEntityEscaper.between(0x7f, Integer.MAX_VALUE) ).translate(string); 
 
 	if (string != null) {
 	    string = string.replaceAll("&amp;", "&"); // To keep same result if
@@ -98,7 +99,7 @@ public class HtmlConverter {
     /**
      * 
      * Converts special HTML values of characters to their original values. <br>
-     * Example : "&eacute;"is converted to "ï¿½"
+     * Example : "&eacute;"is converted to "é"
      * <p>
      * 
      * @param list

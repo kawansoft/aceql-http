@@ -44,114 +44,117 @@ import org.kawanfw.sql.util.FrameworkDebug;
  */
 public class ConnectionStoreCleaner extends Thread {
 
-    private static boolean DEBUG = FrameworkDebug.isSet(ConnectionStoreCleaner.class);
+	private static boolean DEBUG = FrameworkDebug.isSet(ConnectionStoreCleaner.class);
 
-    public static boolean IS_RUNNING = false;
+	public static boolean IS_RUNNING = false;
 
-    private String database = null;
+	private String database = null;
 
+	/**
+	 * Constructor
+	 * 
+	 * @param database
+	 *            the database name
+	 */
+	public ConnectionStoreCleaner(String database) {
+		this.database = database;
+	}
 
-    /**
-     * Constructor
-     * @param database the database name
-     */
-    public ConnectionStoreCleaner(String database) {
-	this.database = database;
-    }
-
-    /**
-     * Cleans the ConnectionStore of old connections
-     * 
-     * @throws SQLException
-     * @throws IOException
-     */
-    public void run() {
-
-	try {
-
-	    /*
-	     * if (IS_RUNNING) { return; }
-	     * 
-	     * IS_RUNNING = true;
-	     */
-
-	    if (!continueRunning()) {
-		return;
-	    }
-
-	    debug("Starting ConnectionStoreCleaner...");
-
-	    while (true) {
+	/**
+	 * Cleans the ConnectionStore of old connections
+	 * 
+	 * @throws SQLException
+	 * @throws IOException
+	 */
+	public void run() {
 
 		try {
-		    Thread.sleep(5000);
-		} catch (InterruptedException e) {
+
+			/*
+			 * if (IS_RUNNING) { return; }
+			 * 
+			 * IS_RUNNING = true;
+			 */
+
+			if (!continueRunning()) {
+				return;
+			}
+
+			debug("Starting ConnectionStoreCleaner...");
+
+			while (true) {
+
+				try {
+					Thread.sleep(5000);
+				} catch (InterruptedException e) {
+				}
+
+				DatabaseConfigurator databaseConfigurator = ServerSqlManager.getDatabaseConfigurator(database);
+				int maxAge = databaseConfigurator.getConnectionMaxAge();
+				
+				// Permanent connections
+				if (maxAge == 0) {
+					return; 
+				}
+				
+				Set<ConnectionKey> keys = ConnectionStore.getKeys();
+
+				debug("ConnectionStore Size: " + keys.size());
+
+				// Duplicate the Set otherwise we will have a
+				// java.util.ConcurrentModificationException...
+				Set<ConnectionKey> keysDuplicate = new LinkedHashSet<ConnectionKey>();
+				keysDuplicate.addAll(keys);
+
+				for (Iterator<ConnectionKey> iterator = keysDuplicate.iterator(); iterator.hasNext();) {
+					ConnectionKey key = (ConnectionKey) iterator.next();
+
+					int age = ConnectionStore.getAge(key);
+
+					ConnectionStore connectionStore = new ConnectionStore(key.getUsername(), key.getConnectionId());
+
+					debug("");
+					debug("size(): " + connectionStore.size());
+					debug("key   : " + key);
+					debug("maxAge: " + maxAge);
+					debug("age   : " + age);
+
+					if (age > maxAge) {
+						debug("Cleaning Connection: " + key);
+						debug("Connection age     : " + age);
+
+						Connection connection = connectionStore.get();
+						connectionStore.clean();
+						debug("Store size         : " + connectionStore.size());
+
+						ConnectionCloser.freeConnection(connection, databaseConfigurator);
+					}
+				}
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static synchronized boolean continueRunning() {
+
+		if (IS_RUNNING) {
+			return false;
 		}
 
-		
-		DatabaseConfigurator databaseConfigurator = ServerSqlManager.getDatabaseConfigurator(database);
-		int maxAge = databaseConfigurator.getConnectionMaxAge();
-		Set<ConnectionKey> keys = ConnectionStore.getKeys();
+		IS_RUNNING = true;
+		return true;
+	}
 
-		debug("ConnectionStore Size: " + keys.size());
-
-		// Duplicate the Set otherwise we will have a
-		// java.util.ConcurrentModificationException...
-		Set<ConnectionKey> keysDuplicate = new LinkedHashSet<ConnectionKey>();
-		keysDuplicate.addAll(keys);
-
-		for (Iterator<ConnectionKey> iterator = keysDuplicate
-			.iterator(); iterator.hasNext();) {
-		    ConnectionKey key = (ConnectionKey) iterator.next();
-
-		    int age = ConnectionStore.getAge(key);
-
-		    ConnectionStore connectionStore = new ConnectionStore(
-			    key.getUsername(), key.getConnectionId());
-
-		    debug("");
-		    debug("size(): " + connectionStore.size());
-		    debug("key   : " + key);
-		    debug("maxAge: " + maxAge);
-		    debug("age   : " + age);
-
-		    if (age > maxAge) {
-			debug("Cleaning Connection: " + key);
-			debug("Connection age     : " + age);
-
-			Connection connection = connectionStore.get();
-			connectionStore.clean();
-			debug("Store size         : " + connectionStore.size());
-
-			ConnectionCloser.freeConnection(connection,
-				databaseConfigurator);
-		    }
+	/**
+	 * Method called by children Servlet for debug purpose Println is done only if
+	 * class name name is in kawansoft-debug.ini
+	 */
+	public static void debug(String s) {
+		if (DEBUG) {
+			System.out.println(new Date() + " " + s);
 		}
-	    }
-
-	} catch (Exception e) {
-	    e.printStackTrace();
 	}
-    }
-
-    public static synchronized boolean continueRunning() {
-
-	if (IS_RUNNING) {
-	    return false;
-	}
-
-	IS_RUNNING = true;
-	return true;
-    }
-
-    /**
-     * Method called by children Servlet for debug purpose Println is done only
-     * if class name name is in kawansoft-debug.ini
-     */
-    public static void debug(String s) {
-	if (DEBUG) {
-	    System.out.println(new Date() + " " + s);
-	}
-    }
 
 }

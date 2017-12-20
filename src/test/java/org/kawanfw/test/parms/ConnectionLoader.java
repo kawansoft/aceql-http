@@ -24,6 +24,7 @@
  */
 package org.kawanfw.test.parms;
 
+import java.lang.reflect.Constructor;
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.SQLException;
@@ -139,8 +140,12 @@ public class ConnectionLoader extends SqlTestParms {
 	System.err.println();
 
 	Class<?> c = Class.forName(driverClassName);
-	Driver driver = (Driver) c.newInstance();
+	
+	//Driver driver = (Driver) c.newInstance();
 
+	Constructor<?> constructor = c.getConstructor();
+	Driver driver = (Driver)constructor.newInstance();
+	
 	String username = JdbcDriverParms.USERNAME;
 	String password = JdbcDriverParms.PASSWORD;
 

@@ -53,6 +53,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
  * Implementation is coded with the <a href="https://github.com/auth0/java-jwt">java-jwt</a> library. 
  * <br><br>
  * Note that:
+ * <p>
  * <ul>
  * <li>A secret valued must be defined using the {@code jwtSessionConfiguratorSecret} property in {@code aceql-server.properties}.</li>
  * <li>The JWT lifetime value used is {@link DefaultSessionConfigurator#getSessionTimelife()} value.

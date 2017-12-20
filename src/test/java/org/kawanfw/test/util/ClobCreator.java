@@ -30,7 +30,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 
-import org.apache.commons.io.IOUtils;
 import org.kawanfw.test.parms.SqlTestParms;
 
 public class ClobCreator {
@@ -54,20 +53,14 @@ public class ClobCreator {
 	    throw new IllegalArgumentException("clobFile can not be null!");
 	}
 
-	Writer out = null;
-
-	try {
-	    out = new BufferedWriter(new FileWriter(clobFile));
-
+	try (Writer out = new BufferedWriter(new FileWriter(clobFile))){
+	   
 	    int cpt = 1;
 
 	    String line = "The quick brown fox jumps over the lazy dog ";
 	    while (cpt < numberOfLines + 1) {
 		out.write(line + cpt++ + CR_LF);
 	    }
-
-	} finally {
-	    IOUtils.closeQuietly(out);
 	}
 
     }

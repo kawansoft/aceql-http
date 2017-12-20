@@ -154,7 +154,8 @@ public class ServerLoginActionSql extends HttpServlet {
 	    String sessionId = sessionConfigurator.generateSessionId(username, database);
 
 	    String stateless = request.getParameter(HttpParameter.STATELESS);
-	    Boolean isStateless = new Boolean(stateless);
+	    //Boolean isStateless = new Boolean(stateless);
+	    Boolean isStateless = Boolean.valueOf(stateless);
 	    
 	    if (!isStateless) {
 		ConnectionStore connectionStore = new ConnectionStore(username,

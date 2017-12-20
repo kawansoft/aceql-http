@@ -65,7 +65,8 @@ import org.kawanfw.sql.util.FrameworkDebug;
  * >DataSourceProxy</a> for the meaning of the displayed values. <br>
  * <br>
  * 
- * It is also possible interact with the pool and call three {@code DataSource} set methods:
+ * It is also possible to interact with the pool and call three {@code DataSource} set methods:
+ * <p>
  * <ul>
  * <li>{@code DataSource.setMinIdle(int)}.</li>
  * <li>{@code DataSource.setMaxIdle(int)}.</li>

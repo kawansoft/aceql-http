@@ -37,8 +37,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.Vector;
 
-import org.apache.commons.io.IOUtils;
-
 
 /**
  * Misc file utilities
@@ -158,17 +156,15 @@ public class FrameworkFileUtil {
 	    throw new FileNotFoundException(Tag.PRODUCT_PRODUCT_FAIL +  "receiveFile does not exists: " + file);
 	}
 	
-	BufferedReader bufferedReader = null;
-	try {
+	
+	try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(
+	    	new FileInputStream(file)));){
 	    // Read content of first line.
-	    bufferedReader = new BufferedReader(new InputStreamReader(
-	    	new FileInputStream(file)));
+	    
 
 	    String firstLine = bufferedReader.readLine();
 	    return firstLine;
-	} finally {
-	    IOUtils.closeQuietly(bufferedReader);
-	}
+	} 
     }
         
     /**
@@ -382,12 +378,8 @@ public class FrameworkFileUtil {
 	    throw new IllegalArgumentException("File name can't be null!");
 	}
 
-	BufferedReader br = null;
-	
-	try {
+	try (BufferedReader br = new BufferedReader(new FileReader(fileIn));) {
 	    String text = "";
-
-	    br = new BufferedReader(new FileReader(fileIn));
 
 	    String line = null;
 
@@ -396,8 +388,6 @@ public class FrameworkFileUtil {
 	    }
 
 	    return text;
-	} finally {
-	    IOUtils.closeQuietly(br);
 	}
     }
 

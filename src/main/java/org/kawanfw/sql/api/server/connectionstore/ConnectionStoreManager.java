@@ -36,8 +36,10 @@ import org.kawanfw.sql.servlet.connection.ConnectionStore;
  * 
  * Class that allows to manage the server Connection Store that stores in memory
  * the JDBC Connections of the client users during their session (stateful mode
- * only). <br>
+ * only).
+ * <p>
  * Class allows to:
+ * <p>
  * <ul>
  * <li>Retrieve all the {@link ConnectionKey} of the Connection Store.</li>
  * <li>Retrieve the age of JDBC <code>Connection</code> stored in the Connection

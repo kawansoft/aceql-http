@@ -54,332 +54,310 @@ import org.kawanfw.sql.version.Version;
  */
 public class TomcatStarter {
 
-    private static boolean DEBUG = FrameworkDebug.isSet(TomcatStarter.class);
+	private static boolean DEBUG = FrameworkDebug.isSet(TomcatStarter.class);
 
-    public static String CR_LF = System.getProperty("line.separator");
+	public static String CR_LF = System.getProperty("line.separator");
 
-    /** The file containing all the properties for the Server Session */
-    private File propertiesFile = null;
+	/** The file containing all the properties for the Server Session */
+	private File propertiesFile = null;
 
-    /** The host of the Web Server */
-    private String host = null;
+	/** The host of the Web Server */
+	private String host = null;
 
-    /** The port of the Web Server */
-    private int port = -1;
+	/** The port of the Web Server */
+	private int port = -1;
 
-    /** To use to replace the display of a password */
-    public static final String MASKED_PASSWORD = "********";
+	/** To use to replace the display of a password */
+	public static final String MASKED_PASSWORD = "********";
 
-    /**
-     * Constructor
-     * 
-     * @param host
-     *            the host of the Web Server
-     * @param port
-     *            the port of the Web Server
-     * @param propertiesFile
-     *            properties file to use for configuration of the Web Server
-     * 
-     */
-    public TomcatStarter(String host, int port, File propertiesFile) {
+	/**
+	 * Constructor
+	 * 
+	 * @param host
+	 *            the host of the Web Server
+	 * @param port
+	 *            the port of the Web Server
+	 * @param propertiesFile
+	 *            properties file to use for configuration of the Web Server
+	 * 
+	 */
+	public TomcatStarter(String host, int port, File propertiesFile) {
 
-	if (host == null) {
-	    throw new IllegalArgumentException("Server host is null!");
+		if (host == null) {
+			throw new IllegalArgumentException("Server host is null!");
+		}
+
+		if (port <= 0) {
+			throw new IllegalArgumentException("Server port <= 0!");
+		}
+
+		if (propertiesFile == null) {
+			throw new IllegalArgumentException("Server properties file is null!");
+		}
+
+		this.host = host;
+		this.port = port;
+		this.propertiesFile = propertiesFile;
 	}
 
-	if (port <= 0) {
-	    throw new IllegalArgumentException("Server port <= 0!");
+	/**
+	 * Start the server
+	 * 
+	 * @throws IOException
+	 * @throws LifecycleException
+	 * @throws ConnectException
+	 * @throws DatabaseConfigurationException
+	 */
+	public void startTomcat() throws IOException, LifecycleException, ConnectException, DatabaseConfigurationException {
+
+		Tomcat tomcat = new Tomcat();
+		try {
+			startTomcat(tomcat);
+		} finally {
+			try {
+				tomcat.stop();
+				tomcat.destroy();
+			} catch (Exception e) {
+				e.printStackTrace(System.out);
+				e.printStackTrace();
+			}
+		}
+
 	}
 
-	if (propertiesFile == null) {
-	    throw new IllegalArgumentException(
-		    "Server properties file is null!");
+	private void startTomcat(Tomcat tomcat)
+			throws IOException, ConnectException, LifecycleException, MalformedURLException {
+		System.out.println(SqlTag.SQL_PRODUCT_START + " Starting " + Version.PRODUCT.NAME + " Web Server...");
+		System.out.println(SqlTag.SQL_PRODUCT_START + " " + Version.getServerVersion());
+		System.out.println(SqlTag.SQL_PRODUCT_START + " " + "Using properties file: ");
+		System.out.println(SqlTag.SQL_PRODUCT_START + "  -> " + propertiesFile);
+
+		Properties properties = TomcatStarterUtil.getProperties(propertiesFile);
+
+		// System.out.println("TomcatEmbedUtil.available(" + port + "): " +
+		// TomcatEmbedUtil.available(port));
+
+		// Says to server that we are in a standalone mode:
+		TomcatSqlModeStore.setTomcatEmbedded(true);
+
+		// Define Tomcat instance properties
+		tomcat.setSilent(true);
+		tomcat.setBaseDir(getBaseDir().getAbsolutePath());
+		tomcat.setHostname(host);
+		tomcat.setPort(port);
+
+		TomcatStarterUtil.testConfigurators(properties);
+
+		// Very important to allow port reuse without System.exit()
+		// See
+		// https://stackoverflow.com/questions/16526027/port-not-getting-free-on-removing-connector-in-embedded-tomcat-7
+		tomcat.getConnector().setProperty("bindOnInit", "false"); // HACK
+
+		// Set the System properties
+		SystemPropUpdater systemPropUpdater = new SystemPropUpdater(properties);
+		systemPropUpdater.update();
+
+		// Set & create connectors
+		TomcatConnectorsUpdater tomcatConnectorsUpdater = new TomcatConnectorsUpdater(tomcat, properties);
+
+		tomcatConnectorsUpdater.updateToHttp2Protocol();
+
+		// Set the supplementary default connector values
+		tomcatConnectorsUpdater.setConnectorValues();
+
+		// Set the supplementary ssl connector values on the default connector
+		tomcatConnectorsUpdater.setDefaultConnectorSslValues();
+
+		// Code to redirect http to https
+		// tomcat.getConnector().setRedirectPort(sslPort);
+
+		// Set up context,
+		// "" indicates the path of the ROOT context
+		Context rootCtx = tomcat.addContext("", getBaseDir().getAbsolutePath());
+
+		// Set the Context
+		// TomcatContextUpdater tomcatContextUpdater = new TomcatContextUpdater(
+		// rootCtx, properties);
+		// tomcatContextUpdater.setContextvalues();
+
+		// Code to force https
+		// SecurityConstraint securityConstraint = new SecurityConstraint();
+		// securityConstraint.setUserConstraint("CONFIDENTIAL");
+		// SecurityCollection collection = new SecurityCollection();
+		// collection.addPattern("/*");
+		// securityConstraint.addCollection(collection);
+		// rootCtx.addConstraint(securityConstraint);
+
+		// Add first servlet with no index
+		addAceqlServlet(properties, rootCtx);
+
+		// Create the dataSources if necessary
+		TomcatStarterUtil.createAndStoreDataSources(properties);
+
+		TomcatStarterUtil.addServlets(properties, rootCtx);
+
+		// ..and we are good to go
+		tomcat.start();
+
+		// System.out.println(SqlTag.SQL_PRODUCT_START);
+		Connector defaultConnector = tomcat.getConnector();
+		@SuppressWarnings("unused")
+		String result = testServlet(properties, defaultConnector.getScheme());
+
+		String runningMessage = SqlTag.SQL_PRODUCT_START + " " + Version.PRODUCT.NAME
+				+ " Web Server OK. Running on port " + port;
+
+		System.out.println(runningMessage);
+		System.out.println();
+
+		// System.out
+		// .println(SqlTag.SQL_PRODUCT_START
+		// + " To close normally: java org.kawanfw.sql.WebServer -stop -port "
+		// + port);
+
+		// System.out.println(SqlTag.SQL_PRODUCT_START
+		// + " From command line, use [Ctrl]+[C] to abort abruptly");
+
+		// tomcat.getServer().await();
+
+		// Loop to serve requests
+		while (true) {
+
+			try {
+				Thread.sleep(2000);
+			} catch (InterruptedException e) {
+
+			}
+
+			// Thread run until terminated by a stop request that creates
+			// PortSemaphoreFile
+			PortSemaphoreFile portSemaphoreFile = new PortSemaphoreFile(port);
+			if (!portSemaphoreFile.exists()) {
+				return;
+			}
+		}
 	}
 
-	this.host = host;
-	this.port = port;
-	this.propertiesFile = propertiesFile;
-    }
+	/**
+	 * Add a Servlet using properties with the index
+	 * 
+	 * @param properties
+	 *            the properties than contain all servlet & configurators info
+	 * @param rootCtx
+	 *            the tomcat root context
+	 */
+	public void addAceqlServlet(Properties properties, Context rootCtx) {
 
-    
-    /**
-     * Start the server
-     * 
-     * @throws IOException
-     * @throws LifecycleException
-     * @throws ConnectException
-     * @throws DatabaseConfigurationException
-     */
-    public void startTomcat() throws IOException, LifecycleException,
-	    ConnectException, DatabaseConfigurationException {
+		if (properties == null) {
+			throw new IllegalArgumentException("properties can not be null");
+		}
 
-	Tomcat tomcat = new Tomcat();
-	try {
-	    startTomcat(tomcat);
-	} finally {
-	    try {
-		tomcat.stop();
-		tomcat.destroy();
-	    } catch (Exception e) {
-		e.printStackTrace(System.out);
-		e.printStackTrace();
-	    }
+		String aceQLManagerServletCallName = TomcatStarterUtil.getAceQLManagerSevletName(properties);
+
+		// Add the ServerSqlManager servlet to the context
+		@SuppressWarnings("unused")
+		Wrapper wrapper = Tomcat.addServlet(rootCtx, aceQLManagerServletCallName, new ServerSqlManager());
+
+		rootCtx.addServletMappingDecoded("/*", aceQLManagerServletCallName);
+
+		TomcatStarterUtil.setInitParametersInStore(properties);
+
+		// Unecessary because we must start at / because of ou Rest API
+		// String serverSqlManagerUrlPattern = serverSqlManagerServletName;
+		// if (!serverSqlManagerUrlPattern.startsWith("/")) {
+		// serverSqlManagerUrlPattern = "/" + serverSqlManagerUrlPattern;
+		// }
+
 	}
 
-    }
+	/**
+	 * Test the servlet
+	 * 
+	 * @param properties
+	 *            the properties than contain all servlet & configurators info
+	 * @param sslScheme
+	 *            the ssl scheme
+	 * @return the status
+	 * 
+	 * @throws MalformedURLException
+	 * @throws IOException
+	 */
+	public String testServlet(Properties properties, String scheme) throws MalformedURLException, IOException {
 
-    private void startTomcat(Tomcat tomcat) throws IOException, ConnectException,
-	    LifecycleException, MalformedURLException {
-	System.out.println(SqlTag.SQL_PRODUCT_START + " Starting "
-		+ Version.PRODUCT.NAME + " Web Server...");
+		String aceQLManagerServletCallName = TomcatStarterUtil.getAceQLManagerSevletName(properties);
 
-	System.out.println(SqlTag.SQL_PRODUCT_START + " "
-		+ Version.getServerVersion());
-	System.out.println(SqlTag.SQL_PRODUCT_START + " " + "Using properties file: ");
-	System.out.println(SqlTag.SQL_PRODUCT_START + "  -> " + propertiesFile);
+		String serverSqlManagerUrlPattern = aceQLManagerServletCallName;
+		serverSqlManagerUrlPattern = serverSqlManagerUrlPattern.trim();
 
-	Properties properties = TomcatStarterUtil.getProperties(propertiesFile);
+		if (!serverSqlManagerUrlPattern.startsWith("/")) {
+			serverSqlManagerUrlPattern = "/" + serverSqlManagerUrlPattern;
+		}
 
-	// System.out.println("TomcatEmbedUtil.available(" + port + "): " +
-	// TomcatEmbedUtil.available(port));
+		String url = scheme + "://" + host + ":" + port + serverSqlManagerUrlPattern;
 
-	// Says to server that we are in a standalone mode:
-	TomcatSqlModeStore.setTomcatEmbedded(true);
+		// Call the ServerSqlManagerServlet to test everything is OK.
+		String serverSqlManagerstatus = callServerSqlManagerServlet(url);
 
-	// Define Tomcat instance properties
-	tomcat.setSilent(true);
-	tomcat.setBaseDir(getBaseDir().getAbsolutePath());
-	tomcat.setHostname(host);
-	tomcat.setPort(port);
+		if (serverSqlManagerstatus.contains("\"OK\"")) {
+			System.out.println(SqlTag.SQL_PRODUCT_START + " URL for client side: " + url);
+		}
 
-	TomcatStarterUtil.testConfigurators(properties);
-	
-	// Very important to allow port reuse without System.exit() 
-	// See https://stackoverflow.com/questions/16526027/port-not-getting-free-on-removing-connector-in-embedded-tomcat-7
-	tomcat.getConnector().setProperty("bindOnInit", "false"); // HACK
-	
-	// Set the System properties
-	SystemPropUpdater systemPropUpdater = new SystemPropUpdater(properties);
-	systemPropUpdater.update();
-	
-	// Set & create connectors
-	TomcatConnectorsUpdater tomcatConnectorsUpdater = new TomcatConnectorsUpdater(
-		tomcat, properties);
-
-	// Set the supplementary default connector values
-	tomcatConnectorsUpdater.setConnectorValues();
-
-	//HTTP2 - Futur usage
-	//tomcat.getConnector().addUpgradeProtocol(new Http2Protocol());
-	
-	// Set the supplementary ssl connector values on the default connector
-	tomcatConnectorsUpdater
-		.setDefaultConnectorSslValues();
-
-        //HTTP2 - Futur usage
-        //httpsConnector.addUpgradeProtocol(new Http2Protocol());
-	
-	// Code to redirect http to https
-        //tomcat.getConnector().setRedirectPort(sslPort);
-	
-	// Set up context,
-	// "" indicates the path of the ROOT context
-	Context rootCtx = tomcat.addContext("", getBaseDir().getAbsolutePath());
-		
-	// Set the Context 
-	//TomcatContextUpdater tomcatContextUpdater = new TomcatContextUpdater(
-	//	rootCtx, properties);
-	//tomcatContextUpdater.setContextvalues();
-	
-	//Code to force https	
-//        SecurityConstraint securityConstraint = new SecurityConstraint();
-//        securityConstraint.setUserConstraint("CONFIDENTIAL");
-//        SecurityCollection collection = new SecurityCollection();
-//        collection.addPattern("/*");
-//        securityConstraint.addCollection(collection);
-//        rootCtx.addConstraint(securityConstraint);
-	
-	// Add first servlet with no index
-	addAceqlServlet(properties, rootCtx);
-	
-	// Create the dataSources if necessary
-	TomcatStarterUtil.createAndStoreDataSources(properties);
-	
-	TomcatStarterUtil.addServlets(properties, rootCtx);
-	
-	// ..and we are good to go
-	tomcat.start();
-
-	//System.out.println(SqlTag.SQL_PRODUCT_START);
-	Connector defaultConnector = tomcat.getConnector();
-	@SuppressWarnings("unused")
-	String result = testServlet(properties, defaultConnector.getScheme());
-
-	String runningMessage = SqlTag.SQL_PRODUCT_START + " "
-		+ Version.PRODUCT.NAME + " Web Server OK. Running on port "
-		+ port;
-
-	System.out.println(runningMessage);
-	
-//	System.out
-//		.println(SqlTag.SQL_PRODUCT_START
-//			+ " To close normally: java org.kawanfw.sql.WebServer -stop -port "
-//			+ port);
-	
-	//System.out.println(SqlTag.SQL_PRODUCT_START
-	//	+ " From command line, use [Ctrl]+[C] to abort abruptly");
-
-	//tomcat.getServer().await();
-	
-	// Loop to serve requests
-	while (true) {
-
-	    try {
-		Thread.sleep(2000);
-	    } catch (InterruptedException e) {
-
-	    }
-
-	    // Thread run until terminated by a stop request that creates 
-	    // PortSemaphoreFile
-	    PortSemaphoreFile portSemaphoreFile = new PortSemaphoreFile(port);
-	    if (! portSemaphoreFile.exists()) {
-		return;
-	    }
-	}
-    }
-
-
-    /**
-     * Add a Servlet using properties with the index
-     * 
-     * @param properties
-     *            the properties than contain all servlet & configurators info
-     * @param rootCtx
-     *            the tomcat root context
-     */
-    public void addAceqlServlet(Properties properties, Context rootCtx) {
-
-	if (properties == null) {
-	    throw new IllegalArgumentException("properties can not be null");
+		return serverSqlManagerstatus;
 	}
 
+	/**
+	 * Call the Server SQL Manager Servlet to test everything is OK.
+	 * 
+	 * @param url
+	 *            the url of the servlet
+	 * 
+	 * @return the return status. "Should be OK.
+	 * @throws MalformedURLException
+	 * @throws IOException
+	 */
+	private String callServerSqlManagerServlet(String url) throws MalformedURLException, IOException {
+		URL theUrl = new URL(url);
+		URLConnection urLconnection = theUrl.openConnection();
 
-	String aceQLManagerServletCallName = TomcatStarterUtil.getAceQLManagerSevletName(properties);
+		BufferedReader br = new BufferedReader(new InputStreamReader(urLconnection.getInputStream()));
+		String inputLine;
 
-	// Add the ServerSqlManager servlet to the context
-	@SuppressWarnings("unused")
-	Wrapper wrapper = Tomcat.addServlet(rootCtx,
-		aceQLManagerServletCallName, new ServerSqlManager());
+		String serverSqlManagerstatus = "";
 
-	rootCtx.addServletMappingDecoded("/*",
-		aceQLManagerServletCallName);
-	
-	TomcatStarterUtil.setInitParametersInStore(properties);
-
-	// Unecessary because we must start at / because of ou Rest API
-//	String serverSqlManagerUrlPattern = serverSqlManagerServletName;
-//	if (!serverSqlManagerUrlPattern.startsWith("/")) {
-//	    serverSqlManagerUrlPattern = "/" + serverSqlManagerUrlPattern;
-//	}
-	
-    }
-
-
-     /**
-     * Test the servlet
-     * 
-     * @param properties
-     *            the properties than contain all servlet & configurators info
-     * @param sslScheme
-     *            the ssl scheme
-     * @return the status
-     * 
-     * @throws MalformedURLException
-     * @throws IOException
-     */
-    public String testServlet(Properties properties, String scheme) throws MalformedURLException,
-	    IOException {
-
-	String aceQLManagerServletCallName = TomcatStarterUtil.getAceQLManagerSevletName(properties);
-
-	String serverSqlManagerUrlPattern = aceQLManagerServletCallName;
-	serverSqlManagerUrlPattern = serverSqlManagerUrlPattern.trim();
-
-	if (!serverSqlManagerUrlPattern.startsWith("/")) {
-	    serverSqlManagerUrlPattern = "/" + serverSqlManagerUrlPattern;
+		// There is only one line:
+		while ((inputLine = br.readLine()) != null) {
+			serverSqlManagerstatus += inputLine + CR_LF;
+		}
+		br.close();
+		return serverSqlManagerstatus;
 	}
 
-	String url = scheme + "://" + host + ":" + port
-		+ serverSqlManagerUrlPattern;
+	/**
+	 * Create a user.home/.kawansoft/tomcat-embedded-temp directory This will be
+	 * used by Tomcat for temporary files.
+	 * 
+	 * @return user.home/.kawansoft/tomcat-embedded-temp directory
+	 */
+	private File getBaseDir() {
 
-	// Call the ServerSqlManagerServlet to test everything is OK.
-	String serverSqlManagerstatus = callServerSqlManagerServlet(url);
-		
-	if (serverSqlManagerstatus.contains("\"OK\"")) {
-	    System.out.println(SqlTag.SQL_PRODUCT_START
-		    + " URL for client side: " + url);
+		String userHome = System.getProperty("user.home");
+		if (!userHome.endsWith(File.separator)) {
+			userHome += File.separator;
+		}
+
+		File baseDir = new File(userHome + ".kawansoft" + File.separator + "tomcat-embedded-temp");
+		baseDir.mkdirs();
+
+		return baseDir;
 	}
 
-	return serverSqlManagerstatus;
-    }
-
-    /**
-     * Call the Server SQL Manager Servlet to test everything is OK.
-     * 
-     * @param url
-     *            the url of the servlet
-     * 
-     * @return the return status. "Should be OK.
-     * @throws MalformedURLException
-     * @throws IOException
-     */
-    private String callServerSqlManagerServlet(String url)
-	    throws MalformedURLException, IOException {
-	URL theUrl = new URL(url);
-	URLConnection urLconnection = theUrl.openConnection();
-
-	BufferedReader br = new BufferedReader(new InputStreamReader(
-		urLconnection.getInputStream()));
-	String inputLine;
-
-	String serverSqlManagerstatus = "";
-
-	// There is only one line:
-	while ((inputLine = br.readLine()) != null) {
-	    serverSqlManagerstatus += inputLine + CR_LF;
+	/**
+	 * debug
+	 */
+	public static void debug(String s) {
+		if (DEBUG) {
+			System.out.println(s);
+		}
 	}
-	br.close();
-	return serverSqlManagerstatus;
-    }
-
-    /**
-     * Create a user.home/.kawansoft/tomcat-embedded-temp directory This will be
-     * used by Tomcat for temporary files.
-     * 
-     * @return user.home/.kawansoft/tomcat-embedded-temp directory
-     */
-    private File getBaseDir() {
-
-	String userHome = System.getProperty("user.home");
-	if (!userHome.endsWith(File.separator)) {
-	    userHome += File.separator;
-	}
-
-	File baseDir = new File(userHome + ".kawansoft" + File.separator
-		+ "tomcat-embedded-temp");
-	baseDir.mkdirs();
-
-	return baseDir;
-    }
-
-    /**
-     * debug
-     */
-    public static void debug(String s) {
-	if (DEBUG) {
-	    System.out.println(s);
-	}
-    }
 
 }

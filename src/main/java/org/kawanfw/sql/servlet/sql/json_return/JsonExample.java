@@ -54,6 +54,7 @@ public class JsonExample {
 	   .write("city", "JavaTown")
 	   .write("state", "JA")
 	   .write("postalCode", "12345")
+	   
 	   .writeStartArray("phoneNumbers")
 	      .writeStartObject()
 	         .write("type", "mobile")
@@ -64,6 +65,7 @@ public class JsonExample {
 	         .write("number", "222-222-2222")
 	      .writeEnd()
 	   .writeEnd()
+	   
 	.writeEnd();
 	gen.close();
 

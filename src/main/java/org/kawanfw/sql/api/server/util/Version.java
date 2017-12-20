@@ -25,7 +25,8 @@
 package org.kawanfw.sql.api.server.util;
 /**
  * 
- * Version info
+ * Allows to get version info.
+ * 
  * @author Nicolas de Pomereu
  *
  */

@@ -54,8 +54,8 @@ class MultipartUtility {
     public boolean DEBUG = false;
 
     @SuppressWarnings("unused")
-    private static final Logger log = getLogger(MultipartUtility.class
-	    .getName());
+    private static final Logger log = getLogger(
+	    MultipartUtility.class.getName());
 
     // Keep this! No System.getProperty("line.separator") that fails on
     // Android
@@ -80,8 +80,8 @@ class MultipartUtility {
     private long totalLength;
 
     public MultipartUtility(final URL url, HttpURLConnection connection,
-	    int connectTimeout, AtomicInteger progress,
-	    AtomicBoolean cancelled, long totalLength) throws IOException {
+	    int connectTimeout, AtomicInteger progress, AtomicBoolean cancelled,
+	    long totalLength) throws IOException {
 	start = currentTimeMillis();
 
 	if (url == null) {
@@ -136,10 +136,17 @@ class MultipartUtility {
 	writer.flush();
 	// outputStream.flush();
 
-	// InputStream inputStream = new BufferedInputStream(
-	// new FileInputStream(uploadFile));
-
-	uploadUsingInputStream(inputStream);
+	try {
+	    uploadUsingInputStream(inputStream);
+	} finally {
+	    if (inputStream != null) {
+		try {
+		    inputStream.close();
+		} catch (Exception e) {
+		    // e.printStackTrace();
+		}
+	    }
+	}
 
     }
 
@@ -157,68 +164,65 @@ class MultipartUtility {
 	writer.flush();
 	// outputStream.flush();
 
-	InputStream inputStream = new BufferedInputStream(new FileInputStream(
-		uploadFile));
-
-	uploadUsingInputStream(inputStream);
+	try (InputStream inputStream = new BufferedInputStream(
+		new FileInputStream(uploadFile));) {
+	    uploadUsingInputStream(inputStream);
+	}
 
     }
 
     private void uploadUsingInputStream(InputStream inputStream)
 	    throws IOException, InterruptedException {
-	try {
-	    /*
-	     * int readBufferSize = 4096;
-	     * 
-	     * final byte[] buffer = new byte[readBufferSize]; int bytesRead;
-	     * while ((bytesRead = inputStream.read(buffer)) != -1) {
-	     * outputStream.write(buffer, 0, bytesRead); }
-	     */
 
-	    debug("totalLength: " + totalLength);
-	    debug("progress   : " + progress);
-	    debug("cancelled  : " + cancelled);
-	    
-	    // Case no progress/cancelled/totaLenth set: direct copy
-	    if (totalLength <= 0 || progress == null || cancelled == null) {
-		IOUtils.copy(inputStream, outputStream);
-		return;
-	    }
+	/*
+	 * int readBufferSize = 4096;
+	 * 
+	 * final byte[] buffer = new byte[readBufferSize]; int bytesRead; while
+	 * ((bytesRead = inputStream.read(buffer)) != -1) {
+	 * outputStream.write(buffer, 0, bytesRead); }
+	 */
 
-	    int tempLen = 0;
-	    byte[] buffer = new byte[1024 * 4];
-	    int n = 0;
+	debug("totalLength: " + totalLength);
+	debug("progress   : " + progress);
+	debug("cancelled  : " + cancelled);
 
-	    while ((n = inputStream.read(buffer)) != -1) {
-		tempLen += n;
-		    
-		if (totalLength > 0 && tempLen > totalLength / 100) {
-		    tempLen = 0;
-		    int cpt = progress.get();
-		    cpt++;
-
-		    // Update the progress value for progress
-		    // indicator
-		    progress.set(Math.min(99, cpt));
-		    debug("progress   : " + progress);
-		}
-
-		// If progress indicator says that user has cancelled the
-		// download, stop now!
-		if (cancelled.get()) {
-		    throw new InterruptedException(
-			    "Blob upload cancelled by user.");
-		}
-
-		outputStream.write(buffer, 0, n);
-	    }
-
-	    // outputStream.flush();
-	    // writer.append(CRLF); // No! will fail by adding it to the
-	    // uploaded file
-	} finally {
-	    IOUtils.closeQuietly(inputStream);
+	// Case no progress/cancelled/totaLenth set: direct copy
+	if (totalLength <= 0 || progress == null || cancelled == null) {
+	    IOUtils.copy(inputStream, outputStream);
+	    return;
 	}
+
+	int tempLen = 0;
+	byte[] buffer = new byte[1024 * 4];
+	int n = 0;
+
+	while ((n = inputStream.read(buffer)) != -1) {
+	    tempLen += n;
+
+	    if (totalLength > 0 && tempLen > totalLength / 100) {
+		tempLen = 0;
+		int cpt = progress.get();
+		cpt++;
+
+		// Update the progress value for progress
+		// indicator
+		progress.set(Math.min(99, cpt));
+		debug("progress   : " + progress);
+	    }
+
+	    // If progress indicator says that user has cancelled the
+	    // download, stop now!
+	    if (cancelled.get()) {
+		throw new InterruptedException(
+			"Blob upload cancelled by user.");
+	    }
+
+	    outputStream.write(buffer, 0, n);
+	}
+
+	// outputStream.flush();
+	// writer.append(CRLF); // No! will fail by adding it to the
+	// uploaded file
     }
 
     public void addHeaderField(String name, String value) throws IOException {

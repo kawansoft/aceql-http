@@ -76,7 +76,6 @@ import java.util.logging.Logger;
 
 public interface DatabaseConfigurator {
 
-
     /**
      * Allows to authenticate the remote {@code (username, password)} couple
      * sent by the client side.
@@ -112,8 +111,8 @@ public interface DatabaseConfigurator {
      * @throws SQLException
      *             if a SQLException occurs
      */
-    public boolean login(String username, char[] password, String database, String ipAddress)
-	    throws IOException, SQLException;
+    public boolean login(String username, char[] password, String database,
+	    String ipAddress) throws IOException, SQLException;
 
     /**
      * <p>
@@ -215,9 +214,9 @@ public interface DatabaseConfigurator {
 	    throws IOException, SQLException;
 
     /**
-     * Allows, for the passed client username and its IP address, to analyze the
-     * string representation of the SQL statement that is received on the
-     * server. <br>
+     * Allows, for the passed client username and its IP address, to know if
+     * statement is a prepared statement an to analyze the string representation
+     * of the SQL statement that is received on the server. <br>
      * If the analysis defined by the method returns false, the SQL statement
      * won't be executed.
      * 
@@ -229,6 +228,8 @@ public interface DatabaseConfigurator {
      *            the IP address of the client user
      * @param sql
      *            the SQL statement
+     * @param isPreparedStatement
+     *            Says if the statement is a prepared statement
      * @param parameterValues
      *            the parameter values of a prepared statement in the natural
      *            order, empty list for a (non prepared) statement
@@ -242,7 +243,8 @@ public interface DatabaseConfigurator {
      */
     public boolean allowStatementAfterAnalysis(String username,
 	    Connection connection, String ipAddress, String sql,
-	    List<Object> parameterValues) throws IOException, SQLException;
+	    boolean isPreparedStatement, List<Object> parameterValues)
+	    throws IOException, SQLException;
 
     /**
      * Allows to implement specific a Java rule immediately after a SQL

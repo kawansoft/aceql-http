@@ -35,7 +35,6 @@ import java.util.LinkedHashSet;
 import java.util.Properties;
 import java.util.Set;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -167,11 +166,10 @@ public class LinkedProperties extends Properties {
 
 	Set<String> linkedPropertiesName = new LinkedHashSet<String>();
 
-	BufferedReader bufferedReader = null;
+	
 
-	try {
-	    bufferedReader = new BufferedReader(new FileReader(fileProperties));
-
+	try (BufferedReader bufferedReader = new BufferedReader(new FileReader(fileProperties));){
+	    
 	    String line = null;
 	    while ((line = bufferedReader.readLine()) != null) {
 
@@ -196,8 +194,6 @@ public class LinkedProperties extends Properties {
 		line = line.trim();
 		linkedPropertiesName.add(line);
 	    }
-	} finally {
-	    IOUtils.closeQuietly(bufferedReader);
 	}
 
 	return linkedPropertiesName;

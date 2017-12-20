@@ -31,7 +31,6 @@ import java.io.InputStream;
 import java.net.InetAddress;
 import java.util.Properties;
 
-import org.apache.commons.io.IOUtils;
 import org.kawanfw.sql.api.server.DatabaseConfigurator;
 import org.kawanfw.sql.util.FrameworkFileUtil;
 import org.kawanfw.sql.util.Tag;
@@ -103,13 +102,10 @@ public class Ssh {
 
 	if (file.exists()) {
 	    Properties prop = new Properties();
-	    InputStream in = null;
+	    
 
-	    try {
-		in = new FileInputStream(file);
+	    try (InputStream in = new FileInputStream(file);){
 		prop.load(in);
-	    } finally {
-		IOUtils.closeQuietly(in);
 	    }
 
 	    host = prop.getProperty("host");

@@ -100,9 +100,12 @@ public class PoolPropertiesCreator {
 	    IllegalArgumentException, NoSuchMethodException,
 	    InvocationTargetException {
 
-	theClass = Class.forName("org.apache.tomcat.jdbc.pool.PoolProperties");
-	theObject = theClass.newInstance();
-
+	//theClass = Class.forName("org.apache.tomcat.jdbc.pool.PoolProperties");
+	//theObject = theClass.newInstance();
+    
+    theClass = org.apache.tomcat.jdbc.pool.PoolProperties.class;
+    theObject = new org.apache.tomcat.jdbc.pool.PoolProperties();
+    	
 	Method[] allMethods = theClass.getDeclaredMethods();
 	Field[] fieldsArray = theClass.getDeclaredFields();
 

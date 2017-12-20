@@ -68,6 +68,7 @@ public class SessionInfo  {
     }
 
     /**
+     * Returns the session id
      * @return the session id
      */
     public String getSessionId() {
@@ -75,6 +76,7 @@ public class SessionInfo  {
     }
     
     /**
+     * Returns the client username
      * @return the client username
      */
     public String getUsername() {	
@@ -82,6 +84,7 @@ public class SessionInfo  {
     }
 
     /**
+     * Returns the database in use for this session
      * @return the database in use for this session
      */
     public String getDatabase() {

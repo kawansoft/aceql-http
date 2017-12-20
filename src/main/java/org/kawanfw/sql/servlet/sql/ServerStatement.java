@@ -43,7 +43,6 @@ import javax.json.stream.JsonGeneratorFactory;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.kawanfw.sql.api.server.DatabaseConfigurator;
 import org.kawanfw.sql.servlet.ConnectionCloser;
@@ -104,7 +103,9 @@ public class ServerStatement {
 
 	String prettyPrinting = request
 		.getParameter(HttpParameter.PRETTY_PRINTING);
-	doPrettyPrinting = new Boolean(prettyPrinting);
+	//doPrettyPrinting = new Boolean(prettyPrinting);
+	doPrettyPrinting = Boolean.valueOf(prettyPrinting);
+	
     }
 
     /**
@@ -150,7 +151,15 @@ public class ServerStatement {
 	}
 	finally {
 
-	    IOUtils.closeQuietly(outFinal);
+	    //IOUtils.closeQuietly(outFinal);
+	    
+	    if (outFinal != null) {
+		try {
+		    outFinal.close();
+		} catch (Exception e) {
+		    //e.printStackTrace();
+		}
+	    }
 	    
 	    String username = request.getParameter(HttpParameter.USERNAME);
 	    String sessionId = request.getParameter(HttpParameter.SESSION_ID);
@@ -263,7 +272,7 @@ public class ServerStatement {
 	    boolean isAllowedAfterAnalysis = databaseConfigurator
 		    .allowStatementAfterAnalysis(username, connection,
 			    ipAddress, sqlOrder,
-			    serverPreparedStatementParameters
+			    isPreparedStatement(), serverPreparedStatementParameters
 			    .getParameterValues());
 
 	    if (!isAllowedAfterAnalysis) {
@@ -425,7 +434,7 @@ public class ServerStatement {
 
 	    boolean isAllowedAfterAnalysis = databaseConfigurator
 		    .allowStatementAfterAnalysis(username, connection,
-			    ipAddress, sqlOrder, new Vector<Object>());
+			    ipAddress, sqlOrder, isPreparedStatement(), new Vector<Object>());
 
 	    if (!isAllowedAfterAnalysis) {
 		isAllowed = false;

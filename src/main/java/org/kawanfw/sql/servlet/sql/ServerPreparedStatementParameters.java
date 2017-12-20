@@ -51,7 +51,6 @@ import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.io.IOUtils;
 import org.kawanfw.sql.api.server.DatabaseConfigurator;
 import org.kawanfw.sql.servlet.HttpParameter;
 import org.kawanfw.sql.servlet.ServerSqlManager;
@@ -124,8 +123,8 @@ public class ServerPreparedStatementParameters {
      * @throws IllegalArgumentException
      *             if use passes bad parameters
      */
-    public void setParameters() throws SQLException, IllegalArgumentException,
-	    IOException {
+    public void setParameters()
+	    throws SQLException, IllegalArgumentException, IOException {
 
 	/** The map of (param_type_n, param_value_n) */
 	Map<Integer, AceQLParameter> statementParameters = new TreeMap<Integer, AceQLParameter>();
@@ -201,15 +200,21 @@ public class ServerPreparedStatementParameters {
 		preparedStatement.setBigDecimal(paramIndex, bigDecimal);
 		parameterValues.put(paramIndex, new BigDecimal(paramValue));
 	    } else if (paramType.equalsIgnoreCase(AceQLTypes.BIT)) {
-		Boolean theBool = new Boolean(paramValue);
-		preparedStatement
-			.setBoolean(paramIndex, theBool.booleanValue());
+
+		// Boolean theBool = new Boolean(paramValue);
+		Boolean theBool = Boolean.valueOf(paramValue);
+
+		preparedStatement.setBoolean(paramIndex,
+			theBool.booleanValue());
 		parameterValues.put(paramIndex,
 			Boolean.parseBoolean(paramValue));
 	    } else if (paramType.equalsIgnoreCase(AceQLTypes.TINYINT)
 		    || paramType.equalsIgnoreCase(AceQLTypes.SMALLINT)
 		    || paramType.equalsIgnoreCase(AceQLTypes.INTEGER)) {
-		Integer theInteger = new Integer(paramValue);
+
+		// Integer theInteger = new Integer(paramValue);
+		Integer theInteger = Integer.parseInt(paramValue);
+
 		preparedStatement.setInt(paramIndex, theInteger.intValue());
 		parameterValues.put(paramIndex, Integer.parseInt(paramValue));
 	    }
@@ -218,16 +223,24 @@ public class ServerPreparedStatementParameters {
 	    // FLOAT Double
 	    // DOUBLE PRECISION Double
 	    else if (paramType.equalsIgnoreCase(AceQLTypes.BIGINT)) {
-		Long theLong = new Long(paramValue);
+		// Long theLong = new Long(paramValue);
+		Long theLong = Long.parseLong(paramValue);
+
 		preparedStatement.setLong(paramIndex, theLong.longValue());
 		parameterValues.put(paramIndex, theLong.longValue());
 	    } else if (paramType.equalsIgnoreCase(AceQLTypes.REAL)) {
-		Float theFloat = new Float(paramValue);
+
+		// loat theFloat = new Float(paramValue);
+		Float theFloat = Float.parseFloat(paramValue);
+
 		preparedStatement.setFloat(paramIndex, theFloat.longValue());
 		parameterValues.put(paramIndex, theFloat.longValue());
-	    } else if (paramType.equalsIgnoreCase(AceQLTypes.FLOAT)
-		    || paramType.equalsIgnoreCase(AceQLTypes.DOUBLE_PRECISION)) {
-		Double theDouble = new Double(paramValue);
+	    } else if (paramType.equalsIgnoreCase(AceQLTypes.FLOAT) || paramType
+		    .equalsIgnoreCase(AceQLTypes.DOUBLE_PRECISION)) {
+
+		// Double theDouble = new Double(paramValue);
+		Double theDouble = Double.valueOf(paramValue);
+
 		preparedStatement.setDouble(paramIndex, theDouble);
 		parameterValues.put(paramIndex, theDouble.doubleValue());
 	    }
@@ -235,17 +248,26 @@ public class ServerPreparedStatementParameters {
 	    // TIME java.sql.Time
 	    // TIMESTAMP java.sql.Timestamp
 	    else if (paramType.equalsIgnoreCase(AceQLTypes.DATE)) {
-		long timemilliseconds = new Long(paramValue).longValue();
+
+		// long timemilliseconds = new Long(paramValue).longValue();
+		long timemilliseconds = Long.parseLong(paramValue);
+
 		java.sql.Date theDateTime = new java.sql.Date(timemilliseconds);
 		preparedStatement.setDate(paramIndex, theDateTime);
 		parameterValues.put(paramIndex, theDateTime);
 	    } else if (paramType.equalsIgnoreCase(AceQLTypes.TIME)) {
-		long timemilliseconds = new Long(paramValue).longValue();
+
+		// long timemilliseconds = new Long(paramValue).longValue();
+		long timemilliseconds = Long.parseLong(paramValue);
+
 		java.sql.Time theDateTime = new java.sql.Time(timemilliseconds);
 		preparedStatement.setTime(paramIndex, theDateTime);
 		parameterValues.put(paramIndex, theDateTime);
 	    } else if (paramType.equalsIgnoreCase(AceQLTypes.TIMESTAMP)) {
-		long timemilliseconds = new Long(paramValue).longValue();
+
+		// long timemilliseconds = new Long(paramValue).longValue();
+		long timemilliseconds = Long.parseLong(paramValue);
+
 		java.sql.Timestamp theDateTime = new java.sql.Timestamp(
 			timemilliseconds);
 		preparedStatement.setTimestamp(paramIndex, theDateTime);
@@ -299,8 +321,8 @@ public class ServerPreparedStatementParameters {
      * @throws SQLException
      */
     private void setCharacterStream(PreparedStatement preparedStatement,
-	    int parameterIndex, String paramValue) throws SQLException,
-	    IOException {
+	    int parameterIndex, String paramValue)
+	    throws SQLException, IOException {
 
 	String username = request.getParameter(HttpParameter.USERNAME);
 	String database = request.getParameter(HttpParameter.DATABASE);
@@ -319,7 +341,7 @@ public class ServerPreparedStatementParameters {
 
 	Reader reader = null;
 	this.readerList.add(reader);
-	
+
 	long theLength = -1;
 
 	String htlmEncoding = request.getParameter(HttpParameter.HTML_ENCODING);
@@ -327,12 +349,11 @@ public class ServerPreparedStatementParameters {
 	    File clobFileHtmlDecoded = new File(clobFile + HTML_DECODED);
 	    blobsOrClobs.add(clobFileHtmlDecoded);
 
-	    BufferedReader br = null;
-	    Writer writer = null;
+	    try (BufferedReader br = new BufferedReader(
+		    new FileReader(clobFile));
+		    Writer writer = new BufferedWriter(
+			    new FileWriter(clobFileHtmlDecoded));) {
 
-	    try {
-		br = new BufferedReader(new FileReader(clobFile));
-		writer = new BufferedWriter(new FileWriter(clobFileHtmlDecoded));
 		String line = null;
 		while ((line = br.readLine()) != null) {
 		    line = HtmlConverter.fromHtml(line);
@@ -340,8 +361,8 @@ public class ServerPreparedStatementParameters {
 		}
 
 	    } finally {
-		IOUtils.closeQuietly(br);
-		IOUtils.closeQuietly(writer);
+		// IOUtils.closeQuietly(br);
+		// IOUtils.closeQuietly(writer);
 
 		if (!KeepTempFilePolicyParms.KEEP_TEMP_FILE && !DEBUG) {
 		    clobFile.delete();
@@ -378,8 +399,8 @@ public class ServerPreparedStatementParameters {
      * @throws IOException
      */
     private void setBinaryStream(PreparedStatement preparedStatement,
-	    int parameterIndex, String paramValue) throws SQLException,
-	    IOException {
+	    int parameterIndex, String paramValue)
+	    throws SQLException, IOException {
 	// Extract the Blob file from the parameter
 
 	String username = request.getParameter(HttpParameter.USERNAME);
@@ -403,13 +424,13 @@ public class ServerPreparedStatementParameters {
 	}
 
 	InputStream in = null;
-	
+
 	// Then update the prepared statement binary stream and we are done!
 	in = new BufferedInputStream(new FileInputStream(blobFile));
 	long theLength = blobFile.length();
 
 	inList.add(in);
-	
+
 	debug("before preparedStatement.setBinaryStream()");
 
 	Connection connection = preparedStatement.getConnection();
@@ -457,11 +478,25 @@ public class ServerPreparedStatementParameters {
      */
     public void close() {
 	for (InputStream in : inList) {
-	    IOUtils.closeQuietly(in);
+	    // IOUtils.closeQuietly(in);
+	    if (in != null) {
+		try {
+		    in.close();
+		} catch (IOException e) {
+		    // e.printStackTrace();
+		}
+	    }
 	}
 
 	for (Reader reader : readerList) {
-	    IOUtils.closeQuietly(reader);
+	    // IOUtils.closeQuietly(reader);
+	    if (reader != null) {
+		try {
+		    reader.close();
+		} catch (IOException e) {
+		    // e.printStackTrace();
+		}
+	    }
 	}
 
 	if (KeepTempFilePolicyParms.KEEP_TEMP_FILE || DEBUG) {

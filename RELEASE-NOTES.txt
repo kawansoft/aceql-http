@@ -1,6 +1,6 @@
 
                      AceQL HTTP
-                 Version 1.0-beta-5
+                 	 Version 1.0
                     Release Notes
 
 
@@ -30,10 +30,27 @@ AceQL HTTP Professional Edition is licensed through:
 See AceQL HTTP Use Guide for more info about AceQL licenses.
 
 
-******************************************************************
-* Note that AceQL Pro is free and requires no license key during *
-* beta program (ends October 30, 2017).                          *
-******************************************************************
+AceQL HTTP Version 1.0 - 20-dec-2017
+------------------------------------
+
+What's new:
+- Java 9 is now fully supported on Linux.
+- DefaultDatabaseConfigurator.getConnectionMaxAge() returns now 0
+  for consistency with other APIs.
+- Dependencies have been updated.
+- As Beta period is expired, AceQL HTTP Professional requires now
+  a 30-day license key.
+
+Bugs fixed:
+- Setting DatabaseConfigurator.getConnectionMaxAge() to 0 was
+  not taken into account by internal code. This has been fixed.
+  
+
+PRO EDITION ONLY - AceQL HTTP Version 1.0-beta-5.2 - 31-oct-2017
+---------------------------------------------------------------
+
+What's new:
+- Beta period has been extended to November 10, 2017.
 
 
 WINDOWS VERSION ONLY - AceQL HTTP Version 1.0-beta-5.1 - 20-sep-2017

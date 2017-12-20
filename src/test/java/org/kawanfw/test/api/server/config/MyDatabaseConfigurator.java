@@ -55,12 +55,13 @@ public class MyDatabaseConfigurator extends DefaultDatabaseConfigurator {
      *            The current SQL/JDBC <code>Connection</code>
      * @param ipAddress
      *            the IP address of the client user
+     * @param isPreparedStatement
+     *            Says if the statement is a prepared statement
      * @param sql
      *            the SQL statement
      * @param parameterValues
      *            the parameter values of a prepared statement in the natural
      *            order, empty list for a (non prepared) statement
-     * 
      * @return <code><b>true</b></code> if all following requirements are met:
      *         <ul>
      *         <li>username does not exists in applicative SQL table
@@ -86,7 +87,8 @@ public class MyDatabaseConfigurator extends DefaultDatabaseConfigurator {
     @Override
     public boolean allowStatementAfterAnalysis(String username,
 	    Connection connection, String ipAddress, String sql,
-	    List<Object> parameterValues) throws IOException, SQLException {
+	    boolean isPreparedStatement, List<Object> parameterValues)
+	    throws IOException, SQLException {
 
 	// First thing is to test if the username has previously been stored in
 	// our applicative BANNED_USERNAME table
@@ -127,14 +129,14 @@ public class MyDatabaseConfigurator extends DefaultDatabaseConfigurator {
 
 	// Any UPDATE on the USER_LOGIN and PRODUCT_ORDER tables requires that
 	// USERNAME value is the last parameter of the PreparedStatement
-	
+
 	if (statementAnalyzer.isUpdate() || statementAnalyzer.isDelete()) {
 	    String table = statementAnalyzer.getTableNameFromDmlStatement();
 	    if (table == null) {
 		return false;
 	    }
 
-	    if (!statementAnalyzer.isPreparedStatement()) {
+	    if (!isPreparedStatement) {
 		return false;
 	    }
 

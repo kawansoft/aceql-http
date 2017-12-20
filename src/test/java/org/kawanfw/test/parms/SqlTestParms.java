@@ -25,6 +25,7 @@
 package org.kawanfw.test.parms;
 
 import java.io.File;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.Driver;
@@ -249,8 +250,11 @@ public class SqlTestParms {
 	    String driverClassName = "org.kawanfw.sql.api.client.RemoteDriver";
 
 	    Class<?> c = Class.forName(driverClassName);
-	    Driver driver = (Driver) c.newInstance();
-
+	    
+	    //Driver driver = (Driver) c.newInstance();
+		Constructor<?> constructor = c.getConstructor();
+		Driver driver  = (Driver) constructor.newInstance();
+		
 	    Properties properties = new Properties();
 	    properties.setProperty("user", REMOTE_USER);
 	    properties.setProperty("password", REMOTE_PASSWORD);

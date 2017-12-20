@@ -70,9 +70,8 @@ public class DefaultSessionConfigurator implements SessionConfigurator {
      * generateSessionId()
      */
     /**
-     * the method builds an authentication session id by a call to: <br>
-     * {@code BigInteger(130, random).toString(32)} <br>
-     * Where {@code random = new SecureRandom()} <br>
+     * The method builds an authentication session id by a call to: <br>
+     * {@link SessionIdentifierGenerator}
      */
     @Override
     public String generateSessionId(String username, String database) {

@@ -785,9 +785,10 @@ public class AceQLHttpApi {
 
 	    Map<String, String> parametersMap = new HashMap<String, String>();
 	    parametersMap.put("sql", sql);
-	    parametersMap.put("prepared_statement", new Boolean(
-		    isPreparedStatement).toString());
-
+	    //parametersMap.put("prepared_statement", new Boolean(
+		//    isPreparedStatement).toString());
+	    parametersMap.put("prepared_statement", "" + isPreparedStatement);
+	    
 	    trace("sql: " + sql);
 	    trace("statement_parameters: " + statementParameters);
 
@@ -861,13 +862,20 @@ public class AceQLHttpApi {
 
 	    Map<String, String> parametersMap = new HashMap<String, String>();
 	    parametersMap.put("sql", sql);
-	    parametersMap.put("prepared_statement", new Boolean(
-		    isPreparedStatement).toString());
+	    //parametersMap.put("prepared_statement", new Boolean(
+		//    isPreparedStatement).toString());
+	    parametersMap.put("prepared_statement", "" + isPreparedStatement);
+	    
+	    //parametersMap
+		//    .put("gzip_result", new Boolean(gzipResult).toString());
 	    parametersMap
-		    .put("gzip_result", new Boolean(gzipResult).toString());
-	    parametersMap.put("pretty_printing",
-		    new Boolean(prettyPrinting).toString());
+	    .put("gzip_result", "" + gzipResult);	 
+	    
+//	    parametersMap.put("pretty_printing",
+//		    new Boolean(prettyPrinting).toString());
 
+	    parametersMap.put("pretty_printing", "" + prettyPrinting);
+	    
 	    // Add the statement parameters map
 	    if (statementParameters != null) {
 		parametersMap.putAll(statementParameters);
@@ -951,6 +959,7 @@ public class AceQLHttpApi {
 	    String fileName = UUID.randomUUID().toString() + ".blob";
 
 	    http.addFilePart("file", inputStream, fileName);
+	    
 	    http.finish();
 
 	    conn = http.getConnection();
@@ -981,7 +990,14 @@ public class AceQLHttpApi {
 		    result = out.toString("UTF-8");
 		}
 	    } finally {
-		IOUtils.closeQuietly(inConn);
+		//IOUtils.closeQuietly(inConn);
+		if (inConn != null) {
+		    try {
+			inConn.close();
+		    } catch (Exception e) {
+			//e.printStackTrace();
+		    }
+		}
 	    }
 
 	    ResultAnalyzer resultAnalyzer = new ResultAnalyzer(result,

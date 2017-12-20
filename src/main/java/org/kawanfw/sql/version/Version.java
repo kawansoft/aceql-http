@@ -23,8 +23,9 @@
  * intact.
  */
 package org.kawanfw.sql.version;
+
 /**
- * Displays the SafeJdbc product Version
+ * Displays the product Version
  */
 
 public class Version {

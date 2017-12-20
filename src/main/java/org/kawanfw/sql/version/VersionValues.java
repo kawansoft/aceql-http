@@ -23,13 +23,14 @@
  * intact.
  */
 package org.kawanfw.sql.version;
+
 /**
  * Contains the package Version info
  */
 
 public class VersionValues {
-    public static final String VERSION = "v1.0-beta-5";
-    public static final String DATE = "13-sep-2017"; 
+    public static final String VERSION = "v1.0";
+    public static final String DATE = "20-dec-2017"; 
 }
 
 // End

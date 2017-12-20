@@ -24,9 +24,6 @@
  */
 package org.kawanfw.test.util;
 
-import java.awt.Desktop;
-import java.io.File;
-
 /**
  * @author Nicolas de Pomereu
  *
@@ -38,17 +35,15 @@ public class Test {
      */
     public Test() {
 	// TODO Auto-generated constructor stub
+
     }
 
     /**
      * @param args
      */
     public static void main(String[] args) throws Exception {
-	if (Desktop.isDesktopSupported()) {
-	    Desktop.getDesktop().edit(new File("I:\\_dev_awake\\aceql-http-main\\aceql-http\\conf\\aceql-server.properties"));
-	} else {
-	    // dunno, up to you to handle this
-	}
+
+	System.out.println("java.version: " + System.getProperty("java.version"));
 
     }
 
