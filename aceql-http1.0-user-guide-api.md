@@ -54,7 +54,7 @@ In case of error, the returned JSON always contains:
 
  In some cases,the full Java Exception stack trace is included in the JSON:
 
-```json
+```
 {  
   "status":"FAIL",
   "error_type":{error type numeric value},
@@ -132,9 +132,9 @@ Allows you to create a new session, authenticate on remote AceQL server, and con
 
 Note that we will use two shortcuts through this User Guide in order to simplify the URL format:
 
-1.     `server` is the shortcut for the scheme, server name, and port of the URL to call. Possiblevalues for server are: <http://localhost:9090>, <https://www.acme.com>, etc.
+1.     server is the shortcut for the scheme, server name, and port of the URL to call. Possiblevalues for server are: <http://localhost:9090>, <https://www.acme.com>, etc.
 
-2.     `aceql` is the shortcut for the AceQL Server servlet path. aceql is also the default configuration value. Any other value is possible, see [Server Installation and Configuration Guide](https://www.aceql.com/rest/soft/1.0/aceql-http1.0-user-guide-server.pdf).
+2.     aceql is the shortcut for the AceQL Server servlet path. aceql is also the default configuration value. Any other value is possible, see [Server Installation and Configuration Guide](https://www.aceql.com/rest/soft/1.0/aceql-http1.0-user-guide-server.pdf).
 
 | URL  parameter | Description                   |
 | -------------- | ----------------------------- |
@@ -158,7 +158,7 @@ Note that we will use two shortcuts through this User Guide in order to simplify
 
 If everything is OK:
 
-```json
+```j
 {  
    "status":"OK",
    "session_id":"session ID alphanumeric string",
@@ -167,7 +167,7 @@ If everything is OK:
 
 In case of error:
 
-```json
+```
 {  
    "status":"FAIL",
    "error_type":{error type numeric value},
@@ -190,7 +190,7 @@ MyUsername/connect?password=MySecret
 
 The call will return a JSON stream with a unique session ID to reuse with all other API calls:
 
-```json
+```
 {                                             
   "status":"OK",                          
   "session_id":"hli7ppunldk07mg8ae4dvv70kc"
@@ -217,7 +217,7 @@ The call will return a JSON stream with a unique session ID to reuse with all ot
 
 If everything is OK:
 
-```json
+```
 {                                             
   "status":"OK",                          
   "result":"result of API call" 
@@ -226,7 +226,7 @@ If everything is OK:
 
 In case of error:
 
-```json
+```
 {  
   "status":"FAIL",
   "error_type":{error type numeric value},
@@ -247,7 +247,7 @@ get_auto_commit
 
 The call will return a JSON stream with the result:
 
-```json
+```
 {                  
     "status":"OK", 
     "result":"true"
@@ -281,7 +281,7 @@ Allow to modify the remote Connection.
 
 If everything is OK:
 
-```bash
+```
 {                                    
     "status":"OK",                   
 }                                    
@@ -289,7 +289,7 @@ If everything is OK:
 
 In case of error:
 
-```json
+```
 {  
   "status":"FAIL",
   "error_type":{errortype numeric value},
@@ -310,7 +310,7 @@ set_auto_commit/true
 
 The call will return a JSON stream with the result:
 
-```json
+```j
 {                
     "status":"OK"
 }                                                               
@@ -347,18 +347,16 @@ Allows to update remote database with a DDL (Data Definition Language), DML (Dat
 
 If everything is OK:
 
-```json
+```
 {   
     "status":"OK",                              
     "row_count":{number of rows affected by update statement}                       
-}                                               
+}                                              
 ```
-
-  
 
 In case of error: 
 
-```json
+```
 {  
    "status":"FAIL",
    "error_type":{error type numeric value},
@@ -379,7 +377,7 @@ execute_update
 
 The call will return:
 
-```json
+```
 {                     
     "status":"OK",    
     "row_count":1     
@@ -398,7 +396,7 @@ http://localhost:9090/aceql/session/hli7ppunldk07mg8ae4dvv70kc/execute_update
 
 The call will return:
 
-```json
+```
 {                     
     "status":"OK",    
     "row_count":1     
@@ -441,7 +439,7 @@ The query result is returned in the form of a JSON stream.
 
 If everything is OK:
 
-```json
+```
 {  
    "status":"OK",
    "query_types":[
@@ -498,7 +496,7 @@ Where:
 
 In case of error:
 
-```json
+```
 {  
   "status":"FAIL",
   "error_type":{errortype numeric value},
@@ -521,7 +519,7 @@ execute_query
 
 The call will return:
 
-```json
+```
 {
     "status":"OK",
     "query_types":[
@@ -559,7 +557,7 @@ $ curl --data "prepared_statement=true" --data"column_types=true" \
 
 This call will return same data as previous one, but in condensed format:
 
-```json
+```
 {"status":"OK","query_types":["INTEGER","CHAR","VARCHAR"],"query_rows":[{"row_1":[{"customer_id":1},{"customer_title":"Sir"},
 {"fname":"Doe"}]}],"row_count":1}
 ```
@@ -606,7 +604,7 @@ The equivalent HTML form format is:
 
 If everything is OK:
 
-```json 
+```
 {                                    
     "status":"OK"                   
 }                                 
@@ -614,7 +612,7 @@ If everything is OK:
 
 In case of error:
 
-```json
+```
 {  
    "status":"FAIL",
    "error_type":{error type numeric value},
@@ -690,7 +688,7 @@ $ curl -F "blob_id=koala.jpg" -F "file=@/home/mike/koala.jpg" \
 
 Call will return:
 
-```json
+```
 {                  
     "status":"OK"  
 }                  
@@ -743,7 +741,7 @@ The call is optional and thus is not required before BLOB download.
 
 If everything is OK:
 
-```json
+```
 {                   
     "status":"OK",  
     "length":"{BLOB length in bytes}"
@@ -752,7 +750,7 @@ If everything is OK:
 
 In case of error:
 
-```json
+```
 {  
    "status":"FAIL",
    "error_type":{error type numeric value},
@@ -787,7 +785,7 @@ If everything is OK, a stream containing the BLOB content is sent by the server.
 
 In case of error, the stream will contain:
 
-```json
+```
 {  
    "status":"FAIL",
    "error_type":{error type numeric value},
@@ -812,7 +810,7 @@ execute_query
 
 Call will return:
 
-```json
+```
 {                                                                      
     "status":"OK",                                                     
     "query_types":[                                                    
@@ -851,7 +849,7 @@ get_blob_length
 
 Call will return:
 
-```json
+```
 {                     
     "status":"OK",    
     "length":"79747"  
@@ -890,7 +888,7 @@ Allows to close the session and to release the server JDBC Connection into the p
 
 If everything is OK:
 
-```json
+```
 {                   
     "status":"OK",  
 }                                                       
@@ -898,7 +896,7 @@ If everything is OK:
 
 In case of error:
 
-```json
+```
 {  
    "status":"FAIL",
    "error_type":{error type numeric value},
