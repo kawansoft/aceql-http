@@ -44,7 +44,7 @@ All responses contain the status key name, whose value is either:
 In case of error, the returned JSON always contains: 
 
 ```json
-{  
+{ 
   "status":"FAIL",
   "error_type":{error type numeric value},
   "error_message":"{error message returned by the server}"
