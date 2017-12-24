@@ -2,7 +2,7 @@
 
 <img src="https://www.aceql.com/favicon.png" alt="AceQL HTTP Icon"/> 
 
-[toc]
+[TOC]
 
 # Using the API
 
