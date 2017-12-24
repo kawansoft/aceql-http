@@ -2,6 +2,8 @@
 
 <img src="https://www.aceql.com/favicon.png" alt="AceQ HTTP Icon"/>
 
+[TOC]
+
 # Server Side Settings
 
 ## Create the kawansoft_example database
