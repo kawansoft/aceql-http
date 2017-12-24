@@ -1,6 +1,6 @@
 # AceQL HTTP - API User Guide
 
-<img src="https://www.aceql.com/favicon.png" alt="AceQ HTTP Icon"/>
+<img src="https://www.aceql.com/favicon.png" alt="AceQL HTTP Icon"/> 
 
 [TOC]
 
@@ -132,9 +132,9 @@ Allows you to create a new session, authenticate on remote AceQL server, and con
 
 Note that we will use two shortcuts through this User Guide in order to simplify the URL format:
 
-1.     server is the shortcut for the scheme, server name, and port of the URL to call. Possiblevalues for server are: <http://localhost:9090>, <https://www.acme.com>, etc.
+- server is the shortcut for the scheme, server name, and port of the URL to call. Possible values for server are: <http://localhost:9090>, <https://www.acme.com>, etc.
 
-2.     aceql is the shortcut for the AceQL Server servlet path. aceql is also the default configuration value. Any other value is possible, see [Server Installation and Configuration Guide](https://www.aceql.com/rest/soft/1.0/aceql-http1.0-user-guide-server.pdf).
+- aceql is the shortcut for the AceQL Server servlet path. aceql is also the default configuration value. Any other value is possible, see [Server Installation and Configuration Guide](https://www.aceql.com/rest/soft/1.0/aceql-http1.0-user-guide-server.pdf).
 
 | URL  parameter | Description                   |
 | -------------- | ----------------------------- |
