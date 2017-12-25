@@ -282,9 +282,9 @@ AceQL can be accessed from client side:
 - **Using any command line tool to make HTTP calls**. We will provide examples with [cURL](https://curl.haxx.se/).
 
 
-- **Using the C# Client SDK with C#** SQL regular syntax, same as with SQL Server Client  classes. The C# Client SDK wraps all http communications aspects. Jump to [C# Client SDK: using SQL](#c#-client-sdk:-using-sql).
-- **Using the Java Client SDK**  that allows regular JDBC calls and wraps all HTTP communications aspects. Jump to [Java  Client SDK: using JDBC](#java-client-sdk:-using-jdbc).
-- **Using the Python Client SDK** that allows regular [DB API 2.0](https://www.python.org/dev/peps/pep-0249/) SQL calls and wraps all HTTP communications aspects. Jump to [Python Client SDK: using SQL](#python-client-sdk:-using-sql).
+- **Using the C# Client SDK with C#** SQL regular syntax, same as with SQL Server Client  classes. The C# Client SDK wraps all http communications aspects. Jump to [C# Client SDK](#c#-client-sdk).
+- **Using the Java Client SDK**  that allows regular JDBC calls and wraps all HTTP communications aspects. Jump to [Java  Client SDK](#java-client-sdk).
+- **Using the Python Client SDK** that allows regular [DB API 2.0](https://www.python.org/dev/peps/pep-0249/) SQL calls and wraps all HTTP communications aspects. Jump to [Python Client SDK](#python-client-sdk).
 
 
 - Using  any other language that supports HTTP GET & POST calls. 
@@ -423,7 +423,7 @@ From now,you can read the [API User Guide](https://www.aceql.com/DocDownload?doc
 - Insert Blobs in the database.
 - Retrieve Blobs from the database.
 
-## C# Client SDK: using SQL 
+## C# Client SDK 
 
 1. Create the “AceQL.MyRemoteConnection” Windows Classic Desktop Console App in Visual Studio. 
 
@@ -536,7 +536,7 @@ The `SelectCustomerAndOrderLogAsync()` method of [MyRemoteConnection.cs](https:/
 
 From now on, you can read the [C# Client SDK User Guide](https://www.aceql.com/DocDownload?doc=https://github.com/kawansoft/AceQL.Client/blob/master/README.md).
 
-## Java Client SDK: using JDBC
+## Java Client SDK
 
 1. Maven:
 
@@ -662,7 +662,7 @@ The `selectCustomerAndOrderLog` method of [MyRemoteConnection.java](https://www.
 
 From now on, you can read the [Java Client SDK User Guide](https://www.aceql.com/DocDownload?doc=https://github.com/kawansoft/aceql-http-client-sdk/blob/master/README.md) or run through the [SDK Javadoc](https://www.aceql.com/rest/soft/1.0/javadoc_sdk).
 
-## Python Client SDK: using SQL
+## Python Client SDK
 
 The aceql module supports Python 2.6–2.7 & 3.4–3.7. 
 
