@@ -1120,12 +1120,9 @@ The same technique is used when uploading potentially huge files (Blobs/Clobs) f
 
 Assuming: 
 
-1.     the database is running on its own separate server,
-
-2.     all AceQL clients are connected in Stateless Mode, and
-
-3.     the running `SessionConfigurator` is [JwtSessionConfigurator](http://www.aceql.com/rest/soft/1.0/javadoc/org/kawanfw/sql/api/server/session/JwtSessionConfigurator.html),
-
+- the database is running on its own separate server,
+- all AceQL clients are connected in Stateless Mode, and
+- the running `SessionConfigurator` is [JwtSessionConfigurator](http://www.aceql.com/rest/soft/1.0/javadoc/org/kawanfw/sql/api/server/session/JwtSessionConfigurator.html),
 
 
 then AceQL can provide high-scalability.
