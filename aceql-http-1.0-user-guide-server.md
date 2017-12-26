@@ -36,7 +36,7 @@ The AceQL Web Server embeds its own [Tomcat 8.5](http://tomcat.apache.org/tomcat
 
 Note that AceQL can run inside any Java EE servlet container (see [Running AceQL HTTP in a Java EE servlet container)](#running-aceql-http-in-a-java-ee-servlet-container). 
 
-**No Tomcat 8.5 expertise is required in order to configure and use the AceQL Web Server: **
+**No Tomcat 8.5 expertise is required in order to configure and use the AceQL Web Server:**
 
 - All Tomcat configuration values are optional: AceQL uses Tomcat 8.5 default values if no user     configuration is done.
 - In some cases you may be required to read portions of the Tomcat 8.5 user documentation: fine     tuning, using SSL & Certificates, etc.
@@ -385,7 +385,7 @@ Here is a documented example of an aceql-server.properties file:
 
 ## Starting/Stopping the AceQL Web Server from Linux/Unix
 
-### Add your JDBC driver to the AceQL installation]
+### Add your JDBC driver to the AceQL installation
 
 Before starting the AceQL Web Server, drop you JDBC driver jar into
 
