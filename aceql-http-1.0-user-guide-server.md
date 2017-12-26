@@ -529,7 +529,7 @@ If you have coded your own Configurators, deploy the classes in the `/classes` d
 
 ### AceQL servlet configuration in web.xml
 
-Create and configure the aceql-server.properties file like normal, as described in [The aceql-server.properties file](#the-aceql-server.properties-file). Do not configure the Tomcat Connector sections that will not be used.
+Create and configure the aceql-server.properties file like normal, as described in [The aceql-server.properties file](#the-aceql-serverproperties-file). Do not configure the Tomcat Connector sections that will not be used.
 
 In `web.xml`, define the AceQL Manager servlet that is defined in `the aceql-server.properties` file. This dual definition is required. The servlet class is. `org.kawanfw.sql.servlet.ServerSqlManager`. 
 
