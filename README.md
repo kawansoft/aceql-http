@@ -9,7 +9,7 @@
          * [Update the PATH (Optional)](#update-the-path-optional)
          * [Testing AceQL HTTP Web server installation](#testing-aceql-http-web-server-installation)
          * [Configure JDBC parameters in aceql-server.properties file](#configure-jdbc-parameters-in-aceql-serverproperties-file)
-         * [Add your JDBC driver to AceQLinstallation](#add-your-jdbc-driver-to-aceqlinstallation)
+         * [Add your JDBC driver to AceQL installation](#add-your-jdbc-driver-to-aceq-linstallation)
          * [Start the AceQL HTTP Web Server](#start-the-aceql-http-web-server)
       * [Windows Installation &amp; Server Startup](#windows-installation--server-startup)
          * [Configure JDBC parameters in aceql-server.properties file](#configure-jdbc-parameters-in-aceql-serverproperties-file-1)
@@ -139,7 +139,7 @@ kawansoft_example.username=user1
 kawansoft_example.password=password1
 ```
 
-### Add your JDBC driver to AceQLinstallation 
+### Add your JDBC driver to AceQL installation 
 
 Drop you JDBC driver jar into `ACEQL_HOME/lib-jdbc` directory.
 
