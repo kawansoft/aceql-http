@@ -42,7 +42,7 @@
 
 The AceQL HTTP API allows you to execute SQL queries and updates on remote databases using pure HTTP calls, with a fluent and simple to use REST like API.
 
-The Server operation is described in [Server Installation and Configuration Guide](https://www.aceql.com/DocDownload?doc=aceql-http1.0-user-guide-server.pdf&version=1.0).
+The Server operation is described in [Server Installation and Configuration Guide](https://github.com/kawansoft/aceql-http/blob/master/aceql-http-1.0-user-guide-server.md).
 
 This document describes all AceQL URLs to use in your HTTP calls. It also contains easy to copy and paste examples in cURL.
 
@@ -168,7 +168,7 @@ Note that we will use two shortcuts through this User Guide in order to simplify
 
 - **server** is the shortcut for the scheme, server name, and port of the URL to call. Possible values for server are: <http://localhost:9090>, <https://www.acme.com>, etc.
 
-- **aceql** is the shortcut for the AceQL Server servlet path. aceql is also the default configuration value. Any other value is possible, see [Server Installation and Configuration Guide](https://www.aceql.com/rest/soft/1.0/aceql-http1.0-user-guide-server.pdf).
+- **aceql** is the shortcut for the AceQL Server servlet path. aceql is also the default configuration value. Any other value is possible, see [Server Installation and Configuration Guide](https://github.com/kawansoft/aceql-http/blob/master/aceql-http-1.0-user-guide-server.md).
 
 | URL  parameter | Description                   |
 | -------------- | ----------------------------- |
@@ -178,7 +178,7 @@ Note that we will use two shortcuts through this User Guide in order to simplify
 | Request  parameter | Requested | Description                              |
 | ------------------ | --------- | ---------------------------------------- |
 | password           | Yes       | The  authentication password             |
-| stateless          | No        | true or false. Defaults to false.  Boolean  that says if the session is in Stateless or Stateful Mode. <br />See [Server Installation and  Configuration Guide](https://www.aceql.com/rest/soft/1.0/aceql-http1.0-user-guide-server.pdf). |
+| stateless          | No        | true or false. Defaults to false.  Boolean  that says if the session is in Stateless or Stateful Mode. <br />See [Server Installation and  Configuration Guide](https://github.com/kawansoft/aceql-http/blob/master/aceql-http-1.0-user-guide-server.md). |
 
 | Notes  about URL and request             |
 | ---------------------------------------- |
@@ -186,7 +186,7 @@ Note that we will use two shortcuts through this User Guide in order to simplify
 
 | Notes  about credentials (username, password) |
 | ---------------------------------------- |
-| These are  *not* the username/password of the remote JDBC Driver,  but are  the authentication information checked by remote AceQL server with  `DatabaseConfigurator.login(username, password`) method. <br />See [Server Installation and  Configuration Guide](https://www.aceql.com/rest/soft/1.0/aceql-http1.0-user-guide-server.pdf). |
+| These are  *not* the username/password of the remote JDBC Driver,  but are  the authentication information checked by remote AceQL server with  `DatabaseConfigurator.login(username, password`) method. <br />See [Server Installation and  Configuration Guide](https://github.com/kawansoft/aceql-http/blob/master/aceql-http-1.0-user-guide-server.md). |
 
 ### Server response to connect call
 

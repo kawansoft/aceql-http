@@ -780,7 +780,7 @@ From now on, you can read the [Module User Guide](https://github.com/kawansoft/a
 
 # From now on…
 
-You can read the [Server User Guide](https://www.aceql.com/DocDownload?doc=aceql-http1.0-user-guide-server.pdf&version=1.0):
+You can read the [Server User Guide](https://www.aceql.com/DocDownload?doc=https://github.com/kawansoft/aceql-http/blob/master/aceql-http-1.0-user-guide-server.md):
 
 You will learn:
 
