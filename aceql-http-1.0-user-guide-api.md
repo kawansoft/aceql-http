@@ -2,6 +2,44 @@
 
 <img src="https://www.aceql.com/favicon.png" alt="AceQL HTTP Icon"/> 
 
+- [Using the API](#using-the-api)
+  * [Java, C# and Python SDK](#java--c--and-python-sdk)
+  * [Authentication & session creation](#authentication---session-creation)
+  * [AceQL Server responses](#aceql-server-responses)
+  * [JSON error format](#json-error-format)
+    + [The error_type key](#the-error-type-key)
+    + [Most common AceQL server messages](#most-common-aceql-server-messages)
+    + [HTTP Status Codes](#http-status-codes)
+- [API reference guide](#api-reference-guide)
+  * [connect](#connect)
+    + [Server response to connect call](#server-response-to-connect-call)
+    + [connect call – cURL example](#connect-call---curl-example)
+  * [Connection info queries](#connection-info-queries)
+    + [Server response to connection info query calls](#server-response-to-connection-info-query-calls)
+    + [Connection info query calls – cURL example](#connection-info-query-calls---curl-example)
+  * [Connection modifiers](#connection-modifiers)
+    + [Server response to connection modifier calls](#server-response-to-connection-modifier-calls)
+    + [Connection modifier calls – cURLexample](#connection-modifier-calls---curlexample)
+  * [execute_update](#execute-update)
+    + [Server response to execute_update call](#server-response-to-execute-update-call)
+    + [execute_update call – cURL examples](#execute-update-call---curl-examples)
+  * [execute_query](#execute-query)
+    + [Server response to execute_query call](#server-response-to-execute-query-call)
+    + [execute_query call – cURL examples](#execute-query-call---curl-examples)
+  * [blob_upload](#blob-upload)
+    + [Server response to blob_upload call](#server-response-to-blob-upload-call)
+    + [update_query call for effective database update](#update-query-call-for-effective-database-update)
+    + [blob_upload call – cURL example](#blob-upload-call---curl-example)
+  * [get_blob_length](#get-blob-length)
+    + [Server response get_blob_length call](#server-response-get-blob-length-call)
+  * [blob_download](#blob-download)
+    + [Server response to blob_download call](#server-response-to-blob-download-call)
+    + [get_blob_length & blob_download call – cURL examples](#get-blob-length---blob-download-call---curl-examples)
+  * [disconnect](#disconnect)
+    + [Server response to disconnect call](#server-response-to-disconnect-call)
+
+
+
 # Using the API
 
 The AceQL HTTP API allows you to execute SQL queries and updates on remote databases using pure HTTP calls, with a fluent and simple to use REST like API.
