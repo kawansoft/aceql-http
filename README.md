@@ -16,7 +16,7 @@ Download the database `kawansoft_example` schema corresponding to your database 
 
 For other databases engines, just tailor the file as indicated: [kawansoft_example_other_databases.txt](https://www.aceql.com/rest/soft/1.0/src/kawansoft_example_other_databases.txt)
 
-Then launch the script that will create the tables in a database.
+Then launch the script that will create the tables in a database
 
 ## Linux/Unix Installation & Server Startup 
 

@@ -46,7 +46,7 @@ The AceQL HTTP API allows you to execute SQL queries and updates on remote datab
 
 The Server operation is described in [Server Installation and Configuration Guide](https://www.aceql.com/DocDownload?doc=aceql-http1.0-user-guide-server.pdf&version=1.0).
 
-This document describes all AceQL URLs to use in your HTTP calls. It also contains easy to copy & paste examples in cURL.
+This document describes all AceQL URLs to use in your HTTP calls. It also contains easy to copy and paste examples in cURL.
 
 ## Java, C# and Python SDK
 

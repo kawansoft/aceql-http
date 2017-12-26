@@ -6,7 +6,7 @@
 
 ## Overview
 
-AceQL HTTP is a library of REST like APIs that allows you access to remote SQL databases over HTTP from any device that supports http. This software has been designed to handle heavy traffic in production environments.
+AceQL HTTP is a library of REST like APIs that allows you access to remote SQL databases over HTTP from any device that supports HTTP. This software has been designed to handle heavy traffic in production environments.
 
 For example, a select command would be called from the client side using this http call with cURL:
 
