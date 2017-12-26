@@ -325,8 +325,8 @@ MyUsername/connect?password=MySecret
 
 ```bash
 {                                             
-	"status":"OK",                            
-	"session_id":"mn7andp2tt049iaeaskr28j9ch"
+   "status":"OK",                            
+   "session_id":"mn7andp2tt049iaeaskr28j9ch"
 }
 ```
 
@@ -363,7 +363,7 @@ This returns the JSON stream:
 
 ```bash
 {  
-	"status":"OK",                                               
+    "status":"OK",                                               
   	"query_rows":[                                                 
       {                                                          
           "row_1":[                                              
@@ -437,7 +437,7 @@ $ curl \
 
 On the server side, the authentication info is purged and the JDBC connection is released in the pool. (A server thread regularly releases phantom connections that were not closed from the client side.)
 
-From now,you can read the [API User Guide](https://www.aceql.com/DocDownload?doc=https://github.com/kawansoft/aceql-http/blob/master/aceql-http-1.0-user-guide-api.md) to learn how to:
+From now,you can read the [API User Guide](https://github.com/kawansoft/aceql-http/blob/master/aceql-http-1.0-user-guide-api.md) to learn how to:
 
 - Query or modify the `Connection` properties.
 - Create SQL transactions.
@@ -555,7 +555,7 @@ From now,you can read the [API User Guide](https://www.aceql.com/DocDownload?doc
 
 The `SelectCustomerAndOrderLogAsync()` method of [MyRemoteConnection.cs](https://www.aceql.com/rest/soft/1.0/src/MyRemoteConnection.cs) displays back the inserted values.
 
-From now on, you can read the [C# Client SDK User Guide](https://www.aceql.com/DocDownload?doc=https://github.com/kawansoft/AceQL.Client/blob/master/README.md).
+From now on, you can read the [C# Client SDK User Guide](https://github.com/kawansoft/AceQL.Client/blob/master/README.md).
 
 ## Java Client SDK
 
@@ -681,23 +681,18 @@ From now on, you can read the [C# Client SDK User Guide](https://www.aceql.com/D
 
 The `selectCustomerAndOrderLog` method of [MyRemoteConnection.java](https://www.aceql.com/rest/soft/1.0/src/MyRemoteConnection.java) displays back the inserted values.
 
-From now on, you can read the [Java Client SDK User Guide](https://www.aceql.com/DocDownload?doc=https://github.com/kawansoft/aceql-http-client-sdk/blob/master/README.md) or run through the [SDK Javadoc](https://www.aceql.com/rest/soft/1.0/javadoc_sdk).
+From now on, you can read the [Java Client SDK User Guide](https://github.com/kawansoft/aceql-http-client-sdk/blob/master/README.md) or run through the [SDK Javadoc](https://www.aceql.com/rest/soft/1.0/javadoc_sdk).
 
 ## Python Client SDK
 
 The aceql module supports Python 2.6–2.7 & 3.4–3.7. 
 
-1.Create a new project with your favorite IDE.
+1. Create a new project with your favorite IDE. 
+2. Install aceql module:
 
-
-
-2.    Install aceql module:
-
-      ```bash
-      $ pip install aceql
-      ```
-
-
+```bash
+$ pip install aceql
+```
 
 3.    Download this Python class: [my_remote_connection.py](https://www.aceql.com/rest/soft/1.0/src/my_remote_connection.py)
 
@@ -780,7 +775,7 @@ From now on, you can read the [Module User Guide](https://github.com/kawansoft/a
 
 # From now on…
 
-You can read the [Server User Guide](https://www.aceql.com/DocDownload?doc=https://github.com/kawansoft/aceql-http/blob/master/aceql-http-1.0-user-guide-server.md):
+You can read the [Server User Guide](https://github.com/kawansoft/aceql-http/blob/master/aceql-http-1.0-user-guide-server.md):
 
 You will learn:
 

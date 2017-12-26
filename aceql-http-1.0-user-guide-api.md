@@ -50,9 +50,9 @@ This document describes all AceQL URLs to use in your HTTP calls. It also contai
 
 AceQL HTTP includes a C#, a Java and a Python SDK that wraps the API and eliminates the tedious works of handling communications errors and parsing JSON results:
 
-- [C# SDK User Guide](https://www.aceql.com:/DocDownload?doc=https://github.com/kawansoft/AceQL.Client/blob/master/README.md)
-- [Java SDK User Guide](https://www.aceql.com:/DocDownload?doc=https://github.com/kawansoft/aceql-http-client-sdk/blob/master/README.md)
-- [Python SDK User Guide](https://www.aceql.com:/DocDownload?doc=https://github.com/kawansoft/aceql-http-client-python/blob/master/README.md)
+- [C# SDK User Guide](https://github.com/kawansoft/AceQL.Client/blob/master/README.md)
+- [Java SDK User Guide](https://github.com/kawansoft/aceql-http-client-sdk/blob/master/README.md)
+- [Python SDK User Guide](https://github.com/kawansoft/aceql-http-client-python/blob/master/README.md) 
 
 ***Reading this User Guide is NOT required if you intend to use a SDK.***
 
@@ -916,7 +916,7 @@ Allows to close the session and to release the server JDBC Connection into the p
 
 | Notes                                    |
 | ---------------------------------------- |
-| In Stateful Mode, it is important to call disconnect at end of session in order to  close the JDBC Connection and release it in the pool. <br />See [Server Installation and  Configuration Guide](http://www.aceql.com/rest/soft/1.0/aceql-http1.0-user-guide-server.pdf) for more info. |
+| In Stateful Mode, it is important to call disconnect at end of session in order to  close the JDBC Connection and release it in the pool. <br />See [Server Installation and  Configuration Guide](https://github.com/kawansoft/aceql-http/blob/master/aceql-http-1.0-user-guide-server.md) for more info. |
 
 ### Server response to disconnect call
 

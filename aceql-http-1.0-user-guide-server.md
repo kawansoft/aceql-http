@@ -266,10 +266,7 @@ Most AceQL configuration is carried out by defining properties in the `aceql-ser
 A more advanced configuration using a "DatabaseConfigurator", which is all optional, will also be detailed:
 
 - Client login and password verification.
-
 - SQL security settings.
-
-
 
 ## The AceQL Manager servlet
 
@@ -458,18 +455,17 @@ Before starting the AceQL Web Server, drop you JDBC driver jar into
 Open a shell and type: 
 
 ```bash
-$ aceql-server -start -host <hostname> -port <port> -properties <file>
+$ aceql-server -start -host <hostname> -port <port number> -properties <file>
 ```
 
 where:
 
--host<hostname>	 hostname of the Web server
+- `-host <hostname>` hostname of the Web server
 
--port <port number>   port number of the Web server. Defaults to 9090
+- `-port <port number>`  port number of the Web server. Defaults to 9090
 
--properties <file>   	properties file to use for this SQL Web server Session. 		         
+- `-properties <file>`  properties file to use for this SQL Web server Session. Defaults to ACEQL_HOME/conf/aceql-server.properties
 
-​					Defaults to ACEQL_HOME/conf/aceql-server.properties
 
 The console will display the properties used and will end with this line if everything is OK (assuming you choose 9090 for port.)
 
@@ -526,12 +522,12 @@ aceql-server.propertiesfile, the URL to use on the client side will be:
 To stop a running instance of the AceQL Web Server:
 
 ```bash
-$ aceql-server-stop -port <port>
+$ aceql-server-stop -port <port number>
 ```
 
 where:
 
--port <portnumber>  	 port number of the Web server. Defaults to 9090
+`-port <port number>`  port number of the Web server. Defaults to 9090
 
 ### Linux: running the AceQL Web server as a service
 
