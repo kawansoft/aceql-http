@@ -771,7 +771,7 @@ $ pip install aceql
 
 The `select_customer_and_orderlog` method of [my_remote_connection.py](https://www.aceql.com/rest/soft/1.0/src/my_remote_connection.py) displays back the inserted values.
 
-From now on, you can read the [Module User Guide](https://www.aceql.com/DocDownload?doc=https://github.com/kawansoft/aceql-http-client-python/blob/master/README.md).
+From now on, you can read the [Python Client SDK User Guide](https://www.aceql.com/DocDownload?doc=https://github.com/kawansoft/aceql-http-client-python/blob/master/README.md).
 
 # From now on…
 
