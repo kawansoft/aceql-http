@@ -437,7 +437,7 @@ $ curl \
 
 On the server side, the authentication info is purged and the JDBC connection is released in the pool. (A server thread regularly releases phantom connections that were not closed from the client side.)
 
-From now,you can read the [API User Guide](https://github.com/kawansoft/aceql-http/blob/master/aceql-http-1.0-user-guide-api.md) to learn how to:
+From now,you can read the [API User Guide](https://www.aceql.com/DocDownload?doc=https://github.com/kawansoft/aceql-http/blob/master/aceql-http-1.0-user-guide-api.md) to learn how to:
 
 - Query or modify the `Connection` properties.
 - Create SQL transactions.
@@ -555,7 +555,7 @@ From now,you can read the [API User Guide](https://github.com/kawansoft/aceql-ht
 
 The `SelectCustomerAndOrderLogAsync()` method of [MyRemoteConnection.cs](https://www.aceql.com/rest/soft/1.0/src/MyRemoteConnection.cs) displays back the inserted values.
 
-From now on, you can read the [C# Client SDK User Guide](https://github.com/kawansoft/AceQL.Client/blob/master/README.md).
+From now on, you can read the [C# Client SDK User Guide](https://www.aceql.com/DocDownload?doc=https://github.com/kawansoft/AceQL.Client/blob/master/README.md).
 
 ## Java Client SDK
 
@@ -681,7 +681,7 @@ From now on, you can read the [C# Client SDK User Guide](https://github.com/kawa
 
 The `selectCustomerAndOrderLog` method of [MyRemoteConnection.java](https://www.aceql.com/rest/soft/1.0/src/MyRemoteConnection.java) displays back the inserted values.
 
-From now on, you can read the [Java Client SDK User Guide](https://github.com/kawansoft/aceql-http-client-sdk/blob/master/README.md) or run through the [SDK Javadoc](https://www.aceql.com/rest/soft/1.0/javadoc_sdk).
+From now on, you can read the [Java Client SDK User Guide](https://www.aceql.com/DocDownload?doc=https://github.com/kawansoft/aceql-http-client-sdk/blob/master/README.md) or run through the [SDK Javadoc](https://www.aceql.com/rest/soft/1.0/javadoc_sdk).
 
 ## Python Client SDK
 
@@ -771,11 +771,11 @@ $ pip install aceql
 
 The `select_customer_and_orderlog` method of [my_remote_connection.py](https://www.aceql.com/rest/soft/1.0/src/my_remote_connection.py) displays back the inserted values.
 
-From now on, you can read the [Module User Guide](https://github.com/kawansoft/aceql-http-client-python/blob/master/README.md).
+From now on, you can read the [Module User Guide](https://www.aceql.com/DocDownload?doc=https://github.com/kawansoft/aceql-http-client-python/blob/master/README.md).
 
 # From now on…
 
-You can read the [Server User Guide](https://github.com/kawansoft/aceql-http/blob/master/aceql-http-1.0-user-guide-server.md):
+You can read the [Server User Guide](https://www.aceql.com/DocDownload?doc=https://github.com/kawansoft/aceql-http/blob/master/aceql-http-1.0-user-guide-server.md):
 
 You will learn:
 
