@@ -1,6 +1,4 @@
-# AceQL HTTP 1.0  
-
-# Server Installation and Configuration Guide 
+# AceQL HTTP 1.0 - Server Installation and Configuration Guide  
 
 <img src="https://www.aceql.com/favicon.png" alt="AceQL HTTP Icon"/> 
 
