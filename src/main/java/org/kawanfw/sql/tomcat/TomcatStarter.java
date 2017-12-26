@@ -188,6 +188,9 @@ public class TomcatStarter {
 		// securityConstraint.addCollection(collection);
 		// rootCtx.addConstraint(securityConstraint);
 
+		// Add a predefined Filter
+		TomcatFilterUtil.addFilterToContext(rootCtx);
+		
 		// Add first servlet with no index
 		addAceqlServlet(properties, rootCtx);
 

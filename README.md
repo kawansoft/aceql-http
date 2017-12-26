@@ -1,4 +1,4 @@
-# AceQL HTTP - Quick Start Guide
+# AceQL HTTP 1.0 - Quick Start Guide
 
 <img src="https://www.aceql.com/favicon.png" alt="AceQ HTTP Icon"/>
 
@@ -24,7 +24,7 @@ AceQL requires the installation of Java version 7, 8 or 9.
 
 ### Download & installation
 
-Open a terminal and download with `Wget`
+Open a terminal and download with `Wget` 
 
 If you use an Open Source database:
 
