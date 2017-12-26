@@ -173,7 +173,7 @@ AceQL HTTP Open Source v1.0 - 20-dec-2017
 Or:
 
 ```
-AceQL HTTP Professional v1.0- 20-dec-2017
+AceQL HTTP Professional v1.0- 20-dec-2017 
 ```
 
 ## Windows Installation
