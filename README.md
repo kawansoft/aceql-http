@@ -780,12 +780,10 @@ You can read the [Server User Guide](https://github.com/kawansoft/aceql-http/blo
 You will learn:
 
 - How to create a Connection Pool.
-
 - How to create a strong authentication on the server for your legitimate users.
-
 - How to secure accesses to your SQL databases.
 
-  ​
+
 
 
 ------
