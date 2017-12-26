@@ -415,11 +415,11 @@ This section is optional. It allows you to configure the HTTP Connector in order
 
 It also allows you to define the SSL Certificate to be used.
 
-Set the `SSLEnabled` property o true, in order to say that the HTTP Connector will accept SSL calls from lient side.
+Set the `SSLEnabled` property o true, in order to say that the HTTP Connector will accept SSL calls from client side.
 
 Each property must be prefixed by `sslConnector`.
 
-*Note: If `SSLEnabled` is set to `true`, AceQL HTTP Web server will accept only SSL connections, i.e. a non SSL call from client side with http` scheme will fail.*
+*Note: If `SSLEnabled` is set to `true`, AceQL HTTP Web server will accept only SSL connections, i.e. a non SSL call from client side with `http` scheme will fail.*
 
 To define SSL HTTP Connector attribute values, refer to the Tomcat 8.5 [SSL Support](http://tomcat.apache.org/tomcat-8.5-doc/config/http.html#SSL_Support) documentation. 
 
