@@ -212,7 +212,7 @@ It will run AceQL at end of installation and display the Window:
 
 <img src="https://www.aceql.com/rest/soft/1.0/img/aceql_windows_gui_home.png" alt="AceQ HTTP GUI Main Windows"/>
 
-**N.B:** Because of a bug in early versions of Java 9 on Windows, the interface will appear "ugly"  or"blurred" on Java 9 if you have increased Windows Screen Resolution Options to 125% or 150%. See https://goo.gl/PAVvrd for more info. Set back Windows Screen Resolution to 100% for clean display.
+**N.B:** Because of a bug in early versions of Java 9 on Windows, the interface will appear "ugly"  or "blurred" on Java 9 if you have increased Windows Screen Resolution Options to 125% or 150%. See https://goo.gl/PAVvrd for more info. Set back Windows Screen Resolution to 100% for clean display.
 
 ### Add your JDBC driver to AceQL installation
 
@@ -220,7 +220,7 @@ A recent PostgreSQL  JDBC driver is pre-installed. (We could not pre-install oth
 
 In order to install your JDBC Driver:
 
-1. Quit completely AceQL with `Ctrl-Q` (or`File` menu & `Quit` item).
+1. Quit completely AceQL with `Ctrl-Q` (or `File` menu & `Quit` item).
 2. Add your JDBC Driver to your `CLASSPATH` or copy it to the `\lib-jdbc` subdirectory of the main installation directory.
 3. Restart AceQL. Then verify that your JDBC Driver is in your current `CLASSPATH` with the `Display CLASSPATH` button. 
 
@@ -441,7 +441,7 @@ $ curl \
 
 On the server side, the authentication info is purged and the JDBC connection is released in the pool. (A server thread regularly releases phantom connections that were not closed from the client side.)
 
-From now,you can read the [API User Guide](https://www.aceql.com/DocDownload?doc=https://github.com/kawansoft/aceql-http/blob/master/aceql-http-1.0-user-guide-api.md) to learn how to:
+From now, you can read the [API User Guide](https://www.aceql.com/DocDownload?doc=https://github.com/kawansoft/aceql-http/blob/master/aceql-http-1.0-user-guide-api.md) to learn how to:
 
 - Query or modify the `Connection` properties.
 - Create SQL transactions.
