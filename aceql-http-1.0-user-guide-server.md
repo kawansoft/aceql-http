@@ -92,7 +92,7 @@ AceQL HTTP is authorized through a license. The license type depends on the edit
 - User  Configuration classes injected at runtime, called "Configurators" in this document. These are server classes that     ensure both security and configuration.
 - The AceQL Helper Libraries. These are SDKs for Java and C# that allow you to wrap AceQL HTTP API calls using fluent code.
 
-The execution of each AceQL HTTP API statement is conditioned by optional rules,defined in configuration classes called "Configurators."
+The execution of each AceQL HTTP API statement is conditioned by optional rules, defined in configuration classes called "Configurators."
 
 The AceQL Web Server embeds its own [Tomcat 8.5](http://tomcat.apache.org/tomcat-8.5-doc/) servlet container in order to run AceQL without any Java EE servlet container.
 
@@ -104,7 +104,7 @@ Note that AceQL can run inside any Java EE servlet container (see [Running AceQL
 - In some cases you may be required to read portions of the Tomcat 8.5 user documentation: fine     tuning, using SSL & Certificates, etc.
 - See the [Quick Start Guide](https://www.aceql.com/DocDownload?doc=https://github.com/kawansoft/aceql-http/blob/master/README.md) for an example that uses default Tomcat configuration.
 
-The AceQL Web Server consists of one Java jar. It is started by calling a Java class ont he command line. All configuration elements are defined in a Java `.properties` file, named **aceql-server.properties** file in this document.
+The AceQL Web Server consists of one Java jar. It is started by calling a Java class on the command line. All configuration elements are defined in a Java `.properties` file, named **aceql-server.properties** file in this document.
 
 All communication between the client and the server uses HTTP/ HTTPS protocols. . 
 
@@ -252,7 +252,7 @@ It will run AceQL at end of installation and display the Window:
 
 <img src="https://www.aceql.com/rest/soft/1.0/img/aceql_windows_gui_home.png" alt="AceQ HTTP GUI Main Windows"/>
 
-**N.B:** Because of a bug in early versions of Java 9 on Windows, the interface will appear "ugly"  or"blurred" on Java 9 if you have increased Windows Screen Resolution Options to 125% or 150%. See https://goo.gl/PAVvrd for more info. Set back Windows Screen Resolution to 100% for clean display.
+**N.B:** Because of a bug in early versions of Java 9 on Windows, the interface will appear "ugly"  or "blurred" on Java 9 if you have increased Windows Screen Resolution Options to 125% or 150%. See https://goo.gl/PAVvrd for more info. Set back Windows Screen Resolution to 100% for clean display.
 
 # Server side configuration
 
@@ -491,7 +491,7 @@ $ aceql-server -start -host localhost
 
 The URL to use on the client side will be: <http://localhost:9090/aceql> 
 
-assuming theAceQL Manager Servlet Section contains the following line:
+assuming the AceQL Manager Servlet Section contains the following line: 
 
 ```properties
 aceQLManagerServletCallName=aceql 
@@ -503,7 +503,7 @@ aceQLManagerServletCallName=aceql
 $ aceql-server -start -host www.acme.org -port 9091
 ```
 
-The URL touse on the client side will be: <http://www.acme.org:9091/aceql> 
+The URL to use on the client side will be: <http://www.acme.org:9091/aceql> 
 
 assuming the AceQL Manager Servlet Section contains the following line:
 
@@ -739,7 +739,7 @@ If you want to implement your own connection pool system, overload the `Database
 
 Of course, you – and your database administrator – don’t want your SQL database to be accessible to the whole world. AceQL provides a mechanism that allows you to check the username and password sent by the remote client program. This is done through the login method of the `DatabaseConfigurator` interface. If login returns true, access is granted. 
 
-Note that the username and password checked here are not the database username and password. The username and password should be checked via an applicative access mechanism,such as an LDAP directory, a login table in the database, etc. 
+Note that the username and password checked here are not the database username and password. The username and password should be checked via an applicative access mechanism, such as an LDAP directory, a login table in the database, etc. 
 
 The following example checks that the username and password entered by the client match an access list defined in an SQL table of the host database. Add the method to your `MyDatabaseConfigurator` class:
 
@@ -1245,7 +1245,7 @@ If you want to ensure that temporary files will be cleaned, you can access the t
 
 where:
 
--   `user.home` =  the user.home of theuser  that started the AceQL Web Server.
+-   `user.home` =  the user.home of the user that started the AceQL Web Server.
 
 -   `username` = the username of the client user.
 
