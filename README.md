@@ -220,7 +220,7 @@ A recent PostgreSQL  JDBC driver is pre-installed. (We could not pre-install oth
 
 In order to install your JDBC Driver:
 
-1. Quit completely AceQL with `Ctrl-Q` (or`File` menu & `Quit` item ).
+1. Quit completely AceQL with `Ctrl-Q` (or`File` menu & `Quit` item).
 2. Add your JDBC Driver to your `CLASSPATH` or copy it to the `\lib-jdbc` subdirectory of the main installation directory.
 3. Restart AceQL. Then verify that your JDBC Driver is in your current `CLASSPATH` with the `Display CLASSPATH` button. 
 
