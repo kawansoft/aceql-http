@@ -611,7 +611,7 @@ then your `web.xml` should contain the following code:
 
 	<init-param>
 		<param-name>properties</param-name>
-		<param-value> c:\Users\Mike\aceql-server.properties</param-value>
+		<param-value>c:\Users\Mike\aceql-server.properties</param-value>
 	</init-param>
 </servlet>
 
@@ -619,7 +619,7 @@ then your `web.xml` should contain the following code:
 < load-on-startup>1</load-on-startup >
 
 <servlet-mapping>
-       <!-- Note the trailing /* in url-pattern --> 
+    <!-- Note the trailing /* in url-pattern --> 
 	<servlet-name>aceql</servlet-name>
 	<url-pattern>/aceql/*</url-pattern>
 </servlet-mapping>
