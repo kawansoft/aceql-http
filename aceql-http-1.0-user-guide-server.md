@@ -813,11 +813,11 @@ Implement this method if you want to choose the directories where the Blobs/Clob
 
 **`getConnectionMaxAge`**:
 
-Implement this method if you want to define the maximum number of minutes a Connection can live before it's closed and released in the pool.
+Implement this method if you want to define the maximum number of minutes a `Connection` can live before it's closed and released in the pool.
 
 **`close`**:
 
-Implement this method if you want to define some Java code to execute before/after a Connection.close().
+Implement this method if you want to define some Java code to execute before/after a `Connection.close()`.
 
 Please check the Javadoc of [DatabaseConfigurator](http://www.aceql.com/rest/soft/1.0/javadoc/org/kawanfw/sql/api/server/DatabaseConfigurator.html) for more information. 
 
