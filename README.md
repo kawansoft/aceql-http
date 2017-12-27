@@ -47,7 +47,7 @@ AceQL requires the installation of Java version 7, 8 or 9.
 
 Open a terminal and download with `Wget` 
 
-If you use an Open Source database:
+If you use an [Open Source database](https://www.aceql.com/open-source-and-commercial-sql-databases.html) database:
 
 ```bash
 $ wget https://www.aceql.com/download/1.0/aceql-http-1.0.run
@@ -66,7 +66,7 @@ If you get a certificate error message, do one of the following:
 1. If the problem is that a known root CA is missing and when you are using Ubuntu or Debian,  then you can solve the problem with this one line: `sudo apt-getinstall ca-certificates`. Then retry the `Wget` call.
 2. Retry the `Wget` call with `--no-check-certificate` at end of command line. Then check the PGP signature of the downloaded file using the corresponding `.asc` signature file available on [download page](https://www.aceql.com/download) using the PGP hyperlink.
 
-In following lines we will assume that the Open Source version is chosen. (Operating mode is the same for pro version).
+In following lines we will assume that the Open Source edition is chosen. (Operating mode is the same for Pro edition).
 
 ```bash
 chmod +x aceql-http-1.0.run
@@ -493,7 +493,7 @@ From now,you can read the [API User Guide](https://www.aceql.com/DocDownload?doc
        }
    ```
 
-5. Build and run. It will insert a new Customer and a new Orderlog:
+5. Build and run. It will insert a new `customer` and a new `orderlog`:
 
    ```C#
        /// <summary>
@@ -565,7 +565,7 @@ From now on, you can read the [C# Client SDK User Guide](https://www.aceql.com/D
 
 1. Maven:
 
-   ```
+   ```xml
    <groupId>com.aceql</groupId>
    <artifactId>aceql-http-client-sdk</artifactId>
    <version>1.0</version>
@@ -577,7 +577,7 @@ From now on, you can read the [C# Client SDK User Guide](https://www.aceql.com/D
 
 4. Download this Java source file: [MyRemoteConnection.java](https://www.aceql.com/rest/soft/1.0/src/MyRemoteConnection.java). Then insert it in the package. 
 
-5. The  connection to the remote database is   created  using `AceQLConnection` class  and passing the URL of the AceQL Servlet Manager of your configuration:
+5. The  connection to the remote database is  created  using `AceQLConnection` class  and passing the URL of the AceQL Servlet Manager of your configuration:
 
    ```java
    /**
@@ -610,7 +610,7 @@ From now on, you can read the [C# Client SDK User Guide](https://www.aceql.com/D
    }
    ```
 
-6. Compile and run from your IDE the `MyRemoteConnection` class. It will insert a new Customer and a new Orderlog:
+6. Compile and run from your IDE the `MyRemoteConnection` class. It will insert a new `customer` and a new `orderlog`:
 
    ```java
    /** 
@@ -731,7 +731,7 @@ $ pip install aceql
       ```
 
 
-5.    Run from your IDE the `my_remote_connection.py` module.  It will insert a new Customer and a new Orderlog: 
+5.    Run from your IDE the `my_remote_connection.py` module.  It will insert a new `customer` and a new `orderlog`: 
 
       ```python
           def insert_customer_and_order_log(self, customer_id, item_id):
