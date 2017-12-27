@@ -31,7 +31,7 @@ See AceQL HTTP Use Guide for more info about AceQL licenses.
 
 
 WINDOWS VERSION ONLY - AceQL HTTP Version 1.0 - 27-dec-2017
---------------------------------------------------------------------
+-----------------------------------------------------------
 
 What's new:
 - Java 9 is now fully supported on Windows.
@@ -54,7 +54,7 @@ Bugs fixed:
   
 
 PRO EDITION ONLY - AceQL HTTP Version 1.0-beta-5.2 - 31-oct-2017
----------------------------------------------------------------
+----------------------------------------------------------------
 
 What's new:
 - Beta period has been extended to November 10, 2017.
