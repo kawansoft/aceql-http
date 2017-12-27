@@ -615,7 +615,7 @@ then your `web.xml` should contain the following code:
 	</init-param>
 </servlet>
 
-<!—Allows you to see immediately in servet container if servlet is OK or KO --> 
+<!—-Allows you to see immediately in servet container if servlet is OK or KO --> 
 < load-on-startup>1</load-on-startup >
 
 <servlet-mapping>
