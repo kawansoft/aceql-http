@@ -466,7 +466,7 @@ where:
 
 - `-port <port number>`  port number of the Web server. Defaults to 9090
 
-- `-properties <file>`  properties file to use for this SQL Web server Session. Defaults to ACEQL_HOME/conf/aceql-server.properties
+- `-properties <file>`  properties file to use for this SQL Web server Session. Defaults to `ACEQL_HOME/conf/aceql-server.properties`.
 
 
 The console will display the properties used and will end with this line if everything is OK (assuming you choose 9090 for port.)
@@ -563,15 +563,16 @@ The running options are fully described in the user interface help.
 
 ### Running the AceQL Web Server without Windows Desktop
 
-If you don’t have access to the Windows Desktop interface (running in a cloud instance, etc.)  you can still run the AceQ LHTTP Web Server from the command line.
+If you don’t have access to the Windows Desktop interface (running in a cloud instance, etc.)  you can still run the AceQL HTTP Web Server from the command line.
 
-See the `<installation-directory>\AceQL\bin\aceql-server.bat` script or the `<installation-directory>\AceQLPro\bin\aceql-server.bat` for Professional Edition
+- Open Sure Edition: see `<installation-directory>\AceQL\bin\aceql-server.bat` script.
+- Professional Edition:  see `<installation-directory>\AceQLPro\bin\aceql-server.bat` script.
 
 You can also start/top the AceQL Web Server from you java programs, as explained in next section.
 
 ## Starting/Stopping the AceQL WebServer from a Java program
 
-You may start or stop from a Java program calling the [WebServerApi](https://www.aceql.com/rest/soft/1.0/javadoc/org/kawanfw/sql/api/server/web/WebServerApi.html) API.
+You may start or stop the AceQL Server from a Java program calling the [WebServerApi](https://www.aceql.com/rest/soft/1.0/javadoc/org/kawanfw/sql/api/server/web/WebServerApi.html) API.
 
 ## Running AceQL HTTP in a Java EE servlet container
 
