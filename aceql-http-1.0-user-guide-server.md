@@ -250,7 +250,9 @@ Run the installer.
 
 It will run AceQL at end of installation and display the Window:
 
-<img src="https://www.aceql.com/rest/soft/1.0/img/aceql_windows_gui_home_v1.0.png" alt="AceQ HTTP GUI Main Windows"/>
+<img src="https://www.aceql.com/rest/soft/1.0/img/aceql_windows_gui_home.png" alt="AceQ HTTP GUI Main Windows"/>
+
+**N.B:** Because of a bug in early versions of Java 9 on Windows, the interface will appear "ugly"  or"blurred" on Java 9 if you have increased Windows Screen Resolution Options to 125% or 150%. See https://goo.gl/PAVvrd for more info. Set back Windows Screen Resolution to 100% for clean display.
 
 # Server side configuration
 
@@ -573,7 +575,7 @@ You may start or stop from a Java program calling the [WebServerApi](https://www
 
 ## Running AceQL HTTP in a Java EE servlet container
 
- AceQL server side may be run inside a Java EE servlet container such as Tomcat.
+AceQL server side may be run inside a Java EE servlet container such as Tomcat.
 
 This option may be preferred by users who already have a Java EE servlet container configured with all Connectors & SSL options, etc., and do want to recode the options in the `aceql-server.properties` file. 
 

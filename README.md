@@ -1,7 +1,6 @@
 # AceQL HTTP 1.0 - Quick Start Guide
 
 <img src="https://www.aceql.com/favicon.png" alt="AceQ HTTP Icon"/>
-
    * [Server Side Settings](#server-side-settings)
       * [Create the kawansoft_example database](#create-the-kawansoft_example-database)
       * [Linux/Unix Installation &amp; Server Startup](#linuxunix-installation--server-startup)
@@ -12,8 +11,8 @@
          * [Add your JDBC driver to AceQL installation](#add-your-jdbc-driver-to-aceql-installation)
          * [Start the AceQL HTTP Web Server](#start-the-aceql-http-web-server)
       * [Windows Installation &amp; Server Startup](#windows-installation--server-startup)
-         * [Configure JDBC parameters in aceql-server.properties file](#configure-jdbc-parameters-in-aceql-serverproperties-file-1)
          * [Add your JDBC driver to AceQL installation](#add-your-jdbc-driver-to-aceql-installation-1)
+         * [Configure JDBC parameters in aceql-server.properties file](#configure-jdbc-parameters-in-aceql-serverproperties-file-1)
          * [Start the AceQL Web Server](#start-the-aceql-web-server)
    * [Client Side](#client-side)
       * [cURL](#curl)
@@ -21,8 +20,6 @@
       * [Java Client SDK](#java-client-sdk)
       * [Python Client SDK](#python-client-sdk)
    * [From now on…](#from-now-on)
-
-
 # Server Side Settings
 
 ## Create the kawansoft_example database
@@ -203,14 +200,26 @@ Because the software installs and runs a Windows Service, you must be logged as 
 
 Download either:
 
-- [AceQL-HTTP-1.0-Setup.exe](https://www.aceql.com/SoftwareDownload?software=AceQL-HTTP-1.0-Setup.exe&version=1.0) if you use an [Open Source database](https://www.aceql.com/open-source-and-commercial-sql-databases.html).
-- [AceQL-HTTP-Pro-1.0-Setup.exe](https://www.aceql.com/SoftwareDownload?software=AceQL-HTTP-Pro-1.0-Setup.exe&version=1.0) if you use a commercial database. You can get an AceQL Professional trial license key here: [https://www.aceql.com/trial](https://www.aceql.com/trial).
+- [AceQL-HTTP-1.0.1-Setup.exe](https://www.aceql.com/SoftwareDownload?software=AceQL-HTTP-1.0.1-Setup.exe&version=1.0) if you use an [Open Source database](https://www.aceql.com/open-source-and-commercial-sql-databases.html).
+- [AceQL-HTTP-Pro-1.0.1-Setup.exe](https://www.aceql.com/SoftwareDownload?software=AceQL-HTTP-Pro-1.0.1-Setup.exe&version=1.0) if you use a commercial database. You can get an AceQL Professional trial license key here: [https://www.aceql.com/trial](https://www.aceql.com/trial).
 
 Run the installer.
 
 It will run AceQL at end of installation and display the Window:
 
-<img src="https://www.aceql.com/rest/soft/1.0/img/aceql_windows_gui_home_v1.0.png" alt="AceQ HTTP GUI Main Windows"/>
+<img src="https://www.aceql.com/rest/soft/1.0/img/aceql_windows_gui_home.png" alt="AceQ HTTP GUI Main Windows"/>
+
+**N.B:** Because of a bug in early versions of Java 9 on Windows, the interface will appear "ugly"  or"blurred" on Java 9 if you have increased Windows Screen Resolution Options to 125% or 150%. See https://goo.gl/PAVvrd for more info. Set back Windows Screen Resolution to 100% for clean display.
+
+### Add your JDBC driver to AceQL installation
+
+A recent PostgreSQL  JDBC driver is pre-installed. (We could not pre-install other vendor drivers due to license restrictions). Skip this paragraph if you are a PostgreSQL user.
+
+In order to install your JDBC Driver:
+
+1. Quit completely AceQL with `Ctrl-Q` (or`File` menu & `Quit` item ).
+2. Add your JDBC Driver to your `CLASSPATH` or copy it to the `\lib-jdbc` subdirectory of the main installation directory.
+3. Restart AceQL. Then verify that your JDBC Driver is in your current `CLASSPATH` with the `Display CLASSPATH` button. 
 
 ### Configure JDBC parameters in aceql-server.properties file 
 
@@ -244,16 +253,6 @@ kawansoft_example.password=password1
 Leave the default **localhost** value for the Host field.
 
 You may set any port value for the `Port` field if port 9090 is not free on your machine.
-
-### Add your JDBC driver to AceQL installation 
-
-A recent PostgreSQL JDBC driver is pre-installed [[1\]](#_ftn1).
-
-If you use another database than PostgreSQL, click “Browse” and select your Driver Jar file to install. You can also drag &drop the Jar files on the window.
-
-------
-
-[[1\]](#_ftnref1) We could not pre-install other vendor drivers due to license restrictions.
 
 ### Start the AceQL Web Server
 
