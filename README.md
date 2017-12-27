@@ -1,6 +1,7 @@
 # AceQL HTTP 1.0 - Quick Start Guide
 
 <img src="https://www.aceql.com/favicon.png" alt="AceQ HTTP Icon"/>
+
    * [Server Side Settings](#server-side-settings)
       * [Create the kawansoft_example database](#create-the-kawansoft_example-database)
       * [Linux/Unix Installation &amp; Server Startup](#linuxunix-installation--server-startup)
@@ -20,6 +21,8 @@
       * [Java Client SDK](#java-client-sdk)
       * [Python Client SDK](#python-client-sdk)
    * [From now on…](#from-now-on)
+
+
 # Server Side Settings
 
 ## Create the kawansoft_example database
