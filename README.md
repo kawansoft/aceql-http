@@ -47,7 +47,7 @@ AceQL requires the installation of Java version 7, 8 or 9.
 
 Open a terminal and download with `Wget` 
 
-If you use an [Open Source database](https://www.aceql.com/open-source-and-commercial-sql-databases.html) database:
+If you use an [Open Source database](https://www.aceql.com/open-source-and-commercial-sql-databases.html):
 
 ```bash
 $ wget https://www.aceql.com/download/1.0/aceql-http-1.0.run
