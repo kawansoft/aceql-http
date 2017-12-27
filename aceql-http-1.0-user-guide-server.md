@@ -128,24 +128,24 @@ The following environments are supported in this version:
 
 | Operating System | JVM (Java Virtual Machine)               |
 | ---------------- | ---------------------------------------- |
-| Windows          | Oracle Java SE 7, Java SE 8.  Java 9 is  not yet supported. |
-| UNIX/Linux       | Oracle Java SE 7, Java SE 8 and Java SE 9 <br />OpenJDK 7, OpenJDK 8 and OpenJDK 9 |
+| Windows          | Oracle Java SE 7, Java SE 8 and Java SE 9 |
+| UNIX/Linux       | Oracle Java SE 7, Java SE 8 and Java SE 9<br />OpenJDK 7, OpenJDK 8 and OpenJDK 9 |
 | OS X / macOS     | Oracle Java SE 7 for OS X 10.7.3+  <br />Oracle Java SE 8 for OS X 10.8+  <br />Oracle Java SE 9 for mac OS 10.10+ |
 
-| **Databases**                    |
-| -------------------------------- |
-| Actian Ingres 10+                |
-| IBM DB2  9.7+.                   |
-| IBM  Informix 11.70+.            |
-| MariaDB  10.0+                   |
-| Microsoft  SQL Server 2008 R2+.  |
-| MS Access  2010+                 |
-| Oracle Database  11g Release 2+. |
-| Oracle  MySQL 5.5+.              |
-| PostgreSQL  8.4.1+.              |
-| Sybase  ASE 15.7+.               |
-| Sybase  SQL Anywhere 12+.        |
-| Teradata  Database 13+           |
+| **Databases**                   |
+| ------------------------------- |
+| Actian Ingres 10+               |
+| IBM DB2  9.7+                   |
+| IBM  Informix 11.70+.           |
+| MariaDB  10.0+                  |
+| Microsoft  SQL Server 2008 R2+  |
+| MS Access  2010+                |
+| Oracle Database  11g Release 2+ |
+| Oracle  MySQL 5.5+              |
+| PostgreSQL  8.4.1+              |
+| Sybase  ASE 15.7+               |
+| Sybase  SQL Anywhere 12+        |
+| Teradata  Database 13+          |
 
 Notes:
 
