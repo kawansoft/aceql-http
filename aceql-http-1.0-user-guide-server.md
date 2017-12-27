@@ -599,7 +599,7 @@ Example:
 Assuming the `aceql-server.properties` file is stored in `c:\Users\Mike` and you have defined the following aceQLManagerServletCallName in `aceql-server.properties`**:**
 
 ```properties
-aceQLManagerServletCallName =aceql 
+aceQLManagerServletCallName=aceql
 ```
 
 then your `web.xml` should contain the following code:
