@@ -187,7 +187,7 @@ If everything is OK, last line will display:
 [ACEQL HTTP START] AceQL HTTP Web Server OK. Running on port 9090.
 ```
 
- If any, configuration errors are displayedwith the tag
+ If any, configuration errors are displayed with the tag
 
 ```bash
 [ACEQL HTTP START FAILURE][USER CONFIGURATION]
