@@ -59,10 +59,12 @@ If you use a commercial database:
 $ wget https://www.aceql.com/download/1.0/aceql-http-pro-1.0.run
 ```
 
+You can get an AceQL Professional trial license key here: [https://www.aceql.com/trial](https://www.aceql.com/trial).
+
 If you get a certificate error message, do one of the following:
 
-1. If the problem is that a known root CA is missing and when you are using Ubuntu or Debian,  then you can solve the problem with this one line: `sudo apt-getinstall ca-certificates`. Then retry the Wget call.
-2. Retry the Wget call with `--no-check-certificate` at end of command line. Then check the PGP signature of the downloaded file using the corresponding .asc signature file available on [download page](https://www.aceql.com/download) using the PGP hyperlink.
+1. If the problem is that a known root CA is missing and when you are using Ubuntu or Debian,  then you can solve the problem with this one line: `sudo apt-getinstall ca-certificates`. Then retry the `Wget` call.
+2. Retry the `Wget` call with `--no-check-certificate` at end of command line. Then check the PGP signature of the downloaded file using the corresponding `.asc` signature file available on [download page](https://www.aceql.com/download) using the PGP hyperlink.
 
 In following lines we will assume that the Open Source version is chosen. (Operating mode is the same for pro version).
 
@@ -202,7 +204,7 @@ Because the software installs and runs a Windows Service, you must be logged as 
 Download either:
 
 - [AceQL-HTTP-1.0-Setup.exe](https://www.aceql.com/SoftwareDownload?software=AceQL-HTTP-1.0-Setup.exe&version=1.0) if you use an [Open Source database](https://www.aceql.com/open-source-and-commercial-sql-databases.html).
-- [AceQL-HTTP-Pro-1.0-Setup.exe](https://www.aceql.com/SoftwareDownload?software=AceQL-HTTP-Pro-1.0-Setup.exe&version=1.0) if you use a [commercial database](https://www.aceql.com/open-source-and-commercial-sql-databases.html).
+- [AceQL-HTTP-Pro-1.0-Setup.exe](https://www.aceql.com/SoftwareDownload?software=AceQL-HTTP-Pro-1.0-Setup.exe&version=1.0) if you use a commercial database. You can get an AceQL Professional trial license key here: [https://www.aceql.com/trial](https://www.aceql.com/trial).
 
 Run the installer.
 
