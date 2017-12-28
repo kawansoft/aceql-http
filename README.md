@@ -172,8 +172,8 @@ The console will display the properties used, test that the Connection is establ
 [ACEQL HTTP START] Testing DataSource.getConnection() for kawansoft_example database:
 [ACEQL HTTP START]  -> Connection OK!
 [ACEQL HTTP START] kawansoft_example Configurators:
-[ACEQL HTTP START]  ->databaseConfiguratorClassName:
-[ACEQL HTTP START]    org.kawanfw.sql.api.server.DefaultDatabaseConfigurator
+[ACEQL HTTP START]  -> databaseConfiguratorClassName:
+[ACEQL HTTP START]     org.kawanfw.sql.api.server.DefaultDatabaseConfigurator
 [ACEQL HTTP START] Configurators Status: OK.
 [ACEQL HTTP START] URL for client side: http://localhost:9090/aceql
 [ACEQL HTTP START] AceQL HTTP Web Server OK. Running on port 9090.
@@ -272,15 +272,15 @@ The console will display the properties used, test that the `Connection` is esta
 [ACEQL HTTP START] Setting Default Connector attribute values:
 [ACEQL HTTP START] Setting Context attribute values:
 [ACEQL HTTP START] Setting Tomcat JDBC Pool attributes forkawansoft_example database:
-[ACEQL HTTP START]  ->driverClassName = org.postgresql.Driver
-[ACEQL HTTP START]  ->url = jdbc:postgresql://localhost:5432/kawansoft_example
-[ACEQL HTTP START]  ->username = user1
-[ACEQL HTTP START]  ->password = ********
+[ACEQL HTTP START]  -> driverClassName = org.postgresql.Driver
+[ACEQL HTTP START]  -> url = jdbc:postgresql://localhost:5432/kawansoft_example
+[ACEQL HTTP START]  -> username = user1
+[ACEQL HTTP START]  -> password = ********
 [ACEQL HTTP START] Testing DataSource.getConnection() forkawansoft_example database:
-[ACEQL HTTP START]  ->Connection OK!
+[ACEQL HTTP START]  -> Connection OK!
 [ACEQL HTTP START] kawansoft_example Configurators:
-[ACEQL HTTP START]  ->databaseConfiguratorClassName:
-[ACEQL HTTP START]    org.kawanfw.sql.api.server.DefaultDatabaseConfigurator
+[ACEQL HTTP START]  -> databaseConfiguratorClassName:
+[ACEQL HTTP START]     org.kawanfw.sql.api.server.DefaultDatabaseConfigurator
 [ACEQL HTTP START] Configurators Status: OK.
 [ACEQL HTTP START] URL for client side:http://localhost:9090/aceql
 [ACEQL HTTP START] AceQL HTTP Web Server OK. Running on port 9090.
