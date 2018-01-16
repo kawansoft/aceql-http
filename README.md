@@ -321,9 +321,11 @@ AceQL can be accessed from client side:
 So via cURL we connect to a database `kawansoft_example` with the identifiers `(MyUsername, MySecret)`:
 
 ```bash
-$ curl http://localhost:9090/aceql/database/kawansoft_example/username/\
-MyUsername/connect?password=MySecret
+$ curl --data-urlencode "password=MySecret" \
+ http://localhost:9090/aceql/database/kawansoft_example/username/MyUsername/connect
 ```
+
+le/username/MyUsername/connect
 
  The command returns a JSON stream with a unique session identifier:
 
