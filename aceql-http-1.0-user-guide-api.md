@@ -53,6 +53,7 @@ AceQL HTTP includes a C#, a Java and a Python SDK that wraps the API and elimina
 - [C# SDK User Guide](https://github.com/kawansoft/AceQL.Client/blob/master/README.md)
 - [Java SDK User Guide](https://github.com/kawansoft/aceql-http-client-sdk/blob/master/README.md)
 - [Python SDK User Guide](https://github.com/kawansoft/aceql-http-client-python/blob/master/README.md) 
+- [Swift SDK User Guide](https://github.com/kawansoft/aceql-http-client-swift/blob/master/README.md) 
 
 ***Reading this User Guide is NOT required if you intend to use a SDK.***
 
