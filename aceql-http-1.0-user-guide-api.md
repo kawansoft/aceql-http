@@ -48,7 +48,7 @@ This document describes all AceQL URLs to use in your HTTP calls. It also contai
 
 ## Java, C# and Python SDK
 
-AceQL HTTP includes a C#, a Java and a Python SDK that wraps the API and eliminates the tedious works of handling communications errors and parsing JSON results:
+AceQL HTTP includes a C#, a Java, a Python and a Swift SDK that wrap the API and eliminate the tedious works of handling communications errors and parsing JSON results:
 
 - [C# SDK User Guide](https://github.com/kawansoft/AceQL.Client/blob/master/README.md)
 - [Java SDK User Guide](https://github.com/kawansoft/aceql-http-client-sdk/blob/master/README.md)
