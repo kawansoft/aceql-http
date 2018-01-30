@@ -42,7 +42,8 @@ public class BlobUtil {
 
     }
 
-    public static long getBlobLength(String blobId, File blobDirectory) throws IOException, SQLException {
+    public static long getBlobLength(String blobId, File blobDirectory)
+	    throws IOException, SQLException {
 
 	if (blobDirectory == null) {
 	    throw new NullPointerException("blobDirectory is null!");
@@ -51,14 +52,13 @@ public class BlobUtil {
 	    throw new NullPointerException("blobId is null!");
 	}
 
-	String fileName = blobDirectory
-		.toString() + File.separator + blobId;
+	String fileName = blobDirectory.toString() + File.separator + blobId;
 
 	File file = new File(fileName);
 
 	if (!file.exists()) {
-	    throw new FileNotFoundException("No file found for blob_id: "
-		    + blobId);
+	    throw new FileNotFoundException(
+		    "No file found for blob_id: " + blobId);
 	}
 
 	return file.length();

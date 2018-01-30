@@ -151,19 +151,21 @@ public class ServerLoginActionSql extends HttpServlet {
 	    // Generate the session id
 	    SessionConfigurator sessionConfigurator = ServerSqlManager
 		    .getSessionManagerConfigurator();
-	    String sessionId = sessionConfigurator.generateSessionId(username, database);
+	    String sessionId = sessionConfigurator.generateSessionId(username,
+		    database);
 
 	    String stateless = request.getParameter(HttpParameter.STATELESS);
-	    //Boolean isStateless = new Boolean(stateless);
+	    // Boolean isStateless = new Boolean(stateless);
 	    Boolean isStateless = Boolean.valueOf(stateless);
-	    
+
 	    if (!isStateless) {
 		ConnectionStore connectionStore = new ConnectionStore(username,
 			sessionId);
 		Connection connection = databaseConfigurator
 			.getConnection(database);
-		
-		// Make sure we are in auto-commit mode when user starts sessione
+
+		// Make sure we are in auto-commit mode when user starts
+		// sessione
 		ConnectionUtil.connectionInit(connection);
 		connectionStore.put(connection);
 	    }

@@ -35,67 +35,60 @@ import java.util.Vector;
 /**
  * @author Nicolas de Pomereu
  * 
- * System utilities
+ *         System utilities
  */
 public class FrameworkSystemUtil {
 
-    
     /**
      * only static methods
      */
     protected FrameworkSystemUtil() {
 
     }
-    
+
     /**
      * Returns true if system is Andro�d
+     * 
      * @return true if system is Andro�d
      */
     public static boolean isAndroid() {
-	
+
 	String userHome = System.getProperty("user.home");
 	String vendorUrl = System.getProperty("java.vendor.url");
-	
+
 	if (userHome.isEmpty() || vendorUrl.contains("www.android.com")) {
 	    return true;
-	}
-	else {
+	} else {
 	    return false;
 	}
-	
+
     }
-    
+
     /**
      * Get all system properties
      */
-    public static Map<String,String> getSystemProperties()
-    {
-        Properties p = System.getProperties();
-        Enumeration<Object> keys = p.keys() ;
-        List<String> listKeys = new Vector<String>();
+    public static Map<String, String> getSystemProperties() {
+	Properties p = System.getProperties();
+	Enumeration<Object> keys = p.keys();
+	List<String> listKeys = new Vector<String>();
 
-        while(keys.hasMoreElements())
-        {
-            String key      = (String)keys.nextElement() ;
-            listKeys.add(key);
-        }
+	while (keys.hasMoreElements()) {
+	    String key = (String) keys.nextElement();
+	    listKeys.add(key);
+	}
 
-        Collections.sort(listKeys);
+	Collections.sort(listKeys);
 
-        Map<String, String> mapProperties = new LinkedHashMap<String, String>();
-        
-        for(int i = 0; i< listKeys.size(); i++)
-        {
-            String key      = listKeys.get(i);
-            String value    =  p.getProperty(key);
+	Map<String, String> mapProperties = new LinkedHashMap<String, String>();
 
-            mapProperties.put(key, value);
-        }
-        
-        return mapProperties;
+	for (int i = 0; i < listKeys.size(); i++) {
+	    String key = listKeys.get(i);
+	    String value = p.getProperty(key);
+
+	    mapProperties.put(key, value);
+	}
+
+	return mapProperties;
     }
-    
-    
-    
 
 }

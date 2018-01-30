@@ -38,7 +38,8 @@ import org.apache.commons.io.FileUtils;
  * kawanfw-web-server-semaphore-port.&lt;port&gt, where port is the port number
  * of the Web server. <br>
  * <br>
- * The Sempahore file is created when the server is stopped with WebServerApi. <br>
+ * The Sempahore file is created when the server is stopped with WebServerApi.
+ * <br>
  * This stops the Web Server.
  * 
  * @author Nicolas de Pomereu
@@ -75,7 +76,8 @@ public class PortSemaphoreFile {
      * @return true if the semaphore file is created
      */
     public boolean create() throws IOException {
-	FileUtils.write(getSemaphoreFile(), "" + port, Charset.defaultCharset());
+	FileUtils.write(getSemaphoreFile(), "" + port,
+		Charset.defaultCharset());
 	return true;
     }
 

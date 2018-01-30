@@ -42,7 +42,8 @@ import com.jcraft.jsch.Session;
 /**
  * 
  * This class provides static methods for SSH authentication to be used directly
- * in {@link DatabaseConfigurator#login(String, char[], String, String)} implementations.
+ * in {@link DatabaseConfigurator#login(String, char[], String, String)}
+ * implementations.
  * 
  * @see org.kawanfw.sql.api.server.SshAuthDatabaseConfigurator
  * 
@@ -51,17 +52,18 @@ import com.jcraft.jsch.Session;
 public class Ssh {
 
     private static final String UNKNOWN_IP_ADDRESS = "unknown_ip_address";
-    
+
     /** The IP address */
     private static String ipAddress = null;
-    
+
     /**
      * Tries to open a SSH session on a host for authentication.
      * <p>
      * <ul>
-     * <li>If the {@code user.home/.kawansoft/sshAuth.properties} file exists: <br>
-     * the {@code (username, password)} couple is checked against the SSH
-     * server of the host defined with the properties {@code host} for the hostname and
+     * <li>If the {@code user.home/.kawansoft/sshAuth.properties} file exists:
+     * <br>
+     * the {@code (username, password)} couple is checked against the SSH server
+     * of the host defined with the properties {@code host} for the hostname and
      * {@code port} for the port in the
      * {@code user.home/.kawansoft/sshAuth.properties} file.</li>
      * <li>If {@code sshAuth.properties} file does not exists: <br>
@@ -69,8 +71,8 @@ public class Ssh {
      * </ul>
      * {@code user.home} is the one of the running servlet container.
      * <p>
-     * The internal SSH client Java library used is <a
-     * href="http://www.jcraft.com/jsch/">JSch</a>. <br>
+     * The internal SSH client Java library used is
+     * <a href="http://www.jcraft.com/jsch/">JSch</a>. <br>
      * Note that there is no host key checking ({@code "StrictHostKeyChecking"}
      * is set to {@code "no"}).
      * 
@@ -97,14 +99,13 @@ public class Ssh {
 
 	String userHomeKawanSoft = FrameworkFileUtil
 		.getUserHomeDotKawansoftDir();
-	File file = new File(userHomeKawanSoft + File.separator
-		+ "sshAuth.properties");
+	File file = new File(
+		userHomeKawanSoft + File.separator + "sshAuth.properties");
 
 	if (file.exists()) {
 	    Properties prop = new Properties();
-	    
 
-	    try (InputStream in = new FileInputStream(file);){
+	    try (InputStream in = new FileInputStream(file);) {
 		prop.load(in);
 	    }
 
@@ -112,15 +113,13 @@ public class Ssh {
 	    String portStr = prop.getProperty("port");
 
 	    if (host == null) {
-		throw new IOException(
-			Tag.PRODUCT
-				+ " property host not found in sshAuth.properties file.");
+		throw new IOException(Tag.PRODUCT
+			+ " property host not found in sshAuth.properties file.");
 	    }
 
 	    if (portStr == null) {
-		throw new IOException(
-			Tag.PRODUCT
-				+ " property port not found in sshAuth.properties file.");
+		throw new IOException(Tag.PRODUCT
+			+ " property port not found in sshAuth.properties file.");
 	    }
 
 	    port = Integer.parseInt(portStr);
@@ -141,8 +140,8 @@ public class Ssh {
     /**
      * Tries to open a SSH session on a passed host for authentication.
      * <p>
-     * The internal SSH client Java library used is <a
-     * href="http://www.jcraft.com/jsch/">JSch</a>. <br>
+     * The internal SSH client Java library used is
+     * <a href="http://www.jcraft.com/jsch/">JSch</a>. <br>
      * Note that there is no host key checking ( {@code "StrictHostKeyChecking"}
      * is set to {@code "no"}).
      * 
@@ -171,8 +170,8 @@ public class Ssh {
 	try {
 	    session = jsch.getSession(username, host, port);
 	} catch (JSchException e) {
-	    throw new IOException(
-		    Tag.PRODUCT + " username or host is invalid.", e);
+	    throw new IOException(Tag.PRODUCT + " username or host is invalid.",
+		    e);
 	}
 
 	session.setPassword(new String(password));
@@ -185,9 +184,8 @@ public class Ssh {
 	    connected = true;
 	    session.disconnect();
 	} catch (JSchException e) {
-	    System.err.println(
-		    "SSH connection impossible for " + username + "@" + host + ":"
-			    + port + ". (" + e.toString() + ")");
+	    System.err.println("SSH connection impossible for " + username + "@"
+		    + host + ":" + port + ". (" + e.toString() + ")");
 	}
 
 	return connected;
@@ -196,8 +194,8 @@ public class Ssh {
     /**
      * Returns the computer IP address in 192.168.1.146 format.
      * 
-     * @return the name or <b><code>unknown_ip_address</code></b> if the IP address cannot
-     *         be found
+     * @return the name or <b><code>unknown_ip_address</code></b> if the IP
+     *         address cannot be found
      */
 
     public static String getIpAddress() {

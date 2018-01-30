@@ -23,6 +23,7 @@
  * intact.
  */
 package org.kawanfw.sql.api.server.connectionstore;
+
 /**
  * Defines a key for the Connection Store that keeps connections in memory in
  * stateful mode. The connections are identified by the client username and an

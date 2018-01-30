@@ -41,8 +41,6 @@ import org.kawanfw.sql.api.server.DatabaseConfigurator;
 
 public class DatabaseConfiguratorCall {
 
-
-
     /**
      * Returns the result of DatabaseConfigurator.allowExecuteUpdate
      * 
@@ -56,9 +54,9 @@ public class DatabaseConfiguratorCall {
      * @throws IOException
      * @throws SQLException
      */
-    public static boolean allowExecuteUpdate(DatabaseConfigurator databaseConfigurator,
-	    String username, Connection connection) throws IOException,
-	    SQLException {
+    public static boolean allowExecuteUpdate(
+	    DatabaseConfigurator databaseConfigurator, String username,
+	    Connection connection) throws IOException, SQLException {
 	return databaseConfigurator.allowExecuteUpdate(username, connection);
     }
 
@@ -75,13 +73,11 @@ public class DatabaseConfiguratorCall {
      * @throws IOException
      * @throws SQLException
      */
-    public static boolean allowStatementClass(DatabaseConfigurator databaseConfigurator,
-	    String username, Connection connection) throws IOException,
-	    SQLException {
+    public static boolean allowStatementClass(
+	    DatabaseConfigurator databaseConfigurator, String username,
+	    Connection connection) throws IOException, SQLException {
 	return databaseConfigurator.allowStatementClass(username, connection);
     }
-
-
 
     /*
      * public void runIfStatementRefused(String username, Connection connection,
@@ -101,17 +97,17 @@ public class DatabaseConfiguratorCall {
      * @throws IOException
      * @throws SQLException
      */
-    public static void runIfStatementRefused(DatabaseConfigurator databaseConfigurator,
-	    String username, Connection connection, String ipAddress,
-	    String sql, List<Object> parameterValues) throws IOException,
-	    SQLException {
-	databaseConfigurator.runIfStatementRefused(username, connection, ipAddress,
-		sql, parameterValues);
+    public static void runIfStatementRefused(
+	    DatabaseConfigurator databaseConfigurator, String username,
+	    Connection connection, String ipAddress, String sql,
+	    List<Object> parameterValues) throws IOException, SQLException {
+	databaseConfigurator.runIfStatementRefused(username, connection,
+		ipAddress, sql, parameterValues);
     }
 
     /**
-     * Return the result of getMaxRowsToReturn method of DatabaseConfigurator, if
-     * it's implemented, else 0.
+     * Return the result of getMaxRowsToReturn method of DatabaseConfigurator,
+     * if it's implemented, else 0.
      * 
      * @param databaseConfigurator
      *            the DatabaseConfigurator instance
@@ -121,11 +117,10 @@ public class DatabaseConfiguratorCall {
      * @throws IOException
      * @throws SQLException
      */
-    public static int getMaxRowsToReturn(DatabaseConfigurator databaseConfigurator)
+    public static int getMaxRowsToReturn(
+	    DatabaseConfigurator databaseConfigurator)
 	    throws IOException, SQLException {
 	return databaseConfigurator.getMaxRows();
     }
-
-
 
 }

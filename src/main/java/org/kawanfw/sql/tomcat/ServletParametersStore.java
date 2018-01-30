@@ -56,6 +56,7 @@ public class ServletParametersStore {
     private static String jwtSessionConfiguratorSecretValue = null;
 
     private static Set<String> userServlets = new HashSet<>();
+
     /**
      * no instantiation
      */
@@ -125,7 +126,8 @@ public class ServletParametersStore {
      *            the init parameter name
      * @return the init parameter value
      */
-    public static String getInitParameter(String database, String initParamName) {
+    public static String getInitParameter(String database,
+	    String initParamName) {
 	Set<InitParamNameValuePair> initParamNameValuePairSet = initParameterseMap
 		.get(database);
 
@@ -241,15 +243,15 @@ public class ServletParametersStore {
      * @return the userServlets
      */
     public static Set<String> getUserServlets() {
-        return userServlets;
+	return userServlets;
     }
 
     /**
-     * @param userServlets the userServlets to set
+     * @param userServlets
+     *            the userServlets to set
      */
     public static void setUserServlets(Set<String> userServlets) {
-        ServletParametersStore.userServlets = userServlets;
+	ServletParametersStore.userServlets = userServlets;
     }
 
-    
 }

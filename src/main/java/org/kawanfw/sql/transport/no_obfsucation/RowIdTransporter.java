@@ -83,8 +83,8 @@ public class RowIdTransporter {
      * @throws IOException
      * @throws ClassNotFoundException
      */
-    public RowId fromBase64(String s) throws IOException,
-	    ClassNotFoundException {
+    public RowId fromBase64(String s)
+	    throws IOException, ClassNotFoundException {
 
 	byte[] byteArray = Base64.base64ToByteArray(s);
 	ByteArrayInputStream bis = new ByteArrayInputStream(byteArray);

@@ -39,10 +39,10 @@ public class Memory {
 	// //SystemOutHandle.display("Available processors (cores): " +
 	// myString);
 
-	myString = NumberFormat.getInstance().format(
-		Runtime.getRuntime().freeMemory() / MB);
+	myString = NumberFormat.getInstance()
+		.format(Runtime.getRuntime().freeMemory() / MB);
 	/* Total amount of free memory available to the JVM */
-	// SystemOutHandle.display("Free memory (Mbytes)   : " + myString);
+	// SystemOutHandle.display("Free memory (Mbytes) : " + myString);
 
 	/* This will return Long.MAX_VALUE if there is no preset limit */
 	long maxMemory = Runtime.getRuntime().maxMemory() / MB;
@@ -54,8 +54,8 @@ public class Memory {
 
 	String maxValue = NumberFormat.getInstance()
 		.format(Long.MAX_VALUE / MB);
-	myString = NumberFormat.getInstance().format(
-		Runtime.getRuntime().freeMemory());
+	myString = NumberFormat.getInstance()
+		.format(Runtime.getRuntime().freeMemory());
 
 	/* Total memory currently in use by the JVM */
 	MessageDisplayer.display("Total memory (Mbytes)  : " + myString

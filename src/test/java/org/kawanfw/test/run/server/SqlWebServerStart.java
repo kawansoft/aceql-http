@@ -44,16 +44,12 @@ public class SqlWebServerStart {
      * @throws Exception
      */
     public static void main(String[] args) throws Exception {
-	
+
 	/*
-	try {
-	    WebServerApi webServerApi = new WebServerApi();
-	    webServerApi.stopServer();
-	} catch (Exception e) {
-	    // Ignore
-	}    
-	*/
-	
+	 * try { WebServerApi webServerApi = new WebServerApi();
+	 * webServerApi.stopServer(); } catch (Exception e) { // Ignore }
+	 */
+
 	WebServer.main(new String[] { "-start", "-host", "localhost",
 		"-properties",
 		"I:\\_dev_awake\\aceql-http-main\\aceql-http\\conf\\aceql-server.properties" });

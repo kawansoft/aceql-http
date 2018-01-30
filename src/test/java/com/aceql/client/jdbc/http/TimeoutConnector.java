@@ -39,7 +39,7 @@ import java.net.SocketTimeoutException;
 class TimeoutConnector {
 
     public static boolean DEBUG = false;
-    
+
     private HttpURLConnection conn = null;
 
     /** The network output stream */
@@ -67,16 +67,16 @@ class TimeoutConnector {
     }
 
     /**
-     * Gets an output stream from the HttpUrlConnection in less than connectTimeout milliseconds, otherwise
-     * throws a SocketTimeoutException
+     * Gets an output stream from the HttpUrlConnection in less than
+     * connectTimeout milliseconds, otherwise throws a SocketTimeoutException
      * 
-     * @return the HttpUrlConnection output stream 
+     * @return the HttpUrlConnection output stream
      * @throws IOException
      * @throws SocketTimeoutException
      */
-    public OutputStream getOutputStream() throws IOException,
-	    SocketTimeoutException {
-	
+    public OutputStream getOutputStream()
+	    throws IOException, SocketTimeoutException {
+
 	os = null;
 	connected = false;
 	exception = null;
@@ -99,12 +99,13 @@ class TimeoutConnector {
 	while (true) {
 
 	    if (connected) {
-		
+
 		if (DEBUG) {
 		    long end = System.currentTimeMillis();
-		    System.out.println("Outut Connection get in: " + (end -begin));
+		    System.out.println(
+			    "Outut Connection get in: " + (end - begin));
 		}
-		
+
 		return os;
 	    }
 

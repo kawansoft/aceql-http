@@ -74,574 +74,649 @@ import org.kawanfw.sql.version.Version;
 @SuppressWarnings("serial")
 public class ServerSqlManager extends HttpServlet {
 
-	private static boolean DEBUG = FrameworkDebug.isSet(ServerSqlManager.class);
+    private static boolean DEBUG = FrameworkDebug.isSet(ServerSqlManager.class);
 
-	public static String CR_LF = System.getProperty("line.separator");
+    public static String CR_LF = System.getProperty("line.separator");
 
-	public static final String DATABASE_CONFIGURATOR_CLASS_NAME = "databaseConfiguratorClassName";
-	public static final String BLOB_DOWNLOAD_CONFIGURATOR_CLASS_NAME = "blobDownloadConfiguratorClassName";
-	public static final String BLOB_UPLOAD_CONFIGURATOR_CLASS_NAME = "blobUploadConfiguratorClassName";
-	public static final String SESSION_CONFIGURATOR_CLASS_NAME = "sessionConfiguratorClassName";
-	public static final String JWT_SESSION_CONFIGURATOR_SECRET = "jwtSessionConfiguratorSecret";
+    public static final String DATABASE_CONFIGURATOR_CLASS_NAME = "databaseConfiguratorClassName";
+    public static final String BLOB_DOWNLOAD_CONFIGURATOR_CLASS_NAME = "blobDownloadConfiguratorClassName";
+    public static final String BLOB_UPLOAD_CONFIGURATOR_CLASS_NAME = "blobUploadConfiguratorClassName";
+    public static final String SESSION_CONFIGURATOR_CLASS_NAME = "sessionConfiguratorClassName";
+    public static final String JWT_SESSION_CONFIGURATOR_SECRET = "jwtSessionConfiguratorSecret";
 
-	/** The map of (database, DatabaseConfigurator) */
-	private static Map<String, DatabaseConfigurator> databaseConfigurators = new HashMap<>();
+    /** The map of (database, DatabaseConfigurator) */
+    private static Map<String, DatabaseConfigurator> databaseConfigurators = new HashMap<>();
 
-	/** The BlobUploadConfigurator instance */
-	private static BlobUploadConfigurator blobUploadConfigurator = null;
+    /** The BlobUploadConfigurator instance */
+    private static BlobUploadConfigurator blobUploadConfigurator = null;
 
-	/**
-	 * @return the blobUploadConfigurator
-	 */
-	public static BlobUploadConfigurator getBlobUploadConfigurator() {
-		return blobUploadConfigurator;
+    /**
+     * @return the blobUploadConfigurator
+     */
+    public static BlobUploadConfigurator getBlobUploadConfigurator() {
+	return blobUploadConfigurator;
+    }
+
+    /**
+     * @return the blobDownloadConfigurator
+     */
+    public static BlobDownloadConfigurator getBlobDownloadConfigurator() {
+	return blobDownloadConfigurator;
+    }
+
+    /** The BlobUploadConfigurator instance */
+    private static BlobDownloadConfigurator blobDownloadConfigurator = null;
+
+    /** The SessionConfigurator instance */
+    private static SessionConfigurator sessionConfigurator = null;
+
+    /**
+     * Getter to used in all classes to get the DatabaseConfigurator for the
+     * database name
+     * 
+     * @param database
+     *            the database to load the DatabaseConfigurator for the database
+     *            name
+     * @return
+     */
+    public static DatabaseConfigurator getDatabaseConfigurator(
+	    String database) {
+	return databaseConfigurators.get(database);
+    }
+
+    /**
+     * Getter to used in all classes to get the SessionConfigurator
+     * 
+     * @return the sessionConfigurator
+     */
+    public static SessionConfigurator getSessionManagerConfigurator() {
+	return sessionConfigurator;
+    }
+
+    /** The Exception thrown at init */
+    private Exception exception = null;
+
+    /** The init error message trapped */
+    private String initErrrorMesage = null;
+
+    /**
+     * Init
+     */
+
+    public void init(ServletConfig config) throws ServletException {
+	super.init(config);
+
+	// Variable use to store the current name when loading, used to
+	// detail
+	// the exception in the catch clauses
+	String classNameToLoad = null;
+	String databaseConfiguratorClassName = null;
+
+	// String servletName = this.getServletName();
+
+	if (!TomcatSqlModeStore.isTomcatEmbedded()) {
+	    System.out.println(SqlTag.SQL_PRODUCT_START + " "
+		    + Version.getServerVersion());
 	}
 
-	/**
-	 * @return the blobDownloadConfigurator
-	 */
-	public static BlobDownloadConfigurator getBlobDownloadConfigurator() {
-		return blobDownloadConfigurator;
-	}
+	// Test the only thing we can test in DatabaseConfigurator
+	// getBlobsDirectory()
 
-	/** The BlobUploadConfigurator instance */
-	private static BlobDownloadConfigurator blobDownloadConfigurator = null;
+	try {
 
-	/** The SessionConfigurator instance */
-	private static SessionConfigurator sessionConfigurator = null;
+	    if (!TomcatSqlModeStore.isTomcatEmbedded()) {
+		createDataSources(config);
+	    }
 
-	/**
-	 * Getter to used in all classes to get the DatabaseConfigurator for the
-	 * database name
-	 * 
-	 * @param database
-	 *            the database to load the DatabaseConfigurator for the database
-	 *            name
-	 * @return
-	 */
-	public static DatabaseConfigurator getDatabaseConfigurator(String database) {
-		return databaseConfigurators.get(database);
-	}
+	    Set<String> databases = ServletParametersStore.getDatabaseNames();
 
-	/**
-	 * Getter to used in all classes to get the SessionConfigurator
-	 * 
-	 * @return the sessionConfigurator
-	 */
-	public static SessionConfigurator getSessionManagerConfigurator() {
-		return sessionConfigurator;
-	}
+	    for (String database : databases) {
+		databaseConfiguratorClassName = ServletParametersStore
+			.getInitParameter(database,
+				DATABASE_CONFIGURATOR_CLASS_NAME);
 
-	/** The Exception thrown at init */
-	private Exception exception = null;
+		debug("databaseConfiguratorClassName    : "
+			+ databaseConfiguratorClassName);
 
-	/** The init error message trapped */
-	private String initErrrorMesage = null;
+		// Check spelling with first letter capitalized
 
-	/**
-	 * Init
-	 */
-
-	public void init(ServletConfig config) throws ServletException {
-		super.init(config);
-
-		// Variable use to store the current name when loading, used to
-		// detail
-		// the exception in the catch clauses
-		String classNameToLoad = null;
-		String databaseConfiguratorClassName = null;
-
-		// String servletName = this.getServletName();
-
-		if (!TomcatSqlModeStore.isTomcatEmbedded()) {
-			System.out.println(SqlTag.SQL_PRODUCT_START + " " + Version.getServerVersion());
+		if (databaseConfiguratorClassName == null
+			|| databaseConfiguratorClassName.isEmpty()) {
+		    String capitalized = StringUtils
+			    .capitalize(DATABASE_CONFIGURATOR_CLASS_NAME);
+		    databaseConfiguratorClassName = ServletParametersStore
+			    .getInitParameter(database, capitalized);
 		}
 
-		// Test the only thing we can test in DatabaseConfigurator
-		// getBlobsDirectory()
+		// Call the specific Configurator class to use
 
-		try {
+		DatabaseConfigurator databaseConfigurator = null;
 
-			if (!TomcatSqlModeStore.isTomcatEmbedded()) {
-				createDataSources(config);
-			}
+		classNameToLoad = databaseConfiguratorClassName;
+		if (databaseConfiguratorClassName != null
+			&& !databaseConfiguratorClassName.isEmpty()) {
+		    Class<?> c = Class.forName(databaseConfiguratorClassName);
 
-			Set<String> databases = ServletParametersStore.getDatabaseNames();
+		    // databaseConfigurator = (DatabaseConfigurator)
+		    // c.newInstance();
+		    Constructor<?> constructor = c.getConstructor();
+		    databaseConfigurator = (DatabaseConfigurator) constructor
+			    .newInstance();
 
-			for (String database : databases) {
-				databaseConfiguratorClassName = ServletParametersStore.getInitParameter(database,
-						DATABASE_CONFIGURATOR_CLASS_NAME);
-
-				debug("databaseConfiguratorClassName    : " + databaseConfiguratorClassName);
-
-				// Check spelling with first letter capitalized
-
-				if (databaseConfiguratorClassName == null || databaseConfiguratorClassName.isEmpty()) {
-					String capitalized = StringUtils.capitalize(DATABASE_CONFIGURATOR_CLASS_NAME);
-					databaseConfiguratorClassName = ServletParametersStore.getInitParameter(database, capitalized);
-				}
-
-				// Call the specific Configurator class to use
-
-				DatabaseConfigurator databaseConfigurator = null;
-
-				classNameToLoad = databaseConfiguratorClassName;
-				if (databaseConfiguratorClassName != null && !databaseConfiguratorClassName.isEmpty()) {
-					Class<?> c = Class.forName(databaseConfiguratorClassName);
-					
-					//databaseConfigurator = (DatabaseConfigurator) c.newInstance();
-					Constructor<?> constructor = c.getConstructor();
-					databaseConfigurator = (DatabaseConfigurator) constructor.newInstance();
-					
-					databaseConfigurators.put(database, databaseConfigurator);
-				} else {
-					databaseConfigurator = new DefaultDatabaseConfigurator();
-					databaseConfiguratorClassName = databaseConfigurator.getClass().getName();
-					classNameToLoad = databaseConfiguratorClassName;
-					databaseConfigurators.put(database, databaseConfigurator);
-				}
-
-				// Gets the Logger to trap Exception if any
-				try {
-					@SuppressWarnings("unused")
-					Logger logger = databaseConfigurator.getLogger();
-				} catch (Exception e) {
-					throw new DatabaseConfigurationException(Tag.PRODUCT_USER_CONFIG_FAIL
-							+ " Impossible to get the Logger from DatabaseConfigurator instance", e);
-				}
-
-				System.out.println(SqlTag.SQL_PRODUCT_START + " " + database + " Database Configurator:");
-				System.out.println(SqlTag.SQL_PRODUCT_START + "  -> databaseConfiguratorClassName: ");
-				System.out.println(SqlTag.SQL_PRODUCT_START + "     " + databaseConfiguratorClassName);
-
-			}
-
-			// Load Configurators for Blobs/Clobs
-			String blobDownloadConfiguratorClassName = ServletParametersStore.getBlobDownloadConfiguratorClassName();
-			String blobUploadConfiguratorClassName = ServletParametersStore.getBlobUploadConfiguratorClassName();
-
-			classNameToLoad = blobDownloadConfiguratorClassName;
-			if (blobDownloadConfiguratorClassName != null && !blobDownloadConfiguratorClassName.isEmpty()) {
-				Class<?> c = Class.forName(blobDownloadConfiguratorClassName);
-				
-				//blobDownloadConfigurator = (BlobDownloadConfigurator) c.newInstance();
-				Constructor<?> constructor = c.getConstructor();
-				blobDownloadConfigurator = (BlobDownloadConfigurator) constructor.newInstance();
-				
-			} else {
-				blobDownloadConfigurator = new DefaultBlobDownloadConfigurator();
-				blobDownloadConfiguratorClassName = blobDownloadConfigurator.getClass().getName();
-				classNameToLoad = blobDownloadConfiguratorClassName;
-			}
-
-			classNameToLoad = blobUploadConfiguratorClassName;
-			if (blobUploadConfiguratorClassName != null && !blobUploadConfiguratorClassName.isEmpty()) {
-				Class<?> c = Class.forName(blobUploadConfiguratorClassName);
-				
-				//blobUploadConfigurator = (BlobUploadConfigurator) c.newInstance();
-				Constructor<?> constructor = c.getConstructor();
-				blobUploadConfigurator = (BlobUploadConfigurator) constructor.newInstance();
-				
-			} else {
-				blobUploadConfigurator = new DefaultBlobUploadConfigurator();
-				blobUploadConfiguratorClassName = blobUploadConfigurator.getClass().getName();
-				classNameToLoad = blobUploadConfiguratorClassName;
-			}
-
-			if (!blobDownloadConfiguratorClassName
-					.equals(org.kawanfw.sql.api.server.blob.DefaultBlobDownloadConfigurator.class.getName())) {
-				System.out.println(SqlTag.SQL_PRODUCT_START + " blobDownloadConfiguratorClassName: ");
-				System.out.println(SqlTag.SQL_PRODUCT_START + " " + blobDownloadConfiguratorClassName);
-			}
-
-			if (!blobUploadConfiguratorClassName
-					.equals(org.kawanfw.sql.api.server.blob.DefaultBlobUploadConfigurator.class.getName())) {
-				System.out.println(SqlTag.SQL_PRODUCT_START + " blobUploadConfiguratorClassName: ");
-				System.out.println(SqlTag.SQL_PRODUCT_START + " " + blobUploadConfiguratorClassName);
-			}
-
-			// Load Configurators for SessionManager
-			String sessionManagerConfiguratorClassName = ServletParametersStore.getSessionConfiguratorClassName();
-
-			classNameToLoad = sessionManagerConfiguratorClassName;
-			if (sessionManagerConfiguratorClassName != null && !sessionManagerConfiguratorClassName.isEmpty()) {
-				Class<?> c = Class.forName(sessionManagerConfiguratorClassName);
-				
-				//sessionConfigurator = (SessionConfigurator) c.newInstance();
-				Constructor<?> constructor = c.getConstructor();
-				sessionConfigurator = (SessionConfigurator) constructor.newInstance();
-				
-			} else {
-				sessionConfigurator = new DefaultSessionConfigurator();
-				sessionManagerConfiguratorClassName = sessionConfigurator.getClass().getName();
-				classNameToLoad = sessionManagerConfiguratorClassName;
-			}
-
-			if (!sessionManagerConfiguratorClassName
-					.equals(org.kawanfw.sql.api.server.session.DefaultSessionConfigurator.class.getName())) {
-				System.out.println(SqlTag.SQL_PRODUCT_START + " sessionManagerConfiguratorClassName: ");
-				System.out.println(SqlTag.SQL_PRODUCT_START + "  -> " + sessionManagerConfiguratorClassName);
-			}
-
-		} catch (ClassNotFoundException e) {
-			initErrrorMesage = Tag.PRODUCT_USER_CONFIG_FAIL
-					+ " Impossible to load (ClassNotFoundException) Configurator class: " + classNameToLoad;
-			exception = e;
-		} catch (InstantiationException e) {
-			initErrrorMesage = Tag.PRODUCT_USER_CONFIG_FAIL
-					+ " Impossible to load (InstantiationException) Configurator class: " + classNameToLoad;
-			exception = e;
-		} catch (IllegalAccessException e) {
-			initErrrorMesage = Tag.PRODUCT_USER_CONFIG_FAIL
-					+ " Impossible to load (IllegalAccessException) Configurator class: " + classNameToLoad;
-			exception = e;
-		} catch (DatabaseConfigurationException e) {
-			initErrrorMesage = e.getMessage();
-			exception = e;
-		} catch (Exception e) {
-			initErrrorMesage = Tag.PRODUCT_PRODUCT_FAIL + " Please contact support at: support@kawansoft.com";
-			exception = e;
-		}
-
-		if (exception == null) {
-			System.out.println(SqlTag.SQL_PRODUCT_START + " Configurators Status: OK.");
-
-			if (!TomcatSqlModeStore.isTomcatEmbedded()) {
-				String runningMessage = SqlTag.SQL_PRODUCT_START + " " + Version.PRODUCT.NAME + " Start OK.";
-				System.out.println(runningMessage);
-			}
-
+		    databaseConfigurators.put(database, databaseConfigurator);
 		} else {
-
-			exception.printStackTrace();
-
-			if (!TomcatSqlModeStore.isTomcatEmbedded()) {
-				String errorMessage1 = SqlTag.SQL_PRODUCT_START + "  -> Configurators Status: KO.";
-				String errorMessage2 = initErrrorMesage;
-				String errorMessage3 = ExceptionUtils.getStackTrace(exception);
-
-				System.out.println(errorMessage1);
-				System.out.println(errorMessage2);
-				System.out.println(errorMessage3);
-
-				System.out.println();
-			}
-
+		    databaseConfigurator = new DefaultDatabaseConfigurator();
+		    databaseConfiguratorClassName = databaseConfigurator
+			    .getClass().getName();
+		    classNameToLoad = databaseConfiguratorClassName;
+		    databaseConfigurators.put(database, databaseConfigurator);
 		}
-	}
 
-	/**
-	 * Post request.
-	 */
-	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		handleRequestWrapper(request, response);
-	}
-
-	/**
-	 * Get request.
-	 */
-	@Override
-	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
-		handleRequestWrapper(request, response);
-	}
-
-	/**
-	 * POST & GET
-	 * 
-	 * @param request
-	 * @param response
-	 * @throws UnsupportedEncodingException
-	 * @throws IOException
-	 */
-	private void handleRequestWrapper(HttpServletRequest request, HttpServletResponse response) {
-
+		// Gets the Logger to trap Exception if any
 		try {
-			handleRequest(request, response);
+		    @SuppressWarnings("unused")
+		    Logger logger = databaseConfigurator.getLogger();
 		} catch (Exception e) {
-			try {
-				PrintWriter out = response.getWriter();
-				ExceptionReturner.logAndReturnException(request, response, out, e);
-
-			} catch (IOException e1) {
-				e1.printStackTrace(System.out);
-			}
+		    throw new DatabaseConfigurationException(
+			    Tag.PRODUCT_USER_CONFIG_FAIL
+				    + " Impossible to get the Logger from DatabaseConfigurator instance",
+			    e);
 		}
+
+		System.out.println(SqlTag.SQL_PRODUCT_START + " " + database
+			+ " Database Configurator:");
+		System.out.println(SqlTag.SQL_PRODUCT_START
+			+ "  -> databaseConfiguratorClassName: ");
+		System.out.println(SqlTag.SQL_PRODUCT_START + "     "
+			+ databaseConfiguratorClassName);
+
+	    }
+
+	    // Load Configurators for Blobs/Clobs
+	    String blobDownloadConfiguratorClassName = ServletParametersStore
+		    .getBlobDownloadConfiguratorClassName();
+	    String blobUploadConfiguratorClassName = ServletParametersStore
+		    .getBlobUploadConfiguratorClassName();
+
+	    classNameToLoad = blobDownloadConfiguratorClassName;
+	    if (blobDownloadConfiguratorClassName != null
+		    && !blobDownloadConfiguratorClassName.isEmpty()) {
+		Class<?> c = Class.forName(blobDownloadConfiguratorClassName);
+
+		// blobDownloadConfigurator = (BlobDownloadConfigurator)
+		// c.newInstance();
+		Constructor<?> constructor = c.getConstructor();
+		blobDownloadConfigurator = (BlobDownloadConfigurator) constructor
+			.newInstance();
+
+	    } else {
+		blobDownloadConfigurator = new DefaultBlobDownloadConfigurator();
+		blobDownloadConfiguratorClassName = blobDownloadConfigurator
+			.getClass().getName();
+		classNameToLoad = blobDownloadConfiguratorClassName;
+	    }
+
+	    classNameToLoad = blobUploadConfiguratorClassName;
+	    if (blobUploadConfiguratorClassName != null
+		    && !blobUploadConfiguratorClassName.isEmpty()) {
+		Class<?> c = Class.forName(blobUploadConfiguratorClassName);
+
+		// blobUploadConfigurator = (BlobUploadConfigurator)
+		// c.newInstance();
+		Constructor<?> constructor = c.getConstructor();
+		blobUploadConfigurator = (BlobUploadConfigurator) constructor
+			.newInstance();
+
+	    } else {
+		blobUploadConfigurator = new DefaultBlobUploadConfigurator();
+		blobUploadConfiguratorClassName = blobUploadConfigurator
+			.getClass().getName();
+		classNameToLoad = blobUploadConfiguratorClassName;
+	    }
+
+	    if (!blobDownloadConfiguratorClassName.equals(
+		    org.kawanfw.sql.api.server.blob.DefaultBlobDownloadConfigurator.class
+			    .getName())) {
+		System.out.println(SqlTag.SQL_PRODUCT_START
+			+ " blobDownloadConfiguratorClassName: ");
+		System.out.println(SqlTag.SQL_PRODUCT_START + " "
+			+ blobDownloadConfiguratorClassName);
+	    }
+
+	    if (!blobUploadConfiguratorClassName.equals(
+		    org.kawanfw.sql.api.server.blob.DefaultBlobUploadConfigurator.class
+			    .getName())) {
+		System.out.println(SqlTag.SQL_PRODUCT_START
+			+ " blobUploadConfiguratorClassName: ");
+		System.out.println(SqlTag.SQL_PRODUCT_START + " "
+			+ blobUploadConfiguratorClassName);
+	    }
+
+	    // Load Configurators for SessionManager
+	    String sessionManagerConfiguratorClassName = ServletParametersStore
+		    .getSessionConfiguratorClassName();
+
+	    classNameToLoad = sessionManagerConfiguratorClassName;
+	    if (sessionManagerConfiguratorClassName != null
+		    && !sessionManagerConfiguratorClassName.isEmpty()) {
+		Class<?> c = Class.forName(sessionManagerConfiguratorClassName);
+
+		// sessionConfigurator = (SessionConfigurator) c.newInstance();
+		Constructor<?> constructor = c.getConstructor();
+		sessionConfigurator = (SessionConfigurator) constructor
+			.newInstance();
+
+	    } else {
+		sessionConfigurator = new DefaultSessionConfigurator();
+		sessionManagerConfiguratorClassName = sessionConfigurator
+			.getClass().getName();
+		classNameToLoad = sessionManagerConfiguratorClassName;
+	    }
+
+	    if (!sessionManagerConfiguratorClassName.equals(
+		    org.kawanfw.sql.api.server.session.DefaultSessionConfigurator.class
+			    .getName())) {
+		System.out.println(SqlTag.SQL_PRODUCT_START
+			+ " sessionManagerConfiguratorClassName: ");
+		System.out.println(SqlTag.SQL_PRODUCT_START + "  -> "
+			+ sessionManagerConfiguratorClassName);
+	    }
+
+	} catch (ClassNotFoundException e) {
+	    initErrrorMesage = Tag.PRODUCT_USER_CONFIG_FAIL
+		    + " Impossible to load (ClassNotFoundException) Configurator class: "
+		    + classNameToLoad;
+	    exception = e;
+	} catch (InstantiationException e) {
+	    initErrrorMesage = Tag.PRODUCT_USER_CONFIG_FAIL
+		    + " Impossible to load (InstantiationException) Configurator class: "
+		    + classNameToLoad;
+	    exception = e;
+	} catch (IllegalAccessException e) {
+	    initErrrorMesage = Tag.PRODUCT_USER_CONFIG_FAIL
+		    + " Impossible to load (IllegalAccessException) Configurator class: "
+		    + classNameToLoad;
+	    exception = e;
+	} catch (DatabaseConfigurationException e) {
+	    initErrrorMesage = e.getMessage();
+	    exception = e;
+	} catch (Exception e) {
+	    initErrrorMesage = Tag.PRODUCT_PRODUCT_FAIL
+		    + " Please contact support at: support@kawansoft.com";
+	    exception = e;
 	}
 
-	/**
-	 * Don't catch Exception in tis method
+	if (exception == null) {
+	    System.out.println(
+		    SqlTag.SQL_PRODUCT_START + " Configurators Status: OK.");
+
+	    if (!TomcatSqlModeStore.isTomcatEmbedded()) {
+		String runningMessage = SqlTag.SQL_PRODUCT_START + " "
+			+ Version.PRODUCT.NAME + " Start OK.";
+		System.out.println(runningMessage);
+	    }
+
+	} else {
+
+	    exception.printStackTrace();
+
+	    if (!TomcatSqlModeStore.isTomcatEmbedded()) {
+		String errorMessage1 = SqlTag.SQL_PRODUCT_START
+			+ "  -> Configurators Status: KO.";
+		String errorMessage2 = initErrrorMesage;
+		String errorMessage3 = ExceptionUtils.getStackTrace(exception);
+
+		System.out.println(errorMessage1);
+		System.out.println(errorMessage2);
+		System.out.println(errorMessage3);
+
+		System.out.println();
+	    }
+
+	}
+    }
+
+    /**
+     * Post request.
+     */
+    public void doPost(HttpServletRequest request, HttpServletResponse response)
+	    throws IOException {
+	handleRequestWrapper(request, response);
+    }
+
+    /**
+     * Get request.
+     */
+    @Override
+    public void doGet(HttpServletRequest request, HttpServletResponse response)
+	    throws IOException {
+
+	handleRequestWrapper(request, response);
+    }
+
+    /**
+     * POST & GET
+     * 
+     * @param request
+     * @param response
+     * @throws UnsupportedEncodingException
+     * @throws IOException
+     */
+    private void handleRequestWrapper(HttpServletRequest request,
+	    HttpServletResponse response) {
+
+	try {
+	    handleRequest(request, response);
+	} catch (Exception e) {
+	    try {
+		PrintWriter out = response.getWriter();
+		ExceptionReturner.logAndReturnException(request, response, out,
+			e);
+
+	    } catch (IOException e1) {
+		e1.printStackTrace(System.out);
+	    }
+	}
+    }
+
+    /**
+     * Don't catch Exception in tis method
+     * 
+     * @param request
+     * @param response
+     * @throws UnsupportedEncodingException
+     * @throws IOException
+     */
+    private void handleRequest(HttpServletRequest request,
+	    HttpServletResponse response)
+	    throws UnsupportedEncodingException, IOException {
+	request.setCharacterEncoding("UTF-8");
+
+	// Web Display if no Servlet path
+	/*
+	 * Enumeration<String> enumeration = request.getParameterNames();
 	 * 
-	 * @param request
-	 * @param response
-	 * @throws UnsupportedEncodingException
-	 * @throws IOException
+	 * if (! enumeration.hasMoreElements() &&
+	 * StringUtils.countMatches(request.getRequestURI(), "/") < 2) {
+	 * ServerSqlManagerDoGetTester serverSqlManagerDoGetTester = new
+	 * ServerSqlManagerDoGetTester();
+	 * serverSqlManagerDoGetTester.doGetTest(response,
+	 * this.getServletName(), exception); return; }
 	 */
-	private void handleRequest(HttpServletRequest request, HttpServletResponse response)
-			throws UnsupportedEncodingException, IOException {
-		request.setCharacterEncoding("UTF-8");
 
-		// Web Display if no Servlet path
-		/*
-		 * Enumeration<String> enumeration = request.getParameterNames();
-		 * 
-		 * if (! enumeration.hasMoreElements() &&
-		 * StringUtils.countMatches(request.getRequestURI(), "/") < 2) {
-		 * ServerSqlManagerDoGetTester serverSqlManagerDoGetTester = new
-		 * ServerSqlManagerDoGetTester();
-		 * serverSqlManagerDoGetTester.doGetTest(response, this.getServletName(),
-		 * exception); return; }
-		 */
+	// If Init fail, say it cleanly to client, instead of bad 500 Servlet
+	// Error
+	if (exception != null) {
+	    OutputStream out = response.getOutputStream();
+	    JsonErrorReturn jsonErrorReturn = new JsonErrorReturn(response,
+		    HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+		    JsonErrorReturn.ERROR_ACEQL_ERROR,
+		    initErrrorMesage + " Reason: " + exception.getMessage(),
+		    ExceptionUtils.getStackTrace(exception));
 
-		// If Init fail, say it cleanly to client, instead of bad 500 Servlet
-		// Error
-		if (exception != null) {
-			OutputStream out = response.getOutputStream();
-			JsonErrorReturn jsonErrorReturn = new JsonErrorReturn(response,
-					HttpServletResponse.SC_INTERNAL_SERVER_ERROR, JsonErrorReturn.ERROR_ACEQL_ERROR,
-					initErrrorMesage + " Reason: " + exception.getMessage(), ExceptionUtils.getStackTrace(exception));
-
-			writeLine(out, jsonErrorReturn.build());
-			return;
-		}
-
-		debug("after RequestInfoStore.init(request);");
-		debug(request.getRemoteAddr());
-
-		// Wrap the HttpServletRequest in roder to allow to set new parameters
-		HttpServletRequestHolder requestHolder = new HttpServletRequestHolder(request);
-
-		ServerSqlDispatch dispatch = new ServerSqlDispatch();
-		debug("before dispatch.executeRequest()");
-
-		// Allows to emulate a request parameter from the Servlet Path:
-		// domain/aceql/database/[database]/username/[username]/connect
-		// domain/aceql/session/[session]/[action_name]/[action_value]
-
-		String database = null;
-		String username = null;
-		String sessionId = null;
-		String action = null;
-		String actionValue = null;
-
-		// Minimalist URL analyzer
-		debug("servlet Path : " + request.getServletPath());
-		debug("getRequestURI: " + request.getRequestURI());
-
-		String servletPath = request.getServletPath();
-		String urlContent = request.getRequestURI();
-
-		String servletName = ServletParametersStore.getServletName();
-
-		if (servletName != null) {
-			servletName = servletName.trim();
-		}
-
-		if (!urlContent.startsWith("/" + servletName) && !servletPath.startsWith("/" + servletName)) {
-			PrintWriter out = response.getWriter();
-
-			// System.out.println("servletPath:" + servletPath);
-			// System.out.println("urlContent :" + urlContent);
-
-			if (urlContent.equals("/")) {
-				JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_BAD_REQUEST,
-						JsonErrorReturn.ERROR_ACEQL_ERROR,
-						JsonErrorReturn.ACEQL_SERVLET_NOT_FOUND_IN_PATH + servletName);
-				out.println(errorReturn.build());
-				return;
-			} else {
-				String servlet = urlContent.substring(1);
-				JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_BAD_REQUEST,
-						JsonErrorReturn.ERROR_ACEQL_ERROR, JsonErrorReturn.UNKNOWN_SERVLET + servlet);
-				out.println(errorReturn.build());
-				return;
-			}
-
-		}
-
-		// Display version if we just call the servlet
-		if (urlContent.endsWith("/" + servletName) || urlContent.endsWith("/" + servletName + "/")) {
-			PrintWriter out = response.getWriter();
-			String version = org.kawanfw.sql.version.Version.getVersion();
-			out.println(JsonOkReturn.build("version", version));
-			return;
-		}
-
-		ServletPathAnalyzer servletPathAnalyzer = new ServletPathAnalyzer();
-
-		try {
-			if (urlContent.endsWith("/connect")) {
-				action = "connect";
-
-				if (!urlContent.contains("/" + servletName + "/database/")) {
-					throw new IllegalArgumentException("Request does not contain /database/ subpath in path");
-				}
-
-				if (!urlContent.contains("/username/")) {
-					throw new IllegalArgumentException("Request does not contain /username/ subpath in path");
-				}
-
-				database = StringUtils.substringBetween(urlContent, "/database/", "/username");
-				username = StringUtils.substringBetween(urlContent, "/username/", "/connect");
-
-			} else if (servletPathAnalyzer.isVersionAction(urlContent)) {
-				action = "get_version";
-				servletPathAnalyzer.buildElements(servletName, urlContent);
-				sessionId = servletPathAnalyzer.getSession();
-			} else if (servletPathAnalyzer.isConnectionModifierOrReader(urlContent)) {
-				action = servletPathAnalyzer.getConnectionModifierOrReader();
-				actionValue = servletPathAnalyzer.getActionValue();
-				servletPathAnalyzer.buildElements(servletName, urlContent);
-				sessionId = servletPathAnalyzer.getSession();
-			} else if (servletPathAnalyzer.isBlobAction(urlContent)) {
-				action = servletPathAnalyzer.getBlobAction();
-				actionValue = servletPathAnalyzer.getActionValue();
-				servletPathAnalyzer.buildElements(servletName, urlContent);
-				sessionId = servletPathAnalyzer.getSession();
-			} else if (servletPathAnalyzer.isExecuteUpdateOrQueryStatement(urlContent)) {
-				action = servletPathAnalyzer.getSqlStatement();
-				servletPathAnalyzer.buildElements(servletName, urlContent);
-				sessionId = servletPathAnalyzer.getSession();
-			} else {
-				throw new IllegalArgumentException(
-						"Unknown action: " + StringUtils.substringAfterLast(urlContent, "/"));
-			}
-
-		} catch (Exception e) {
-			// Happens if bad request ==> 400
-			String errorMessage = e.getMessage();
-			PrintWriter out = response.getWriter();
-			JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_BAD_REQUEST,
-					JsonErrorReturn.ERROR_ACEQL_ERROR, errorMessage);
-			out.println(errorReturn.build());
-			return;
-		}
-
-		// In other cases than connect, username & database are null
-		if (username == null && database == null) {
-
-			boolean isVerified = sessionConfigurator.verifySessionId(sessionId);
-
-			if (!isVerified) {
-				PrintWriter out = response.getWriter();
-				JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_UNAUTHORIZED,
-						JsonErrorReturn.ERROR_ACEQL_ERROR, JsonErrorReturn.INVALID_SESSION_ID);
-				out.println(errorReturn.build());
-				return;
-			}
-
-			username = sessionConfigurator.getUsername(sessionId);
-			database = sessionConfigurator.getDatabase(sessionId);
-
-			if (username == null || database == null) {
-				PrintWriter out = response.getWriter();
-				JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_UNAUTHORIZED,
-						JsonErrorReturn.ERROR_ACEQL_ERROR, JsonErrorReturn.INVALID_SESSION_ID);
-				out.println(errorReturn.build());
-				return;
-			}
-		}
-
-		debug("");
-		debug("action     : " + action);
-		debug("actionValue: " + actionValue);
-		debug("username   : " + username);
-		debug("sessionId  : " + sessionId);
-		debug("database   : " + database);
-
-		requestHolder.setParameter(HttpParameter.ACTION, action);
-		requestHolder.setParameter(HttpParameter.ACTION_VALUE, actionValue);
-
-		requestHolder.setParameter(HttpParameter.SESSION_ID, sessionId);
-
-		requestHolder.setParameter(HttpParameter.USERNAME, username);
-		requestHolder.setParameter(HttpParameter.DATABASE, database);
-
-		dispatch.executeRequest(requestHolder, response);
+	    writeLine(out, jsonErrorReturn.build());
+	    return;
 	}
 
-	/**
-	 * Creates the data sources - this is called only if AceQL is used in Servlet
-	 * Container
-	 * 
-	 * @param config
-	 * @throws IOException
-	 */
-	private void createDataSources(ServletConfig config) throws IOException {
-		String propertiesFileStr = config.getInitParameter("properties");
+	debug("after RequestInfoStore.init(request);");
+	debug(request.getRemoteAddr());
 
-		if (propertiesFileStr == null || propertiesFileStr.isEmpty()) {
-			throw new DatabaseConfigurationException(Tag.PRODUCT_USER_CONFIG_FAIL
-					+ " AceQL servlet param-name \"properties\" not set. Impossible to load the AceQL Server properties file.");
-		}
+	// Wrap the HttpServletRequest in roder to allow to set new parameters
+	HttpServletRequestHolder requestHolder = new HttpServletRequestHolder(
+		request);
 
-		File propertiesFile = new File(propertiesFileStr);
+	ServerSqlDispatch dispatch = new ServerSqlDispatch();
+	debug("before dispatch.executeRequest()");
 
-		if (!propertiesFile.exists()) {
-			throw new DatabaseConfigurationException(
-					Tag.PRODUCT_USER_CONFIG_FAIL + " properties file not found: " + propertiesFile);
-		}
+	// Allows to emulate a request parameter from the Servlet Path:
+	// domain/aceql/database/[database]/username/[username]/connect
+	// domain/aceql/session/[session]/[action_name]/[action_value]
 
-		System.out.println(SqlTag.SQL_PRODUCT_START + " " + "Using properties file: ");
-		System.out.println(SqlTag.SQL_PRODUCT_START + "  -> " + propertiesFile);
+	String database = null;
+	String username = null;
+	String sessionId = null;
+	String action = null;
+	String actionValue = null;
 
-		Properties properties = TomcatStarterUtil.getProperties(propertiesFile);
+	// Minimalist URL analyzer
+	debug("servlet Path : " + request.getServletPath());
+	debug("getRequestURI: " + request.getRequestURI());
 
-		TomcatStarterUtil.setInitParametersInStore(properties);
+	String servletPath = request.getServletPath();
+	String urlContent = request.getRequestURI();
 
-		// Create the default DataSource if necessary
-		TomcatStarterUtil.createAndStoreDataSources(properties);
+	String servletName = ServletParametersStore.getServletName();
+
+	if (servletName != null) {
+	    servletName = servletName.trim();
+	}
+
+	if (!urlContent.startsWith("/" + servletName)
+		&& !servletPath.startsWith("/" + servletName)) {
+	    PrintWriter out = response.getWriter();
+
+	    // System.out.println("servletPath:" + servletPath);
+	    // System.out.println("urlContent :" + urlContent);
+
+	    if (urlContent.equals("/")) {
+		JsonErrorReturn errorReturn = new JsonErrorReturn(response,
+			HttpServletResponse.SC_BAD_REQUEST,
+			JsonErrorReturn.ERROR_ACEQL_ERROR,
+			JsonErrorReturn.ACEQL_SERVLET_NOT_FOUND_IN_PATH
+				+ servletName);
+		out.println(errorReturn.build());
+		return;
+	    } else {
+		String servlet = urlContent.substring(1);
+		JsonErrorReturn errorReturn = new JsonErrorReturn(response,
+			HttpServletResponse.SC_BAD_REQUEST,
+			JsonErrorReturn.ERROR_ACEQL_ERROR,
+			JsonErrorReturn.UNKNOWN_SERVLET + servlet);
+		out.println(errorReturn.build());
+		return;
+	    }
 
 	}
 
-	/**
-	 * Write a line of string on the servlet output stream. Will add the necessary
-	 * CR_LF
-	 * 
-	 * @param out
-	 *            the servlet output stream
-	 * @param s
-	 *            the string to write
-	 * @throws IOException
-	 */
-	public static void write(OutputStream out, String s) throws IOException {
-		out.write((s + CR_LF).getBytes("UTF-8"));
+	// Display version if we just call the servlet
+	if (urlContent.endsWith("/" + servletName)
+		|| urlContent.endsWith("/" + servletName + "/")) {
+	    PrintWriter out = response.getWriter();
+	    String version = org.kawanfw.sql.version.Version.getVersion();
+	    out.println(JsonOkReturn.build("version", version));
+	    return;
 	}
 
-	/**
-	 * Write a CR/LF on the servlet output stream. Designed to add a end line to
-	 * ResultSetWriter action
-	 * 
-	 * @param out
-	 *            the servlet output stream
-	 * @throws IOException
-	 */
-	public static void writeLine(OutputStream out) throws IOException {
-		out.write((CR_LF).getBytes("UTF-8"));
-	}
+	ServletPathAnalyzer servletPathAnalyzer = new ServletPathAnalyzer();
 
-	/**
-	 * Write a line of string on the servlet output stream. Will add the necessary
-	 * CR_LF
-	 * 
-	 * @param out
-	 *            the servlet output stream
-	 * @param s
-	 *            the string to write
-	 * @throws IOException
-	 */
-	public static void writeLine(OutputStream out, String s) throws IOException {
-		out.write((s + CR_LF).getBytes("UTF-8"));
-	}
+	try {
+	    if (urlContent.endsWith("/connect")) {
+		action = "connect";
 
-	/**
-	 * Method called by children Servlet for debug purpose Println is done only if
-	 * class name name is in kawansoft-debug.ini
-	 */
-	public static void debug(String s) {
-		if (DEBUG) {
-			System.out.println(new Date() + " " + s);
+		if (!urlContent.contains("/" + servletName + "/database/")) {
+		    throw new IllegalArgumentException(
+			    "Request does not contain /database/ subpath in path");
 		}
+
+		if (!urlContent.contains("/username/")) {
+		    throw new IllegalArgumentException(
+			    "Request does not contain /username/ subpath in path");
+		}
+
+		database = StringUtils.substringBetween(urlContent,
+			"/database/", "/username");
+		username = StringUtils.substringBetween(urlContent,
+			"/username/", "/connect");
+
+	    } else if (servletPathAnalyzer.isVersionAction(urlContent)) {
+		action = "get_version";
+		servletPathAnalyzer.buildElements(servletName, urlContent);
+		sessionId = servletPathAnalyzer.getSession();
+	    } else if (servletPathAnalyzer
+		    .isConnectionModifierOrReader(urlContent)) {
+		action = servletPathAnalyzer.getConnectionModifierOrReader();
+		actionValue = servletPathAnalyzer.getActionValue();
+		servletPathAnalyzer.buildElements(servletName, urlContent);
+		sessionId = servletPathAnalyzer.getSession();
+	    } else if (servletPathAnalyzer.isBlobAction(urlContent)) {
+		action = servletPathAnalyzer.getBlobAction();
+		actionValue = servletPathAnalyzer.getActionValue();
+		servletPathAnalyzer.buildElements(servletName, urlContent);
+		sessionId = servletPathAnalyzer.getSession();
+	    } else if (servletPathAnalyzer
+		    .isExecuteUpdateOrQueryStatement(urlContent)) {
+		action = servletPathAnalyzer.getSqlStatement();
+		servletPathAnalyzer.buildElements(servletName, urlContent);
+		sessionId = servletPathAnalyzer.getSession();
+	    } else {
+		throw new IllegalArgumentException("Unknown action: "
+			+ StringUtils.substringAfterLast(urlContent, "/"));
+	    }
+
+	} catch (Exception e) {
+	    // Happens if bad request ==> 400
+	    String errorMessage = e.getMessage();
+	    PrintWriter out = response.getWriter();
+	    JsonErrorReturn errorReturn = new JsonErrorReturn(response,
+		    HttpServletResponse.SC_BAD_REQUEST,
+		    JsonErrorReturn.ERROR_ACEQL_ERROR, errorMessage);
+	    out.println(errorReturn.build());
+	    return;
 	}
+
+	// In other cases than connect, username & database are null
+	if (username == null && database == null) {
+
+	    boolean isVerified = sessionConfigurator.verifySessionId(sessionId);
+
+	    if (!isVerified) {
+		PrintWriter out = response.getWriter();
+		JsonErrorReturn errorReturn = new JsonErrorReturn(response,
+			HttpServletResponse.SC_UNAUTHORIZED,
+			JsonErrorReturn.ERROR_ACEQL_ERROR,
+			JsonErrorReturn.INVALID_SESSION_ID);
+		out.println(errorReturn.build());
+		return;
+	    }
+
+	    username = sessionConfigurator.getUsername(sessionId);
+	    database = sessionConfigurator.getDatabase(sessionId);
+
+	    if (username == null || database == null) {
+		PrintWriter out = response.getWriter();
+		JsonErrorReturn errorReturn = new JsonErrorReturn(response,
+			HttpServletResponse.SC_UNAUTHORIZED,
+			JsonErrorReturn.ERROR_ACEQL_ERROR,
+			JsonErrorReturn.INVALID_SESSION_ID);
+		out.println(errorReturn.build());
+		return;
+	    }
+	}
+
+	debug("");
+	debug("action     : " + action);
+	debug("actionValue: " + actionValue);
+	debug("username   : " + username);
+	debug("sessionId  : " + sessionId);
+	debug("database   : " + database);
+
+	requestHolder.setParameter(HttpParameter.ACTION, action);
+	requestHolder.setParameter(HttpParameter.ACTION_VALUE, actionValue);
+
+	requestHolder.setParameter(HttpParameter.SESSION_ID, sessionId);
+
+	requestHolder.setParameter(HttpParameter.USERNAME, username);
+	requestHolder.setParameter(HttpParameter.DATABASE, database);
+
+	dispatch.executeRequest(requestHolder, response);
+    }
+
+    /**
+     * Creates the data sources - this is called only if AceQL is used in
+     * Servlet Container
+     * 
+     * @param config
+     * @throws IOException
+     */
+    private void createDataSources(ServletConfig config) throws IOException {
+	String propertiesFileStr = config.getInitParameter("properties");
+
+	if (propertiesFileStr == null || propertiesFileStr.isEmpty()) {
+	    throw new DatabaseConfigurationException(
+		    Tag.PRODUCT_USER_CONFIG_FAIL
+			    + " AceQL servlet param-name \"properties\" not set. Impossible to load the AceQL Server properties file.");
+	}
+
+	File propertiesFile = new File(propertiesFileStr);
+
+	if (!propertiesFile.exists()) {
+	    throw new DatabaseConfigurationException(
+		    Tag.PRODUCT_USER_CONFIG_FAIL
+			    + " properties file not found: " + propertiesFile);
+	}
+
+	System.out.println(
+		SqlTag.SQL_PRODUCT_START + " " + "Using properties file: ");
+	System.out.println(SqlTag.SQL_PRODUCT_START + "  -> " + propertiesFile);
+
+	Properties properties = TomcatStarterUtil.getProperties(propertiesFile);
+
+	TomcatStarterUtil.setInitParametersInStore(properties);
+
+	// Create the default DataSource if necessary
+	TomcatStarterUtil.createAndStoreDataSources(properties);
+
+    }
+
+    /**
+     * Write a line of string on the servlet output stream. Will add the
+     * necessary CR_LF
+     * 
+     * @param out
+     *            the servlet output stream
+     * @param s
+     *            the string to write
+     * @throws IOException
+     */
+    public static void write(OutputStream out, String s) throws IOException {
+	out.write((s + CR_LF).getBytes("UTF-8"));
+    }
+
+    /**
+     * Write a CR/LF on the servlet output stream. Designed to add a end line to
+     * ResultSetWriter action
+     * 
+     * @param out
+     *            the servlet output stream
+     * @throws IOException
+     */
+    public static void writeLine(OutputStream out) throws IOException {
+	out.write((CR_LF).getBytes("UTF-8"));
+    }
+
+    /**
+     * Write a line of string on the servlet output stream. Will add the
+     * necessary CR_LF
+     * 
+     * @param out
+     *            the servlet output stream
+     * @param s
+     *            the string to write
+     * @throws IOException
+     */
+    public static void writeLine(OutputStream out, String s)
+	    throws IOException {
+	out.write((s + CR_LF).getBytes("UTF-8"));
+    }
+
+    /**
+     * Method called by children Servlet for debug purpose Println is done only
+     * if class name name is in kawansoft-debug.ini
+     */
+    public static void debug(String s) {
+	if (DEBUG) {
+	    System.out.println(new Date() + " " + s);
+	}
+    }
 
 }

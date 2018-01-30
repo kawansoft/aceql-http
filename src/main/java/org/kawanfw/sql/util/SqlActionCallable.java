@@ -23,6 +23,7 @@
  * intact.
  */
 package org.kawanfw.sql.util;
+
 /**
  * @author Nicolas de Pomereu
  * 

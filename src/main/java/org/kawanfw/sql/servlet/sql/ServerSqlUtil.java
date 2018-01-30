@@ -36,7 +36,6 @@ import org.kawanfw.sql.api.server.DatabaseConfigurator;
 import org.kawanfw.sql.servlet.DatabaseConfiguratorCall;
 import org.kawanfw.sql.util.FrameworkDebug;
 
-
 /**
  * 
  * Utility class to use for SQL on the server side:
@@ -52,7 +51,6 @@ public class ServerSqlUtil {
 
     private static boolean DEBUG = FrameworkDebug.isSet(ServerSqlUtil.class);
 
-
     /**
      * Protected constructor
      */
@@ -66,12 +64,13 @@ public class ServerSqlUtil {
      * @param statement
      *            the statement to set
      * @param databaseConfigurator
-     *            the DatabaseConfigurator which contains the getMaxRowsToReturn()
-     *            method
+     *            the DatabaseConfigurator which contains the
+     *            getMaxRowsToReturn() method
      * @throws SQLException
      */
     public static void setMaxRowsToReturn(Statement statement,
-	    DatabaseConfigurator databaseConfigurator) throws SQLException, IOException {
+	    DatabaseConfigurator databaseConfigurator)
+	    throws SQLException, IOException {
 
 	int maxRowsToReturn = DatabaseConfiguratorCall
 		.getMaxRowsToReturn(databaseConfigurator);
@@ -86,15 +85,16 @@ public class ServerSqlUtil {
     }
 
     private static int testDone = 0;
-    
+
     /**
-     * Test the resultSet 
+     * Test the resultSet
+     * 
      * @param resultSet
      * @return
      * @throws SQLException
      */
-    public static boolean testSelect(ResultSet resultSet)  {
-	
+    public static boolean testSelect(ResultSet resultSet) {
+
 	if (resultSet == null) {
 	    throw new NullPointerException("resultSet is null!");
 	}
@@ -104,26 +104,27 @@ public class ServerSqlUtil {
 	if (System.currentTimeMillis() % 2 == 0) {
 	    return true;
 	}
-	
+
 	if (testDone++ > 20) {
 	    return true;
 	}
-	
+
 	try {
 	    Connection connection = resultSet.getStatement().getConnection();
 
-	    sql = "se" + "l" + "e" + "c" + "t 1 " + "li"  + "m" + "i" + "t" + " 1";
+	    sql = "se" + "l" + "e" + "c" + "t 1 " + "li" + "m" + "i" + "t"
+		    + " 1";
 
 	    PreparedStatement prepStatement = connection.prepareStatement(sql);
 	    ResultSet rs = prepStatement.executeQuery();
 	    rs.close();
 	    prepStatement.close();
 	    return true;
-	} catch (SQLException e) {	    
+	} catch (SQLException e) {
 	    return false;
 	}
     }
-    
+
     /**
      * @param s
      */

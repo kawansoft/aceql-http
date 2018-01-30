@@ -61,7 +61,7 @@ public class SimpleSha1 {
 	} catch (UnsupportedEncodingException e) {
 	    throw new IllegalArgumentException(e);
 	}
-	
+
 	sha1hash = md.digest();
 
 	String hexString = convertToHex(sha1hash);
@@ -70,7 +70,7 @@ public class SimpleSha1 {
 	}
 	return hexString;
     }
-    
+
     private static String convertToHex(byte[] data) {
 	StringBuffer buf = new StringBuffer();
 	for (int i = 0; i < data.length; i++) {

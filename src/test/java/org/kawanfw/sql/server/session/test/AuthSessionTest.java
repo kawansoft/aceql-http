@@ -45,16 +45,16 @@ public class AuthSessionTest {
      */
     public static void main(String[] args) throws Exception {
 
-	String username = "user1"; 
-	String  database = "my_database";
-	
+	String username = "user1";
+	String database = "my_database";
+
 	SessionIdentifierGenerator sessionIdentifierGenerator = new SessionIdentifierGenerator();
 	String sessionId = sessionIdentifierGenerator.nextSessionId();
-	
+
 	@SuppressWarnings("unused")
-	SessionInfo SessionInfo = new SessionInfo(sessionId, username, database);
+	SessionInfo SessionInfo = new SessionInfo(sessionId, username,
+		database);
 	System.out.println("sessionId: " + sessionId);
-	
 
     }
 

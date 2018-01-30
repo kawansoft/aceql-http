@@ -23,9 +23,10 @@
  * intact.
  */
 package org.kawanfw.test.parms;
+
 /**
  *
- * Defines the JDBC driver parameters 
+ * Defines the JDBC driver parameters
  * 
  * @author Nicolas de Pomereu
  *
@@ -41,7 +42,7 @@ public class JdbcDriverParms {
 
     public static String MARIADB_DRIVER_CLASS_NAME = "org.mariadb.jdbc.Driver";
     public static String MARIADB_URL = "jdbc:mysql://localhost:3307/kawansoft_example";
-    
+
     public static String ORACLE_DRIVER_CLASS_NAME = "oracle.jdbc.driver.OracleDriver";
     public static String ORACLE_URL = "jdbc:oracle:thin:kawansoft_example@//localhost:1521/XE";
 

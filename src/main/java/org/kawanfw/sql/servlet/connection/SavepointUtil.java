@@ -57,20 +57,23 @@ public class SavepointUtil {
      * savepoint), releaseSavepoint(Savepoint savepoint)
      * 
      * @param request
-     * @param response TODO
+     * @param response
+     *            TODO
      * @param out
      * @param action
-     * @param connection 
+     * @param connection
      * @throws IOException
      * @throws SQLException
      * @throws IllegalArgumentException
      */
     public static void setSavepointExecute(HttpServletRequest request,
-	    HttpServletResponse response, OutputStream out, String action, Connection connection) throws IOException, SQLException,
-	    IllegalArgumentException {
+	    HttpServletResponse response, OutputStream out, String action,
+	    Connection connection)
+	    throws IOException, SQLException, IllegalArgumentException {
 
 	try {
-	    saveSavePointExecuteThrowException(request, out, action, connection);
+	    saveSavePointExecuteThrowException(request, out, action,
+		    connection);
 	} catch (IllegalArgumentException e) {
 	    JsonErrorReturn errorReturn = new JsonErrorReturn(response,
 		    HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
@@ -90,7 +93,7 @@ public class SavepointUtil {
 	    Connection connection) throws SQLException, IOException {
 	String username = request.getParameter(HttpParameter.USERNAME);
 	String sessionId = request.getParameter(HttpParameter.SESSION_ID);
-	
+
 	ConnectionStore connectionStore = new ConnectionStore(username,
 		sessionId);
 
@@ -103,13 +106,13 @@ public class SavepointUtil {
 		    savepoint.getSavepointId(), "noname");
 	    String savepointStr = savepointHttp.toString();
 	    savepointStr = HtmlConverter.toHtml(savepointStr);
-	    
-	    ServerSqlManager.writeLine(out, JsonOkReturn.build("result", savepointStr));
+
+	    ServerSqlManager.writeLine(out,
+		    JsonOkReturn.build("result", savepointStr));
 
 	    return;
 
-	} else if (action
-		.equals(HttpParameter.SET_SAVEPOINT_NAME)) {
+	} else if (action.equals(HttpParameter.SET_SAVEPOINT_NAME)) {
 	    String name = request.getParameter(ConnectionParms.NAME);
 
 	    name = HtmlConverter.fromHtml(name);
@@ -121,15 +124,14 @@ public class SavepointUtil {
 		    savepoint.getSavepointName());
 	    String savepointStr = savepointHttp.toString();
 	    savepointStr = HtmlConverter.toHtml(savepointStr);
-	    
-	    ServerSqlManager.writeLine(out, JsonOkReturn.build("savepoint", savepointStr));
-	    
+
+	    ServerSqlManager.writeLine(out,
+		    JsonOkReturn.build("savepoint", savepointStr));
+
 	    return;
 
-	} else if (action
-		.equals(HttpParameter.ROLLBACK_SAVEPOINT)) {
-	    String savepointStr = request
-		    .getParameter(HttpParameter.SAVEPOINT);
+	} else if (action.equals(HttpParameter.ROLLBACK_SAVEPOINT)) {
+	    String savepointStr = request.getParameter(HttpParameter.SAVEPOINT);
 	    savepointStr = HtmlConverter.fromHtml(savepointStr);
 
 	    Savepoint savepointInfo = SavepointHttp
@@ -143,14 +145,12 @@ public class SavepointUtil {
 
 	    connection.rollback(savepoint);
 
-	    //ServerSqlManager.writeLine(out, TransferStatus.SEND_OK);
+	    // ServerSqlManager.writeLine(out, TransferStatus.SEND_OK);
 	    ServerSqlManager.writeLine(out, JsonOkReturn.build());
 	    return;
 
-	} else if (action
-		.equals(HttpParameter.RELEASE_SAVEPOINT)) {
-	    String savepointStr = request
-		    .getParameter(HttpParameter.SAVEPOINT);
+	} else if (action.equals(HttpParameter.RELEASE_SAVEPOINT)) {
+	    String savepointStr = request.getParameter(HttpParameter.SAVEPOINT);
 	    savepointStr = HtmlConverter.fromHtml(savepointStr);
 
 	    Savepoint savepointInfo = SavepointHttp
@@ -165,7 +165,7 @@ public class SavepointUtil {
 	    connection.releaseSavepoint(savepoint);
 	    connectionStore.remove(savepointInfo);
 
-	    //ServerSqlManager.writeLine(out, TransferStatus.SEND_OK);
+	    // ServerSqlManager.writeLine(out, TransferStatus.SEND_OK);
 	    ServerSqlManager.writeLine(out, JsonOkReturn.build());
 	    return;
 	} else {

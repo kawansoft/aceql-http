@@ -32,13 +32,14 @@ import org.kawanfw.sql.util.FrameworkDebug;
 import org.kawanfw.sql.util.SqlTag;
 
 /**
- * @author Nicolas de Pomereu
- * set or clear System Properties defined in properties file.
+ * @author Nicolas de Pomereu set or clear System Properties defined in
+ *         properties file.
  */
 public class SystemPropUpdater {
 
-    private static boolean DEBUG = FrameworkDebug.isSet(SystemPropUpdater.class);
-    
+    private static boolean DEBUG = FrameworkDebug
+	    .isSet(SystemPropUpdater.class);
+
     private Properties properties = null;
 
     public SystemPropUpdater(Properties properties) {
@@ -50,22 +51,23 @@ public class SystemPropUpdater {
 	Enumeration<?> enumeration = properties.propertyNames();
 
 	if (enumeration.hasMoreElements()) {
-	    System.out.println(SqlTag.SQL_PRODUCT_START
-		    + " Setting System Properties:");
+	    System.out.println(
+		    SqlTag.SQL_PRODUCT_START + " Setting System Properties:");
 	}
 
 	while (enumeration.hasMoreElements()) {
 	    String property = (String) enumeration.nextElement();
 
 	    if (property.startsWith("systemSetProperty.")) {
-		
+
 		String theValue = properties.getProperty(property);
-		
-		String systemProperty = StringUtils.substringAfter(property, ".");
+
+		String systemProperty = StringUtils.substringAfter(property,
+			".");
 
 		debug("property      : " + property);
 		debug("systemProperty: " + systemProperty);
-		
+
 		if (theValue != null && !theValue.isEmpty()) {
 
 		    theValue = theValue.trim();
@@ -75,11 +77,11 @@ public class SystemPropUpdater {
 		    System.setProperty(systemProperty, theValue);
 		}
 	    }
-	    
+
 	    if (property.equals("systemClearProperty")) {
-				
+
 		String theValue = properties.getProperty(property);
-				
+
 		if (theValue != null && !theValue.isEmpty()) {
 
 		    theValue = theValue.trim();
@@ -89,8 +91,8 @@ public class SystemPropUpdater {
 		    System.clearProperty(theValue);
 		}
 	    }
-	    
-	}	
+
+	}
     }
 
     /**
@@ -101,5 +103,5 @@ public class SystemPropUpdater {
 	    System.out.println(s);
 	}
     }
-    
+
 }

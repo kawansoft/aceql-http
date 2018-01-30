@@ -29,11 +29,11 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * 
  * Wrapper to return an error http status. Allows logging.
+ * 
  * @author Nicolas de Pomereu
  *
  */
 public class HttpStatus {
-
 
     protected HttpStatus() {
 

@@ -58,8 +58,10 @@ import java.util.logging.Logger;
  * <code>Statement</code> that is not a <code>PreparedStatement</code>.</li>
  * <li>Define a specific piece of Java code to analyze the source code of the
  * SQL statement before allowing or not it's execution.</li>
- * <li>Execute a specific piece of Java code if a SQL statement is not allowed.</li>
- * <li>Define the maximum number of rows that may be returned to the client.</li>
+ * <li>Execute a specific piece of Java code if a SQL statement is not
+ * allowed.</li>
+ * <li>Define the maximum number of rows that may be returned to the
+ * client.</li>
  * <li>Define the {@code Logger} to use to trap server Exceptions.</li>
  * </ul>
  * <p>
@@ -298,7 +300,8 @@ public interface DatabaseConfigurator {
 
     /**
      * Allows to define the directory into which Blobs/Clobs are uploaded by
-     * client side, and from which Blobs/Clobs are downloaded by client side. <br>
+     * client side, and from which Blobs/Clobs are downloaded by client side.
+     * <br>
      * See default implementation in:
      * {@link DefaultDatabaseConfigurator#getBlobsDirectory(String)}.
      * 
@@ -308,8 +311,8 @@ public interface DatabaseConfigurator {
      * @throws IOException
      *             if an IOException occurs
      */
-    public File getBlobsDirectory(String username) throws IOException,
-	    SQLException;
+    public File getBlobsDirectory(String username)
+	    throws IOException, SQLException;
 
     /**
      * Returns the {@link Logger} that will be used by AceQL for logging:

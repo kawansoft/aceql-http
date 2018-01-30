@@ -40,9 +40,9 @@ import org.apache.commons.lang3.text.translate.NumericEntityEscaper;
 
 @SuppressWarnings("deprecation")
 public class HtmlConverter {
-    
+
     private static boolean DO_NOTHING = false;
-    
+
     /**
      * 
      * Converts special HTML values of characters to their original values. <br>
@@ -57,11 +57,13 @@ public class HtmlConverter {
      */
 
     public static String fromHtml(String string) {
-	
-	if (DO_NOTHING) return string;
-	
-	if (string == null) return string;
-	    
+
+	if (DO_NOTHING)
+	    return string;
+
+	if (string == null)
+	    return string;
+
 	if (string.contains("&")) {
 	    return StringEscapeUtils.unescapeHtml4(string);
 	} else {
@@ -83,16 +85,19 @@ public class HtmlConverter {
      */
 
     public static String toHtml(String string) {
-		
-	if (DO_NOTHING) return string;
-	
-	string = StringEscapeUtils.ESCAPE_HTML4.with(NumericEntityEscaper.between(0x7f, Integer.MAX_VALUE) ).translate(string); 
+
+	if (DO_NOTHING)
+	    return string;
+
+	string = StringEscapeUtils.ESCAPE_HTML4
+		.with(NumericEntityEscaper.between(0x7f, Integer.MAX_VALUE))
+		.translate(string);
 
 	if (string != null) {
 	    string = string.replaceAll("&amp;", "&"); // To keep same result if
 						      // multi-call
 	}
-	
+
 	return string;
     }
 

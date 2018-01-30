@@ -43,9 +43,10 @@ public class SshAuthDatabaseConfigurator extends DefaultDatabaseConfigurator
      * Allows using SSH to authenticate the remote {@code (username, password)}
      * couple sent by the client side.
      * <ul>
-     * <li>If the {@code user.home/.kawansoft/sshAuth.properties} file exists: <br>
-     * the {@code (username, password)} couple is checked against the SSH
-     * server of the host defined with the properties {@code host} for the hostname and
+     * <li>If the {@code user.home/.kawansoft/sshAuth.properties} file exists:
+     * <br>
+     * the {@code (username, password)} couple is checked against the SSH server
+     * of the host defined with the properties {@code host} for the hostname and
      * {@code port} for the port in the
      * {@code user.home/.kawansoft/sshAuth.properties} file.</li>
      * <li>If {@code sshAuth.properties} file does not exists: <br>
@@ -53,6 +54,7 @@ public class SshAuthDatabaseConfigurator extends DefaultDatabaseConfigurator
      * </ul>
      * {@code user.home} is the one of the running servlet container.
      * <p>
+     * 
      * @param username
      *            the username sent by the client login
      * @param password
@@ -61,7 +63,7 @@ public class SshAuthDatabaseConfigurator extends DefaultDatabaseConfigurator
      *            the database name to which the client wants to connect
      * @param ipAddress
      *            the IP address of the client user
-     *            
+     * 
      * @return <code>true</code> if the (login, password) couple is
      *         correct/valid as a SSH user on this host. If false, the client
      *         side will not be authorized to send any command.
@@ -70,7 +72,8 @@ public class SshAuthDatabaseConfigurator extends DefaultDatabaseConfigurator
      *             Exception.
      */
     @Override
-    public boolean login(String username, char[] password, String database, String ipAddress) throws IOException {
+    public boolean login(String username, char[] password, String database,
+	    String ipAddress) throws IOException {
 	return Ssh.login(username, password);
     }
 

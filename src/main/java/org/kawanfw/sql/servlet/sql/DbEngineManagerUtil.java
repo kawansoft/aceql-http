@@ -26,7 +26,6 @@ package org.kawanfw.sql.servlet.sql;
 
 import org.apache.commons.lang3.StringUtils;
 
-
 /**
  * 
  * Utility classes for DbVendorManager
@@ -52,15 +51,15 @@ public class DbEngineManagerUtil {
      * @return true if the SQL order contains the word surrounded with spaces
      */
     public static boolean containsWord(String sqlOrder, String word) {
-        String s = sqlOrder;
-    
-        s = s.replace('\t', ' ');
-    
-        if (s.toLowerCase().contains(" " + word.toLowerCase() + " ")) {
-            return true;
-        } else {
-            return false;
-        }
+	String s = sqlOrder;
+
+	s = s.replace('\t', ' ');
+
+	if (s.toLowerCase().contains(" " + word.toLowerCase() + " ")) {
+	    return true;
+	} else {
+	    return false;
+	}
     }
 
     /**
@@ -70,11 +69,11 @@ public class DbEngineManagerUtil {
      * @return sqlOrder without trailing ";"
      */
     public static String removeSemicolon(String sqlOrder) {
-        while (sqlOrder.trim().endsWith(";")) {
-            sqlOrder = sqlOrder.trim();
-            sqlOrder = StringUtils.removeEnd(sqlOrder, ";");
-        }
-        return sqlOrder;
+	while (sqlOrder.trim().endsWith(";")) {
+	    sqlOrder = sqlOrder.trim();
+	    sqlOrder = StringUtils.removeEnd(sqlOrder, ";");
+	}
+	return sqlOrder;
     }
 
 }

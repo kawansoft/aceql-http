@@ -40,7 +40,7 @@ import org.kawanfw.sql.api.util.SqlUtil;
  */
 
 public class DbEngineManager {
-    
+
     /**
      * No constructor
      */
@@ -58,33 +58,35 @@ public class DbEngineManager {
 	    return sqlOrder;
 	}
 
-	if (DbEngineManagerUtil.containsWord(sqlOrder, "l" + "i" + "m" + "i" +"t")) {
+	if (DbEngineManagerUtil.containsWord(sqlOrder,
+		"l" + "i" + "m" + "i" + "t")) {
 	    return sqlOrder;
 	}
 
 	sqlOrder = DbEngineManagerUtil.removeSemicolon(sqlOrder);
 
-	sqlOrder += " L" + "I" + "M" + "I" +"T 1";
+	sqlOrder += " L" + "I" + "M" + "I" + "T 1";
 	return sqlOrder;
     }
 
-    public static boolean checkDb(Properties properties,
-	    Connection connection) throws DatabaseConfigurationException {
+    public static boolean checkDb(Properties properties, Connection connection)
+	    throws DatabaseConfigurationException {
 
 	SqlUtil sqlUtil = null;
-	
+
 	try {
 	    sqlUtil = new SqlUtil(connection);
-	    
-	    if (sqlUtil.isH2() || sqlUtil.isHSQLDB() || sqlUtil.isMySQL() || sqlUtil.isPostgreSQL()) {
+
+	    if (sqlUtil.isH2() || sqlUtil.isHSQLDB() || sqlUtil.isMySQL()
+		    || sqlUtil.isPostgreSQL()) {
 		return true;
-	    } 
-	    
+	    }
+
 	} catch (SQLException e) {
 	    throw new DatabaseConfigurationException(e.getMessage());
 	}
-	
-	return false;	
+
+	return false;
     }
 
 }

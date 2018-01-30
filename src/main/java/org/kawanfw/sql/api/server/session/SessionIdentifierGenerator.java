@@ -30,11 +30,12 @@ import java.security.SecureRandom;
  * 
  * Session id generator with 26 long strings.
  * <p>
- * Uses a static {@code SecureRandom}.
+ * Uses a static {@code SecureRandom}. <br>
+ * Each call to {@code nextSessionId()} calls {@code SecureRandom#nextInt(int)}.
  * <br>
- * Each call to {@code nextSessionId()} calls {@code SecureRandom#nextInt(int)}. 
- * <br>
- * See Open Source Edition <a href="https://github.com/kawansoft/aceql-http/blob/master/src/main/java/org/kawanfw/sql/api/server/session/SessionIdentifierGenerator.java">source code</a>.
+ * See Open Source Edition <a href=
+ * "https://github.com/kawansoft/aceql-http/blob/master/src/main/java/org/kawanfw/sql/api/server/session/SessionIdentifierGenerator.java">source
+ * code</a>.
  * 
  * @author Nicolas de Pomereu
  *
@@ -43,20 +44,21 @@ public class SessionIdentifierGenerator {
 
     private static final String AB = "0123456789abcdefghijklmnopqrstuvwxyz";
     private static SecureRandom rnd = new SecureRandom();
-    
+
     /**
      * Returns the next session id using a {@code SecureRandom}
+     * 
      * @return the next session id using a {@code SecureRandom}
      */
     public String nextSessionId() {
 	return randomString(26);
     }
-    
-    private String randomString( int len ){
-       StringBuilder sb = new StringBuilder( len );
-       for( int i = 0; i < len; i++ ) 
-          sb.append( AB.charAt( rnd.nextInt(AB.length()) ) );
-       return sb.toString();
+
+    private String randomString(int len) {
+	StringBuilder sb = new StringBuilder(len);
+	for (int i = 0; i < len; i++)
+	    sb.append(AB.charAt(rnd.nextInt(AB.length())));
+	return sb.toString();
     }
-    
+
 }

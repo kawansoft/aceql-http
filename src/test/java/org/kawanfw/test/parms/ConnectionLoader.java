@@ -54,8 +54,8 @@ public class ConnectionLoader extends SqlTestParms {
      * @throws Exception
      * @throws SQLException
      */
-    public static Connection getAceqlConnection() throws SQLException,
-	    Exception {
+    public static Connection getAceqlConnection()
+	    throws SQLException, Exception {
 
 	return SqlTestParms.getConnectionWithUrl(SqlTestParms.ACEQL_URL);
     }
@@ -65,8 +65,8 @@ public class ConnectionLoader extends SqlTestParms {
      * @throws Exception
      * @throws SQLException
      */
-    public static Connection getAceqlConnection2() throws SQLException,
-	    Exception {
+    public static Connection getAceqlConnection2()
+	    throws SQLException, Exception {
 
 	return SqlTestParms.getConnectionWithUrl(SqlTestParms.ACEQL_URL_2);
     }
@@ -80,8 +80,8 @@ public class ConnectionLoader extends SqlTestParms {
      * @throws Exception
      *             if the Driver can not be loaded
      */
-    public static Connection getLocalConnection() throws SQLException,
-	    Exception {
+    public static Connection getLocalConnection()
+	    throws SQLException, Exception {
 
 	String sqlEngine = UserPrefManager.getSqlEngineToUse();
 
@@ -135,17 +135,17 @@ public class ConnectionLoader extends SqlTestParms {
 	}
 
 	System.err.println();
-	System.err
-		.println("WARNING: the Connection is a local JDBC Connection! ");
+	System.err.println(
+		"WARNING: the Connection is a local JDBC Connection! ");
 	System.err.println();
 
 	Class<?> c = Class.forName(driverClassName);
-	
-	//Driver driver = (Driver) c.newInstance();
+
+	// Driver driver = (Driver) c.newInstance();
 
 	Constructor<?> constructor = c.getConstructor();
-	Driver driver = (Driver)constructor.newInstance();
-	
+	Driver driver = (Driver) constructor.newInstance();
+
 	String username = JdbcDriverParms.USERNAME;
 	String password = JdbcDriverParms.PASSWORD;
 

@@ -33,7 +33,7 @@ public class Version {
     public static final String getVersion() {
 	return "" + new PRODUCT();
     }
-    
+
     public static final String getServerVersion() {
 	return "" + new PRODUCT().server();
     }
@@ -58,17 +58,17 @@ public class Version {
 	public static final String TYPE_PROFESSIONAL = "Professional";
 	public static final String DATE = VersionValues.DATE;
 
-	public static String TYPE = (isOpenSourceVersion()) ? TYPE_OPEN_SOURCE : TYPE_PROFESSIONAL;
-	
+	public static String TYPE = (isOpenSourceVersion()) ? TYPE_OPEN_SOURCE
+		: TYPE_PROFESSIONAL;
+
 	public String toString() {
-	    return NAME + " " +  VERSION + " - " + DATE;
+	    return NAME + " " + VERSION + " - " + DATE;
 	}
-	
+
 	public String server() {
 	    return NAME + " " + TYPE + " " + VERSION + " - " + DATE;
 	}
-	
-	
+
     }
 
     public static final class VENDOR {
@@ -84,18 +84,20 @@ public class Version {
 
     /**
      * Says if the current AceQL version is Open Source or Professional
+     * 
      * @return
      */
-     static boolean isOpenSourceVersion() {
+    static boolean isOpenSourceVersion() {
 	try {
 	    @SuppressWarnings("unused")
-	    Class<?> c = Class.forName("org.kawanfw.sql.licensing.LicenseBuilder");
+	    Class<?> c = Class
+		    .forName("org.kawanfw.sql.licensing.LicenseBuilder");
 	    return false;
 	} catch (ClassNotFoundException e) {
 	    return true;
 	}
     }
-    
+
     /*
      * //Rule 8: Make your classes noncloneable public final Object clone()
      * throws java.lang.CloneNotSupportedException { throw new

@@ -50,7 +50,7 @@ public class ServerSqlManagerDoGetTester {
 
     /** Color used by servlet display in all KawanSoft Frameworks */
     public static final String KAWANSOFT_COLOR = "E7403E";
-    
+
     public static String CR_LF = System.getProperty("line.separator");
     public static final String DATABASE_CONFIGURATOR_CLASS_NAME = "databaseConfiguratorClassName";
 
@@ -64,7 +64,7 @@ public class ServerSqlManagerDoGetTester {
 
 	response.setContentType("text/html");
 	PrintWriter out = response.getWriter();
-		
+
 	debug("doGetTest begin");
 
 	try {
@@ -73,7 +73,6 @@ public class ServerSqlManagerDoGetTester {
 		    + "OK & Running.";
 
 	    // Test configurators, only if not already thrown Exception:
-
 
 	    if (exception != null) {
 
@@ -116,8 +115,9 @@ public class ServerSqlManagerDoGetTester {
 
 	    // ok for tomcat embededed display
 	    /*
-	     * if (TomcatSqlModeStore.isTomcatEmbedded()) { // Tomcat is embedded &
-	     * running OK status = "OK"; out.println(status); return; }
+	     * if (TomcatSqlModeStore.isTomcatEmbedded()) { // Tomcat is
+	     * embedded & running OK status = "OK"; out.println(status); return;
+	     * }
 	     */
 
 	    Set<String> databases = ServletParametersStore.getDatabaseNames();
@@ -126,8 +126,8 @@ public class ServerSqlManagerDoGetTester {
 	    out.println("<br>");
 	    out.println("<font face=\"Arial\">");
 	    out.println("<b>");
-	    out.println("<font color=\"#" + KAWANSOFT_COLOR
-		    + "\">" + Version.getServerVersion() + "</font>");
+	    out.println("<font color=\"#" + KAWANSOFT_COLOR + "\">"
+		    + Version.getServerVersion() + "</font>");
 	    out.println("<br>");
 	    out.println("<br>");
 	    out.println(servletName + " Servlet Configuration");
@@ -138,8 +138,10 @@ public class ServerSqlManagerDoGetTester {
 
 	    out.println("<tr>");
 	    out.println("<td align=\"center\"> <b>Database Name</b> </td>");
-	    out.println("<td align=\"center\"> <b>Configurator Parameter</b> </td>");
-	    out.println("<td align=\"center\"> <b>Configurator Value</b> </td>");
+	    out.println(
+		    "<td align=\"center\"> <b>Configurator Parameter</b> </td>");
+	    out.println(
+		    "<td align=\"center\"> <b>Configurator Value</b> </td>");
 	    out.println("</tr>");
 
 	    for (String database : databases) {
@@ -155,8 +157,8 @@ public class ServerSqlManagerDoGetTester {
 
 		out.println("<tr>");
 		out.println("<td> " + database + "</td>");
-		out.println("<td> " + DATABASE_CONFIGURATOR_CLASS_NAME
-			+ "</td>");
+		out.println(
+			"<td> " + DATABASE_CONFIGURATOR_CLASS_NAME + "</td>");
 		out.println("<td> " + databaseConfiguratorClassName + "</td>");
 		out.println("</tr>");
 	    }
@@ -166,7 +168,8 @@ public class ServerSqlManagerDoGetTester {
 	    out.println("<br><br>");
 	    out.println("<table cellpadding=\"3\" border=\"1\">");
 	    out.println("<tr>");
-	    out.println("<td align=\"center\"> <b>SQL Configuration Status</b> </td>");
+	    out.println(
+		    "<td align=\"center\"> <b>SQL Configuration Status</b> </td>");
 	    out.println("</tr>");
 	    out.println("<tr>");
 	    out.println("<td> " + status + "</td>");

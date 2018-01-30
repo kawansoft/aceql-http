@@ -67,31 +67,32 @@ public class ProxyLoader {
 	}
 
 	System.setProperty("java.net.useSystemProxies", "true");
-	List<Proxy> proxies = ProxySelector.getDefault().select(
-		new URI("http://www.google.com/"));
-	       
+	List<Proxy> proxies = ProxySelector.getDefault()
+		.select(new URI("http://www.google.com/"));
+
 	if (proxies != null && proxies.size() >= 1) {
 	    System.out.println("Loading proxy file info...");
 
 	    if (proxies.get(0).type().equals(Proxy.Type.DIRECT)) {
 		return null;
 	    }
-	    
+
 	    File file = new File(NEOTUNNEL_TXT);
 	    if (file.exists()) {
-		String proxyValues = FileUtils.readFileToString(file, Charset.defaultCharset());
+		String proxyValues = FileUtils.readFileToString(file,
+			Charset.defaultCharset());
 		String username = StringUtils.substringBefore(proxyValues, " ");
 		String password = StringUtils.substringAfter(proxyValues, " ");
 
 		username = username.trim();
 		password = password.trim();
-		
-		proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(
-			"localhost", 8080));
-		
+
+		proxy = new Proxy(Proxy.Type.HTTP,
+			new InetSocketAddress("localhost", 8080));
+
 		passwordAuthentication = new PasswordAuthentication(username,
 			password.toCharArray());
-		
+
 		System.out.println("USING PROXY WITH AUTHENTICATION: " + proxy
 			+ " / " + username + " " + password);
 	    } else {
@@ -107,6 +108,6 @@ public class ProxyLoader {
      * @return the passwordAuthentication
      */
     public PasswordAuthentication getPasswordAuthentication() {
-        return passwordAuthentication;
+	return passwordAuthentication;
     }
 }

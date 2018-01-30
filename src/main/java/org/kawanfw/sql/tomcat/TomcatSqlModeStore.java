@@ -29,7 +29,6 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
-
 /**
  * Class that store the mode in which we run Tomcat: nativ or embedded. <br>
  * Includes also the data source set/get.
@@ -41,10 +40,10 @@ public class TomcatSqlModeStore {
 
     /** Value that says we are in stand alone Server with Tomcat Embed */
     private static boolean tomcatEmbedded = false;
-    
+
     /** The (Database name Name, DataSource) Map */
     private static Map<String, DataSource> dataSourceMap = new HashMap<String, DataSource>();
-    
+
     /**
      * no instantiation
      */
@@ -56,33 +55,38 @@ public class TomcatSqlModeStore {
      * @return the tomcatEmbedded
      */
     public static boolean isTomcatEmbedded() {
-        return tomcatEmbedded;
+	return tomcatEmbedded;
     }
 
     /**
-     * @param tomcatEmbedded the tomcatEmbedded to set
+     * @param tomcatEmbedded
+     *            the tomcatEmbedded to set
      */
     public static void setTomcatEmbedded(boolean tomcatEmbedded) {
-        TomcatSqlModeStore.tomcatEmbedded = tomcatEmbedded;
+	TomcatSqlModeStore.tomcatEmbedded = tomcatEmbedded;
     }
-        
-        
+
     /**
      * Stores a DataSource for a specified database.
-     * @param database the database to store the DataSource for
-     * @param dataSource the dataSource to set.
+     * 
+     * @param database
+     *            the database to store the DataSource for
+     * @param dataSource
+     *            the dataSource to set.
      */
     public static void setDataSource(String database, DataSource dataSource) {
-       dataSourceMap.put(database, dataSource);
-    }    
-    
+	dataSourceMap.put(database, dataSource);
+    }
+
     /**
      * Returns the DataSource associated to a database.
-     * @param database the database to store the DataSource for
-     * @return the dataSource	corresponding to the database
+     * 
+     * @param database
+     *            the database to store the DataSource for
+     * @return the dataSource corresponding to the database
      */
     public static DataSource getDataSource(String database) {
-        return dataSourceMap.get(database);
-    }    
-    
+	return dataSourceMap.get(database);
+    }
+
 }

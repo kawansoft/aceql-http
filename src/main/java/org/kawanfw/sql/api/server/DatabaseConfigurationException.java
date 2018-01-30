@@ -23,12 +23,13 @@
  * intact.
  */
 package org.kawanfw.sql.api.server;
+
 /**
  * 
- * Thrown to indicate that a Database configuration error has been detected. This may
- * happen if a {@link DatabaseConfigurator} throws an {@code Exception} of if the
- * <code>server-sql.properties</code> properties file contains configuration
- * errors.
+ * Thrown to indicate that a Database configuration error has been detected.
+ * This may happen if a {@link DatabaseConfigurator} throws an {@code Exception}
+ * of if the <code>server-sql.properties</code> properties file contains
+ * configuration errors.
  * 
  * @author Nicolas de Pomereu
  * @since 1.0
@@ -39,8 +40,8 @@ public class DatabaseConfigurationException extends IllegalArgumentException {
     private static final long serialVersionUID = 1959919487288293009L;
 
     /**
-     * Constructs a new <code>DatabaseConfigurationException</code> with no detail
-     * message.
+     * Constructs a new <code>DatabaseConfigurationException</code> with no
+     * detail message.
      */
 
     public DatabaseConfigurationException() {
@@ -48,8 +49,8 @@ public class DatabaseConfigurationException extends IllegalArgumentException {
     }
 
     /**
-     * Constructs a new <code>DatabaseConfigurationException</code> with the specified
-     * detail message.
+     * Constructs a new <code>DatabaseConfigurationException</code> with the
+     * specified detail message.
      *
      * @param s
      *            the detail message.
@@ -59,8 +60,8 @@ public class DatabaseConfigurationException extends IllegalArgumentException {
     }
 
     /**
-     * Constructs a new <code>DatabaseConfigurationException</code>  with the specified detail message and
-     * cause.
+     * Constructs a new <code>DatabaseConfigurationException</code> with the
+     * specified detail message and cause.
      * 
      * @param message
      * @param cause
@@ -68,7 +69,5 @@ public class DatabaseConfigurationException extends IllegalArgumentException {
     public DatabaseConfigurationException(String message, Throwable cause) {
 	super(message, cause);
     }
-    
-    
 
 }

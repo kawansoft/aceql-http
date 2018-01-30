@@ -53,8 +53,8 @@ public class ClobCreator {
 	    throw new IllegalArgumentException("clobFile can not be null!");
 	}
 
-	try (Writer out = new BufferedWriter(new FileWriter(clobFile))){
-	   
+	try (Writer out = new BufferedWriter(new FileWriter(clobFile))) {
+
 	    int cpt = 1;
 
 	    String line = "The quick brown fox jumps over the lazy dog ";

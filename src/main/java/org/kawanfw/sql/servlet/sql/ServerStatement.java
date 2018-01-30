@@ -95,7 +95,7 @@ public class ServerStatement {
     public ServerStatement(HttpServletRequest request,
 	    HttpServletResponse response,
 	    DatabaseConfigurator databaseConfigurator, Connection connection)
-		    throws SQLException {
+	    throws SQLException {
 	this.request = request;
 	this.response = response;
 	this.databaseConfigurator = databaseConfigurator;
@@ -103,9 +103,9 @@ public class ServerStatement {
 
 	String prettyPrinting = request
 		.getParameter(HttpParameter.PRETTY_PRINTING);
-	//doPrettyPrinting = new Boolean(prettyPrinting);
+	// doPrettyPrinting = new Boolean(prettyPrinting);
 	doPrettyPrinting = Boolean.valueOf(prettyPrinting);
-	
+
     }
 
     /**
@@ -125,7 +125,7 @@ public class ServerStatement {
 	try {
 
 	    outFinal = getFinalOutputStream(out);
-	    
+
 	    // Execute it
 	    if (isPreparedStatement()) {
 		executePrepStatement(outFinal);
@@ -148,19 +148,18 @@ public class ServerStatement {
 		    JsonErrorReturn.ERROR_ACEQL_FAILURE, e.getMessage(),
 		    ExceptionUtils.getStackTrace(e));
 	    ServerSqlManager.writeLine(outFinal, errorReturn.build());
-	}
-	finally {
+	} finally {
 
-	    //IOUtils.closeQuietly(outFinal);
-	    
+	    // IOUtils.closeQuietly(outFinal);
+
 	    if (outFinal != null) {
 		try {
 		    outFinal.close();
 		} catch (Exception e) {
-		    //e.printStackTrace();
+		    // e.printStackTrace();
 		}
 	    }
-	    
+
 	    String username = request.getParameter(HttpParameter.USERNAME);
 	    String sessionId = request.getParameter(HttpParameter.SESSION_ID);
 
@@ -223,8 +222,8 @@ public class ServerStatement {
      * 
      * @throws SQLException
      */
-    private void executePrepStatement(OutputStream out) throws SQLException,
-    IOException {
+    private void executePrepStatement(OutputStream out)
+	    throws SQLException, IOException {
 
 	String username = request.getParameter(HttpParameter.USERNAME);
 	String sqlOrder = request.getParameter(HttpParameter.SQL);
@@ -271,9 +270,9 @@ public class ServerStatement {
 
 	    boolean isAllowedAfterAnalysis = databaseConfigurator
 		    .allowStatementAfterAnalysis(username, connection,
-			    ipAddress, sqlOrder,
-			    isPreparedStatement(), serverPreparedStatementParameters
-			    .getParameterValues());
+			    ipAddress, sqlOrder, isPreparedStatement(),
+			    serverPreparedStatementParameters
+				    .getParameterValues());
 
 	    if (!isAllowedAfterAnalysis) {
 		isAllowed = false;
@@ -292,9 +291,10 @@ public class ServerStatement {
 			.prepStatementNotAllowedBuild(sqlOrder,
 				"Prepared Statement not allowed",
 				serverPreparedStatementParameters
-				.getParameterTypes(),
+					.getParameterTypes(),
 				serverPreparedStatementParameters
-				.getParameterValues(), doPrettyPrinting);
+					.getParameterValues(),
+				doPrettyPrinting);
 		throw new SecurityException(message);
 	    }
 
@@ -309,16 +309,15 @@ public class ServerStatement {
 			    databaseConfigurator, username, connection,
 			    ipAddress, sqlOrder,
 			    serverPreparedStatementParameters
-			    .getParameterValues());
+				    .getParameterValues());
 
 		    String message = JsonSecurityMessage
-			    .prepStatementNotAllowedBuild(
-				    sqlOrder,
+			    .prepStatementNotAllowedBuild(sqlOrder,
 				    "Prepared Statement not allowed for executeUpdate",
 				    serverPreparedStatementParameters
-				    .getParameterTypes(),
+					    .getParameterTypes(),
 				    serverPreparedStatementParameters
-				    .getParameterValues(),
+					    .getParameterValues(),
 				    doPrettyPrinting);
 
 		    throw new SecurityException(message);
@@ -327,12 +326,12 @@ public class ServerStatement {
 		int rc = preparedStatement.executeUpdate();
 
 		StringWriter sw = new StringWriter();
-		JsonGeneratorFactory jf = JsonUtil
-			.getJsonGeneratorFactory(JsonUtil.DEFAULT_PRETTY_PRINTING);
+		JsonGeneratorFactory jf = JsonUtil.getJsonGeneratorFactory(
+			JsonUtil.DEFAULT_PRETTY_PRINTING);
 		JsonGenerator gen = jf.createGenerator(sw);
 
 		gen.writeStartObject().write("status", "OK")
-		.write("row_count", rc).writeEnd();
+			.write("row_count", rc).writeEnd();
 		gen.close();
 
 		ServerSqlManager.write(out, sw.toString());
@@ -397,8 +396,8 @@ public class ServerStatement {
      * 
      * @throws SQLException
      */
-    private void executeStatement(OutputStream out) throws SQLException,
-    IOException {
+    private void executeStatement(OutputStream out)
+	    throws SQLException, IOException {
 
 	String username = request.getParameter(HttpParameter.USERNAME);
 	String sqlOrder = request.getParameter(HttpParameter.SQL);
@@ -434,7 +433,8 @@ public class ServerStatement {
 
 	    boolean isAllowedAfterAnalysis = databaseConfigurator
 		    .allowStatementAfterAnalysis(username, connection,
-			    ipAddress, sqlOrder, isPreparedStatement(), new Vector<Object>());
+			    ipAddress, sqlOrder, isPreparedStatement(),
+			    new Vector<Object>());
 
 	    if (!isAllowedAfterAnalysis) {
 		isAllowed = false;
@@ -465,8 +465,7 @@ public class ServerStatement {
 			    ipAddress, sqlOrder, new Vector<Object>());
 
 		    String message = JsonSecurityMessage
-			    .statementNotAllowedBuild(
-				    sqlOrder,
+			    .statementNotAllowedBuild(sqlOrder,
 				    "Statement not allowed for for executeUpdate",
 				    doPrettyPrinting);
 		    throw new SecurityException(message);
@@ -478,12 +477,12 @@ public class ServerStatement {
 
 		StringWriter sw = new StringWriter();
 
-		JsonGeneratorFactory jf = JsonUtil
-			.getJsonGeneratorFactory(JsonUtil.DEFAULT_PRETTY_PRINTING);
+		JsonGeneratorFactory jf = JsonUtil.getJsonGeneratorFactory(
+			JsonUtil.DEFAULT_PRETTY_PRINTING);
 		JsonGenerator gen = jf.createGenerator(sw);
 
 		gen.writeStartObject().write("status", "OK")
-		.write("row_count", rc).writeEnd();
+			.write("row_count", rc).writeEnd();
 		gen.close();
 
 		ServerSqlManager.write(out, sw.toString());
@@ -511,8 +510,8 @@ public class ServerStatement {
 	    }
 	} catch (SQLException e) {
 
-	    String message = StatementFailure.statementFailureBuild(
-		    sqlOrder, e.toString(), doPrettyPrinting);
+	    String message = StatementFailure.statementFailureBuild(sqlOrder,
+		    e.toString(), doPrettyPrinting);
 
 	    LoggerUtil.log(request, e, message);
 	    throw e;
@@ -528,8 +527,8 @@ public class ServerStatement {
 
     private boolean isExecuteUpdate() {
 
-	return request.getParameter(HttpParameter.ACTION).equals(
-		HttpParameter.EXECUTE_UPDATE);
+	return request.getParameter(HttpParameter.ACTION)
+		.equals(HttpParameter.EXECUTE_UPDATE);
     }
 
     /**

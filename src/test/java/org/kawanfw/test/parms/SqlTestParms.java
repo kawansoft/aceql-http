@@ -73,16 +73,15 @@ public class SqlTestParms {
 
     /** SQL Engines */
     // SQL Server-jtds
-    
-    public static String SQLSERVER_JTDS_DRIVER = SqlUtil.SQL_SERVER + "-jtds"; 
-    
-    //  SQL Server-ms
-    public static String SQLSERVER_MS_DRIVER = SqlUtil.SQL_SERVER + "-ms"; 
-    
-    //  SQL Server-ms
-    public static String MARIADB = "MARIADB"; 
-    
-    
+
+    public static String SQLSERVER_JTDS_DRIVER = SqlUtil.SQL_SERVER + "-jtds";
+
+    // SQL Server-ms
+    public static String SQLSERVER_MS_DRIVER = SqlUtil.SQL_SERVER + "-ms";
+
+    // SQL Server-ms
+    public static String MARIADB = "MARIADB";
+
     /** Methods to load the driver */
     public static int DRIVER_LOADING_NEW_INSTANCE = 1;
     public static int DRIVER_LOADING_REGISTER = 2;
@@ -100,18 +99,14 @@ public class SqlTestParms {
     public static String[] SQL_ENGINES_TO_TEST = {
 	    // SqlUtil.ACCESS, // We have only a 32 bits version...
 	    // SqlUtil.ADAPTIVE_SERVER_ENTERPRISE, //Connection Hangs
-	    //SqlUtil.SQL_ANYWHERE,
+	    // SqlUtil.SQL_ANYWHERE,
 	    SqlUtil.DB2,
 	    // SqlUtil.H2,
 	    // SqlUtil.HSQLDB, // Forgot how to launch
 	    // SqlUtil.INGRES,
 	    // SqlUtil.INFORMIX,
-	    MARIADB,
-	    SqlUtil.MYSQL, 
-	    SqlUtil.POSTGRESQL,
-	    SQLSERVER_JTDS_DRIVER,
-	    SQLSERVER_MS_DRIVER, 
-	    SqlUtil.ORACLE,
+	    MARIADB, SqlUtil.MYSQL, SqlUtil.POSTGRESQL, SQLSERVER_JTDS_DRIVER,
+	    SQLSERVER_MS_DRIVER, SqlUtil.ORACLE,
 	    // SqlUtil.TERADATA // Requires a separated VM Ware!
     };
 
@@ -232,9 +227,9 @@ public class SqlTestParms {
      * @throws IllegalAccessException
      */
 
-    static Connection getConnectionWithUrl(String url) throws SQLException,
-	    Exception, ClassNotFoundException, InstantiationException,
-	    IllegalAccessException {
+    static Connection getConnectionWithUrl(String url)
+	    throws SQLException, Exception, ClassNotFoundException,
+	    InstantiationException, IllegalAccessException {
 
 	// For a local connection
 	if (!isRemote()) {
@@ -245,16 +240,16 @@ public class SqlTestParms {
 	Connection connection = null;
 
 	if (DRIVER_LOADING_METHOD == DRIVER_LOADING_NEW_INSTANCE) {
-	    System.out
-		    .println("Loading Driver with Class.forName(\"org.kawanfw.sql.api.client.RemoteDriver\")");
+	    System.out.println(
+		    "Loading Driver with Class.forName(\"org.kawanfw.sql.api.client.RemoteDriver\")");
 	    String driverClassName = "org.kawanfw.sql.api.client.RemoteDriver";
 
 	    Class<?> c = Class.forName(driverClassName);
-	    
-	    //Driver driver = (Driver) c.newInstance();
-		Constructor<?> constructor = c.getConstructor();
-		Driver driver  = (Driver) constructor.newInstance();
-		
+
+	    // Driver driver = (Driver) c.newInstance();
+	    Constructor<?> constructor = c.getConstructor();
+	    Driver driver = (Driver) constructor.newInstance();
+
 	    Properties properties = new Properties();
 	    properties.setProperty("user", REMOTE_USER);
 	    properties.setProperty("password", REMOTE_PASSWORD);
@@ -264,14 +259,13 @@ public class SqlTestParms {
 			ENCRYPTION_PASSWORD);
 	    }
 
-	    
-//	    properties.setProperty("maxLengthForString", ""
-//		    + (DefaultParms.DEFAULT_MAX_LENGTH_FOR_STRING + 5));
-//	    properties.setProperty("readBufferSize", ""
-//		    + (DefaultParms.DEFAULT_READ_BUFFER_SIZE + 6));
-//	    properties.setProperty("writeBufferSize", ""
-//		    + (DefaultParms.DEFAULT_WRITE_BUFFER_SIZE + 7));
-//	    properties.setProperty("acceptAllSslCertificates", "" + true);
+	    // properties.setProperty("maxLengthForString", ""
+	    // + (DefaultParms.DEFAULT_MAX_LENGTH_FOR_STRING + 5));
+	    // properties.setProperty("readBufferSize", ""
+	    // + (DefaultParms.DEFAULT_READ_BUFFER_SIZE + 6));
+	    // properties.setProperty("writeBufferSize", ""
+	    // + (DefaultParms.DEFAULT_WRITE_BUFFER_SIZE + 7));
+	    // properties.setProperty("acceptAllSslCertificates", "" + true);
 	    properties.setProperty("statelessMode", "" + STATELESS_MODE);
 
 	    properties.setProperty("http-client-http.socket.timeout",
@@ -284,61 +278,56 @@ public class SqlTestParms {
 	} else if (DRIVER_LOADING_METHOD == DRIVER_LOADING_REGISTER) {
 
 	    /*
-	    ProxyLoader proxyLoader = new ProxyLoader();
-	    Proxy proxy = proxyLoader.getProxy();
-	    PasswordAuthentication passwordAuthentication = proxyLoader.getPasswordAuthentication();
-	    
-	    System.out.println("proxy: " + proxy);
-	    System.out.println("passwordAuthentication: " + passwordAuthentication);
-	    
-	    SessionParameters sessionParameters = new SessionParameters();
-
-	    String proxyUsername = null;
-	    String proxyPassword = null;
-	    
-	    if (passwordAuthentication != null) {
-		proxyUsername = passwordAuthentication.getUserName();
-		proxyPassword = new String(passwordAuthentication.getPassword());
-	    }
-	    
-	    if (USE_ENCRYPTION_PASSWORD) {
-		sessionParameters
-			.setEncryptionPassword(ENCRYPTION_PASSWORD
-				.toCharArray());
-	    }
-
-	    sessionParameters
-		    .setAcceptAllSslCertificates(SqlTestParms.ACCEPT_ALL_SSL_CERTIFICATES);
-
-	    System.out
-		    .println("Loading Driver with DriverManager.getConnection(url, properties)");
-
-	    Properties properties = new Properties();
-	    properties.setProperty("user", REMOTE_USER);
-	    properties.setProperty("password", REMOTE_PASSWORD);
-
-	    properties.setProperty("sessionParameters",
-		    sessionParameters.toString());
-
-	    if (proxy != null) {
-		properties.setProperty("proxy", proxy.toString());
-	    }
-	    
-	    if (passwordAuthentication != null) {
-		properties.setProperty("proxyUsername", proxyUsername);
-		properties.setProperty("proxyPassword", proxyPassword);
-	    }
-	    
-	    // properties.setProperty("joinResultSetMetaData", "true");
-
-	    // Required for Android, optional for others environments:
-	    Class.forName("org.kawanfw.sql.api.client.RemoteDriver");
-
-	    connection = DriverManager.getConnection(url, properties);
-	*/
+	     * ProxyLoader proxyLoader = new ProxyLoader(); Proxy proxy =
+	     * proxyLoader.getProxy(); PasswordAuthentication
+	     * passwordAuthentication = proxyLoader.getPasswordAuthentication();
+	     * 
+	     * System.out.println("proxy: " + proxy);
+	     * System.out.println("passwordAuthentication: " +
+	     * passwordAuthentication);
+	     * 
+	     * SessionParameters sessionParameters = new SessionParameters();
+	     * 
+	     * String proxyUsername = null; String proxyPassword = null;
+	     * 
+	     * if (passwordAuthentication != null) { proxyUsername =
+	     * passwordAuthentication.getUserName(); proxyPassword = new
+	     * String(passwordAuthentication.getPassword()); }
+	     * 
+	     * if (USE_ENCRYPTION_PASSWORD) { sessionParameters
+	     * .setEncryptionPassword(ENCRYPTION_PASSWORD .toCharArray()); }
+	     * 
+	     * sessionParameters .setAcceptAllSslCertificates(SqlTestParms.
+	     * ACCEPT_ALL_SSL_CERTIFICATES);
+	     * 
+	     * System.out
+	     * .println("Loading Driver with DriverManager.getConnection(url, properties)"
+	     * );
+	     * 
+	     * Properties properties = new Properties();
+	     * properties.setProperty("user", REMOTE_USER);
+	     * properties.setProperty("password", REMOTE_PASSWORD);
+	     * 
+	     * properties.setProperty("sessionParameters",
+	     * sessionParameters.toString());
+	     * 
+	     * if (proxy != null) { properties.setProperty("proxy",
+	     * proxy.toString()); }
+	     * 
+	     * if (passwordAuthentication != null) {
+	     * properties.setProperty("proxyUsername", proxyUsername);
+	     * properties.setProperty("proxyPassword", proxyPassword); }
+	     * 
+	     * // properties.setProperty("joinResultSetMetaData", "true");
+	     * 
+	     * // Required for Android, optional for others environments:
+	     * Class.forName("org.kawanfw.sql.api.client.RemoteDriver");
+	     * 
+	     * connection = DriverManager.getConnection(url, properties);
+	     */
 	} else {
-	    throw new IllegalArgumentException("Loading method not supported: "
-		    + DRIVER_LOADING_METHOD);
+	    throw new IllegalArgumentException(
+		    "Loading method not supported: " + DRIVER_LOADING_METHOD);
 	}
 
 	return connection;

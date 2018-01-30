@@ -34,7 +34,6 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.kawanfw.sql.servlet.ServerSqlManager;
 import org.kawanfw.sql.servlet.sql.LoggerUtil;
 
-
 public class ExceptionReturner {
 
     protected ExceptionReturner() {
@@ -43,19 +42,21 @@ public class ExceptionReturner {
 
     /**
      * Clean return of Exception in JSon format & log Exception.
-     * @param request 
+     * 
+     * @param request
      * @param response
      * @param out
      * @param exception
      */
     public static void logAndReturnException(HttpServletRequest request,
-	    HttpServletResponse response, PrintWriter out, Exception exception) {
+	    HttpServletResponse response, PrintWriter out,
+	    Exception exception) {
 
 	try {
 	    JsonErrorReturn jsonErrorReturn = new JsonErrorReturn(response,
-	    	HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-	    	JsonErrorReturn.ERROR_ACEQL_ERROR, exception.getMessage(),
-	    	ExceptionUtils.getStackTrace(exception));
+		    HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+		    JsonErrorReturn.ERROR_ACEQL_ERROR, exception.getMessage(),
+		    ExceptionUtils.getStackTrace(exception));
 
 	    out.println(jsonErrorReturn.build());
 	    LoggerUtil.log(request, exception);
@@ -65,25 +66,28 @@ public class ExceptionReturner {
 	}
 
     }
-    
+
     /**
      * Clean return of Exception in JSon format & log Exception.
+     * 
      * @param request
      * @param response
      * @param out
      * @param exception
      */
-    public static void logAndReturnException(HttpServletRequest request, HttpServletResponse response, OutputStream out, Exception exception) {
+    public static void logAndReturnException(HttpServletRequest request,
+	    HttpServletResponse response, OutputStream out,
+	    Exception exception) {
 	try {
 
-	    JsonErrorReturn jsonErrorReturn = new JsonErrorReturn(
-		    response,
+	    JsonErrorReturn jsonErrorReturn = new JsonErrorReturn(response,
 		    HttpServletResponse.SC_OK,
-		    JsonErrorReturn.ERROR_ACEQL_ERROR, exception.getMessage(), ExceptionUtils.getStackTrace(exception));
+		    JsonErrorReturn.ERROR_ACEQL_ERROR, exception.getMessage(),
+		    ExceptionUtils.getStackTrace(exception));
 
 	    ServerSqlManager.writeLine(out, jsonErrorReturn.build());
 	    LoggerUtil.log(request, exception);
-	    
+
 	} catch (Exception e) {
 	    // Should never happen
 	    e.printStackTrace();

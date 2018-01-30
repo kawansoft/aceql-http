@@ -34,8 +34,8 @@ import org.kawanfw.sql.util.Tag;
  * This class is used in all tests to display messages If verbose mode is on all
  * messages are displayed on System.out
  * 
- * If Running on Android messages are sent to MainActivity to be
- * displayed on device screen
+ * If Running on Android messages are sent to MainActivity to be displayed on
+ * device screen
  */
 
 public class MessageDisplayer {

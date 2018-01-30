@@ -35,8 +35,9 @@ import org.kawanfw.sql.util.FrameworkDebug;
  */
 public class ServletPathAnalyzer {
 
-    private static boolean DEBUG = FrameworkDebug.isSet(ServletPathAnalyzer.class);
-	    
+    private static boolean DEBUG = FrameworkDebug
+	    .isSet(ServletPathAnalyzer.class);
+
     /**
      * 
      */
@@ -46,27 +47,26 @@ public class ServletPathAnalyzer {
     private String connectionModifierOrReader = null;
     private String sqlStatement = null;
     private String blobAction = null;
-    
+
     private String actionValue = null;
     private String session = null;
-    
-    
-    public  boolean isConnectionModifierOrReader(String urlContent) {
-	
+
+    public boolean isConnectionModifierOrReader(String urlContent) {
+
 	if (urlContent == null) {
 	    throw new NullPointerException("urlContent is null");
 	}
-	
+
 	if (urlContent.endsWith("/disconnect")) {
 	    connectionModifierOrReader = "disconnect";
 	    return true;
 	}
-	
+
 	if (urlContent.endsWith("/commit")) {
 	    connectionModifierOrReader = "commit";
 	    return true;
 	}
-	
+
 	if (urlContent.endsWith("/get_catalog")) {
 	    connectionModifierOrReader = "get_catalog";
 	    return true;
@@ -76,36 +76,38 @@ public class ServletPathAnalyzer {
 	    connectionModifierOrReader = "rollback";
 	    return true;
 	}
-	
-	if (urlContent.endsWith("/set_auto_commit/true") || urlContent.endsWith("/set_auto_commit/false")) {
+
+	if (urlContent.endsWith("/set_auto_commit/true")
+		|| urlContent.endsWith("/set_auto_commit/false")) {
 	    connectionModifierOrReader = "set_auto_commit";
 	    actionValue = StringUtils.substringAfterLast(urlContent, "/");
 	    return true;
 	}
-	
-	if (urlContent.endsWith("/set_read_only/true") || urlContent.endsWith("/set_read_only/false")) {
+
+	if (urlContent.endsWith("/set_read_only/true")
+		|| urlContent.endsWith("/set_read_only/false")) {
 	    connectionModifierOrReader = "set_read_only";
 	    actionValue = StringUtils.substringAfterLast(urlContent, "/");
 	    return true;
 	}
-	
+
 	if (urlContent.contains("/set_transaction_isolation_level/")) {
 	    connectionModifierOrReader = "set_transaction_isolation_level";
 	    actionValue = StringUtils.substringAfterLast(urlContent, "/");
 	    return true;
 	}
-	
+
 	if (urlContent.contains("/set_holdability/")) {
 	    connectionModifierOrReader = "set_holdability";
 	    actionValue = StringUtils.substringAfterLast(urlContent, "/");
 	    return true;
 	}
-	
+
 	if (urlContent.endsWith("/get_auto_commit")) {
 	    connectionModifierOrReader = "get_auto_commit";
 	    return true;
 	}
-	
+
 	if (urlContent.endsWith("/is_read_only")) {
 	    connectionModifierOrReader = "is_read_only";
 	    return true;
@@ -115,120 +117,119 @@ public class ServletPathAnalyzer {
 	    connectionModifierOrReader = "get_holdability";
 	    return true;
 	}
-	
+
 	if (urlContent.endsWith("/get_transaction_isolation_level")) {
 	    connectionModifierOrReader = "get_transaction_isolation_level";
 	    return true;
 	}
-	
+
 	return false;
-	
+
     }
-    
+
     public boolean isVersionAction(String urlContent) {
 	if (urlContent == null) {
 	    throw new NullPointerException("urlContent is null");
 	}
-	
+
 	if (urlContent.endsWith("/get_version")) {
 	    return true;
-	}
-	else {
+	} else {
 	    return false;
 	}
     }
-    
-  
+
     public boolean isBlobAction(String urlContent) {
 	if (urlContent == null) {
 	    throw new NullPointerException("urlContent is null");
 	}
-	
+
 	if (urlContent.endsWith("/blob_upload")) {
 	    blobAction = "blob_upload";
 	    return true;
 	}
-	
+
 	if (urlContent.endsWith("/blob_download")) {
 	    blobAction = "blob_download";
 	    return true;
 	}
-	
+
 	if (urlContent.endsWith("/get_blob_length")) {
 	    blobAction = "get_blob_length";
 	    return true;
 	}
-	
+
 	return false;
 
     }
-    
+
     public String getBlobAction() {
 	if (blobAction == null) {
-	    throw new NullPointerException("blobAction is null. Call isBlobAction() before");
+	    throw new NullPointerException(
+		    "blobAction is null. Call isBlobAction() before");
 	}
-        return blobAction;
+	return blobAction;
     }
 
-    
     public String getConnectionModifierOrReader() {
-	
+
 	if (connectionModifierOrReader == null) {
-	    throw new NullPointerException("connectionModifierOrReader is null. Call isConnectionModifier() before");
+	    throw new NullPointerException(
+		    "connectionModifierOrReader is null. Call isConnectionModifier() before");
 	}
-        return connectionModifierOrReader;
+	return connectionModifierOrReader;
     }
-    
+
     public boolean isExecuteUpdateOrQueryStatement(String urlContent) {
 	if (urlContent == null) {
 	    throw new NullPointerException("urlContent is null");
 	}
-	
+
 	if (urlContent.endsWith("/execute_update")) {
 	    sqlStatement = "execute_update";
 	    return true;
 	}
-	
+
 	if (urlContent.endsWith("/execute_query")) {
 	    sqlStatement = "execute_query";
 	    return true;
 	}
 
 	return false;
-	
+
     }
 
     public void buildElements(String servletName, String urlContent) {
-		
+
 	if (urlContent == null) {
 	    throw new NullPointerException("urlContent is null");
 	}
 
-	if (! urlContent.contains("/session/")) {
-	    throw new IllegalArgumentException("Request does not contain /session/ subpath in path");
+	if (!urlContent.contains("/session/")) {
+	    throw new IllegalArgumentException(
+		    "Request does not contain /session/ subpath in path");
 	}
-	
+
 	session = StringUtils.substringBetween(urlContent, "/session/", "/");
 
 	if (session == null) {
-	    throw new IllegalArgumentException("Request does not contain session id");
+	    throw new IllegalArgumentException(
+		    "Request does not contain session id");
 	}
-	
+
     }
 
     public String getSession() {
-        return session;
+	return session;
     }
 
-
     public String getSqlStatement() {
-        return sqlStatement;
+	return sqlStatement;
     }
 
     public String getActionValue() {
-        return actionValue;
+	return actionValue;
     }
-
 
     /**
      * Debug
@@ -238,12 +239,5 @@ public class ServletPathAnalyzer {
 	    System.out.println(new Date() + " " + s);
 	}
     }
-
-
-
-    
-    
-    
-    
 
 }

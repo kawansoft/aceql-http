@@ -239,8 +239,9 @@ public class SqlUtil {
      * @return true if the actual loaded database is the product
      */
     private boolean isProduct(String product) {
-	return databaseProductName.toLowerCase()
-		.contains(product.toLowerCase()) ? true : false;
+	return databaseProductName.toLowerCase().contains(product.toLowerCase())
+		? true
+		: false;
     }
 
     /**

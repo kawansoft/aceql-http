@@ -96,7 +96,7 @@ public class ConnectionStoreManager {
      *            the key of the Connection Store
      * @param databaseConfigurator
      *            the SQL Configurator
-     * @throws SQLException 
+     * @throws SQLException
      */
     public static void remove(ConnectionKey connectionKey,
 	    DatabaseConfigurator databaseConfigurator) throws SQLException {
@@ -114,11 +114,10 @@ public class ConnectionStoreManager {
 
 	// Get the Connection before removing it from the store..
 	Connection connection = connectionStore.get();
-	
+
 	// Release the Connection into the pool
 	connectionStore.remove();
-	ConnectionCloser.freeConnection(connection, databaseConfigurator);	
-
+	ConnectionCloser.freeConnection(connection, databaseConfigurator);
 
     }
 

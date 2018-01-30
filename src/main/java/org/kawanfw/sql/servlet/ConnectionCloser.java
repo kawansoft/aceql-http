@@ -46,11 +46,11 @@ public class ConnectionCloser {
      * @param databaseConfigurator
      *            the user sql configuration that contains the close
      *            implementation
-     * @throws SQLException 
+     * @throws SQLException
      */
     public static void freeConnection(Connection connection,
 	    DatabaseConfigurator databaseConfigurator) throws SQLException {
-	
+
 	if (connection != null) {
 	    // Release the Connection into the pool
 	    databaseConfigurator.close(connection);

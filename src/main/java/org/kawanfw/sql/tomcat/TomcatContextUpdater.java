@@ -41,16 +41,18 @@ import org.kawanfw.sql.util.SqlTag;
 /**
  * @author Nicolas de Pomereu
  * 
- *         Creates a PoolProperties from the passed Properties on constructor. <br>
+ *         Creates a PoolProperties from the passed Properties on constructor.
+ *         <br>
  *         Uses reflection to call all setXxx methods of PoolProperties using
  *         the property names.
  * 
  */
 public class TomcatContextUpdater {
-    
+
     /** Debug info */
-    private static boolean DEBUG = FrameworkDebug.isSet(TomcatContextUpdater.class);
-    
+    private static boolean DEBUG = FrameworkDebug
+	    .isSet(TomcatContextUpdater.class);
+
     /** The properties */
     private Properties properties = null;
 
@@ -61,17 +63,17 @@ public class TomcatContextUpdater {
 
     /** The Tomcat context instance to update */
     private Context context = null;
-    
-   
+
     /**
      * Constructor.
+     * 
      * @param context
      * @param properties
      */
     public TomcatContextUpdater(Context context, Properties properties) {
 	this.properties = properties;
 	this.context = context;
-		
+
     }
 
     /**
@@ -81,7 +83,7 @@ public class TomcatContextUpdater {
 
 	theObject = context;
 	theClass = context.getClass();
-	
+
 	Method[] allMethods = theClass.getDeclaredMethods();
 
 	methodNamesAndParms = new HashMap<String, Class<?>[]>();
@@ -94,14 +96,15 @@ public class TomcatContextUpdater {
 
 	// Do we have to set special values to the Connector?
 	Enumeration<?> enumeration = properties.propertyNames();
-	
+
 	if (enumeration.hasMoreElements()) {
 	    System.out.println(SqlTag.SQL_PRODUCT_START
 		    + " Setting Context attribute values:");
 	}
-	
+
 	// First step: build the map httpClientParams
-	for (Enumeration<?> e = properties.propertyNames(); e.hasMoreElements();) {
+	for (Enumeration<?> e = properties.propertyNames(); e
+		.hasMoreElements();) {
 
 	    String propertyName = (String) e.nextElement();
 	    String propertyValue = properties.getProperty(propertyName);
@@ -116,18 +119,19 @@ public class TomcatContextUpdater {
 
 		propertyName = StringUtils.substringAfter(propertyName, ".");
 		debug("property.name: " + propertyName);
-		
+
 		String theMethod = "set" + StringUtils.capitalize(propertyName);
 		debug("property.name: " + propertyName);
-		    try {
-			callMethod(propertyName, propertyValue);
-		    } catch (Exception e1) {
-			e1.printStackTrace();
-			throw new DatabaseConfigurationException("The "
-				+ propertyName + " could not be set with value: "
-				+ propertyValue + " using method " + theMethod + " (Exception: " + e1.toString() + ")");
-		    }
-		
+		try {
+		    callMethod(propertyName, propertyValue);
+		} catch (Exception e1) {
+		    e1.printStackTrace();
+		    throw new DatabaseConfigurationException("The "
+			    + propertyName + " could not be set with value: "
+			    + propertyValue + " using method " + theMethod
+			    + " (Exception: " + e1.toString() + ")");
+		}
+
 		// No! Does not work because all properties in
 		// server-sql.properties are not Tomcat JDBC pool properties
 		// else {
@@ -164,9 +168,9 @@ public class TomcatContextUpdater {
 	String theMethod = "set" + StringUtils.capitalize(propertyName);
 
 	String propertyValueToDisplay = propertyValue;
-//	if (propertyName.equals("password")) {
-//	    propertyValueToDisplay = TomcatStarter.MASKED_PASSWORD;
-//	}
+	// if (propertyName.equals("password")) {
+	// propertyValueToDisplay = TomcatStarter.MASKED_PASSWORD;
+	// }
 
 	Class<?>[] pType = methodNamesAndParms.get(theMethod);
 
@@ -179,7 +183,7 @@ public class TomcatContextUpdater {
 	// theMethod
 	// + "(" + propertyValueToDisplay + ")");
 	// }
-	
+
 	System.out.println(SqlTag.SQL_PRODUCT_START + "  -> " + propertyName
 		+ " = " + propertyValueToDisplay);
 
@@ -202,7 +206,6 @@ public class TomcatContextUpdater {
 
     }
 
-		
     /**
      * Print debug info
      * 
@@ -213,5 +216,5 @@ public class TomcatContextUpdater {
 	if (DEBUG)
 	    System.out.println(new Date() + " " + s);
     }
-    
+
 }

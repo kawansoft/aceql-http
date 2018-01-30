@@ -149,8 +149,7 @@ public class JavaSqlConversion {
 	    sqlType = AceQLTypes.LONGVARBINARY;
 	} else if (javaType == Types.BLOB) {
 	    sqlType = AceQLTypes.BLOB;
-	} 
-	else if (javaType == Types.CLOB) {
+	} else if (javaType == Types.CLOB) {
 	    sqlType = AceQLTypes.CLOB;
 	} else {
 	    return "UNKNOWN";

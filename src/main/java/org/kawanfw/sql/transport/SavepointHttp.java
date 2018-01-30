@@ -119,8 +119,8 @@ public class SavepointHttp implements Savepoint {
 
 	int id = Integer.parseInt(idStr);
 
-	String name = StringUtils
-		.substringBetween(savepointStr, ", name=", "]");
+	String name = StringUtils.substringBetween(savepointStr, ", name=",
+		"]");
 
 	if (name == null) {
 	    throw new IllegalArgumentException("name can not be null!");

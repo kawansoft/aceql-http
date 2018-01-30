@@ -46,9 +46,9 @@ public class JsonSecurityMessage {
 
     }
 
-
     /**
      * Builds a security error message in JSON format for Prepared Statements
+     * 
      * @param sqlOrder
      * @param errorMessage
      * @param parameters
@@ -62,31 +62,31 @@ public class JsonSecurityMessage {
 
 	try {
 	    JsonGeneratorFactory jf = JsonUtil
-	    	.getJsonGeneratorFactory(doPrettyPrinting);
+		    .getJsonGeneratorFactory(doPrettyPrinting);
 
 	    ByteArrayOutputStream out = new ByteArrayOutputStream();
-	    
+
 	    JsonGenerator gen = jf.createGenerator(out);
 	    gen.writeStartObject();
 	    gen.write(Tag.PRODUCT_SECURITY, errorMessage);
 	    gen.write("SQL order", sqlOrder);
-	    
+
 	    gen.writeStartArray("Parameter types");
-	    for(Map.Entry<Integer, String> entry : parameters.entrySet()) {
-	        int key = entry.getKey();
-	        String value = entry.getValue();
-	        gen.writeStartObject();
-	        gen.write(key + "", value);
-	        gen.writeEnd();
+	    for (Map.Entry<Integer, String> entry : parameters.entrySet()) {
+		int key = entry.getKey();
+		String value = entry.getValue();
+		gen.writeStartObject();
+		gen.write(key + "", value);
+		gen.writeEnd();
 	    }
 	    gen.writeEnd();
-	    
+
 	    gen.writeStartArray("Parameter values");
 	    for (Object value : values) {
-	        gen.write((value != null) ? value.toString() : "null");
+		gen.write((value != null) ? value.toString() : "null");
 	    }
 	    gen.writeEnd();
-	    
+
 	    gen.writeEnd();
 	    gen.close();
 	    return out.toString("UTF-8");
@@ -99,19 +99,21 @@ public class JsonSecurityMessage {
 
     /**
      * Builds a security error message in JSON format for Statements
+     * 
      * @param sqlOrder
      * @param errorMessage
      * @param doPrettyPrinting
      * @return
      */
-    public static String statementNotAllowedBuild(String sqlOrder, String errorMessage, boolean doPrettyPrinting) {
-	
+    public static String statementNotAllowedBuild(String sqlOrder,
+	    String errorMessage, boolean doPrettyPrinting) {
+
 	try {
 	    JsonGeneratorFactory jf = JsonUtil
-	    	.getJsonGeneratorFactory(doPrettyPrinting);
+		    .getJsonGeneratorFactory(doPrettyPrinting);
 
 	    ByteArrayOutputStream out = new ByteArrayOutputStream();
-	    
+
 	    JsonGenerator gen = jf.createGenerator(out);
 	    gen.writeStartObject();
 	    gen.write(Tag.PRODUCT_SECURITY, errorMessage);
@@ -124,7 +126,7 @@ public class JsonSecurityMessage {
 		    + " " + sqlOrder;
 	    return returnString;
 	}
-	
+
     }
 
 }

@@ -45,7 +45,8 @@ public class UserPrefManager {
      */
     public static void setDatabaseToUse(String database) throws IOException {
 	database = database.trim();
-	FileUtils.write(getProductFile(), "database = " + database, Charset.defaultCharset());
+	FileUtils.write(getProductFile(), "database = " + database,
+		Charset.defaultCharset());
     }
 
     /**
@@ -86,7 +87,8 @@ public class UserPrefManager {
 	    if (FrameworkSystemUtil.isAndroid()) {
 		// exchangeDir = "/sdcard/";
 		exchangeDir = System.getProperty("java.io.tmpdir");
-		if (!exchangeDir.endsWith(System.getProperty("file.separator"))) {
+		if (!exchangeDir
+			.endsWith(System.getProperty("file.separator"))) {
 		    exchangeDir += System.getProperty("file.separator");
 		}
 	    } else {

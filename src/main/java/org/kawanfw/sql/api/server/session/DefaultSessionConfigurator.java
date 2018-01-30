@@ -29,15 +29,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Default implementation of session management:<p>
+ * Default implementation of session management:
+ * <p>
  * <ul>
  * <li>Session id are generated using a {@code SecureRandom} with the
  * {@link SessionIdentifierGenerator} class.</li>
  * <li>Session info (username, database) and session date/time creation are
  * stored in a {@code HashMap} whose key is the session id.</li>
  * <li>Session id is sent by client side at each API call. AceQL verifies that
- * the {@code HashMap} contains the username and that the session is not expired to
- * grant access to the APIexecution.</li>
+ * the {@code HashMap} contains the username and that the session is not expired
+ * to grant access to the APIexecution.</li>
  * </ul>
  * <p>
  * It is not required nor recommended to extend this class or to develop another
@@ -77,7 +78,8 @@ public class DefaultSessionConfigurator implements SessionConfigurator {
     public String generateSessionId(String username, String database) {
 	String sessionId = sessionIdentifierGenerator.nextSessionId();
 
-	SessionInfo sessionInfo = new SessionInfo(sessionId, username, database);
+	SessionInfo sessionInfo = new SessionInfo(sessionId, username,
+		database);
 	sessionInfoStore.put(sessionId, sessionInfo);
 
 	return sessionId;
@@ -177,8 +179,10 @@ public class DefaultSessionConfigurator implements SessionConfigurator {
 	// Check if session is expired.
 	long now = new Date().getTime();
 
-	if (now - sessionInfo.getCreationTime() > getSessionTimelife() * 60 * 1000) {
-	    // System.err.println("now - sessionInfo.getCreationTime() > getSessionTimelife");
+	if (now - sessionInfo.getCreationTime() > getSessionTimelife() * 60
+		* 1000) {
+	    // System.err.println("now - sessionInfo.getCreationTime() >
+	    // getSessionTimelife");
 	    return false;
 	}
 

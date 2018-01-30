@@ -44,15 +44,16 @@ public class JwtSessionConfiguratorTest {
      */
     public static void main(String[] args) throws Exception {
 	JwtSessionConfigurator jwtSessionConfigurator = new JwtSessionConfigurator();
-	
-	String token = jwtSessionConfigurator.generateSessionId("username", "kawansoft_example");
+
+	String token = jwtSessionConfigurator.generateSessionId("username",
+		"kawansoft_example");
 
 	String username = jwtSessionConfigurator.getUsername(token);
 	String database = jwtSessionConfigurator.getDatabase(token);
 
 	System.out.println("username: " + username);
 	System.out.println("database: " + database);
-	
+
     }
 
 }

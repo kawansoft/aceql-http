@@ -42,8 +42,8 @@ import org.kawanfw.sql.util.FrameworkDebug;
  * 
  * Tool to display the content of any JDBC <code>ResultSet</code> on a print
  * stream. <br>
- * (Code extracted/adapted from <a
- * href="http://shop.oreilly.com/product/9781565926165.do">Oreilly JDBC
+ * (Code extracted/adapted from
+ * <a href="http://shop.oreilly.com/product/9781565926165.do">Oreilly JDBC
  * book</a>). <br>
  * <br>
  * Limitations:
@@ -52,8 +52,8 @@ import org.kawanfw.sql.util.FrameworkDebug;
  * <li>Binary/BLOB columns are not displayed.</li>
  * </ul>
  * <br>
- * Example on our test database <a
- * href="http://www.aceql.com/soft/4.0/src/kawansoft_example.txt"
+ * Example on our test database
+ * <a href="http://www.aceql.com/soft/4.0/src/kawansoft_example.txt"
  * >kawansoft_example</a>: <blockquote>
  * 
  * <pre>
@@ -209,7 +209,8 @@ public class ResultSetPrinter {
 		debug("str:" + str);
 
 		int colType = meta.getColumnType(i);
-		if (str.startsWith(TransportConverter.KAWANFW_BYTES_STREAM_FILE)) {
+		if (str.startsWith(
+			TransportConverter.KAWANFW_BYTES_STREAM_FILE)) {
 		    if (isBinaryColumn(colType) || colType == Types.BIGINT) {
 			str = getBinaryDataMessage();
 		    }
@@ -377,7 +378,8 @@ public class ResultSetPrinter {
 		String str = getFirstLineOfText(strNoTrim);
 		str = str.trim();
 
-		if (str.startsWith(TransportConverter.KAWANFW_BYTES_STREAM_FILE)) {
+		if (str.startsWith(
+			TransportConverter.KAWANFW_BYTES_STREAM_FILE)) {
 		    if (isBinaryColumn(colType) || colType == Types.BIGINT) {
 			str = getBinaryDataMessage();
 		    }

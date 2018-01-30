@@ -41,18 +41,16 @@ public class ConfiguratorMethodsTester {
     private static boolean DEBUG = FrameworkDebug
 	    .isSet(ConfiguratorMethodsTester.class);
 
-
     private DatabaseConfigurator databaseConfigurator = null;
-    
+
     /** The Exception */
     private Exception exception = null;
 
     /** The init error message trapped */
     private String initErrrorMesage = null;
 
-    
-
-    public ConfiguratorMethodsTester(DatabaseConfigurator databaseConfigurator) {
+    public ConfiguratorMethodsTester(
+	    DatabaseConfigurator databaseConfigurator) {
 	super();
 	this.databaseConfigurator = databaseConfigurator;
     }
@@ -96,18 +94,17 @@ public class ConfiguratorMethodsTester {
 
 		debug("In commonsConfigurator.login.");
 
-		isOk = databaseConfigurator
-			.login("dummy", "dummy".toCharArray(), "dummy", "127.0.0.1");
+		isOk = databaseConfigurator.login("dummy",
+			"dummy".toCharArray(), "dummy", "127.0.0.1");
 
 		debug("After new commonsConfigurator.login.");
 
 	    } catch (Exception e) {
 		debug("Exception thrown: " + e.toString());
-		initErrrorMesage = e.getMessage();	
+		initErrrorMesage = e.getMessage();
 		exception = e;
 	    }
 	}
-
 
     }
 

@@ -44,9 +44,10 @@ public class JsonSecurityMessageTest {
 
 	boolean doPrettyPrinting = true;
 	String sqlOrder = "DELETE FROM CUSTOMER";
-	
+
 	String errorMessage = "Statement not allowed for ExecuteUpdate";
-	String jsonErrorMessage = JsonSecurityMessage.statementNotAllowedBuild(sqlOrder, errorMessage, doPrettyPrinting);
+	String jsonErrorMessage = JsonSecurityMessage.statementNotAllowedBuild(
+		sqlOrder, errorMessage, doPrettyPrinting);
 	System.out.println(jsonErrorMessage);
 
 	Map<Integer, String> parameters = new HashMap<>();
@@ -58,7 +59,8 @@ public class JsonSecurityMessageTest {
 
 	sqlOrder = "UPDATE CUSTOMER SET ? WHERE CUSTOMER_ID = ?";
 	errorMessage = "Prepared Statement not allowed.";
-	jsonErrorMessage = JsonSecurityMessage.prepStatementNotAllowedBuild(sqlOrder, errorMessage, parameters, values, doPrettyPrinting);
+	jsonErrorMessage = JsonSecurityMessage.prepStatementNotAllowedBuild(
+		sqlOrder, errorMessage, parameters, values, doPrettyPrinting);
 	System.out.println();
 	System.out.println(jsonErrorMessage);
     }

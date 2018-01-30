@@ -166,10 +166,9 @@ public class LinkedProperties extends Properties {
 
 	Set<String> linkedPropertiesName = new LinkedHashSet<String>();
 
-	
+	try (BufferedReader bufferedReader = new BufferedReader(
+		new FileReader(fileProperties));) {
 
-	try (BufferedReader bufferedReader = new BufferedReader(new FileReader(fileProperties));){
-	    
 	    String line = null;
 	    while ((line = bufferedReader.readLine()) != null) {
 

@@ -44,15 +44,15 @@ import org.apache.tomcat.util.http.fileupload.disk.DiskFileItemFactory;
 import org.apache.tomcat.util.http.fileupload.servlet.ServletFileUpload;
 import org.apache.tomcat.util.http.fileupload.util.Streams;
 
-
 /**
  * 
  * Class that allows uploading Blob/Clobs. Default implementation. <br>
  * It is not required nor recommended to extend this class or to develop another
  * {@code BlobUploadConfigurator} implementation. <br>
- * Extend this class and override {@link #upload(HttpServletRequest, HttpServletResponse, File)} only if you want to
- * implement your own advanced upload mechanism with special features: file
- * chunking, recovery mechanisms, etc.
+ * Extend this class and override
+ * {@link #upload(HttpServletRequest, HttpServletResponse, File)} only if you
+ * want to implement your own advanced upload mechanism with special features:
+ * file chunking, recovery mechanisms, etc.
  * 
  * @author Nicolas de Pomereu
  *
@@ -77,9 +77,8 @@ public class DefaultBlobUploadConfigurator implements BlobUploadConfigurator {
      * Simple upload of file into user directory.
      */
     @Override
-    public void upload(HttpServletRequest request,
-	    HttpServletResponse response, File blobDirectory)
-	    throws IOException, FileUploadException {
+    public void upload(HttpServletRequest request, HttpServletResponse response,
+	    File blobDirectory) throws IOException, FileUploadException {
 
 	debug("in upload()");
 
@@ -95,8 +94,8 @@ public class DefaultBlobUploadConfigurator implements BlobUploadConfigurator {
 	}
 
 	// Default upload directory is user.home/tmp
-	File tempRepository = new File(SystemUtils.getUserHome()
-		+ File.separator + "tmp");
+	File tempRepository = new File(
+		SystemUtils.getUserHome() + File.separator + "tmp");
 	tempRepository.mkdirs();
 	debug("tempRepository: " + tempRepository);
 

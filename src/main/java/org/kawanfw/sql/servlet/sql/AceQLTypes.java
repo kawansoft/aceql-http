@@ -30,6 +30,7 @@ import java.util.Set;
 
 /**
  * All the allowed SQL types in software
+ * 
  * @author Nicolas de Pomereu
  *
  */
@@ -38,7 +39,7 @@ public class AceQLTypes {
     protected AceQLTypes() {
 
     }
-    
+
     public static final String BIGINT = "BIGINT";
     public static final String BINARY = "BINARY";
     public static final String BIT = "BIT";
@@ -62,12 +63,13 @@ public class AceQLTypes {
     public static final String URL = "URL";
     public static final String VARBINARY = "VARBINARY";
     public static final String VARCHAR = "VARCHAR";
-    
-    private static final String[] SQL_TYPES = { BIGINT, BINARY, BIT, BLOB, CHAR, CHARACTER, CLOB,
-	    DATE, DECIMAL, DOUBLE_PRECISION, FLOAT, INTEGER, LONGVARBINARY,
-	    LONGVARCHAR, NUMERIC, REAL, SMALLINT, TIME, TIMESTAMP, TINYINT,
-	    URL, VARBINARY, VARCHAR };
-    
-    public static final Set<String> SQL_TYPES_SET = new HashSet<String>(Arrays.asList(SQL_TYPES));
-    
+
+    private static final String[] SQL_TYPES = { BIGINT, BINARY, BIT, BLOB, CHAR,
+	    CHARACTER, CLOB, DATE, DECIMAL, DOUBLE_PRECISION, FLOAT, INTEGER,
+	    LONGVARBINARY, LONGVARCHAR, NUMERIC, REAL, SMALLINT, TIME,
+	    TIMESTAMP, TINYINT, URL, VARBINARY, VARCHAR };
+
+    public static final Set<String> SQL_TYPES_SET = new HashSet<String>(
+	    Arrays.asList(SQL_TYPES));
+
 }

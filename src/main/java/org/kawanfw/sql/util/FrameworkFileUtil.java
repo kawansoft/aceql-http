@@ -37,7 +37,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.Vector;
 
-
 /**
  * Misc file utilities
  * 
@@ -53,7 +52,7 @@ public class FrameworkFileUtil {
     public static String CR_LF = System.getProperty("line.separator");
 
     /** List of files */
-    //private List<File> m_fileList = new Vector<File>();
+    // private List<File> m_fileList = new Vector<File>();
 
     /**
      * Constructor
@@ -75,98 +74,102 @@ public class FrameworkFileUtil {
     }
 
     /**
-     * Returns System.getProperty("user.home") for all devices except for Android which
-     * returns java.io.tmpdir/kawansoft-user-home
+     * Returns System.getProperty("user.home") for all devices except for
+     * Android which returns java.io.tmpdir/kawansoft-user-home
      * 
-     * @return System.getProperty("user.home") for all devices except for Android which
-     * returns java.io.tmpdir/kawansoft-user-home
+     * @return System.getProperty("user.home") for all devices except for
+     *         Android which returns java.io.tmpdir/kawansoft-user-home
      */
-    public static String getUserHome()
-    {
+    public static String getUserHome() {
 	String userHome = System.getProperty("user.home");
-	
-	if (! FrameworkSystemUtil.isAndroid()) {
+
+	if (!FrameworkSystemUtil.isAndroid()) {
 	    return userHome;
 	}
-	
-	//  We are on android 
+
+	// We are on android
 	userHome = System.getProperty("java.io.tmpdir");
 	if (!userHome.endsWith(File.separator)) {
 	    userHome += File.separator;
 	}
-	
+
 	userHome += "kawansoft-user-home";
-	
+
 	File userHomeFile = new File(userHome);
 	userHomeFile.mkdirs();
-	
+
 	return userHome;
-		
+
     }
-    
+
     /**
-     * Returns System.getProperty("user.home") + File.separator + ".kawansoft for all devices except for Android which
-     * returns java.io.tmpdir/kawansoft-user-home/.kawansoft 
+     * Returns System.getProperty("user.home") + File.separator + ".kawansoft
+     * for all devices except for Android which returns
+     * java.io.tmpdir/kawansoft-user-home/.kawansoft
      * 
-     * @return System.getProperty("user.home") + File.separator + ".kawansoft for all devices except for Android which
-     * returns java.io.tmpdir/kawansoft-user-home/.kawansoft 
+     * @return System.getProperty("user.home") + File.separator + ".kawansoft
+     *         for all devices except for Android which returns
+     *         java.io.tmpdir/kawansoft-user-home/.kawansoft
      */
-    
-    public static String getUserHomeDotKawansoftDir() { 
-	
+
+    public static String getUserHomeDotKawansoftDir() {
+
 	String userHomeDotKwansoft = getUserHome();
 	if (!userHomeDotKwansoft.endsWith(File.separator)) {
 	    userHomeDotKwansoft += File.separator;
 	}
-	
+
 	userHomeDotKwansoft += ".kawansoft";
-		
+
 	File tempDirFile = new File(userHomeDotKwansoft);
 	tempDirFile.mkdirs();
-	
+
 	return userHomeDotKwansoft;
     }
-    
+
     /**
      * @return the Kawansoft temp directory (create it if not exists)
      */
     public static String getKawansoftTempDir() {
-			
-	String tempDir = FrameworkFileUtil.getUserHomeDotKawansoftDir() + File.separator + "tmp";
-		
+
+	String tempDir = FrameworkFileUtil.getUserHomeDotKawansoftDir()
+		+ File.separator + "tmp";
+
 	File tempDirFile = new File(tempDir);
 	tempDirFile.mkdirs();
-	
+
 	return tempDir;
     }
-    
+
     /**
      * Extract the first line of a presumed text file
-     * @param file the presumed text file to extract the first line from 
-     * @return	the first line of the file
+     * 
+     * @param file
+     *            the presumed text file to extract the first line from
+     * @return the first line of the file
      * @throws IOException
      */
     public static String getFirstLineOfFile(File file) throws IOException {
-	
+
 	if (file == null) {
-	    throw new IllegalArgumentException(Tag.PRODUCT_PRODUCT_FAIL +  "receiveFile is null");
+	    throw new IllegalArgumentException(
+		    Tag.PRODUCT_PRODUCT_FAIL + "receiveFile is null");
 	}
-	
-	if (! file.exists()) {
-	    throw new FileNotFoundException(Tag.PRODUCT_PRODUCT_FAIL +  "receiveFile does not exists: " + file);
+
+	if (!file.exists()) {
+	    throw new FileNotFoundException(Tag.PRODUCT_PRODUCT_FAIL
+		    + "receiveFile does not exists: " + file);
 	}
-	
-	
-	try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(
-	    	new FileInputStream(file)));){
+
+	try (BufferedReader bufferedReader = new BufferedReader(
+		new InputStreamReader(new FileInputStream(file)));) {
 	    // Read content of first line.
-	    
 
 	    String firstLine = bufferedReader.readLine();
 	    return firstLine;
-	} 
+	}
     }
-        
+
     /**
      * Return true if the filename is a Linux possible Filename
      * 
@@ -193,8 +196,6 @@ public class FrameworkFileUtil {
 	}
     }
 
-    
-    
     /**
      * Return true if the fils exists, is readable and is not locked by another
      * process <br>
@@ -268,21 +269,21 @@ public class FrameworkFileUtil {
      *            if true, search inside directories
      */
 
-//    private static void searchFiles(File[] fileList, boolean recurse) {
-//	if (fileList == null) {
-//	    throw new IllegalArgumentException("File list can't be null!");
-//	}
-//
-//	for (int i = 0; i < fileList.length; i++) {
-//	    m_fileList.add(fileList[i]);
-//
-//	    if (fileList[i].isDirectory()) {
-//		if (recurse) {
-//		    searchFiles(fileList[i].listFiles(), recurse);
-//		}
-//	    }
-//	}
-//    }
+    // private static void searchFiles(File[] fileList, boolean recurse) {
+    // if (fileList == null) {
+    // throw new IllegalArgumentException("File list can't be null!");
+    // }
+    //
+    // for (int i = 0; i < fileList.length; i++) {
+    // m_fileList.add(fileList[i]);
+    //
+    // if (fileList[i].isDirectory()) {
+    // if (recurse) {
+    // searchFiles(fileList[i].listFiles(), recurse);
+    // }
+    // }
+    // }
+    // }
 
     /**
      * Extract all files from a list of files, with recurse options
@@ -294,25 +295,26 @@ public class FrameworkFileUtil {
      * 
      * @return the extracted all files
      */
-//    public static List<File> listAllFiles(List<File> fileList, boolean recurse) {
-//
-//	if (fileList == null) {
-//	    throw new IllegalArgumentException("File list can't be null!");
-//	}
-//
-//	if (fileList.isEmpty()) {
-//	    return new Vector<File>();
-//	}
-//
-//	File[] files = new File[fileList.size()];
-//
-//	for (int i = 0; i < fileList.size(); i++) {
-//	    files[i] = fileList.get(i);
-//	}
-//
-//	searchFiles(files, recurse);
-//	return m_fileList;
-//    }
+    // public static List<File> listAllFiles(List<File> fileList, boolean
+    // recurse) {
+    //
+    // if (fileList == null) {
+    // throw new IllegalArgumentException("File list can't be null!");
+    // }
+    //
+    // if (fileList.isEmpty()) {
+    // return new Vector<File>();
+    // }
+    //
+    // File[] files = new File[fileList.size()];
+    //
+    // for (int i = 0; i < fileList.size(); i++) {
+    // files[i] = fileList.get(i);
+    // }
+    //
+    // searchFiles(files, recurse);
+    // return m_fileList;
+    // }
 
     /**
      * 
@@ -384,7 +386,7 @@ public class FrameworkFileUtil {
 	    String line = null;
 
 	    while ((line = br.readLine()) != null) {
-	        text += line;
+		text += line;
 	    }
 
 	    return text;

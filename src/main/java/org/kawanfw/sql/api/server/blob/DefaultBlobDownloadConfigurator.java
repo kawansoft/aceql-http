@@ -35,22 +35,22 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * 
  * Class that allows downloading Blob/Clobs. Default implementation. <br>
- * It is not required nor recommended to extend this class or to develop another 
- * {@code BlobDownloadConfigurator} implementation.
- * <br>
- * Extend this class and override {@link #download(HttpServletRequest, File, OutputStream)} only if you want to
- * implement your own advanced download mechanism with special features: file chunking,
- * recovery mechanisms, etc.
+ * It is not required nor recommended to extend this class or to develop another
+ * {@code BlobDownloadConfigurator} implementation. <br>
+ * Extend this class and override
+ * {@link #download(HttpServletRequest, File, OutputStream)} only if you want to
+ * implement your own advanced download mechanism with special features: file
+ * chunking, recovery mechanisms, etc.
  * 
  * @author Nicolas de Pomereu
  *
  */
-public class DefaultBlobDownloadConfigurator implements
-	BlobDownloadConfigurator {
+public class DefaultBlobDownloadConfigurator
+	implements BlobDownloadConfigurator {
 
-    
     /**
-     * Constructor. {@code BlobDownloadConfigurator} implementation must have no constructor or a unique no parms constructor. 
+     * Constructor. {@code BlobDownloadConfigurator} implementation must have no
+     * constructor or a unique no parms constructor.
      */
     public DefaultBlobDownloadConfigurator() {
 
@@ -60,14 +60,16 @@ public class DefaultBlobDownloadConfigurator implements
      * Simple copy of file to download on Servlet output stream.
      */
     @Override
-    public void download(HttpServletRequest request, File file, OutputStream outputStream) throws IOException {
+    public void download(HttpServletRequest request, File file,
+	    OutputStream outputStream) throws IOException {
 
-	if (! file.exists()) {
-	    throw new FileNotFoundException("File does not exist: " + file.getName());
+	if (!file.exists()) {
+	    throw new FileNotFoundException(
+		    "File does not exist: " + file.getName());
 	}
-	
+
 	Files.copy(file.toPath(), outputStream);
-	
+
     }
 
 }

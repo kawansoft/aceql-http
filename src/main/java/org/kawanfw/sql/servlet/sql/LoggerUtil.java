@@ -36,7 +36,9 @@ import org.kawanfw.sql.servlet.HttpParameter;
 import org.kawanfw.sql.servlet.ServerSqlManager;
 
 /**
- * Logs all Exceptions thrown on server side, even user and application Exceptions (SQLException), for ease of debug if any problem.
+ * Logs all Exceptions thrown on server side, even user and application
+ * Exceptions (SQLException), for ease of debug if any problem.
+ * 
  * @author Nicolas de Pomereu
  *
  */
@@ -50,39 +52,43 @@ public class LoggerUtil {
     }
 
     /**
-     * Logs the SQL Exception with out internal AceQL errorMessage that details the reason of the SQLException to ease debug.
+     * Logs the SQL Exception with out internal AceQL errorMessage that details
+     * the reason of the SQLException to ease debug.
+     * 
      * @param request
-     * @param sqlException		
+     * @param sqlException
      * @param aceQLErrorMessage
-     * @throws IOException 
+     * @throws IOException
      */
-    public static void log(HttpServletRequest request, SQLException sqlException,
-	    String aceQLErrorMessage) throws IOException {
-	
+    public static void log(HttpServletRequest request,
+	    SQLException sqlException, String aceQLErrorMessage)
+	    throws IOException {
+
 	String database = request.getParameter(HttpParameter.DATABASE);
 
 	DatabaseConfigurator databaseConfigurator = ServerSqlManager
 		.getDatabaseConfigurator(database);
-	
-	Logger logger = databaseConfigurator.getLogger();	
+
+	Logger logger = databaseConfigurator.getLogger();
 	logger.log(Level.WARNING, aceQLErrorMessage);
 	logger.log(Level.WARNING, sqlException.toString());
-	
+
     }
 
-    
     /**
      * Logs the thrown Exception.
+     * 
      * @param request
      * @param exception
-     * @throws IOException 
+     * @throws IOException
      */
-    public static void log(HttpServletRequest request, Exception exception) throws IOException {
+    public static void log(HttpServletRequest request, Exception exception)
+	    throws IOException {
 	String database = request.getParameter(HttpParameter.DATABASE);
 
 	DatabaseConfigurator databaseConfigurator = ServerSqlManager
 		.getDatabaseConfigurator(database);
-	
+
 	Logger logger = databaseConfigurator.getLogger();
 	logger.log(Level.WARNING, "Exception: " + exception);
     }

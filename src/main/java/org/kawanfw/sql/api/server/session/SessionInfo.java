@@ -32,59 +32,66 @@ import java.util.Date;
  * 
  * @author Nicolas de Pomereu
  */
-public class SessionInfo  {
+public class SessionInfo {
 
     private String sessionId = null;
     private String username = null;
     private String database = null;
     private long creationTime;
 
-    
     /**
      * Constructor
-     * @param sessionId		the unique session id that is generated after login by {@link SessionConfigurator#generateSessionId(String, String)}
-     * @param username		the logged client username
-     * @param database		the database to use for this session
+     * 
+     * @param sessionId
+     *            the unique session id that is generated after login by
+     *            {@link SessionConfigurator#generateSessionId(String, String)}
+     * @param username
+     *            the logged client username
+     * @param database
+     *            the database to use for this session
      */
     public SessionInfo(String sessionId, String username, String database) {
-	
+
 	if (sessionId == null) {
 	    throw new NullPointerException("sessionId is null!");
 	}
-	
+
 	if (username == null) {
 	    throw new NullPointerException("username is null!");
 	}
-	
+
 	if (database == null) {
 	    throw new NullPointerException("database is null!");
 	}
-	
+
 	this.sessionId = sessionId;
 	this.username = username;
 	this.database = database;
-	
+
 	this.creationTime = new Date().getTime();
     }
 
     /**
      * Returns the session id
+     * 
      * @return the session id
      */
     public String getSessionId() {
 	return sessionId;
     }
-    
+
     /**
      * Returns the client username
+     * 
      * @return the client username
      */
-    public String getUsername() {	
+    public String getUsername() {
 	return username;
     }
 
     /**
      * Returns the database in use for this session
+     * 
      * @return the database in use for this session
      */
     public String getDatabase() {
@@ -95,8 +102,7 @@ public class SessionInfo  {
      * @return the date/time when this {@code SessionInfo} instance was created
      */
     public long getCreationTime() {
-        return creationTime;
+	return creationTime;
     }
-        
-    
+
 }

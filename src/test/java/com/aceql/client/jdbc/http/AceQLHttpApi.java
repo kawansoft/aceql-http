@@ -160,7 +160,8 @@ public class AceQLHttpApi {
      */
     public AceQLHttpApi(String serverUrl, String database, String username,
 	    char[] password, Proxy proxy,
-	    PasswordAuthentication passwordAuthentication) throws AceQLException {
+	    PasswordAuthentication passwordAuthentication)
+	    throws AceQLException {
 
 	try {
 	    if (database == null) {
@@ -186,8 +187,8 @@ public class AceQLHttpApi {
 	    setProxyCredentials();
 
 	    String url = serverUrl + "/database/" + database + "/username/"
-		    + username + "/connect" + "?password=" + new String(password)
-		    + "&stateless=" + stateless;
+		    + username + "/connect" + "?password="
+		    + new String(password) + "&stateless=" + stateless;
 
 	    String result = callWithGet(url);
 
@@ -412,8 +413,8 @@ public class AceQLHttpApi {
 		connectTimeout);
 
 	try (OutputStream connOut = timeoutConnector.getOutputStream();) {
-	    BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(
-		    connOut, "UTF-8"));
+	    BufferedWriter writer = new BufferedWriter(
+		    new OutputStreamWriter(connOut, "UTF-8"));
 	    writer.write(AceQLHttpApi.getPostDataString(parameters));
 
 	    // writer.flush();
@@ -526,10 +527,10 @@ public class AceQLHttpApi {
      * indicator to notify this instance that the user has cancelled the current
      * blob/clob upload or download.
      * 
-     * @param cancelled the
-     *            shareable canceled variable that will be used by the progress
-     *            indicator to notify this instance that the end user has
-     *            cancelled the current blob/clob upload or download
+     * @param cancelled
+     *            the shareable canceled variable that will be used by the
+     *            progress indicator to notify this instance that the end user
+     *            has cancelled the current blob/clob upload or download
      * 
      */
     public void setCancelled(AtomicBoolean cancelled) {
@@ -568,7 +569,8 @@ public class AceQLHttpApi {
     }
 
     /**
-     * Says the query result is returned  compressed with the GZIP file format.
+     * Says the query result is returned compressed with the GZIP file format.
+     * 
      * @return the gzipResult
      */
     public boolean isGzipResult() {
@@ -750,7 +752,8 @@ public class AceQLHttpApi {
      *             if any Exception occurs
      */
     public String getTransactionIsolation() throws AceQLException {
-	String result = callApiWithResult("get_transaction_isolation_level", null);
+	String result = callApiWithResult("get_transaction_isolation_level",
+		null);
 	return result;
     }
 
@@ -785,10 +788,10 @@ public class AceQLHttpApi {
 
 	    Map<String, String> parametersMap = new HashMap<String, String>();
 	    parametersMap.put("sql", sql);
-	    //parametersMap.put("prepared_statement", new Boolean(
-		//    isPreparedStatement).toString());
+	    // parametersMap.put("prepared_statement", new Boolean(
+	    // isPreparedStatement).toString());
 	    parametersMap.put("prepared_statement", "" + isPreparedStatement);
-	    
+
 	    trace("sql: " + sql);
 	    trace("statement_parameters: " + statementParameters);
 
@@ -862,20 +865,19 @@ public class AceQLHttpApi {
 
 	    Map<String, String> parametersMap = new HashMap<String, String>();
 	    parametersMap.put("sql", sql);
-	    //parametersMap.put("prepared_statement", new Boolean(
-		//    isPreparedStatement).toString());
+	    // parametersMap.put("prepared_statement", new Boolean(
+	    // isPreparedStatement).toString());
 	    parametersMap.put("prepared_statement", "" + isPreparedStatement);
-	    
-	    //parametersMap
-		//    .put("gzip_result", new Boolean(gzipResult).toString());
-	    parametersMap
-	    .put("gzip_result", "" + gzipResult);	 
-	    
-//	    parametersMap.put("pretty_printing",
-//		    new Boolean(prettyPrinting).toString());
+
+	    // parametersMap
+	    // .put("gzip_result", new Boolean(gzipResult).toString());
+	    parametersMap.put("gzip_result", "" + gzipResult);
+
+	    // parametersMap.put("pretty_printing",
+	    // new Boolean(prettyPrinting).toString());
 
 	    parametersMap.put("pretty_printing", "" + prettyPrinting);
-	    
+
 	    // Add the statement parameters map
 	    if (statementParameters != null) {
 		parametersMap.putAll(statementParameters);
@@ -959,7 +961,7 @@ public class AceQLHttpApi {
 	    String fileName = UUID.randomUUID().toString() + ".blob";
 
 	    http.addFilePart("file", inputStream, fileName);
-	    
+
 	    http.finish();
 
 	    conn = http.getConnection();
@@ -990,12 +992,12 @@ public class AceQLHttpApi {
 		    result = out.toString("UTF-8");
 		}
 	    } finally {
-		//IOUtils.closeQuietly(inConn);
+		// IOUtils.closeQuietly(inConn);
 		if (inConn != null) {
 		    try {
 			inConn.close();
 		    } catch (Exception e) {
-			//e.printStackTrace();
+			// e.printStackTrace();
 		    }
 		}
 	    }

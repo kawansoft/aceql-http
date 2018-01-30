@@ -85,15 +85,14 @@ public class HttpServletRequestHolder extends HttpServletRequestWrapper {
     public String getParameter(String parameterName) {
 
 	debug("getParameter of " + parameterName + ":");
-	
+
 	String value = null;
 	if (mapParameters.containsKey(parameterName)) {
-	    value =  mapParameters.get(parameterName);
-	}
-	else {
+	    value = mapParameters.get(parameterName);
+	} else {
 	    value = super.getParameter(parameterName);
 	}
-	
+
 	debug("value: " + value + ":");
 	return value;
 

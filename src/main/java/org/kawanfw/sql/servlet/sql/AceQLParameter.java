@@ -23,8 +23,10 @@
  * intact.
  */
 package org.kawanfw.sql.servlet.sql;
+
 /**
  * Immutable Holder for a PreparedStatement Parameter
+ * 
  * @author Nicolas de Pomereu
  *
  */
@@ -33,9 +35,10 @@ public class AceQLParameter {
 
     private String parameterType = null;
     private String parameterValue = null;
-    
+
     /**
      * Constructor
+     * 
      * @param parameterType
      * @param parameterValue
      */
@@ -46,21 +49,20 @@ public class AceQLParameter {
 
     /**
      * Returns the parameter type
+     * 
      * @return the parameter type
      */
     public String getParameterType() {
-        return parameterType;
+	return parameterType;
     }
 
     /**
      * Returns the parameter value
+     * 
      * @return the parameter value
      */
     public String getParameterValue() {
-        return parameterValue;
+	return parameterValue;
     }
-    
-    
-	     
 
 }

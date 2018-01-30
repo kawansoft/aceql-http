@@ -26,7 +26,6 @@ package org.kawanfw.sql.util;
 
 import org.apache.commons.lang3.StringUtils;
 
-
 /**
  * @author Nicolas de Pomereu Build the raw filename that will contain the Blob
  *         or Clob contant
@@ -66,13 +65,13 @@ public class FileNameFromBlobBuilder {
     public FileNameFromBlobBuilder(String sqlOrder, String columnName,
 	    boolean isClob) {
 	if (sqlOrder == null) {
-	    throw new IllegalArgumentException(Tag.PRODUCT_PRODUCT_FAIL
-		    + "sqlOrder can not be null!");
+	    throw new IllegalArgumentException(
+		    Tag.PRODUCT_PRODUCT_FAIL + "sqlOrder can not be null!");
 	}
 
 	if (columnName == null) {
-	    throw new IllegalArgumentException(Tag.PRODUCT_PRODUCT_FAIL
-		    + "columnName can not be null!");
+	    throw new IllegalArgumentException(
+		    Tag.PRODUCT_PRODUCT_FAIL + "columnName can not be null!");
 	}
 
 	this.sqlOrder = sqlOrder;
@@ -93,8 +92,8 @@ public class FileNameFromBlobBuilder {
     public FileNameFromBlobBuilder(String sqlOrder, int parameterIndex,
 	    boolean isClob) {
 	if (sqlOrder == null) {
-	    throw new IllegalArgumentException(Tag.PRODUCT_PRODUCT_FAIL
-		    + "sqlOrder can not be null!");
+	    throw new IllegalArgumentException(
+		    Tag.PRODUCT_PRODUCT_FAIL + "sqlOrder can not be null!");
 	}
 
 	if (parameterIndex < 1) {
@@ -119,7 +118,8 @@ public class FileNameFromBlobBuilder {
 	sqlOrder = sqlOrder.trim();
 
 	String statementType = StringUtils.substringBefore(sqlOrder, BLANK);
-	String tableName = getTableNameFromDmlStatement(statementType, sqlOrder);
+	String tableName = getTableNameFromDmlStatement(statementType,
+		sqlOrder);
 
 	if (tableName == null) {
 	    tableName = "unknown";
@@ -129,15 +129,14 @@ public class FileNameFromBlobBuilder {
 	    statementType = "unknown";
 	}
 
-
 	if (columnName != null) {
 	    fileName = statementType.toLowerCase() + "-"
 		    + tableName.toLowerCase() + "." + columnName + "-" + unique
 		    + ".blob";
 	} else {
 	    fileName = statementType.toLowerCase() + "-"
-		    + tableName.toLowerCase() + "-index-" + parameterIndex
-		    + "-" + unique + ".blob";
+		    + tableName.toLowerCase() + "-index-" + parameterIndex + "-"
+		    + unique + ".blob";
 	}
 
 	if (isClob) {
@@ -159,8 +158,8 @@ public class FileNameFromBlobBuilder {
      *         statement) for a DML statement. Returns null if statement is not
      *         DML.
      */
-    private String getTableNameFromDmlStatement(String statementType, String sql)
-	    throws IllegalArgumentException {
+    private String getTableNameFromDmlStatement(String statementType,
+	    String sql) throws IllegalArgumentException {
 	// Extract the first order
 	String statementTypeUpper = statementType.toUpperCase();
 

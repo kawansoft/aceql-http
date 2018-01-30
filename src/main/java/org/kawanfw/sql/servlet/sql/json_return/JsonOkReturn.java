@@ -36,81 +36,82 @@ import javax.json.stream.JsonGeneratorFactory;
  */
 public class JsonOkReturn {
 
-    
     /**
      * Returns just OK
+     * 
      * @return just OK
      */
     public static String build() {
-	
-	JsonGeneratorFactory jf = JsonUtil.getJsonGeneratorFactory(JsonUtil.DEFAULT_PRETTY_PRINTING);
-	
+
+	JsonGeneratorFactory jf = JsonUtil
+		.getJsonGeneratorFactory(JsonUtil.DEFAULT_PRETTY_PRINTING);
+
 	StringWriter sw = new StringWriter();
 	JsonGenerator gen = jf.createGenerator(sw);
 
-	gen.writeStartObject()
-	.write("status", "OK")	   
-	.writeEnd();
+	gen.writeStartObject().write("status", "OK").writeEnd();
 	gen.close();
-	
+
 	return sw.toString();
     }
-    
+
     /**
      * Returns a name and a value after the OK
+     * 
      * @return just OK
      */
     public static String build(String name, String value) {
-	
+
 	if (name == null) {
 	    throw new NullPointerException("name is null");
 	}
 	if (value == null) {
 	    throw new NullPointerException("value is null");
 	}
-	
-	JsonGeneratorFactory jf = JsonUtil.getJsonGeneratorFactory(JsonUtil.DEFAULT_PRETTY_PRINTING);
-	
+
+	JsonGeneratorFactory jf = JsonUtil
+		.getJsonGeneratorFactory(JsonUtil.DEFAULT_PRETTY_PRINTING);
+
 	StringWriter sw = new StringWriter();
 	JsonGenerator gen = jf.createGenerator(sw);
 
-	gen.writeStartObject()
-	.write("status", "OK")	  
-	.write(name, value)
-	.writeEnd();
+	gen.writeStartObject().write("status", "OK").write(name, value)
+		.writeEnd();
 	gen.close();
-	
+
 	return sw.toString();
     }
-    
+
     /**
      * Build a Json with name and values rom the passed map
-     * @param namesAndValues	the map of (name, value) to add to the JsonGenerator
+     * 
+     * @param namesAndValues
+     *            the map of (name, value) to add to the JsonGenerator
      * @return
      */
     public static String build(Map<String, String> namesAndValues) {
-	
+
 	if (namesAndValues == null) {
 	    throw new NullPointerException("namesAndValues is null");
 	}
-	
-	JsonGeneratorFactory jf = JsonUtil.getJsonGeneratorFactory(JsonUtil.DEFAULT_PRETTY_PRINTING);
-	
+
+	JsonGeneratorFactory jf = JsonUtil
+		.getJsonGeneratorFactory(JsonUtil.DEFAULT_PRETTY_PRINTING);
+
 	StringWriter sw = new StringWriter();
 	JsonGenerator gen = jf.createGenerator(sw);
 
-	gen.writeStartObject()
-	.write("status", "OK")	;
-	
+	gen.writeStartObject().write("status", "OK");
+
 	for (Map.Entry<String, String> entry : namesAndValues.entrySet()) {
 
 	    // trace(entry.getKey() + "/" + entry.getValue());
 	    gen.write(entry.getKey(), entry.getValue());
 	}
-	
+
 	gen.writeEnd();
 	gen.close();
-	
+
 	return sw.toString();
     }
 

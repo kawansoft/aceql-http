@@ -58,45 +58,45 @@ public class StatementFailure {
 		+ " - SQL order: " + sqlOrder + " - parms:" + parameters
 		+ " - values: " + values;
 	return returnString;
-	
-//	try {
-//	    JsonGeneratorFactory jf = JsonUtil
-//		    .getJsonGeneratorFactory(doPrettyPrinting);
-//
-//	    ByteArrayOutputStream out = new ByteArrayOutputStream();
-//
-//	    JsonGenerator gen = jf.createGenerator(out);
-//	    gen.writeStartObject();
-//	    gen.write("Prepared Statement Exception", errorMessage);
-//	    gen.write("SQL order", sqlOrder);
-//
-//	    gen.writeStartArray("Parameter types");
-//	    for (Map.Entry<Integer, String> entry : parameters.entrySet()) {
-//		int key = entry.getKey();
-//		String value = entry.getValue();
-//		gen.writeStartObject();
-//		gen.write(key + "", value);
-//		gen.writeEnd();
-//	    }
-//	    gen.writeEnd();
-//
-//	    gen.writeStartArray("Parameter values");
-//	    for (Object value : values) {
-//		gen.write((value != null) ? value.toString() : "null");
-//	    }
-//	    gen.writeEnd();
-//
-//	    gen.writeEnd();
-//	    gen.close();
-//	    return out.toString();
-//	} catch (Exception e) {
-//	    // Never fail, just return the string
-//	    String returnString = "Prepared Statement Exception: "
-//		    + errorMessage + " " + sqlOrder + " " + parameters + " "
-//		    + values;
-//	    return returnString;
-//	}
-	
+
+	// try {
+	// JsonGeneratorFactory jf = JsonUtil
+	// .getJsonGeneratorFactory(doPrettyPrinting);
+	//
+	// ByteArrayOutputStream out = new ByteArrayOutputStream();
+	//
+	// JsonGenerator gen = jf.createGenerator(out);
+	// gen.writeStartObject();
+	// gen.write("Prepared Statement Exception", errorMessage);
+	// gen.write("SQL order", sqlOrder);
+	//
+	// gen.writeStartArray("Parameter types");
+	// for (Map.Entry<Integer, String> entry : parameters.entrySet()) {
+	// int key = entry.getKey();
+	// String value = entry.getValue();
+	// gen.writeStartObject();
+	// gen.write(key + "", value);
+	// gen.writeEnd();
+	// }
+	// gen.writeEnd();
+	//
+	// gen.writeStartArray("Parameter values");
+	// for (Object value : values) {
+	// gen.write((value != null) ? value.toString() : "null");
+	// }
+	// gen.writeEnd();
+	//
+	// gen.writeEnd();
+	// gen.close();
+	// return out.toString();
+	// } catch (Exception e) {
+	// // Never fail, just return the string
+	// String returnString = "Prepared Statement Exception: "
+	// + errorMessage + " " + sqlOrder + " " + parameters + " "
+	// + values;
+	// return returnString;
+	// }
+
     }
 
     /**
@@ -113,27 +113,26 @@ public class StatementFailure {
 	String returnString = "Statement Exception: " + errorMessage
 		+ " - SQL order: " + sqlOrder;
 	return returnString;
-	
 
-//	try {
-//	    JsonGeneratorFactory jf = JsonUtil
-//		    .getJsonGeneratorFactory(doPrettyPrinting);
-//
-//	    ByteArrayOutputStream out = new ByteArrayOutputStream();
-//
-//	    JsonGenerator gen = jf.createGenerator(out);
-//	    gen.writeStartObject();
-//	    gen.write("Statement Exception", errorMessage);
-//	    gen.write("SQL order", sqlOrder);
-//	    gen.writeEnd();
-//	    gen.close();
-//	    return out.toString();
-//	} catch (Exception e) {
-//	    // Never fail, just return the string
-//	    String returnString = "Statement Exception: " + errorMessage + " "
-//		    + sqlOrder;
-//	    return returnString;
-//	}
+	// try {
+	// JsonGeneratorFactory jf = JsonUtil
+	// .getJsonGeneratorFactory(doPrettyPrinting);
+	//
+	// ByteArrayOutputStream out = new ByteArrayOutputStream();
+	//
+	// JsonGenerator gen = jf.createGenerator(out);
+	// gen.writeStartObject();
+	// gen.write("Statement Exception", errorMessage);
+	// gen.write("SQL order", sqlOrder);
+	// gen.writeEnd();
+	// gen.close();
+	// return out.toString();
+	// } catch (Exception e) {
+	// // Never fail, just return the string
+	// String returnString = "Statement Exception: " + errorMessage + " "
+	// + sqlOrder;
+	// return returnString;
+	// }
 
     }
 

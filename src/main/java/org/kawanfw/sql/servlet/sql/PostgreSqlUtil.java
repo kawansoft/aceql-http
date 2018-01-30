@@ -90,8 +90,7 @@ public class PostgreSqlUtil {
      *         large file storage
      */
     public static boolean isPostgreSqlStatementWithOID(Connection connection,
-	    String sql) throws SQLException,
-	    IOException {
+	    String sql) throws SQLException, IOException {
 
 	debug("before new SqlUtil(connection).isPostgreSQL()");
 	if (!new SqlUtil(connection).isPostgreSQL()) {
@@ -133,22 +132,24 @@ public class PostgreSqlUtil {
 
     /**
      * Returns all the column names that are Types.BIGINT
+     * 
      * @param connection
      * @return the column names that are Types.BIGINT
      * @throws SQLException
      */
-    public static Set<String> getTypeBigIntColumnNames(Connection connection) throws SQLException {
-	
+    public static Set<String> getTypeBigIntColumnNames(Connection connection)
+	    throws SQLException {
+
 	if (connection == null) {
 	    throw new IllegalArgumentException("connection is null!");
 	}
-	
+
 	DatabaseMetaData databaseMetaData = connection.getMetaData();
 
 	String catalog = null;
 	String schema = "public";
 	String table = null;
-	
+
 	Set<String> typeBigIntColumnNames = new TreeSet<String>();
 	ResultSet rs = null;
 	try {
@@ -158,14 +159,14 @@ public class PostgreSqlUtil {
 		int columnType = rs.getInt(5);
 
 		if (columnType == Types.BIGINT) {
-		    
+
 		    if (DEBUG) {
 			System.out.println();
 			System.out.println(rs.getString(1));
 			System.out.println(rs.getString(2));
 			System.out.println(rs.getString(4));
 		    }
-		  
+
 		    String columnName = rs.getString(4).toLowerCase();
 		    typeBigIntColumnNames.add(columnName);
 		}
@@ -175,10 +176,10 @@ public class PostgreSqlUtil {
 		rs.close();
 	    }
 	}
-	
+
 	return typeBigIntColumnNames;
     }
-    
+
     /**
      * Extract the Large Object Input Stream from PostgreSQL
      * 
@@ -199,11 +200,11 @@ public class PostgreSqlUtil {
 	LargeObjectManager lobj = ((org.postgresql.PGConnection) conn)
 		.getLargeObjectAPI();
 	long oid = resultSet.getLong(columnIndex);
-	
+
 	if (oid < 1) {
 	    return null;
 	}
-	
+
 	LargeObject obj = lobj.open(oid, LargeObjectManager.READ);
 
 	in = obj.getInputStream();
@@ -226,23 +227,23 @@ public class PostgreSqlUtil {
      */
     public static void setPostgreSqlParameterWithLargeObject(
 	    PreparedStatement preparedStatement, int parameterIndex,
-	    InputStream in, Connection connection) throws SQLException,
-	    IOException {
+	    InputStream in, Connection connection)
+	    throws SQLException, IOException {
 	// Get the Large Object Manager to perform operations with
 	LargeObjectManager lobj = ((org.postgresql.PGConnection) connection)
 		.getLargeObjectAPI();
 
 	// Create a new large object
-	long oid = lobj.createLO(LargeObjectManager.READ
-		| LargeObjectManager.WRITE);
+	long oid = lobj
+		.createLO(LargeObjectManager.READ | LargeObjectManager.WRITE);
 
 	// Open the large object for writing
 	LargeObject obj = lobj.open(oid, LargeObjectManager.WRITE);
-	
-	try (OutputStream out = obj.getOutputStream();){
+
+	try (OutputStream out = obj.getOutputStream();) {
 	    IOUtils.copy(in, out);
 	} finally {
-	    //IOUtils.closeQuietly(out);
+	    // IOUtils.closeQuietly(out);
 	    // Close the large object
 	    obj.close();
 	}

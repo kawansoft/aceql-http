@@ -23,6 +23,7 @@
  * intact.
  */
 package org.kawanfw.sql.util;
+
 /**
  * @author Nicolas de Pomereu
  *
@@ -31,8 +32,8 @@ package org.kawanfw.sql.util;
 public class FileSplitSeparatorLine {
 
     /**
-	 * 
-	 */
+     * 
+     */
     protected FileSplitSeparatorLine() {
 	// TODO Auto-generated constructor stub
     }

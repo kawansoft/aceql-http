@@ -38,7 +38,7 @@ import javax.json.stream.JsonGeneratorFactory;
 public class JsonUtil {
 
     public static boolean DEFAULT_PRETTY_PRINTING = true;
-    
+
     /**
      * protected
      */
@@ -48,18 +48,22 @@ public class JsonUtil {
 
     /**
      * JsonGeneratorFactory getter with pretty printing on/off
-     * @param prettyPrintingif true, JSON will be pretty printed
+     * 
+     * @param prettyPrintingif
+     *            true, JSON will be pretty printed
      * @return
      */
-    public static JsonGeneratorFactory getJsonGeneratorFactory(boolean prettyPrinting) {
-        Map<String, Object> properties = new HashMap<>(1);
-        if (prettyPrinting) {
-        // Putting any value sets the pretty printing to true... So test must be done
-            properties.put(JsonGenerator.PRETTY_PRINTING, prettyPrinting);
-        }
-    
-        JsonGeneratorFactory jf = Json.createGeneratorFactory(properties);
-        return jf;
+    public static JsonGeneratorFactory getJsonGeneratorFactory(
+	    boolean prettyPrinting) {
+	Map<String, Object> properties = new HashMap<>(1);
+	if (prettyPrinting) {
+	    // Putting any value sets the pretty printing to true... So test
+	    // must be done
+	    properties.put(JsonGenerator.PRETTY_PRINTING, prettyPrinting);
+	}
+
+	JsonGeneratorFactory jf = Json.createGeneratorFactory(properties);
+	return jf;
     }
 
 }

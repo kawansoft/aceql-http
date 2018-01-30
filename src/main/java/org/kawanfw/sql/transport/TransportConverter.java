@@ -86,8 +86,8 @@ public class TransportConverter {
      * @return the bytes
      */
     public static byte[] fromTransportFormatToBytes(String string) {
-	String encodedString = StringUtils
-		.substringAfter(string, KAWANFW_BYTES);
+	String encodedString = StringUtils.substringAfter(string,
+		KAWANFW_BYTES);
 
 	if (encodedString.equals("null")) {
 	    return null;

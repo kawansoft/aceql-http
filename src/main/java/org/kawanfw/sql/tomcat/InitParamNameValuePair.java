@@ -23,16 +23,18 @@
  * intact.
  */
 package org.kawanfw.sql.tomcat;
+
 /**
  * Defines a init parameter (name, value) pair
  * 
  * @author Nicolas de Pomereu
  *
  */
-public class InitParamNameValuePair implements
-	Comparable<InitParamNameValuePair> {
+public class InitParamNameValuePair
+	implements Comparable<InitParamNameValuePair> {
     private final String name;
     private final String value;
+
     public InitParamNameValuePair(String name, String value) {
 	if (name == null) {
 	    throw new IllegalArgumentException("Name may not be null");
@@ -40,18 +42,21 @@ public class InitParamNameValuePair implements
 	this.name = name;
 	this.value = value;
     }
+
     /**
      * @return the name
      */
     public String getName() {
 	return name;
     }
+
     /**
      * @return the value
      */
     public String getValue() {
 	return value;
     }
+
     /*
      * (non-Javadoc)
      * 
@@ -62,6 +67,7 @@ public class InitParamNameValuePair implements
 	return "InitParamNameValuePair [name=" + name + ", value=" + value
 		+ "]";
     }
+
     /*
      * (non-Javadoc)
      * 
@@ -75,6 +81,7 @@ public class InitParamNameValuePair implements
 	result = prime * result + ((value == null) ? 0 : value.hashCode());
 	return result;
     }
+
     /*
      * (non-Javadoc)
      * 
@@ -101,6 +108,7 @@ public class InitParamNameValuePair implements
 	    return false;
 	return true;
     }
+
     @Override
     public int compareTo(InitParamNameValuePair o) {
 	return this.getName().compareToIgnoreCase(o.getName());

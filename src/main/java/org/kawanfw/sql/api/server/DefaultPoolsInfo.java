@@ -53,8 +53,8 @@ import org.kawanfw.sql.util.FrameworkDebug;
 /**
  * 
  * Allows to display current JDBC pool status & info for each database.<br>
- * Includes 3 methods to modify the JDBC pools.
- * <br><br>
+ * Includes 3 methods to modify the JDBC pools. <br>
+ * <br>
  * Values are accessed using methods in
  * {@code org.apache.tomcat.jdbc.pool.DataSource} class.<br>
  * The {@code DataSource} instances are retrieved in this servlet using
@@ -65,7 +65,8 @@ import org.kawanfw.sql.util.FrameworkDebug;
  * >DataSourceProxy</a> for the meaning of the displayed values. <br>
  * <br>
  * 
- * It is also possible to interact with the pool and call three {@code DataSource} set methods:
+ * It is also possible to interact with the pool and call three
+ * {@code DataSource} set methods:
  * <p>
  * <ul>
  * <li>{@code DataSource.setMinIdle(int)}.</li>
@@ -75,8 +76,8 @@ import org.kawanfw.sql.util.FrameworkDebug;
  * <br>
  * To call the servlet from a browser, cURL or a program: <br>
  * 
- * {@code http(s)://host:port/default_pools_info?password=<password_value>}
- * <br><br>
+ * {@code http(s)://host:port/default_pools_info?password=<password_value>} <br>
+ * <br>
  * Where:<br>
  * password_value = value stored in
  * user.home/.kawansoft/default_pools_info_password.txt <br>
@@ -88,22 +89,23 @@ import org.kawanfw.sql.util.FrameworkDebug;
  * <br>
  * Where:
  * <ul>
- * <li>database_name=the database as defined in aceql-server.properties. If not specified, set_method will be applied to all databases.</li>
+ * <li>database_name=the database as defined in aceql-server.properties. If not
+ * specified, set_method will be applied to all databases.</li>
  * <li>set_method = setMinIdle or setMaxIdle or setMaxActive.</li>
  * <li>int_value= the number to pass to the set_method.</li>
  * </ul>
  * 
  * <br>
- * Note that You can create your own servlet if you want to develop you own interaction with the
- * JDBC pools.<br>
+ * Note that You can create your own servlet if you want to develop you own
+ * interaction with the JDBC pools.<br>
  * Just add you servlet name, class and url-pattern in the Servlets Section of
  * your aceql-server.properties file.<br>
  * <br>
  * 
  * @author Nicolas de Pomereu
  * @since 1.0
- * @see <a
- *      href="https://tomcat.apache.org/tomcat-8.5-doc/api/org/apache/tomcat/jdbc/pool/DataSourceProxy.html">DataSourceProxy</a>
+ * @see <a href=
+ *      "https://tomcat.apache.org/tomcat-8.5-doc/api/org/apache/tomcat/jdbc/pool/DataSourceProxy.html">DataSourceProxy</a>
  */
 public class DefaultPoolsInfo extends HttpServlet {
 
@@ -113,8 +115,11 @@ public class DefaultPoolsInfo extends HttpServlet {
     private static final long serialVersionUID = 6129302507495768396L;
     private static boolean DEBUG = FrameworkDebug.isSet(DefaultPoolsInfo.class);
 
-    /* (non-Javadoc)
-     * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.
+     * HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -169,8 +174,8 @@ public class DefaultPoolsInfo extends HttpServlet {
      * @throws FileUploadException
      */
     private void executeRequestInTryCatch(HttpServletRequest request,
-	    HttpServletResponse response, OutputStream out) throws IOException,
-	    SQLException, FileUploadException {
+	    HttpServletResponse response, OutputStream out)
+	    throws IOException, SQLException, FileUploadException {
 
 	debug("Starting...");
 
@@ -193,12 +198,15 @@ public class DefaultPoolsInfo extends HttpServlet {
 	String storedPassword = null;
 
 	try {
-	    storedPassword = FileUtils.readFileToString(
-		    new File(SystemUtils.USER_HOME + File.separator
-			    + ".kawansoft" + File.separator
-			    + "default_pools_info_password.txt"), "UTF-8");
+	    storedPassword = FileUtils
+		    .readFileToString(
+			    new File(SystemUtils.USER_HOME + File.separator
+				    + ".kawansoft" + File.separator
+				    + "default_pools_info_password.txt"),
+			    "UTF-8");
 
-	    if (storedPassword == null || !storedPassword.trim().equals(password)) {
+	    if (storedPassword == null
+		    || !storedPassword.trim().equals(password)) {
 		throw new IllegalArgumentException(
 			JsonErrorReturn.INVALID_USERNAME_OR_PASSWORD);
 	    }
@@ -213,7 +221,7 @@ public class DefaultPoolsInfo extends HttpServlet {
 	}
 
 	String setDatabase = request.getParameter("database");
-	
+
 	Map<String, DataSource> dataSources = DataSourceStore.getDataSources();
 
 	if (dataSources == null || dataSources.isEmpty()) {
@@ -238,14 +246,13 @@ public class DefaultPoolsInfo extends HttpServlet {
 
 	gen.writeStartObject();
 	gen.write("status", "OK");
-	gen.write(
-		"see",
+	gen.write("see",
 		"https://tomcat.apache.org/tomcat-8.5-doc/api/org/apache/tomcat/jdbc/pool/DataSourceProxy.html");
 
 	gen.writeStartArray("databases");
 
 	for (String database : databases) {
-	    
+
 	    DataSource datasource = dataSources.get(database);
 
 	    if (setDatabase == null || setDatabase.equals(database)) {
@@ -272,7 +279,6 @@ public class DefaultPoolsInfo extends HttpServlet {
 		    }
 		}
 	    }
-	    
 
 	    gen.writeStartObject().write("database", database).writeEnd();
 
@@ -291,18 +297,15 @@ public class DefaultPoolsInfo extends HttpServlet {
 		    .writeEnd();
 	    gen.writeStartObject()
 		    .write("getNumIdle()", datasource.getNumIdle()).writeEnd();
-	    gen.writeStartObject()
-		    .write("getReconnectedCount()",
-			    datasource.getReconnectedCount()).writeEnd();
+	    gen.writeStartObject().write("getReconnectedCount()",
+		    datasource.getReconnectedCount()).writeEnd();
 	    gen.writeStartObject()
 		    .write("getReleasedCount()", datasource.getReleasedCount())
 		    .writeEnd();
-	    gen.writeStartObject()
-		    .write("getReleasedIdleCount()",
-			    datasource.getReleasedIdleCount()).writeEnd();
-	    gen.writeStartObject()
-		    .write("getRemoveAbandonedCount()",
-			    datasource.getRemoveAbandonedCount()).writeEnd();
+	    gen.writeStartObject().write("getReleasedIdleCount()",
+		    datasource.getReleasedIdleCount()).writeEnd();
+	    gen.writeStartObject().write("getRemoveAbandonedCount()",
+		    datasource.getRemoveAbandonedCount()).writeEnd();
 	    gen.writeStartObject()
 		    .write("getReturnedCount()", datasource.getReturnedCount())
 		    .writeEnd();

@@ -31,8 +31,8 @@ import org.kawanfw.sql.api.server.DatabaseConfigurator;
 /**
  * @author Nicolas de Pomereu
  *
- *         A class that allows to call DatabaseConfigurator
- *         methods per reflection using Invoker.
+ *         A class that allows to call DatabaseConfigurator methods per
+ *         reflection using Invoker.
  */
 public class ReflectionCaller {
 
@@ -42,9 +42,10 @@ public class ReflectionCaller {
     protected ReflectionCaller() {
 
     }
-    
+
     /**
-     * Return the result of getDelayBeforeNextLogin method of DatabaseConfigurator
+     * Return the result of getDelayBeforeNextLogin method of
+     * DatabaseConfigurator
      * 
      * @param databaseConfigurator
      *            the DatabaseConfigurator instance
@@ -80,7 +81,8 @@ public class ReflectionCaller {
     }
 
     /**
-     * Return the result of getDelayBeforeNextLogin method of DatabaseConfigurator
+     * Return the result of getDelayBeforeNextLogin method of
+     * DatabaseConfigurator
      * 
      * @param databaseConfigurator
      *            the DatabaseConfigurator instance
@@ -89,8 +91,8 @@ public class ReflectionCaller {
      * @throws SQLException
      *             if any Exception occurs, it is wrapped into an SQLException
      */
-    public static int getDelayBeforeNextLogin(DatabaseConfigurator databaseConfigurator)
-	    throws SQLException {
+    public static int getDelayBeforeNextLogin(
+	    DatabaseConfigurator databaseConfigurator) throws SQLException {
 	String methodName = new Object() {
 	}.getClass().getEnclosingMethod().getName();
 

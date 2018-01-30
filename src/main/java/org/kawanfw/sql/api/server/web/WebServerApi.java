@@ -44,8 +44,8 @@ import org.kawanfw.sql.version.Version;
  * <br>
  * Note that the {@code org.kawanfw.sql.WebServer} class is used to start & stop
  * the embedded Web Server from command line and uses the APIs of this class.
- * Source code is available here:&nbsp; <a
- * href="http://www.aceql.com/rest/soft/1.0/src/WebServer.java">WebServer.java</a>.
+ * Source code is available here:&nbsp; <a href=
+ * "http://www.aceql.com/rest/soft/1.0/src/WebServer.java">WebServer.java</a>.
  * 
  * @author Nicolas de Pomereu
  * 
@@ -89,8 +89,8 @@ public class WebServerApi {
      *             related problem
      */
     public void startServer(String host, int port, File propertiesFile)
-	    throws ConnectException, IOException, DatabaseConfigurationException,
-	    LifecycleException {
+	    throws ConnectException, IOException,
+	    DatabaseConfigurationException, LifecycleException {
 
 	debug("propertiesFiles: " + propertiesFile);
 
@@ -110,17 +110,17 @@ public class WebServerApi {
 	}
 
 	if (!propertiesFile.exists()) {
-	    throw new DatabaseConfigurationException("The properties file "
-		    + propertiesFile + " does not exists. "
-		    + SqlTag.PLEASE_CORRECT);
+	    throw new DatabaseConfigurationException(
+		    "The properties file " + propertiesFile
+			    + " does not exists. " + SqlTag.PLEASE_CORRECT);
 	}
-	
+
 	if (!TomcatStarterUtil.available(port)) {
 	    throw new ConnectException("The port " + port
 		    + " is not available for starting Web server. "
 		    + SqlTag.PLEASE_CORRECT);
 	}
-	
+
 	PortSemaphoreFile portSemaphoreFile = new PortSemaphoreFile(port);
 
 	try {
@@ -130,24 +130,23 @@ public class WebServerApi {
 	} catch (IOException e) {
 	    throw new IOException(
 		    "Web server can not start. Impossible to create the semaphore file: "
-			    + portSemaphoreFile.getSemaphoreFile()
-			    + CR_LF
+			    + portSemaphoreFile.getSemaphoreFile() + CR_LF
 			    + "Create manually the semapahore file to start the Web server on port "
-			    + port + ".", e);
+			    + port + ".",
+		    e);
 	}
-	
+
 	// Do not use SecureRandom class
 	if (SystemUtils.IS_OS_UNIX) {
 	    System.setProperty("java.security.egd", "file:/dev/./urandom");
 	    debug("java.security.egd: "
 		    + System.getProperty("java.security.egd"));
 	}
-	
+
 	// OK build the Servlet
 	TomcatStarter tomcatStarter = new TomcatStarter(host, port,
 		propertiesFile);
 
-	
 	tomcatStarter.startTomcat();
 
     }
@@ -172,8 +171,8 @@ public class WebServerApi {
      *             thrown by embedded Tomcat for any lifecycle related problem
      */
     public void startServer(String host, File propertiesFile)
-	    throws ConnectException, IOException, DatabaseConfigurationException,
-	    LifecycleException {
+	    throws ConnectException, IOException,
+	    DatabaseConfigurationException, LifecycleException {
 	startServer(host, DEFAULT_PORT, propertiesFile);
     }
 
@@ -201,13 +200,15 @@ public class WebServerApi {
      *             stop) can not be created
      */
     public void stopServer(int port) throws IOException {
-  
+
 	PortSemaphoreFile portSemaphoreFile = new PortSemaphoreFile(port);
-	
-	if (! portSemaphoreFile.exists()) {
-	    throw new ConnectException("WARNING! There is no " + Version.PRODUCT.NAME + " Web server running on port " + port); 
+
+	if (!portSemaphoreFile.exists()) {
+	    throw new ConnectException(
+		    "WARNING! There is no " + Version.PRODUCT.NAME
+			    + " Web server running on port " + port);
 	}
-	
+
 	// Always Force the deletion of the semaphore file:
 	try {
 	    portSemaphoreFile.delete();
@@ -215,13 +216,16 @@ public class WebServerApi {
 	    throw new IOException(
 		    "Can not stop the Web server. Please delete manually the semaphore file "
 			    + portSemaphoreFile.getSemaphoreFile()
-			    + " and then retry. ", ioe);
+			    + " and then retry. ",
+		    ioe);
 	}
-	
-	if (TomcatStarterUtil.available(port)) {	    
-	    throw new ConnectException("WARNING! There is no SQL Web server running on port " + port); 
+
+	if (TomcatStarterUtil.available(port)) {
+	    throw new ConnectException(
+		    "WARNING! There is no SQL Web server running on port "
+			    + port);
 	}
-	
+
     }
 
     /**

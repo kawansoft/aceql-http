@@ -55,16 +55,16 @@ public class StatementAnalyzerTest {
 	ddlWithNoCommentsNoSemiColumns(stAnalyzer);
 
 	System.out.println(stAnalyzer.getTableNameFromDmlStatement());
-	Assert.assertEquals("orderlog", stAnalyzer
-		.getTableNameFromDmlStatement().toLowerCase());
+	Assert.assertEquals("orderlog",
+		stAnalyzer.getTableNameFromDmlStatement().toLowerCase());
 
 	System.out.println("stAnalyzer.isInsert(): " + stAnalyzer.isInsert());
 	Assert.assertEquals(true, stAnalyzer.isInsert());
 
 	System.out.println("stAnalyzer.getStatementType(): "
 		+ stAnalyzer.getStatementType());
-	Assert.assertEquals("insert", stAnalyzer.getStatementType()
-		.toLowerCase());
+	Assert.assertEquals("insert",
+		stAnalyzer.getStatementType().toLowerCase());
 
     }
 
@@ -79,16 +79,16 @@ public class StatementAnalyzerTest {
 	ddlWithNoCommentsNoSemiColumns(stAnalyzer);
 
 	System.out.println(stAnalyzer.getTableNameFromDmlStatement());
-	Assert.assertEquals("customer", stAnalyzer
-		.getTableNameFromDmlStatement().toLowerCase());
+	Assert.assertEquals("customer",
+		stAnalyzer.getTableNameFromDmlStatement().toLowerCase());
 
 	System.out.println("stAnalyzer.isSelect(): " + stAnalyzer.isSelect());
 	Assert.assertEquals(true, stAnalyzer.isSelect());
 
 	System.out.println("stAnalyzer.getStatementType(): "
 		+ stAnalyzer.getStatementType());
-	Assert.assertEquals("select", stAnalyzer.getStatementType()
-		.toLowerCase());
+	Assert.assertEquals("select",
+		stAnalyzer.getStatementType().toLowerCase());
 
     }
 
@@ -106,16 +106,16 @@ public class StatementAnalyzerTest {
 	ddlWithNoCommentsNoSemiColumns(stAnalyzer);
 
 	System.out.println(stAnalyzer.getTableNameFromDmlStatement());
-	Assert.assertEquals("orderlog", stAnalyzer
-		.getTableNameFromDmlStatement().toLowerCase());
+	Assert.assertEquals("orderlog",
+		stAnalyzer.getTableNameFromDmlStatement().toLowerCase());
 
 	System.out.println("stAnalyzer.isUpdate(): " + stAnalyzer.isUpdate());
 	Assert.assertEquals(true, stAnalyzer.isUpdate());
 
 	System.out.println("stAnalyzer.getStatementType(): "
 		+ stAnalyzer.getStatementType());
-	Assert.assertEquals("update", stAnalyzer.getStatementType()
-		.toLowerCase());
+	Assert.assertEquals("update",
+		stAnalyzer.getStatementType().toLowerCase());
     }
 
     /**
@@ -129,16 +129,16 @@ public class StatementAnalyzerTest {
 	ddlWithNoCommentsNoSemiColumns(stAnalyzer);
 
 	System.out.println(stAnalyzer.getTableNameFromDmlStatement());
-	Assert.assertEquals("orderlog", stAnalyzer
-		.getTableNameFromDmlStatement().toLowerCase());
+	Assert.assertEquals("orderlog",
+		stAnalyzer.getTableNameFromDmlStatement().toLowerCase());
 
 	System.out.println("stAnalyzer.isDelete(): " + stAnalyzer.isDelete());
 	Assert.assertEquals(true, stAnalyzer.isDelete());
 
 	System.out.println("stAnalyzer.getStatementType(): "
 		+ stAnalyzer.getStatementType());
-	Assert.assertEquals("delete", stAnalyzer.getStatementType()
-		.toLowerCase());
+	Assert.assertEquals("delete",
+		stAnalyzer.getStatementType().toLowerCase());
 
     }
 
@@ -158,8 +158,8 @@ public class StatementAnalyzerTest {
 		+ stAnalyzer.isWithSemicolons());
 	Assert.assertEquals(false, stAnalyzer.isWithSemicolons());
 
-	System.out.println("stAnalyzer.isWithComments(): "
-		+ stAnalyzer.isWithComments());
+	System.out.println(
+		"stAnalyzer.isWithComments(): " + stAnalyzer.isWithComments());
 	Assert.assertEquals(false, stAnalyzer.isWithComments());
 
 	System.out.println("stAnalyzer.isDdl(): " + stAnalyzer.isDdl());
@@ -192,8 +192,8 @@ public class StatementAnalyzerTest {
 		+ stAnalyzer.isWithSemicolons());
 	Assert.assertEquals(true, stAnalyzer.isWithSemicolons());
 
-	System.out.println("stAnalyzer.isWithComments(): "
-		+ stAnalyzer.isWithComments());
+	System.out.println(
+		"stAnalyzer.isWithComments(): " + stAnalyzer.isWithComments());
 	Assert.assertEquals(true, stAnalyzer.isWithComments());
 
 	System.out.println("stAnalyzer.isDdl(): " + stAnalyzer.isDdl());
@@ -226,8 +226,8 @@ public class StatementAnalyzerTest {
 		+ stAnalyzer.isWithSemicolons());
 	Assert.assertEquals(false, stAnalyzer.isWithSemicolons());
 
-	System.out.println("stAnalyzer.isWithComments(): "
-		+ stAnalyzer.isWithComments());
+	System.out.println(
+		"stAnalyzer.isWithComments(): " + stAnalyzer.isWithComments());
 	Assert.assertEquals(false, stAnalyzer.isWithComments());
 
 	System.out.println("stAnalyzer.isDdl(): " + stAnalyzer.isDdl());

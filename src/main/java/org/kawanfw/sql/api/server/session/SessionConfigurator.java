@@ -23,34 +23,41 @@
  * intact.
  */
 package org.kawanfw.sql.api.server.session;
+
 /**
- * Interface that defines how to generate and verify session id for (username, database) sessions.
+ * Interface that defines how to generate and verify session id for (username,
+ * database) sessions. <br>
  * <br>
- * <br>
- * Interface implementation allows to:<p>
+ * Interface implementation allows to:
+ * <p>
  * <ul>
  * <li>Define how to generate a session id after client /connect call.</li>
  * <li>Define the sessions lifetime.</li>
- * <li>Define how to verify that the stored session is valid and not expired.</li>
+ * <li>Define how to verify that the stored session is valid and not
+ * expired.</li>
  * </ul>
  * <p>
- * Two implementations are provided:<p>
+ * Two implementations are provided:
+ * <p>
  * <ul>
- * <li>The {@link DefaultSessionConfigurator} default implementation stores user info
- * on the server.</li>
- * <li>The {@link JwtSessionConfigurator} implementation generates self contained JWT (JSON Web Tokens) and there is no info storage 
- * on the server.</li>
+ * <li>The {@link DefaultSessionConfigurator} default implementation stores user
+ * info on the server.</li>
+ * <li>The {@link JwtSessionConfigurator} implementation generates self
+ * contained JWT (JSON Web Tokens) and there is no info storage on the
+ * server.</li>
  * </ul>
+ * 
  * @author Nicolas de Pomereu
  */
 public interface SessionConfigurator {
     /**
      * Generates a unique session id for the (username, database) couple. The
      * session id is used to authenticate clients calls that pass it at each
-     * http call.
-     * <br><br>
-     * Method may be also use to store in server memory the (username, database) couple
-     * for the generated session id. This is done in the default implementation {@link DefaultSessionConfigurator}.
+     * http call. <br>
+     * <br>
+     * Method may be also use to store in server memory the (username, database)
+     * couple for the generated session id. This is done in the default
+     * implementation {@link DefaultSessionConfigurator}.
      * 
      * @param username
      *            the username to store for the passed session id
@@ -60,6 +67,7 @@ public interface SessionConfigurator {
      * @return a unique session id for the (username, database) couple.
      */
     public String generateSessionId(String username, String database);
+
     /**
      * Loads the username stored for the passed session id
      * 
@@ -68,6 +76,7 @@ public interface SessionConfigurator {
      * @return the username stored for the passed session Id
      */
     public String getUsername(String sessionId);
+
     /**
      * Loads the database stored for the passed session id
      * 
@@ -76,6 +85,7 @@ public interface SessionConfigurator {
      * @return the database stored for the passed session Id
      */
     public String getDatabase(String sessionId);
+
     /**
      * Loads the creation time of the instance
      * 
@@ -84,6 +94,7 @@ public interface SessionConfigurator {
      * @return the creation time of the instance
      */
     public long getCreationTime(String sessionId);
+
     /**
      * Removes storage for the passed session Id. Method is called by AceQL when
      * client side calls {@code disconnect}
@@ -91,6 +102,7 @@ public interface SessionConfigurator {
      * @param sessionId
      */
     public void remove(String sessionId);
+
     /**
      * Verify that this session id corresponds to an existing and is still valid
      * (non expired).
@@ -100,6 +112,7 @@ public interface SessionConfigurator {
      * @return true if the sessionId is valid
      */
     public boolean verifySessionId(String sessionId);
+
     /**
      * Allows to define the sessions lifetime in minutes
      * 

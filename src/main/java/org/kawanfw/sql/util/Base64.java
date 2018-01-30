@@ -119,19 +119,19 @@ public class Base64 {
      * alphabet does not use the capital letters. It is designed for use in
      * environments where "case folding" occurs.
      */
-    private static final char intToAltBase64[] = { '!', '"', '#', '$', '%',
-	    '&', '\'', '(', ')', ',', '-', '.', ':', ';', '<', '>', '@', '[',
-	    ']', '^', '`', '_', '{', '|', '}', '~', 'a', 'b', 'c', 'd', 'e',
-	    'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r',
-	    's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4',
-	    '5', '6', '7', '8', '9', '+', '?' };
+    private static final char intToAltBase64[] = { '!', '"', '#', '$', '%', '&',
+	    '\'', '(', ')', ',', '-', '.', ':', ';', '<', '>', '@', '[', ']',
+	    '^', '`', '_', '{', '|', '}', '~', 'a', 'b', 'c', 'd', 'e', 'f',
+	    'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's',
+	    't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5',
+	    '6', '7', '8', '9', '+', '?' };
 
     /**
      * Translates the specified Base64 string (as per Preferences.get(byte[]))
      * into a byte array.
      * 
-     * @throws IllegalArgumentException if <tt>s</tt> is not a valid Base64
-     *        string.
+     * @throws IllegalArgumentException
+     *             if <tt>s</tt> is not a valid Base64 string.
      */
     public static byte[] base64ToByteArray(String s) {
 	return base64ToByteArray(s, false);
@@ -196,8 +196,8 @@ public class Base64 {
     }
 
     /**
-     * Translates the specified character, which is assumed to be in the
-     * "Base 64 Alphabet" into its equivalent 6-bit positive integer.
+     * Translates the specified character, which is assumed to be in the "Base
+     * 64 Alphabet" into its equivalent 6-bit positive integer.
      * 
      * @throw IllegalArgumentException or ArrayOutOfBoundsException if c is not
      *        in the Base64 Alphabet.

@@ -455,7 +455,7 @@ public class TomcatStarterUtil {
 	    properties = new LinkedProperties(linkedProperties);
 	    properties.load(in);
 	}
-	
+
 	return properties;
     }
 

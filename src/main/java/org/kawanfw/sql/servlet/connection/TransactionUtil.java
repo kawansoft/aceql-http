@@ -55,7 +55,8 @@ public class TransactionUtil {
      * getTransactionIsolation
      * 
      * @param request
-     * @param response TODO
+     * @param response
+     *            TODO
      * @param out
      * @param action
      * @param connection
@@ -64,7 +65,8 @@ public class TransactionUtil {
      * @throws IllegalArgumentException
      */
     public static void setConnectionModifierAction(HttpServletRequest request,
-	    HttpServletResponse response, OutputStream out, String action, Connection connection)
+	    HttpServletResponse response, OutputStream out, String action,
+	    Connection connection)
 	    throws IOException, SQLException, IllegalArgumentException {
 
 	try {
@@ -75,34 +77,38 @@ public class TransactionUtil {
 	    } else if (action.equals(HttpParameter.ROLLBACK)) {
 		connection.rollback();
 	    } else if (action.equals(HttpParameter.SET_AUTO_COMMIT)) {
-		boolean autoCommit = Boolean.parseBoolean(request
-			.getParameter(HttpParameter.ACTION_VALUE));
+		boolean autoCommit = Boolean.parseBoolean(
+			request.getParameter(HttpParameter.ACTION_VALUE));
 		connection.setAutoCommit(autoCommit);
 	    } else if (action.equals(HttpParameter.SET_READ_ONLY)) {
-		boolean readOnly = Boolean.parseBoolean(request
-			.getParameter(HttpParameter.ACTION_VALUE));
+		boolean readOnly = Boolean.parseBoolean(
+			request.getParameter(HttpParameter.ACTION_VALUE));
 		connection.setReadOnly(readOnly);
 	    } else if (action.equals(HttpParameter.SET_HOLDABILITY)) {
-		int holdability = getHoldability(request.getParameter(HttpParameter.ACTION_VALUE));
+		int holdability = getHoldability(
+			request.getParameter(HttpParameter.ACTION_VALUE));
 		connection.setHoldability(holdability);
 	    } else if (action
 		    .equals(HttpParameter.SET_TRANSACTION_ISOLATION_LEVEL)) {
-		int level = getTransactionIsolation(request.getParameter(HttpParameter.ACTION_VALUE));
+		int level = getTransactionIsolation(
+			request.getParameter(HttpParameter.ACTION_VALUE));
 		connection.setTransactionIsolation(level);
 	    } else {
-		throw new IllegalArgumentException("Invalid Sql Action: "
-			+ action);
+		throw new IllegalArgumentException(
+			"Invalid Sql Action: " + action);
 	    }
 
 	    ServerSqlManager.writeLine(out, JsonOkReturn.build());
 
 	} catch (IllegalArgumentException e) {
-	    JsonErrorReturn errorReturn = new JsonErrorReturn(
-		    response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, JsonErrorReturn.ERROR_ACEQL_ERROR, e.getMessage());
+	    JsonErrorReturn errorReturn = new JsonErrorReturn(response,
+		    HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+		    JsonErrorReturn.ERROR_ACEQL_ERROR, e.getMessage());
 	    ServerSqlManager.writeLine(out, errorReturn.build());
 	} catch (SQLException e) {
-	    JsonErrorReturn errorReturn = new JsonErrorReturn(
-		    response, HttpServletResponse.SC_BAD_REQUEST, JsonErrorReturn.ERROR_JDBC_ERROR, e.getMessage());
+	    JsonErrorReturn errorReturn = new JsonErrorReturn(response,
+		    HttpServletResponse.SC_BAD_REQUEST,
+		    JsonErrorReturn.ERROR_JDBC_ERROR, e.getMessage());
 	    ServerSqlManager.writeLine(out, errorReturn.build());
 	}
 
@@ -122,11 +128,10 @@ public class TransactionUtil {
      * @throws IllegalArgumentException
      */
 
-    public static void getConnectionionInfosExecute(
-	    HttpServletRequest request,
-	    HttpServletResponse response, OutputStream out,
-	    String action, Connection connection) throws IOException, SQLException,
-	    IllegalArgumentException {
+    public static void getConnectionionInfosExecute(HttpServletRequest request,
+	    HttpServletResponse response, OutputStream out, String action,
+	    Connection connection)
+	    throws IOException, SQLException, IllegalArgumentException {
 
 	try {
 	    if (action.equals(HttpParameter.GET_AUTO_COMMIT)) {
@@ -150,44 +155,41 @@ public class TransactionUtil {
 	    } else if (action
 		    .equals(HttpParameter.GET_TRANSACTION_ISOLATION_LEVEL)) {
 		int transactionIsolation = connection.getTransactionIsolation();
-		String strTransactionIsolation = getTransactionIsolationAsString(transactionIsolation);
-		ServerSqlManager.writeLine(
-			out,
-			JsonOkReturn.build("result", ""
-				+ strTransactionIsolation));
+		String strTransactionIsolation = getTransactionIsolationAsString(
+			transactionIsolation);
+		ServerSqlManager.writeLine(out, JsonOkReturn.build("result",
+			"" + strTransactionIsolation));
 	    } else {
-		throw new IllegalArgumentException("Invalid Sql Action: "
-			+ action);
+		throw new IllegalArgumentException(
+			"Invalid Sql Action: " + action);
 	    }
 	} catch (IllegalArgumentException e) {
-	    JsonErrorReturn errorReturn = new JsonErrorReturn(
-		    response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, JsonErrorReturn.ERROR_ACEQL_ERROR, e.getMessage());
+	    JsonErrorReturn errorReturn = new JsonErrorReturn(response,
+		    HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+		    JsonErrorReturn.ERROR_ACEQL_ERROR, e.getMessage());
 	    ServerSqlManager.writeLine(out, errorReturn.build());
 	} catch (SQLException e) {
-	    JsonErrorReturn errorReturn = new JsonErrorReturn(
-		    response, HttpServletResponse.SC_BAD_REQUEST, JsonErrorReturn.ERROR_JDBC_ERROR, e.getMessage());
+	    JsonErrorReturn errorReturn = new JsonErrorReturn(response,
+		    HttpServletResponse.SC_BAD_REQUEST,
+		    JsonErrorReturn.ERROR_JDBC_ERROR, e.getMessage());
 	    ServerSqlManager.writeLine(out, errorReturn.build());
 	}
     }
-    
-    private static String getTransactionIsolationAsString(int transactionIsolationLevel) {
-	
+
+    private static String getTransactionIsolationAsString(
+	    int transactionIsolationLevel) {
+
 	if (transactionIsolationLevel == Connection.TRANSACTION_NONE) {
 	    return HttpParameter.NONE;
-	}
-	else if (transactionIsolationLevel == Connection.TRANSACTION_READ_UNCOMMITTED) {
+	} else if (transactionIsolationLevel == Connection.TRANSACTION_READ_UNCOMMITTED) {
 	    return HttpParameter.READ_UNCOMMITTED;
-	}
-	else if (transactionIsolationLevel == Connection.TRANSACTION_READ_COMMITTED) {
+	} else if (transactionIsolationLevel == Connection.TRANSACTION_READ_COMMITTED) {
 	    return HttpParameter.READ_COMMITTED;
-	}
-	else if (transactionIsolationLevel == Connection.TRANSACTION_REPEATABLE_READ) {
+	} else if (transactionIsolationLevel == Connection.TRANSACTION_REPEATABLE_READ) {
 	    return HttpParameter.REPEATABLE_READ;
-	}
-	else if (transactionIsolationLevel == Connection.TRANSACTION_SERIALIZABLE) {
+	} else if (transactionIsolationLevel == Connection.TRANSACTION_SERIALIZABLE) {
 	    return HttpParameter.SERIALIZABLE;
-	}
-	else {
+	} else {
 	    return "UNKNOWN";
 	}
     }
@@ -215,24 +217,22 @@ public class TransactionUtil {
 	} else if (actionValue.equals(HttpParameter.CLOSE_CURSORS_AT_COMMIT)) {
 	    return ResultSet.CLOSE_CURSORS_AT_COMMIT;
 	} else {
-	    throw new IllegalArgumentException("Unsupported Holdability: "
-		    + actionValue);
+	    throw new IllegalArgumentException(
+		    "Unsupported Holdability: " + actionValue);
 	}
     }
-    
+
     private static String getHoldabilityAsString(int holdability) {
 
 	if (holdability == ResultSet.HOLD_CURSORS_OVER_COMMIT) {
 	    return HttpParameter.HOLD_CURSORS_OVER_COMMIT;
 	} else if (holdability == ResultSet.CLOSE_CURSORS_AT_COMMIT) {
 	    return HttpParameter.CLOSE_CURSORS_AT_COMMIT;
-	}else {
-	    throw new IllegalArgumentException("Unsupported Holdability: "
-		    + holdability);
+	} else {
+	    throw new IllegalArgumentException(
+		    "Unsupported Holdability: " + holdability);
 	}
     }
-    
-    
 
     /**
      * Method called by children Servlet for debug purpose println is done only

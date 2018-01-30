@@ -23,6 +23,7 @@
  * intact.
  */
 package org.kawanfw.sql.api.server.util;
+
 /**
  * 
  * Allows to get version info.
@@ -39,9 +40,10 @@ public class Version {
     public Version() {
 
     }
-    
+
     /**
      * Returns the product name, version and date
+     * 
      * @return the product name, version and date
      */
     public String getVersion() {

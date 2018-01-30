@@ -44,16 +44,18 @@ import org.kawanfw.sql.util.SqlTag;
 /**
  * @author Nicolas de Pomereu
  * 
- *         Creates a PoolProperties from the passed Properties on constructor. <br>
+ *         Creates a PoolProperties from the passed Properties on constructor.
+ *         <br>
  *         Uses reflection to call all setXxx methods of PoolProperties using
  *         the property names.
  * 
  */
 public class PoolPropertiesCreator {
-    
+
     /** Debug info */
-    private static boolean DEBUG = FrameworkDebug.isSet(PoolPropertiesCreator.class);
-    
+    private static boolean DEBUG = FrameworkDebug
+	    .isSet(PoolPropertiesCreator.class);
+
     /** The properties */
     private Properties properties = null;
 
@@ -95,17 +97,18 @@ public class PoolPropertiesCreator {
      * @throws Exception
      *             for all others cases
      */
-    public PoolProperties create() throws ClassNotFoundException,
-	    InstantiationException, IllegalAccessException, SecurityException,
-	    IllegalArgumentException, NoSuchMethodException,
-	    InvocationTargetException {
+    public PoolProperties create()
+	    throws ClassNotFoundException, InstantiationException,
+	    IllegalAccessException, SecurityException, IllegalArgumentException,
+	    NoSuchMethodException, InvocationTargetException {
 
-	//theClass = Class.forName("org.apache.tomcat.jdbc.pool.PoolProperties");
-	//theObject = theClass.newInstance();
-    
-    theClass = org.apache.tomcat.jdbc.pool.PoolProperties.class;
-    theObject = new org.apache.tomcat.jdbc.pool.PoolProperties();
-    	
+	// theClass =
+	// Class.forName("org.apache.tomcat.jdbc.pool.PoolProperties");
+	// theObject = theClass.newInstance();
+
+	theClass = org.apache.tomcat.jdbc.pool.PoolProperties.class;
+	theObject = new org.apache.tomcat.jdbc.pool.PoolProperties();
+
 	Method[] allMethods = theClass.getDeclaredMethods();
 	Field[] fieldsArray = theClass.getDeclaredFields();
 
@@ -125,7 +128,8 @@ public class PoolPropertiesCreator {
 	}
 
 	// First step: build the map httpClientParams
-	for (Enumeration<?> e = properties.propertyNames(); e.hasMoreElements();) {
+	for (Enumeration<?> e = properties.propertyNames(); e
+		.hasMoreElements();) {
 
 	    String propertyName = (String) e.nextElement();
 	    String propertyValue = properties.getProperty(propertyName);
@@ -135,14 +139,15 @@ public class PoolPropertiesCreator {
 	    }
 
 	    propertyName = propertyName.trim();
-	    
+
 	    // Test that the property is a field of PoolProperties
 	    if (propertyName.startsWith(database + ".")) {
 
-		propertyName = StringUtils.substringAfter(propertyName,database + ".");
-	
+		propertyName = StringUtils.substringAfter(propertyName,
+			database + ".");
+
 		debug("property.name: " + propertyName);
-		
+
 		if (fields.contains(propertyName)) {
 		    try {
 			callMethod(propertyName, propertyValue);
@@ -228,7 +233,6 @@ public class PoolPropertiesCreator {
 
     }
 
-		
     /**
      * Print debug info
      * 
@@ -239,5 +243,5 @@ public class PoolPropertiesCreator {
 	if (DEBUG)
 	    System.out.println(new Date() + " " + s);
     }
-    
+
 }

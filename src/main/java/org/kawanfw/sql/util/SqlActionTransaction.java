@@ -23,6 +23,7 @@
  * intact.
  */
 package org.kawanfw.sql.util;
+
 /**
  * @author Nicolas de Pomereu
  * 
@@ -45,7 +46,8 @@ public class SqlActionTransaction {
     public static final String ACTION_SQL_GET_HOLDABILITY = "sql_get_holdability";
     public static final String ACTION_SQL_GET_TRANSACTION_ISOLATION = "sql_get_transaction_isolation=";
 
-    //public static final String ACTION_SQL_INIT_REMOTE_CONNECTION = "sql_init_remote_connection";
+    // public static final String ACTION_SQL_INIT_REMOTE_CONNECTION =
+    // "sql_init_remote_connection";
 
     /*
      * setSavepoint setSavepoint(name) rollback(Savepoint savepoint)

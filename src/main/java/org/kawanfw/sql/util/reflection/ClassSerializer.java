@@ -40,11 +40,12 @@ import org.kawanfw.sql.util.Base64;
  * @author Nicolas de Pomereu
  *
  *         Allows to serialize any serializable class instance to base64 string
- *         with serialization and to get back the instance with deserialization. <br>
- * <br>
+ *         with serialization and to get back the instance with deserialization.
+ *         <br>
+ *         <br>
  *         The {@link #toPropertyValue(Object)} allows to serialize a
- *         {@link HttpProxy} or {@link SessionParameters} instance and to
- *         pass the serialized instance as a property value to the
+ *         {@link HttpProxy} or {@link SessionParameters} instance and to pass
+ *         the serialized instance as a property value to the
  *         {@link RemoteDriver}.
  * 
  */
@@ -72,10 +73,9 @@ public class ClassSerializer<E> {
 	String serializedBase64 = null;
 
 	ByteArrayOutputStream bos = new ByteArrayOutputStream();
-	
 
-	try (ObjectOutputStream oos = new ObjectOutputStream(bos);){
-	    
+	try (ObjectOutputStream oos = new ObjectOutputStream(bos);) {
+
 	    oos.writeObject(element);
 	    oos.flush();
 	    byte[] byteArray = bos.toByteArray();
@@ -100,8 +100,8 @@ public class ClassSerializer<E> {
      *             Class of a serialized object cannot be found.
      */
     @SuppressWarnings("unchecked")
-    public E fromBase64(String serializedBase64) throws IOException,
-	    ClassNotFoundException {
+    public E fromBase64(String serializedBase64)
+	    throws IOException, ClassNotFoundException {
 
 	E element = null;
 
@@ -109,8 +109,8 @@ public class ClassSerializer<E> {
 
 	ByteArrayInputStream bis = new ByteArrayInputStream(byteArray);
 
-	try (ObjectInputStream ois = new ObjectInputStream(bis); ){
-	    
+	try (ObjectInputStream ois = new ObjectInputStream(bis);) {
+
 	    element = (E) ois.readObject();
 	    return element;
 	}

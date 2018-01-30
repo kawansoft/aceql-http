@@ -120,8 +120,8 @@ public class ServerSqlDispatch {
      * @throws FileUploadException
      */
     private void executeRequestInTryCatch(HttpServletRequest request,
-	    HttpServletResponse response, OutputStream out) throws IOException,
-	    SQLException, FileUploadException {
+	    HttpServletResponse response, OutputStream out)
+	    throws IOException, SQLException, FileUploadException {
 
 	// Immediate catch if we are asking a file upload, because
 	// parameters are in unknown sequence.
@@ -235,7 +235,8 @@ public class ServerSqlDispatch {
 
 	out = response.getOutputStream();
 	if (action.equals(HttpParameter.GET_VERSION)) {
-	    String version = new org.kawanfw.sql.version.Version.PRODUCT().server();
+	    String version = new org.kawanfw.sql.version.Version.PRODUCT()
+		    .server();
 	    ServerSqlManager.writeLine(out,
 		    JsonOkReturn.build("result", version));
 	    return;
@@ -288,7 +289,7 @@ public class ServerSqlDispatch {
 		    ExceptionUtils.getStackTrace(e));
 	    ServerSqlManager.writeLine(out, jsonErrorReturn.build());
 	    LoggerUtil.log(request, e);
-	    
+
 	    return;
 	}
 
@@ -303,8 +304,8 @@ public class ServerSqlDispatch {
 	    SavepointUtil.setSavepointExecute(request, response, out, action,
 		    connection);
 	} else if (isConnectionReader(action)) {
-	    TransactionUtil.getConnectionionInfosExecute(request, response,
-		    out, action, connection);
+	    TransactionUtil.getConnectionionInfosExecute(request, response, out,
+		    action, connection);
 	} else {
 	    throw new IllegalArgumentException("Invalid Sql Action: " + action);
 	}
@@ -324,8 +325,8 @@ public class ServerSqlDispatch {
     }
 
     private void blobUpload(HttpServletRequest request,
-	    HttpServletResponse response) throws IOException,
-	    FileUploadException, SQLException {
+	    HttpServletResponse response)
+	    throws IOException, FileUploadException, SQLException {
 	debug("BlobUploadConfigurator Start");
 
 	// Pass Username & Database because they can't be recovered from
@@ -367,17 +368,18 @@ public class ServerSqlDispatch {
 	    JsonErrorReturn errorReturn = new JsonErrorReturn(response,
 		    HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
 		    JsonErrorReturn.ERROR_ACEQL_ERROR,
-		    JsonErrorReturn.ERROR_UPLOADING_BLOB + e.getMessage(), ExceptionUtils.getStackTrace(e));
+		    JsonErrorReturn.ERROR_UPLOADING_BLOB + e.getMessage(),
+		    ExceptionUtils.getStackTrace(e));
 	    out.println(errorReturn.build());
-	    
+
 	    LoggerUtil.log(request, e);
 	}
     }
 
     private void blobDownload(HttpServletRequest request,
 	    HttpServletResponse response, String username,
-	    DatabaseConfigurator databaseConfigurator) throws IOException,
-	    SQLException {
+	    DatabaseConfigurator databaseConfigurator)
+	    throws IOException, SQLException {
 	String blobId = request.getParameter(HttpParameter.BLOB_ID);
 
 	File blobDirectory = databaseConfigurator.getBlobsDirectory(username);
@@ -393,7 +395,7 @@ public class ServerSqlDispatch {
 		    JsonErrorReturn.ERROR_ACEQL_ERROR,
 		    JsonErrorReturn.BLOB_DIRECTORY_DOES_NOT_EXIST
 			    + blobDirectory.getName());
-	    prinWriter.println(errorReturn.build());	    
+	    prinWriter.println(errorReturn.build());
 	    return;
 	}
 
@@ -421,9 +423,10 @@ public class ServerSqlDispatch {
 	    JsonErrorReturn errorReturn = new JsonErrorReturn(response,
 		    HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
 		    JsonErrorReturn.ERROR_ACEQL_ERROR,
-		    JsonErrorReturn.ERROR_DOWNLOADING_BLOB + e.getMessage(), ExceptionUtils.getStackTrace(e));
+		    JsonErrorReturn.ERROR_DOWNLOADING_BLOB + e.getMessage(),
+		    ExceptionUtils.getStackTrace(e));
 	    ServerSqlManager.writeLine(out, errorReturn.build());
-	    
+
 	    LoggerUtil.log(request, e);
 	}
     }
@@ -447,7 +450,8 @@ public class ServerSqlDispatch {
 		|| action.equals(HttpParameter.ROLLBACK)
 		|| action.equals(HttpParameter.SET_READ_ONLY)
 		|| action.equals(HttpParameter.SET_HOLDABILITY)
-		|| action.equals(HttpParameter.SET_TRANSACTION_ISOLATION_LEVEL)) {
+		|| action.equals(
+			HttpParameter.SET_TRANSACTION_ISOLATION_LEVEL)) {
 	    return true;
 	} else {
 	    return false;
@@ -458,8 +462,8 @@ public class ServerSqlDispatch {
 	if (action.equals(HttpParameter.GET_AUTO_COMMIT)
 		|| action.equals(HttpParameter.GET_CATALOG)
 		|| action.equals(HttpParameter.GET_HOLDABILITY)
-		|| action.equals(HttpParameter.IS_READ_ONLY)
-		|| action.equals(HttpParameter.GET_TRANSACTION_ISOLATION_LEVEL)) {
+		|| action.equals(HttpParameter.IS_READ_ONLY) || action.equals(
+			HttpParameter.GET_TRANSACTION_ISOLATION_LEVEL)) {
 	    return true;
 	} else {
 	    return false;
