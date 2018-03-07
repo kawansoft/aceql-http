@@ -50,13 +50,13 @@ Open a terminal and download with `Wget`
 If you use an [Open Source database](https://www.aceql.com/open-source-and-commercial-sql-databases.html):
 
 ```bash
-$ wget https://www.aceql.com/download/2.0/aceql-http-2.0.run
+$ wget https://www.aceql.com/rest/soft/2.0/download/aceql-http-2.0.run
 ```
 
 If you use a commercial database:
 
 ```bash
-$ wget https://www.aceql.com/download/2.0/aceql-http-pro-2.0.run
+$ wget https://www.aceql.com/rest/soft/2.0/download/aceql-http-pro-2.0.run
 ```
 
 You can get an AceQL Professional trial license key here: [https://www.aceql.com/trial](https://www.aceql.com/trial).
