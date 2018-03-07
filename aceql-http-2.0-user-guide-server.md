@@ -544,13 +544,13 @@ then your `web.xml` should contain the following code:
 
 ```xml
 <servlet>
-	<servlet-name>aceql</servlet-name>
-	<servlet-class>org.kawanfw.sql.servlet.ServerSqlManager</servlet-class>
+    <servlet-name>aceql</servlet-name>
+    <servlet-class>org.kawanfw.sql.servlet.ServerSqlManager</servlet-class>
 
-	<init-param>
-		<param-name>properties</param-name>
-		<param-value>c:\Users\Mike\aceql-server.properties</param-value>
-	</init-param>
+    <init-param>
+        <param-name>properties</param-name>
+        <param-value>c:\Users\Mike\aceql-server.properties</param-value>
+    </init-param>
 </servlet>
 
 <!—- Allows you to see immediately in servet container if servlet is OK or KO --> 
@@ -558,8 +558,8 @@ then your `web.xml` should contain the following code:
 
 <servlet-mapping>
     <!-- Note the trailing /* in url-pattern --> 
-	<servlet-name>aceql</servlet-name>
-	<url-pattern>/aceql/*</url-pattern>
+    <servlet-name>aceql</servlet-name>
+    <url-pattern>/aceql/*</url-pattern>
 </servlet-mapping>
 ```
 
