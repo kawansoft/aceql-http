@@ -203,8 +203,8 @@ Because the software installs and runs a Windows Service, you must be logged as 
 
 Download either:
 
-- [aceql-http-2.0.1-Setup.exe](https://www.aceql.com/SoftwareDownload?software=aceql-http-2.0.1-Setup.exe&version=1.0) if you use an [Open Source database](https://www.aceql.com/open-source-and-commercial-sql-databases.html).
-- [AceQL-HTTP-Pro-1.0.1-Setup.exe](https://www.aceql.com/SoftwareDownload?software=AceQL-HTTP-Pro-1.0.1-Setup.exe&version=1.0) if you use a commercial database. You can get an AceQL Professional trial license key here: [https://www.aceql.com/trial](https://www.aceql.com/trial).
+- [AceQL-http-2.0-Setup.exe](https://www.aceql.com/SoftwareDownload?software=AceQL-HTTP-2.0-Setup.exe&version=2.0) if you use an [Open Source database](https://www.aceql.com/open-source-and-commercial-sql-databases.html).
+- [AceQL-HTTP-Pro-2.0-Setup.exe](https://www.aceql.com/SoftwareDownload?software=AceQL-HTTP-Pro-2.0-Setup.exe&version=2.0) if you use a commercial database. You can get an AceQL Professional trial license key here: [https://www.aceql.com/trial](https://www.aceql.com/trial).
 
 Run the installer.
 
@@ -574,7 +574,7 @@ From now on, you can read the [C# Client SDK User Guide](https://www.aceql.com/D
    <version>1.0</version>
    ```
 
-2. If you don’t use Maven: the [aceql-http-client-all-2.0.jar](https://www.aceql.com/SoftwareDownload?software=aceql-http-client-sdk-all-2.0.jar&version=2.0) file contains the SDK with all dependencies.
+2. If you don’t use Maven: the [aceql-http-client-all-1.0.1.jar](https://www.aceql.com/SoftwareDownload?software=aceql-http-client-sdk-all-1.0.1.jar&version=1.0) file contains the SDK with all dependencies.
 
 3. Create an `org.kawanfw.sql.api.client.quickstart` package in your IDE.
 
