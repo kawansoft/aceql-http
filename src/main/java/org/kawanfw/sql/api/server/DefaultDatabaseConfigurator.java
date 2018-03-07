@@ -225,14 +225,6 @@ public class DefaultDatabaseConfigurator implements DatabaseConfigurator {
     }
 
     /**
-     * @return 0 hours (connections are never released and closed).
-     */
-    @Override
-    public int getConnectionMaxAge() throws IOException, SQLException {
-	return 0;
-    }
-
-    /**
      * @return <code>user.home/.aceql-server-root/username</code>. (
      *         {@code user.home} is the one of the servlet container).
      */

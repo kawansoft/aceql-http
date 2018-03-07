@@ -1,6 +1,6 @@
 
                      AceQL HTTP
-                    Version 1.0
+                    Version 2.0
                     Release Notes
 
 
@@ -28,6 +28,37 @@ AceQL HTTP Professional Edition is licensed through:
  - Single Site AceQL License
     
 See AceQL HTTP Use Guide for more info about AceQL licenses.
+
+
+AceQL HTTP Version 2.0 - 28-feb-2018
+------------------------------------
+
+What's new:
+
+- Server allows to create new Connection without re-authentication.
+- It is now possible to create and use from client side more than
+  one Connection on the same database.
+  
+- Stateful mode is now the main and only mode. This simplifies
+  the software architecture, the user documentation and ease of 
+  used for developers.
+  
+- DatabaseConfigurator.getConnectionMaxAge() has been removed 
+  because of duplicate usage. (Same kind of value can be set when 
+  defining Connection pool whatever pool system is used).
+  
+- DefaultSessionConfigurator: getSessionTimelife() is now 0 
+  (infinite session lifetime) instead of 12 hours.
+  
+- Connections Store cleaning has been completely rewritten. A 
+  cleaning thread is regularly launched instead of a permanent
+  thread.
+  
+- Use last Tomcat 8.5 librairies (v. 8.5.28).
+
+- Note that this version is compatible will all Client SDK 
+  versions.
+
 
 
 WINDOWS VERSION ONLY - AceQL HTTP Version 1.0 - 27-dec-2017

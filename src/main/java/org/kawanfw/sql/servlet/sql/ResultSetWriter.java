@@ -545,18 +545,18 @@ public class ResultSetWriter {
 	RowId rowId = resultSet.getRowId(columnIndex);
 
 	String sessionId = request.getParameter(HttpParameter.SESSION_ID);
+	String connectionId = request.getParameter(HttpParameter.CONNECTION_ID);
 
-	if (!ConnectionStore.isStateless(username, sessionId)) {
-	    ConnectionStore connectionStore = new ConnectionStore(username,
-		    sessionId);
-	    Connection connection = connectionStore.get();
+	ConnectionStore connectionStore = new ConnectionStore(username,
+		sessionId, connectionId);
+	Connection connection = connectionStore.get();
 
-	    if (connection == null) {
-		throw new SQLException(SqlReturnCode.SESSION_INVALIDATED);
-	    }
-
-	    connectionStore.put(rowId);
+	if (connection == null) {
+	    throw new SQLException(SqlReturnCode.SESSION_INVALIDATED);
 	}
+
+	connectionStore.put(rowId);
+
 
 	return rowId.toString();
 	// RowIdHttp rowIdHttp = new RowIdHttp(rowId.hashCode(),

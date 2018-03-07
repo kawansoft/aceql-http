@@ -25,8 +25,8 @@
 package org.kawanfw.sql.api.server.connectionstore;
 
 /**
- * Defines a key for the Connection Store that keeps connections in memory in
- * stateful mode. The connections are identified by the client username and an
+ * Defines a key for the Connection Store that keeps connections in memory.
+ * The connections are identified by the client username and an
  * unique generated connection Id in order to identify different connections
  * belonging to the same username.
  * 
@@ -40,23 +40,31 @@ public class ConnectionKey {
     private String username = null;
 
     /**
-     * The client Connection Id which is unique per Connection built on client
-     * side
+     * The client Session Id which is unique per (username, database)
      */
-    private String connectionId = null;
+    private String sessionId = null;
+
+    /**
+     * The client  Connection Id which is unique per Connection 
+     */
+    private String connectionId;
 
     /**
      * Constructor
      * 
      * @param username
      *            the client username
-     * @param connectionId
-     *            the unique Id per Connection built on client side
+     * @param sessionId
+     *            the unique Id per Session 
+     * @param connectionId 
+     * 		  the unique Connection Id per Connection
      */
-    public ConnectionKey(String username, String connectionId) {
+    public ConnectionKey(String username, String sessionId, String connectionId) {
 
 	this.username = username;
+	this.sessionId = sessionId;
 	this.connectionId = connectionId;
+	
     }
 
     /**
@@ -69,20 +77,25 @@ public class ConnectionKey {
     }
 
     /**
+     * Returns the unique session Id corresponding to this ConnectionKey.
+     * 
+     * @return the client unique session Id corresponding to this
+     *         ConnectionKey
+     */
+    public String getSessionId() {
+	return sessionId;
+    }
+
+    /**
      * Returns the unique connection Id corresponding to this ConnectionKey.
      * 
      * @return the client unique connection Id corresponding to this
      *         ConnectionKey
      */
     public String getConnectionId() {
-	return connectionId;
+        return connectionId;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see java.lang.Object#hashCode()
-     */
     @Override
     public int hashCode() {
 	final int prime = 31;
@@ -90,15 +103,12 @@ public class ConnectionKey {
 	result = prime * result
 		+ ((connectionId == null) ? 0 : connectionId.hashCode());
 	result = prime * result
+		+ ((sessionId == null) ? 0 : sessionId.hashCode());
+	result = prime * result
 		+ ((username == null) ? 0 : username.hashCode());
 	return result;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
     @Override
     public boolean equals(Object obj) {
 	if (this == obj)
@@ -113,6 +123,11 @@ public class ConnectionKey {
 		return false;
 	} else if (!connectionId.equals(other.connectionId))
 	    return false;
+	if (sessionId == null) {
+	    if (other.sessionId != null)
+		return false;
+	} else if (!sessionId.equals(other.sessionId))
+	    return false;
 	if (username == null) {
 	    if (other.username != null)
 		return false;
@@ -121,15 +136,12 @@ public class ConnectionKey {
 	return true;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see java.lang.Object#toString()
-     */
     @Override
     public String toString() {
-	return "ConnectionKey [username=" + username + ", connectionId="
-		+ connectionId + "]";
+	return "ConnectionKey [username=" + username + ", sessionId="
+		+ sessionId + ", connectionId=" + connectionId + "]";
     }
+
+
 
 }

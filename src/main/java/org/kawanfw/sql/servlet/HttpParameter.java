@@ -41,12 +41,13 @@ public class HttpParameter {
 
     }
 
+    // Login info
     public static final String USERNAME = "username";
     public static final String SESSION_ID = "session_id";
     public static final String DATABASE = "database";
-
+    public static final String CONNECTION_ID = "connection_id";
+    
     public static final String PASSWORD = "password";
-    public static final String STATELESS = "stateless";
     public static final String PRETTY_PRINTING = "pretty_printing";
     public static final String COLUMN_TYPES = "column_types";
 
@@ -55,10 +56,19 @@ public class HttpParameter {
 
     public static final String UNKNOWN = "unknown";
 
-    // Connect/disconnect actions
+    // Login/Logout actions
+    // OLD calls in version 1.0
     public static final String CONNECT = "connect";
     public static final String DISCONNECT = "disconnect";
-
+    
+    // Login/Logout actions
+    // New calls in version 1.0
+    public static final String LOGIN = "login";
+    public static final String LOGOUT = "logout";
+    
+    // New action to get a new Connection
+    public static final String GET_CONNECTION = "get_connection";  
+    
     // Version action
     public static final Object GET_VERSION = "get_version";
 
@@ -68,7 +78,7 @@ public class HttpParameter {
     // Connections modifiers & Getters Action & values
     public static final String COMMIT = "commit";
     public static final String ROLLBACK = "rollback";
-
+    
     public static final String SET_AUTO_COMMIT = "set_auto_commit";
     public static final String SET_READ_ONLY = "set_read_only";
     public static final String SET_TRANSACTION_ISOLATION_LEVEL = "set_transaction_isolation_level";
@@ -97,6 +107,8 @@ public class HttpParameter {
     public static final String NAME = "NAME";
     public static final String SAVEPOINT = "SAVEPOINT";
 
+    public static final String CLOSE = "close";
+    
     // New DML Action
     public static final String EXECUTE_UPDATE = "execute_update";
     public static final String EXECUTE_QUERY = "execute_query";
@@ -117,5 +129,8 @@ public class HttpParameter {
 
     public static final String HTML_ENCODING = "html_encoding";
     public static final String FILENAME = "filename";
+    
+    public static final String CLIENT_VERSION = "client_version";
+
 
 }

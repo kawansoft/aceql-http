@@ -83,7 +83,7 @@ public class JsonOkReturn {
     }
 
     /**
-     * Build a Json with name and values rom the passed map
+     * Build a Json with name and values from the passed map
      * 
      * @param namesAndValues
      *            the map of (name, value) to add to the JsonGenerator
@@ -105,7 +105,7 @@ public class JsonOkReturn {
 
 	for (Map.Entry<String, String> entry : namesAndValues.entrySet()) {
 
-	    // trace(entry.getKey() + "/" + entry.getValue());
+	    //System.out.println(entry.getKey() + "/" + entry.getValue());
 	    gen.write(entry.getKey(), entry.getValue());
 	}
 

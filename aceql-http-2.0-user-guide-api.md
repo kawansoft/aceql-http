@@ -1,9 +1,9 @@
-# AceQL HTTP 1.0 - API User Guide
+# AceQL HTTP 2.0 - API User Guide
 
 <img src="https://www.aceql.com/favicon.png" alt="AceQL HTTP Icon"/> 
 
-   * [Using the API](#using-the-api)
-      * [Java, C# and Python SDK](#java-c-and-python-sdk)
+ * [Using the API](#using-the-api)
+      * [Java, C#, Swift and Python SDK](#java-c-swift-and-python-sdk)
       * [Authentication &amp; session creation](#authentication--session-creation)
       * [AceQL Server responses](#aceql-server-responses)
       * [JSON error format](#json-error-format)
@@ -11,9 +11,10 @@
          * [Most common AceQL server messages](#most-common-aceql-server-messages)
          * [HTTP Status Codes](#http-status-codes)
    * [API reference guide](#api-reference-guide)
-      * [connect](#connect)
-         * [Server response to connect call](#server-response-to-connect-call)
-         * [connect call – cURL example](#connect-call--curl-example)
+      * [login](#login)
+         * [Server response to login call](#server-response-to-login-call)
+         * [login call – cURL example](#login-call--curl-example)
+         * [The connection_id URL parameter](#the-connection_id-url-parameter)
       * [Connection info queries](#connection-info-queries)
          * [Server response to connection info query calls](#server-response-to-connection-info-query-calls)
          * [Connection info query calls – cURL example](#connection-info-query-calls--curl-example)
@@ -31,12 +32,15 @@
          * [update_query call for effective database update](#update_query-call-for-effective-database-update)
          * [blob_upload call – cURL example](#blob_upload-call--curl-example)
       * [get_blob_length](#get_blob_length)
-         * [Server response get_blob_length call](#server-response-get_blob_length-call)
+         * [Server response to get_blob_length call](#server-response-to-get_blob_length-call)
       * [blob_download](#blob_download)
          * [Server response to blob_download call](#server-response-to-blob_download-call)
          * [get_blob_length &amp; blob_download call – cURL examples](#get_blob_length--blob_download-call--curl-examples)
-      * [disconnect](#disconnect)
-         * [Server response to disconnect call](#server-response-to-disconnect-call)
+      * [get_connection](#get_connection)
+         * [Server response get_connection call](#server-response-get_connection-call)
+      * [close](#close)
+      * [logout](#logout)
+         * [Server response to logout call](#server-response-to-logout-call)
 
 # Using the API
 
@@ -46,7 +50,7 @@ The Server operation is described in [Server Installation and Configuration Guid
 
 This document describes all AceQL URLs to use in your HTTP calls. It also contains easy to copy and paste examples in cURL.
 
-## Java, C# and Python SDK
+## Java, C#, Swift and Python SDK
 
 AceQL HTTP includes a C#, a Java, a Python and a Swift SDK that wrap the API and eliminate the tedious works of handling communications errors and parsing JSON results:
 
@@ -59,7 +63,7 @@ AceQL HTTP includes a C#, a Java, a Python and a Swift SDK that wrap the API and
 
 ## Authentication & session creation 
 
-Authentication and session creation is done with connect call, which:
+Authentication and session creation is done with login call, which:
 
 - Allows you to specify the username and password to gain access to a remote AceQL Server.
 - Allows you to specify the database to use during the session.
@@ -122,22 +126,22 @@ The error_type key allows you to get the type of error, and where the error occu
 
 ### Most common AceQL server messages 
 
-| AceQL Server Error  Messages (error_type=2) |
-| ---------------------------------------- |
-| AceQL main servlet not found in path     |
-| An error occurred during Blob download   |
-| An error occurred during Blob upload     |
+| AceQL Server Error  Messages (error_type=2)                  |
+| ------------------------------------------------------------ |
+| AceQL main servlet not found in path                         |
+| An error occurred during Blob download                       |
+| An error occurred during Blob upload                         |
 | Blob directory defined in  `DatabaseConfigurator.getBlobDirectory()` does not exist |
-| Connection is invalidated (probably expired) |
-| Database does not exist                  |
-| Invalid blob_id. Cannot be used to create a  file |
-| Invalid blob_id. No Blob corresponding to  blob_id |
-| Invalid session_id                       |
-| Invalid username or password             |
-| No action found in request               |
-| Operation not allowed in stateless mode  |
-| Unable to get a Connection               |
-| Unknown SQL action or not supported by  software |
+| Connection is invalidated (probably expired)                 |
+| Database does not exist                                      |
+| Invalid blob_id. Cannot be used to create a  file            |
+| Invalid blob_id. No Blob corresponding to  blob_id           |
+| Invalid or exipred Connection                                |
+| Invalid session_id                                           |
+| Invalid username or password                                 |
+| No action found in request                                   |
+| Unable to get a Connection                                   |
+| Unknown SQL action or not supported by  software             |
 
 ### HTTP Status Codes 
 
@@ -148,48 +152,47 @@ When an error occurs:
 - If error_type is 0, the HTTP Status Code is returned by the client side and may take all possible values in a malformed HTTP call.
 - If error_type is > 0, the HTTP Status Code can take one the following values returned by server side:
 
-| HTTP  Status Code           | Description                              |
-| --------------------------- | ---------------------------------------- |
-| 400 (BAD REQUEST)           | Missing element in URL path <br />Missing request parameters<br />All JDBC errors raised by the remote JDBC Driver |
-| 401 (UNAUTHORIZED)          | Invalid username or password in connect<br />Invalid session_id <br />The AceQL Server forbade the execution of the SQL statement for security reasons |
-| 404 (NOT_FOUND)             | BLOB directory does not exist on server<br />BLOB file not found on server |
-| 500 (INTERNAL_SERVER_ERROR) | The AceQL Server is on failure and raised an unexpected Java Exception |
+| HTTP  Status Code           | Description                                                  |
+| --------------------------- | ------------------------------------------------------------ |
+| 400 (BAD REQUEST)           | Missing element in URL path. <br />Missing request parameters.<br />All JDBC errors raised by the remote JDBC Driver. |
+| 401 (UNAUTHORIZED)          | Invalid username or password in `login`.<br />Invalid `session_id`. <br />The AceQL Server forbade the execution of the SQL statement for security reasons. |
+| 404 (NOT_FOUND)             | BLOB directory does not exist on server.<br />BLOB file not found on server. |
+| 500 (INTERNAL_SERVER_ERROR) | The AceQL Server is on failure and raised an unexpected Java Exception. |
 
 # API reference guide
 
-## connect
+## login
 
 Allows you to create a new session, authenticate on remote AceQL server, and connect to a remote SQL database.
 
-| URL  Format                              |
-| ---------------------------------------- |
-| `server/aceql/database/{database}/username/{username}/connect` |
+| URL  Format                                                 |
+| ----------------------------------------------------------- |
+| `server/aceql/database/{database}/username/{username}/login |
 
 Note that we will use two shortcuts through this User Guide in order to simplify the URL format:
 
 - **server** is the shortcut for the scheme, server name, and port of the URL to call. Possible values for server are: <http://localhost:9090>, <https://www.acme.com>, etc.
 
-- **aceql** is the shortcut for the AceQL Server servlet path. aceql is also the default configuration value. Any other value is possible, see [Server Installation and Configuration Guide](https://github.com/kawansoft/aceql-http/blob/master/aceql-http-1.0-user-guide-server.md).
+- **aceql** is the shortcut for the AceQL Server servlet path. aceql is also the default configuration value. Any other value is possible, see [Server Installation and Configuration Guide](https://github.com/kawansoft/aceql-http/blob/master/aceql-http-2.0-user-guide-server.md).
 
 | URL  parameter | Description                   |
 | -------------- | ----------------------------- |
 | database       | The  remote database name     |
 | username       | The  authentication user name |
 
-| Request  parameter | Requested | Description                              |
-| ------------------ | --------- | ---------------------------------------- |
-| password           | Yes       | The  authentication password             |
-| stateless          | No        | true or false. Defaults to false.  Boolean  that says if the session is in Stateless or Stateful Mode. <br />See [Server Installation and  Configuration Guide](https://github.com/kawansoft/aceql-http/blob/master/aceql-http-1.0-user-guide-server.md). |
+| Request  parameter | Requested | Description                  |
+| ------------------ | --------- | ---------------------------- |
+| password           | Yes       | The  authentication password |
 
 | Notes  about URL and request             |
 | ---------------------------------------- |
 | Supported request methods: GET and POST.<br />All URL parameters must be URL encoded.<br />All Request parameters must be URL encoded and formatted in UTF-8. |
 
-| Notes  about credentials (username, password) |
-| ---------------------------------------- |
-| These are  *not* the username/password of the remote JDBC Driver,  but are  the authentication information checked by remote AceQL server with  `DatabaseConfigurator.login(username, password`) method. <br />See [Server Installation and  Configuration Guide](https://github.com/kawansoft/aceql-http/blob/master/aceql-http-1.0-user-guide-server.md). |
+| Notes  about credentials (username, password)                |
+| ------------------------------------------------------------ |
+| These are  *not* the username/password of the remote JDBC Driver,  but are  the authentication information checked by remote AceQL server with  `DatabaseConfigurator.login(username, password`) method. <br />See [Server Installation and  Configuration Guide](https://github.com/kawansoft/aceql-http/blob/master/aceql-http-2.0-user-guide-server.md). |
 
-### Server response to connect call
+### Server response to login call
 
 If everything is OK:
 
@@ -197,6 +200,7 @@ If everything is OK:
 {  
    "status":"OK",
    "session_id":"session ID alphanumeric string",
+   "connection_id":"connection ID number"
 }
 ```
 
@@ -211,16 +215,16 @@ In case of error:
 }
 ```
 
-### connect call – cURL example 
+### login call – cURL example 
 
 All the following examples use a MySQL database named `kawansoft_example`.
 
-Connection to the [kawansoft_example](http://www.aceql.com/rest/soft/1.0/src/kawansoft_example.txt) database with (MyUsername, MySecret) credentials:
+Connection to the [kawansoft_example](http://www.aceql.com/rest/soft/2.0/src/kawansoft_example.txt) database with (MyUsername, MySecret) credentials:
 
 ```bash
 $ curl \
 http://localhost:9090/aceql/database/kawansoft_example/username/\
-MyUsername/connect?password=MySecret
+MyUsername/login?password=MySecret
 ```
 
 The call will return a JSON stream with a unique session ID to reuse with all other API calls:
@@ -229,20 +233,28 @@ The call will return a JSON stream with a unique session ID to reuse with all ot
 {                                             
   "status":"OK",                          
   "session_id":"hli7ppunldk07mg8ae4dvv70kc"
+  "connection_id":"461003207"
 }            
 ```
+
+### The connection_id URL parameter
+
+The `connection_id` identifies the remote `java.sql.Connection`. It can be used to distinguish different `java.sql.Connection`on the same database.
+
+ `connection_id` URL parameters may be passed to each API. If `connection_id` is not expicitely passed as URL parameter, the server side will used the default and first `java.sql.Connection` created at login.
 
 ## Connection info queries
 
  Allow to get info on remote database connection.
 
-| URL  Format                              |
-| ---------------------------------------- |
-| `server/aceql/session/{session_id}/get_auto_commit`  `server/aceql/session/{session_id}/is_read_only`  `server/aceql/session/{session_id}/get_holdability`   `server/aceql/session/{session_id}/get_transaction_isolation_level` |
+| URL  Format                                                  |
+| ------------------------------------------------------------ |
+| `server/aceql/session/{session_id}/connection/{connection_id}/get_auto_commit`  `server/aceql/session/{session_id}/connection/{connection_id}/is_read_only`  `server/aceql/session/{session_id}/connection/{connection_id}/get_holdability`   `server/aceql/session/{session_id}/connection/{connection_id}/get_transaction_isolation_level` |
 
-| URL  parameter | Description                              |
-| -------------- | ---------------------------------------- |
-| session_id     | The session_id  value returned by connect. |
+| URL  parameter | Description                                                  |
+| -------------- | ------------------------------------------------------------ |
+| session_id     | The session_id  value returned by `login`.                   |
+| connection_id  | The ID that refers the `java.sql.Connection` to use on server.<br>Optional: if not passed, server will use the one created at login. |
 
 | Request  parameter | Requested | Description |
 | ------------------ | --------- | ----------- |
@@ -293,24 +305,21 @@ The call will return a JSON stream with the result:
 
 Allow to modify the remote Connection. 
 
-| URL  Format                              |
-| ---------------------------------------- |
-| `server/aceql/session/{session_id}/commit`  <br />`server/aceql/session/{session_id}/rollback`  <br />`server/aceql/session/{session_id}/set_auto_commit/{boolean}  server/aceql/session/{session_id}/set_holdability/{holdability}  server/aceql/session/{session_id}/set_read_only/{boolean}  server/aceql/session/{session_id}/set_transaction_isolation_level/{level}` |
+| URL  Format                                                  |
+| ------------------------------------------------------------ |
+| `server/aceql/session/{session_id}/connection/{connection_id}/commit`  <br />`server/aceql/session/{session_id}/connection/{connection_id}/rollback`  <br />`server/aceql/session/{session_id}/connection/{connection_id}/set_auto_commit/{boolean}  server/aceql/session/{session_id}/connection/{connection_id}/set_holdability/{holdability}  server/aceql/session/{session_id}/connection/{connection_id}/set_read_only/{boolean}  server/aceql/session/{session_id}/connection/{connection_id}/set_transaction_isolation_level/{level}` |
 
-| URL  parameter | Description                              |
-| -------------- | ---------------------------------------- |
-| session_id     | The session_id  value returned by `connect`. |
-| boolean        | false<br />true                          |
-| holdability    | close_cursors_at_commit<br />hold_cursors_over_commit |
+| URL  parameter | Description / value                                          |
+| -------------- | ------------------------------------------------------------ |
+| session_id     | The session_id  value returned by `login`.                   |
+| connection_id  | The ID that refers the `java.sql.Connection` to use on server.<br>Optional: if not passed, server will use the one created at login. |
+| boolean        | false<br />true                                              |
+| holdability    | close_cursors_at_commit<br />hold_cursors_over_commit        |
 | level          | read_committed <br />read_uncommitted<br />repeatable_read<br />serializable |
 
 | Request  parameter | Requested | Description |
 | ------------------ | --------- | ----------- |
 | None               |           |             |
-
-| Notes                                    |
-| ---------------------------------------- |
-| Connection modifiers calls are allowed only for default Stateful Mode. |
 
 ### Server response to connection modifier calls
 
@@ -355,13 +364,14 @@ The call will return a JSON stream with the result:
 
 Allows to update remote database with a DDL (Data Definition Language), DML (Data Modification Language),  or DCL (Data Control Language) statement.
 
-| URL  Format                              |
-| ---------------------------------------- |
-| `server/aceql/session/{session_id}/execute_update` |
+| URL  Format                                                  |
+| ------------------------------------------------------------ |
+| `server/aceql/session/{session_id}/connection/{connection_id}/execute_update` |
 
-| URL  parameter | Description                              |
-| -------------- | ---------------------------------------- |
-| session_id     | The session_id  value returned by `connect`. |
+| URL  parameter | Description                                                  |
+| -------------- | ------------------------------------------------------------ |
+| session_id     | The session_id  value returned by `login`.                   |
+| connection_id  | The ID that refers the `java.sql.Connection` to use on server.<br>Optional: if not passed, server will use the one created at login. |
 
 | Request  parameter | Requested | Description                              |
 | ------------------ | --------- | ---------------------------------------- |
@@ -444,13 +454,14 @@ Allows to send a query to the database with a statement or prepared statement.
 
 The query result is returned in the form of a JSON stream.
 
-| URL Format                               |
-| ---------------------------------------- |
-| `server/aceql/session/{session_id}/execute_query` |
+| URL Format                                                   |
+| ------------------------------------------------------------ |
+| `server/aceql/session/{session_id}/connection/{connection_id}/execute_query` |
 
-| URL parameter | Description                              |
-| ------------- | ---------------------------------------- |
-| session_id    | The session_id value returned by `connect`. |
+| URL parameter | Description                                                  |
+| ------------- | ------------------------------------------------------------ |
+| session_id    | The session_id value returned by `login`.                    |
+| connection_id | The ID that refers the `java.sql.Connection` to use on server.<br>Optional: if not passed, server will use the one created at login. |
 
 | Request parameter  | Requested | Description                              |
 | ------------------ | --------- | ---------------------------------------- |
@@ -605,13 +616,14 @@ Effective database update will be done in a following `execute_update` prepared 
 
 This is a Multipart POST request in UTF-8 format.
 
-| URL Format                               |
-| ---------------------------------------- |
-| `server/aceql/session/{session_id}/blob_upload` |
+| URL Format                                                   |
+| ------------------------------------------------------------ |
+| `server/aceql/session/{session_id}/connection/{connection_id}/blob_upload` |
 
-| URL parameter | Description                              |
-| ------------- | ---------------------------------------- |
-| session_id    | The session_id value returned by `connect`. |
+| URL parameter | Description                                                  |
+| ------------- | ------------------------------------------------------------ |
+| session_id    | The session_id value returned by `login`.                    |
+| connection_id | The ID that refers the `java.sql.Connection` to use on server.<br>Optional: if not passed, server will use the one created at login. |
 
 | Request parameter | Requested | Description                              |
 | ----------------- | --------- | ---------------------------------------- |
@@ -712,8 +724,6 @@ CREATE TABLE product_image
 );
 ```
 
- 
-
 Let’s upload a BLOB on the server:
 
 ```bash
@@ -756,23 +766,24 @@ Allows to retrieve the size of a BLOB before it’s download.
 
 The call is optional and thus is not required before BLOB download.
 
-| URL Format                               |
-| ---------------------------------------- |
-| `server/aceql/session/{session_id}/get_blob_length` |
+| URL Format                                                   |
+| ------------------------------------------------------------ |
+| `server/aceql/session/{session_id}/connection/{connection_id}/get_blob_length` |
 
-| URL parameter | Description                              |
-| ------------- | ---------------------------------------- |
-| session_id    | The session_id value returned by `connect`. |
+| URL parameter | Description                                                  |
+| ------------- | ------------------------------------------------------------ |
+| session_id    | The session_id value returned by `login`.                    |
+| connection_id | The ID that refers the `java.sql.Connection` to use on server.<br>Optional: if not passed, server will use the one created at login. |
 
-| Request parameter | Requested | Description                              |
-| ----------------- | --------- | ---------------------------------------- |
-| blob_id           | Yes       | The reference Id of the BLOB to download.  The value is retrieved with a prior `execute_query` call, see below in:  [blob_download](#blob_download) |
+| Request parameter | Requested | Description                                                  |
+| ----------------- | --------- | ------------------------------------------------------------ |
+| blob_id           | Yes       | The reference Id of the BLOB to download.  The value is retrieved with a prior `execute_query` call, see below in:  [blob_download](#blob_download). |
 
 | Notes                                    |
 | ---------------------------------------- |
 | This call supports POST method only.<br />All Request parameters must be URL encoded and formatted in UTF-8. |
 
-### Server response get_blob_length call
+### Server response to get_blob_length call
 
 If everything is OK:
 
@@ -798,13 +809,14 @@ In case of error:
 
 Allows to download a BLOB from the remote server:
 
-| URL Format                               |
-| ---------------------------------------- |
-| `server/aceql/session/{session_id}/blob_download` |
+| URL Format                                                   |
+| ------------------------------------------------------------ |
+| `server/aceql/session/{session_id}/connection/{connection_id}/blob_download` |
 
-| URL parameter | Description                              |
-| ------------- | ---------------------------------------- |
-| session_id    | The session_id value returned by `connect`. |
+| URL parameter | Description                                                  |
+| ------------- | ------------------------------------------------------------ |
+| session_id    | The session_id value returned by `login`.                    |
+| connection_id | The ID that refers the `java.sql.Connection` to use on server.<br>Optional: if not passed, server will use the one created at login. |
 
 | Request parameter | Requested | Description                              |
 | ----------------- | --------- | ---------------------------------------- |
@@ -899,27 +911,85 @@ http://localhost:9090/aceql/session/hli7ppunldk07mg8ae4dvv70kc/\
 blob_download>/home/admin/blob.jpg
 ```
 
-## disconnect 
+## get_connection
 
-Allows to close the session and to release the server JDBC Connection into the pool.
+Allows to open a new `java.sql.Connection` on the server without doing a new authentication with `login` .
 
-| URL Format                               |
-| ---------------------------------------- |
-| `server/aceql/ session/{session_id}/disconnect` |
+| URL Format                                         |
+| -------------------------------------------------- |
+| `server/aceql/session/{session_id}/get_connection` |
 
-| URL parameter | Description                              |
-| ------------- | ---------------------------------------- |
-| session_id    | The session_id value returned by `connect` |
+| URL parameter | Description                               |
+| ------------- | ----------------------------------------- |
+| session_id    | The session_id value returned by `login`. |
+
+| Request parameter | Requested | Description |
+| ----------------- | --------- | ----------- |
+| none              |           |             |
+
+### Server response get_connection call
+
+If everything is OK:
+
+```
+{                   
+    "status":"OK",  
+    "length":"{BLOB length in bytes}"
+    "connection_id":{"connection ID number"}
+}                                         
+
+```
+
+In case of error:
+
+```
+{  
+   "status":"FAIL",
+   "error_type":{error type numeric value},
+   "error_message":"{error message returned by the server}",
+   "http_status":{http status code numeric value}
+}
+
+```
+
+## close
+
+Allows to close a `connection`  in use and release the  corresponding remote JDBC `java.sql.Connection` into the pool.
+
+| URL Format                                                   |
+| ------------------------------------------------------------ |
+| `server/aceql/session/{session_id}/connection/{connection_id}/close` |
+
+| URL parameter | Description                                                 |
+| ------------- | ----------------------------------------------------------- |
+| session_id    | The session_id value returned by `login`.                   |
+| connection_id | The ID that refers the `java.sql.Connection` on the server. |
 
 | Request parameter | Requested | Description |
 | ----------------- | --------- | ----------- |
 | None              |           |             |
 
-| Notes                                    |
-| ---------------------------------------- |
-| In Stateful Mode, it is important to call disconnect at end of session in order to  close the JDBC Connection and release it in the pool. <br />See [Server Installation and  Configuration Guide](https://github.com/kawansoft/aceql-http/blob/master/aceql-http-1.0-user-guide-server.md) for more info. |
+## logout 
 
-### Server response to disconnect call
+Allows to close the session and to release all the server JDBC `Connection`s  into the pool.
+
+| URL Format                                 |
+| ------------------------------------------ |
+| `server/aceql/session/{session_id}/logout` |
+
+| URL parameter | Description                               |
+| ------------- | ----------------------------------------- |
+| session_id    | The session_id value returned by `login`. |
+
+| Request parameter | Requested | Description |
+| ----------------- | --------- | ----------- |
+| None              |           |             |
+
+|                                                              |
+| ------------------------------------------------------------ |
+| It is important to always call `logout` at end of session in order to  close all the JDBC `Connection` and release them in the pool. <br />See [Server Installation and  Configuration Guide](https://github.com/kawansoft/aceql-http/blob/master/aceql-http-2.0-user-guide-server.md) for more info. |
+
+### Server response to logout call
 
 If everything is OK:
 

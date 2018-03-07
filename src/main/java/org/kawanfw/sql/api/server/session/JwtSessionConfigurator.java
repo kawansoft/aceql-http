@@ -31,6 +31,7 @@ import java.util.Map;
 import org.kawanfw.sql.tomcat.ServletParametersStore;
 
 import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTCreator.Builder;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
@@ -82,10 +83,24 @@ public class JwtSessionConfigurator implements SessionConfigurator {
 		    .getJwtSessionConfiguratorSecretValue();
 	    Algorithm algorithm = Algorithm.HMAC256(secret);
 
+	    /*
 	    String token = JWT.create().withIssuedAt(new Date())
 		    .withClaim("usr", username).withClaim("dbn", database)
 		    .sign(algorithm);
-
+	   */
+	    
+	    Builder builder = JWT.create();
+	    builder.withIssuedAt(new Date());
+	    builder.withClaim("usr", username);
+	    builder.withClaim("dbn", database);
+	    builder.withIssuedAt(new Date());
+	    
+	    if (getSessionTimelife() != 0) {
+		Date expiresAt = new Date(System.currentTimeMillis() + (getSessionTimelife() * 60 * 1000));
+		builder.withExpiresAt(expiresAt);
+	    }
+	    
+	    String token = builder.sign(algorithm);
 	    return token;
 
 	} catch (UnsupportedEncodingException exception) {
@@ -176,7 +191,7 @@ public class JwtSessionConfigurator implements SessionConfigurator {
      */
     @Override
     public void remove(String sessionId) {
-	// Nothing stored. Do nothing.
+
     }
 
     /*
@@ -202,16 +217,16 @@ public class JwtSessionConfigurator implements SessionConfigurator {
 	    JWTVerifier verifier = JWT.require(algorithm).build(); // Reusable
 								   // verifier
 								   // instance
-
+	    @SuppressWarnings("unused")
 	    DecodedJWT jwt = verifier.verify(sessionId);
 
-	    Date issuedAt = jwt.getIssuedAt();
-	    Date now = new Date();
-
-	    if (now.getTime()
-		    - issuedAt.getTime() > (getSessionTimelife() * 60 * 1000)) {
-		return false;
-	    }
+//	    Date issuedAt = jwt.getIssuedAt();
+//	    Date now = new Date();
+//
+//	    if (now.getTime()
+//		    - issuedAt.getTime() > (getSessionTimelife() * 60 * 1000)) {
+//		return false;
+//	    }
 
 	} catch (UnsupportedEncodingException exception) {
 	    System.err.println(exception);
@@ -219,7 +234,6 @@ public class JwtSessionConfigurator implements SessionConfigurator {
 	    return false;
 	} catch (JWTVerificationException exception) {
 	    System.err.println(exception);
-	    // Invalid signature/claims
 	    return false;
 	}
 

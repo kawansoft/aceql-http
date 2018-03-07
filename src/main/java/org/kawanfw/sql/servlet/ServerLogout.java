@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -68,20 +69,15 @@ public class ServerLogout {
 		    .getSessionManagerConfigurator();
 	    sessionConfigurator.remove(sessionId);
 
-	    if (!ConnectionStore.isStateless(username, sessionId)) {
-		ConnectionStore connectionStore = new ConnectionStore(username,
-			sessionId);
-		Connection connection = connectionStore.get();
+	    Set<Connection> connections = ConnectionStore.getAllConnections(username, sessionId);
 
-		connectionStore.remove();
-		ConnectionCloser.freeConnection(connection,
-			databaseConfigurator);
-
-	    } else {
-		// Nothing to do for stateless connection as no connection
-		// created at this point
+	    for (Connection connection : connections) {
+		//ConnectionCloser.freeConnection(connection, databaseConfigurator);
+		databaseConfigurator.close(connection);
 	    }
-
+	    
+	    ConnectionStore.removeAll(username, sessionId);
+	    
 	    deleteBlobFiles(databaseConfigurator, username);
 
 	    String jSonReturn = JsonOkReturn.build();

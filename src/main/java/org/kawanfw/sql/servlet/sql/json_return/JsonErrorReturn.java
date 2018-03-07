@@ -31,13 +31,15 @@ import javax.json.stream.JsonGenerator;
 import javax.json.stream.JsonGeneratorFactory;
 import javax.servlet.http.HttpServletResponse;
 
+import org.kawanfw.sql.version.VersionValues;
+
 public class JsonErrorReturn {
 
     public static boolean LOG_JSON_ERROR = false;
 
     public static final String ACEQL_SERVLET_NOT_FOUND_IN_PATH = "AceQL main servlet not found in path: ";
     public static final String BLOB_DIRECTORY_DOES_NOT_EXIST = "Blob directory defined in DatabaseConfigurator.getBlobDirectory() does not exist: ";
-    public static final String CONNECTION_IS_INVALIDATED = "Connection is invalidated (probably expired).";
+    public static final String INVALID_CONNECTION = "Invalid or exipred Connection.";
     public static final String DATABASE_DOES_NOT_EXIST = "Database does not exist: ";
     public static final String ERROR_DOWNLOADING_BLOB = "An error occurred during Blob download: ";
     public static final String ERROR_UPLOADING_BLOB = "An error occurred during Blob upload: ";
@@ -46,16 +48,19 @@ public class JsonErrorReturn {
     public static final String INVALID_SESSION_ID = "Invalid session_id.";
     public static final String INVALID_USERNAME_OR_PASSWORD = "Invalid username or password.";
     public static final String NO_ACTION_FOUND_IN_REQUEST = "No action found in request.";
-    public static final String OPERATION_NOT_ALLOWED_IN_STATELESS_MODE = "Operation not allowed in stateless mode: ";
     public static final String UNABLE_TO_GET_A_CONNECTION = "Unable to get a Connection.";
     public static final String UNKNOWN_SQL_ACTION = "Unknown SQL action or not supported by software";
     public static final String NO_DATASOURCES_DEFINED = "No databases have been defined in \"Tomcat JDBC Connection Pool Section\" in properties file.";
     public static final String UNKNOWN_SERVLET = "This servlet is unknown and has not been declared in properties file: ";
+    public static final String PLEASE_UPDATE_CLIENT_SDK = "This HTTP AceQL server version (" 
+    + VersionValues.VERSION + ") is not compatible with Client SDK. Please upgrade Client SDK.";
 
     public static final int ERROR_JDBC_ERROR = 1;
     public static final int ERROR_ACEQL_ERROR = 2;
     public static final int ERROR_ACEQL_UNAUTHORIZED = 3;
     public static final int ERROR_ACEQL_FAILURE = 4;
+
+
 
     /*
      * { "httpStatus":"FAIL", "error_type":[code erreur numérique],

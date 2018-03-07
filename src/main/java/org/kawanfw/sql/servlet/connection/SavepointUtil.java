@@ -93,9 +93,10 @@ public class SavepointUtil {
 	    Connection connection) throws SQLException, IOException {
 	String username = request.getParameter(HttpParameter.USERNAME);
 	String sessionId = request.getParameter(HttpParameter.SESSION_ID);
-
+	String connectionId = request.getParameter(HttpParameter.CONNECTION_ID);
+	
 	ConnectionStore connectionStore = new ConnectionStore(username,
-		sessionId);
+		sessionId, connectionId);
 
 	if (action.equals(HttpParameter.SET_SAVEPOINT)) {
 

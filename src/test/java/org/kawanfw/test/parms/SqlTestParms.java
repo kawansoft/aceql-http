@@ -56,9 +56,6 @@ public class SqlTestParms {
      */
     public static boolean REMOTE = true;
 
-    /** Says if we are in stateless mode on server */
-    public static boolean STATELESS_MODE = false;
-
     public static boolean ACCEPT_ALL_SSL_CERTIFICATES = true;
 
     /** if true, request will be encrypted */
@@ -266,7 +263,6 @@ public class SqlTestParms {
 	    // properties.setProperty("writeBufferSize", ""
 	    // + (DefaultParms.DEFAULT_WRITE_BUFFER_SIZE + 7));
 	    // properties.setProperty("acceptAllSslCertificates", "" + true);
-	    properties.setProperty("statelessMode", "" + STATELESS_MODE);
 
 	    properties.setProperty("http-client-http.socket.timeout",
 		    "[java.lang.Integer, 1000000]");

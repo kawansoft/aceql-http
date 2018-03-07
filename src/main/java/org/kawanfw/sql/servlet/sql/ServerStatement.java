@@ -45,11 +45,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.kawanfw.sql.api.server.DatabaseConfigurator;
-import org.kawanfw.sql.servlet.ConnectionCloser;
 import org.kawanfw.sql.servlet.DatabaseConfiguratorCall;
 import org.kawanfw.sql.servlet.HttpParameter;
 import org.kawanfw.sql.servlet.ServerSqlManager;
-import org.kawanfw.sql.servlet.connection.ConnectionStore;
 import org.kawanfw.sql.servlet.sql.json_return.JsonErrorReturn;
 import org.kawanfw.sql.servlet.sql.json_return.JsonSecurityMessage;
 import org.kawanfw.sql.servlet.sql.json_return.JsonUtil;
@@ -160,14 +158,6 @@ public class ServerStatement {
 		}
 	    }
 
-	    String username = request.getParameter(HttpParameter.USERNAME);
-	    String sessionId = request.getParameter(HttpParameter.SESSION_ID);
-
-	    if (ConnectionStore.isStateless(username, sessionId)) {
-		// Release the connection
-		ConnectionCloser.freeConnection(connection,
-			databaseConfigurator);
-	    }
 	}
     }
 
@@ -260,9 +250,9 @@ public class ServerStatement {
 	    // Throws a SQL exception if the order is not authorized:
 	    debug("before new SqlSecurityChecker()");
 
-	    String database = request.getParameter(HttpParameter.DATABASE);
-	    DatabaseConfigurator databaseConfigurator = ServerSqlManager
-		    .getDatabaseConfigurator(database);
+//	    String database = request.getParameter(HttpParameter.DATABASE);
+//	    DatabaseConfigurator databaseConfigurator = ServerSqlManager
+//		    .getDatabaseConfigurator(database);
 
 	    boolean isAllowed = true;
 

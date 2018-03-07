@@ -64,9 +64,6 @@ public class AceQLHttpApi {
 
     private static boolean TRACE_ON = false;
 
-    // Says if session is stateless
-    private static boolean stateless = false;
-
     // private values
     private String serverUrl;
     private String username;
@@ -90,25 +87,6 @@ public class AceQLHttpApi {
 
     private AtomicBoolean cancelled;
     private AtomicInteger progress;
-
-    /**
-     * Says if session is stateless.
-     * 
-     * @return {@code true} if session is stateless, else {@code false}.
-     */
-    public static boolean isStateless() {
-	return stateless;
-    }
-
-    /**
-     * Sets the session mode
-     * 
-     * @param stateless
-     *            if true, the session will be stateless, else stateful.
-     */
-    public static void setStateless(boolean stateless) {
-	AceQLHttpApi.stateless = stateless;
-    }
 
     /**
      * Sets the read timeout.
@@ -188,7 +166,7 @@ public class AceQLHttpApi {
 
 	    String url = serverUrl + "/database/" + database + "/username/"
 		    + username + "/connect" + "?password="
-		    + new String(password) + "&stateless=" + stateless;
+		    + new String(password);
 
 	    String result = callWithGet(url);
 

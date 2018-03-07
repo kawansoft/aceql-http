@@ -27,7 +27,10 @@ package org.kawanfw.sql.servlet;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -107,7 +110,7 @@ public class ServerLoginActionSql extends HttpServlet {
 			JsonErrorReturn.ERROR_ACEQL_ERROR,
 			JsonErrorReturn.INVALID_USERNAME_OR_PASSWORD);
 		out.println(errorReturn.build());
-		return;
+		return;  
 	    }
 
 	    username = username.trim();
@@ -153,31 +156,67 @@ public class ServerLoginActionSql extends HttpServlet {
 		    .getSessionManagerConfigurator();
 	    String sessionId = sessionConfigurator.generateSessionId(username,
 		    database);
-
-	    String stateless = request.getParameter(HttpParameter.STATELESS);
-	    // Boolean isStateless = new Boolean(stateless);
-	    Boolean isStateless = Boolean.valueOf(stateless);
-
-	    if (!isStateless) {
-		ConnectionStore connectionStore = new ConnectionStore(username,
-			sessionId);
-		Connection connection = databaseConfigurator
-			.getConnection(database);
-
-		// Make sure we are in auto-commit mode when user starts
-		// sessione
-		ConnectionUtil.connectionInit(connection);
-		connectionStore.put(connection);
-	    }
-
+	    
+	    String connectionId = null;
+	    
+	    connectionId = getConnectionId(sessionId, request, username,
+		    database, databaseConfigurator);
+	    
 	    Trace.sessionId("sessionId: " + sessionId);
-	    out.println(JsonOkReturn.build("session_id", sessionId));
+	    
+	    Map<String, String> map = new HashMap<>();
+	    map.put("session_id", sessionId);
+	    map.put("connection_id", connectionId);
+	    
+	    out.println(JsonOkReturn.build(map));
 
 	} catch (Exception e) {
 
 	    ExceptionReturner.logAndReturnException(request, response, out, e);
 
 	}
+    }
+
+    /**
+     * Extract a Connection from the pool and return the connection id (hashcode) to client.
+     * Connections is stored in memory until client side calls close action 
+     * @param sessionId
+     * @param request 
+     * @param username
+     * @param database
+     * @param databaseConfigurator
+     * @return
+     * @throws SQLException
+     */
+    public static  String getConnectionId(String sessionId, HttpServletRequest request,
+	    String username, String database, DatabaseConfigurator databaseConfigurator)
+	    throws SQLException {
+	
+	// Exract connection from pool
+	Connection connection = databaseConfigurator
+	    .getConnection(database);
+
+	// Each Connection is identified by hashcode
+	String connectionId  = getConnectionId(connection);
+
+//	// Force connectionId if client version is not 2.0
+//	String clientVersion = request.getParameter(HttpParameter.CLIENT_VERSION);
+//	if (clientVersion == null || clientVersion.compareTo("v2.0") < 0) {
+//	    connectionId = "unique";
+//	}
+	
+	ConnectionStore connectionStore = new ConnectionStore(username,
+	    sessionId, connectionId);
+
+	// Make sure we are in auto-commit mode when user starts
+	// session
+	ConnectionUtil.connectionInit(connection);
+	connectionStore.put(connection);
+	return connectionId;
+    }
+
+    public static String getConnectionId(Connection connection) {
+	return "" + connection.hashCode();
     }
 
     private void debug(String s) {

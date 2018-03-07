@@ -29,14 +29,12 @@ import java.sql.SQLException;
 import java.util.Set;
 
 import org.kawanfw.sql.api.server.DatabaseConfigurator;
-import org.kawanfw.sql.servlet.ConnectionCloser;
 import org.kawanfw.sql.servlet.connection.ConnectionStore;
 
 /**
  * 
  * Class that allows to manage the server Connection Store that stores in memory
- * the JDBC Connections of the client users during their session (stateful mode
- * only).
+ * the JDBC Connections of the client users during their session.
  * <p>
  * Class allows to:
  * <p>
@@ -59,24 +57,6 @@ public class ConnectionStoreManager {
      */
     protected ConnectionStoreManager() {
 
-    }
-
-    /**
-     * Returns the age of the connection in seconds for a ConnectionKey.
-     * 
-     * @param connectionKey
-     *            the connection key that contains the username and the
-     *            connection Id
-     * 
-     * @return the age of the connection in seconds
-     */
-    public static int getAge(ConnectionKey connectionKey) {
-
-	if (connectionKey == null) {
-	    throw new IllegalArgumentException("connectionKey is null!");
-	}
-
-	return ConnectionStore.getAge(connectionKey);
     }
 
     /**
@@ -110,14 +90,15 @@ public class ConnectionStoreManager {
 	}
 
 	ConnectionStore connectionStore = new ConnectionStore(
-		connectionKey.getUsername(), connectionKey.getConnectionId());
+		connectionKey.getUsername(), connectionKey.getSessionId(), connectionKey.getConnectionId());
 
 	// Get the Connection before removing it from the store..
 	Connection connection = connectionStore.get();
 
 	// Release the Connection into the pool
 	connectionStore.remove();
-	ConnectionCloser.freeConnection(connection, databaseConfigurator);
+	databaseConfigurator.close(connection);
+	//ConnectionCloser.freeConnection(connection, databaseConfigurator);
 
     }
 

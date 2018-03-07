@@ -469,12 +469,13 @@ public class ServerSqlManager extends HttpServlet {
 	debug("before dispatch.executeRequest()");
 
 	// Allows to emulate a request parameter from the Servlet Path:
-	// domain/aceql/database/[database]/username/[username]/connect
+	// domain/aceql/database/[database]/username/[username]/login
 	// domain/aceql/session/[session]/[action_name]/[action_value]
 
 	String database = null;
 	String username = null;
 	String sessionId = null;
+	String connectionId = null;
 	String action = null;
 	String actionValue = null;
 
@@ -483,7 +484,7 @@ public class ServerSqlManager extends HttpServlet {
 	debug("getRequestURI: " + request.getRequestURI());
 
 	String servletPath = request.getServletPath();
-	String urlContent = request.getRequestURI();
+	String requestUri = request.getRequestURI();
 
 	String servletName = ServletParametersStore.getServletName();
 
@@ -491,14 +492,14 @@ public class ServerSqlManager extends HttpServlet {
 	    servletName = servletName.trim();
 	}
 
-	if (!urlContent.startsWith("/" + servletName)
+	if (!requestUri.startsWith("/" + servletName)
 		&& !servletPath.startsWith("/" + servletName)) {
 	    PrintWriter out = response.getWriter();
 
 	    // System.out.println("servletPath:" + servletPath);
 	    // System.out.println("urlContent :" + urlContent);
 
-	    if (urlContent.equals("/")) {
+	    if (requestUri.equals("/")) {
 		JsonErrorReturn errorReturn = new JsonErrorReturn(response,
 			HttpServletResponse.SC_BAD_REQUEST,
 			JsonErrorReturn.ERROR_ACEQL_ERROR,
@@ -507,7 +508,7 @@ public class ServerSqlManager extends HttpServlet {
 		out.println(errorReturn.build());
 		return;
 	    } else {
-		String servlet = urlContent.substring(1);
+		String servlet = requestUri.substring(1);
 		JsonErrorReturn errorReturn = new JsonErrorReturn(response,
 			HttpServletResponse.SC_BAD_REQUEST,
 			JsonErrorReturn.ERROR_ACEQL_ERROR,
@@ -519,8 +520,8 @@ public class ServerSqlManager extends HttpServlet {
 	}
 
 	// Display version if we just call the servlet
-	if (urlContent.endsWith("/" + servletName)
-		|| urlContent.endsWith("/" + servletName + "/")) {
+	if (requestUri.endsWith("/" + servletName)
+		|| requestUri.endsWith("/" + servletName + "/")) {
 	    PrintWriter out = response.getWriter();
 	    String version = org.kawanfw.sql.version.Version.getVersion();
 	    out.println(JsonOkReturn.build("version", version));
@@ -530,47 +531,59 @@ public class ServerSqlManager extends HttpServlet {
 	ServletPathAnalyzer servletPathAnalyzer = new ServletPathAnalyzer();
 
 	try {
-	    if (urlContent.endsWith("/connect")) {
-		action = "connect";
+	    if (isLoginAction(requestUri)) {
+		action = "login";
 
-		if (!urlContent.contains("/" + servletName + "/database/")) {
+		if (!requestUri.contains("/" + servletName + "/database/")) {
 		    throw new IllegalArgumentException(
 			    "Request does not contain /database/ subpath in path");
 		}
 
-		if (!urlContent.contains("/username/")) {
+		if (!requestUri.contains("/username/")) {
 		    throw new IllegalArgumentException(
 			    "Request does not contain /username/ subpath in path");
 		}
 
-		database = StringUtils.substringBetween(urlContent,
+		database = StringUtils.substringBetween(requestUri,
 			"/database/", "/username");
-		username = StringUtils.substringBetween(urlContent,
-			"/username/", "/connect");
+		
+		// Accept /connect pattern
+		if (requestUri.endsWith("/connect")) {
+		    requestUri = StringUtils.substringBeforeLast(requestUri, "/connect") + "/login";
+		}
+		else if (requestUri.contains("/connect?")) {
+		    requestUri = StringUtils.substringBeforeLast(requestUri, "/connect?") + "/login?";
+		}
+		
+		username = StringUtils.substringBetween(requestUri,
+			"/username/", "/login");
 
-	    } else if (servletPathAnalyzer.isVersionAction(urlContent)) {
+	    } else if (servletPathAnalyzer.isVersionAction(requestUri)) {
 		action = "get_version";
-		servletPathAnalyzer.buildElements(servletName, urlContent);
+		servletPathAnalyzer.buildElements(servletName, requestUri);
 		sessionId = servletPathAnalyzer.getSession();
 	    } else if (servletPathAnalyzer
-		    .isConnectionModifierOrReader(urlContent)) {
+		    .isConnectionModifierOrReader(requestUri)) {
 		action = servletPathAnalyzer.getConnectionModifierOrReader();
 		actionValue = servletPathAnalyzer.getActionValue();
-		servletPathAnalyzer.buildElements(servletName, urlContent);
+		servletPathAnalyzer.buildElements(servletName, requestUri);
 		sessionId = servletPathAnalyzer.getSession();
-	    } else if (servletPathAnalyzer.isBlobAction(urlContent)) {
+		connectionId = servletPathAnalyzer.getConnection();
+	    } else if (servletPathAnalyzer.isBlobAction(requestUri)) {
 		action = servletPathAnalyzer.getBlobAction();
 		actionValue = servletPathAnalyzer.getActionValue();
-		servletPathAnalyzer.buildElements(servletName, urlContent);
+		servletPathAnalyzer.buildElements(servletName, requestUri);
 		sessionId = servletPathAnalyzer.getSession();
+		connectionId = servletPathAnalyzer.getConnection();
 	    } else if (servletPathAnalyzer
-		    .isExecuteUpdateOrQueryStatement(urlContent)) {
+		    .isExecuteUpdateOrQueryStatement(requestUri)) {
 		action = servletPathAnalyzer.getSqlStatement();
-		servletPathAnalyzer.buildElements(servletName, urlContent);
+		servletPathAnalyzer.buildElements(servletName, requestUri);
 		sessionId = servletPathAnalyzer.getSession();
+		connectionId = servletPathAnalyzer.getConnection();
 	    } else {
 		throw new IllegalArgumentException("Unknown action: "
-			+ StringUtils.substringAfterLast(urlContent, "/"));
+			+ StringUtils.substringAfterLast(requestUri, "/"));
 	    }
 
 	} catch (Exception e) {
@@ -614,21 +627,27 @@ public class ServerSqlManager extends HttpServlet {
 	}
 
 	debug("");
-	debug("action     : " + action);
-	debug("actionValue: " + actionValue);
-	debug("username   : " + username);
-	debug("sessionId  : " + sessionId);
-	debug("database   : " + database);
+	debug("action      : " + action);
+	debug("actionValue : " + actionValue);
+	debug("username    : " + username);
+	debug("sessionId   : " + sessionId);
+	debug("connectionId: " + connectionId);
+	debug("database    : " + database);
 
 	requestHolder.setParameter(HttpParameter.ACTION, action);
 	requestHolder.setParameter(HttpParameter.ACTION_VALUE, actionValue);
 
 	requestHolder.setParameter(HttpParameter.SESSION_ID, sessionId);
+	requestHolder.setParameter(HttpParameter.CONNECTION_ID, connectionId);
 
 	requestHolder.setParameter(HttpParameter.USERNAME, username);
 	requestHolder.setParameter(HttpParameter.DATABASE, database);
 
 	dispatch.executeRequest(requestHolder, response);
+    }
+
+    private boolean isLoginAction(String requestUri) {
+	return requestUri.endsWith("/login") || requestUri.endsWith("/connect");
     }
 
     /**

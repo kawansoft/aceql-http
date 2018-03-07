@@ -97,7 +97,7 @@ public interface SessionConfigurator {
 
     /**
      * Removes storage for the passed session Id. Method is called by AceQL when
-     * client side calls {@code disconnect}
+     * client side calls {@code logout}
      * 
      * @param sessionId
      */

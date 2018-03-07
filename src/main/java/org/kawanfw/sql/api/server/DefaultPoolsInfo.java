@@ -180,7 +180,7 @@ public class DefaultPoolsInfo extends HttpServlet {
 	debug("Starting...");
 
 	// Prepare the response
-	response.setContentType("text/html; charset=UTF-8");
+	response.setContentType("text/plain; charset=UTF-8");
 
 	String password = request.getParameter("password");
 

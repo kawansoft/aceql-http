@@ -50,75 +50,86 @@ public class ServletPathAnalyzer {
 
     private String actionValue = null;
     private String session = null;
+    private String connection;
 
-    public boolean isConnectionModifierOrReader(String urlContent) {
+    public boolean isConnectionModifierOrReader(String requestUri) {
 
-	if (urlContent == null) {
+	if (requestUri == null) {
 	    throw new NullPointerException("urlContent is null");
 	}
 
-	if (urlContent.endsWith("/disconnect")) {
-	    connectionModifierOrReader = "disconnect";
+	if (requestUri.endsWith("/get_connection")) {
+	    connectionModifierOrReader = "get_connection";
+	    return true;
+	}	
+	
+	if (requestUri.endsWith("/close")) {
+	    connectionModifierOrReader = "close";
 	    return true;
 	}
+	
+	if (requestUri.endsWith("/logout") || requestUri.endsWith("/disconnect")) {
+	    connectionModifierOrReader = "logout";
+	    return true; 
+	}
 
-	if (urlContent.endsWith("/commit")) {
+	if (requestUri.endsWith("/commit")) {
 	    connectionModifierOrReader = "commit";
 	    return true;
 	}
 
-	if (urlContent.endsWith("/get_catalog")) {
+	if (requestUri.endsWith("/get_catalog")) {
 	    connectionModifierOrReader = "get_catalog";
 	    return true;
 	}
 
-	if (urlContent.endsWith("/rollback")) {
+	if (requestUri.endsWith("/rollback")) {
 	    connectionModifierOrReader = "rollback";
 	    return true;
 	}
 
-	if (urlContent.endsWith("/set_auto_commit/true")
-		|| urlContent.endsWith("/set_auto_commit/false")) {
+	if (requestUri.endsWith("/set_auto_commit/true")
+		|| requestUri.endsWith("/set_auto_commit/false")) {
 	    connectionModifierOrReader = "set_auto_commit";
-	    actionValue = StringUtils.substringAfterLast(urlContent, "/");
+	    actionValue = StringUtils.substringAfterLast(requestUri, "/");
 	    return true;
 	}
 
-	if (urlContent.endsWith("/set_read_only/true")
-		|| urlContent.endsWith("/set_read_only/false")) {
+	if (requestUri.endsWith("/set_read_only/true")
+		|| requestUri.endsWith("/set_read_only/false")) {
 	    connectionModifierOrReader = "set_read_only";
-	    actionValue = StringUtils.substringAfterLast(urlContent, "/");
+	    actionValue = StringUtils.substringAfterLast(requestUri, "/");
 	    return true;
 	}
 
-	if (urlContent.contains("/set_transaction_isolation_level/")) {
+	if (requestUri.contains("/set_transaction_isolation_level/")) {
 	    connectionModifierOrReader = "set_transaction_isolation_level";
-	    actionValue = StringUtils.substringAfterLast(urlContent, "/");
+	    actionValue = StringUtils.substringAfterLast(requestUri, "/");
 	    return true;
 	}
 
-	if (urlContent.contains("/set_holdability/")) {
+	if (requestUri.contains("/set_holdability/")) {
 	    connectionModifierOrReader = "set_holdability";
-	    actionValue = StringUtils.substringAfterLast(urlContent, "/");
+	    actionValue = StringUtils.substringAfterLast(requestUri, "/");
 	    return true;
 	}
 
-	if (urlContent.endsWith("/get_auto_commit")) {
+	if (requestUri.endsWith("/get_auto_commit")) {
 	    connectionModifierOrReader = "get_auto_commit";
 	    return true;
 	}
 
-	if (urlContent.endsWith("/is_read_only")) {
+	if (requestUri.endsWith("/is_read_only")) {
 	    connectionModifierOrReader = "is_read_only";
 	    return true;
 	}
 
-	if (urlContent.endsWith("/get_holdability")) {
+	if (requestUri.endsWith("/get_holdability")) {
 	    connectionModifierOrReader = "get_holdability";
 	    return true;
 	}
 
-	if (urlContent.endsWith("/get_transaction_isolation_level")) {
+	if (requestUri.endsWith("/get_transaction_isolation_level")) {
 	    connectionModifierOrReader = "get_transaction_isolation_level";
 	    return true;
 	}
@@ -216,11 +227,18 @@ public class ServletPathAnalyzer {
 	    throw new IllegalArgumentException(
 		    "Request does not contain session id");
 	}
-
+	
+	// can be null
+	connection = StringUtils.substringBetween(urlContent, "/connection/", "/");
+	
     }
 
     public String getSession() {
 	return session;
+    }
+
+    public String getConnection() {
+	return connection;
     }
 
     public String getSqlStatement() {

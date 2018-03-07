@@ -43,7 +43,6 @@ import org.kawanfw.sql.api.server.blob.BlobDownloadConfigurator;
 import org.kawanfw.sql.api.server.blob.BlobUploadConfigurator;
 import org.kawanfw.sql.servlet.connection.ConnectionStore;
 import org.kawanfw.sql.servlet.connection.ConnectionStoreCleaner;
-import org.kawanfw.sql.servlet.connection.ConnectionUtil;
 import org.kawanfw.sql.servlet.connection.SavepointUtil;
 import org.kawanfw.sql.servlet.connection.TransactionUtil;
 import org.kawanfw.sql.servlet.sql.LoggerUtil;
@@ -63,9 +62,9 @@ import org.kawanfw.sql.util.FrameworkDebug;
  *         connection.
  * 
  */
-public class ServerSqlDispatch {
-    private static boolean DEBUG = FrameworkDebug
-	    .isSet(ServerSqlDispatch.class);
+public class ServerSqlDispatch { 
+
+    private static boolean DEBUG = FrameworkDebug.isSet(ServerSqlDispatch.class);
 
     /**
      * Constructor
@@ -142,6 +141,7 @@ public class ServerSqlDispatch {
 	String action = request.getParameter(HttpParameter.ACTION);
 	String username = request.getParameter(HttpParameter.USERNAME);
 	String sessionId = request.getParameter(HttpParameter.SESSION_ID);
+	String connectionId = request.getParameter(HttpParameter.CONNECTION_ID);
 	String database = request.getParameter(HttpParameter.DATABASE);
 
 	if (action == null || action.isEmpty()) {
@@ -155,10 +155,12 @@ public class ServerSqlDispatch {
 
 	    return;
 	}
+	
+	debug("ACTION: " + action);
 
-	debug("test action.equals(HttpParameter.CONNECT)");
-
-	if (action.equals(HttpParameter.CONNECT)) {
+	debug("test action.equals(HttpParameter.LOGIN)");	
+	
+	if (action.equals(HttpParameter.LOGIN) || action.equals(HttpParameter.CONNECT)) {
 	    ServerLoginActionSql serverLoginActionSql = new ServerLoginActionSql();
 	    serverLoginActionSql.executeAction(request, response, action);
 	    return;
@@ -179,6 +181,14 @@ public class ServerSqlDispatch {
 	    return;
 	}
 
+	// 
+	if (action.equals(HttpParameter.GET_CONNECTION)) {
+	    out = response.getOutputStream();
+	    connectionId = ServerLoginActionSql.getConnectionId(sessionId, request, username, database, databaseConfigurator);
+	    ServerSqlManager.writeLine(out, JsonOkReturn.build("connection_id", connectionId));
+	    return;
+	}
+	
 	// Redirect if it's a File download request (Blobs/Clobs)
 	if (action.equals(HttpParameter.BLOB_DOWNLOAD)) {
 	    blobDownload(request, response, username, databaseConfigurator);
@@ -226,9 +236,9 @@ public class ServerSqlDispatch {
 	    return;
 	}
 
-	debug("After isActionForAwakeFile");
+	debug("Before if (action.equals(HttpParameter.LOGOUT))");
 
-	if (action.equals(HttpParameter.DISCONNECT)) {
+	if (action.equals(HttpParameter.LOGOUT) || action.equals(HttpParameter.DISCONNECT) ) {
 	    ServerLogout.logout(request, response, databaseConfigurator);
 	    return;
 	}
@@ -243,44 +253,31 @@ public class ServerSqlDispatch {
 	}
 
 	// Start clean Connections thread
-	connectionStoreClean(username, sessionId, database);
+	connectionStoreClean();
 
-	if (isSavepointModifier(action) || isConnectionModifier(action)) {
-	    if (ConnectionStore.isStateless(username, sessionId)) {
+	Connection connection = null;
+	
+	try {
+	    ConnectionStore connectionStore = new ConnectionStore(username,
+		    sessionId, connectionId);
+	    
+	    // Hack to allow version 1.0 to continue to get connection
+	    if (connectionId == null || connectionId.isEmpty()) {
+		 connection = connectionStore.getFirst();
+	    }
+	    else {
+		connection = connectionStore.get();
+	    }
+
+	    if (connection == null || connection.isClosed()) {
 		JsonErrorReturn errorReturn = new JsonErrorReturn(response,
-			HttpServletResponse.SC_UNAUTHORIZED,
-			JsonErrorReturn.ERROR_ACEQL_UNAUTHORIZED,
-			JsonErrorReturn.OPERATION_NOT_ALLOWED_IN_STATELESS_MODE
-				+ action + ".");
+			HttpServletResponse.SC_NOT_FOUND,
+			JsonErrorReturn.ERROR_ACEQL_ERROR,
+			JsonErrorReturn.INVALID_CONNECTION);
 		ServerSqlManager.writeLine(out, errorReturn.build());
 		return;
 	    }
-	}
 
-	Connection connection = null;
-
-	try {
-	    if (ConnectionStore.isStateless(username, sessionId)) {
-		connection = databaseConfigurator.getConnection(database);
-
-		// Put connection in auto-commit true and read only false
-		// Because client side can not do it in stateless mode
-		ConnectionUtil.connectionInit(connection);
-
-	    } else {
-		ConnectionStore connectionStore = new ConnectionStore(username,
-			sessionId);
-		connection = connectionStore.get();
-
-		if (connection == null || connection.isClosed()) {
-		    JsonErrorReturn errorReturn = new JsonErrorReturn(response,
-			    HttpServletResponse.SC_NOT_FOUND,
-			    JsonErrorReturn.ERROR_ACEQL_ERROR,
-			    JsonErrorReturn.CONNECTION_IS_INVALIDATED);
-		    ServerSqlManager.writeLine(out, errorReturn.build());
-		    return;
-		}
-	    }
 	} catch (SQLException e) {
 	    JsonErrorReturn jsonErrorReturn = new JsonErrorReturn(response,
 		    HttpServletResponse.SC_BAD_REQUEST,
@@ -293,6 +290,28 @@ public class ServerSqlDispatch {
 	    return;
 	}
 
+	// Release connection in pool & remove all references
+	if (action.equals(HttpParameter.CLOSE)) {
+	    try {
+		//ConnectionCloser.freeConnection(connection,
+		//	databaseConfigurator);
+		databaseConfigurator.close(connection);
+		if (connectionId == null) {
+		    connectionId = ServerLoginActionSql.getConnectionId(connection);
+		}
+		ConnectionStore connectionStore = new ConnectionStore(username,
+			sessionId, connectionId);
+		connectionStore.remove();
+		ServerSqlManager.writeLine(out, JsonOkReturn.build());
+	    } catch (SQLException e) {
+		JsonErrorReturn errorReturn = new JsonErrorReturn(response,
+			HttpServletResponse.SC_BAD_REQUEST,
+			JsonErrorReturn.ERROR_JDBC_ERROR, e.getMessage());
+		ServerSqlManager.writeLine(out, errorReturn.build());
+	    }
+	    return;
+	}
+	
 	if (isStatement(action)) {
 	    ServerStatement serverStatement = new ServerStatement(request,
 		    response, databaseConfigurator, connection);
@@ -312,16 +331,16 @@ public class ServerSqlDispatch {
 
     }
 
-    private void connectionStoreClean(String username, String sessionId,
-	    String database) {
-	// If we are not in stateless mode, clean old connections with a
-	// Thread
-	if (!ConnectionStore.isStateless(username, sessionId)
-		&& !ConnectionStoreCleaner.IS_RUNNING) {
-	    ConnectionStoreCleaner cleaner = new ConnectionStoreCleaner(
-		    database);
+    /**
+     * Clean connection store.
+     */
+    private void connectionStoreClean() {
+	
+	if (ConnectionStoreCleaner.timeToCleanConnectionStore()) {
+	    ConnectionStoreCleaner cleaner = new ConnectionStoreCleaner();
 	    cleaner.start();
 	}
+	
     }
 
     private void blobUpload(HttpServletRequest request,
@@ -451,7 +470,9 @@ public class ServerSqlDispatch {
 		|| action.equals(HttpParameter.SET_READ_ONLY)
 		|| action.equals(HttpParameter.SET_HOLDABILITY)
 		|| action.equals(
-			HttpParameter.SET_TRANSACTION_ISOLATION_LEVEL)) {
+			HttpParameter.SET_TRANSACTION_ISOLATION_LEVEL)
+		|| action.equals(
+			HttpParameter.CLOSE)) {
 	    return true;
 	} else {
 	    return false;

@@ -45,13 +45,12 @@ import java.util.Map;
  * {@code SessionConfigurator} implementation. <br>
  * Do it if you want to implement you own session mechanism and/or want to
  * manage how session info are stored.<br>
+ * <br>Note that {@code getSessionTimelife()} returns 0 and that sessions never expire.s
+ * <br>Extend this class and override {@code getSessionTimelife()} if you want to define expirable sessions.
  * 
  * @author Nicolas de Pomereu
  */
 public class DefaultSessionConfigurator implements SessionConfigurator {
-
-    /** 12H converted in minutes */
-    public static final int TIME_12_HOURS_IN_MINUTES = 60 * 12;
 
     private SessionIdentifierGenerator sessionIdentifierGenerator = new SessionIdentifierGenerator();
     private Map<String, SessionInfo> sessionInfoStore = new HashMap<>();
@@ -197,11 +196,11 @@ public class DefaultSessionConfigurator implements SessionConfigurator {
      * (java.lang.String)
      */
     /**
-     * @return 12 hours (720 minutes)
+     * Returns 0. (Session never expires).
      */
     @Override
     public int getSessionTimelife() {
-	return TIME_12_HOURS_IN_MINUTES;
+	return 0;
     }
 
 }

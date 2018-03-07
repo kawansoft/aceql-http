@@ -29,10 +29,13 @@ import java.sql.Connection;
 import java.sql.RowId;
 import java.sql.SQLException;
 import java.sql.Savepoint;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -42,8 +45,8 @@ import org.kawanfw.sql.util.FrameworkDebug;
 
 /**
  * 
- * Stores the Connection in autocommit mode false in static for subsequent
- * returns
+ * Stores the Connection in static for subsequent
+ * new calls by remote device/PC clients.
  * 
  * @author Nicolas de Pomereu
  */
@@ -58,11 +61,8 @@ public class ConnectionStore {
      */
     private ConnectionKey connectionKey = null;
 
-    /** Map of (username + connectionId), connection= */
+    /** Map of (username + sessionId + connectionId), connection= */
     private static Map<ConnectionKey, Connection> connectionMap = new HashMap<>();
-
-    /** Timestamp to compute the age of a stored Connection */
-    private static Map<ConnectionKey, Integer> connectionAge = new HashMap<>();
 
     /** The map of Savepoints */
     private static Map<ConnectionKey, Set<Savepoint>> savepointMap = new HashMap<>();
@@ -77,35 +77,26 @@ public class ConnectionStore {
      * Constructor
      * 
      * @param username
+     * @param sessionId
      * @param connectionId
      */
-    public ConnectionStore(String username, String connectionId) {
+    public ConnectionStore(String username, String sessionId, String connectionId) {
 
 	if (username == null) {
 	    throw new IllegalArgumentException("username is null!");
 	}
 
-	if (connectionId == null) {
-	    throw new IllegalArgumentException("connectionId is null!");
+	if (sessionId == null) {
+	    throw new IllegalArgumentException("sessionId is null!");
 	}
+	
+	// NO! Allow null connectionId
+//	if (connectionId == null) {
+//	    throw new IllegalArgumentException("connectionId is null!");
+//	}
 
-	this.connectionKey = new ConnectionKey(username, connectionId);
+	this.connectionKey = new ConnectionKey(username, sessionId, connectionId);
 
-    }
-
-    /**
-     * Says if pair (Username, connectionId) is Stateless or Stateful It it
-     * Stateful id the connectionMap contains en entry
-     * 
-     * @param username
-     * @param connectionId
-     * @return
-     */
-    public static boolean isStateless(String username, String connectionId) {
-	ConnectionKey connectionKey = new ConnectionKey(username, connectionId);
-	boolean isStateless = (connectionMap.containsKey(connectionKey)) ? false
-		: true;
-	return isStateless;
     }
 
     /**
@@ -122,8 +113,6 @@ public class ConnectionStore {
 	}
 
 	connectionMap.put(connectionKey, connection);
-	connectionAge.put(connectionKey,
-		(int) (new Date().getTime() / 1000 / 60));
     }
 
     /**
@@ -398,6 +387,7 @@ public class ConnectionStore {
     public Connection get() {
 	return connectionMap.get(connectionKey);
     }
+    
 
     /**
      * Remove all stored instances in the ConnectionStore. This must be done
@@ -405,26 +395,12 @@ public class ConnectionStore {
      */
     public void remove() {
 	debug("Removing a Connection for user: " + connectionKey);
-	clean();
 	connectionMap.remove(connectionKey);
-    }
-
-    /**
-     * Remove the Connection info associated to username + connectionId. <br>
-     * But keeps the entry in connectionMap do that program knows if client user
-     * is in Stateful mode or not.
-     */
-    public void clean() {
-	debug("Cleaning a Connection for user: " + connectionKey);
-
-	// NO: says the connection is stateful
-	// connectionMap.remove(connectionKey);
-
-	connectionAge.remove(connectionKey);
 	savepointMap.remove(connectionKey);
 	arrayMap.remove(connectionKey);
 	rowIdMap.remove(connectionKey);
     }
+
 
     /**
      * Returns the size of the Connection Store
@@ -436,33 +412,69 @@ public class ConnectionStore {
     }
 
     /**
-     * Returns the age of the connection in minutes for an id username +
-     * connectionId
-     * 
-     * @param connectionkey
-     *            the connection key that contains the username and the
-     *            connection Id
-     * @return the age of the connection in minutes
-     */
-    public static int getAge(ConnectionKey connectionkey) {
-
-	Integer ageInMinutes = connectionAge.get(connectionkey);
-	if (ageInMinutes == null || ageInMinutes == 0) {
-	    // ageInMinutes = new Integer(0);
-	    ageInMinutes = Integer.valueOf(0);
-	}
-
-	int nowInMinutes = (int) (new Date().getTime() / 1000 / 60);
-	return nowInMinutes - ageInMinutes;
-    }
-
-    /**
      * Returns the keys of the store
      * 
      * @return the keys of the store
      */
     public static Set<ConnectionKey> getKeys() {
 	return connectionMap.keySet();
+    }
+
+
+    public static Set<Connection> getAllConnections(String username,
+	    String sessionId) {
+
+	Set<Connection> connections = new HashSet<>();
+	
+        for (ConnectionKey connectionKey : connectionMap.keySet())
+        {
+            if (connectionKey.getUsername().equals(username) && connectionKey.getSessionId().equals(sessionId)) {
+                Connection connection = connectionMap.get(connectionKey);
+                connections.add(connection);
+            }
+        }
+        
+        return connections;
+        
+    }
+    
+    /**
+     * Returns the first available Connection of all Connections for couple(username, sessionId)
+     * @return the first available Connection of all Connections for couple(username, sessionId)
+     */
+    public Connection getFirst() throws SQLException {
+	Set<Connection> connections = getAllConnections(this.connectionKey.getUsername(), this.connectionKey.getSessionId());
+	if (connections.isEmpty()) {
+	    throw new SQLException("No Connection stored for ("
+		    + this.connectionKey.getUsername() + ", " + this.connectionKey.getSessionId() + ")");
+	}
+	List<Connection> connectionsList = new ArrayList<>();
+	connectionsList.addAll(connections);
+	return connectionsList.get(0);
+    }
+    
+
+    public static void removeAll(String username, String sessionId) {
+	
+	// No!! Will triger a ConcurrentModificationException!
+//        for (ConnectionKey connectionKey : connectionMap.keySet())
+//        {
+//            if (connectionKey.getUsername().equals(username) && connectionKey.getSessionId().equals(sessionId)) {
+//        	connectionMap.remove(connectionKey);
+//            }
+//        }
+//        
+        // Intermediate Collection to avoid ConcurrentModificationException on Map
+
+        Set<ConnectionKey> connectionsKeys = new HashSet<>(connectionMap.keySet());
+        
+        for (ConnectionKey connectionKey : connectionsKeys)
+        {
+            if (connectionKey.getUsername().equals(username) && connectionKey.getSessionId().equals(sessionId)) {
+        	connectionMap.remove(connectionKey);
+            }
+        }
+        
     }
 
     /**
@@ -474,5 +486,6 @@ public class ConnectionStore {
 	    System.out.println(new Date() + " " + s);
 	}
     }
+
 
 }
