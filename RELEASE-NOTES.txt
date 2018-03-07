@@ -36,12 +36,13 @@ AceQL HTTP Version 2.0 - 28-feb-2018
 What's new:
 
 - Server allows to create new Connection without re-authentication.
+
 - It is now possible to create and use from client side more than
   one Connection on the same database.
   
 - Stateful mode is now the main and only mode. This simplifies
   the software architecture, the user documentation and ease of 
-  used for developers.
+  use for developers.
   
 - DatabaseConfigurator.getConnectionMaxAge() has been removed 
   because of duplicate usage. (Same kind of value can be set when 
