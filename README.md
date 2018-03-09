@@ -310,7 +310,7 @@ AceQL can be accessed from client side:
 - **Using the C# Client SDK with C#** SQL regular syntax, same as with SQL Server Client  classes. The C# Client SDK wraps all http communications aspects. Jump to [C# Client SDK](#c-client-sdk).
 - **Using the Java Client SDK**  that allows regular JDBC calls and wraps all HTTP communications aspects. Jump to [Java  Client SDK](#java-client-sdk).
 - **Using the Python Client SDK** that allows regular [DB API 2.0](https://www.python.org/dev/peps/pep-0249/) SQL calls and wraps all HTTP communications aspects. Jump to [Python Client SDK](#python-client-sdk).
-
+- **Using the Swift Client SDK**. Read the [Swift Client SDK User Guide](https://github.com/kawansoft/aceql-http-client-swift/blob/master/README.md).
 
 - Using  any other language that supports HTTP GET & POST calls. 
 
