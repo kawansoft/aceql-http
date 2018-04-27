@@ -203,8 +203,8 @@ Because the software installs and runs a Windows Service, you must be logged as 
 
 Download either:
 
-- [AceQL-http-2.0-Setup.exe](https://www.aceql.com/SoftwareDownload?software=AceQL-HTTP-2.0-Setup.exe&version=2.0) if you use an [Open Source database](https://www.aceql.com/open-source-and-commercial-sql-databases.html).
-- [AceQL-HTTP-Pro-2.0-Setup.exe](https://www.aceql.com/SoftwareDownload?software=AceQL-HTTP-Pro-2.0-Setup.exe&version=2.0) if you use a commercial database. You can get an AceQL Professional trial license key here: [https://www.aceql.com/trial](https://www.aceql.com/trial).
+- [AceQL-http-2.0-Setup-x64.exe](https://www.aceql.com/SoftwareDownload?software=AceQL-HTTP-2.0-Setup-x64.exe&version=2.0) if you use an [Open Source database](https://www.aceql.com/open-source-and-commercial-sql-databases.html).
+- [AceQL-HTTP-Pro-2.0-Setup-x64.exe](https://www.aceql.com/SoftwareDownload?software=AceQL-HTTP-Pro-2.0-Setup-x64.exe&version=2.0) if you use a commercial database. You can get an AceQL Professional trial license key here: [https://www.aceql.com/trial](https://www.aceql.com/trial).
 
 Run the installer.
 
