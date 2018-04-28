@@ -125,9 +125,9 @@ The only required third party installation is a recent JVM.
 
 The following environments are supported in this version:
 
-| Operating System | JVM (Java Virtual Machine)               |
-| ---------------- | ---------------------------------------- |
-| Windows          | Oracle Java SE 7, Java SE 8 and Java SE 9 |
+| Operating System | JVM (Java Virtual Machine)                                   |
+| ---------------- | ------------------------------------------------------------ |
+| Windows          | Oracle Java SE 7, Java SE 8 and Java SE 9. (64-bit only).    |
 | UNIX/Linux       | Oracle Java SE 7, Java SE 8 and Java SE 9<br />OpenJDK 7, OpenJDK 8 and OpenJDK 9 |
 | OS X / macOS     | Oracle Java SE 7 for OS X 10.7.3+  <br />Oracle Java SE 8 for OS X 10.8+  <br />Oracle Java SE 9 for mac OS 10.10+ |
 
