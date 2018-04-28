@@ -197,7 +197,7 @@ We are now ready to send SQL requests from client side!
 
 ## Windows Installation & Server Startup 
 
-AceQL requires the installation of Java version 7, 8 or 9.
+AceQL requires the installation of Java version 7, 8 or 9. (64-bit only).
 
 Because the software installs and runs a Windows Service, you must be logged as a Windows Administrator to install AceQL.
 
