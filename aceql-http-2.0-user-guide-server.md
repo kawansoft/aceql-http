@@ -80,9 +80,9 @@ execute_query
 
 AceQL HTTP is authorized through a license. The license type depends on the edition you test,use, or buy:
 
-| **Product**             | **License**                              |
-| ----------------------- | ---------------------------------------- |
-| AceQL HTTP Open Source  | [AceQL Open Source License](http://www.aceql.com/rest/soft/licensing/AceQLOpenSourceLicense.txt) |
+| **Product**             | **License**                                                  |
+| ----------------------- | ------------------------------------------------------------ |
+| AceQL HTTP Open Source  | [AceQL Open Source License (LGPL v2.1)](http://www.aceql.com/rest/soft/licensing/AceQLOpenSourceLicense.txt) |
 | AceQL HTTP Professional | [30 day Trial](http://www.aceql.com/rest/soft/licensing/AceQLTrialLicense.html)<br />[Singe Server AceQL License](http://www.aceql.com/rest/soft/licensing/AceQLSingleServerLicense.html)<br />[Single Site AceQL License](http://www.aceql.com/rest/soft/licensing/AceQLSingleSiteLicense.html) |
 
  The AceQL HTTP framework consists of:
