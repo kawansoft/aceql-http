@@ -55,7 +55,6 @@ import java.util.Set;
 import java.util.Vector;
 
 import javax.json.stream.JsonGenerator;
-import javax.json.stream.JsonGeneratorFactory;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.io.IOUtils;
@@ -65,7 +64,6 @@ import org.kawanfw.sql.api.util.SqlUtil;
 import org.kawanfw.sql.servlet.HttpParameter;
 import org.kawanfw.sql.servlet.ServerSqlManager;
 import org.kawanfw.sql.servlet.connection.ConnectionStore;
-import org.kawanfw.sql.servlet.sql.json_return.JsonUtil;
 import org.kawanfw.sql.util.FrameworkDebug;
 import org.kawanfw.sql.util.FrameworkFileUtil;
 import org.kawanfw.sql.util.HtmlConverter;
@@ -112,8 +110,9 @@ public class ResultSetWriter {
     /** The set of columns that are OID (Types.BIGINT) */
     private Set<String> typeBigIntColumnNames = null;
 
-    private Boolean doPrettyPrinting = false;
     private Boolean doColumnTypes = false;
+
+    private JsonGenerator gen = null;
 
     /**
      * @param request
@@ -124,20 +123,17 @@ public class ResultSetWriter {
      *            the client username
      * @param sqlOrder
      *            the sql order
+     * @param gen The JSon Generator
      */
     public ResultSetWriter(HttpServletRequest request, OutputStream out,
-	    String username, String sqlOrder) {
+	    String username, String sqlOrder, JsonGenerator gen) {
 	this.out = out;
 
 	this.username = username;
 	this.sqlOrder = sqlOrder;
 
 	this.request = request;
-
-	String prettyPrinting = request
-		.getParameter(HttpParameter.PRETTY_PRINTING);
-	// doPrettyPrinting = new Boolean(prettyPrinting);
-	doPrettyPrinting = Boolean.parseBoolean(prettyPrinting);
+	this.gen = gen;
 
 	String columnTypes = request.getParameter(HttpParameter.COLUMN_TYPES);
 	// doColumnTypes= new Boolean(columnTypes);
@@ -228,12 +224,6 @@ public class ResultSetWriter {
 	    boolean doTest = ServerSqlUtil.testSelect(resultSet);
 	    if (!doTest)
 		return;
-
-	    JsonGeneratorFactory jf = JsonUtil
-		    .getJsonGeneratorFactory(doPrettyPrinting);
-
-	    JsonGenerator gen = jf.createGenerator(out);
-	    gen.writeStartObject().write("status", "OK");
 
 	    if (doColumnTypes) {
 		gen.writeStartArray("column_types");
@@ -393,13 +383,9 @@ public class ResultSetWriter {
 	    gen.writeEnd(); // .writeStartArray("query_rows")
 
 	    gen.write("row_count", row_count);
-	    gen.writeEnd(); // .write("status", "OK")
-
-	    gen.flush();
-
+	    	    
 	    ServerSqlManager.writeLine(out);
 
-	    gen.close();
 
 	} finally {
 	    resultSet.close();

@@ -39,6 +39,7 @@ import java.io.Writer;
 import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -66,8 +67,7 @@ import org.kawanfw.sql.util.KeepTempFilePolicyParms;
  */
 public class ServerPreparedStatementParameters {
 
-    private static boolean DEBUG = FrameworkDebug
-	    .isSet(ServerPreparedStatementParameters.class);
+    private static boolean DEBUG = FrameworkDebug.isSet(ServerPreparedStatementParameters.class);
 
     /** Universal and clean line separator */
     private static String CR_LF = System.getProperty("line.separator");
@@ -96,6 +96,10 @@ public class ServerPreparedStatementParameters {
     /** The blob/clob files list */
     private List<File> blobsOrClobs = new Vector<File>();
 
+    private Map<Integer, AceQLParameter> inOutStatementParameters = new TreeMap<Integer, AceQLParameter>();
+
+
+
     /**
      * Constructor
      * 
@@ -104,8 +108,7 @@ public class ServerPreparedStatementParameters {
      * @param request
      *            the servlet request
      */
-    public ServerPreparedStatementParameters(
-	    PreparedStatement preparedStatement, HttpServletRequest request) {
+    public ServerPreparedStatementParameters(PreparedStatement preparedStatement, HttpServletRequest request) {
 
 	if (preparedStatement == null) {
 	    throw new NullPointerException("preparedStatement is nul!");
@@ -123,28 +126,43 @@ public class ServerPreparedStatementParameters {
      * @throws IllegalArgumentException
      *             if use passes bad parameters
      */
-    public void setParameters()
-	    throws SQLException, IllegalArgumentException, IOException {
-
-	/** The map of (param_type_n, param_value_n) */
-	Map<Integer, AceQLParameter> statementParameters = new TreeMap<Integer, AceQLParameter>();
+    public void setParameters() throws SQLException, IllegalArgumentException, IOException {
 
 	int i = 1;
 
 	while (true) {
-	    String requestParamType = request
-		    .getParameter(HttpParameter.PARAM_TYPE_ + i);
+	    String requestParamType = request.getParameter(HttpParameter.PARAM_TYPE_ + i);
 
 	    if (requestParamType != null && !requestParamType.isEmpty()) {
-		String requestParamValue = request
-			.getParameter(HttpParameter.PARAM_VALUE_ + i);
-		statementParameters.put(i, new AceQLParameter(requestParamType,
-			requestParamValue));
+		String requestParamValue = request.getParameter(HttpParameter.PARAM_VALUE_ + i);
 
-		if (requestParamValue == null || requestParamValue.isEmpty()) {
-		    throw new SQLException(
-			    "No parameter value for parameter index " + i);
+		String parameterDirection = request.getParameter(HttpParameter.PARAM_DIRECTION_ + i);
+
+		if (parameterDirection == null) {
+		    parameterDirection = ParameterDirection.IN;
 		}
+		parameterDirection = parameterDirection.toLowerCase();
+
+		if (!parameterDirection.equals(ParameterDirection.IN)
+			&& !parameterDirection.equals(ParameterDirection.OUT)
+			&& !parameterDirection.equals(ParameterDirection.INOUT)) {
+		    throw new IllegalArgumentException("Invalid direction for parameter of index " + i + ": " + parameterDirection);
+		}
+
+		// Out parameters may have a f...ing name!! We have to handle it.
+		String outParameterName = request.getParameter(HttpParameter.OUT_PARAM_NAME_ + i);
+		
+		inOutStatementParameters.put(i,
+			new AceQLParameter(i, requestParamType, requestParamValue, parameterDirection, outParameterName));
+
+		debug("index: " + i + " / type " + requestParamType + " / direction: " +  parameterDirection + " / value: " + requestParamValue);
+		
+		if (isInParameter(parameterDirection)) {
+		    if (requestParamValue == null || requestParamValue.isEmpty()) {
+			throw new SQLException("No parameter value for IN parameter index " + i);
+		    }
+		}
+
 	    } else {
 		break;
 	    }
@@ -152,32 +170,30 @@ public class ServerPreparedStatementParameters {
 	    i++;
 	}
 
-	if (statementParameters.isEmpty()) {
+	if (inOutStatementParameters.isEmpty()) {
 	    return;
 	}
 
-	for (Map.Entry<Integer, AceQLParameter> entry : statementParameters
-		.entrySet()) {
+	for (Map.Entry<Integer, AceQLParameter> entry : inOutStatementParameters.entrySet()) {
 
 	    int paramIndex = entry.getKey();
 	    AceQLParameter aceQLParameter = entry.getValue();
-
+	    
 	    String paramType = aceQLParameter.getParameterType();
 	    String paramValue = aceQLParameter.getParameterValue();
+	    String paramDirection = aceQLParameter.getParameterDirection();
 
-	    if (paramValue.equals("NULL")) {
+	    if (isInParameter(paramDirection) && paramValue.equals("NULL")) {
 		paramValue = null;
 	    }
 
 	    debug(paramIndex + " / " + paramType + " / " + paramValue);
 	    /*
-	     * CHARACTER String VARCHAR String NUMERIC java.math.BigDecimal
-	     * DECIMAL java.math.BigDecimal BIT Boolean TINYINT Integer SMALLINT
-	     * Integer INTEGER Integer BIGINT Long REAL Float FLOAT Double
-	     * DOUBLE PRECISION Double
+	     * CHARACTER String VARCHAR String NUMERIC java.math.BigDecimal DECIMAL
+	     * java.math.BigDecimal BIT Boolean TINYINT Integer SMALLINT Integer INTEGER
+	     * Integer BIGINT Long REAL Float FLOAT Double DOUBLE PRECISION Double
 	     * 
-	     * DATE java.sql.Date TIME java.sql.Time TIMESTAMP
-	     * java.sql.Timestamp
+	     * DATE java.sql.Date TIME java.sql.Time TIMESTAMP java.sql.Timestamp
 	     */
 
 	    parameterTypes.put(paramIndex, paramType);
@@ -185,127 +201,216 @@ public class ServerPreparedStatementParameters {
 
 	    if (paramValue == null) {
 		debug("BEFORE setNull " + paramIndex + " " + paramType);
-		preparedStatement.setNull(paramIndex,
-			JavaSqlConversion.fromSqlToJava(paramType));
-		parameterValues.put(paramIndex, null);
+
+		if (isInParameter(paramDirection)) {
+		    preparedStatement.setNull(paramIndex, JavaSqlConversion.fromSqlToJava(paramType));
+		    parameterValues.put(paramIndex, null);
+		}
+
+		registerOutParameter(paramIndex, paramType, paramDirection);
+
 		debug("AFTER setNull");
-	    } else if (paramType.equalsIgnoreCase(AceQLTypes.CHAR)
-		    || paramType.equalsIgnoreCase(AceQLTypes.CHARACTER)
+	    } else if (paramType.equalsIgnoreCase(AceQLTypes.CHAR) || paramType.equalsIgnoreCase(AceQLTypes.CHARACTER)
 		    || paramType.equalsIgnoreCase(AceQLTypes.VARCHAR)) {
-		preparedStatement.setString(paramIndex, paramValue);
-		parameterValues.put(paramIndex, paramValue);
+
+		if (isInParameter(paramDirection)) {
+		    preparedStatement.setString(paramIndex, paramValue);
+		    parameterValues.put(paramIndex, paramValue);
+		}
+		registerOutParameter(paramIndex, paramType, paramDirection);
+
 	    } else if (paramType.equalsIgnoreCase(AceQLTypes.DECIMAL)
 		    || paramType.equalsIgnoreCase(AceQLTypes.NUMERIC)) {
-		BigDecimal bigDecimal = new BigDecimal(paramValue);
-		preparedStatement.setBigDecimal(paramIndex, bigDecimal);
-		parameterValues.put(paramIndex, new BigDecimal(paramValue));
+		if (isInParameter(paramDirection)) {
+		    BigDecimal bigDecimal = new BigDecimal(paramValue);
+		    preparedStatement.setBigDecimal(paramIndex, bigDecimal);
+		    parameterValues.put(paramIndex, new BigDecimal(paramValue));
+		}
+		registerOutParameter(paramIndex, paramType, paramDirection);
+		
 	    } else if (paramType.equalsIgnoreCase(AceQLTypes.BIT)) {
 
-		// Boolean theBool = new Boolean(paramValue);
-		Boolean theBool = Boolean.valueOf(paramValue);
+		if (isInParameter(paramDirection)) {
+		    // Boolean theBool = new Boolean(paramValue);
+		    Boolean theBool = Boolean.valueOf(paramValue);
 
-		preparedStatement.setBoolean(paramIndex,
-			theBool.booleanValue());
-		parameterValues.put(paramIndex,
-			Boolean.parseBoolean(paramValue));
-	    } else if (paramType.equalsIgnoreCase(AceQLTypes.TINYINT)
-		    || paramType.equalsIgnoreCase(AceQLTypes.SMALLINT)
+		    preparedStatement.setBoolean(paramIndex, theBool.booleanValue());
+		    parameterValues.put(paramIndex, Boolean.parseBoolean(paramValue));
+		}
+		registerOutParameter(paramIndex, paramType, paramDirection);
+
+	    } else if (paramType.equalsIgnoreCase(AceQLTypes.TINYINT) || paramType.equalsIgnoreCase(AceQLTypes.SMALLINT)
 		    || paramType.equalsIgnoreCase(AceQLTypes.INTEGER)) {
 
-		// Integer theInteger = new Integer(paramValue);
-		Integer theInteger = Integer.parseInt(paramValue);
+		if (isInParameter(paramDirection)) {
+		    // Integer theInteger = new Integer(paramValue);
+		    Integer theInteger = Integer.parseInt(paramValue);
 
-		preparedStatement.setInt(paramIndex, theInteger.intValue());
-		parameterValues.put(paramIndex, Integer.parseInt(paramValue));
+		    preparedStatement.setInt(paramIndex, theInteger.intValue());
+		    parameterValues.put(paramIndex, Integer.parseInt(paramValue));
+		}
+		registerOutParameter(paramIndex, paramType, paramDirection);
+
 	    }
 	    // BIGINT Long
 	    // REAL Float
 	    // FLOAT Double
 	    // DOUBLE PRECISION Double
 	    else if (paramType.equalsIgnoreCase(AceQLTypes.BIGINT)) {
-		// Long theLong = new Long(paramValue);
-		Long theLong = Long.parseLong(paramValue);
 
-		preparedStatement.setLong(paramIndex, theLong.longValue());
-		parameterValues.put(paramIndex, theLong.longValue());
+		if (isInParameter(paramDirection)) {
+		    // Long theLong = new Long(paramValue);
+		    Long theLong = Long.parseLong(paramValue);
+
+		    preparedStatement.setLong(paramIndex, theLong.longValue());
+		    parameterValues.put(paramIndex, theLong.longValue());
+		}
+		registerOutParameter(paramIndex, paramType, paramDirection);
+		
 	    } else if (paramType.equalsIgnoreCase(AceQLTypes.REAL)) {
 
-		// loat theFloat = new Float(paramValue);
-		Float theFloat = Float.parseFloat(paramValue);
+		if (isInParameter(paramDirection)) {
+		    // loat theFloat = new Float(paramValue);
+		    Float theFloat = Float.parseFloat(paramValue);
 
-		preparedStatement.setFloat(paramIndex, theFloat.longValue());
-		parameterValues.put(paramIndex, theFloat.longValue());
-	    } else if (paramType.equalsIgnoreCase(AceQLTypes.FLOAT) || paramType
-		    .equalsIgnoreCase(AceQLTypes.DOUBLE_PRECISION)) {
+		    preparedStatement.setFloat(paramIndex, theFloat.longValue());
+		    parameterValues.put(paramIndex, theFloat.longValue());
+		}
+		registerOutParameter(paramIndex, paramType, paramDirection);
 
-		// Double theDouble = new Double(paramValue);
-		Double theDouble = Double.valueOf(paramValue);
+	    } else if (paramType.equalsIgnoreCase(AceQLTypes.FLOAT)
+		    || paramType.equalsIgnoreCase(AceQLTypes.DOUBLE_PRECISION)) {
 
-		preparedStatement.setDouble(paramIndex, theDouble);
-		parameterValues.put(paramIndex, theDouble.doubleValue());
+		if (isInParameter(paramDirection)) {
+		    // Double theDouble = new Double(paramValue);
+		    Double theDouble = Double.valueOf(paramValue);
+
+		    preparedStatement.setDouble(paramIndex, theDouble);
+		    parameterValues.put(paramIndex, theDouble.doubleValue());
+		}		
+		registerOutParameter(paramIndex, paramType, paramDirection);
+
 	    }
 	    // DATE java.sql.Date
 	    // TIME java.sql.Time
 	    // TIMESTAMP java.sql.Timestamp
 	    else if (paramType.equalsIgnoreCase(AceQLTypes.DATE)) {
+		if (isInParameter(paramDirection)) {
+		    // long timemilliseconds = new Long(paramValue).longValue();
+		    long timemilliseconds = Long.parseLong(paramValue);
 
-		// long timemilliseconds = new Long(paramValue).longValue();
-		long timemilliseconds = Long.parseLong(paramValue);
+		    java.sql.Date theDateTime = new java.sql.Date(timemilliseconds);
+		    preparedStatement.setDate(paramIndex, theDateTime);
+		    parameterValues.put(paramIndex, theDateTime);
+		}
+		registerOutParameter(paramIndex, paramType, paramDirection);
 
-		java.sql.Date theDateTime = new java.sql.Date(timemilliseconds);
-		preparedStatement.setDate(paramIndex, theDateTime);
-		parameterValues.put(paramIndex, theDateTime);
 	    } else if (paramType.equalsIgnoreCase(AceQLTypes.TIME)) {
+		if (isInParameter(paramDirection)) {
+		    // long timemilliseconds = new Long(paramValue).longValue();
+		    long timemilliseconds = Long.parseLong(paramValue);
 
-		// long timemilliseconds = new Long(paramValue).longValue();
-		long timemilliseconds = Long.parseLong(paramValue);
+		    java.sql.Time theDateTime = new java.sql.Time(timemilliseconds);
+		    preparedStatement.setTime(paramIndex, theDateTime);
+		    parameterValues.put(paramIndex, theDateTime);
+		}
+		registerOutParameter(paramIndex, paramType, paramDirection);
 
-		java.sql.Time theDateTime = new java.sql.Time(timemilliseconds);
-		preparedStatement.setTime(paramIndex, theDateTime);
-		parameterValues.put(paramIndex, theDateTime);
 	    } else if (paramType.equalsIgnoreCase(AceQLTypes.TIMESTAMP)) {
 
-		// long timemilliseconds = new Long(paramValue).longValue();
-		long timemilliseconds = Long.parseLong(paramValue);
+		if (isInParameter(paramDirection)) {
+		    // long timemilliseconds = new Long(paramValue).longValue();
+		    long timemilliseconds = Long.parseLong(paramValue);
 
-		java.sql.Timestamp theDateTime = new java.sql.Timestamp(
-			timemilliseconds);
-		preparedStatement.setTimestamp(paramIndex, theDateTime);
-		parameterValues.put(paramIndex, theDateTime);
+		    java.sql.Timestamp theDateTime = new java.sql.Timestamp(timemilliseconds);
+		    preparedStatement.setTimestamp(paramIndex, theDateTime);
+		    parameterValues.put(paramIndex, theDateTime);
+		}
+		registerOutParameter(paramIndex, paramType, paramDirection);
+
 	    }
 	    // LONGVARCHAR String
 	    else if (paramType.equalsIgnoreCase(AceQLTypes.LONGVARCHAR)
 		    || paramType.equalsIgnoreCase(AceQLTypes.CLOB)) {
+
+		if (isOutParameter(paramDirection)) {
+		    throw new IllegalArgumentException(
+			    "Invalid OUT direction. Characters stream and Clob parameters can not be OUT. (index " + paramIndex + ").");
+		}
+
 		setCharacterStream(preparedStatement, paramIndex, paramValue);
 		parameterValues.put(paramIndex, paramValue);
 	    } else if (paramType.equalsIgnoreCase(AceQLTypes.URL)) {
-		try {
-		    URL url = new URL(paramValue);
-		    preparedStatement.setURL(paramIndex, url);
-		    parameterValues.put(paramIndex, paramValue);
-		} catch (MalformedURLException e) {
-		    throw new IllegalArgumentException(
-			    "The following URL is invalid/malformed: "
-				    + paramValue);
+
+		if (isInParameter(paramDirection)) {
+		    try {
+			URL url = new URL(paramValue);
+			preparedStatement.setURL(paramIndex, url);
+			parameterValues.put(paramIndex, paramValue);
+		    } catch (MalformedURLException e) {
+			throw new IllegalArgumentException("The following URL is invalid/malformed: " + paramValue);
+		    }
 		}
+		registerOutParameter(paramIndex, paramType, paramDirection);
+
 	    }
 	    // BINARY byte[]
 	    // VARBINARY byte[]
 	    // LONGVARBINARY byte[]
-	    else if (paramType.equalsIgnoreCase(AceQLTypes.BINARY)
-		    || paramType.equalsIgnoreCase(AceQLTypes.VARBINARY)
+	    else if (paramType.equalsIgnoreCase(AceQLTypes.BINARY) || paramType.equalsIgnoreCase(AceQLTypes.VARBINARY)
 		    || paramType.equalsIgnoreCase(AceQLTypes.LONGVARBINARY)
 		    || paramType.equalsIgnoreCase(AceQLTypes.BLOB)) {
+
+		if (isOutParameter(paramDirection)) {
+		    throw new IllegalArgumentException(
+			    "Invalid OUT direction. Binary stream and Blob parameters can not be OUT (parameter index " + paramIndex + ").");
+		}
 
 		setBinaryStream(preparedStatement, paramIndex, paramValue);
 		parameterValues.put(paramIndex, paramValue);
 
 	    } else {
-		throw new IllegalArgumentException("Invalid param_type: "
-			+ paramType + " for param_index " + paramIndex + ".");
+		throw new IllegalArgumentException(
+			"Invalid parameter type: " + paramType + " for parameter index " + paramIndex + ".");
 	    }
 	}
 
+    }
+
+    private void registerOutParameter(int paramIndex, String paramType, String paramDirection) throws SQLException {
+	if (isOutParameter(paramDirection)) {
+	    if (preparedStatement instanceof CallableStatement) {
+		int sqlType = JavaSqlConversion.fromSqlToJava(paramType);
+		((CallableStatement) preparedStatement).registerOutParameter(paramIndex, sqlType);
+	    }
+	    else {
+		throw new IllegalArgumentException("Illegal OUT parameter. PreparedStatement is not a CallableStatement (parameter index: " + paramIndex + ").");
+	    }
+	}
+    }
+
+    public static boolean isInParameter(String parameterDirection) {
+	if (parameterDirection == null) {
+	    throw new NullPointerException("parameterDirection is null");
+	}
+
+	if (parameterDirection.equals(ParameterDirection.IN) || parameterDirection.equals(ParameterDirection.INOUT)) {
+	    return true;
+	} else {
+	    return false;
+	}
+    }
+
+    public static boolean isOutParameter(String parameterDirection) {
+	if (parameterDirection == null) {
+	    throw new NullPointerException("parameterDirection is null");
+	}
+
+	if (parameterDirection.equals(ParameterDirection.OUT) || parameterDirection.equals(ParameterDirection.INOUT)) {
+	    return true;
+	} else {
+	    return false;
+	}
     }
 
     /**
@@ -320,14 +425,12 @@ public class ServerPreparedStatementParameters {
      *            the parameter value (the file name)
      * @throws SQLException
      */
-    private void setCharacterStream(PreparedStatement preparedStatement,
-	    int parameterIndex, String paramValue)
+    private void setCharacterStream(PreparedStatement preparedStatement, int parameterIndex, String paramValue)
 	    throws SQLException, IOException {
 
 	String username = request.getParameter(HttpParameter.USERNAME);
 	String database = request.getParameter(HttpParameter.DATABASE);
-	DatabaseConfigurator databaseConfigurator = ServerSqlManager
-		.getDatabaseConfigurator(database);
+	DatabaseConfigurator databaseConfigurator = ServerSqlManager.getDatabaseConfigurator(database);
 
 	// Extract the Clob file from the parameter
 	String blobId = paramValue;
@@ -335,8 +438,7 @@ public class ServerPreparedStatementParameters {
 	File clobFile = new File(blobsDir.toString() + File.separator + blobId);
 
 	if (!clobFile.exists()) {
-	    throw new FileNotFoundException(
-		    "Clob file does not exists for blob_id: " + blobId);
+	    throw new FileNotFoundException("Clob file does not exists for blob_id: " + blobId);
 	}
 
 	Reader reader = null;
@@ -349,10 +451,8 @@ public class ServerPreparedStatementParameters {
 	    File clobFileHtmlDecoded = new File(clobFile + HTML_DECODED);
 	    blobsOrClobs.add(clobFileHtmlDecoded);
 
-	    try (BufferedReader br = new BufferedReader(
-		    new FileReader(clobFile));
-		    Writer writer = new BufferedWriter(
-			    new FileWriter(clobFileHtmlDecoded));) {
+	    try (BufferedReader br = new BufferedReader(new FileReader(clobFile));
+		    Writer writer = new BufferedWriter(new FileWriter(clobFileHtmlDecoded));) {
 
 		String line = null;
 		while ((line = br.readLine()) != null) {
@@ -380,14 +480,13 @@ public class ServerPreparedStatementParameters {
 
 	// We cast theLength, because the long version may not be implemented by
 	// the driver
-	preparedStatement.setCharacterStream(parameterIndex, reader,
-		(int) theLength);
+	preparedStatement.setCharacterStream(parameterIndex, reader, (int) theLength);
 
     }
 
     /**
-     * Set the binary stream using the underlying Blob file uploaded by the
-     * client side
+     * Set the binary stream using the underlying Blob file uploaded by the client
+     * side
      * 
      * @param preparedStatement
      *            The Prepared Statement to execute
@@ -398,15 +497,13 @@ public class ServerPreparedStatementParameters {
      * @throws SQLException
      * @throws IOException
      */
-    private void setBinaryStream(PreparedStatement preparedStatement,
-	    int parameterIndex, String paramValue)
+    private void setBinaryStream(PreparedStatement preparedStatement, int parameterIndex, String paramValue)
 	    throws SQLException, IOException {
 	// Extract the Blob file from the parameter
 
 	String username = request.getParameter(HttpParameter.USERNAME);
 	String database = request.getParameter(HttpParameter.DATABASE);
-	DatabaseConfigurator databaseConfigurator = ServerSqlManager
-		.getDatabaseConfigurator(database);
+	DatabaseConfigurator databaseConfigurator = ServerSqlManager.getDatabaseConfigurator(database);
 
 	// Extract the Blob/Clob file from the parameter
 	String blobId = paramValue;
@@ -419,8 +516,7 @@ public class ServerPreparedStatementParameters {
 	debug("before new BufferedInputStream(new FileInputStream(blobFile))");
 
 	if (!blobFile.exists()) {
-	    throw new IllegalArgumentException(
-		    "No Blob/Clob uploaded for blob_id: " + blobId);
+	    throw new IllegalArgumentException("No Blob/Clob uploaded for blob_id: " + blobId);
 	}
 
 	InputStream in = null;
@@ -440,16 +536,14 @@ public class ServerPreparedStatementParameters {
 	if (PostgreSqlUtil.isPostgreSqlStatementWithOID(connection, sql)) {
 
 	    debug("column is OID! " + parameterIndex);
-	    PostgreSqlUtil.setPostgreSqlParameterWithLargeObject(
-		    preparedStatement, parameterIndex, in, connection);
+	    PostgreSqlUtil.setPostgreSqlParameterWithLargeObject(preparedStatement, parameterIndex, in, connection);
 
 	} else {
 	    // We cast theLength, because the long version may not be
 	    // implemented by
 	    // the driver
 	    debug("column is NOT OID " + parameterIndex);
-	    preparedStatement.setBinaryStream(parameterIndex, in,
-		    (int) theLength);
+	    preparedStatement.setBinaryStream(parameterIndex, in, (int) theLength);
 	}
 
 	debug("after preparedStatement.setBinaryStream()");
@@ -516,6 +610,13 @@ public class ServerPreparedStatementParameters {
 	return parameterStringValues;
     }
 
+    /**
+     * @return the inOutStatementParameters
+     */
+    public Map<Integer, AceQLParameter> getInOutStatementParameters() {
+        return inOutStatementParameters;
+    }
+    
     /**
      * @param s
      */

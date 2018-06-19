@@ -82,7 +82,7 @@ public class LoggerUtil {
      * @param exception
      * @throws IOException
      */
-    public static void log(HttpServletRequest request, Exception exception)
+    public static void log(HttpServletRequest request, Throwable exception)
 	    throws IOException {
 	String database = request.getParameter(HttpParameter.DATABASE);
 
@@ -90,7 +90,14 @@ public class LoggerUtil {
 		.getDatabaseConfigurator(database);
 
 	Logger logger = databaseConfigurator.getLogger();
-	logger.log(Level.WARNING, "Exception: " + exception);
+	if (logger != null) {
+	    logger.log(Level.WARNING, "Exception: " + exception);
+	}
+	else {
+	    System.err.println("Logger is null!");
+	    System.err.println("Exception: " + exception);
+	}
+
     }
 
 }

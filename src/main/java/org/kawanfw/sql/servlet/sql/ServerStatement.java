@@ -334,9 +334,19 @@ public class ServerStatement {
 
 		    rs = preparedStatement.executeQuery();
 
+		    JsonGeneratorFactory jf = JsonUtil
+			    .getJsonGeneratorFactory(doPrettyPrinting);
+
+		    JsonGenerator gen = jf.createGenerator(out);
+		    gen.writeStartObject().write("status", "OK");
+		    
 		    ResultSetWriter resultSetWriter = new ResultSetWriter(
-			    request, out, username, sqlOrder);
+			    request, out, username, sqlOrder, gen);
 		    resultSetWriter.write(rs);
+		   		    
+		    gen.writeEnd(); // .write("status", "OK")  
+		    gen.flush();
+		    gen.close();	    	    
 
 		} finally {
 
@@ -488,9 +498,19 @@ public class ServerStatement {
 
 		    rs = statement.executeQuery(sqlOrder);
 
+		    JsonGeneratorFactory jf = JsonUtil
+			    .getJsonGeneratorFactory(doPrettyPrinting);
+
+		    JsonGenerator gen = jf.createGenerator(out);
+		    gen.writeStartObject().write("status", "OK");
+		    
 		    ResultSetWriter resultSetWriter = new ResultSetWriter(
-			    request, out, username, sqlOrder);
+			    request, out, username, sqlOrder, gen);
 		    resultSetWriter.write(rs);
+
+		    gen.writeEnd(); // .write("status", "OK")		    
+		    gen.flush();
+		    gen.close();
 
 		} finally {
 		    if (rs != null) {
@@ -519,21 +539,6 @@ public class ServerStatement {
 
 	return request.getParameter(HttpParameter.ACTION)
 		.equals(HttpParameter.EXECUTE_UPDATE);
-    }
-
-    /**
-     * Create our own temp file in user.home/kawansoft/tmp
-     * 
-     * @return the tempfile to create
-     * 
-     */
-    public static synchronized File createTempFileForResultSet() {
-	String unique = FrameworkFileUtil.getUniqueId();
-	String tempDir = FrameworkFileUtil.getKawansoftTempDir();
-	String tempFile = tempDir + File.separator + "server-result-set-"
-		+ unique + ".tmp";
-
-	return new File(tempFile);
     }
 
     /**

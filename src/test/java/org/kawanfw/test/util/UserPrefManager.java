@@ -55,6 +55,7 @@ public class UserPrefManager {
      * @throws IOException
      */
     public static String getSqlEngineToUse() throws IOException {
+
 	FileInputStream in = null;
 
 	try {

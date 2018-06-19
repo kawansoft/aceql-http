@@ -206,6 +206,11 @@ public class ServletPathAnalyzer {
 	    return true;
 	}
 
+	if (urlContent.endsWith("/execute")) {
+	    sqlStatement = "execute";
+	    return true;
+	}
+
 	return false;
 
     }

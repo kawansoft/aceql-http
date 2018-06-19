@@ -47,7 +47,7 @@ import org.kawanfw.sql.servlet.connection.SavepointUtil;
 import org.kawanfw.sql.servlet.connection.TransactionUtil;
 import org.kawanfw.sql.servlet.sql.LoggerUtil;
 import org.kawanfw.sql.servlet.sql.ServerStatement;
-import org.kawanfw.sql.servlet.sql.json_return.ExceptionReturner;
+import org.kawanfw.sql.servlet.sql.callable.ServerCallableStatement;
 import org.kawanfw.sql.servlet.sql.json_return.JsonErrorReturn;
 import org.kawanfw.sql.servlet.sql.json_return.JsonOkReturn;
 import org.kawanfw.sql.servlet.util.BlobUtil;
@@ -73,39 +73,10 @@ public class ServerSqlDispatch {
 	// Does nothing
     }
 
-    /**
-     * Execute the client sent SQL request. Exception are trapped, cleanly
-     * returned to client side and logged on DatabaseConfigurator.getLogger()
-     * Logger.
-     * 
-     * @param request
-     *            the http request
-     * @param response
-     *            the http response
-     * @throws IOException
-     *             if any IOException occurs
-     */
-    public void executeRequest(HttpServletRequest request,
-	    HttpServletResponse response) throws IOException {
-
-	OutputStream out = null;
-
-	try {
-
-	    executeRequestInTryCatch(request, response, out);
-
-	} catch (Exception e) {
-
-	    if (out == null) {
-		out = response.getOutputStream();
-	    }
-
-	    ExceptionReturner.logAndReturnException(request, response, out, e);
-	}
-    }
 
     /**
-     * Execute the client sent sql request
+     * Execute the client sent sql request that is already wrapped in the calling try/catch
+     * that handles Throwable
      * 
      * @param request
      *            the http request
@@ -118,7 +89,7 @@ public class ServerSqlDispatch {
      * @throws SQLException
      * @throws FileUploadException
      */
-    private void executeRequestInTryCatch(HttpServletRequest request,
+    public void executeRequestInTryCatch(HttpServletRequest request,
 	    HttpServletResponse response, OutputStream out)
 	    throws IOException, SQLException, FileUploadException {
 
@@ -188,6 +159,9 @@ public class ServerSqlDispatch {
 	    ServerSqlManager.writeLine(out, JsonOkReturn.build("connection_id", connectionId));
 	    return;
 	}
+	
+	// Tests exceptions
+	ServerSqlManager.testThrowException();
 	
 	// Redirect if it's a File download request (Blobs/Clobs)
 	if (action.equals(HttpParameter.BLOB_DOWNLOAD)) {
@@ -312,11 +286,19 @@ public class ServerSqlDispatch {
 	    return;
 	}
 	
-	if (isStatement(action)) {
+	
+	
+	if (isStatement(action) && ! isStoredProcedure(request)) {
 	    ServerStatement serverStatement = new ServerStatement(request,
 		    response, databaseConfigurator, connection);
 	    serverStatement.executeQueryOrUpdate(out);
-	} else if (isConnectionModifier(action)) {
+	} 
+	else if (isStoredProcedure(request)) {
+	    ServerCallableStatement serverCallableStatement = new ServerCallableStatement(request,
+		    response, databaseConfigurator, connection);
+	    serverCallableStatement.executeOrExecuteQuery(out);
+	}
+	else if (isConnectionModifier(action)) {
 	    TransactionUtil.setConnectionModifierAction(request, response, out,
 		    action, connection);
 	} else if (isSavepointModifier(action)) {
@@ -330,6 +312,34 @@ public class ServerSqlDispatch {
 	}
 
     }
+
+    private boolean isStoredProcedure(HttpServletRequest request) {
+	String storedProcedure = request.getParameter(HttpParameter.STORED_PROCEDURE);
+	String sql = request.getParameter(HttpParameter.SQL);
+	boolean explicitStoredProcedure = Boolean.parseBoolean(storedProcedure);
+
+	if (explicitStoredProcedure) {
+	    return true;
+	}
+	
+	// From Python there maybe an implicit call without any more info
+	boolean implicitStoredProcedure = false;
+
+	if (sql != null) {
+	    sql = sql.trim().toLowerCase();
+	    if (sql.startsWith("{") && sql.endsWith("}") && sql.contains("call ")) {
+		implicitStoredProcedure = true;
+	    }
+	}
+
+	if (implicitStoredProcedure) {
+	    return true;
+	} else {
+	    return false;
+	}
+
+    }
+
 
     /**
      * Clean connection store.

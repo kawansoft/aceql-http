@@ -110,6 +110,7 @@ public class HttpParameter {
     public static final String CLOSE = "close";
     
     // New DML Action
+    public static final String EXECUTE = "execute";
     public static final String EXECUTE_UPDATE = "execute_update";
     public static final String EXECUTE_QUERY = "execute_query";
 
@@ -118,8 +119,14 @@ public class HttpParameter {
     public static final String PREPARED_STATEMENT = "prepared_statement";
     public static final String GZIP_RESULT = "gzip_result";
 
+    public static final String STORED_PROCEDURE = "stored_procedure";
+    
     public static final String PARAM_VALUE_ = "param_value_";
     public static final String PARAM_TYPE_ = "param_type_";
+    public static final String PARAM_DIRECTION_ = "param_direction_";
+    
+    // Out register parameters
+    public static final String OUT_PARAM_NAME_ = "out_param_name_";  
 
     // Blob actions & parameters
     public static final String BLOB_UPLOAD = "blob_upload";
@@ -131,6 +138,9 @@ public class HttpParameter {
     public static final String FILENAME = "filename";
     
     public static final String CLIENT_VERSION = "client_version";
+
+
+
 
 
 }

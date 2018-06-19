@@ -1,4 +1,4 @@
-# AceQL HTTP 2.0 - Quick Start Guide
+# AceQL HTTP 2.1 - Quick Start Guide
 
 <img src="https://www.aceql.com/favicon.png" alt="AceQ HTTP Icon"/>
 

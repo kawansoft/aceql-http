@@ -43,6 +43,8 @@ import org.kawanfw.test.util.UserPrefManager;
 
 public class ConnectionLoader extends SqlTestParms {
 
+    public static String sqlEngine = null;
+
     /**
      * Protected constructor
      */
@@ -83,7 +85,10 @@ public class ConnectionLoader extends SqlTestParms {
     public static Connection getLocalConnection()
 	    throws SQLException, Exception {
 
-	String sqlEngine = UserPrefManager.getSqlEngineToUse();
+		
+	if (sqlEngine == null) {
+	    sqlEngine = UserPrefManager.getSqlEngineToUse();
+	}
 
 	String driverClassName;
 	String url;

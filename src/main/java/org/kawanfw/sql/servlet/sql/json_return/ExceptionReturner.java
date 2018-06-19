@@ -77,7 +77,7 @@ public class ExceptionReturner {
      */
     public static void logAndReturnException(HttpServletRequest request,
 	    HttpServletResponse response, OutputStream out,
-	    Exception exception) {
+	    Throwable exception) {
 	try {
 
 	    JsonErrorReturn jsonErrorReturn = new JsonErrorReturn(response,

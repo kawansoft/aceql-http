@@ -255,7 +255,7 @@ public class DefaultPoolsInfo extends HttpServlet {
 
 	    DataSource datasource = dataSources.get(database);
 
-	    if (setDatabase == null || setDatabase.equals(database)) {
+	    if (setDatabase == null || setDatabase.equals(database)) { 
 		String doSet = request.getParameter("setMinIdle");
 		if (doSet != null && !doSet.isEmpty()
 			&& StringUtils.isNumeric(doSet)) {
