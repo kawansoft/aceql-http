@@ -180,13 +180,13 @@ In following lines we will assume that the Open Source edition is chosen. (Opera
 Make the file executable and then run it:
 
 ```bash
-chmod+x aceql-http-2.1x.run                                       
-./aceql-http-2.1x.run
+chmod+x aceql-http-2.1.run                                       
+./aceql-http-2.1.run
 ```
 
-This will create the `aceql-http-2.1x` folder that you can move where you want.
+This will create the `aceql-http-2.1` folder that you can move where you want.
 
-The full path to the final `aceql-http-2.1x` installation folder will be surnamed **ACEQL_HOME** in following text.
+The full path to the final `aceql-http-2.1` installation folder will be surnamed **ACEQL_HOME** in following text.
 
 Example: if you run `aceql-http-2.1.run` from `/home/mike`, then software is installed in `/home/mike/aceql-http-2.1` which is the value of **ACEQL_HOME.**
 
