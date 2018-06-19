@@ -232,7 +232,7 @@ AceQL HTTP Open Source v2.1 - 18-jun-2018
 Or:
 
 ```
-AceQL HTTP Professional v2.1- 18-feb-2018
+AceQL HTTP Professional v2.1 - 18-jun-2018
 ```
 
 ## Windows Installation
