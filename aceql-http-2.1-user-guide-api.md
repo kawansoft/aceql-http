@@ -173,7 +173,7 @@ Note that we will use two shortcuts through this User Guide in order to simplify
 
 - **server** is the shortcut for the scheme, server name, and port of the URL to call. Possible values for server are: <http://localhost:9090>, <https://www.acme.com>, etc.
 
-- **aceql** is the shortcut for the AceQL Server servlet path. aceql is also the default configuration value. Any other value is possible, see [Server Installation and Configuration Guide](https://github.com/kawansoft/aceql-http/blob/master/aceql-http-2.0-user-guide-server.md).
+- **aceql** is the shortcut for the AceQL Server servlet path. aceql is also the default configuration value. Any other value is possible, see [Server Installation and Configuration Guide](https://github.com/kawansoft/aceql-http/blob/master/aceql-http-2.1-user-guide-server.md).
 
 | URL  parameter | Description                   |
 | -------------- | ----------------------------- |
@@ -190,7 +190,7 @@ Note that we will use two shortcuts through this User Guide in order to simplify
 
 | Notes  about credentials (username, password)                |
 | ------------------------------------------------------------ |
-| These are  *not* the username/password of the remote JDBC Driver,  but are  the authentication information checked by remote AceQL server with  `DatabaseConfigurator.login(username, password`) method. <br />See [Server Installation and  Configuration Guide](https://github.com/kawansoft/aceql-http/blob/master/aceql-http-2.0-user-guide-server.md). |
+| These are  *not* the username/password of the remote JDBC Driver,  but are  the authentication information checked by remote AceQL server with  `DatabaseConfigurator.login(username, password`) method. <br />See [Server Installation and  Configuration Guide](https://github.com/kawansoft/aceql-http/blob/master/aceql-http-2.1-user-guide-server.md). |
 
 ### Server response to login call
 
@@ -219,7 +219,7 @@ In case of error:
 
 All the following examples use a MySQL database named `kawansoft_example`.
 
-Connection to the [kawansoft_example](http://www.aceql.com/rest/soft/2.0/src/kawansoft_example.txt) database with (MyUsername, MySecret) credentials:
+Connection to the [kawansoft_example](http://www.aceql.com/rest/soft/2.1/src/kawansoft_example.txt) database with (MyUsername, MySecret) credentials:
 
 ```bash
 $ curl \
@@ -987,7 +987,7 @@ Allows to close the session and to release all the server JDBC `Connection`s  in
 
 |                                                              |
 | ------------------------------------------------------------ |
-| It is important to always call `logout` at end of session in order to  close all the JDBC `Connection` and release them in the pool. <br />See [Server Installation and  Configuration Guide](https://github.com/kawansoft/aceql-http/blob/master/aceql-http-2.0-user-guide-server.md) for more info. |
+| It is important to always call `logout` at end of session in order to  close all the JDBC `Connection` and release them in the pool. <br />See [Server Installation and  Configuration Guide](https://github.com/kawansoft/aceql-http/blob/master/aceql-http-2.1-user-guide-server.md) for more info. |
 
 ### Server response to logout call
 
