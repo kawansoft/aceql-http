@@ -37,9 +37,9 @@ AceQL HTTP Version 2.1 - 18-jun-2018
 What's new:
 
 - This version now supports stored procedure calls from client side. 
-  See you prefered AceQL client SDK for usage.
+  See you preferred AceQL client SDK for usage.
 - Server could crash in case or RuntimeException. These runtime exceptions
-  are not catched.
+  are now caught.
 - Version is now fully 64 bit.
 
 
