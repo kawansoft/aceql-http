@@ -40,7 +40,7 @@ What's new:
   See you preferred AceQL client SDK for usage.
 - Server could crash in case or RuntimeException. These runtime exceptions
   are now caught.
-- Version is now fully 64 bit.
+- Windows version is now fully 64 bit.
 
 
 
