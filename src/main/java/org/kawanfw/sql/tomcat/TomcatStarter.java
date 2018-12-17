@@ -1,7 +1,7 @@
 /*
  * This file is part of AceQL HTTP.
  * AceQL HTTP: SQL Over HTTP                                     
- * Copyright (C) 2017,  KawanSoft SAS
+ * Copyright (C) 2018, KawanSoft SAS
  * (http://www.kawansoft.com). All rights reserved.                                
  *                                                                               
  * AceQL HTTP is free software; you can redistribute it and/or                 
@@ -162,6 +162,9 @@ public class TomcatStarter {
 	SystemPropUpdater systemPropUpdater = new SystemPropUpdater(properties);
 	systemPropUpdater.update();
 
+	ThreadPoolExecutorStore threadPoolExecutorStore= new ThreadPoolExecutorStore(properties);
+	threadPoolExecutorStore.create();
+
 	// Set & create connectors
 	TomcatConnectorsUpdater tomcatConnectorsUpdater = new TomcatConnectorsUpdater(
 		tomcat, properties);
@@ -273,7 +276,7 @@ public class TomcatStarter {
 	@SuppressWarnings("unused")
 	Wrapper wrapper = Tomcat.addServlet(rootCtx,
 		aceQLManagerServletCallName, new ServerSqlManager());
-
+	wrapper.setAsyncSupported(true); 
 	rootCtx.addServletMappingDecoded("/*", aceQLManagerServletCallName);
 
 	TomcatStarterUtil.setInitParametersInStore(properties);

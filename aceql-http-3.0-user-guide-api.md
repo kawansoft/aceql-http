@@ -1,4 +1,6 @@
-# AceQL HTTP v2.1 - API User Guide
+# AceQL HTTP v3.0 - December 2018
+
+# API User Guide
 
 <img src="https://www.aceql.com/favicon.png" alt="AceQL HTTP Icon"/> 
 
@@ -46,7 +48,7 @@
 
 The AceQL HTTP API allows you to execute SQL queries and updates on remote databases using pure HTTP calls, with a fluent and simple to use REST like API.
 
-The Server operation is described in [Server Installation and Configuration Guide](https://github.com/kawansoft/aceql-http/blob/master/aceql-http-1.0-user-guide-server.md).
+The Server operation is described in [Server Installation and Configuration Guide](https://github.com/kawansoft/aceql-http/blob/master/aceql-http-3.0-user-guide-server.md).
 
 This document describes all AceQL URLs to use in your HTTP calls. It also contains easy to copy and paste examples in cURL.
 
@@ -173,7 +175,7 @@ Note that we will use two shortcuts through this User Guide in order to simplify
 
 - **server** is the shortcut for the scheme, server name, and port of the URL to call. Possible values for server are: <http://localhost:9090>, <https://www.acme.com>, etc.
 
-- **aceql** is the shortcut for the AceQL Server servlet path. aceql is also the default configuration value. Any other value is possible, see [Server Installation and Configuration Guide](https://github.com/kawansoft/aceql-http/blob/master/aceql-http-2.1-user-guide-server.md).
+- **aceql** is the shortcut for the AceQL Server servlet path. aceql is also the default configuration value. Any other value is possible, see [Server Installation and Configuration Guide](https://github.com/kawansoft/aceql-http/blob/master/aceql-http-3.0-user-guide-server.md).
 
 | URL  parameter | Description                   |
 | -------------- | ----------------------------- |
@@ -190,7 +192,7 @@ Note that we will use two shortcuts through this User Guide in order to simplify
 
 | Notes  about credentials (username, password)                |
 | ------------------------------------------------------------ |
-| These are  *not* the username/password of the remote JDBC Driver,  but are  the authentication information checked by remote AceQL server with  `DatabaseConfigurator.login(username, password`) method. <br />See [Server Installation and  Configuration Guide](https://github.com/kawansoft/aceql-http/blob/master/aceql-http-2.1-user-guide-server.md). |
+| These are  *not* the username/password of the remote JDBC Driver,  but are  the authentication information checked by remote AceQL server with  `DatabaseConfigurator.login(username, password`) method. <br />See [Server Installation and  Configuration Guide](https://github.com/kawansoft/aceql-http/blob/master/aceql-http-3.0-user-guide-server.md). |
 
 ### Server response to login call
 
@@ -219,7 +221,7 @@ In case of error:
 
 All the following examples use a MySQL database named `kawansoft_example`.
 
-Connection to the [kawansoft_example](http://www.aceql.com/rest/soft/2.1/src/kawansoft_example.txt) database with (MyUsername, MySecret) credentials:
+Connection to the [kawansoft_example](http://www.aceql.com/rest/soft/3.0/src/kawansoft_example.txt) database with (MyUsername, MySecret) credentials:
 
 ```bash
 $ curl \
@@ -987,7 +989,7 @@ Allows to close the session and to release all the server JDBC `Connection`s  in
 
 |                                                              |
 | ------------------------------------------------------------ |
-| It is important to always call `logout` at end of session in order to  close all the JDBC `Connection` and release them in the pool. <br />See [Server Installation and  Configuration Guide](https://github.com/kawansoft/aceql-http/blob/master/aceql-http-2.1-user-guide-server.md) for more info. |
+| It is important to always call `logout` at end of session in order to  close all the JDBC `Connection` and release them in the pool. <br />See [Server Installation and  Configuration Guide](https://github.com/kawansoft/aceql-http/blob/master/aceql-http-3.0-user-guide-server.md) for more info. |
 
 ### Server response to logout call
 

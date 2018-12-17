@@ -1,7 +1,7 @@
 /*
  * This file is part of AceQL HTTP.
  * AceQL HTTP: SQL Over HTTP                                     
- * Copyright (C) 2017,  KawanSoft SAS
+ * Copyright (C) 2018, KawanSoft SAS
  * (http://www.kawansoft.com). All rights reserved.                                
  *                                                                               
  * AceQL HTTP is free software; you can redistribute it and/or                 
@@ -391,9 +391,9 @@ public class TomcatStarterUtil {
 			    "Connection is null. Please verify all the values in properties file.");
 		}
 
+		// Futur usage
 		// Checks that DB Vendor is supported
 		boolean isOk = DbEngineManager.checkDb(properties, connection);
-
 		if (!isOk) {
 		    System.err.println(ERROR_MESSAGE + driverClassName);
 		    TomcatSqlModeStore.setDataSource(database, null);

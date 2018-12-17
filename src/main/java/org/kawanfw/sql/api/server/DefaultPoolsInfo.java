@@ -1,7 +1,7 @@
 /*
  * This file is part of AceQL HTTP.
  * AceQL HTTP: SQL Over HTTP                                     
- * Copyright (C) 2017,  KawanSoft SAS
+ * Copyright (C) 2018, KawanSoft SAS
  * (http://www.kawansoft.com). All rights reserved.                                
  *                                                                               
  * AceQL HTTP is free software; you can redistribute it and/or                 
@@ -38,11 +38,12 @@ import javax.json.stream.JsonGeneratorFactory;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.sql.DataSource;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
-import org.apache.tomcat.jdbc.pool.DataSource;
+import org.apache.tomcat.jdbc.pool.DataSourceProxy;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.kawanfw.sql.servlet.ServerSqlManager;
 import org.kawanfw.sql.servlet.sql.json_return.ExceptionReturner;
@@ -254,20 +255,21 @@ public class DefaultPoolsInfo extends HttpServlet {
 	for (String database : databases) {
 
 	    DataSource datasource = dataSources.get(database);
+	    DataSourceProxy dataSourceProxy = (org.apache.tomcat.jdbc.pool.DataSource) datasource;
 
 	    if (setDatabase == null || setDatabase.equals(database)) { 
 		String doSet = request.getParameter("setMinIdle");
 		if (doSet != null && !doSet.isEmpty()
 			&& StringUtils.isNumeric(doSet)) {
 		    if (StringUtils.isNumeric(doSet)) {
-			datasource.setMinIdle(Integer.parseInt(doSet));
+			dataSourceProxy.setMinIdle(Integer.parseInt(doSet));
 		    }
 		}
 		doSet = request.getParameter("setMaxIdle");
 		if (doSet != null && !doSet.isEmpty()
 			&& StringUtils.isNumeric(doSet)) {
 		    if (StringUtils.isNumeric(doSet)) {
-			datasource.setMaxIdle(Integer.parseInt(doSet));
+			dataSourceProxy.setMaxIdle(Integer.parseInt(doSet));
 		    }
 		}
 
@@ -275,7 +277,7 @@ public class DefaultPoolsInfo extends HttpServlet {
 		if (doSet != null && !doSet.isEmpty()
 			&& StringUtils.isNumeric(doSet)) {
 		    if (StringUtils.isNumeric(doSet)) {
-			datasource.setMaxActive(Integer.parseInt(doSet));
+			dataSourceProxy.setMaxActive(Integer.parseInt(doSet));
 		    }
 		}
 	    }
@@ -283,36 +285,36 @@ public class DefaultPoolsInfo extends HttpServlet {
 	    gen.writeStartObject().write("database", database).writeEnd();
 
 	    gen.writeStartObject()
-		    .write("getBorrowedCount()", datasource.getBorrowedCount())
+		    .write("getBorrowedCount()", dataSourceProxy.getBorrowedCount())
 		    .writeEnd();
 	    gen.writeStartObject()
-		    .write("getMaxActive()", datasource.getMaxActive())
+		    .write("getMaxActive()", dataSourceProxy.getMaxActive())
 		    .writeEnd();
 	    gen.writeStartObject()
-		    .write("getMaxIdle()", datasource.getMaxIdle()).writeEnd();
+		    .write("getMaxIdle()", dataSourceProxy.getMaxIdle()).writeEnd();
 	    gen.writeStartObject()
-		    .write("getMinIdle()", datasource.getMinIdle()).writeEnd();
+		    .write("getMinIdle()", dataSourceProxy.getMinIdle()).writeEnd();
 	    gen.writeStartObject()
-		    .write("getNumActive()", datasource.getNumActive())
+		    .write("getNumActive()", dataSourceProxy.getNumActive())
 		    .writeEnd();
 	    gen.writeStartObject()
-		    .write("getNumIdle()", datasource.getNumIdle()).writeEnd();
+		    .write("getNumIdle()", dataSourceProxy.getNumIdle()).writeEnd();
 	    gen.writeStartObject().write("getReconnectedCount()",
-		    datasource.getReconnectedCount()).writeEnd();
+		    dataSourceProxy.getReconnectedCount()).writeEnd();
 	    gen.writeStartObject()
-		    .write("getReleasedCount()", datasource.getReleasedCount())
+		    .write("getReleasedCount()", dataSourceProxy.getReleasedCount())
 		    .writeEnd();
 	    gen.writeStartObject().write("getReleasedIdleCount()",
-		    datasource.getReleasedIdleCount()).writeEnd();
+		    dataSourceProxy.getReleasedIdleCount()).writeEnd();
 	    gen.writeStartObject().write("getRemoveAbandonedCount()",
-		    datasource.getRemoveAbandonedCount()).writeEnd();
+		    dataSourceProxy.getRemoveAbandonedCount()).writeEnd();
 	    gen.writeStartObject()
-		    .write("getReturnedCount()", datasource.getReturnedCount())
+		    .write("getReturnedCount()", dataSourceProxy.getReturnedCount())
 		    .writeEnd();
-	    gen.writeStartObject().write("getSize()", datasource.getSize())
+	    gen.writeStartObject().write("getSize()", dataSourceProxy.getSize())
 		    .writeEnd();
 	    gen.writeStartObject()
-		    .write("getWaitCount()", datasource.getWaitCount())
+		    .write("getWaitCount()", dataSourceProxy.getWaitCount())
 		    .writeEnd();
 
 	}
@@ -324,7 +326,7 @@ public class DefaultPoolsInfo extends HttpServlet {
 	out = response.getOutputStream();
 	String outString = writer.toString();
 	ServerSqlManager.writeLine(out, outString);
-
+	
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * This file is part of AceQL HTTP.
  * AceQL HTTP: SQL Over HTTP                                     
- * Copyright (C) 2017,  KawanSoft SAS
+ * Copyright (C) 2018, KawanSoft SAS
  * (http://www.kawansoft.com). All rights reserved.                                
  *                                                                               
  * AceQL HTTP is free software; you can redistribute it and/or                 
@@ -85,7 +85,7 @@ public class MyDatabaseConfigurator extends DefaultDatabaseConfigurator {
      *             if a SQLException occurs
      */
     @Override
-    public boolean allowStatementAfterAnalysis(String username,
+    public boolean allowSqlRunAfterAnalysis(String username,
 	    Connection connection, String ipAddress, String sql,
 	    boolean isPreparedStatement, List<Object> parameterValues)
 	    throws IOException, SQLException {

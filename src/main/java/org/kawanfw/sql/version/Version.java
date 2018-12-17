@@ -1,7 +1,7 @@
 /*
  * This file is part of AceQL HTTP.
  * AceQL HTTP: SQL Over HTTP                                     
- * Copyright (C) 2017,  KawanSoft SAS
+ * Copyright (C) 2018, KawanSoft SAS
  * (http://www.kawansoft.com). All rights reserved.                                
  *                                                                               
  * AceQL HTTP is free software; you can redistribute it and/or                 
@@ -54,12 +54,12 @@ public class Version {
 	public static final String NAME = "AceQL HTTP";
 	public static final String VERSION = VersionValues.VERSION;
 	public static final String DESCRIPTION = "Remote SQL access over HTTP";
-	public static final String TYPE_OPEN_SOURCE = "Open Source";
-	public static final String TYPE_PROFESSIONAL = "Professional";
+	public static final String TYPE_COMMUNINITY = "Community";
+	public static final String TYPE_ENTERPRISE = "Enterprise ";
 	public static final String DATE = VersionValues.DATE;
 
-	public static String TYPE = (isOpenSourceVersion()) ? TYPE_OPEN_SOURCE
-		: TYPE_PROFESSIONAL;
+	public static String TYPE = (isOpenSourceVersion()) ? TYPE_COMMUNINITY
+		: TYPE_ENTERPRISE;
 
 	public String toString() {
 	    return NAME + " " + VERSION + " - " + DATE;

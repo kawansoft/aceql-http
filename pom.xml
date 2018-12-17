@@ -1,118 +1,126 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.aceql</groupId>
-  <artifactId>aceql-http</artifactId>
-  <version>2.1</version>
-  <packaging>jar</packaging>
+	<groupId>com.aceql</groupId>
+	<artifactId>aceql-http</artifactId>
+	<version>3.0</version>
+	<packaging>jar</packaging>
 
-  <name>AceQL HTTP</name>
-  <url>http://www.aceql.com</url>
+	<name>AceQL HTTP</name>
+	<url>http://www.aceql.com</url>
 
-  <properties>
-    <project.build.sourceEncoding>ISO-8859-1</project.build.sourceEncoding>
-    <maven.compiler.source>1.7</maven.compiler.source>
-    <maven.compiler.target>1.7</maven.compiler.target>
-  </properties>
+	<properties>
+		<project.build.sourceEncoding>ISO-8859-1</project.build.sourceEncoding>
+		<maven.compiler.source>1.7</maven.compiler.source>
+		<maven.compiler.target>1.7</maven.compiler.target>
+	</properties>
 
-  <dependencies>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.10</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-        <groupId>org.postgresql</groupId>
-        <artifactId>postgresql</artifactId>
-        <version>42.1.4.jre7</version>
-    </dependency>
-    <dependency>
-        <groupId>commons-cli</groupId>
-        <artifactId>commons-cli</artifactId>
-        <version>1.4</version>
-    </dependency>
-    <dependency>
-        <groupId>org.glassfish</groupId>
-        <artifactId>javax.json</artifactId>
-        <version>1.0.4</version>
-    </dependency>
-    <dependency>
-        <groupId>commons-io</groupId>
-        <artifactId>commons-io</artifactId>
-        <version>2.6</version>
-    </dependency>
-    <dependency>
-        <groupId>com.jcraft</groupId>
-        <artifactId>jsch</artifactId>
-        <version>0.1.54</version>
-    </dependency>
-    <dependency>
-        <groupId>org.apache.commons</groupId>
-        <artifactId>commons-lang3</artifactId>
-        <version>3.7</version>
-    </dependency>
-    <dependency>
-        <groupId>com.auth0</groupId>
-        <artifactId>java-jwt</artifactId>
-        <version>3.3.0</version>
-    </dependency>
-    <dependency>
-        <groupId>org.apache.tomcat.embed</groupId>
-        <artifactId>tomcat-embed-core</artifactId>
-        <version>8.5.28</version>
-    </dependency>
-    <dependency>
-        <groupId>org.apache.tomcat</groupId>
-        <artifactId>tomcat-jdbc</artifactId>
-        <version>8.5.28</version>
-    </dependency>
-    <dependency>
-    	<groupId>commons-codec</groupId>
-    	<artifactId>commons-codec</artifactId>
-    	<version>1.10</version>
-    </dependency>
-  </dependencies>
-  <organization>
-    <name>KawanSoft</name>
-    <url>http://www.kawansoft.com</url>
-  </organization>
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.10</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>42.1.4.jre7</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-cli</groupId>
+			<artifactId>commons-cli</artifactId>
+			<version>1.4</version>
+		</dependency>
+		<dependency>
+			<groupId>org.glassfish</groupId>
+			<artifactId>javax.json</artifactId>
+			<version>1.0.4</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.6</version>
+		</dependency>
+		<dependency>
+			<groupId>com.jcraft</groupId>
+			<artifactId>jsch</artifactId>
+			<version>0.1.54</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.8.1</version>
+		</dependency>
+		<dependency>
+			<groupId>com.auth0</groupId>
+			<artifactId>java-jwt</artifactId>
+			<version>3.3.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.tomcat.embed</groupId>
+			<artifactId>tomcat-embed-core</artifactId>
+			<version>8.5.35</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.tomcat</groupId>
+			<artifactId>tomcat-jdbc</artifactId>
+			<version>8.5.35</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+			<version>1.10</version>
+		</dependency>
 
-    <licenses>
-        <license>
-            <name>LGPL 2.1</name>
-            <url>http://www.gnu.org/licenses/lgpl-2.1.html</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>
-    <developers>
-    <developer>
-        <id>abecquereau</id>
-        <name>Alexandre Becquereau</name>
-        <email>abecquereau@kawansoft.com</email>
-        <timezone>GMT+1</timezone>
-        <roles>
-            <role>developer</role>
-        </roles>
-    </developer>
-    <developer>
-        <id>ndepomereu</id>
-        <name>Nicolas de Pomereu</name>
-        <email>ndepomereu@kawansoft.com</email>
-        <timezone>GMT+1</timezone>
-        <roles>
-            <role>architect</role>
-            <role>developer</role>
-        </roles>
-    </developer>        
-  </developers> 
-  <inceptionYear>2016</inceptionYear>
-  <scm>
-    <url>https://github.com/kawansoft/aceql-http</url>
-    <developerConnection>https://github.com/kawansoft/aceql-http</developerConnection>
-  </scm>
-  <description>AceQL HTTP is a framework of REST like http APIs that allow to access to remote SQL databases over http from any device that supports http. 
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>3.1.0</version>
+		</dependency>
+
+	</dependencies>
+	<organization>
+		<name>KawanSoft</name>
+		<url>http://www.kawansoft.com</url>
+	</organization>
+
+	<licenses>
+		<license>
+			<name>LGPL 2.1</name>
+			<url>http://www.gnu.org/licenses/lgpl-2.1.html</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+	<developers>
+		<developer>
+			<id>abecquereau</id>
+			<name>Alexandre Becquereau</name>
+			<email>abecquereau@kawansoft.com</email>
+			<timezone>GMT+1</timezone>
+			<roles>
+				<role>developer</role>
+			</roles>
+		</developer>
+		<developer>
+			<id>ndepomereu</id>
+			<name>Nicolas de Pomereu</name>
+			<email>ndepomereu@kawansoft.com</email>
+			<timezone>GMT+1</timezone>
+			<roles>
+				<role>architect</role>
+				<role>developer</role>
+			</roles>
+		</developer>
+	</developers>
+	<inceptionYear>2016</inceptionYear>
+	<scm>
+		<url>https://github.com/kawansoft/aceql-http</url>
+		<developerConnection>https://github.com/kawansoft/aceql-http</developerConnection>
+	</scm>
+	<description>AceQL HTTP is a framework of REST like http APIs that allow to access to remote SQL databases over http from any device that supports http. 
 
 AceQL HTTP is provided with four client SDK:
 - The AceQL C# Client SDK allows to wrap the HTTP APIs using Microsoft SQL Server like calls in their code, just like they would for a local database.

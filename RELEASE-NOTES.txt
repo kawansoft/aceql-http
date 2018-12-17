@@ -1,6 +1,6 @@
 
                      AceQL HTTP
-                    Version 2.1
+                    Version 3.0
                     Release Notes
 
 
@@ -19,15 +19,21 @@ AceQL HTTP is provided with two client SDKs:
 Security has been taken into account from the design: It as allowed to specify 
 and code strong security rules in order to protect the databases. 
 
-AceQL HTTP Open Source Edition is licensed through the GNU Lesser General
-Public License (LGPL v2.1).
+AceQL HTTP is licensed through the GNU Lesser General Public License 
+(LGPL v2.1).
 
-AceQL HTTP Professional Edition is licensed through:
- - 30 day Trial License
- - Single Server AceQL License 
- - Single Site AceQL License
-    
-See AceQL HTTP Use Guide for more info about AceQL licenses.
+
+AceQL HTTP Version 3.0 - 17-dec-2018
+------------------------------------
+
+- AceQL open source / Community Edition now supports all main database
+  vendors.
+- Main servlet is now async for better reliability and performances.
+- DatabaseConfigurator.allowStatementAfterAnalysis method 
+  has been renamed to allowSqlRunAfterAnalysis for the sake of
+  clarity.
+- Uses newest Tomcat 8.5.35 embedded libraries for security reasons.
+- Update other misc Maven dependencies.
 
 
 
@@ -41,7 +47,6 @@ What's new:
 - Server could crash in case or RuntimeException. These runtime exceptions
   are now caught.
 - Windows version is now fully 64 bit.
-
 
 
 AceQL HTTP Version 2.0 - 28-feb-2018

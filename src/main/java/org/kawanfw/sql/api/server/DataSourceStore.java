@@ -1,7 +1,7 @@
 /*
  * This file is part of AceQL HTTP.
  * AceQL HTTP: SQL Over HTTP                                     
- * Copyright (C) 2017,  KawanSoft SAS
+ * Copyright (C) 2018, KawanSoft SAS
  * (http://www.kawansoft.com). All rights reserved.                                
  *                                                                               
  * AceQL HTTP is free software; you can redistribute it and/or                 
@@ -28,7 +28,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.tomcat.jdbc.pool.DataSource;
+import javax.sql.DataSource;
+
 import org.kawanfw.sql.tomcat.ServletParametersStore;
 import org.kawanfw.sql.tomcat.TomcatSqlModeStore;
 
@@ -73,8 +74,7 @@ public class DataSourceStore {
 	}
 
 	for (String database : databases) {
-	    dataSourceSet.put(database,
-		    (org.apache.tomcat.jdbc.pool.DataSource) TomcatSqlModeStore
+	    dataSourceSet.put(database, TomcatSqlModeStore
 			    .getDataSource(database));
 	}
 	return dataSourceSet;

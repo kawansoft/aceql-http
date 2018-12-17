@@ -1,7 +1,7 @@
 /*
  * This file is part of AceQL HTTP.
  * AceQL HTTP: SQL Over HTTP                                     
- * Copyright (C) 2017,  KawanSoft SAS
+ * Copyright (C) 2018, KawanSoft SAS
  * (http://www.kawansoft.com). All rights reserved.                                
  *                                                                               
  * AceQL HTTP is free software; you can redistribute it and/or                 
@@ -25,9 +25,6 @@
 package org.kawanfw.sql.servlet.sql;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Date;
@@ -81,47 +78,6 @@ public class ServerSqlUtil {
 		statement.setFetchSize(0); // To avoid any possible conflict
 		statement.setMaxRows(maxRowsToReturn);
 	    }
-	}
-    }
-
-    private static int testDone = 0;
-
-    /**
-     * Test the resultSet
-     * 
-     * @param resultSet
-     * @return
-     * @throws SQLException
-     */
-    public static boolean testSelect(ResultSet resultSet) {
-
-	if (resultSet == null) {
-	    throw new NullPointerException("resultSet is null!");
-	}
-
-	String sql = null;
-
-	if (System.currentTimeMillis() % 2 == 0) {
-	    return true;
-	}
-
-	if (testDone++ > 20) {
-	    return true;
-	}
-
-	try {
-	    Connection connection = resultSet.getStatement().getConnection();
-
-	    sql = "se" + "l" + "e" + "c" + "t 1 " + "li" + "m" + "i" + "t"
-		    + " 1";
-
-	    PreparedStatement prepStatement = connection.prepareStatement(sql);
-	    ResultSet rs = prepStatement.executeQuery();
-	    rs.close();
-	    prepStatement.close();
-	    return true;
-	} catch (SQLException e) {
-	    return false;
 	}
     }
 

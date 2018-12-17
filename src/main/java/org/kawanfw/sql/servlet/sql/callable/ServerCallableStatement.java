@@ -1,7 +1,7 @@
 /*
  * This file is part of AceQL HTTP.
  * AceQL HTTP: SQL Over HTTP                                     
- * Copyright (C) 2017,  KawanSoft SAS
+ * Copyright (C) 2018, KawanSoft SAS
  * (http://www.kawansoft.com). All rights reserved.                                
  *                                                                               
  * AceQL HTTP is free software; you can redistribute it and/or                 
@@ -229,7 +229,7 @@ public class ServerCallableStatement {
 
 	    String ipAddress = request.getRemoteAddr();
 
-	    boolean isAllowedAfterAnalysis = databaseConfigurator.allowStatementAfterAnalysis(username, connection,
+	    boolean isAllowedAfterAnalysis = databaseConfigurator.allowSqlRunAfterAnalysis(username, connection,
 		    ipAddress, sqlOrder, true, serverPreparedStatementParameters.getParameterValues());
 
 	    if (!isAllowedAfterAnalysis) {

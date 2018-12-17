@@ -1,7 +1,7 @@
 /*
  * This file is part of AceQL HTTP.
  * AceQL HTTP: SQL Over HTTP                                     
- * Copyright (C) 2017,  KawanSoft SAS
+ * Copyright (C) 2018, KawanSoft SAS
  * (http://www.kawansoft.com). All rights reserved.                                
  *                                                                               
  * AceQL HTTP is free software; you can redistribute it and/or                 
@@ -24,7 +24,6 @@
  */
 package org.kawanfw.sql.servlet.sql;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -52,7 +51,6 @@ import org.kawanfw.sql.servlet.sql.json_return.JsonErrorReturn;
 import org.kawanfw.sql.servlet.sql.json_return.JsonSecurityMessage;
 import org.kawanfw.sql.servlet.sql.json_return.JsonUtil;
 import org.kawanfw.sql.util.FrameworkDebug;
-import org.kawanfw.sql.util.FrameworkFileUtil;
 
 /**
  * @author KawanSoft S.A.S
@@ -259,7 +257,7 @@ public class ServerStatement {
 	    String ipAddress = request.getRemoteAddr();
 
 	    boolean isAllowedAfterAnalysis = databaseConfigurator
-		    .allowStatementAfterAnalysis(username, connection,
+		    .allowSqlRunAfterAnalysis(username, connection,
 			    ipAddress, sqlOrder, isPreparedStatement(),
 			    serverPreparedStatementParameters
 				    .getParameterValues());
@@ -432,7 +430,7 @@ public class ServerStatement {
 	    String ipAddress = request.getRemoteAddr();
 
 	    boolean isAllowedAfterAnalysis = databaseConfigurator
-		    .allowStatementAfterAnalysis(username, connection,
+		    .allowSqlRunAfterAnalysis(username, connection,
 			    ipAddress, sqlOrder, isPreparedStatement(),
 			    new Vector<Object>());
 
