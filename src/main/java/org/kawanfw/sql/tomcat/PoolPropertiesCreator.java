@@ -52,196 +52,185 @@ import org.kawanfw.sql.util.SqlTag;
  */
 public class PoolPropertiesCreator {
 
-    /** Debug info */
-    private static boolean DEBUG = FrameworkDebug
-	    .isSet(PoolPropertiesCreator.class);
+	/** Debug info */
+	private static boolean DEBUG = FrameworkDebug.isSet(PoolPropertiesCreator.class);
 
-    /** The properties */
-    private Properties properties = null;
+	/** The properties */
+	private Properties properties = null;
 
-    private Class<?> theClass = null;
-    private Map<String, Class<?>[]> methodNamesAndParms = null;
+	private Class<?> theClass = null;
+	private Map<String, Class<?>[]> methodNamesAndParms = null;
 
-    private Object theObject = null;
+	private Object theObject = null;
 
-    private String database = null;
+	private String database = null;
 
-    /**
-     * Create a PoolProperties from the passed properties
-     * 
-     * @param properties
-     * @param database
-     *            the database Name.
-     */
-    public PoolPropertiesCreator(Properties properties, String database) {
-	super();
-	this.properties = properties;
-	this.database = database;
+	/**
+	 * Create a PoolProperties from the passed properties
+	 * 
+	 * @param properties
+	 * @param database
+	 *            the database Name.
+	 */
+	public PoolPropertiesCreator(Properties properties, String database) {
+		super();
+		this.properties = properties;
+		this.database = database;
 
-    }
-
-    /**
-     * Creates the PoolProperties from the properties passed on constructor.
-     * 
-     * @return a PoolProperties
-     * @throws ClassNotFoundException
-     * @throws IllegalAccessException
-     * @throws InstantiationException
-     * @throws InvocationTargetException
-     * @throws NoSuchMethodException
-     * @throws IllegalArgumentException
-     * @throws SecurityException
-     * 
-     * @throws NumberFormatException
-     *             if a numeric property is with letters
-     * @throws Exception
-     *             for all others cases
-     */
-    public PoolProperties create()
-	    throws ClassNotFoundException, InstantiationException,
-	    IllegalAccessException, SecurityException, IllegalArgumentException,
-	    NoSuchMethodException, InvocationTargetException {
-
-	// theClass =
-	// Class.forName("org.apache.tomcat.jdbc.pool.PoolProperties");
-	// theObject = theClass.newInstance();
-
-	theClass = org.apache.tomcat.jdbc.pool.PoolProperties.class;
-	theObject = new org.apache.tomcat.jdbc.pool.PoolProperties();
-
-	Method[] allMethods = theClass.getDeclaredMethods();
-	Field[] fieldsArray = theClass.getDeclaredFields();
-
-	Set<String> fields = new HashSet<String>();
-
-	for (Field theField : fieldsArray) {
-	    String fieldName = theField.getName();
-	    fields.add(fieldName);
 	}
 
-	methodNamesAndParms = new HashMap<String, Class<?>[]>();
+	/**
+	 * Creates the PoolProperties from the properties passed on constructor.
+	 * 
+	 * @return a PoolProperties
+	 * @throws ClassNotFoundException
+	 * @throws IllegalAccessException
+	 * @throws InstantiationException
+	 * @throws InvocationTargetException
+	 * @throws NoSuchMethodException
+	 * @throws IllegalArgumentException
+	 * @throws SecurityException
+	 * 
+	 * @throws NumberFormatException
+	 *             if a numeric property is with letters
+	 * @throws Exception
+	 *             for all others cases
+	 */
+	public PoolProperties create() throws ClassNotFoundException, InstantiationException, IllegalAccessException,
+			SecurityException, IllegalArgumentException, NoSuchMethodException, InvocationTargetException {
 
-	for (Method m : allMethods) {
-	    String methodName = m.getName();
-	    Class<?>[] pType = m.getParameterTypes();
-	    methodNamesAndParms.put(methodName, pType);
-	}
+		// theClass =
+		// Class.forName("org.apache.tomcat.jdbc.pool.PoolProperties");
+		// theObject = theClass.newInstance();
 
-	// First step: build the map httpClientParams
-	for (Enumeration<?> e = properties.propertyNames(); e
-		.hasMoreElements();) {
+		theClass = org.apache.tomcat.jdbc.pool.PoolProperties.class;
+		theObject = new org.apache.tomcat.jdbc.pool.PoolProperties();
 
-	    String propertyName = (String) e.nextElement();
-	    String propertyValue = properties.getProperty(propertyName);
+		Method[] allMethods = theClass.getDeclaredMethods();
+		Field[] fieldsArray = theClass.getDeclaredFields();
 
-	    if (propertyValue != null) {
-		propertyValue = propertyValue.trim();
-	    }
+		Set<String> fields = new HashSet<String>();
 
-	    propertyName = propertyName.trim();
-
-	    // Test that the property is a field of PoolProperties
-	    if (propertyName.startsWith(database + ".")) {
-
-		propertyName = StringUtils.substringAfter(propertyName,
-			database + ".");
-
-		debug("property.name: " + propertyName);
-
-		if (fields.contains(propertyName)) {
-		    try {
-			callMethod(propertyName, propertyValue);
-		    } catch (NumberFormatException e1) {
-			throw new DatabaseConfigurationException("The "
-				+ propertyName + " value is not numeric: "
-				+ propertyValue);
-		    }
+		for (Field theField : fieldsArray) {
+			String fieldName = theField.getName();
+			fields.add(fieldName);
 		}
-		// No! Does not work because all properties in
-		// server-sql.properties are not Tomcat JDBC pool properties
-		// else {
-		// throw new DatabaseConfigurationException("The property " +
-		// propertyName +
-		// " does not match a Tomcat JDBC Pool property.");
+
+		methodNamesAndParms = new HashMap<String, Class<?>[]>();
+
+		for (Method m : allMethods) {
+			String methodName = m.getName();
+			Class<?>[] pType = m.getParameterTypes();
+			methodNamesAndParms.put(methodName, pType);
+		}
+
+		// First step: build the map httpClientParams
+		for (Enumeration<?> e = properties.propertyNames(); e.hasMoreElements();) {
+
+			String propertyName = (String) e.nextElement();
+			String propertyValue = properties.getProperty(propertyName);
+
+			if (propertyValue != null) {
+				propertyValue = propertyValue.trim();
+			}
+
+			propertyName = propertyName.trim();
+
+			// Test that the property is a field of PoolProperties
+			if (propertyName.startsWith(database + ".")) {
+
+				propertyName = StringUtils.substringAfter(propertyName, database + ".");
+
+				debug("property.name: " + propertyName);
+
+				if (fields.contains(propertyName)) {
+					try {
+						callMethod(propertyName, propertyValue);
+					} catch (NumberFormatException e1) {
+						throw new DatabaseConfigurationException(
+								"The " + propertyName + " value is not numeric: " + propertyValue);
+					}
+				}
+				// No! Does not work because all properties in
+				// server-sql.properties are not Tomcat JDBC pool properties
+				// else {
+				// throw new DatabaseConfigurationException("The property " +
+				// propertyName +
+				// " does not match a Tomcat JDBC Pool property.");
+				// }
+			}
+
+		}
+
+		PoolProperties poolProperties = (PoolProperties) theObject;
+		return poolProperties;
+	}
+
+	/**
+	 * Call the method corresponding to the property name with the property value.
+	 * 
+	 * @param propertyName
+	 * @param propertyValue
+	 * 
+	 * @throws NoSuchMethodException
+	 * @throws SecurityException
+	 * @throws InvocationTargetException
+	 * @throws IllegalAccessException
+	 * @throws IllegalArgumentException
+	 * @throws NumberFormatException
+	 * @throws Exception
+	 */
+	private void callMethod(String propertyName, String propertyValue) throws SecurityException, NoSuchMethodException,
+			NumberFormatException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {
+
+		String theMethod = "set" + StringUtils.capitalize(propertyName);
+
+		String propertyValueToDisplay = propertyValue;
+		if (propertyName.equals("password")) {
+			propertyValueToDisplay = TomcatStarter.MASKED_PASSWORD;
+		}
+
+		Class<?>[] pType = methodNamesAndParms.get(theMethod);
+
+		// if (pType[0] == String.class) {
+		// System.out.println(SqlTag.SQL_PRODUCT_START + "poolProperties." +
+		// theMethod
+		// + "(\"" + propertyValueToDisplay + "\")");
+		// } else {
+		// System.out.println(SqlTag.SQL_PRODUCT_START + "poolProperties." +
+		// theMethod
+		// + "(" + propertyValueToDisplay + ")");
 		// }
-	    }
+
+		System.out.println(SqlTag.SQL_PRODUCT_START + "  -> " + propertyName + " = " + propertyValueToDisplay);
+
+		// Invoke the method
+		Method main = theClass.getDeclaredMethod(theMethod, pType);
+
+		// if (argTypes[i] == Connection.class) {
+		if (pType[0] == long.class) {
+			main.invoke(theObject, Long.parseLong(propertyValue));
+		} else if (pType[0] == String.class) {
+			main.invoke(theObject, propertyValue);
+		} else if (pType[0] == boolean.class) {
+			main.invoke(theObject, Boolean.parseBoolean(propertyValue));
+		} else if (pType[0] == int.class) {
+			main.invoke(theObject, Integer.parseInt(propertyValue));
+		} else {
+			throw new DatabaseConfigurationException("Invalid Connection Pool property: " + propertyName);
+		}
 
 	}
 
-	PoolProperties poolProperties = (PoolProperties) theObject;
-	return poolProperties;
-    }
+	/**
+	 * Print debug info
+	 * 
+	 * @param s
+	 */
 
-    /**
-     * Call the method corresponding to the property name with the property
-     * value.
-     * 
-     * @param propertyName
-     * @param propertyValue
-     * 
-     * @throws NoSuchMethodException
-     * @throws SecurityException
-     * @throws InvocationTargetException
-     * @throws IllegalAccessException
-     * @throws IllegalArgumentException
-     * @throws NumberFormatException
-     * @throws Exception
-     */
-    private void callMethod(String propertyName, String propertyValue)
-	    throws SecurityException, NoSuchMethodException,
-	    NumberFormatException, IllegalArgumentException,
-	    IllegalAccessException, InvocationTargetException {
-
-	String theMethod = "set" + StringUtils.capitalize(propertyName);
-
-	String propertyValueToDisplay = propertyValue;
-	if (propertyName.equals("password")) {
-	    propertyValueToDisplay = TomcatStarter.MASKED_PASSWORD;
+	private void debug(String s) {
+		if (DEBUG)
+			System.out.println(new Date() + " " + s);
 	}
-
-	Class<?>[] pType = methodNamesAndParms.get(theMethod);
-
-	// if (pType[0] == String.class) {
-	// System.out.println(SqlTag.SQL_PRODUCT_START + "poolProperties." +
-	// theMethod
-	// + "(\"" + propertyValueToDisplay + "\")");
-	// } else {
-	// System.out.println(SqlTag.SQL_PRODUCT_START + "poolProperties." +
-	// theMethod
-	// + "(" + propertyValueToDisplay + ")");
-	// }
-
-	System.out.println(SqlTag.SQL_PRODUCT_START + "  -> " + propertyName
-		+ " = " + propertyValueToDisplay);
-
-	// Invoke the method
-	Method main = theClass.getDeclaredMethod(theMethod, pType);
-
-	// if (argTypes[i] == Connection.class) {
-	if (pType[0] == long.class) {
-	    main.invoke(theObject, Long.parseLong(propertyValue));
-	} else if (pType[0] == String.class) {
-	    main.invoke(theObject, propertyValue);
-	} else if (pType[0] == boolean.class) {
-	    main.invoke(theObject, Boolean.parseBoolean(propertyValue));
-	} else if (pType[0] == int.class) {
-	    main.invoke(theObject, Integer.parseInt(propertyValue));
-	} else {
-	    throw new DatabaseConfigurationException(
-		    "Invalid Connection Pool property: " + propertyName);
-	}
-
-    }
-
-    /**
-     * Print debug info
-     * 
-     * @param s
-     */
-
-    private void debug(String s) {
-	if (DEBUG)
-	    System.out.println(new Date() + " " + s);
-    }
 
 }

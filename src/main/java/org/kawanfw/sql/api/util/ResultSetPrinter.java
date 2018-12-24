@@ -32,8 +32,8 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Types;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.kawanfw.sql.transport.TransportConverter;
 import org.kawanfw.sql.util.FrameworkDebug;
@@ -113,7 +113,7 @@ public class ResultSetPrinter {
      * The map than contains per column number (starts at 1) the maximum
      * required length
      */
-    private Map<Integer, Integer> columnWidth = new HashMap<Integer, Integer>();
+    private Map<Integer, Integer> columnWidth = new ConcurrentHashMap<Integer, Integer>();
 
     /** The Result Set to process */
     private ResultSet resultSet = null;

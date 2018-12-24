@@ -1,6 +1,6 @@
 
                      AceQL HTTP
-                    Version 3.0
+                    Version 3.1
                     Release Notes
 
 
@@ -23,6 +23,19 @@ AceQL HTTP is licensed through the GNU Lesser General Public License
 (LGPL v2.1).
 
 
+AceQL HTTP Version 3.1 - 24-dec-2018
+------------------------------------
+
+What's new:
+- destroy() call has been added to main servlet ServerSqlManager for
+  clean shutdown of ThreadPoolExecutor without warnings. 
+
+Bugs fixed:
+- HttpServletRequestHolder could in rare cases collide request parameters 
+  from concurrent clients. This has been fixed. 
+
+
+
 AceQL HTTP Version 3.0 - 17-dec-2018
 ------------------------------------
 
@@ -34,7 +47,6 @@ AceQL HTTP Version 3.0 - 17-dec-2018
   clarity.
 - Uses newest Tomcat 8.5.35 embedded libraries for security reasons.
 - Update other misc Maven dependencies.
-
 
 
 AceQL HTTP Version 2.1 - 18-jun-2018

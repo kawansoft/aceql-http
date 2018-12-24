@@ -48,93 +48,92 @@ import org.kawanfw.sql.util.FrameworkDebug;
  */
 public class ServerLogout {
 
-    private static boolean DEBUG = FrameworkDebug.isSet(ServerLogout.class);;
+	private static boolean DEBUG = FrameworkDebug.isSet(ServerLogout.class);;
 
-    // A space
-    public static final String SPACE = " ";
+	// A space
+	public static final String SPACE = " ";
 
-    public static void logout(HttpServletRequest request,
-	    HttpServletResponse response,
-	    DatabaseConfigurator databaseConfigurator) throws IOException {
+	private static final long TWENTY_MINUTES_IN_MILLISECONDS = 1000 * 60 * 20;
 
-	PrintWriter out = response.getWriter();
+	public static void logout(HttpServletRequest request, HttpServletResponse response,
+			DatabaseConfigurator databaseConfigurator) throws IOException {
 
-	try {
-	    response.setContentType("text/html");
+		PrintWriter out = response.getWriter();
 
-	    String username = request.getParameter(HttpParameter.USERNAME);
-	    String sessionId = request.getParameter(HttpParameter.SESSION_ID);
+		try {
+			response.setContentType("text/html");
 
-	    SessionConfigurator sessionConfigurator = ServerSqlManager
-		    .getSessionManagerConfigurator();
-	    sessionConfigurator.remove(sessionId);
+			String username = request.getParameter(HttpParameter.USERNAME);
+			String sessionId = request.getParameter(HttpParameter.SESSION_ID);
 
-	    Set<Connection> connections = ConnectionStore.getAllConnections(username, sessionId);
+			SessionConfigurator sessionConfigurator = ServerSqlManager.getSessionManagerConfigurator();
+			sessionConfigurator.remove(sessionId);
 
-	    for (Connection connection : connections) {
-		//ConnectionCloser.freeConnection(connection, databaseConfigurator);
-		databaseConfigurator.close(connection);
-	    }
-	    
-	    ConnectionStore.removeAll(username, sessionId);
-	    
-	    deleteBlobFiles(databaseConfigurator, username);
+			Set<Connection> connections = ConnectionStore.getAllConnections(username, sessionId);
 
-	    String jSonReturn = JsonOkReturn.build();
+			for (Connection connection : connections) {
+				// ConnectionCloser.freeConnection(connection, databaseConfigurator);
+				databaseConfigurator.close(connection);
+			}
 
-	    if (DEBUG) {
-		System.err.println("jSonReturn: " + jSonReturn);
-		System.err.println(sessionId);
-	    }
+			ConnectionStore.removeAll(username, sessionId);
 
-	    out.println(jSonReturn);
+			deleteOldBlobFiles(databaseConfigurator, username);
 
-	} catch (Exception e) {
+			String jSonReturn = JsonOkReturn.build();
 
-	    JsonErrorReturn errorReturn = new JsonErrorReturn(response,
-		    HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-		    JsonErrorReturn.ERROR_ACEQL_FAILURE, e.getMessage(),
-		    ExceptionUtils.getStackTrace(e));
-	    out.println(errorReturn.build());
+			if (DEBUG) {
+				System.err.println("jSonReturn: " + jSonReturn);
+				System.err.println(sessionId);
+			}
 
-	}
-    }
+			out.println(jSonReturn);
 
-    /**
-     * Delete all files, but do throw error if problem, except development
-     * control null pointer exception
-     * 
-     * @param databaseConfigurator
-     * @param username
-     */
-    private static void deleteBlobFiles(
-	    DatabaseConfigurator databaseConfigurator, String username)
-	    throws IOException, SQLException {
+		} catch (Exception e) {
 
-	if (databaseConfigurator == null) {
-	    throw new NullPointerException("databaseConfigurator is null!");
+			JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+					JsonErrorReturn.ERROR_ACEQL_FAILURE, e.getMessage(), ExceptionUtils.getStackTrace(e));
+			out.println(errorReturn.build());
+
+		}
 	}
 
-	if (username == null) {
-	    throw new NullPointerException("username is null!");
+	/**
+	 * Delete all files, but do throw error if problem, except development control
+	 * null pointer exception
+	 * 
+	 * @param databaseConfigurator
+	 * @param username
+	 */
+	private static void deleteOldBlobFiles(DatabaseConfigurator databaseConfigurator, String username)
+			throws IOException, SQLException {
+
+		if (databaseConfigurator == null) {
+			throw new NullPointerException("databaseConfigurator is null!");
+		}
+
+		if (username == null) {
+			throw new NullPointerException("username is null!");
+		}
+
+		// Delete all files
+		File blobDirectory = databaseConfigurator.getBlobsDirectory(username);
+		if (blobDirectory == null || !blobDirectory.exists()) {
+			return;
+		}
+
+		File[] files = blobDirectory.listFiles();
+
+		if (files == null) {
+			return;
+		}
+
+		for (File file : files) {
+			if (file.lastModified() < System.currentTimeMillis() - TWENTY_MINUTES_IN_MILLISECONDS) {
+				file.delete();
+			}
+		}
+
 	}
-
-	// Delete all files
-	File blobDirectory = databaseConfigurator.getBlobsDirectory(username);
-	if (blobDirectory == null || !blobDirectory.exists()) {
-	    return;
-	}
-
-	File[] files = blobDirectory.listFiles();
-
-	if (files == null) {
-	    return;
-	}
-
-	for (File file : files) {
-	    file.delete();
-	}
-
-    }
 
 }

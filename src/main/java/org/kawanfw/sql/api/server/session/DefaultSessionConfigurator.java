@@ -25,8 +25,8 @@
 package org.kawanfw.sql.api.server.session;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Default implementation of session management:
@@ -53,7 +53,7 @@ import java.util.Map;
 public class DefaultSessionConfigurator implements SessionConfigurator {
 
     private SessionIdentifierGenerator sessionIdentifierGenerator = new SessionIdentifierGenerator();
-    private Map<String, SessionInfo> sessionInfoStore = new HashMap<>();
+    private Map<String, SessionInfo> sessionInfoStore = new ConcurrentHashMap<>();
 
     /**
      * Constructor. {@code SessionConfigurator} implementation must have no

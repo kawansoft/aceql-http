@@ -36,7 +36,6 @@ import java.util.Properties;
 
 import org.apache.catalina.Context;
 import org.apache.catalina.LifecycleException;
-import org.apache.catalina.Wrapper;
 import org.apache.catalina.connector.Connector;
 import org.apache.catalina.startup.Tomcat;
 import org.kawanfw.sql.api.server.DatabaseConfigurationException;
@@ -109,8 +108,8 @@ public class TomcatStarter {
      * @throws ConnectException
      * @throws DatabaseConfigurationException
      */
-    public void startTomcat() throws IOException, LifecycleException,
-	    ConnectException, DatabaseConfigurationException {
+    public void startTomcat() throws IOException,
+	    ConnectException, DatabaseConfigurationException, LifecycleException {
 
 	Tomcat tomcat = new Tomcat();
 	try {
@@ -274,7 +273,7 @@ public class TomcatStarter {
 
 	// Add the ServerSqlManager servlet to the context
 	@SuppressWarnings("unused")
-	Wrapper wrapper = Tomcat.addServlet(rootCtx,
+	org.apache.catalina.Wrapper wrapper = Tomcat.addServlet(rootCtx,
 		aceQLManagerServletCallName, new ServerSqlManager());
 	wrapper.setAsyncSupported(true); 
 	rootCtx.addServletMappingDecoded("/*", aceQLManagerServletCallName);

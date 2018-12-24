@@ -35,8 +35,7 @@ package org.kawanfw.sql.util;
 public class KeepTempFilePolicyParms {
 
     /** if true, the local blob files will be deleted after been uploaded */
-    public static boolean KEEP_TEMP_FILE = FrameworkDebug
-	    .isSet(KeepTempFilePolicyParms.class);
+    public static boolean KEEP_TEMP_FILE = FrameworkDebug.isSet(KeepTempFilePolicyParms.class);
 
     /**
      * No Constructor

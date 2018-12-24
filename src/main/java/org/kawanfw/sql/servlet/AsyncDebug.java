@@ -58,20 +58,19 @@ import java.text.SimpleDateFormat;
  */
 public class AsyncDebug {
 
-    public static boolean DEBUG = true;
+	public static boolean DEBUG = false;
 
-    public static void debug(String s) {
-        if (DEBUG) {
-            System.out.println(getNowFormatted() + " " + s);
-        }
-    }
+	public static void debug(String s) {
+		if (DEBUG) {
+			System.out.println(getNowFormatted() + " " + s);
+		}
+	}
 
-    public static String getNowFormatted() {
-	Timestamp tsNow = new Timestamp(System.currentTimeMillis());
-	DateFormat df = new SimpleDateFormat("yy/MM/dd HH:mm:ss.SSS");
-	String now = df.format(tsNow);
-	return now;
-    }
-    
-    
+	public static String getNowFormatted() {
+		Timestamp tsNow = new Timestamp(System.currentTimeMillis());
+		DateFormat df = new SimpleDateFormat("yy/MM/dd HH:mm:ss.SSS");
+		String now = df.format(tsNow);
+		return now;
+	}
+
 }

@@ -41,67 +41,67 @@ import org.kawanfw.sql.util.FrameworkDebug;
  */
 public class HttpServletRequestHolder extends HttpServletRequestWrapper {
 
-    private static boolean DEBUG = FrameworkDebug
-	    .isSet(HttpServletRequestHolder.class);
+	private static boolean DEBUG = FrameworkDebug.isSet(HttpServletRequestHolder.class);
 
-    /** The map of emulated request parameters */
-    private static Map<String, String> mapParameters = new HashMap<>();
+	/** The map of emulated request parameters */
+	// No concurrency support to allow null values
+	private Map<String, String> mapParameters = new HashMap<>(); 
 
-    /**
-     * Constructor
-     * 
-     * @param request
-     *            the underlying HttpServletRequest
-     */
-    public HttpServletRequestHolder(HttpServletRequest request) {
-	super(request);
-    }
-
-    /**
-     * Request parameter emulation by adding a request parameter
-     * 
-     * @param name
-     *            the parameter name
-     * @param value
-     *            the parameter value
-     */
-    public void setParameter(String name, String value) {
-
-	if (name == null) {
-	    throw new NullPointerException("name is null!");
+	/**
+	 * Constructor
+	 * 
+	 * @param request
+	 *            the underlying HttpServletRequest
+	 */
+	public HttpServletRequestHolder(HttpServletRequest request) {
+		super(request);
 	}
 
-	mapParameters.put(name, value);
-    }
+	/**
+	 * Request parameter emulation by adding a request parameter
+	 * 
+	 * @param name
+	 *            the parameter name
+	 * @param value
+	 *            the parameter value
+	 */
+	public void setParameter(String name, String value) {
 
-    /**
-     * Will return the request parameter.
-     * 
-     * @param parameterName
-     *            parameter name
-     * @return the parameter value
-     */
-    @Override
-    public String getParameter(String parameterName) {
+		if (name == null) {
+			throw new NullPointerException("name is null!");
+		}
 
-	debug("getParameter of " + parameterName + ":");
-
-	String value = null;
-	if (mapParameters.containsKey(parameterName)) {
-	    value = mapParameters.get(parameterName);
-	} else {
-	    value = super.getParameter(parameterName);
+		mapParameters.put(name, value);
 	}
 
-	debug("value: " + value + ":");
-	return value;
+	/**
+	 * Will return the request parameter.
+	 * 
+	 * @param parameterName
+	 *            parameter name
+	 * @return the parameter value
+	 */
+	@Override
+	public String getParameter(String parameterName) {
 
-    }
+		debug("getParameter of " + parameterName + ":");
 
-    private void debug(String s) {
-	if (DEBUG) {
-	    System.out.println(new Date() + " " + s);
+		String value = null;
+		if (mapParameters.containsKey(parameterName)) {
+			value = mapParameters.get(parameterName);
+		} else {
+			value = super.getParameter(parameterName);
+		}
+
+		debug("value: " + value + ":");
+		return value;
+
 	}
-    }
+
+	private void debug(String s) {
+		if (DEBUG) {
+			System.out.println(new Date() + " " + s);
+		}
+	}
 
 }

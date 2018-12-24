@@ -24,8 +24,8 @@
  */
 package org.kawanfw.sql.tomcat;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.sql.DataSource;
 
@@ -38,55 +38,55 @@ import javax.sql.DataSource;
  */
 public class TomcatSqlModeStore {
 
-    /** Value that says we are in stand alone Server with Tomcat Embed */
-    private static boolean tomcatEmbedded = false;
+	/** Value that says we are in stand alone Server with Tomcat Embed */
+	private static boolean tomcatEmbedded = false;
 
-    /** The (Database name Name, DataSource) Map */
-    private static Map<String, DataSource> dataSourceMap = new HashMap<String, DataSource>();
+	/** The (Database name Name, DataSource) Map */
+	private static Map<String, DataSource> dataSourceMap = new ConcurrentHashMap<String, DataSource>();
 
-    /**
-     * no instantiation
-     */
-    private TomcatSqlModeStore() {
+	/**
+	 * no instantiation
+	 */
+	private TomcatSqlModeStore() {
 
-    }
+	}
 
-    /**
-     * @return the tomcatEmbedded
-     */
-    public static boolean isTomcatEmbedded() {
-	return tomcatEmbedded;
-    }
+	/**
+	 * @return the tomcatEmbedded
+	 */
+	public static boolean isTomcatEmbedded() {
+		return tomcatEmbedded;
+	}
 
-    /**
-     * @param tomcatEmbedded
-     *            the tomcatEmbedded to set
-     */
-    public static void setTomcatEmbedded(boolean tomcatEmbedded) {
-	TomcatSqlModeStore.tomcatEmbedded = tomcatEmbedded;
-    }
+	/**
+	 * @param tomcatEmbedded
+	 *            the tomcatEmbedded to set
+	 */
+	public static void setTomcatEmbedded(boolean tomcatEmbedded) {
+		TomcatSqlModeStore.tomcatEmbedded = tomcatEmbedded;
+	}
 
-    /**
-     * Stores a DataSource for a specified database.
-     * 
-     * @param database
-     *            the database to store the DataSource for
-     * @param dataSource
-     *            the dataSource to set.
-     */
-    public static void setDataSource(String database, DataSource dataSource) {
-	dataSourceMap.put(database, dataSource);
-    }
+	/**
+	 * Stores a DataSource for a specified database.
+	 * 
+	 * @param database
+	 *            the database to store the DataSource for
+	 * @param dataSource
+	 *            the dataSource to set.
+	 */
+	public static void setDataSource(String database, DataSource dataSource) {
+		dataSourceMap.put(database, dataSource);
+	}
 
-    /**
-     * Returns the DataSource associated to a database.
-     * 
-     * @param database
-     *            the database to store the DataSource for
-     * @return the dataSource corresponding to the database
-     */
-    public static DataSource getDataSource(String database) {
-	return dataSourceMap.get(database);
-    }
+	/**
+	 * Returns the DataSource associated to a database.
+	 * 
+	 * @param database
+	 *            the database to store the DataSource for
+	 * @return the dataSource corresponding to the database
+	 */
+	public static DataSource getDataSource(String database) {
+		return dataSourceMap.get(database);
+	}
 
 }

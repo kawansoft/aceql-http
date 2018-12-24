@@ -24,9 +24,9 @@
  */
 package org.kawanfw.sql.api.server;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.sql.DataSource;
 
@@ -46,38 +46,37 @@ import org.kawanfw.sql.tomcat.TomcatSqlModeStore;
  */
 public class DataSourceStore {
 
-    /**
-     * Protected Constructor
-     */
-    protected DataSourceStore() {
+	/**
+	 * Protected Constructor
+	 */
+	protected DataSourceStore() {
 
-    }
-
-    /**
-     * Method to be called by users servlets to get info on the JDBC Pool
-     * DataSources created for each database. <br>
-     * <br>
-     * The {@link DefaultPoolsInfo} servlet with url-pattern
-     * {@code /default_pools_info} is provided to query some info for of each
-     * database {@code DataSource}. <br>
-     * 
-     * @return the the {@code Map} of
-     *         {@code org.apache.tomcat.jdbc.pool.DataSource} per database
-     */
-    public static Map<String, DataSource> getDataSources() {
-	Set<String> databases = ServletParametersStore.getDatabaseNames();
-
-	Map<String, DataSource> dataSourceSet = new HashMap<>();
-
-	if (databases == null || databases.isEmpty()) {
-	    return dataSourceSet;
 	}
 
-	for (String database : databases) {
-	    dataSourceSet.put(database, TomcatSqlModeStore
-			    .getDataSource(database));
+	/**
+	 * Method to be called by users servlets to get info on the JDBC Pool
+	 * DataSources created for each database. <br>
+	 * <br>
+	 * The {@link DefaultPoolsInfo} servlet with url-pattern
+	 * {@code /default_pools_info} is provided to query some info for of each
+	 * database {@code DataSource}. <br>
+	 * 
+	 * @return the the {@code Map} of {@code org.apache.tomcat.jdbc.pool.DataSource}
+	 *         per database
+	 */
+	public static Map<String, DataSource> getDataSources() {
+		Set<String> databases = ServletParametersStore.getDatabaseNames();
+
+		Map<String, DataSource> dataSourceSet = new ConcurrentHashMap<>();
+
+		if (databases == null || databases.isEmpty()) {
+			return dataSourceSet;
+		}
+
+		for (String database : databases) {
+			dataSourceSet.put(database, TomcatSqlModeStore.getDataSource(database));
+		}
+		return dataSourceSet;
 	}
-	return dataSourceSet;
-    }
 
 }

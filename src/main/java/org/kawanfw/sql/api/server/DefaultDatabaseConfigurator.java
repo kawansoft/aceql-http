@@ -28,9 +28,9 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.FileHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -66,7 +66,7 @@ import org.kawanfw.sql.util.Tag;
 public class DefaultDatabaseConfigurator implements DatabaseConfigurator {
 
     /** The map of data sources to use for connection pooling */
-    private Map<String, DataSource> dataSourceSet = new HashMap<>();
+    private Map<String, DataSource> dataSourceSet = new ConcurrentHashMap<>();
 
     private static Logger ACEQL_LOGGER = null;
 

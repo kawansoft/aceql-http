@@ -52,6 +52,6 @@ public class SqlWebServerStart {
 
 	WebServer.main(new String[] { "-start", "-host", "localhost",
 		"-properties",
-		"I:\\_dev_awake\\aceql-http-main\\aceql-http\\conf\\aceql-server.properties" });
+		"I:\\_dev_awake\\aceql-http-main\\aceql-http\\conf\\aceql-server2.properties" });
     }
 }
