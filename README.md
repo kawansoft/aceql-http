@@ -190,7 +190,7 @@ AceQL requires the installation of Java version 7+ (64-bit only).
 
 Because the software installs and runs a Windows Service, you must be logged as a Windows Administrator to install AceQL.
 
-Download [aceql-http-3.1-Setup-x64.exe](https://www.aceql.com/SoftwareDownload?software=aceql-http-3.1-Setup-x64.exe&version=3.1) 
+Download [aceql-http-3.1-Setup-x64.exe](https://www.aceql.com/SoftwareDownload?software=AceQL-HTTP-3.1-Setup-x64.exe&version=3.1) 
 
 Run the installer.
 
