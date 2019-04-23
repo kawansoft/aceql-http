@@ -563,7 +563,7 @@ From now on, you can read the [C# Client SDK User Guide](https://www.aceql.com/D
    <version>3.0</version>
    ```
 
-2. If you don’t use Maven: the [aceql-http-client-all-2.1.jar](https://www.aceql.com/SoftwareDownload?software=aceql-http-client-sdk-all-2.1.jar&version=2.1) file contains the SDK with all dependencies.
+2. If you don’t use Maven: the [aceql-http-client-all-3.0.jar](https://www.aceql.com/SoftwareDownload?software=aceql-http-client-sdk-all-3.0.jar&version=3.1) file contains the SDK with all dependencies.
 
 3. Create an `org.kawanfw.sql.api.client.quickstart` package in your IDE.
 
