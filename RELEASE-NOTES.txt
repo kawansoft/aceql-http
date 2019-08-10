@@ -27,8 +27,8 @@ AceQL HTTP Version 3.2.1 - 10-aug-2019
 ---------------------------------------
 
 Bugs fixed:
-- aceql-server -stop would return -1 exit code instead of 0. It
-  could problem when using CI tools like Jenkins. This has been fixed.
+- aceql-server -stop was returning -1 exit code instead of 0. It
+  could cause a problem when using CI tools like Jenkins. This has been fixed.
 
 
 
