@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="aceql-http-3.1">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/dist/aceql-http-3.1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

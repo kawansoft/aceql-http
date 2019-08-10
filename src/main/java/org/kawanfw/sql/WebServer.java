@@ -197,7 +197,7 @@ public class WebServer {
 	if (cmd.hasOption("version")) {
 	    System.out.println(Version.getServerVersion());
 	    System.out.println();
-	    System.exit(-1);
+	    System.exit(0);
 	}
 
 	if (!cmd.hasOption("start") && !cmd.hasOption("stop")) {
@@ -257,7 +257,7 @@ public class WebServer {
 		    e.getCause().printStackTrace();
 		}
 		System.err.println();
-		System.exit((-1));
+		System.exit(-1);
 	    }
 
 	    catch (ConnectException e) {
@@ -302,7 +302,7 @@ public class WebServer {
 			Version.PRODUCT.NAME + " Web server running on port "
 				+ port + " successfully stopped!");
 		System.out.println();
-		System.exit(-1);
+		System.exit(0);
 	    } catch (IOException e) {
 
 		if (e instanceof ConnectException) {
