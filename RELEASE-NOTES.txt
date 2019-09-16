@@ -1,6 +1,6 @@
 
                      AceQL HTTP
-                    Version 3.2.1
+                    Version 3.2.2
                     Release Notes
 
 
@@ -23,14 +23,25 @@ AceQL HTTP is licensed through the GNU Lesser General Public License
 (LGPL v2.1).
 
 
+AceQL HTTP Version 3.2.2 - 16-Sep-2019
+---------------------------------------
+
+Bugs fixed:
+- DECIMAL SQL type passed from client side was ignored. Thus has been fixed.
+- DATE, TIME, TIMESTAMP could be malformed when called from a stored
+  procedure this has been fixed.
+ What's new:
+- Update Tomcat base libraries to 8.5.45 (Security requirements). 
+
+
+
 AceQL HTTP Version 3.2.1 - 10-aug-2019
 ---------------------------------------
 
 Bugs fixed:
 - aceql-server -stop was returning -1 exit code instead of 0. It
   could cause a problem when using CI tools like Jenkins. This has been fixed.
-
-
+ 
 
 AceQL HTTP Version 3.2 - 23-apr-2019
 ------------------------------------

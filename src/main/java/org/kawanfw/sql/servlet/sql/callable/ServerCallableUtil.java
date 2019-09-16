@@ -66,14 +66,35 @@ public class ServerCallableUtil {
         // DATE java.sql.Date
         // TIME java.sql.Time
         // TIMESTAMP java.sql.Timestamp
+        // HACK Version 3.2.2: add .getTime() to transport in numeric long format instead of
+        // Date formated.
         else if (paramType.equalsIgnoreCase(AceQLTypes.DATE)) {
-            outParamValue = "" + callableStatement.getDate(outParamIndex);
+            if (callableStatement.getDate(outParamIndex) != null) {
+                outParamValue = "" + callableStatement.getDate(outParamIndex).getTime(); 
+            }
+            else {
+        	outParamValue = null;
+            }
     
-        } else if (paramType.equalsIgnoreCase(AceQLTypes.TIME)) {
-            outParamValue = "" + callableStatement.getTime(outParamIndex);
+        } else if (paramType.equalsIgnoreCase(AceQLTypes.TIME)) { 
+            
+            if (callableStatement.getTime(outParamIndex) != null) {
+                outParamValue = "" + callableStatement.getTime(outParamIndex).getTime(); 
+            }
+            else {
+        	outParamValue = null;
+            }
     
         } else if (paramType.equalsIgnoreCase(AceQLTypes.TIMESTAMP)) {
-            outParamValue = "" + callableStatement.getTimestamp(outParamIndex);
+            
+            if (callableStatement.getTimestamp(outParamIndex) != null) {
+                outParamValue = "" + callableStatement.getTimestamp(outParamIndex).getTime(); 
+            }
+            else {
+        	outParamValue = null;
+            }
+            
+            
         } else if (paramType.equalsIgnoreCase(AceQLTypes.URL)) {
     
             outParamValue = "" + callableStatement.getURL(outParamIndex);

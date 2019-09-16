@@ -59,9 +59,15 @@ public class JavaSqlConversion {
 	    javaType = Types.VARCHAR;
 	} else if (sqlParamType.equals(AceQLTypes.LONGVARCHAR)) {
 	    javaType = Types.LONGVARCHAR;
-	} else if (sqlParamType.equals(AceQLTypes.BIT)) {
+	} 
+	else if (sqlParamType.equals(AceQLTypes.BIT)) {
 	    javaType = Types.BIT;
-	} else if (sqlParamType.equals(AceQLTypes.NUMERIC)) {
+	} 
+	// HACK Version 3.2.2: add AceQLTypes.DECIMAL
+	else if (sqlParamType.equals(AceQLTypes.DECIMAL)) {
+	    javaType = Types.DECIMAL;
+	} 	
+	else if (sqlParamType.equals(AceQLTypes.NUMERIC)) {
 	    javaType = Types.NUMERIC;
 	} else if (sqlParamType.equals(AceQLTypes.TINYINT)) {
 	    javaType = Types.TINYINT;

@@ -374,6 +374,12 @@ public class ServerCallableStatement {
 	    }
 
 	    String outParamValue = ServerCallableUtil.callableStatementGetStringValue(callableStatement, outParamIndex, paramType);
+	    
+	    // HACK Version 3.2.2: Never write null on Json
+	    if (outParamValue == null) {
+		outParamValue = "NULL";
+	    }
+	    
 	    gen.write("" + outParamIndex, outParamValue);
 	}
 
