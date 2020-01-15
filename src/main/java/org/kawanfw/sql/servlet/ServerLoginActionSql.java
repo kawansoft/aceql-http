@@ -1,24 +1,24 @@
 /*
  * This file is part of AceQL HTTP.
- * AceQL HTTP: SQL Over HTTP                                     
- * Copyright (C) 2018, KawanSoft SAS
- * (http://www.kawansoft.com). All rights reserved.                                
- *                                                                               
- * AceQL HTTP is free software; you can redistribute it and/or                 
- * modify it under the terms of the GNU Lesser General Public                    
- * License as published by the Free Software Foundation; either                  
- * version 2.1 of the License, or (at your option) any later version.            
- *                                                                               
- * AceQL HTTP is distributed in the hope that it will be useful,               
- * but WITHOUT ANY WARRANTY; without even the implied warranty of                
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU             
- * Lesser General Public License for more details.                               
- *                                                                               
- * You should have received a copy of the GNU Lesser General Public              
- * License along with this library; if not, write to the Free Software           
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  
+ * AceQL HTTP: SQL Over HTTP
+ * Copyright (C) 2020,  KawanSoft SAS
+ * (http://www.kawansoft.com). All rights reserved.
+ *
+ * AceQL HTTP is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * AceQL HTTP is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
  * 02110-1301  USA
- * 
+ *
  * Any modifications to this file must keep this entire header
  * intact.
  */
@@ -47,7 +47,7 @@ import org.kawanfw.sql.util.FrameworkDebug;
 
 /**
  * Login.
- * 
+ *
  * @author Nicolas de Pomereu
  *
  */
@@ -72,9 +72,9 @@ public class ServerLoginActionSql extends HttpServlet {
     }
 
     /**
-     * 
+     *
      * Execute the login request
-     * 
+     *
      * @param request
      *            the http request
      * @param response
@@ -110,7 +110,7 @@ public class ServerLoginActionSql extends HttpServlet {
 			JsonErrorReturn.ERROR_ACEQL_ERROR,
 			JsonErrorReturn.INVALID_USERNAME_OR_PASSWORD);
 		out.println(errorReturn.build());
-		return;  
+		return;
 	    }
 
 	    username = username.trim();
@@ -156,18 +156,18 @@ public class ServerLoginActionSql extends HttpServlet {
 		    .getSessionManagerConfigurator();
 	    String sessionId = sessionConfigurator.generateSessionId(username,
 		    database);
-	    
+
 	    String connectionId = null;
-	    
+
 	    connectionId = getConnectionId(sessionId, request, username,
 		    database, databaseConfigurator);
-	    
+
 	    Trace.sessionId("sessionId: " + sessionId);
-	    
+
 	    Map<String, String> map = new HashMap<>();
 	    map.put("session_id", sessionId);
 	    map.put("connection_id", connectionId);
-	    
+
 	    out.println(JsonOkReturn.build(map));
 
 	} catch (Exception e) {
@@ -179,9 +179,9 @@ public class ServerLoginActionSql extends HttpServlet {
 
     /**
      * Extract a Connection from the pool and return the connection id (hashcode) to client.
-     * Connections is stored in memory until client side calls close action 
+     * Connections is stored in memory until client side calls close action
      * @param sessionId
-     * @param request 
+     * @param request
      * @param username
      * @param database
      * @param databaseConfigurator
@@ -191,7 +191,7 @@ public class ServerLoginActionSql extends HttpServlet {
     public static  String getConnectionId(String sessionId, HttpServletRequest request,
 	    String username, String database, DatabaseConfigurator databaseConfigurator)
 	    throws SQLException {
-	
+
 	// Exract connection from pool
 	Connection connection = databaseConfigurator
 	    .getConnection(database);
@@ -204,7 +204,7 @@ public class ServerLoginActionSql extends HttpServlet {
 //	if (clientVersion == null || clientVersion.compareTo("v2.0") < 0) {
 //	    connectionId = "unique";
 //	}
-	
+
 	ConnectionStore connectionStore = new ConnectionStore(username,
 	    sessionId, connectionId);
 

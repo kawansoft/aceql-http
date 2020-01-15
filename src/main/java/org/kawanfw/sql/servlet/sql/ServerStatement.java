@@ -1,24 +1,24 @@
 /*
  * This file is part of AceQL HTTP.
- * AceQL HTTP: SQL Over HTTP                                     
- * Copyright (C) 2018, KawanSoft SAS
- * (http://www.kawansoft.com). All rights reserved.                                
- *                                                                               
- * AceQL HTTP is free software; you can redistribute it and/or                 
- * modify it under the terms of the GNU Lesser General Public                    
- * License as published by the Free Software Foundation; either                  
- * version 2.1 of the License, or (at your option) any later version.            
- *                                                                               
- * AceQL HTTP is distributed in the hope that it will be useful,               
- * but WITHOUT ANY WARRANTY; without even the implied warranty of                
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU             
- * Lesser General Public License for more details.                               
- *                                                                               
- * You should have received a copy of the GNU Lesser General Public              
- * License along with this library; if not, write to the Free Software           
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  
+ * AceQL HTTP: SQL Over HTTP
+ * Copyright (C) 2020,  KawanSoft SAS
+ * (http://www.kawansoft.com). All rights reserved.
+ *
+ * AceQL HTTP is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * AceQL HTTP is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
  * 02110-1301  USA
- * 
+ *
  * Any modifications to this file must keep this entire header
  * intact.
  */
@@ -33,7 +33,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Vector;
 import java.util.zip.GZIPOutputStream;
 
@@ -44,7 +46,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.kawanfw.sql.api.server.DatabaseConfigurator;
-import org.kawanfw.sql.servlet.DatabaseConfiguratorCall;
+import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
 import org.kawanfw.sql.servlet.HttpParameter;
 import org.kawanfw.sql.servlet.ServerSqlManager;
 import org.kawanfw.sql.servlet.sql.json_return.JsonErrorReturn;
@@ -54,7 +56,7 @@ import org.kawanfw.sql.util.FrameworkDebug;
 
 /**
  * @author KawanSoft S.A.S
- * 
+ *
  *         Allows to execute the Statement or Prepared Statement on the Server
  *         as executeQuery() or executeUpdate()
  */
@@ -69,27 +71,27 @@ public class ServerStatement {
     /** The http request */
     private HttpServletRequest request;
 
-    private DatabaseConfigurator databaseConfigurator;
-
     private HttpServletResponse response;
 
     private Boolean doPrettyPrinting;
 
+    private List<SqlFirewallManager> sqlFirewallManagers = new ArrayList<>();
+
     /**
      * Default Constructor
-     * 
+     *
      * @param request               the http request
      * @param response              the http servlet response
-     * @param databaseConfigurator
+     * @param sqlFirewallManagers
      * @param connection
      * @param sqlOrderAndParmsStore the Sql order and parms
      */
 
     public ServerStatement(HttpServletRequest request, HttpServletResponse response,
-	    DatabaseConfigurator databaseConfigurator, Connection connection) throws SQLException {
+	    List<SqlFirewallManager> sqlFirewallManagers, Connection connection) throws SQLException {
 	this.request = request;
 	this.response = response;
-	this.databaseConfigurator = databaseConfigurator;
+	this.sqlFirewallManagers = sqlFirewallManagers;
 	this.connection = connection;
 
 	String prettyPrinting = request.getParameter(HttpParameter.PRETTY_PRINTING);
@@ -100,7 +102,7 @@ public class ServerStatement {
 
     /**
      * Execute the SQL query or update. <br>
-     * 
+     *
      * @param out
      * @throws FileNotFoundException
      * @throws IOException
@@ -122,7 +124,7 @@ public class ServerStatement {
 		executeStatement(outFinal);
 	    }
 	} catch (SecurityException e) {
-	    JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_UNAUTHORIZED,
+	    JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_FORBIDDEN,
 		    JsonErrorReturn.ERROR_ACEQL_UNAUTHORIZED, e.getMessage());
 	    ServerSqlManager.writeLine(outFinal, errorReturn.build());
 	} catch (SQLException e) {
@@ -150,7 +152,7 @@ public class ServerStatement {
 
     /**
      * Get the OutputStream to use. A regular one or a GZIP_RESULT one
-     * 
+     *
      * @param file
      * @return
      * @throws FileNotFoundException
@@ -186,17 +188,18 @@ public class ServerStatement {
      * Execute the passed SQL Statement and return: <br>
      * - The result set as a List of Maps for SELECT statements. <br>
      * - The return code for other statements
-     * 
+     *
      * @param sqlOrder the qsql order
      * @param sqlParms the sql parameters
      * @param out      the writer where to write to result set output
-     * 
-     * 
+     *
+     *
      * @throws SQLException
      */
     private void executePrepStatement(OutputStream out) throws SQLException, IOException {
 
 	String username = request.getParameter(HttpParameter.USERNAME);
+	String database = request.getParameter(HttpParameter.DATABASE);
 	String sqlOrder = request.getParameter(HttpParameter.SQL);
 
 	debug("sqlOrder        : " + sqlOrder);
@@ -229,28 +232,20 @@ public class ServerStatement {
 	    // Throws a SQL exception if the order is not authorized:
 	    debug("before new SqlSecurityChecker()");
 
-	    // String database = request.getParameter(HttpParameter.DATABASE);
-	    // DatabaseConfigurator databaseConfigurator = ServerSqlManager
-	    // .getDatabaseConfigurator(database);
-
-	    boolean isAllowed = true;
-
 	    String ipAddress = request.getRemoteAddr();
 
-	    boolean isAllowedAfterAnalysis = databaseConfigurator.allowSqlRunAfterAnalysis(username, connection,
-		    ipAddress, sqlOrder, isPreparedStatement(), serverPreparedStatementParameters.getParameterValues());
-
-	    if (!isAllowedAfterAnalysis) {
-		isAllowed = false;
+	    boolean isAllowedAfterAnalysis = false;
+	    for (SqlFirewallManager sqlFirewallManager : sqlFirewallManagers) {
+		isAllowedAfterAnalysis = sqlFirewallManager.allowSqlRunAfterAnalysis(username, database, connection, ipAddress,
+			sqlOrder, isPreparedStatement(), serverPreparedStatementParameters.getParameterValues());
+		if (!isAllowedAfterAnalysis) {
+		    List<Object> parameterValues = new ArrayList<>();
+		    sqlFirewallManager.runIfStatementRefused(username, database, connection, ipAddress, false, sqlOrder, parameterValues);
+		    break;
+		}
 	    }
 
-	    if (!isAllowed) {
-
-		debug("Before DatabaseConfiguratorCall.runIfStatementRefused");
-		DatabaseConfiguratorCall.runIfStatementRefused(databaseConfigurator, ipAddress, connection, ipAddress,
-			sqlOrder, serverPreparedStatementParameters.getParameterValues());
-		debug("After  DatabaseConfiguratorCall.runIfStatementRefused");
-
+	    if (!isAllowedAfterAnalysis) {
 		String message = JsonSecurityMessage.prepStatementNotAllowedBuild(sqlOrder,
 			"Prepared Statement not allowed", serverPreparedStatementParameters.getParameterTypes(),
 			serverPreparedStatementParameters.getParameterValues(), doPrettyPrinting);
@@ -261,17 +256,22 @@ public class ServerStatement {
 
 	    if (isExecuteUpdate()) {
 
-		if (!DatabaseConfiguratorCall.allowExecuteUpdate(databaseConfigurator, username, connection)) {
+		//boolean allowExecuteUpdate = DatabaseConfiguratorCall.allowExecuteUpdate(databaseConfigurator, username, connection);
 
-		    DatabaseConfiguratorCall.runIfStatementRefused(databaseConfigurator, username, connection,
-			    ipAddress, sqlOrder, serverPreparedStatementParameters.getParameterValues());
+		for (SqlFirewallManager sqlFirewallManager : sqlFirewallManagers) {
+		    isAllowedAfterAnalysis = sqlFirewallManager.allowExecuteUpdate(username, database, connection);
+		    if (!isAllowedAfterAnalysis) {
+			List<Object> parameterValues = new ArrayList<>();
+			sqlFirewallManager.runIfStatementRefused(username, database, connection, ipAddress, false,
+				sqlOrder, parameterValues);
 
-		    String message = JsonSecurityMessage.prepStatementNotAllowedBuild(sqlOrder,
-			    "Prepared Statement not allowed for executeUpdate",
-			    serverPreparedStatementParameters.getParameterTypes(),
-			    serverPreparedStatementParameters.getParameterValues(), doPrettyPrinting);
+			String message = JsonSecurityMessage.prepStatementNotAllowedBuild(sqlOrder,
+				"Prepared Statement not allowed for executeUpdate",
+				serverPreparedStatementParameters.getParameterTypes(),
+				serverPreparedStatementParameters.getParameterValues(), doPrettyPrinting);
 
-		    throw new SecurityException(message);
+			throw new SecurityException(message);
+		    }
 		}
 
 		int rc = preparedStatement.executeUpdate();
@@ -340,23 +340,23 @@ public class ServerStatement {
      * Execute the passed SQL Statement and return: <br>
      * - The result set as a List of Maps for SELECT statements. <br>
      * - The return code for other statements
-     * 
+     *
      * @param sqlOrder the qsql order
      * @param sqlParms the sql parameters
      * @param out      the writer where to write to result set output
-     * 
-     * 
+     *
+     *
      * @throws SQLException
      */
     private void executeStatement(OutputStream out) throws SQLException, IOException {
 
 	String username = request.getParameter(HttpParameter.USERNAME);
+	String database = request.getParameter(HttpParameter.DATABASE);
 	String sqlOrder = request.getParameter(HttpParameter.SQL);
 	debug("sqlOrder   : " + sqlOrder);
 
 	Statement statement = null;
 
-	String database = request.getParameter(HttpParameter.DATABASE);
 	DatabaseConfigurator databaseConfigurator = ServerSqlManager.getDatabaseConfigurator(database);
 
 	try {
@@ -369,28 +369,28 @@ public class ServerStatement {
 	    // Throws a SQL exception if the order is not authorized:
 	    debug("before new SqlSecurityChecker()");
 
-	    boolean isAllowed = true;
-
-	    boolean statementClassAllowed = DatabaseConfiguratorCall.allowStatementClass(databaseConfigurator, username,
-		    connection);
-
-	    if (!statementClassAllowed) {
-		isAllowed = false;
-	    }
-
 	    String ipAddress = request.getRemoteAddr();
+	    boolean isAllowed = false;
 
-	    boolean isAllowedAfterAnalysis = databaseConfigurator.allowSqlRunAfterAnalysis(username, connection,
-		    ipAddress, sqlOrder, isPreparedStatement(), new Vector<Object>());
+	    SqlFirewallManager sqlFirewallOnDeny = null;
+	    for (SqlFirewallManager sqlFirewallManager : sqlFirewallManagers) {
+		sqlFirewallOnDeny = sqlFirewallManager;
+		isAllowed = sqlFirewallManager.allowStatementClass(username, database, connection);
+		if (!isAllowed) {
+		    break;
+		}
 
-	    if (!isAllowedAfterAnalysis) {
-		isAllowed = false;
+		isAllowed = sqlFirewallManager.allowSqlRunAfterAnalysis(username, database,
+			    connection, ipAddress, sqlOrder, isPreparedStatement(), new Vector<Object>());
+		if (!isAllowed) {
+		    break;
+		}
 	    }
 
 	    if (!isAllowed) {
-
-		DatabaseConfiguratorCall.runIfStatementRefused(databaseConfigurator, username, connection, ipAddress,
-			sqlOrder, new Vector<Object>());
+		List<Object> parameterValues = new ArrayList<>();
+		sqlFirewallOnDeny.runIfStatementRefused(username, database, connection, ipAddress,
+			false, sqlOrder, parameterValues);
 
 		String message = JsonSecurityMessage.statementNotAllowedBuild(sqlOrder, "Statement not allowed",
 			doPrettyPrinting);
@@ -403,14 +403,18 @@ public class ServerStatement {
 
 	    if (isExecuteUpdate()) {
 
-		if (!DatabaseConfiguratorCall.allowExecuteUpdate(databaseConfigurator, username, connection)) {
+		for (SqlFirewallManager sqlFirewallManager : sqlFirewallManagers) {
+		    isAllowed = sqlFirewallManager.allowExecuteUpdate(username, database, connection);
+		    if (!isAllowed) {
+			List<Object> parameterValues = new ArrayList<>();
+			sqlFirewallManager.runIfStatementRefused(username, database, connection, ipAddress, false,
+				sqlOrder, parameterValues);
 
-		    DatabaseConfiguratorCall.runIfStatementRefused(databaseConfigurator, username, connection,
-			    ipAddress, sqlOrder, new Vector<Object>());
+			String message = JsonSecurityMessage.statementNotAllowedBuild(sqlOrder,
+				"Statement not allowed for for executeUpdate", doPrettyPrinting);
+			throw new SecurityException(message);
 
-		    String message = JsonSecurityMessage.statementNotAllowedBuild(sqlOrder,
-			    "Statement not allowed for for executeUpdate", doPrettyPrinting);
-		    throw new SecurityException(message);
+		    }
 		}
 
 		int rc = -1;

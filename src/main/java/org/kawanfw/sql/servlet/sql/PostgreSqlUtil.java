@@ -1,24 +1,24 @@
 /*
  * This file is part of AceQL HTTP.
- * AceQL HTTP: SQL Over HTTP                                     
- * Copyright (C) 2018, KawanSoft SAS
- * (http://www.kawansoft.com). All rights reserved.                                
- *                                                                               
- * AceQL HTTP is free software; you can redistribute it and/or                 
- * modify it under the terms of the GNU Lesser General Public                    
- * License as published by the Free Software Foundation; either                  
- * version 2.1 of the License, or (at your option) any later version.            
- *                                                                               
- * AceQL HTTP is distributed in the hope that it will be useful,               
- * but WITHOUT ANY WARRANTY; without even the implied warranty of                
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU             
- * Lesser General Public License for more details.                               
- *                                                                               
- * You should have received a copy of the GNU Lesser General Public              
- * License along with this library; if not, write to the Free Software           
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  
+ * AceQL HTTP: SQL Over HTTP
+ * Copyright (C) 2020,  KawanSoft SAS
+ * (http://www.kawansoft.com). All rights reserved.
+ *
+ * AceQL HTTP is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * AceQL HTTP is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
  * 02110-1301  USA
- * 
+ *
  * Any modifications to this file must keep this entire header
  * intact.
  */
@@ -35,6 +35,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.Vector;
@@ -49,9 +50,9 @@ import org.postgresql.largeobject.LargeObjectManager;
 
 /**
  * Dedicated method for PostgreSQL Large Objects treatment
- * 
+ *
  * @author Nicolas de Pomereu
- * 
+ *
  */
 public class PostgreSqlUtil {
 
@@ -63,7 +64,7 @@ public class PostgreSqlUtil {
 
     /**
      * Returns for PostgreSQL the table for a column
-     * 
+     *
      * @param rs
      *            the ResultSet to analyze
      * @param columnIndex
@@ -81,7 +82,7 @@ public class PostgreSqlUtil {
     /**
      * Says if the database is PostgreSQL AND there is an OID column for large
      * file storage
-     * 
+     *
      * @param connection
      *            the JDBC Connection
      * @param sql
@@ -103,8 +104,12 @@ public class PostgreSqlUtil {
 
 	StatementAnalyzer statementAnalyzer = new StatementAnalyzer(sql,
 		new Vector<Object>());
-	String table = statementAnalyzer.getTableNameFromDmlStatement();
+	List<String> tables = statementAnalyzer.getTables();
+	if (tables.isEmpty()) {
+	    return false;
+	}
 
+	String table = tables.get(0);
 	table = table.toLowerCase();
 
 	debug("table: " + table);
@@ -132,7 +137,7 @@ public class PostgreSqlUtil {
 
     /**
      * Returns all the column names that are Types.BIGINT
-     * 
+     *
      * @param connection
      * @return the column names that are Types.BIGINT
      * @throws SQLException
@@ -182,7 +187,7 @@ public class PostgreSqlUtil {
 
     /**
      * Extract the Large Object Input Stream from PostgreSQL
-     * 
+     *
      * @param resultSet
      *            the Result Set to extract the blob from
      * @param columnIndex
@@ -213,7 +218,7 @@ public class PostgreSqlUtil {
 
     /**
      * Create a Large Object to set the PostgreSQL OID with
-     * 
+     *
      * @param preparedStatement
      *            the Prepared Statement
      * @param parameterIndex

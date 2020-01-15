@@ -1,6 +1,6 @@
 
                      AceQL HTTP
-                    Version 3.2.2
+                     Version 4.0
                     Release Notes
 
 
@@ -23,8 +23,41 @@ AceQL HTTP is licensed through the GNU Lesser General Public License
 (LGPL v2.1).
 
 
+AceQL HTTP Version 4.0 - 14-Jan-2020
+------------------------------------
+
+What's New:
+
+- SQL firewalling is now done through the SqlFirewallManager 
+  interface. SqlFirewallManager concrete classes may be chained 
+  to easily add new rulesets. This also allows to 
+  properly isolate and reuse firewalling code.
+  Default built-in implementations are provided for an easy 
+  startup without any coding. 
+
+- The new metadata API allows downloading a remote database schema
+  in HTML or text format, to get a remote database main properties, 
+  to get the list of tables, and to get the details of each table.
+  It also allows wrapping remote tables, columns, indexes, etc. into
+  easy to use provided Java, C# and Python classes in the client SDKs: 
+  Table, Index, Column, etc.
+  HTML and text schemas are rendered with SchemaCrawler (www.schemacrawler.com).
+  The metadata API allows exposing more easily the databases along with the 
+  schemas, without any need to communicate, maintain or synchronize separated
+  documentation for the API users. Users are thus autonomous to explore 
+  the metadata and schema of the exposed databases.  
+  
+- StatementAnalyzer has been retrofitted with an external heavily used 
+  and highly supported SQL parser  (JSqlParser library - 
+  https://github.com/JSQLParser/JSqlParser).
+  
+- Tomcat base libraries have been updated to 8.5.50 (Security requirements). 
+
+- AceQL HTTP requires now Java 8 or higher.
+   
+
 AceQL HTTP Version 3.2.2 - 16-Sep-2019
----------------------------------------
+--------------------------------------
 
 Bugs fixed:
 - DECIMAL SQL type passed from client side was ignored. Thus has been fixed.

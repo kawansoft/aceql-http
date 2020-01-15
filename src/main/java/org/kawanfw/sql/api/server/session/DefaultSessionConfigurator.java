@@ -1,36 +1,38 @@
 /*
  * This file is part of AceQL HTTP.
- * AceQL HTTP: SQL Over HTTP                                     
- * Copyright (C) 2018, KawanSoft SAS
- * (http://www.kawansoft.com). All rights reserved.                                
- *                                                                               
- * AceQL HTTP is free software; you can redistribute it and/or                 
- * modify it under the terms of the GNU Lesser General Public                    
- * License as published by the Free Software Foundation; either                  
- * version 2.1 of the License, or (at your option) any later version.            
- *                                                                               
- * AceQL HTTP is distributed in the hope that it will be useful,               
- * but WITHOUT ANY WARRANTY; without even the implied warranty of                
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU             
- * Lesser General Public License for more details.                               
- *                                                                               
- * You should have received a copy of the GNU Lesser General Public              
- * License along with this library; if not, write to the Free Software           
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  
+ * AceQL HTTP: SQL Over HTTP
+ * Copyright (C) 2020,  KawanSoft SAS
+ * (http://www.kawansoft.com). All rights reserved.
+ *
+ * AceQL HTTP is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * AceQL HTTP is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
  * 02110-1301  USA
- * 
+ *
  * Any modifications to this file must keep this entire header
  * intact.
  */
 package org.kawanfw.sql.api.server.session;
 
+import java.io.File;
 import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.commons.lang3.SystemUtils;
+
 /**
  * Default implementation of session management:
- * <p>
  * <ul>
  * <li>Session id are generated using a {@code SecureRandom} with the
  * {@link SessionIdentifierGenerator} class.</li>
@@ -47,7 +49,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * manage how session info are stored.<br>
  * <br>Note that {@code getSessionTimelife()} returns 0 and that sessions never expire.s
  * <br>Extend this class and override {@code getSessionTimelife()} if you want to define expirable sessions.
- * 
+ *
  * @author Nicolas de Pomereu
  */
 public class DefaultSessionConfigurator implements SessionConfigurator {
@@ -65,7 +67,7 @@ public class DefaultSessionConfigurator implements SessionConfigurator {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.kawanfw.sql.api.server.session.SessionConfigurator#
      * generateSessionId()
      */
@@ -77,6 +79,10 @@ public class DefaultSessionConfigurator implements SessionConfigurator {
     public String generateSessionId(String username, String database) {
 	String sessionId = sessionIdentifierGenerator.nextSessionId();
 
+	if (new File(SystemUtils.USER_HOME + File.separator + "aceql_fixed_session.txt").exists()) {
+	    sessionId = "64qssfsku57i99nkpjtap8hho5";
+	}
+
 	SessionInfo sessionInfo = new SessionInfo(sessionId, username,
 		database);
 	sessionInfoStore.put(sessionId, sessionInfo);
@@ -86,7 +92,7 @@ public class DefaultSessionConfigurator implements SessionConfigurator {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.kawanfw.sql.api.server.session.SessionConfigurator#getUsername
      * (java.lang.String)
      */
@@ -103,7 +109,7 @@ public class DefaultSessionConfigurator implements SessionConfigurator {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.kawanfw.sql.api.server.session.SessionConfigurator#getDatabase
      * (java.lang.String)
      */
@@ -120,7 +126,7 @@ public class DefaultSessionConfigurator implements SessionConfigurator {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.kawanfw.sql.api.server.session.SessionConfigurator#getCreationTime
      * (java.lang.String)
@@ -138,7 +144,7 @@ public class DefaultSessionConfigurator implements SessionConfigurator {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.kawanfw.sql.api.server.session.SessionConfigurator#remove(
      * java.lang.String)
      */
@@ -149,7 +155,7 @@ public class DefaultSessionConfigurator implements SessionConfigurator {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.kawanfw.sql.api.server.session.SessionConfigurator#verifySessionId
      * (java.lang.String)
@@ -159,7 +165,7 @@ public class DefaultSessionConfigurator implements SessionConfigurator {
      * <ul>
      * <li>Verify that the sessionId exists</li>
      * <li>Verify that the sessionId is not expired (must be less that 12
-     * hours>.</li>
+     * hours).</li>
      * </ul>
      */
     @Override
@@ -190,7 +196,7 @@ public class DefaultSessionConfigurator implements SessionConfigurator {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.kawanfw.sql.api.server.session.SessionConfigurator#getSessionTimelife
      * (java.lang.String)

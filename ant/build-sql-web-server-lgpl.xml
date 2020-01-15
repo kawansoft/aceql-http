@@ -2,7 +2,7 @@
 
 <project name="Buildfile for LGPL aceql-http-server-x.y.z.jar" default="all" basedir=".">
 
-	<property name="version"                  	value="3.2.2"/>
+	<property name="version"                  	value="4.0"/>
 	
 	<!-- Update the webapp.lib.dir for your installation -->
     <property name="webapp.lib.dir"   			value="c:\tomcat\webapps\aceql-test\WEB-INF\lib"/>  	

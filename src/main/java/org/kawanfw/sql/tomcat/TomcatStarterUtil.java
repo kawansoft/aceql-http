@@ -1,24 +1,24 @@
 /*
  * This file is part of AceQL HTTP.
- * AceQL HTTP: SQL Over HTTP                                     
- * Copyright (C) 2018, KawanSoft SAS
- * (http://www.kawansoft.com). All rights reserved.                                
- *                                                                               
- * AceQL HTTP is free software; you can redistribute it and/or                 
- * modify it under the terms of the GNU Lesser General Public                    
- * License as published by the Free Software Foundation; either                  
- * version 2.1 of the License, or (at your option) any later version.            
- *                                                                               
- * AceQL HTTP is distributed in the hope that it will be useful,               
- * but WITHOUT ANY WARRANTY; without even the implied warranty of                
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU             
- * Lesser General Public License for more details.                               
- *                                                                               
- * You should have received a copy of the GNU Lesser General Public              
- * License along with this library; if not, write to the Free Software           
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  
+ * AceQL HTTP: SQL Over HTTP
+ * Copyright (C) 2020,  KawanSoft SAS
+ * (http://www.kawansoft.com). All rights reserved.
+ *
+ * AceQL HTTP is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * AceQL HTTP is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
  * 02110-1301  USA
- * 
+ *
  * Any modifications to this file must keep this entire header
  * intact.
  */
@@ -35,7 +35,9 @@ import java.net.DatagramSocket;
 import java.net.ServerSocket;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
@@ -67,6 +69,8 @@ public class TomcatStarterUtil {
 	    + "ed" + " in" + " this " + "ver" + "si" + "on " + "fo" + "r Dr"
 	    + "iv" + "er: ";
 
+
+
     /**
      * protected constructor
      */
@@ -77,7 +81,7 @@ public class TomcatStarterUtil {
     /**
      * If the user has created a driverClassName property in the properties
      * file: we create a Tomcat JDBC Pool from the properties
-     * 
+     *
      * @param properties
      *            properties extracted from the properties file
      * @throws DatabaseConfigurationException
@@ -164,7 +168,7 @@ public class TomcatStarterUtil {
 	    // Object theObject = c.newInstance();
 	    Constructor<?> constructor = c.getConstructor();
 	    @SuppressWarnings("unused")
-	    Object theObject = (Object) constructor.newInstance();
+	    Object theObject = constructor.newInstance();
 
 	} catch (Exception e) {
 	    throw new IllegalArgumentException(
@@ -246,7 +250,7 @@ public class TomcatStarterUtil {
 
     /**
      * Returns the servlets names from the properties
-     * 
+     *
      * @param properties
      * @return servlets names
      */
@@ -269,7 +273,7 @@ public class TomcatStarterUtil {
 
     /**
      * Returns the database names from the properties
-     * 
+     *
      * @param properties
      * @return the database names
      * @throws DatabaseConfigurationException
@@ -301,7 +305,7 @@ public class TomcatStarterUtil {
     /**
      * If the user has created a driverClassName property in the properties
      * file: we create a Tomcat JDBC Pool from the properties
-     * 
+     *
      * @param properties
      *            properties extracted from the properties file
      * @param database
@@ -423,11 +427,11 @@ public class TomcatStarterUtil {
 
     /**
      * Returns the Properties extracted from a file.
-     * 
+     *
      * @param file
      *            the file containing the properties
      * @return the Properties extracted from the file
-     * 
+     *
      * @throws IOException
      * @throws DatabaseConfigurationException
      */
@@ -462,7 +466,7 @@ public class TomcatStarterUtil {
     /**
      * Set the servlet parameters store with the values extracted from the
      * Properties.
-     * 
+     *
      * @param properties
      *            Properties extracted from the server-sql.properties files
      * @throws IllegalArgumentException
@@ -477,7 +481,6 @@ public class TomcatStarterUtil {
 
 	ServletParametersStore.setServletName(aceQLManagerServletCallName);
 	Set<String> databases = getDatabaseNames(properties);
-
 	ServletParametersStore.setDatabaseNames(databases);
 
 	for (String database : databases) {
@@ -492,6 +495,18 @@ public class TomcatStarterUtil {
 			new InitParamNameValuePair(
 				DATABASE_CONFIGURATOR_CLASS_NAME,
 				databaseConfiguratorClassName));
+	    }
+
+	    String sqlFirewallClassNameArray = TomcatStarterUtil
+		    .trimSafe(properties.getProperty(
+			    database + "." + ServerSqlManager.SQL_FIREWALL_MANAGER_CLASS_NAMES));
+
+	    if (sqlFirewallClassNameArray != null && ! sqlFirewallClassNameArray.isEmpty()) {
+		List<String> sqlFirewallClassNames = TomcatStarterUtilFirewall.getList(sqlFirewallClassNameArray);
+		ServletParametersStore.setSqlFirewallClassNames(database, sqlFirewallClassNames);
+	    }
+	    else {
+		ServletParametersStore.setSqlFirewallClassNames(database, new ArrayList<String>());
 	    }
 	}
 
@@ -523,7 +538,7 @@ public class TomcatStarterUtil {
 
     /**
      * Safely trim a String
-     * 
+     *
      * @param s
      *            the String to trim
      * @return
@@ -538,7 +553,7 @@ public class TomcatStarterUtil {
 
     /**
      * Checks to see if a specific port is available.
-     * 
+     *
      * @param port
      *            the port to check for availability
      */

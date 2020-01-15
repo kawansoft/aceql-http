@@ -1,24 +1,24 @@
 /*
  * This file is part of AceQL HTTP.
- * AceQL HTTP: SQL Over HTTP                                     
- * Copyright (C) 2018, KawanSoft SAS
- * (http://www.kawansoft.com). All rights reserved.                                
- *                                                                               
- * AceQL HTTP is free software; you can redistribute it and/or                 
- * modify it under the terms of the GNU Lesser General Public                    
- * License as published by the Free Software Foundation; either                  
- * version 2.1 of the License, or (at your option) any later version.            
- *                                                                               
- * AceQL HTTP is distributed in the hope that it will be useful,               
- * but WITHOUT ANY WARRANTY; without even the implied warranty of                
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU             
- * Lesser General Public License for more details.                               
- *                                                                               
- * You should have received a copy of the GNU Lesser General Public              
- * License along with this library; if not, write to the Free Software           
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  
+ * AceQL HTTP: SQL Over HTTP
+ * Copyright (C) 2020,  KawanSoft SAS
+ * (http://www.kawansoft.com). All rights reserved.
+ *
+ * AceQL HTTP is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * AceQL HTTP is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
  * 02110-1301  USA
- * 
+ *
  * Any modifications to this file must keep this entire header
  * intact.
  */
@@ -31,28 +31,31 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-import org.kawanfw.sql.api.server.DefaultDatabaseConfigurator;
 import org.kawanfw.sql.api.server.StatementAnalyzer;
+import org.kawanfw.sql.api.server.firewall.DefaultSqlFirewallManager;
 
 /**
  * Class that show hot to analyze a client SQL statement and authorize it or
  * not.
- * 
+ *
  * @author Nicolas de Pomereu
  *
  */
-public class MyDatabaseConfigurator extends DefaultDatabaseConfigurator {
+public class MySqlFirewallManager extends DefaultSqlFirewallManager {
 
     /**
      * Allows, for the passed client username, to analyze the string
      * representation of the SQL statement that is received on the server. <br>
      * If the analysis defined by the method returns false, the SQL statement
      * won't be executed.
-     * 
+     *
      * @param username
      *            the client username to check the rule for.
+     * @param database
+     *            the database name as defined in the JDBC URL field
      * @param connection
      *            The current SQL/JDBC <code>Connection</code>
+     *            the database name as defined in the JDBC URL field
      * @param ipAddress
      *            the IP address of the client user
      * @param isPreparedStatement
@@ -78,17 +81,17 @@ public class MyDatabaseConfigurator extends DefaultDatabaseConfigurator {
      *         <li>If an illegitimate SQL statement is detected, discard the
      *         username and log his IP as a banned IP.</li>
      *         </ul>
-     * 
+     *
      * @throws IOException
      *             if an IOException occurs
      * @throws SQLException
      *             if a SQLException occurs
      */
     @Override
-    public boolean allowSqlRunAfterAnalysis(String username,
-	    Connection connection, String ipAddress, String sql,
-	    boolean isPreparedStatement, List<Object> parameterValues)
-	    throws IOException, SQLException {
+    public boolean allowSqlRunAfterAnalysis(String username, String database,
+	    Connection connection, String ipAddress,
+	    String sql, boolean isPreparedStatement, List<Object> parameterValues)
+		    throws IOException, SQLException {
 
 	// First thing is to test if the username has previously been stored in
 	// our applicative BANNED_USERNAME table
@@ -131,10 +134,13 @@ public class MyDatabaseConfigurator extends DefaultDatabaseConfigurator {
 	// USERNAME value is the last parameter of the PreparedStatement
 
 	if (statementAnalyzer.isUpdate() || statementAnalyzer.isDelete()) {
-	    String table = statementAnalyzer.getTableNameFromDmlStatement();
-	    if (table == null) {
+
+	    List<String> tables = statementAnalyzer.getTables();
+	    if (tables.isEmpty()) {
 		return false;
 	    }
+
+	    String table = tables.get(0);
 
 	    if (!isPreparedStatement) {
 		return false;
@@ -161,44 +167,49 @@ public class MyDatabaseConfigurator extends DefaultDatabaseConfigurator {
      * Insert the username that made an illegal SQL call and it's IP address
      * into the BANNED_USERNAMES table. From now on, the username will not be
      * able to do any further AceQL HTTP calls.
-     * 
+     *
      * @param username
      *            the discarded client username
+     * @param database
+     *            the database name as defined in the JDBC URL field
      * @param connection
      *            The current SQL/JDBC <code>Connection</code>
      * @param ipAddress
      *            the IP address of the client user
+     * @param isMetadataQuery Says if the call is an AceQL Metadata Query API call.
      * @param sql
      *            the SQL statement
      * @param parameterValues
      *            the parameter values of a prepared statement in the natural
      *            order, empty list for a (non prepared) statement
-     * 
+     *
      * @throws IOException
      *             if an IOException occurs
      * @throws SQLException
      *             if a SQLException occurs
      */
     @Override
-    public void runIfStatementRefused(String username, Connection connection,
-	    String ipAddress, String sql, List<Object> parameterValues)
-	    throws IOException, SQLException {
+    public void runIfStatementRefused(String username, String database,
+	    Connection connection, String ipAddress,
+	    boolean isMetadataQuery, String sql, List<Object> parameterValues)
+		    throws IOException, SQLException {
 
 	// Call the parent method that logs the event:
-	super.runIfStatementRefused(username, connection, ipAddress, sql,
-		parameterValues);
+	super.runIfStatementRefused(username, database, connection, ipAddress,
+		isMetadataQuery, sql, parameterValues);
+
+	System.err.println("Statement refused by MySqlFirewallManager: " + sql);
 
 	// Insert the username & its IP into the banned usernames table
-	String sqlOrder = "INSERT INTO BANNED_USERNAMES VALUES (?, ?)";
+	String sqlOrder = "INSERT INTO BANNED_USERNAMES VALUES (?)";
 
 	PreparedStatement prepStatement = connection.prepareStatement(sqlOrder);
 	prepStatement.setString(1, username);
-	prepStatement.setString(2, ipAddress);
 	try {
 	    prepStatement.executeUpdate();
 	} catch (SQLException e) {
 	    // Case the instance already exists
-	    System.err.println(e.toString());
+	    System.out.println("Ignore: " + e.toString());
 	}
 	prepStatement.close();
 

@@ -1,24 +1,24 @@
 /*
  * This file is part of AceQL HTTP.
- * AceQL HTTP: SQL Over HTTP                                     
- * Copyright (C) 2018, KawanSoft SAS
- * (http://www.kawansoft.com). All rights reserved.                                
- *                                                                               
- * AceQL HTTP is free software; you can redistribute it and/or                 
- * modify it under the terms of the GNU Lesser General Public                    
- * License as published by the Free Software Foundation; either                  
- * version 2.1 of the License, or (at your option) any later version.            
- *                                                                               
- * AceQL HTTP is distributed in the hope that it will be useful,               
- * but WITHOUT ANY WARRANTY; without even the implied warranty of                
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU             
- * Lesser General Public License for more details.                               
- *                                                                               
- * You should have received a copy of the GNU Lesser General Public              
- * License along with this library; if not, write to the Free Software           
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  
+ * AceQL HTTP: SQL Over HTTP
+ * Copyright (C) 2020,  KawanSoft SAS
+ * (http://www.kawansoft.com). All rights reserved.
+ *
+ * AceQL HTTP is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * AceQL HTTP is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
  * 02110-1301  USA
- * 
+ *
  * Any modifications to this file must keep this entire header
  * intact.
  */
@@ -52,8 +52,8 @@ import org.kawanfw.sql.servlet.sql.json_return.JsonUtil;
 import org.kawanfw.sql.util.FrameworkDebug;
 
 /**
- * 
- * Allows to display current JDBC pool status & info for each database.<br>
+ *
+ * Allows to display current JDBC pool status and info for each database.<br>
  * Includes 3 methods to modify the JDBC pools. <br>
  * <br>
  * Values are accessed using methods in
@@ -65,10 +65,9 @@ import org.kawanfw.sql.util.FrameworkDebug;
  * "https://tomcat.apache.org/tomcat-8.5-doc/api/org/apache/tomcat/jdbc/pool/DataSourceProxy.html"
  * >DataSourceProxy</a> for the meaning of the displayed values. <br>
  * <br>
- * 
+ *
  * It is also possible to interact with the pool and call three
  * {@code DataSource} set methods:
- * <p>
  * <ul>
  * <li>{@code DataSource.setMinIdle(int)}.</li>
  * <li>{@code DataSource.setMaxIdle(int)}.</li>
@@ -76,14 +75,14 @@ import org.kawanfw.sql.util.FrameworkDebug;
  * </ul>
  * <br>
  * To call the servlet from a browser, cURL or a program: <br>
- * 
+ *
  * {@code http(s)://host:port/default_pools_info?password=<password_value>} <br>
  * <br>
  * Where:<br>
  * password_value = value stored in
  * user.home/.kawansoft/default_pools_info_password.txt <br>
  * <br>
- * 
+ *
  * To modify the pool for a database:<br>
  * {@code http(s)://host:port/default_pools_info?password=<password_value>&database=database_name&set_method=int_value}
  * <br>
@@ -95,14 +94,14 @@ import org.kawanfw.sql.util.FrameworkDebug;
  * <li>set_method = setMinIdle or setMaxIdle or setMaxActive.</li>
  * <li>int_value= the number to pass to the set_method.</li>
  * </ul>
- * 
+ *
  * <br>
  * Note that You can create your own servlet if you want to develop you own
  * interaction with the JDBC pools.<br>
  * Just add you servlet name, class and url-pattern in the Servlets Section of
  * your aceql-server.properties file.<br>
  * <br>
- * 
+ *
  * @author Nicolas de Pomereu
  * @since 1.0
  * @see <a href=
@@ -111,14 +110,14 @@ import org.kawanfw.sql.util.FrameworkDebug;
 public class DefaultPoolsInfo extends HttpServlet {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 6129302507495768396L;
     private static boolean DEBUG = FrameworkDebug.isSet(DefaultPoolsInfo.class);
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.
      * HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
@@ -133,7 +132,7 @@ public class DefaultPoolsInfo extends HttpServlet {
      * Execute the client sent SQL request. Exception are trapped, cleanly
      * returned to client side and logged on DatabaseConfigurator.getLogger()
      * Logger.
-     * 
+     *
      * @param request
      *            the http request
      * @param response
@@ -162,7 +161,7 @@ public class DefaultPoolsInfo extends HttpServlet {
 
     /**
      * Execute the client request
-     * 
+     *
      * @param request
      *            the http request
      * @param response
@@ -257,7 +256,7 @@ public class DefaultPoolsInfo extends HttpServlet {
 	    DataSource datasource = dataSources.get(database);
 	    DataSourceProxy dataSourceProxy = (org.apache.tomcat.jdbc.pool.DataSource) datasource;
 
-	    if (setDatabase == null || setDatabase.equals(database)) { 
+	    if (setDatabase == null || setDatabase.equals(database)) {
 		String doSet = request.getParameter("setMinIdle");
 		if (doSet != null && !doSet.isEmpty()
 			&& StringUtils.isNumeric(doSet)) {
@@ -326,7 +325,7 @@ public class DefaultPoolsInfo extends HttpServlet {
 	out = response.getOutputStream();
 	String outString = writer.toString();
 	ServerSqlManager.writeLine(out, outString);
-	
+
     }
 
     /**

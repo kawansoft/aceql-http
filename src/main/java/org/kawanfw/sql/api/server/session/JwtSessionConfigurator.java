@@ -1,24 +1,24 @@
 /*
  * This file is part of AceQL HTTP.
- * AceQL HTTP: SQL Over HTTP                                     
- * Copyright (C) 2018, KawanSoft SAS
- * (http://www.kawansoft.com). All rights reserved.                                
- *                                                                               
- * AceQL HTTP is free software; you can redistribute it and/or                 
- * modify it under the terms of the GNU Lesser General Public                    
- * License as published by the Free Software Foundation; either                  
- * version 2.1 of the License, or (at your option) any later version.            
- *                                                                               
- * AceQL HTTP is distributed in the hope that it will be useful,               
- * but WITHOUT ANY WARRANTY; without even the implied warranty of                
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU             
- * Lesser General Public License for more details.                               
- *                                                                               
- * You should have received a copy of the GNU Lesser General Public              
- * License along with this library; if not, write to the Free Software           
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  
+ * AceQL HTTP: SQL Over HTTP
+ * Copyright (C) 2020,  KawanSoft SAS
+ * (http://www.kawansoft.com). All rights reserved.
+ *
+ * AceQL HTTP is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * AceQL HTTP is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
  * 02110-1301  USA
- * 
+ *
  * Any modifications to this file must keep this entire header
  * intact.
  */
@@ -52,7 +52,6 @@ import com.auth0.jwt.interfaces.DecodedJWT;
  * <a href="https://github.com/auth0/java-jwt">java-jwt</a> library. <br>
  * <br>
  * Note that:
- * <p>
  * <ul>
  * <li>A secret valued must be defined using the
  * {@code jwtSessionConfiguratorSecret} property in
@@ -60,14 +59,14 @@ import com.auth0.jwt.interfaces.DecodedJWT;
  * <li>The JWT lifetime value used is
  * {@link DefaultSessionConfigurator#getSessionTimelife()} value.
  * </ul>
- * 
+ *
  * @author Nicolas de Pomereu
  */
 public class JwtSessionConfigurator implements SessionConfigurator {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.kawanfw.sql.api.server.session.SessionConfigurator#generateSessionId(
      * java.lang.String, java.lang.String)
@@ -88,18 +87,18 @@ public class JwtSessionConfigurator implements SessionConfigurator {
 		    .withClaim("usr", username).withClaim("dbn", database)
 		    .sign(algorithm);
 	   */
-	    
+
 	    Builder builder = JWT.create();
 	    builder.withIssuedAt(new Date());
 	    builder.withClaim("usr", username);
 	    builder.withClaim("dbn", database);
 	    builder.withIssuedAt(new Date());
-	    
+
 	    if (getSessionTimelife() != 0) {
 		Date expiresAt = new Date(System.currentTimeMillis() + (getSessionTimelife() * 60 * 1000));
 		builder.withExpiresAt(expiresAt);
 	    }
-	    
+
 	    String token = builder.sign(algorithm);
 	    return token;
 
@@ -114,7 +113,7 @@ public class JwtSessionConfigurator implements SessionConfigurator {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.kawanfw.sql.api.server.session.SessionConfigurator#getUsername(java.
      * lang.String)
@@ -139,7 +138,7 @@ public class JwtSessionConfigurator implements SessionConfigurator {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.kawanfw.sql.api.server.session.SessionConfigurator#getDatabase(java.
      * lang.String)
@@ -164,7 +163,7 @@ public class JwtSessionConfigurator implements SessionConfigurator {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.kawanfw.sql.api.server.session.SessionConfigurator#getCreationTime(
      * java.lang.String)
@@ -184,7 +183,7 @@ public class JwtSessionConfigurator implements SessionConfigurator {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.kawanfw.sql.api.server.session.SessionConfigurator#remove(java.lang.
      * String)
@@ -196,7 +195,7 @@ public class JwtSessionConfigurator implements SessionConfigurator {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.kawanfw.sql.api.server.session.SessionConfigurator#verifySessionId(
      * java.lang.String)
@@ -242,7 +241,7 @@ public class JwtSessionConfigurator implements SessionConfigurator {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.kawanfw.sql.api.server.session.SessionConfigurator#getSessionTimelife
      * ()

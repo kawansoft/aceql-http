@@ -1,24 +1,24 @@
 /*
  * This file is part of AceQL HTTP.
- * AceQL HTTP: SQL Over HTTP                                     
- * Copyright (C) 2018, KawanSoft SAS
- * (http://www.kawansoft.com). All rights reserved.                                
- *                                                                               
- * AceQL HTTP is free software; you can redistribute it and/or                 
- * modify it under the terms of the GNU Lesser General Public                    
- * License as published by the Free Software Foundation; either                  
- * version 2.1 of the License, or (at your option) any later version.            
- *                                                                               
- * AceQL HTTP is distributed in the hope that it will be useful,               
- * but WITHOUT ANY WARRANTY; without even the implied warranty of                
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU             
- * Lesser General Public License for more details.                               
- *                                                                               
- * You should have received a copy of the GNU Lesser General Public              
- * License along with this library; if not, write to the Free Software           
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  
+ * AceQL HTTP: SQL Over HTTP
+ * Copyright (C) 2020,  KawanSoft SAS
+ * (http://www.kawansoft.com). All rights reserved.
+ *
+ * AceQL HTTP is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * AceQL HTTP is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
  * 02110-1301  USA
- * 
+ *
  * Any modifications to this file must keep this entire header
  * intact.
  */
@@ -40,13 +40,13 @@ import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 
 /**
- * 
+ *
  * This class provides static methods for SSH authentication to be used directly
  * in {@link DatabaseConfigurator#login(String, char[], String, String)}
  * implementations.
- * 
+ *
  * @see org.kawanfw.sql.api.server.SshAuthDatabaseConfigurator
- * 
+ *
  * @author Nicolas de Pomereu
  */
 public class Ssh {
@@ -58,7 +58,6 @@ public class Ssh {
 
     /**
      * Tries to open a SSH session on a host for authentication.
-     * <p>
      * <ul>
      * <li>If the {@code user.home/.kawansoft/sshAuth.properties} file exists:
      * <br>
@@ -75,22 +74,22 @@ public class Ssh {
      * <a href="http://www.jcraft.com/jsch/">JSch</a>. <br>
      * Note that there is no host key checking ({@code "StrictHostKeyChecking"}
      * is set to {@code "no"}).
-     * 
+     *
      * @param username
      *            the username sent by the client login
      * @param password
      *            the password to connect to the server
-     * 
+     *
      * @return <code>true</code> if the user is able to open a SSH session with
      *         the passed parameters
-     * 
+     *
      * @throws IOException
      *             if a {@code host} or {@code port} property can not be found
      *             in the {@code sshAuth.properties} or error reading property
      *             file or IP address of the host can not be accessed.
      * @throws NumberFormatException
      *             if the {@code port} property is no numeric
-     * 
+     *
      */
     public static boolean login(String username, char[] password)
 	    throws IOException, NumberFormatException {
@@ -144,7 +143,7 @@ public class Ssh {
      * <a href="http://www.jcraft.com/jsch/">JSch</a>. <br>
      * Note that there is no host key checking ( {@code "StrictHostKeyChecking"}
      * is set to {@code "no"}).
-     * 
+     *
      * @param host
      *            the host name or IP address of the SSH server
      * @param port
@@ -153,13 +152,13 @@ public class Ssh {
      *            the user name for authentication
      * @param password
      *            the password for authentication
-     * 
+     *
      * @return <code>true</code> if the user is able to open a SSH session with
      *         the passed parameters
-     * 
+     *
      * @throws IOException
      *             if <code>username</code> or <code>host</code> are invalid.
-     * 
+     *
      */
     public static boolean login(String host, int port, String username,
 	    char[] password) throws IOException {
@@ -193,7 +192,7 @@ public class Ssh {
 
     /**
      * Returns the computer IP address in 192.168.1.146 format.
-     * 
+     *
      * @return the name or <b><code>unknown_ip_address</code></b> if the IP
      *         address cannot be found
      */

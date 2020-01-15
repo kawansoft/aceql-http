@@ -1,10 +1,10 @@
-# AceQL HTTP v3.2.2 - September 16, 2019
+# AceQL HTTP v4.0 - January 15, 2020
 
 # API User Guide
 
 <img src="https://www.aceql.com/favicon.png" alt="AceQL HTTP Icon"/> 
 
- * [Using the API](#using-the-api)
+   * [Using the API](#using-the-api)
       * [Java, C#, Swift and Python SDK](#java-c-swift-and-python-sdk)
       * [Authentication &amp; session creation](#authentication--session-creation)
       * [AceQL Server responses](#aceql-server-responses)
@@ -39,7 +39,15 @@
          * [Server response to blob_download call](#server-response-to-blob_download-call)
          * [get_blob_length &amp; blob_download call – cURL examples](#get_blob_length--blob_download-call--curl-examples)
       * [get_connection](#get_connection)
-         * [Server response get_connection call](#server-response-get_connection-call)
+         * [Server response to get_connection call](#server-response-to-get_connection-call)
+      * [db_schema_download](#db_schema_download)
+         * [Server response to db_schema_download call](#server-response-to-db_schema_download-call)
+      * [get_db_metadata](#get_db_metadata)
+         * [Server response to get_db_metadata call](#server-response-to-get_db_metadata-call)
+      * [get_table_names](#get_table_names)
+         * [Server response to get_table_names call](#server-response-to-get_table_names-call)
+      * [get_table](#get_table)
+         * [Server response to get_table call](#server-response-to-get_table-call)
       * [close](#close)
       * [logout](#logout)
          * [Server response to logout call](#server-response-to-logout-call)
@@ -167,9 +175,9 @@ When an error occurs:
 
 Allows you to create a new session, authenticate on remote AceQL server, and connect to a remote SQL database.
 
-| URL  Format                                                 |
-| ----------------------------------------------------------- |
-| `server/aceql/database/{database}/username/{username}/login |
+| URL  Format                                                  |
+| ------------------------------------------------------------ |
+| `server/aceql/database/{database}/username/{username}/login` |
 
 Note that we will use two shortcuts through this User Guide in order to simplify the URL format:
 
@@ -929,7 +937,7 @@ Allows to open a new `java.sql.Connection` on the server without doing a new aut
 | ----------------- | --------- | ----------- |
 | none              |           |             |
 
-### Server response get_connection call
+### Server response to get_connection call
 
 If everything is OK:
 
@@ -953,6 +961,137 @@ In case of error:
 }
 
 ```
+
+## db_schema_download
+
+Downloads the database schema in HTML or text plain format. This API requires Java 8 or beyon on server side.
+
+| URL Format                                                   |
+| ------------------------------------------------------------ |
+| server/aceql/session/{session_id}/metadata_query/db_schema_download |
+
+| URL parameter | Description                               |
+| ------------- | ----------------------------------------- |
+| session_id    | The session_id value returned by `login`. |
+
+| Request parameter | Requested | Description                                                  |
+| ----------------- | --------- | ------------------------------------------------------------ |
+| format            | No        | The format of the downloaded stream. `html` or `text`. Defaults to `html`. |
+| table_name        | No        | if specified, the downloaded schema will contain only the table. |
+
+### Server response to db_schema_download call
+
+If everything is OK, a stream containing  the schema in HTML or text format is sent by the server.
+
+In case of error:
+
+```
+{  
+   "status":"FAIL",
+   "error_type":{error type numeric value},
+   "error_message":"{error message returned by the server}",
+   "http_status":{http status code numeric value}
+}
+
+```
+
+## get_db_metadata
+
+Retrieves the main values of the database's metadata as retrieved by the remote JDBC Driver.
+
+| URL Format                                                   |
+| ------------------------------------------------------------ |
+| server/aceql/session/{session_id}/metadata_query/get_db_metadata |
+
+| URL parameter | Description                               |
+| ------------- | ----------------------------------------- |
+| session_id    | The session_id value returned by `login`. |
+
+| Request parameter | Requested | Description |
+| ----------------- | --------- | ----------- |
+| none              |           |             |
+
+### Server response to get_db_metadata call
+
+If everything is OK, a  JSON structure with the main values of the database's metadata as retrieved by the remote JDBC Driver.
+
+In case of error:
+
+```
+{  
+   "status":"FAIL",
+   "error_type":{error type numeric value},
+   "error_message":"{error message returned by the server}",
+   "http_status":{http status code numeric value}
+}
+
+```
+
+## get_table_names
+
+Retrieves the table names of the remote database.
+
+| URL Format                                                   |
+| ------------------------------------------------------------ |
+| server/aceql/session/{session_id}/metadata_query/get_table_names |
+
+| URL parameter | Description                               |
+| ------------- | ----------------------------------------- |
+| session_id    | The session_id value returned by `login`. |
+
+| Request parameter | Requested | Description                                   |
+| ----------------- | --------- | --------------------------------------------- |
+| table_type        | No        | The table type to select (`TABLE` or `VIEW)`. |
+
+### Server response to get_table_names call
+
+If everything is OK, a JSON structure that contains the table names of the remote database.
+
+In case of error:
+
+```
+{  
+   "status":"FAIL",
+   "error_type":{error type numeric value},
+   "error_message":"{error message returned by the server}",
+   "http_status":{http status code numeric value}
+}
+
+```
+
+## get_table
+
+Retrieves the details of a table of the remote database.
+
+| URL Format                                                 |
+| ---------------------------------------------------------- |
+| server/aceql/session/{session_id}/metadata_query/get_table |
+
+| URL parameter | Description                               |
+| ------------- | ----------------------------------------- |
+| session_id    | The session_id value returned by `login`. |
+
+| Request parameter | Requested | Description                        |
+| ----------------- | --------- | ---------------------------------- |
+| table_name        | No        | The name of the table to retrieve. |
+
+### Server response to get_table call
+
+If everything is OK, a JSON structure that contains the table details. The naming conventions are those used in JDBC.
+
+In case of error:
+
+```
+{  
+   "status":"FAIL",
+   "error_type":{error type numeric value},
+   "error_message":"{error message returned by the server}",
+   "http_status":{http status code numeric value}
+}
+
+```
+
+## 
 
 ## close
 

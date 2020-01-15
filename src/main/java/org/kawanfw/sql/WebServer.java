@@ -1,24 +1,24 @@
 /*
  * This file is part of AceQL HTTP.
- * AceQL HTTP: SQL Over HTTP                                     
- * Copyright (C) 2018, KawanSoft SAS
- * (http://www.kawansoft.com). All rights reserved.                                
- *                                                                               
- * AceQL HTTP is free software; you can redistribute it and/or                 
- * modify it under the terms of the GNU Lesser General Public                    
- * License as published by the Free Software Foundation; either                  
- * version 2.1 of the License, or (at your option) any later version.            
- *                                                                               
- * AceQL HTTP is distributed in the hope that it will be useful,               
- * but WITHOUT ANY WARRANTY; without even the implied warranty of                
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU             
- * Lesser General Public License for more details.                               
- *                                                                               
- * You should have received a copy of the GNU Lesser General Public              
- * License along with this library; if not, write to the Free Software           
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  
+ * AceQL HTTP: SQL Over HTTP
+ * Copyright (C) 2020,  KawanSoft SAS
+ * (http://www.kawansoft.com). All rights reserved.
+ *
+ * AceQL HTTP is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * AceQL HTTP is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
  * 02110-1301  USA
- * 
+ *
  * Any modifications to this file must keep this entire header
  * intact.
  */
@@ -46,11 +46,11 @@ import org.kawanfw.sql.util.SqlTag;
 import org.kawanfw.sql.version.Version;
 
 /**
- * 
- * AceQL Web Server start & stop with command line.
- * 
+ *
+ * AceQL Web Server start and stop with command line.
+ *
  * @author Nicolas de Pomereu
- * 
+ *
  */
 @SuppressWarnings("deprecation")
 public class WebServer {
@@ -69,7 +69,7 @@ public class WebServer {
 
     /**
      * Prints usage
-     * 
+     *
      * @param options
      *            the CLI Options
      */
@@ -98,7 +98,7 @@ public class WebServer {
 
     /**
      * Create the CLI Options
-     * 
+     *
      * @return the CLI Options
      * @throws IllegalArgumentException
      */
@@ -151,10 +151,10 @@ public class WebServer {
 
     /**
      * Starts or stops the AceQL Web Server.
-     * 
+     *
      * @param args
      *            the arguments of Web Server start/stop.
-     * 
+     *
      * @throws ParseException
      *             if any Exception when parsing command line
      * @throws IOException
@@ -330,7 +330,7 @@ public class WebServer {
     /**
      * if ACEQL_HOME is set by calling script, we have a default properties
      * files
-     * 
+     *
      * @return ACEQL_HOME/conf/aceql-server.properties if ACEQL_HOME env var is
      *         set, else null
      */
@@ -358,7 +358,7 @@ public class WebServer {
 
     /**
      * Displays the error message and exit Java
-     * 
+     *
      * @param message
      *            The message to display before exit
      * @param options

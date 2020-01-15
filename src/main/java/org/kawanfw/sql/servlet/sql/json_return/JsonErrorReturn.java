@@ -1,24 +1,24 @@
 /*
  * This file is part of AceQL HTTP.
- * AceQL HTTP: SQL Over HTTP                                     
- * Copyright (C) 2018, KawanSoft SAS
- * (http://www.kawansoft.com). All rights reserved.                                
- *                                                                               
- * AceQL HTTP is free software; you can redistribute it and/or                 
- * modify it under the terms of the GNU Lesser General Public                    
- * License as published by the Free Software Foundation; either                  
- * version 2.1 of the License, or (at your option) any later version.            
- *                                                                               
- * AceQL HTTP is distributed in the hope that it will be useful,               
- * but WITHOUT ANY WARRANTY; without even the implied warranty of                
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU             
- * Lesser General Public License for more details.                               
- *                                                                               
- * You should have received a copy of the GNU Lesser General Public              
- * License along with this library; if not, write to the Free Software           
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  
+ * AceQL HTTP: SQL Over HTTP
+ * Copyright (C) 2020,  KawanSoft SAS
+ * (http://www.kawansoft.com). All rights reserved.
+ *
+ * AceQL HTTP is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * AceQL HTTP is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
  * 02110-1301  USA
- * 
+ *
  * Any modifications to this file must keep this entire header
  * intact.
  */
@@ -52,13 +52,20 @@ public class JsonErrorReturn {
     public static final String UNKNOWN_SQL_ACTION = "Unknown SQL action or not supported by software";
     public static final String NO_DATASOURCES_DEFINED = "No databases have been defined in \"Tomcat JDBC Connection Pool Section\" in properties file.";
     public static final String UNKNOWN_SERVLET = "This servlet is unknown and has not been declared in properties file: ";
-    public static final String PLEASE_UPDATE_CLIENT_SDK = "This HTTP AceQL server version (" 
+    public static final String PLEASE_UPDATE_CLIENT_SDK = "This HTTP AceQL server version ("
     + VersionValues.VERSION + ") is not compatible with Client SDK. Please upgrade Client SDK.";
+    public static final String INVALID_OUTPUT_FORMAT = "The output format is invalid. Should be \"html\" or \"text\".";
+    public static final String INVALID_TABLE_NAME = "SQL table not found in database.";
+
 
     public static final int ERROR_JDBC_ERROR = 1;
     public static final int ERROR_ACEQL_ERROR = 2;
     public static final int ERROR_ACEQL_UNAUTHORIZED = 3;
     public static final int ERROR_ACEQL_FAILURE = 4;
+
+
+
+
 
 
 
@@ -75,13 +82,13 @@ public class JsonErrorReturn {
 
     /**
      * Constructor
-     * 
+     *
      * @param response
      *            the servlet response
      * @param httpStatus
      *            the http response httpStatus
-     * @param errorType
-     * @param errorMessage
+     * @param errorType	the type of the error
+     * @param errorMessage	the detailled text error message
      */
     public JsonErrorReturn(HttpServletResponse response, int httpStatus,
 	    int errorType, String errorMessage) {
@@ -96,7 +103,7 @@ public class JsonErrorReturn {
 
     /**
      * Constructor
-     * 
+     *
      * @param response
      * @param httpStatus
      *            http response httpStatus
@@ -117,7 +124,7 @@ public class JsonErrorReturn {
 
     /**
      * Builds the error message
-     * 
+     *
      * @return the error message
      */
     public String build() {
@@ -158,7 +165,7 @@ public class JsonErrorReturn {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.lang.Object#toString()
      */
     @Override

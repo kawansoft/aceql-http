@@ -1,24 +1,24 @@
 /*
  * This file is part of AceQL HTTP.
- * AceQL HTTP: SQL Over HTTP                                     
- * Copyright (C) 2018, KawanSoft SAS
- * (http://www.kawansoft.com). All rights reserved.                                
- *                                                                               
- * AceQL HTTP is free software; you can redistribute it and/or                 
- * modify it under the terms of the GNU Lesser General Public                    
- * License as published by the Free Software Foundation; either                  
- * version 2.1 of the License, or (at your option) any later version.            
- *                                                                               
- * AceQL HTTP is distributed in the hope that it will be useful,               
- * but WITHOUT ANY WARRANTY; without even the implied warranty of                
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU             
- * Lesser General Public License for more details.                               
- *                                                                               
- * You should have received a copy of the GNU Lesser General Public              
- * License along with this library; if not, write to the Free Software           
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  
+ * AceQL HTTP: SQL Over HTTP
+ * Copyright (C) 2020,  KawanSoft SAS
+ * (http://www.kawansoft.com). All rights reserved.
+ *
+ * AceQL HTTP is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * AceQL HTTP is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
  * 02110-1301  USA
- * 
+ *
  * Any modifications to this file must keep this entire header
  * intact.
  */
@@ -28,7 +28,6 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.FileHandler;
@@ -54,13 +53,13 @@ import org.kawanfw.sql.util.Tag;
  * releases it into the pool.</li>
  * </ul>
  * <p>
- * <b><font color="red">WARNING</b></font>: This default implementation will
+ * <b>WARNING</b>: This default implementation will
  * allow to start immediate remote SQL calls but is <b>*not*</b> at all secured.
  * <br>
- * <b>It is highly recommended to override this class with your own secured
+ * <b>It is highly recommended to override this class with a secured
  * implementation for the other methods.</b>
  * <p>
- * 
+ *
  * @author Nicolas de Pomereu
  */
 public class DefaultDatabaseConfigurator implements DatabaseConfigurator {
@@ -95,11 +94,11 @@ public class DefaultDatabaseConfigurator implements DatabaseConfigurator {
      * the {@code Connection} is extracted from the {@code DataSource} created
      * by the embedded Tomcat JDBC Pool. The JDBC parameters used to create the
      * {@code DataSource} are defined in the properties file passed at start-up
-     * of AceQL.</li>
-     * 
+     * of AceQL.
+     *
      * @param database
      *            the database name to extract the {@code Connection} for.
-     * 
+     *
      * @return the {@code Connection} extracted from Tomcat JDBC Connection
      *         Pool.
      */
@@ -140,41 +139,6 @@ public class DefaultDatabaseConfigurator implements DatabaseConfigurator {
 	return connection;
     }
 
-    /**
-     * @return <code><b>true</b></code>. (Client programs will be allowed to
-     *         call a database update statement.)
-     */
-    @Override
-    public boolean allowExecuteUpdate(String username, Connection connection)
-	    throws IOException, SQLException {
-
-	return true;
-    }
-
-    /**
-     * @return <code><b>true</b></code>. (Client programs will be allowed to
-     *         create raw <code>Statement</code>, i.e. call statements without
-     *         parameters.)
-     */
-    @Override
-    public boolean allowStatementClass(String username, Connection connection)
-	    throws IOException, SQLException {
-
-	return true;
-    }
-
-    /**
-     * @return <code><b>true</b></code>. No analysis is done so all SQL
-     *         statements are authorized.
-     */
-    @Override
-    public boolean allowSqlRunAfterAnalysis(String username,
-	    Connection connection, String ipAddress, String sql,
-	    boolean isPreparedStatement, List<Object> parameterValues)
-	    throws IOException, SQLException {
-
-	return true;
-    }
 
     /**
      * Closes the connection acquired by
@@ -199,21 +163,6 @@ public class DefaultDatabaseConfigurator implements DatabaseConfigurator {
 	    }
 	}
 
-    }
-
-    /**
-     * A warning with all parameters is logged on {@code Logger} retrieved with
-     * {@link #getLogger()}.
-     */
-    @Override
-    public void runIfStatementRefused(String username, Connection connection,
-	    String ipAddress, String sql, List<Object> parameterValues)
-	    throws IOException, SQLException {
-
-	String logInfo = "Client " + username + " (IP: " + ipAddress
-		+ ") has been denied executing sql statement: " + sql.trim()
-		+ " with parameters: " + parameterValues;
-	getLogger().log(Level.WARNING, logInfo);
     }
 
     /**
@@ -243,7 +192,7 @@ public class DefaultDatabaseConfigurator implements DatabaseConfigurator {
 
     /**
      * Creates a static {@code Logger} instance.
-     * 
+     *
      * @return a static {@code Logger} with properties:
      *         <ul>
      *         <li>Name: {@code "DefaultDatabaseConfigurator"}.</li>

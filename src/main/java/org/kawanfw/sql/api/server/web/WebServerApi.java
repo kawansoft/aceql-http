@@ -1,24 +1,24 @@
 /*
  * This file is part of AceQL HTTP.
- * AceQL HTTP: SQL Over HTTP                                     
- * Copyright (C) 2018, KawanSoft SAS
- * (http://www.kawansoft.com). All rights reserved.                                
- *                                                                               
- * AceQL HTTP is free software; you can redistribute it and/or                 
- * modify it under the terms of the GNU Lesser General Public                    
- * License as published by the Free Software Foundation; either                  
- * version 2.1 of the License, or (at your option) any later version.            
- *                                                                               
- * AceQL HTTP is distributed in the hope that it will be useful,               
- * but WITHOUT ANY WARRANTY; without even the implied warranty of                
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU             
- * Lesser General Public License for more details.                               
- *                                                                               
- * You should have received a copy of the GNU Lesser General Public              
- * License along with this library; if not, write to the Free Software           
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  
+ * AceQL HTTP: SQL Over HTTP
+ * Copyright (C) 2020,  KawanSoft SAS
+ * (http://www.kawansoft.com). All rights reserved.
+ *
+ * AceQL HTTP is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * AceQL HTTP is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
  * 02110-1301  USA
- * 
+ *
  * Any modifications to this file must keep this entire header
  * intact.
  */
@@ -39,16 +39,15 @@ import org.kawanfw.sql.util.SqlTag;
 import org.kawanfw.sql.version.Version;
 
 /**
- * 
- * APIs to start & stop the embedded Web Server from a Java program. <br>
+ *
+ * APIs to start and stop the embedded Web Server from a Java program. <br>
  * <br>
- * Note that the {@code org.kawanfw.sql.WebServer} class is used to start & stop
+ * Note that the {@code org.kawanfw.sql.WebServer} class is used to start and stop
  * the embedded Web Server from command line and uses the APIs of this class.
- * Source code is available here:&nbsp; <a href=
- * "http://www.aceql.com/rest/soft/1.0/src/WebServer.java">WebServer.java</a>.
- * 
+ * Source code is available here:&nbsp; <a href="http://www.aceql.com/rest/soft/1.0/src/WebServer.java">WebServer.java</a>.
+ *
  * @author Nicolas de Pomereu
- * 
+ *
  */
 public class WebServerApi {
 
@@ -69,14 +68,14 @@ public class WebServerApi {
 
 	/**
 	 * Starts the embedded Web Server.
-	 * 
+	 *
 	 * @param host
 	 *            the host of the Web Server
 	 * @param port
 	 *            the port of the Web Server
 	 * @param propertiesFile
 	 *            properties file to use for configuration of the Web Server
-	 * 
+	 *
 	 * @throws ConnectException
 	 *             if the port is not available
 	 * @throws IOException
@@ -142,12 +141,12 @@ public class WebServerApi {
 	/**
 	 * Starts the embedded Web Server on the default port
 	 * {@link WebServerApi#DEFAULT_PORT}.
-	 * 
+	 *
 	 * @param host
 	 *            the host of the Web Server
 	 * @param propertiesFile
 	 *            properties file to use for configuration of the Web Server
-	 * 
+	 *
 	 * @throws ConnectException
 	 *             if the default port is not available
 	 * @throws IOException
@@ -166,7 +165,7 @@ public class WebServerApi {
 	/**
 	 * Stops the embedded Web server running on the default port
 	 * {@link WebServerApi#DEFAULT_PORT}.
-	 * 
+	 *
 	 * @throws IOException
 	 *             if the semaphore file (that signals to the SQL Web Server to
 	 *             stop) can not be created
@@ -178,10 +177,10 @@ public class WebServerApi {
 
 	/**
 	 * Stops the embedded Web server running on the designated port.
-	 * 
+	 *
 	 * @param port
 	 *            the port on which the SQL Web server is running
-	 * 
+	 *
 	 * @throws IOException
 	 *             if the semaphore file (that signals to the Web Server to stop)
 	 *             can not be created
