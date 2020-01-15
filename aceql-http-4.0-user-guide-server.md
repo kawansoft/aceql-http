@@ -1172,8 +1172,6 @@ If you want to ensure that temporary files will be cleaned, you can access the t
 
 1. The uploaded/downloaded Blob or Clob files are located in the directory defined by `DatabaseConfigurator.getBlobsDirectory()`. Default `DefaultDatabaseConfigurator.getBlobsDirectory()` implementation stores the Blob/Clob files in `user.home/.aceql-server-root/username`.
 
-
-
 Where:
 
 -   `user.home` =  the user.home of the user that started the AceQL Web Server.
