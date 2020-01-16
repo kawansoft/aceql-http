@@ -773,7 +773,7 @@ Please check the Javadoc of [DatabaseConfigurator](http://www.aceql.com/rest/sof
 
 ## Coding SQL Firewall Rulesets
 
-The [SqlFirewallManager](http://www.aceql.com/rest/soft/4.0/javadoc/org/kawanfw/sql/api/server/firewal/SqlFirewallManager.html) interface allows you to define the SQL Security settings: 
+The [SqlFirewallManager](http://www.aceql.com/rest/soft/4.0/javadoc/org/kawanfw/sql/api/server/firewall/SqlFirewallManager.html) interface allows you to define the SQL Security settings: 
 
 
 - Define if a client user has the right to call a `Statement.executeUpdate()` (i.e. call a statement that updates the database).
