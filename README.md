@@ -556,10 +556,10 @@ From now on, you can read the [C# Client SDK User Guide](https://www.aceql.com/D
    ```xml
    <groupId>com.aceql</groupId>
    <artifactId>aceql-http-client-sdk</artifactId>
-   <version>3.0</version>
+   <version>4.0</version>
    ```
 
-2. If you don’t use Maven: the [aceql-http-client-all-3.0.jar](https://www.aceql.com/SoftwareDownload?software=aceql-http-client-sdk-all-3.0.jar&version=3.1) file contains the SDK with all dependencies.
+2. If you don’t use Maven: the [aceql-http-client-all-4.0.jar](https://www.aceql.com/SoftwareDownload?software=aceql-http-client-sdk-all-4.0.jar&version=4) file contains the SDK with all dependencies.
 
 3. Create an `org.kawanfw.sql.api.client.quickstart` package in your IDE.
 
@@ -677,7 +677,7 @@ From now on, you can read the [Java Client SDK User Guide](https://www.aceql.com
 
 ## Python Client SDK
 
-The aceql module supports Python 2.6–2.7 & 3.4–3.7. 
+The aceql module supports Python 2.6–2.7 & 3.4–3.8. 
 
 1. Create a new project with your favorite IDE. 
 2. Install aceql module:
