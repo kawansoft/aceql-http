@@ -143,6 +143,5 @@
 AceQL HTTP is provided with four client SDK:
 - The AceQL C# Client SDK allows to wrap the HTTP APIs using Microsoft SQL Server like calls in their code, just like they would for a local database.
 - The AceQL Java Client SDK allows to wrap the HTTP APIs using JDBC calls in their code, just like they would for a local database.
-- The AceQL Python Client SDK allows SQL calls to be encoded with standard unmodified DB-API 2.0 syntax 
-- The AceQL Swift Client SDK allows SQL calls to be encoded with SQLite.swift like syntax.</description>
+- The AceQL Python Client SDK allows SQL calls to be encoded with standard unmodified DB-API 2.0 syntax </description>
 </project>
