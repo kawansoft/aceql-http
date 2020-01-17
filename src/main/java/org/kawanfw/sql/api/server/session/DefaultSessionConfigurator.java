@@ -47,7 +47,7 @@ import org.apache.commons.lang3.SystemUtils;
  * {@code SessionConfigurator} implementation. <br>
  * Do it if you want to implement you own session mechanism and/or want to
  * manage how session info are stored.<br>
- * <br>Note that {@code getSessionTimelife()} returns 0 and that sessions never expire.s
+ * <br>Note that {@code getSessionTimelife()} returns 0 and that sessions never expires.
  * <br>Extend this class and override {@code getSessionTimelife()} if you want to define expirable sessions.
  *
  * @author Nicolas de Pomereu

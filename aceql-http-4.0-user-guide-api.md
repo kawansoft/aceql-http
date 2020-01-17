@@ -5,7 +5,7 @@
 <img src="https://www.aceql.com/favicon.png" alt="AceQL HTTP Icon"/> 
 
    * [Using the API](#using-the-api)
-      * [Java, C#, Swift and Python SDK](#java-c-swift-and-python-sdk)
+      * [C#, Java and Python SDK](#c-java-and-python-sdk)
       * [Authentication &amp; session creation](#authentication--session-creation)
       * [AceQL Server responses](#aceql-server-responses)
       * [JSON error format](#json-error-format)
@@ -60,7 +60,7 @@ The Server operation is described in [Server Installation and Configuration Guid
 
 This document describes all AceQL URLs to use in your HTTP calls. It also contains easy to copy and paste examples in cURL.
 
-## Java, C#, Swift and Python SDK
+## C#, Java and Python SDK
 
 AceQL HTTP includes a C#, a Java and a Python SDK that wrap the API and eliminate the tedious works of handling communications errors and parsing JSON results:
 
