@@ -963,7 +963,7 @@ In case of error:
 
 ## db_schema_download
 
-Downloads the database schema in HTML or text plain format. This API requires Java 8 or beyon on server side.
+Downloads the database schema in HTML or text plain format. 
 
 | URL Format                                                   |
 | ------------------------------------------------------------ |
