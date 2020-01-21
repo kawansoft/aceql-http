@@ -4,7 +4,8 @@
 
 <img src="https://www.aceql.com/favicon.png" alt="AceQL HTTP Icon"/> 
 
- * [Fundamentals](#fundamentals)
+
+   * [Fundamentals](#fundamentals)
       * [Overview](#overview)
       * [Technical operating environment](#technical-operating-environment)
    * [Download &amp; Installation](#download--installation)
@@ -46,14 +47,14 @@
          * [Extracting a Connection from your connection pool system](#extracting-a-connection-from-your-connection-pool-system)
          * [Login method - authenticating the client username and password](#login-method---authenticating-the-client-username-and-password)
       * [Coding SQL Firewall Rulesets](#coding-sql-firewall-rulesets)
-            * [The SqlFirewallManager interface SQL security methods](#the-sqlfirewallmanager-interface-sql-security-methods)
+         * [The SqlFirewallManager interface SQL security methods](#the-sqlfirewallmanager-interface-sql-security-methods)
          * [Passing concrete SqlFirewallManager classes](#passing-concrete-sqlfirewallmanager-classes)
          * [Chaining SqlFirewallManager  classes](#chaining-sqlfirewallmanager--classes)
    * [Session management and security](#session-management-and-security)
       * [SessionConfigurator interface](#sessionconfigurator-interface)
       * [Session management default implementation](#session-management-default-implementation)
       * [Session management using JWT](#session-management-using-jwt)
-            * [Activating JwtSessionConfigurator](#activating-jwtsessionconfigurator)
+         * [Activating JwtSessionConfigurator](#activating-jwtsessionconfigurator)
          * [Creating your own session management](#creating-your-own-session-management)
       * [Interacting with the JDBC Pool at runtime](#interacting-with-the-jdbc-pool-at-runtime)
    * [State management / Stateful Mode](#state-management--stateful-mode)
@@ -62,6 +63,8 @@
          * [Transport format](#transport-format)
          * [Content streaming and memory management](#content-streaming-and-memory-management)
       * [Managing temporary files](#managing-temporary-files)
+
+
 
 
 # Fundamentals
