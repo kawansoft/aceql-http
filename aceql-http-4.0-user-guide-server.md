@@ -77,7 +77,7 @@ For example, a select command would be called from the client side using this ht
 
 ```bash
 $ curl --data-urlencode \
- "sql=select customer_id, customer_title, lname from customer where customer_id = 1" \
+ "sql=select id, title, lname from customer where customer_id = 1" \
  https://www.acme.com:9443/aceql/session/mn7andp2tt049iaeaskr28j9ch/execute_query
 ```
 

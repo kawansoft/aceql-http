@@ -4,6 +4,7 @@
 
 <img src="https://www.aceql.com/favicon.png" alt="AceQ HTTP Icon"/>
 
+   * [Overview](#overview)
    * [Server Side Settings](#server-side-settings)
       * [Create the kawansoft_example database](#create-the-kawansoft_example-database)
       * [Linux/Unix Installation &amp; Server Startup](#linuxunix-installation--server-startup)
@@ -24,6 +25,78 @@
       * [Python Client SDK](#python-client-sdk)
    * [From now on…](#from-now-on)
 
+# Overview
+
+AceQL HTTP is a library of REST like APIs that allows you access to remote SQL databases over HTTP from any device that supports HTTP. This software has been designed to handle heavy traffic in production environments.
+
+For example, a select command would be called from the client side using this http call with cURL:
+
+```bash
+$ curl --data-urlencode \
+ "sql=select id, title, lname from customer where customer_id = 1" \
+ https://www.acme.com:9443/aceql/session/mn7andp2tt049iaeaskr28j9ch/execute_query
+```
+
+AceQL HTTP is authorized through an Open Source license: [AceQL Open Source License (LGPL v2.1)](http://www.aceql.com/rest/soft/licensing/AceQLOpenSourceLicense.txt).
+
+ The AceQL HTTP framework consists of:
+
+- The AceQL Web Server.
+
+- User  Configuration classes injected at runtime, called "Configurators" in this document. These are server classes that ensure both security and configuration.
+
+- The AceQL Client SDKs for [C#](https://github.com/kawansoft/AceQL.Client) ,  [Java](https://github.com/kawansoft/aceql-http-client-sdk) and [Python](https://github.com/kawansoft/aceql-http-client-python) that allow you to wrap AceQL HTTP API calls using fluent code: 
+
+  - ```C#
+    // C# AceQL Client Calls Sample 
+    string sql = "select id, title, lname from customer where customer_id = 1";
+    
+    using (AceQLCommand command = new AceQLCommand(sql, connection))
+    using (AceQLDataReader dataReader = await command.ExecuteReaderAsync())
+    {
+        while (dataReader.Read())
+        {
+            Console.WriteLine();
+            int i = 0;
+            Console.WriteLine("customer id   : " + dataReader.GetValue(i++));
+            Console.WriteLine("customer title: " + dataReader.GetValue(i++));
+            Console.WriteLine("customer name : " + dataReader.GetValue(i++));
+        }
+    } 
+    ```
+
+  - ```java 
+    // Java AceQL Client Calls Sample 
+    String sql = "select id, title, lname from customer where customer_id = 1";
+    
+    try (Statement statement = connection.createStatement();
+        ResultSet rs = statement.executeQuery(sql);) {
+        while (rs.next()) {
+    
+        System.out.println();
+        int i = 1;
+        System.out.println("customer id   : " + rs.getInt(i++));
+        System.out.println("customer title: " + rs.getString(i++));
+        System.out.println("customer name : " + rs.getString(i++));
+        }
+    }
+    ```
+
+  - ```python
+    # Python AceQL Client Calls Sample 
+    with closing(connection.cursor()) as cursor:
+        sql = "select id, title, lname from customer where customer_id = 1";
+        cursor.execute(sql)
+        rows = cursor.fetchall()
+    
+        for row in rows:
+            print("customer id   : " + str(row[0]))
+            print("customer title: " + row[1])
+            print("customer name : " + row[2])
+    ```
+
+
+The execution of each AceQL HTTP API statement is conditioned by optional rules, defined in configuration classes called "Configurators."
 
 # Server Side Settings
 
