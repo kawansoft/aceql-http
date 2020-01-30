@@ -30,7 +30,7 @@ public class JSQLParserTest {
      */
     public static void main(String[] args) throws Exception {
 
-	Statement statement = CCJSqlParserUtil.parse("DROP TABLE CUSTOMER");
+	Statement statement = CCJSqlParserUtil.parse("SELECT * from public.CUSTOMER");
 	TablesNamesFinder tablesNamesFinder = new TablesNamesFinder();
 	List<String> tableList = tablesNamesFinder.getTableList(statement);
 	System.out.println(tableList);
