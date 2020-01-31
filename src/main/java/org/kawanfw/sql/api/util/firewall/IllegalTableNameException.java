@@ -8,7 +8,7 @@ public class IllegalTableNameException extends IllegalArgumentException {
     private int lineNumber = -1;
 
     public IllegalTableNameException(String table, int lineNumber) {
-	super(table + " Line: "+ lineNumber);
+	super("table " + table + " name does no exists in database on line "+ lineNumber);
 	this.table = table;
 	this.lineNumber = lineNumber;
     }

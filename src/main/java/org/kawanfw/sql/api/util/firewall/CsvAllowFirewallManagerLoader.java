@@ -5,9 +5,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 /**
  * Loads all the rules contained in a CSV structured like:
@@ -21,6 +22,10 @@ username;table;delete;insert;select;update
  * @author Nicolas de Pomereu
  *
  */
+/**
+ * @author Nicolas de Pomereu
+ *
+ */
 public class CsvAllowFirewallManagerLoader {
 
     private File file = null;
@@ -28,8 +33,8 @@ public class CsvAllowFirewallManagerLoader {
     /** The tables of the current database */
     private Set<String> tableSet = null;
 
-    /** the Map of (username, TableAllowStatements) */
-    private Map<String, TableAllowStatements> mapTableAllowStatementsPerUser = new HashMap<>();
+    /** the Set of TableAllowStatements) */
+    private Set<TableAllowStatements> tableAllowStatementsSet = new HashSet<>();
 
     /**
      * Constructor.
@@ -68,22 +73,25 @@ public class CsvAllowFirewallManagerLoader {
 	checkFileIntegrity();
 
 	try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file));) {
+	    bufferedReader.readLine(); // Read first line
 	    String line = null;
 	    while ((line = bufferedReader.readLine()) != null) {
 		TableAllowStatements tableAllowStatements = tableAllowStatementsBuild(line);
-		mapTableAllowStatementsPerUser.put(tableAllowStatements.getUsername(), tableAllowStatements);
+		tableAllowStatementsSet.add(tableAllowStatements);
 	    }
 	}
     }
 
     private TableAllowStatements tableAllowStatementsBuild(String line) {
 	String[] elements = line.split(";");
-	String username = elements[0];
-	String table = elements[1];
-	boolean allowDelete = Boolean.parseBoolean(elements[2]);
-	boolean allowInsert = Boolean.parseBoolean(elements[3]);
-	boolean allowSelect = Boolean.parseBoolean(elements[4]);
-	boolean allowUpdate = Boolean.parseBoolean(elements[5]);
+
+	int i = 0;
+	String username = elements[i++];
+	String table = elements[i++];
+	boolean allowDelete = Boolean.parseBoolean(elements[i++]);
+	boolean allowInsert = Boolean.parseBoolean(elements[i++]);
+	boolean allowSelect = Boolean.parseBoolean(elements[i++]);
+	boolean allowUpdate = Boolean.parseBoolean(elements[i++]);
 
 	TableAllowStatements tableAllowStatements = new TableAllowStatements(username, table, allowDelete, allowInsert,
 		allowSelect, allowUpdate);
@@ -122,27 +130,29 @@ public class CsvAllowFirewallManagerLoader {
 
 	// Double check...
 	if (elements.length != 6) {
-	    throw new IllegalFirstLineException("There must be 6 column names in CSV file header. Header is: " + line);
+	    throw new IllegalFirstLineException(
+		    "There must be 6 column names in CSV file header line. Incorrect header line: " + line);
 	}
 
-	String table = elements[1].toLowerCase();
+	int i = 1;
+	String table = elements[i++].toLowerCase();
 	if (!tableSet.contains(table)) {
 	    throw new IllegalTableNameException(table, lineNumber);
 	}
 
-	if (!isStrictBooleanValue(elements[2].toLowerCase())) {
+	if (!isStrictBooleanValue(elements[i++].toLowerCase())) {
 	    throw new IllegalStatementAllowBooleanValue("delete", lineNumber);
 	}
 
-	if (!isStrictBooleanValue(elements[3].toLowerCase())) {
+	if (!isStrictBooleanValue(elements[i++].toLowerCase())) {
 	    throw new IllegalStatementAllowBooleanValue("insert", lineNumber);
 	}
 
-	if (!isStrictBooleanValue(elements[4].toLowerCase())) {
+	if (!isStrictBooleanValue(elements[i++].toLowerCase())) {
 	    throw new IllegalStatementAllowBooleanValue("select", lineNumber);
 	}
 
-	if (!isStrictBooleanValue(elements[5].toLowerCase())) {
+	if (!isStrictBooleanValue(elements[i++].toLowerCase())) {
 	    throw new IllegalStatementAllowBooleanValue("update", lineNumber);
 	}
     }
@@ -168,35 +178,90 @@ public class CsvAllowFirewallManagerLoader {
 	String[] elements = line.split(";");
 
 	if (elements.length != 6) {
-	    throw new IllegalFirstLineException("There must be 6 column names in CSV file header. Header is: " + line);
+	    throw new IllegalFirstLineException(
+		    "There must be 6 column names in CSV file header line. Incorrect header line: " + line);
 	}
 
-	String username = elements[0];
-	String table = elements[1];
-	String delete = elements[2];
-	String insert = elements[3];
-	String select = elements[4];
-	String update = elements[5];
+	int i = 0;
+	String username = elements[i++];
+	String table = elements[i++];
+	String delete = elements[i++];
+	String insert = elements[i++];
+	String select = elements[i++];
+	String update = elements[i++];
 
-	if (username.contentEquals("username")) {
-	    throw new IllegalFirstLineException("Missing \"username\" header.");
+	if (!username.equals("username")) {
+	    throw new IllegalFirstLineException("Missing \"username\" first column on first line.");
 	}
-	if (table.contentEquals("table")) {
-	    throw new IllegalFirstLineException("Missing \"table\" header.");
+	if (!table.equals("table")) {
+	    throw new IllegalFirstLineException("Missing \"table\" second column on first line.");
 	}
-	if (delete.contentEquals("delete")) {
-	    throw new IllegalFirstLineException("Missing \"delete\" header.");
+	if (!delete.equals("delete")) {
+	    throw new IllegalFirstLineException("Missing \"delete\" third column on first line.");
 	}
-	if (insert.contentEquals("insert")) {
-	    throw new IllegalFirstLineException("Missing \"insert\" header.");
+	if (!insert.equals("insert")) {
+	    throw new IllegalFirstLineException("Missing \"insert\" fourth column on first line.");
 	}
-	if (select.contentEquals("select")) {
-	    throw new IllegalFirstLineException("Missing \"select\" header.");
+	if (!select.equals("select")) {
+	    throw new IllegalFirstLineException("Missing \"select\" fifth column on first line.");
 	}
-	if (update.contentEquals("update")) {
-	    throw new IllegalFirstLineException("Missing \"update\" header.");
+	if (!update.equals("update")) {
+	    throw new IllegalFirstLineException("Missing \"update\" sixth column on first line.");
+	}
+    }
+
+
+
+    public Set<TableAllowStatements> getTableAllowStatementsSet() {
+        return tableAllowStatementsSet;
+    }
+
+    public void setTableAllowStatementsSet(Set<TableAllowStatements> tableAllowStatementsSet) {
+        this.tableAllowStatementsSet = tableAllowStatementsSet;
+    }
+
+    public static void main(String[] argv) throws Exception {
+	Set<String> tableSet = new HashSet<String>();
+	tableSet.add("all");
+	tableSet.add("consumer");
+	tableSet.add("orderlog");
+
+	File file = new File("I:\\_dev_awake\\aceql-http-main\\aceql-http\\private\\rules.csv");
+	CsvAllowFirewallManagerLoader csvAllowFirewallManagerLoader = new CsvAllowFirewallManagerLoader(file, tableSet);
+	csvAllowFirewallManagerLoader.load();
+
+	Set<TableAllowStatements> set = csvAllowFirewallManagerLoader.getTableAllowStatementsSet();
+
+	for (TableAllowStatements tableAllowStatements : set) {
+	    System.out.println(tableAllowStatements);
+	}
+
+	Map<String, Map<String, TableAllowStatements>> map = new TreeMap<>();
+
+	for (TableAllowStatements tableAllowStatements : set) {
+	    String username =  tableAllowStatements.getUsername();
+	    String table =  tableAllowStatements.getTable();
+
+	    if (map.containsKey(username)) {
+		Map<String, TableAllowStatements> mapTable = map.get(username);
+		mapTable.put(table, tableAllowStatements);
+		map.put(username,  mapTable);
+	    }
+	    else {
+		Map<String, TableAllowStatements> mapTable = new TreeMap<>();
+		mapTable.put(table, tableAllowStatements);
+		map.put(username,  mapTable);
+	    }
+	}
+
+	System.out.println();
+	//System.out.println(map);
+
+	for (Map.Entry<String, Map<String, TableAllowStatements>> entry : map.entrySet()) {
+	    String username = entry.getKey();
+	    Map<String, TableAllowStatements> value = entry.getValue();
+	    System.out.println("username: " + username + " / "+ value);
 	}
 
     }
-
 }

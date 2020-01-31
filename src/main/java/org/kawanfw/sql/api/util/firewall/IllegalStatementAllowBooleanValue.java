@@ -8,7 +8,7 @@ public class IllegalStatementAllowBooleanValue extends IllegalArgumentException 
     private static final long serialVersionUID = 3329147381309094047L;
 
     public IllegalStatementAllowBooleanValue(String statement, int lineNumber) {
-	super();
+	super("value is not expected \"false\" or \"true\" for " + statement + "column on line " + lineNumber);
 	this.statement = statement;
 	this.lineNumber = lineNumber;
     }
