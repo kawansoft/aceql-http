@@ -5,10 +5,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 
 /**
  * Loads all the rules contained in a CSV structured like:
@@ -29,30 +29,39 @@ username;table;delete;insert;select;update
 public class CsvAllowFirewallManagerLoader {
 
     private File file = null;
+    private String database = null;
 
     /** The tables of the current database */
     private Set<String> tableSet = null;
 
-    /** the Set of TableAllowStatements) */
-    private Set<TableAllowStatements> tableAllowStatementsSet = new HashSet<>();
+    ///** the Set of TableAllowStatements) */
+    //private Set<TableAllowStatements> tableAllowStatementsSet = new HashSet<>();
+
+    private Map<DatabaseUserTableTriplet, TableAllowStatements> mapTableAllowStatementsSet = new HashMap<>();
+
 
     /**
      * Constructor.
-     *
      * @param file     the file containing all the rule lines: username, table,
      *                 delete, insert, select, update
+     * @param database the database name
      * @param tableSet the table names of the database to check.
      */
-    public CsvAllowFirewallManagerLoader(File file, Set<String> tableSet) {
+    public CsvAllowFirewallManagerLoader(File file, String database, Set<String> tableSet) {
 
 	if (file == null) {
 	    throw new NullPointerException("file is null!");
+	}
+
+	if (database == null) {
+	    throw new NullPointerException("database is null!");
 	}
 
 	if (tableSet == null) {
 	    throw new NullPointerException("tableSet is null!");
 	}
 
+	this.database = database;
 	this.file = file;
 	this.tableSet = tableSet;
     }
@@ -76,10 +85,25 @@ public class CsvAllowFirewallManagerLoader {
 	    bufferedReader.readLine(); // Read first line
 	    String line = null;
 	    while ((line = bufferedReader.readLine()) != null) {
+
+		DatabaseUserTableTriplet databaseUserTableTriplet = databaseUserTableTripletBuild(line);
 		TableAllowStatements tableAllowStatements = tableAllowStatementsBuild(line);
-		tableAllowStatementsSet.add(tableAllowStatements);
+
+		mapTableAllowStatementsSet.put(databaseUserTableTriplet, tableAllowStatements);
+
 	    }
 	}
+    }
+
+    private DatabaseUserTableTriplet databaseUserTableTripletBuild(String line) {
+	String[] elements = line.split(";");
+
+	int i = 0;
+	String username = elements[i++];
+	String table = elements[i++];
+
+	DatabaseUserTableTriplet databaseUserTableTriplet = new DatabaseUserTableTriplet(database, username, table);
+	return databaseUserTableTriplet;
     }
 
     private TableAllowStatements tableAllowStatementsBuild(String line) {
@@ -93,8 +117,8 @@ public class CsvAllowFirewallManagerLoader {
 	boolean allowSelect = Boolean.parseBoolean(elements[i++]);
 	boolean allowUpdate = Boolean.parseBoolean(elements[i++]);
 
-	TableAllowStatements tableAllowStatements = new TableAllowStatements(username, table, allowDelete, allowInsert,
-		allowSelect, allowUpdate);
+	TableAllowStatements tableAllowStatements = new TableAllowStatements(database, username, table, allowDelete,
+		allowInsert, allowSelect, allowUpdate);
 	return tableAllowStatements;
     }
 
@@ -210,57 +234,33 @@ public class CsvAllowFirewallManagerLoader {
 	}
     }
 
-
-
-    public Set<TableAllowStatements> getTableAllowStatementsSet() {
-        return tableAllowStatementsSet;
-    }
-
-    public void setTableAllowStatementsSet(Set<TableAllowStatements> tableAllowStatementsSet) {
-        this.tableAllowStatementsSet = tableAllowStatementsSet;
+    /**
+     * Returns the Map of allowed statements per table, per database and username.
+     * @return the Map of allowed statements per table, per database and username.
+     */
+    public Map<DatabaseUserTableTriplet, TableAllowStatements> getMapTableAllowStatementsSet() {
+        return mapTableAllowStatementsSet;
     }
 
     public static void main(String[] argv) throws Exception {
+
+	String database = "kawansoft_example";
+
 	Set<String> tableSet = new HashSet<String>();
 	tableSet.add("all");
 	tableSet.add("consumer");
 	tableSet.add("orderlog");
 
 	File file = new File("I:\\_dev_awake\\aceql-http-main\\aceql-http\\private\\rules.csv");
-	CsvAllowFirewallManagerLoader csvAllowFirewallManagerLoader = new CsvAllowFirewallManagerLoader(file, tableSet);
+	CsvAllowFirewallManagerLoader csvAllowFirewallManagerLoader = new CsvAllowFirewallManagerLoader(file, database, tableSet);
 	csvAllowFirewallManagerLoader.load();
 
-	Set<TableAllowStatements> set = csvAllowFirewallManagerLoader.getTableAllowStatementsSet();
+	Map<DatabaseUserTableTriplet, TableAllowStatements> mapTableAllowStatementsSet = csvAllowFirewallManagerLoader.getMapTableAllowStatementsSet();
 
-	for (TableAllowStatements tableAllowStatements : set) {
-	    System.out.println(tableAllowStatements);
-	}
-
-	Map<String, Map<String, TableAllowStatements>> map = new TreeMap<>();
-
-	for (TableAllowStatements tableAllowStatements : set) {
-	    String username =  tableAllowStatements.getUsername();
-	    String table =  tableAllowStatements.getTable();
-
-	    if (map.containsKey(username)) {
-		Map<String, TableAllowStatements> mapTable = map.get(username);
-		mapTable.put(table, tableAllowStatements);
-		map.put(username,  mapTable);
-	    }
-	    else {
-		Map<String, TableAllowStatements> mapTable = new TreeMap<>();
-		mapTable.put(table, tableAllowStatements);
-		map.put(username,  mapTable);
-	    }
-	}
-
-	System.out.println();
-	//System.out.println(map);
-
-	for (Map.Entry<String, Map<String, TableAllowStatements>> entry : map.entrySet()) {
-	    String username = entry.getKey();
-	    Map<String, TableAllowStatements> value = entry.getValue();
-	    System.out.println("username: " + username + " / "+ value);
+	for (Map.Entry<DatabaseUserTableTriplet, TableAllowStatements> entry : mapTableAllowStatementsSet.entrySet()) {
+	    DatabaseUserTableTriplet triplet = entry.getKey();
+	    TableAllowStatements tableAllowStatements = entry.getValue();
+	    System.out.println(triplet + " / " + tableAllowStatements);
 	}
 
     }

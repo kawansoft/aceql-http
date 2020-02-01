@@ -4,44 +4,30 @@
 package org.kawanfw.sql.api.util.firewall;
 
 /**
- * Stores the allowed statements of a table for an username.
- *
+ * A triplet that allows to identify a CSV rule of CsvAllowFirewallManager SQL Firewall Manager.
  * @author Nicolas de Pomereu
  *
  */
-public class TableAllowStatements {
+public class DatabaseUserTableTriplet {
 
-    // Says for each statement if it is allows
     private String database = null;
     private String username = null;
     private String table = null;
-    private boolean allowDelete = false;
-    private boolean allowInsert = false;
-    private boolean allowSelect = false;
-    private boolean allowUpdate = false;
 
     /**
      * Constructor.
-     *
-     * @param database    the database name.
-     * @param username    the username for the rule.
-     * @param table       the table name for the rule.
-     * @param allowDelete if true, delete will be allowed on table.
-     * @param allowInsert if true, insert will be allowed on table.
-     * @param allowSelect if true, select will be allowed on table.
-     * @param allowUpdate if true, update will be allowed on table.
+     * @param database
+     * @param username
+     * @param table
      */
-    public TableAllowStatements(String database, String username, String table, boolean allowDelete,
-	    boolean allowInsert, boolean allowSelect, boolean allowUpdate) {
+    public DatabaseUserTableTriplet(String database, String username, String table) {
 
 	if (database == null) {
 	    throw new NullPointerException("database is null!");
 	}
-
 	if (username == null) {
 	    throw new NullPointerException("username is null!");
 	}
-
 	if (table == null) {
 	    throw new NullPointerException("table is null!");
 	}
@@ -49,10 +35,6 @@ public class TableAllowStatements {
 	this.database = database;
 	this.username = username;
 	this.table = table;
-	this.allowDelete = allowDelete;
-	this.allowInsert = allowInsert;
-	this.allowSelect = allowSelect;
-	this.allowUpdate = allowUpdate;
     }
 
     public String getDatabase() {
@@ -65,22 +47,6 @@ public class TableAllowStatements {
 
     public String getTable() {
         return table;
-    }
-
-    public boolean isAllowDelete() {
-        return allowDelete;
-    }
-
-    public boolean isAllowInsert() {
-        return allowInsert;
-    }
-
-    public boolean isAllowSelect() {
-        return allowSelect;
-    }
-
-    public boolean isAllowUpdate() {
-        return allowUpdate;
     }
 
     @Override
@@ -101,7 +67,7 @@ public class TableAllowStatements {
 	    return false;
 	if (getClass() != obj.getClass())
 	    return false;
-	TableAllowStatements other = (TableAllowStatements) obj;
+	DatabaseUserTableTriplet other = (DatabaseUserTableTriplet) obj;
 	if (database == null) {
 	    if (other.database != null)
 		return false;
@@ -122,9 +88,9 @@ public class TableAllowStatements {
 
     @Override
     public String toString() {
-	return "TableAllowStatements [database=" + database + ", username=" + username + ", table=" + table
-		+ ", allowDelete=" + allowDelete + ", allowInsert=" + allowInsert + ", allowSelect=" + allowSelect
-		+ ", allowUpdate=" + allowUpdate + "]";
+	return "DatabaseUserTableTriplet [database=" + database + ", username=" + username + ", table=" + table + "]";
     }
+
+
 
 }
