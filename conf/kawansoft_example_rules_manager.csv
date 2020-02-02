@@ -1,7 +1,7 @@
 username;table;delete;insert;select;update
 public;all;false;false;false;false
-user1;consumer;false;false;true;false
+user1;customer;false;false;true;true
 user1;banned_usernames;false;true;true;true
-user2;consumer;true;true;true;true
+user2;customer;true;true;true;true
 user3;orderlog;false;false;true;false
 user2;orderlog;false;false;true;false

@@ -8,10 +8,11 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.HashSet;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.kawanfw.sql.api.server.StatementAnalyzer;
 import org.kawanfw.sql.api.util.firewall.CsvRulesManagerLoader;
@@ -25,6 +26,8 @@ import org.kawanfw.sql.servlet.ServerSqlManager;
  *
  */
 public class CsvRulesManager extends DefaultSqlFirewallManager implements SqlFirewallManager {
+
+    private static final boolean DEBUG = false;
 
     /**
      * The map that contains for each database/username the table and their rights
@@ -92,7 +95,6 @@ public class CsvRulesManager extends DefaultSqlFirewallManager implements SqlFir
 		    return true;
 		}
 	    }
-
 	}
 
 	// No previous allowance, return false
@@ -128,7 +130,7 @@ public class CsvRulesManager extends DefaultSqlFirewallManager implements SqlFir
 
 	    AceQLMetaData aceQLMetaData = new AceQLMetaData(connection);
 	    List<String> tables = aceQLMetaData.getTableNames();
-	    Set<String> tableSet = new HashSet<>();
+	    Set<String> tableSet = new TreeSet<>();
 	    // Load in lowercase
 	    for (String table : tables) {
 		tableSet.add(table.toLowerCase());
@@ -157,7 +159,7 @@ public class CsvRulesManager extends DefaultSqlFirewallManager implements SqlFir
      */
     public static File getCsvFile(String database) throws FileNotFoundException {
 	File dir = ServerSqlManager.getAceqlServerPropertiesDirectory();
-	File csvFile = new File(dir + File.separator + database + "rules_manager.csv");
+	File csvFile = new File(dir + File.separator + database + "_rules_manager.csv");
 
 	if (!csvFile.exists()) {
 	    throw new FileNotFoundException("The CSV rules files does not exist: " + csvFile);
@@ -171,6 +173,15 @@ public class CsvRulesManager extends DefaultSqlFirewallManager implements SqlFir
     public void runIfStatementRefused(String username, String database, Connection connection, String ipAddress,
 	    boolean isMetadataQuery, String sql, List<Object> parameterValues) throws IOException, SQLException {
 	super.runIfStatementRefused(username, database, connection, ipAddress, isMetadataQuery, sql, parameterValues);
+
+	debug("username: " + username + " / database: " + database + " / sql: " + sql);
+    }
+
+    private void debug(String string) {
+	if (DEBUG) {
+	    System.out.println(new Date() + string);
+	}
+
     }
 
 }
