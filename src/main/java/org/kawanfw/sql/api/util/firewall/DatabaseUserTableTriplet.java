@@ -4,11 +4,11 @@
 package org.kawanfw.sql.api.util.firewall;
 
 /**
- * A triplet that allows to identify a CSV rule of CsvAllowFirewallManager SQL Firewall Manager.
+ * A triplet that allows to identify a CSV rule of CsvRulesManager SQL Firewall Manager.
  * @author Nicolas de Pomereu
  *
  */
-public class DatabaseUserTableTriplet {
+public class DatabaseUserTableTriplet implements Comparable<DatabaseUserTableTriplet> {
 
     private String database = null;
     private String username = null;
@@ -87,10 +87,14 @@ public class DatabaseUserTableTriplet {
     }
 
     @Override
+    public int compareTo(DatabaseUserTableTriplet other) {
+	return this.toString().compareTo(other.toString());
+    }
+
+    @Override
     public String toString() {
 	return "DatabaseUserTableTriplet [database=" + database + ", username=" + username + ", table=" + table + "]";
     }
-
 
 
 }

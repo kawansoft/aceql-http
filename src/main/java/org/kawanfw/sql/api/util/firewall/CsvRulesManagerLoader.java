@@ -5,10 +5,11 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentSkipListMap;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 /**
  * Loads all the rules contained in a CSV structured like:
@@ -26,7 +27,7 @@ username;table;delete;insert;select;update
  * @author Nicolas de Pomereu
  *
  */
-public class CsvAllowFirewallManagerLoader {
+public class CsvRulesManagerLoader {
 
     private File file = null;
     private String database = null;
@@ -34,10 +35,9 @@ public class CsvAllowFirewallManagerLoader {
     /** The tables of the current database */
     private Set<String> tableSet = null;
 
-    ///** the Set of TableAllowStatements) */
-    //private Set<TableAllowStatements> tableAllowStatementsSet = new HashSet<>();
-
-    private Map<DatabaseUserTableTriplet, TableAllowStatements> mapTableAllowStatementsSet = new HashMap<>();
+    /** The map that contains for each database/username the table and their rights */
+    private Map<DatabaseUserTableTriplet, TableAllowStatements> mapTableAllowStatementsSet = new ConcurrentSkipListMap<>();
+    private Set<TableAllowStatements> tableAllowStatementsSet = new ConcurrentSkipListSet<>();
 
 
     /**
@@ -47,7 +47,7 @@ public class CsvAllowFirewallManagerLoader {
      * @param database the database name
      * @param tableSet the table names of the database to check.
      */
-    public CsvAllowFirewallManagerLoader(File file, String database, Set<String> tableSet) {
+    public CsvRulesManagerLoader(File file, String database, Set<String> tableSet) {
 
 	if (file == null) {
 	    throw new NullPointerException("file is null!");
@@ -89,8 +89,8 @@ public class CsvAllowFirewallManagerLoader {
 		DatabaseUserTableTriplet databaseUserTableTriplet = databaseUserTableTripletBuild(line);
 		TableAllowStatements tableAllowStatements = tableAllowStatementsBuild(line);
 
+		tableAllowStatementsSet.add(tableAllowStatements);
 		mapTableAllowStatementsSet.put(databaseUserTableTriplet, tableAllowStatements);
-
 	    }
 	}
     }
@@ -112,13 +112,13 @@ public class CsvAllowFirewallManagerLoader {
 	int i = 0;
 	String username = elements[i++];
 	String table = elements[i++];
-	boolean allowDelete = Boolean.parseBoolean(elements[i++]);
-	boolean allowInsert = Boolean.parseBoolean(elements[i++]);
-	boolean allowSelect = Boolean.parseBoolean(elements[i++]);
-	boolean allowUpdate = Boolean.parseBoolean(elements[i++]);
+	boolean delete = Boolean.parseBoolean(elements[i++]);
+	boolean insert = Boolean.parseBoolean(elements[i++]);
+	boolean select = Boolean.parseBoolean(elements[i++]);
+	boolean update = Boolean.parseBoolean(elements[i++]);
 
-	TableAllowStatements tableAllowStatements = new TableAllowStatements(database, username, table, allowDelete,
-		allowInsert, allowSelect, allowUpdate);
+	TableAllowStatements tableAllowStatements = new TableAllowStatements(database, username, table, delete,
+		insert, select, update);
 	return tableAllowStatements;
     }
 
@@ -214,22 +214,22 @@ public class CsvAllowFirewallManagerLoader {
 	String select = elements[i++];
 	String update = elements[i++];
 
-	if (!username.equals("username")) {
+	if (!username.toLowerCase().equals("username")) {
 	    throw new IllegalFirstLineException("Missing \"username\" first column on first line.");
 	}
-	if (!table.equals("table")) {
+	if (!table.toLowerCase().equals("table")) {
 	    throw new IllegalFirstLineException("Missing \"table\" second column on first line.");
 	}
-	if (!delete.equals("delete")) {
+	if (!delete.toLowerCase().equals("delete")) {
 	    throw new IllegalFirstLineException("Missing \"delete\" third column on first line.");
 	}
-	if (!insert.equals("insert")) {
+	if (!insert.toLowerCase().equals("insert")) {
 	    throw new IllegalFirstLineException("Missing \"insert\" fourth column on first line.");
 	}
-	if (!select.equals("select")) {
+	if (!select.toLowerCase().equals("select")) {
 	    throw new IllegalFirstLineException("Missing \"select\" fifth column on first line.");
 	}
-	if (!update.equals("update")) {
+	if (!update.toLowerCase().equals("update")) {
 	    throw new IllegalFirstLineException("Missing \"update\" sixth column on first line.");
 	}
     }
@@ -242,26 +242,40 @@ public class CsvAllowFirewallManagerLoader {
         return mapTableAllowStatementsSet;
     }
 
+
+    public Set<TableAllowStatements> getTableAllowStatementsSet() {
+        return tableAllowStatementsSet;
+    }
+
+
     public static void main(String[] argv) throws Exception {
 
 	String database = "kawansoft_example";
 
 	Set<String> tableSet = new HashSet<String>();
 	tableSet.add("all");
+	tableSet.add("banned_usernames");
 	tableSet.add("consumer");
 	tableSet.add("orderlog");
 
-	File file = new File("I:\\_dev_awake\\aceql-http-main\\aceql-http\\private\\rules.csv");
-	CsvAllowFirewallManagerLoader csvAllowFirewallManagerLoader = new CsvAllowFirewallManagerLoader(file, database, tableSet);
-	csvAllowFirewallManagerLoader.load();
+	File file = new File("I:\\_dev_awake\\aceql-http-main\\aceql-http\\conf\\kawansoft_example_rules_manager.csv");
+	CsvRulesManagerLoader csvRulesManagerLoader = new CsvRulesManagerLoader(file, database, tableSet);
+	csvRulesManagerLoader.load();
 
-	Map<DatabaseUserTableTriplet, TableAllowStatements> mapTableAllowStatementsSet = csvAllowFirewallManagerLoader.getMapTableAllowStatementsSet();
+	Map<DatabaseUserTableTriplet, TableAllowStatements> mapTableAllowStatements = csvRulesManagerLoader.getMapTableAllowStatementsSet();
 
-	for (Map.Entry<DatabaseUserTableTriplet, TableAllowStatements> entry : mapTableAllowStatementsSet.entrySet()) {
+	for (Map.Entry<DatabaseUserTableTriplet, TableAllowStatements> entry : mapTableAllowStatements.entrySet()) {
 	    DatabaseUserTableTriplet triplet = entry.getKey();
 	    TableAllowStatements tableAllowStatements = entry.getValue();
 	    System.out.println(triplet + " / " + tableAllowStatements);
 	}
+
+	System.out.println();
+	Set<TableAllowStatements> tableAllowStatementsSet = csvRulesManagerLoader.getTableAllowStatementsSet();
+	for (TableAllowStatements tableAllowStatements : tableAllowStatementsSet) {
+	    System.out.println(tableAllowStatements);
+	}
+
 
     }
 }

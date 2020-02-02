@@ -70,6 +70,9 @@ public class ServerSqlManager extends HttpServlet {
 
     public static String CR_LF = System.getProperty("line.separator");
 
+    /* The directory used for the properties file */
+    private static File aceqlServerPropertiesDirectory = null;
+
     public static final String DATABASE_CONFIGURATOR_CLASS_NAME = "databaseConfiguratorClassName";
     public static final String SQL_FIREWALL_MANAGER_CLASS_NAMES = "sqlFirewallManagerClassNames";
     public static final String BLOB_DOWNLOAD_CONFIGURATOR_CLASS_NAME = "blobDownloadConfiguratorClassName";
@@ -142,6 +145,14 @@ public class ServerSqlManager extends HttpServlet {
      */
     public static Map<String, List<SqlFirewallManager>> getSqlFirewallMap() {
         return sqlFirewallMap;
+    }
+
+    public static File getAceqlServerPropertiesDirectory() {
+        return aceqlServerPropertiesDirectory;
+    }
+
+    public static void setAceqlServerPropertiesDirectory(File aceqlServerPropertiesDirectory) {
+        ServerSqlManager.aceqlServerPropertiesDirectory = aceqlServerPropertiesDirectory;
     }
 
     /**

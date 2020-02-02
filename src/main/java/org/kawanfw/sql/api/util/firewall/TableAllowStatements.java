@@ -9,16 +9,16 @@ package org.kawanfw.sql.api.util.firewall;
  * @author Nicolas de Pomereu
  *
  */
-public class TableAllowStatements {
+public class TableAllowStatements implements Comparable<TableAllowStatements> {
 
     // Says for each statement if it is allows
     private String database = null;
     private String username = null;
     private String table = null;
-    private boolean allowDelete = false;
-    private boolean allowInsert = false;
-    private boolean allowSelect = false;
-    private boolean allowUpdate = false;
+    private boolean delete = false;
+    private boolean insert = false;
+    private boolean select = false;
+    private boolean update = false;
 
     /**
      * Constructor.
@@ -26,13 +26,13 @@ public class TableAllowStatements {
      * @param database    the database name.
      * @param username    the username for the rule.
      * @param table       the table name for the rule.
-     * @param allowDelete if true, delete will be allowed on table.
-     * @param allowInsert if true, insert will be allowed on table.
-     * @param allowSelect if true, select will be allowed on table.
-     * @param allowUpdate if true, update will be allowed on table.
+     * @param elete if true, delete will be allowed on table.
+     * @param insert if true, insert will be allowed on table.
+     * @param select if true, select will be allowed on table.
+     * @param update if true, update will be allowed on table.
      */
-    public TableAllowStatements(String database, String username, String table, boolean allowDelete,
-	    boolean allowInsert, boolean allowSelect, boolean allowUpdate) {
+    public TableAllowStatements(String database, String username, String table, boolean delete,
+	    boolean insert, boolean select, boolean update) {
 
 	if (database == null) {
 	    throw new NullPointerException("database is null!");
@@ -49,10 +49,10 @@ public class TableAllowStatements {
 	this.database = database;
 	this.username = username;
 	this.table = table;
-	this.allowDelete = allowDelete;
-	this.allowInsert = allowInsert;
-	this.allowSelect = allowSelect;
-	this.allowUpdate = allowUpdate;
+	this.delete = delete;
+	this.insert = insert;
+	this.select = select;
+	this.update = update;
     }
 
     public String getDatabase() {
@@ -67,20 +67,20 @@ public class TableAllowStatements {
         return table;
     }
 
-    public boolean isAllowDelete() {
-        return allowDelete;
+    public boolean isDeleteAllowed() {
+        return delete;
     }
 
-    public boolean isAllowInsert() {
-        return allowInsert;
+    public boolean isInsertAllowe() {
+        return insert;
     }
 
-    public boolean isAllowSelect() {
-        return allowSelect;
+    public boolean isSelectAllowed() {
+        return select;
     }
 
-    public boolean isAllowUpdate() {
-        return allowUpdate;
+    public boolean isUpdateAllowed() {
+        return update;
     }
 
     @Override
@@ -121,10 +121,14 @@ public class TableAllowStatements {
     }
 
     @Override
-    public String toString() {
-	return "TableAllowStatements [database=" + database + ", username=" + username + ", table=" + table
-		+ ", allowDelete=" + allowDelete + ", allowInsert=" + allowInsert + ", allowSelect=" + allowSelect
-		+ ", allowUpdate=" + allowUpdate + "]";
+    public int compareTo(TableAllowStatements other) {
+	return this.toString().compareTo(other.toString());
     }
 
+    @Override
+    public String toString() {
+	return "[database=" + database + ", username=" + username + ", table=" + table
+		+ ", delete=" + delete + ", insert=" + insert + ", select=" + select
+		+ ", update=" + update + "]";
+    }
 }

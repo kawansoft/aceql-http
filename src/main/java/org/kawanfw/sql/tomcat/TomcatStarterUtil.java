@@ -442,6 +442,10 @@ public class TomcatStarterUtil {
 	    throw new IllegalArgumentException("file can not be null!");
 	}
 
+	// Sets the irecotry of the poperties file. Will be used elsewere
+	// (for CsvRulesManager load file, per example).
+	ServerSqlManager.setAceqlServerPropertiesDirectory(file.getParentFile());
+
 	if (!file.exists()) {
 	    throw new DatabaseConfigurationException(
 		    "properties file not found: " + file);
