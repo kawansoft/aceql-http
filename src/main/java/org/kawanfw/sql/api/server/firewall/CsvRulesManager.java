@@ -120,7 +120,7 @@ public class CsvRulesManager extends DefaultSqlFirewallManager implements SqlFir
 	    }
 	}
 
-	// No allowance found return false
+	// No allowance found: return false
 	return false;
     }
 
