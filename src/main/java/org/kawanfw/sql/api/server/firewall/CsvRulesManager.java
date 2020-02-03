@@ -13,7 +13,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+import org.kawanfw.sql.api.server.DefaultDatabaseConfigurator;
 import org.kawanfw.sql.api.server.StatementAnalyzer;
 import org.kawanfw.sql.api.util.firewall.CsvRulesManagerLoader;
 import org.kawanfw.sql.api.util.firewall.DatabaseUserTableTriplet;
@@ -22,8 +25,8 @@ import org.kawanfw.sql.metadata.AceQLMetaData;
 import org.kawanfw.sql.servlet.ServerSqlManager;
 
 /**
- * @author Nicolas de Pomereu
  *
+ * @author Nicolas de Pomereu
  */
 public class CsvRulesManager extends DefaultSqlFirewallManager implements SqlFirewallManager {
 
@@ -35,12 +38,18 @@ public class CsvRulesManager extends DefaultSqlFirewallManager implements SqlFir
     private Map<DatabaseUserTableTriplet, TableAllowStatements> mapTableAllowStatementsSet = null;
 
     /**
-     * Mandatory Constructor.
+     * Constructor. {@code SqlFirewallManager} implementation must have no
+     * constructor or a unique no parameters constructor.
      */
     public CsvRulesManager() {
 
     }
 
+    /**
+     * Allows the execution of the statement if a allowing rules exists in the :
+     * <br>
+     * <code>&lt;database&gt;_rules_manager.csv</code> file.
+     */
     @Override
     public boolean allowSqlRunAfterAnalysis(String username, String database, Connection connection, String ipAddress,
 	    String sql, boolean isPreparedStatement, List<Object> parameterValues) throws IOException, SQLException {
@@ -50,7 +59,21 @@ public class CsvRulesManager extends DefaultSqlFirewallManager implements SqlFir
 
 	boolean isAllowed = isAllowed(username, database, sql, parameterValues);
 	return isAllowed;
+    }
 
+    /**
+     * Logs the info using {@code DefaultDatabaseConfigurator#getLogger() Logger}.
+     */
+    @Override
+    public void runIfStatementRefused(String username, String database, Connection connection, String ipAddress,
+	    boolean isMetadataQuery, String sql, List<Object> parameterValues) throws IOException, SQLException {
+
+	String logInfo = "Client username " + username + " (IP: " + ipAddress
+		+ ") has been denied by CsvRulesManager SqlFirewallManager executing the statement: " + sql + ".";
+
+	DefaultDatabaseConfigurator defaultDatabaseConfigurator = new DefaultDatabaseConfigurator();
+	Logger logger = defaultDatabaseConfigurator.getLogger();
+	logger.log(Level.WARNING, logInfo);
     }
 
     /**
@@ -97,7 +120,7 @@ public class CsvRulesManager extends DefaultSqlFirewallManager implements SqlFir
 	    }
 	}
 
-	// No previous allowance, return false
+	// No allowance found return false
 	return false;
     }
 
@@ -143,9 +166,9 @@ public class CsvRulesManager extends DefaultSqlFirewallManager implements SqlFir
 
 	    Set<TableAllowStatements> tableAllowStatementsSet = csvRulesManagerLoader.getTableAllowStatementsSet();
 
-	    System.out.println("CsvRulesManager Rules Loaded:");
+	    debug("CsvRulesManager Rules Loaded:");
 	    for (TableAllowStatements tableAllowStatements : tableAllowStatementsSet) {
-		System.out.println(tableAllowStatements);
+		debug("" + tableAllowStatements.toString());
 	    }
 	}
     }
@@ -169,19 +192,10 @@ public class CsvRulesManager extends DefaultSqlFirewallManager implements SqlFir
 
     }
 
-    @Override
-    public void runIfStatementRefused(String username, String database, Connection connection, String ipAddress,
-	    boolean isMetadataQuery, String sql, List<Object> parameterValues) throws IOException, SQLException {
-	super.runIfStatementRefused(username, database, connection, ipAddress, isMetadataQuery, sql, parameterValues);
-
-	debug("username: " + username + " / database: " + database + " / sql: " + sql);
-    }
-
+    @SuppressWarnings("unused")
     private void debug(String string) {
 	if (DEBUG) {
 	    System.out.println(new Date() + string);
 	}
-
     }
-
 }

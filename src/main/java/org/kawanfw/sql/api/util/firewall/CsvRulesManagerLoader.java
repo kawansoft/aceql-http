@@ -144,7 +144,7 @@ public class CsvRulesManagerLoader {
 	    int lineNumber = 1;
 	    while ((line = bufferedReader.readLine()) != null) {
 		// If current line is badly formated, throw clean Exception
-		checkCurrentLineIntegrity(line, lineNumber);
+		checkCurrentLineIntegrity(line, lineNumber++);
 	    }
 	}
     }
@@ -154,30 +154,35 @@ public class CsvRulesManagerLoader {
 
 	// Double check...
 	if (elements.length != 6) {
-	    throw new IllegalFirstLineException(
+	    throw new IllegalFirstLineException(file,
 		    "There must be 6 column names in CSV file header line. Incorrect header line: " + line);
 	}
 
 	int i = 1;
 	String table = elements[i++].toLowerCase();
 	if (!tableSet.contains(table)) {
-	    throw new IllegalTableNameException(table, lineNumber);
+	    throw new IllegalTableNameException(file, table, lineNumber);
 	}
 
-	if (!isStrictBooleanValue(elements[i++].toLowerCase())) {
-	    throw new IllegalStatementAllowBooleanValue("delete", lineNumber);
+	String value = null;
+	value = elements[i++].toLowerCase();
+	if (!isStrictBooleanValue(value)) {
+	    throw new IllegalStatementAllowBooleanValue(file, value, "delete", lineNumber);
 	}
 
-	if (!isStrictBooleanValue(elements[i++].toLowerCase())) {
-	    throw new IllegalStatementAllowBooleanValue("insert", lineNumber);
+	value = elements[i++].toLowerCase();
+	if (!isStrictBooleanValue(value)) {
+	    throw new IllegalStatementAllowBooleanValue(file, value, "insert", lineNumber);
 	}
 
-	if (!isStrictBooleanValue(elements[i++].toLowerCase())) {
-	    throw new IllegalStatementAllowBooleanValue("select", lineNumber);
+	value = elements[i++].toLowerCase();
+	if (!isStrictBooleanValue(value)) {
+	    throw new IllegalStatementAllowBooleanValue(file, value, "select", lineNumber);
 	}
 
-	if (!isStrictBooleanValue(elements[i++].toLowerCase())) {
-	    throw new IllegalStatementAllowBooleanValue("update", lineNumber);
+	value = elements[i++].toLowerCase();
+	if (!isStrictBooleanValue(value)) {
+	    throw new IllegalStatementAllowBooleanValue(file, value, "update", lineNumber);
 	}
     }
 
@@ -202,7 +207,7 @@ public class CsvRulesManagerLoader {
 	String[] elements = line.split(";");
 
 	if (elements.length != 6) {
-	    throw new IllegalFirstLineException(
+	    throw new IllegalFirstLineException(file,
 		    "There must be 6 column names in CSV file header line. Incorrect header line: " + line);
 	}
 
@@ -215,22 +220,22 @@ public class CsvRulesManagerLoader {
 	String update = elements[i++];
 
 	if (!username.toLowerCase().equals("username")) {
-	    throw new IllegalFirstLineException("Missing \"username\" first column on first line.");
+	    throw new IllegalFirstLineException(file, "Missing \"username\" first column on first line.");
 	}
 	if (!table.toLowerCase().equals("table")) {
-	    throw new IllegalFirstLineException("Missing \"table\" second column on first line.");
+	    throw new IllegalFirstLineException(file, "Missing \"table\" second column on first line.");
 	}
 	if (!delete.toLowerCase().equals("delete")) {
-	    throw new IllegalFirstLineException("Missing \"delete\" third column on first line.");
+	    throw new IllegalFirstLineException(file, "Missing \"delete\" third column on first line.");
 	}
 	if (!insert.toLowerCase().equals("insert")) {
-	    throw new IllegalFirstLineException("Missing \"insert\" fourth column on first line.");
+	    throw new IllegalFirstLineException(file, "Missing \"insert\" fourth column on first line.");
 	}
 	if (!select.toLowerCase().equals("select")) {
-	    throw new IllegalFirstLineException("Missing \"select\" fifth column on first line.");
+	    throw new IllegalFirstLineException(file, "Missing \"select\" fifth column on first line.");
 	}
 	if (!update.toLowerCase().equals("update")) {
-	    throw new IllegalFirstLineException("Missing \"update\" sixth column on first line.");
+	    throw new IllegalFirstLineException(file, "Missing \"update\" sixth column on first line.");
 	}
     }
 
@@ -246,7 +251,6 @@ public class CsvRulesManagerLoader {
     public Set<TableAllowStatements> getTableAllowStatementsSet() {
         return tableAllowStatementsSet;
     }
-
 
     public static void main(String[] argv) throws Exception {
 

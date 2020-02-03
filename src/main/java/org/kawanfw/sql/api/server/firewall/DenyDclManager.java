@@ -28,7 +28,10 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+import org.kawanfw.sql.api.server.DefaultDatabaseConfigurator;
 import org.kawanfw.sql.api.server.StatementAnalyzer;
 
 /**
@@ -53,6 +56,20 @@ public class DenyDclManager extends DefaultSqlFirewallManager implements SqlFire
 	} else {
 	    return true;
 	}
+    }
+
+    /**
+     * Logs the info using {@code DefaultDatabaseConfigurator#getLogger() Logger}.
+     */
+    @Override
+    public void runIfStatementRefused(String username, String database, Connection connection, String ipAddress,
+	    boolean isMetadataQuery, String sql, List<Object> parameterValues) throws IOException, SQLException {
+	String logInfo = "Client username " + username + " (IP: " + ipAddress
+		+ ") has been denied by DenyDclManager SqlFirewallManager executing the DCL statement: " + sql + ".";
+
+	DefaultDatabaseConfigurator defaultDatabaseConfigurator = new DefaultDatabaseConfigurator();
+	Logger logger = defaultDatabaseConfigurator.getLogger();
+	logger.log(Level.WARNING, logInfo);
     }
 
 }

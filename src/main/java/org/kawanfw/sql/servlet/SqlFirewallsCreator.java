@@ -24,11 +24,15 @@
  */
 package org.kawanfw.sql.servlet;
 
+import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.kawanfw.sql.api.server.DatabaseConfigurator;
 import org.kawanfw.sql.api.server.firewall.DefaultSqlFirewallManager;
 import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
 
@@ -42,9 +46,10 @@ public class SqlFirewallsCreator {
     private List<String> sqlFirewallClassNames = new ArrayList<>();
     private List<SqlFirewallManager> sqlFirewallManagers = new ArrayList<>();
 
-    public SqlFirewallsCreator(List<String> sqlFirewallClassNames)
+    public SqlFirewallsCreator(List<String> sqlFirewallClassNames, String database,
+	    DatabaseConfigurator databaseConfigurator)
 	    throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException,
-	    IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+	    IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException, IOException {
 
 	if (sqlFirewallClassNames != null && !sqlFirewallClassNames.isEmpty()) {
 
@@ -52,6 +57,14 @@ public class SqlFirewallsCreator {
 		Class<?> c = Class.forName(sqlFirewallClassName);
 		Constructor<?> constructor = c.getConstructor();
 		SqlFirewallManager sqlFirewallManager = (SqlFirewallManager) constructor.newInstance();
+
+		try (Connection connection = databaseConfigurator.getConnection(database);) {
+		    List<Object> parameterValues = new ArrayList<>();
+		    // We call code just to verify it's OK:
+		    sqlFirewallManager.allowSqlRunAfterAnalysis("username", database, connection, "127.0.0.1",
+			    "select * from table", false, parameterValues);
+		}
+
 		sqlFirewallClassName = sqlFirewallManager.getClass().getName();
 
 		this.sqlFirewallManagers.add(sqlFirewallManager);

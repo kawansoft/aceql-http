@@ -148,7 +148,9 @@ public class ServerSqlManagerInit {
 		List<String> sqlFirewallClassNames = ServletParametersStore.getSqlFirewallClassNames(database);
 		classNameToLoad = sqlFirewallClassNames.toString();
 
-		SqlFirewallsCreator sqlFirewallsCreator = new SqlFirewallsCreator(sqlFirewallClassNames);
+
+		DatabaseConfigurator databaseConfigurator = databaseConfigurators.get(database);
+		SqlFirewallsCreator sqlFirewallsCreator = new SqlFirewallsCreator(sqlFirewallClassNames, database, databaseConfigurator);
 		List<SqlFirewallManager> sqlFirewallManagers = sqlFirewallsCreator.getSqlFirewalls();
 		sqlFirewallMap.put(database, sqlFirewallManagers);
 

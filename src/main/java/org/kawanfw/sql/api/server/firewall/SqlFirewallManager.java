@@ -63,6 +63,7 @@ import org.kawanfw.sql.api.server.StatementAnalyzer;
  * <li>{@link DenyExecuteUpdateManager}</li>
  * <li>{@link DenyMetadataQueryManager}</li>
  * <li>{@link DenyStatementClassManager}</li>
+ * <li>{@link CsvRulesManager}</li>
  * </ul>
  * <p>
  * Note that the helper class {@link StatementAnalyzer} allows to do some simple
