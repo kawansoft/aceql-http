@@ -25,7 +25,34 @@ import org.kawanfw.sql.metadata.AceQLMetaData;
 import org.kawanfw.sql.servlet.ServerSqlManager;
 
 /**
- *
+ * Firewall manager that checks each SQL request against the content of a CSV File.
+ * <br>
+ * The name of the CSV file that will be used by a database is:
+ * <code>&lt;database&gt;_rules_manager.csv</code> where database is the name of the database declared in the .properties files.
+ * <br>
+ * The file must be located in the same directory as the AceQL .properties file used when starting the AceQL server.
+ * <br><br>
+ * The CSV file contains the rules for accessing the tables, with semicolon for separator:
+ * <ul>
+ * <li>First line contains the element names: <code>username;table;delete;insert;select;update</code></li>
+ * <li>Subsequent lines contain the rules, with the values for each element:
+ * <ul>
+ * <li>{@code username}: AceQL username of the connected client.</li>
+ * <li>{@code table}: the table name to access. Name must not include dots and prefixes.</i>
+ * <li>{@code delete}: {@code true} if username has the right to delete rows of the table, else {@code false}.</li>
+ * <li>{@code insert}: {@code true} if username has the right to insert rows in the table, else {@code false}.</li>
+ * <li>{@code select}: {@code true} if username has the right to select rows of the table, else {@code false}.</li>
+ * <li>{@code update}: {@code true} if username has the right to update rows of the table, else {@code false}.</li>
+ * </ul>
+ * </ul>
+ * Note that:
+ * <ul>
+ * <li>{@code public} value may be used for username column and means any username.
+ * {@code public} supersedes all other rules defines for users for the specified {@code table}, when request is allowed.</li>
+ * <li>{@code all} value is allowed for table column and means any table. {@code all} supersedes all other rules
+ * to apply to the the table for the specified {@code username}, when request is allowed: </li>
+ * </ul> *
+
  * @author Nicolas de Pomereu
  */
 public class CsvRulesManager extends DefaultSqlFirewallManager implements SqlFirewallManager {

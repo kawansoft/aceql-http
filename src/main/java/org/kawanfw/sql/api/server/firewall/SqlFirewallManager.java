@@ -34,7 +34,8 @@ import org.kawanfw.sql.api.server.StatementAnalyzer;
 
 /**
  * Interface that allows to define firewall rules for AceQL HTTP SQL calls. <br>
- * Concrete implementations are defined in aceql-server.properties. <br><br>
+ * Concrete implementations are defined in aceql-server.properties. <br>
+ * <br>
  * A concrete implementation should be developed on the server side in order to:
  * <ul>
  * <li>Define if a client user has the right to call a
@@ -58,12 +59,12 @@ import org.kawanfw.sql.api.server.StatementAnalyzer;
  * don't require any coding. The classes may be chained. See each Javadoc for
  * more details:
  * <ul>
+ * <li>{@link CsvRulesManager}</li>
  * <li>{@link DenyDclManager}</li>
  * <li>{@link DenyDdlManager}</li>
  * <li>{@link DenyExecuteUpdateManager}</li>
  * <li>{@link DenyMetadataQueryManager}</li>
  * <li>{@link DenyStatementClassManager}</li>
- * <li>{@link CsvRulesManager}</li>
  * </ul>
  * <p>
  * Note that the helper class {@link StatementAnalyzer} allows to do some simple
