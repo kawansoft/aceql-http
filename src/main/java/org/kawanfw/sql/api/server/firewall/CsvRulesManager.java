@@ -50,7 +50,7 @@ import org.kawanfw.sql.servlet.ServerSqlManager;
  * <li>{@code public} value may be used for username column and means any username.
  * {@code public} supersedes all other rules defines for users for the specified {@code table}, when request is allowed.</li>
  * <li>{@code all} value is allowed for table column and means any table. {@code all} supersedes all other rules
- * to apply to the the table for the specified {@code username}, when request is allowed: </li>
+ * to apply to the table for the specified {@code username}, when request is allowed: </li>
  * </ul> *
 
  * @author Nicolas de Pomereu

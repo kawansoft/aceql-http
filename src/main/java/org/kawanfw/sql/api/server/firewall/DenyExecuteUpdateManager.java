@@ -58,7 +58,7 @@ public class DenyExecuteUpdateManager extends DefaultSqlFirewallManager implemen
     public void runIfStatementRefused(String username, String database, Connection connection, String ipAddress,
 	    boolean isMetadataQuery, String sql, List<Object> parameterValues) throws IOException, SQLException {
 	String logInfo = "Client username " + username + " (IP: " + ipAddress
-		+ ") has been denied by DenyExecuteUpdateManager SqlFirewallManager executing the db update statement: "
+		+ ") has been denied by DenyExecuteUpdateManager SqlFirewallManager executing the datadase write statement: "
 		+ sql + ".";
 
 	DefaultDatabaseConfigurator defaultDatabaseConfigurator = new DefaultDatabaseConfigurator();
