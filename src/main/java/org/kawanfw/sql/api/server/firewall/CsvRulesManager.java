@@ -27,6 +27,7 @@ import org.kawanfw.sql.servlet.ServerSqlManager;
 /**
  * Firewall manager that checks each SQL request against the content of a CSV File.
  * <br>
+ * <br>
  * The name of the CSV file that will be used by a database is:
  * <code>&lt;database&gt;_rules_manager.csv</code> where database is the name of the database declared in the .properties files.
  * <br>
@@ -73,8 +74,7 @@ public class CsvRulesManager extends DefaultSqlFirewallManager implements SqlFir
     }
 
     /**
-     * Allows the execution of the statement if a allowing rules exists in the :
-     * <br>
+     * Allows the execution of the statement if a allowing rules exists in the:&nbsp;
      * <code>&lt;database&gt;_rules_manager.csv</code> file.
      */
     @Override
