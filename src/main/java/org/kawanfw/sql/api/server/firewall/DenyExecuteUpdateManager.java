@@ -38,7 +38,7 @@ import org.kawanfw.sql.api.server.DefaultDatabaseConfigurator;
  * thus guaranteed to be accessed in read only from client side.
  *
  * @author Nicolas de Pomereu
- *
+ * @since 4.0
  */
 public class DenyExecuteUpdateManager extends DefaultSqlFirewallManager implements SqlFirewallManager {
 

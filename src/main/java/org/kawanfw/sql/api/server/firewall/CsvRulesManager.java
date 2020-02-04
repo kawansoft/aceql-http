@@ -69,6 +69,7 @@ import org.kawanfw.sql.servlet.ServerSqlManager;
  * <br>
  *
  * @author Nicolas de Pomereu
+ * @since 4.1
  */
 public class CsvRulesManager extends DefaultSqlFirewallManager implements SqlFirewallManager {
 

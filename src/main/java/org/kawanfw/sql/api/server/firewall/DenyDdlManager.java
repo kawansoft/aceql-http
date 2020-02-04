@@ -39,7 +39,7 @@ import org.kawanfw.sql.api.server.StatementAnalyzer;
  * Firewall manager that denies any DDL (Data Definition Language) call.
  *
  * @author Nicolas de Pomereu
- *
+ * @since 4.0
  */
 public class DenyDdlManager extends DefaultSqlFirewallManager implements SqlFirewallManager {
 

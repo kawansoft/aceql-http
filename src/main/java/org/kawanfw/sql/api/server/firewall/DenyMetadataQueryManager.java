@@ -37,7 +37,7 @@ import org.kawanfw.sql.api.server.DefaultDatabaseConfigurator;
  * Firewall manager that denies the use of the AceQL Metadata Query API.
  *
  * @author Nicolas de Pomereu
- *
+ * @since 4.0
  */
 public class DenyMetadataQueryManager extends DefaultSqlFirewallManager implements SqlFirewallManager {
 

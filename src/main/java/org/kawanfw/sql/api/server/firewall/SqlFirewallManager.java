@@ -69,6 +69,9 @@ import org.kawanfw.sql.api.server.StatementAnalyzer;
  * <p>
  * Note that the helper class {@link StatementAnalyzer} allows to do some simple
  * tests on the SQL statement string representation.
+ *
+ * @author Nicolas de Pomereu
+ * @since 4.1
  */
 
 public interface SqlFirewallManager {

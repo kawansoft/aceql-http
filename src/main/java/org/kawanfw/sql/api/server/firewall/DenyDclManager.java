@@ -38,7 +38,7 @@ import org.kawanfw.sql.api.server.StatementAnalyzer;
  * Firewall manager that denies any DCL (Data Control Language) call.
  *
  * @author Nicolas de Pomereu
- *
+ * @since 4.0
  */
 public class DenyDclManager extends DefaultSqlFirewallManager implements SqlFirewallManager {
 

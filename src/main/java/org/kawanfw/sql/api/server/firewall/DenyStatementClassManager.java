@@ -38,7 +38,7 @@ import org.kawanfw.sql.api.server.DefaultDatabaseConfigurator;
  * class. (Calling Statements without parameters is forbidden).
  *
  * @author Nicolas de Pomereu
- *
+ * @since 4.0
  */
 public class DenyStatementClassManager extends DefaultSqlFirewallManager implements SqlFirewallManager {
 

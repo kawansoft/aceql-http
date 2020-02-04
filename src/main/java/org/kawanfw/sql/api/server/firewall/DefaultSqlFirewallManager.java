@@ -42,7 +42,7 @@ import org.kawanfw.sql.api.server.DefaultDatabaseConfigurator;
  * implementation for all methods.</b>
  *
  * @author Nicolas de Pomereu
- *
+ * @since 4.0
  */
 public class DefaultSqlFirewallManager implements SqlFirewallManager {
 
