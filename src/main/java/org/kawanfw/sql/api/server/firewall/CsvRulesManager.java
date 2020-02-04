@@ -63,7 +63,6 @@ import org.kawanfw.sql.servlet.ServerSqlManager;
  * {@code all} supersedes all other rules to apply to the table for the
  * specified {@code username}, when request is allowed:</li>
  * </ul>
- * <br>
  * See an example of CSV file: <a href=
  * "https://www.aceql.com/rest/soft/4.1/src/kawansoft_example_rules_manager.csv">kawansoft_example_rules_manager.csv</a>
  * <br>
