@@ -89,7 +89,7 @@ public class CsvRulesManager extends DefaultSqlFirewallManager implements SqlFir
     }
 
     /**
-     * Allows the execution of the statement if a allowing rules exists in
+     * Allows the execution of the statement if an allowing rules exists in
      * the:&nbsp; <code>&lt;database&gt;_rules_manager.csv</code> file.
      */
     @Override
@@ -104,7 +104,7 @@ public class CsvRulesManager extends DefaultSqlFirewallManager implements SqlFir
     }
 
     /**
-     * Logs the info using {@code DefaultDatabaseConfigurator#getLogger() Logger}.
+     * Logs the info using {@link DefaultDatabaseConfigurator#getLogger()} {@code Logger}.
      */
     @Override
     public void runIfStatementRefused(String username, String database, Connection connection, String ipAddress,

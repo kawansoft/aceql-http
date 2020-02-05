@@ -52,7 +52,7 @@ public class DenyMetadataQueryManager extends DefaultSqlFirewallManager implemen
     }
 
     /**
-     * Logs the info using {@code DefaultDatabaseConfigurator#getLogger() Logger}.
+     * Logs the info using {@link DefaultDatabaseConfigurator#getLogger()} {@code Logger}.
      */
     @Override
     public void runIfStatementRefused(String username, String database, Connection connection, String ipAddress,
