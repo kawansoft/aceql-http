@@ -1,4 +1,4 @@
-# AceQL HTTP v4.0   - January 15,  2020
+# AceQL HTTP v4.1   - February 8,  2020
 
 # Server Installation and Configuration Guide  
 
@@ -89,7 +89,7 @@ AceQL HTTP is authorized through an Open Source license: [AceQL Open Source Lice
 
 - The AceQL Web Server.
 
-- User  Configuration classes injected at runtime, called "Configurators" in this document. These are server classes that ensure both security and configuration.
+- User  configuration classes injected at runtime. These are server classes that ensure both security and configuration.
 
 - The AceQL Client SDKs for [C#](https://github.com/kawansoft/AceQL.Client) ,  [Java](https://github.com/kawansoft/aceql-http-client-sdk) and [Python](https://github.com/kawansoft/aceql-http-client-python) that allow you to wrap AceQL HTTP API calls using fluent code: 
 
@@ -204,7 +204,7 @@ Notes:
 Open a terminal and download with Wget.
 
 ```bash
-wget https://www.aceql.com/rest/soft/4.0/download/aceql-http-4.0.run
+wget https://www.aceql.com/rest/soft/4.1/download/aceql-http-4.1.run
 ```
 
 If you get a certificate error message, do one of the following:
@@ -215,15 +215,15 @@ If you get a certificate error message, do one of the following:
 Make the file executable and then run it:
 
 ```bash
-chmod+x aceql-http-4.0.run                                       
-./aceql-http-4.0.run
+chmod+x aceql-http-4.1.run                                       
+./aceql-http-4.1.run
 ```
 
-This will create the `aceql-http-4.0` folder that you can move where you want.
+This will create the `aceql-http-4.1` folder that you can move where you want.
 
-The full path to the final `aceql-http-4.0` installation folder will be surnamed **ACEQL_HOME** in following text.
+The full path to the final `aceql-http-4.1` installation folder will be surnamed **ACEQL_HOME** in following text.
 
-Example: if you run `aceql-http-4.0.run` from `/home/mike`, then software is installed in `/home/mike/aceql-http-4.0` which is the value of **ACEQL_HOME.**
+Example: if you run `aceql-http-4.1.run` from `/home/mike`, then software is installed in `/home/mike/aceql-http-4.1` which is the value of **ACEQL_HOME.**
 
 **Note**
 
@@ -237,10 +237,10 @@ Open a shell session and make sure `java` binary is in the PATH by typing
 
 Add `java` to your PATH if the command does not display Java version. 
 
-Add to your PATH the path to the bin directory of aceql-http-4.0 installation:
+Add to your PATH the path to the bin directory of aceql-http-4.1 installation:
 
 ```bash
-$ PATH=$PATH:/path/to/aceql-http-4.0/bin/
+$ PATH=$PATH:/path/to/aceql-http-4.1/bin/
 export PATH
 ```
 
@@ -261,7 +261,7 @@ Call the `aceql-server` script to display the AceQL version:
 It will display a line with all version info, like:
 
 ```
-AceQL HTTP Community v4.0 - 14-Jan-2020
+AceQL HTTP Community v4.1 - 14-Jan-2020
 ```
 
 
@@ -276,7 +276,7 @@ Run the installer.
 
 It will run AceQL at end of installation and display the Window:
 
-<img src="https://www.aceql.com/rest/soft/4.0/img/aceql_windows_gui_home.png" alt="AceQ HTTP GUI Main Windows"/> 
+<img src="https://www.aceql.com/rest/soft/4.1/img/aceql_windows_gui_home.png" alt="AceQ HTTP GUI Main Windows"/> 
 
 **N.B:** Because of a bug in early versions of Java 9 on Windows, the interface will appear "ugly"  or "blurred" on Java 9 if you have increased Windows Screen Resolution Options to 125% or 150%. See https://goo.gl/PAVvrd for more info. Set back Windows Screen Resolution to 100% for clean display.
 
@@ -465,7 +465,7 @@ To create an SSL Certificate, refer to:
 
 Here is a documented example of an aceql-server.properties file:
 
-[model-aceql-server.properties](https://www.aceql.com/rest/soft/4.0/src/model-aceql-server.properties). 
+[model-aceql-server.properties](https://www.aceql.com/rest/soft/4.1/src/model-aceql-server.properties). 
 
 ## Starting/Stopping the AceQL Web Server from Linux/Unix
 
@@ -558,7 +558,7 @@ where:
 
 The `aceqlhttp` wrapper allows to run AceQL program as a Linux service.
 
-- Click [here](https://www.aceql.com/rest/soft/4.0/src/aceqlhttp.sh) to download `aceqlhttp.sh`
+- Click [here](https://www.aceql.com/rest/soft/4.1/src/aceqlhttp.sh) to download `aceqlhttp.sh`
 - Copy aceqlhttp.sh to `/etc/init.d/aceqlhttp` (requires root privilege). 
 - `sudo chmod +x /etc/init.d/aceqlhttp`
 - Then edit `/etc/init.d/aceqlhttp` and:
@@ -595,7 +595,7 @@ You can also start/top the AceQL Web Server from you java programs, as explained
 
 ## Starting/Stopping the AceQL WebServer from a Java program
 
-You may start or stop the AceQL Server from a Java program calling the [WebServerApi](https://www.aceql.com/rest/soft/4.0/javadoc/org/kawanfw/sql/api/server/web/WebServerApi.html) API.
+You may start or stop the AceQL Server from a Java program calling the [WebServerApi](https://www.aceql.com/rest/soft/4.1/javadoc/org/kawanfw/sql/api/server/web/WebServerApi.html) API.
 
 ## Running AceQL HTTP in a Java EE servlet container
 
@@ -667,7 +667,7 @@ It will display a JSON string and should display a status of `"OK"` and the curr
 ```json
 {                                            
   "status":"OK",                           
-  "version":"AceQL HTTP v4.0 – 15-Jan-2019"
+  "version":"AceQL HTTP v4.1 – 15-Jan-2019"
 }         
 ```
 
@@ -697,12 +697,12 @@ Or for Maven users:
 ```xml
 <groupId>com.aceql</groupId>
 <artifactId>aceql-http</artifactId>
-<version>4.0</version>
+<version>4.1</version>
 ```
 
 ### Database Configurator interface
 
-The [DatabaseConfigurator](http://www.aceql.com/rest/soft/4.0/javadoc/org/kawanfw/sql/api/server/DatabaseConfigurator.html) interface allows you to define main configuration settings:
+The [DatabaseConfigurator](http://www.aceql.com/rest/soft/4.1/javadoc/org/kawanfw/sql/api/server/DatabaseConfigurator.html) interface allows you to define main configuration settings:
 
 - Define how to extract a JDBC Connection from a Connection Pool (if you don’t want to use the default Tomcat JDBC Pool).
 - Define with login method if a client username and password are allowed for connection.
@@ -711,7 +711,7 @@ The [DatabaseConfigurator](http://www.aceql.com/rest/soft/4.0/javadoc/org/kawanf
 - Define the Logger to use to trap server Exceptions and warning messages.
 - Define the maximum number of rows that      may be returned to the client.
 
-AceQL comes with a default `DatabaseConfigurator` implementation that may be extended: [DefaultDatabaseConfigurator](http://www.aceql.com/rest/soft/4.0/javadoc/org/kawanfw/sql/api/server/DefaultDatabaseConfigurator.html).
+AceQL comes with a default `DatabaseConfigurator` implementation that may be extended: [DefaultDatabaseConfigurator](http://www.aceql.com/rest/soft/4.1/javadoc/org/kawanfw/sql/api/server/DefaultDatabaseConfigurator.html).
 
 If no `DatabaseConfigurator` is implemented, AceQL loads and uses the `DefaultDatabaseConfigurator` class.
 
@@ -731,13 +731,13 @@ If you don’t provide a parameter for a `DatabaseConfigurator`, AceQL will use 
 
 ## Coding Database Configurators
 
-This section will illustrate how to code your own configuration methods in a concrete implementation of the [DatabaseConfigurator](http://www.aceql.com/rest/soft/4.0/javadoc/org/kawanfw/sql/api/server/DatabaseConfigurator.html) interface.
+This section will illustrate how to code your own configuration methods in a concrete implementation of the [DatabaseConfigurator](http://www.aceql.com/rest/soft/4.1/javadoc/org/kawanfw/sql/api/server/DatabaseConfigurator.html) interface.
 
 Create a class `MyDatabaseConfigurator` that extends `DefaultDatabaseConfigurator`. You will then implement your own methods.
 
 ### Extracting a Connection from your connection pool system
 
-This is not necessary if you use the default Tomcat JDBC Pool embedded in AceQL: [DefaultDatabaseConfigurator.getConnection()](https://www.aceql.com/rest/soft/4.0/javadoc/org/kawanfw/sql/api/server/DefaultDatabaseConfigurator.html#getConnection(java.lang.String)).
+This is not necessary if you use the default Tomcat JDBC Pool embedded in AceQL: [DefaultDatabaseConfigurator.getConnection()](https://www.aceql.com/rest/soft/4.1/javadoc/org/kawanfw/sql/api/server/DefaultDatabaseConfigurator.html#getConnection(java.lang.String)).
 
 If you want to implement your own connection pool system, overload the `DatabaseConfigurator.getConnection()` method in your concrete class implementation.
 
@@ -824,11 +824,11 @@ Implement this method if you want to define the maximum number of minutes a `Con
 
 Implement this method if you want to define some Java code to execute before/after a `Connection.close()`.
 
-Please check the Javadoc of [DatabaseConfigurator](http://www.aceql.com/rest/soft/4.0/javadoc/org/kawanfw/sql/api/server/DatabaseConfigurator.html) for more information. 
+Please check the Javadoc of [DatabaseConfigurator](http://www.aceql.com/rest/soft/4.1/javadoc/org/kawanfw/sql/api/server/DatabaseConfigurator.html) for more information. 
 
 ## Coding SQL Firewall Rulesets
 
-The [SqlFirewallManager](http://www.aceql.com/rest/soft/4.0/javadoc/org/kawanfw/sql/api/server/firewall/SqlFirewallManager.html) interface allows you to define the SQL Security settings: 
+The [SqlFirewallManager](http://www.aceql.com/rest/soft/4.1/javadoc/org/kawanfw/sql/api/server/firewall/SqlFirewallManager.html) interface allows you to define the SQL Security settings: 
 
 
 - Define if a client user has the right to call a `Statement.executeUpdate()` (i.e. call a statement that updates the database).
@@ -847,17 +847,17 @@ A good dual defense strategy would be:
 
 ####  The SqlFirewallManager interface SQL security methods 
 
-The SQL security settings are coded in a concrete implementation of the [SqlFirewallManager](http://www.aceql.com/rest/soft/4.0/javadoc/org/kawanfw/sql/api/server/firewall/SqlFirewallManager.html) interface with the following methods:
+The SQL security settings are coded in a concrete implementation of the [SqlFirewallManager](http://www.aceql.com/rest/soft/4.1/javadoc/org/kawanfw/sql/api/server/firewall/SqlFirewallManager.html) interface with the following methods:
 
 | **Method**                 | **Role**                                                     |
 | -------------------------- | ------------------------------------------------------------ |
 | `allowExecuteUpdate`       | Defines if a client user has the right to  call a statement that updates the database. |
-| `allowMetadataQuery`       | Defines if a client if a client user has the right to  call the Metadata Query API. (See the [API User Guide](https://github.com/kawansoft/aceql-http/blob/master/aceql-http-4.0-user-guide-api.md)). |
+| `allowMetadataQuery`       | Defines if a client if a client user has the right to  call the Metadata Query API. (See the [API User Guide](https://github.com/kawansoft/aceql-http/blob/master/aceql-http-4.1-user-guide-api.md)). |
 | `allowStatementClass`      | Defines if a client user has the right to  call a raw `Statement` that is not a `PreparedStatement`. |
 | `allowSqlRunAfterAnalysis` | Defines a specific piece of Java code to get  the caller username and IP address and analyze the source code of the SQL statement before allowing or disallowing its execution. |
 | `runIfStatementRefused`    | Executes a specific piece of Java code if an  SQL statement is not allowed. |
 
-AceQL default implementation ([DefaultSqlFirewallManager](http://www.aceql.com/rest/soft/4.0/javadoc/org/kawanfw/sql/api/server/firewall/DefaultSqlFirewallManager.html) ) has minimal restrictions and should *not* be used in production code. It allows *all* SQL code execution.
+AceQL default implementation ([DefaultSqlFirewallManager](http://www.aceql.com/rest/soft/4.1/javadoc/org/kawanfw/sql/api/server/firewall/DefaultSqlFirewallManager.html) ) has minimal restrictions and should *not* be used in production code. It allows *all* SQL code execution.
 
 For example, assume that you want more security in your own `DatabaseConfigurator` implementation that defines these requirements: 
 
@@ -869,7 +869,7 @@ For example, assume that you want more security in your own `DatabaseConfigurato
 - Any UPDATE on the `USER_LOGIN` and `PRODUCT_ORDER` tables requires that the USERNAME value is the last parameter of the `PreparedStatement`.
 - If an illegitimate SQL  statement is detected, the username is inserted in an applicative table     that stores banned usernames.
 
-The [StatementAnalyzer](https://www.aceql.com/rest/soft/4.0/javadoc/org/kawanfw/sql/api/server/StatementAnalyzer.html) utility class allows analysis of the SQL statement.
+The [StatementAnalyzer](https://www.aceql.com/rest/soft/4.1/javadoc/org/kawanfw/sql/api/server/StatementAnalyzer.html) utility class allows analysis of the SQL statement.
 
 Create a `MySqlConfigurator` class that extends `DefaultSqlConfigurator` and implements `allowSqlRunAfterAnalysis`:
 
@@ -1062,7 +1062,7 @@ If you don’t provide a parameter for a `SqlFirewallManager` , AceQL will use t
 
 ### Chaining SqlFirewallManager  classes
 
-[SqlFirewallManager](http://www.aceql.com/rest/soft/4.0/javadoc/org/kawanfw/sql/api/server/firewall/SqlFirewallManager.html) may be chained when declared in `aceql-server.properties` configuration file.
+[SqlFirewallManager](http://www.aceql.com/rest/soft/4.1/javadoc/org/kawanfw/sql/api/server/firewall/SqlFirewallManager.html) may be chained when declared in `aceql-server.properties` configuration file.
 
 If SqlFirewallManager classes are chained, an `AND` condition is applied to all the SqlFirewallManager execution conditions in order to compute final allow decision. For example, the `allowExecuteUpdate(`) of each chained SqlFirewallManager  instance must return `true` in order to allow updates of the database.
 
@@ -1084,9 +1084,9 @@ kawansoft_example.sqlFirewallManagerClassNames=\
 
 ## SessionConfigurator interface
 
-After server authentication succeeds (through the [DatabaseConfigurator.login()](https://www.aceql.com/rest/soft/4.0/javadoc/org/kawanfw/sql/api/server/DatabaseConfigurator.html#login(java.lang.String,%20char[],%20java.lang.String,%20java.lang.String)). method), the AceQL Manager builds an authentication session id that is sent back to the client and will be used by each succeeding client call in order to authenticate the calls. 
+After server authentication succeeds (through the [DatabaseConfigurator.login()](https://www.aceql.com/rest/soft/4.1/javadoc/org/kawanfw/sql/api/server/DatabaseConfigurator.html#login(java.lang.String,%20char[],%20java.lang.String,%20java.lang.String)). method), the AceQL Manager builds an authentication session id that is sent back to the client and will be used by each succeeding client call in order to authenticate the calls. 
 
-Session security is managed by implementing the [SessionConfigurator](https://www.aceql.com/rest/soft/4.0/javadoc/org/kawanfw/sql/api/server/session/SessionConfigurator.html) interface that defines how to generate and verify the session id for (username, database) sessions. 
+Session security is managed by implementing the [SessionConfigurator](https://www.aceql.com/rest/soft/4.1/javadoc/org/kawanfw/sql/api/server/session/SessionConfigurator.html) interface that defines how to generate and verify the session id for (username, database) sessions. 
 
 Interface implementation allows you to:  
 
@@ -1100,9 +1100,9 @@ Interface implementation allows you to:
 
 The default mechanism that builds an authentication session id is coded in the class 
 
-[DefaultSessionConfigurator](https://www.aceql.com/rest/soft/4.0/javadoc/org/kawanfw/sql/api/server/session/DefaultSessionConfigurator.html): 
+[DefaultSessionConfigurator](https://www.aceql.com/rest/soft/4.1/javadoc/org/kawanfw/sql/api/server/session/DefaultSessionConfigurator.html): 
 
-- Session ids are generated using a `SecureRandom` with the [SessionIdentifierGenerator](http://www.aceql.com/rest/soft/4.0/javadoc/org/kawanfw/sql/api/server/session/SessionIdentifierGenerator.html) class.
+- Session ids are generated using a `SecureRandom` with the [SessionIdentifierGenerator](http://www.aceql.com/rest/soft/4.1/javadoc/org/kawanfw/sql/api/server/session/SessionIdentifierGenerator.html) class.
 - Session info (username, database) and session date/time creation are stored in a `HashMap`, whose key is the session id.
 - Session id is sent by client side at each  API call.  AceQL verifies that the `HashMap`  contains the username and that the session is not expired to grant access to the API execution.
 
@@ -1119,7 +1119,7 @@ The disadvantage is that session information is stored on the server side.
 
 ## Session management using JWT
 
-Session management using JWT is coded in [JwtSessionConfigurator](https://www.aceql.com/rest/soft/4.0/javadoc/org/kawanfw/sql/api/server/session/JwtSessionConfigurator.html).
+Session management using JWT is coded in [JwtSessionConfigurator](https://www.aceql.com/rest/soft/4.1/javadoc/org/kawanfw/sql/api/server/session/JwtSessionConfigurator.html).
 
 Session management is done using self-contained JWT (JSON Web Token). 
 
@@ -1145,7 +1145,7 @@ Restart the AceQL Web Server for activation.
 
 ### Creating your own session management 
 
-If you want to create your session management using your own session id generation and security rules, you can implement  the [SessionConfigurator](https://www.aceql.com/rest/soft/4.0/javadoc/org/kawanfw/sql/api/server/session/SessionConfigurator.html) in your own class, and then: 
+If you want to create your session management using your own session id generation and security rules, you can implement  the [SessionConfigurator](https://www.aceql.com/rest/soft/4.1/javadoc/org/kawanfw/sql/api/server/session/SessionConfigurator.html) in your own class, and then: 
 
 Add your class in the CLASSPATH.
 
@@ -1165,7 +1165,7 @@ The Servlets Section in `aceql-server.properties` allow to define you own servle
 - modify a pool size,
 - etc.
 
-The API  [DataSourceStore](https://www.aceql.com/rest/soft/4.0/javadoc/org/kawanfw/sql/api/server/DataSourceStore.html) class allows to retrieve for each database the Tomcat [org.apache.tomcat.jdbc.pool.DataSource](https://tomcat.apache.org/tomcat-8.5-doc/api/org/apache/tomcat/jdbc/pool/DataSource.html) corresponding to the Tomcat JDBC Pool created at AceQL Web server startup. 
+The API  [DataSourceStore](https://www.aceql.com/rest/soft/4.1/javadoc/org/kawanfw/sql/api/server/DataSourceStore.html) class allows to retrieve for each database the Tomcat [org.apache.tomcat.jdbc.pool.DataSource](https://tomcat.apache.org/tomcat-8.5-doc/api/org/apache/tomcat/jdbc/pool/DataSource.html) corresponding to the Tomcat JDBC Pool created at AceQL Web server startup. 
 
 # State management / Stateful Mode
 

@@ -29,8 +29,8 @@ import org.kawanfw.sql.servlet.ServerSqlManager;
  * File. The CSV file is loaded in memory at AceQL server startup. <br>
  * <br>
  * The name of the CSV file that will be used by a database is:
- * <code>&lt;database&gt;_rules_manager.csv</code>, where database is the name of
- * the database declared in the {@code aceql.properties} files.<br>
+ * <code>&lt;database&gt;_rules_manager.csv</code>, where database is the name
+ * of the database declared in the {@code aceql.properties} files.<br>
  * The file must be located in the same directory as the
  * {@code aceql.properties} file used when starting the AceQL server.<br>
  * <br>
@@ -44,24 +44,25 @@ import org.kawanfw.sql.servlet.ServerSqlManager;
  * <li>{@code username}: AceQL username of the connected client.</li>
  * <li>{@code table}: the table name to access. Name must not include dots and
  * prefixes.</i>
- * <li>{@code delete}: {@code true} if the username has the right to delete rows of
- * the table, else {@code false}.</li>
- * <li>{@code insert}: {@code true} if the username has the right to insert rows in
- * the table, else {@code false}.</li>
- * <li>{@code select}: {@code true} if the username has the right to select rows of
- * the table, else {@code false}.</li>
- * <li>{@code update}: {@code true} if the username has the right to update rows of
- * the table, else {@code false}.</li>
+ * <li>{@code delete}: {@code true} if the username has the right to delete rows
+ * of the table, else {@code false}.</li>
+ * <li>{@code insert}: {@code true} if the username has the right to insert rows
+ * in the table, else {@code false}.</li>
+ * <li>{@code select}: {@code true} if the username has the right to select rows
+ * of the table, else {@code false}.</li>
+ * <li>{@code update}: {@code true} if the username has the right to update rows
+ * of the table, else {@code false}.</li>
  * </ul>
  * </ul>
  * Note that:
  * <ul>
- * <li>{@code public} value may be used for the {@code username} column and means any
- * username. {@code public} usage supersedes all other rules defines for usernames for the
- * specified {@code table}, when request is allowed.</li>
- * <li>{@code all} value is allowed for {@code table} column and means any table.
- * {@code all} usage supersedes all other rules to apply to the table for the
- * specified {@code username}, when request is allowed:</li>
+ * <li>{@code public} value may be used for the {@code username} column and
+ * means any username. At execution time: if a rule with {@code public} returns true for a CSV
+ * column, the rule supersedes other declared rules declared for specific users
+ * for the same CSV column.
+ * <li>{@code all} value is allowed for {@code table} column and means any
+ * table. At execution time: If a rule with {@code all} returns true for a CSV column, the rule
+ * supersedes other specific rules declared for specific tables for the same CSV column.
  * </ul>
  * See an example of CSV file: <a href=
  * "https://www.aceql.com/rest/soft/4.1/src/kawansoft_example_rules_manager.csv">kawansoft_example_rules_manager.csv</a>
@@ -104,7 +105,8 @@ public class CsvRulesManager extends DefaultSqlFirewallManager implements SqlFir
     }
 
     /**
-     * Logs the info using {@link DefaultDatabaseConfigurator#getLogger()} {@code Logger}.
+     * Logs the info using {@link DefaultDatabaseConfigurator#getLogger()}
+     * {@code Logger}.
      */
     @Override
     public void runIfStatementRefused(String username, String database, Connection connection, String ipAddress,
