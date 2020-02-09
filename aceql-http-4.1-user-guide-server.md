@@ -369,7 +369,7 @@ databases = my_database1, my_database2
 
 # Mandatory JDBC properties:
 my_database1.driverClassName = org.postgresql.Driver
-my_database1.url= jdbc:postgresql://localhost:5432/kawansoft_example 
+my_database1.url= jdbc:postgresql://localhost:5432/sampledb 
 my_database1.username= user1  
 my_database1.password= password1 
 
@@ -1075,7 +1075,7 @@ For example, the following settings will chain two built-in SqlFirewallManager c
     `DROP, CREATE TABLE,` etc.
 
 ```properties
-kawansoft_example.sqlFirewallManagerClassNames=\
+sampledb.sqlFirewallManagerClassNames=\
      org.kawanfw.sql.api.server.firewall.DenyExecuteUpdateManager,\
      org.kawanfw.sql.api.server.firewall.DenyDdlManager
 ```

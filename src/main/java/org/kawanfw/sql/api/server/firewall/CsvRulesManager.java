@@ -43,7 +43,7 @@ import org.kawanfw.sql.servlet.ServerSqlManager;
  * <ul>
  * <li>{@code username}: AceQL username of the connected client.</li>
  * <li>{@code table}: the table name to access. Name must not include dots and
- * prefixes.</i>
+ * prefixes.</li>
  * <li>{@code delete}: {@code true} if the username has the right to delete rows
  * of the table, else {@code false}.</li>
  * <li>{@code insert}: {@code true} if the username has the right to insert rows
@@ -55,6 +55,7 @@ import org.kawanfw.sql.servlet.ServerSqlManager;
  * <li>Optional comments for the rule.</li>
  * </ul>
  * </ul>
+ * <br>
  * Note that:
  * <ul>
  * <li>{@code public} value may be used for the {@code username} column and
@@ -66,6 +67,7 @@ import org.kawanfw.sql.servlet.ServerSqlManager;
  * column, the rule supersedes other specific rules declared for specific tables
  * for the same CSV column.
  * </ul>
+ * <br>
  * See an example of CSV file: <a href=
  * "https://www.aceql.com/rest/soft/4.1/src/sampledb_rules_manager.csv">sampledb_rules_manager.csv</a>
  * <br>
@@ -260,7 +262,7 @@ public class CsvRulesManager extends DefaultSqlFirewallManager implements SqlFir
      * @param database
      * @throws FileNotFoundException
      */
-    public static File getCsvFile(String database) throws FileNotFoundException {
+    private static File getCsvFile(String database) throws FileNotFoundException {
 	File dir = ServerSqlManager.getAceqlServerPropertiesDirectory();
 	File csvFile = new File(dir + File.separator + database + "_rules_manager.csv");
 
