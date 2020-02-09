@@ -53,6 +53,8 @@ username;table;delete;insert;select;update
  */
 public class CsvRulesManagerLoader {
 
+    private static final int HEADER_LINE_NB_ELEMENTS = 7;
+
     private File file = null;
     private String database = null;
 
@@ -173,55 +175,7 @@ public class CsvRulesManagerLoader {
 	}
     }
 
-    private void checkCurrentLineIntegrity(String line, int lineNumber) {
-	String[] elements = line.split(";");
-
-	// Double check...
-	if (elements.length != 6) {
-	    throw new IllegalFirstLineException(file,
-		    "There must be 6 column names in CSV file header line. Incorrect header line: " + line);
-	}
-
-	int i = 1;
-	String table = elements[i++].toLowerCase();
-	if (!tableSet.contains(table)) {
-	    throw new IllegalTableNameException(file, table, lineNumber);
-	}
-
-	String value = null;
-	value = elements[i++].toLowerCase();
-	if (!isStrictBooleanValue(value)) {
-	    throw new IllegalStatementAllowBooleanValue(file, value, "delete", lineNumber);
-	}
-
-	value = elements[i++].toLowerCase();
-	if (!isStrictBooleanValue(value)) {
-	    throw new IllegalStatementAllowBooleanValue(file, value, "insert", lineNumber);
-	}
-
-	value = elements[i++].toLowerCase();
-	if (!isStrictBooleanValue(value)) {
-	    throw new IllegalStatementAllowBooleanValue(file, value, "select", lineNumber);
-	}
-
-	value = elements[i++].toLowerCase();
-	if (!isStrictBooleanValue(value)) {
-	    throw new IllegalStatementAllowBooleanValue(file, value, "update", lineNumber);
-	}
-    }
-
-    private boolean isStrictBooleanValue(String booleanValue) {
-	if (booleanValue == null) {
-	    return false;
-	}
-	if (!booleanValue.toLowerCase().contentEquals("false") && !booleanValue.toLowerCase().contentEquals("true")) {
-	    return false;
-	}
-	return true;
-
-    }
-
-    /**
+      /**
      * Checks that first line integrity
      *
      * @param line
@@ -230,9 +184,9 @@ public class CsvRulesManagerLoader {
 
 	String[] elements = line.split(";");
 
-	if (elements.length != 6) {
+	if (elements.length != HEADER_LINE_NB_ELEMENTS) {
 	    throw new IllegalFirstLineException(file,
-		    "There must be 6 column names in CSV file header line. Incorrect header line: " + line);
+		    "There must be " + HEADER_LINE_NB_ELEMENTS + " column names in CSV file header line. Incorrect header line: " + line);
 	}
 
 	int i = 0;
@@ -242,6 +196,7 @@ public class CsvRulesManagerLoader {
 	String insert = elements[i++];
 	String select = elements[i++];
 	String update = elements[i++];
+	String optionalComments = elements[i++];
 
 	if (!username.toLowerCase().equals("username")) {
 	    throw new IllegalFirstLineException(file, "Missing \"username\" first column on first line.");
@@ -261,8 +216,59 @@ public class CsvRulesManagerLoader {
 	if (!update.toLowerCase().equals("update")) {
 	    throw new IllegalFirstLineException(file, "Missing \"update\" sixth column on first line.");
 	}
+	if (!optionalComments.toLowerCase().equals("optional comments")) {
+	    throw new IllegalFirstLineException(file, "Missing \"optional comments\" seventh column on first line.");
+	}
+
     }
 
+    private void checkCurrentLineIntegrity(String line, int lineNumber) {
+   	String[] elements = line.split(";");
+
+   	// Double check...
+   	if (elements.length != HEADER_LINE_NB_ELEMENTS && elements.length != HEADER_LINE_NB_ELEMENTS - 1) {
+   	    throw new IllegalFirstLineException(file,
+   		    "There must be " + HEADER_LINE_NB_ELEMENTS + " or " +  (HEADER_LINE_NB_ELEMENTS -1) + " values in CSV file current line. Incorrect line: " + line);
+   	}
+
+   	int i = 1;
+   	String table = elements[i++].toLowerCase();
+   	if (!tableSet.contains(table)) {
+   	    throw new IllegalTableNameException(file, table, lineNumber);
+   	}
+
+   	String value = null;
+   	value = elements[i++].toLowerCase();
+   	if (!isStrictBooleanValue(value)) {
+   	    throw new IllegalStatementAllowBooleanValue(file, value, "delete", lineNumber);
+   	}
+
+   	value = elements[i++].toLowerCase();
+   	if (!isStrictBooleanValue(value)) {
+   	    throw new IllegalStatementAllowBooleanValue(file, value, "insert", lineNumber);
+   	}
+
+   	value = elements[i++].toLowerCase();
+   	if (!isStrictBooleanValue(value)) {
+   	    throw new IllegalStatementAllowBooleanValue(file, value, "select", lineNumber);
+   	}
+
+   	value = elements[i++].toLowerCase();
+   	if (!isStrictBooleanValue(value)) {
+   	    throw new IllegalStatementAllowBooleanValue(file, value, "update", lineNumber);
+   	}
+       }
+
+       private boolean isStrictBooleanValue(String booleanValue) {
+   	if (booleanValue == null) {
+   	    return false;
+   	}
+   	if (!booleanValue.toLowerCase().contentEquals("false") && !booleanValue.toLowerCase().contentEquals("true")) {
+   	    return false;
+   	}
+   	return true;
+
+       }
     /**
      * Returns the Map of allowed statements per table, per database and username.
      * @return the Map of allowed statements per table, per database and username.
@@ -283,8 +289,9 @@ public class CsvRulesManagerLoader {
 	Set<String> tableSet = new HashSet<String>();
 	tableSet.add("all");
 	tableSet.add("banned_usernames");
-	tableSet.add("consumer");
+	tableSet.add("customer");
 	tableSet.add("orderlog");
+	tableSet.add("documentation");
 
 	File file = new File("I:\\_dev_awake\\aceql-http-main\\aceql-http\\conf\\kawansoft_example_rules_manager.csv");
 	CsvRulesManagerLoader csvRulesManagerLoader = new CsvRulesManagerLoader(file, database, tableSet);

@@ -38,7 +38,7 @@ import org.kawanfw.sql.servlet.ServerSqlManager;
  * separator:
  * <ul>
  * <li>First line contains the element names:
- * <code>username;table;delete;insert;select;update</code></li>
+ * <code>username;table;delete;insert;select;update;optional comments</code></li>
  * <li>Subsequent lines contain the rules, with the values for each element:
  * <ul>
  * <li>{@code username}: AceQL username of the connected client.</li>
@@ -52,17 +52,19 @@ import org.kawanfw.sql.servlet.ServerSqlManager;
  * of the table, else {@code false}.</li>
  * <li>{@code update}: {@code true} if the username has the right to update rows
  * of the table, else {@code false}.</li>
+ * <li>An optional comments line.</li>
  * </ul>
  * </ul>
  * Note that:
  * <ul>
  * <li>{@code public} value may be used for the {@code username} column and
- * means any username. At execution time: if a rule with {@code public} returns true for a CSV
- * column, the rule supersedes other declared rules declared for specific users
- * for the same CSV column.
+ * means any username. At execution time: if a rule with {@code public} returns
+ * true for a CSV column, the rule supersedes other declared rules declared for
+ * specific users for the same CSV column.
  * <li>{@code all} value is allowed for {@code table} column and means any
- * table. At execution time: If a rule with {@code all} returns true for a CSV column, the rule
- * supersedes other specific rules declared for specific tables for the same CSV column.
+ * table. At execution time: If a rule with {@code all} returns true for a CSV
+ * column, the rule supersedes other specific rules declared for specific tables
+ * for the same CSV column.
  * </ul>
  * See an example of CSV file: <a href=
  * "https://www.aceql.com/rest/soft/4.1/src/kawansoft_example_rules_manager.csv">kawansoft_example_rules_manager.csv</a>
@@ -74,7 +76,7 @@ import org.kawanfw.sql.servlet.ServerSqlManager;
  */
 public class CsvRulesManager extends DefaultSqlFirewallManager implements SqlFirewallManager {
 
-    private static final boolean DEBUG = false;
+    private static boolean DEBUG = false;
 
     /**
      * The map that contains for each database/username the table and their rights
@@ -138,13 +140,31 @@ public class CsvRulesManager extends DefaultSqlFirewallManager implements SqlFir
 	String statementName = analyzer.getStatementName();
 	statementName = statementName.toLowerCase();
 
+	debug("");
+	debug("Testing statement: " + statementName + ":");
+
 	boolean isAllowed = false;
 
 	for (String table : tables) {
 	    table = table.toLowerCase();
-	    // Test public
-	    DatabaseUserTableTriplet databaseUserTableTriplet = new DatabaseUserTableTriplet(database, "public", table);
+
+	    // Test public with all tables
+	    DatabaseUserTableTriplet databaseUserTableTriplet = new DatabaseUserTableTriplet(database, "public", "all");
 	    TableAllowStatements tableAllowStatements = mapTableAllowStatementsSet.get(databaseUserTableTriplet);
+
+	    debug("public and all -  tableAllowStatements: " + tableAllowStatements + ":");
+	    if (tableAllowStatements != null) {
+		isAllowed = isAllowed(tableAllowStatements, statementName);
+		if (isAllowed) {
+		    return true;
+		}
+	    }
+
+	    // Test public with the passed table
+	    databaseUserTableTriplet = new DatabaseUserTableTriplet(database, "public", table);
+	    tableAllowStatements = mapTableAllowStatementsSet.get(databaseUserTableTriplet);
+
+	    debug("public -  tableAllowStatements: " + tableAllowStatements + ":");
 
 	    if (tableAllowStatements != null) {
 		isAllowed = isAllowed(tableAllowStatements, statementName);
@@ -153,8 +173,24 @@ public class CsvRulesManager extends DefaultSqlFirewallManager implements SqlFir
 		}
 	    }
 
+	    // Test username woth all tables
+	    databaseUserTableTriplet = new DatabaseUserTableTriplet(database, username, "all");
+	    tableAllowStatements = mapTableAllowStatementsSet.get(databaseUserTableTriplet);
+
+	    debug("all -  tableAllowStatements: " + tableAllowStatements + ":");
+
+	    if (tableAllowStatements != null) {
+		isAllowed = isAllowed(tableAllowStatements, statementName);
+		if (isAllowed) {
+		    return true;
+		}
+	    }
+
+	    // Test direct values
 	    databaseUserTableTriplet = new DatabaseUserTableTriplet(database, username, table);
 	    tableAllowStatements = mapTableAllowStatementsSet.get(databaseUserTableTriplet);
+
+	    debug("tableAllowStatements: " + tableAllowStatements + ":");
 
 	    if (tableAllowStatements != null) {
 		isAllowed = isAllowed(tableAllowStatements, statementName);
@@ -239,7 +275,7 @@ public class CsvRulesManager extends DefaultSqlFirewallManager implements SqlFir
     @SuppressWarnings("unused")
     private void debug(String string) {
 	if (DEBUG) {
-	    System.out.println(new Date() + string);
+	    System.out.println(new Date() + " " + string);
 	}
     }
 }
