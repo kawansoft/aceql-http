@@ -370,7 +370,7 @@ public class MetaDataJavaPrinter {
     public static void main(String[] args) throws Exception {
 	Connection connection = ConnectionParms.getConnection();
 
-	MetaDataJavaPrinter metaDataJava = new MetaDataJavaPrinter(connection, "kawansoft_example");
+	MetaDataJavaPrinter metaDataJava = new MetaDataJavaPrinter(connection, "sampledb");
 
 	DatabaseMetaData databaseMetaData = connection.getMetaData();
 	String databaseProductName = databaseMetaData.getDatabaseProductName();

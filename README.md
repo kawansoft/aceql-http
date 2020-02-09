@@ -6,7 +6,7 @@
 
    * [Overview](#overview)
    * [Server Side Settings](#server-side-settings)
-      * [Create the kawansoft_example database](#create-the-kawansoft_example-database)
+      * [Create the sampledb database](#create-the-sampledb-database)
       * [Linux/Unix Installation &amp; Server Startup](#linuxunix-installation--server-startup)
          * [Download &amp; installation](#download--installation)
          * [Update the PATH (Optional)](#update-the-path-optional)
@@ -102,17 +102,17 @@ The execution of each AceQL HTTP API statement is conditioned by optional rules,
 
 # Server Side Settings
 
-## Create the kawansoft_example database
+## Create the sampledb database
 
-Download the database `kawansoft_example` schema corresponding to your database engine: 
+Download the database `sampledb` schema corresponding to your database engine: 
 
-- [kawansoft_example_mysq.txt](https://www.aceql.com/rest/soft/4.1/src/kawansoft_example_mysql.txt )
-- [kawansoft_example_postgresql.txt](https://www.aceql.com/rest/soft/4.1/src/kawansoft_example_postgresql.txt)
-- [kawansoft_example_ms_sql_serverl.txt](https://www.aceql.com/rest/soft/4.1/src/kawansoft_example_ms_sql_server.txt)
-- [kawansoft_example_oracle_database.txt](https://www.aceql.com/rest/soft/4.1/src/kawansoft_example_oracle_database.txt)
+- [sampledb_mysq.txt](https://www.aceql.com/rest/soft/4.1/src/sampledb_mysql.txt )
+- [sampledb_postgresql.txt](https://www.aceql.com/rest/soft/4.1/src/sampledb_postgresql.txt)
+- [sampledb_ms_sql_serverl.txt](https://www.aceql.com/rest/soft/4.1/src/sampledb_ms_sql_server.txt)
+- [sampledb_oracle_database.txt](https://www.aceql.com/rest/soft/4.1/src/sampledb_oracle_database.txt)
 
 
-For other databases engines, just tailor the file as indicated: [kawansoft_example_other_databases.txt](https://www.aceql.com/rest/soft/4.1/src/kawansoft_example_other_databases.txt)
+For other databases engines, just tailor the file as indicated: [sampledb_other_databases.txt](https://www.aceql.com/rest/soft/4.1/src/sampledb_other_databases.txt)
 
 Then launch the script that will create the tables in a database
 
@@ -188,7 +188,7 @@ Set the database name to the `databases` property:
 
 ```ini
 # Database names separated by commas
-databases = kawansoft_example
+databases = sampledb
 ```
 
 Change the 4 JDBC properties values accordingly to your JDBC Driver, your database URL, and your database username/password. Each property name must be prefixed with the database name and a dot:
@@ -197,10 +197,10 @@ Example for PostgreSQL:
 
 ```properties
 # PostgreSQL example
-kawansoft_example.driverClassName= org.postgresql.Driver
-kawansoft_example.url=jdbc:postgresql://localhost:5432/kawansoft_example
-kawansoft_example.username=user1  
-kawansoft_example.password=password1
+sampledb.driverClassName= org.postgresql.Driver
+sampledb.url=jdbc:postgresql://localhost:5432/sampledb
+sampledb.username=user1  
+sampledb.password=password1
 ```
 
 ### Add your JDBC driver to AceQL installation 
@@ -228,14 +228,14 @@ The console will display the properties used, test that the Connection is establ
                     keepAliveTime: 10, workQueue: ArrayBlockingQueue(50000)]
 [ACEQL HTTP START] Setting Default Connector attribute values:
 [ACEQL HTTP START] Setting Context attribute values:
-[ACEQL HTTP START] Setting Tomcat JDBC Pool attributes for kawansoft_example database:
+[ACEQL HTTP START] Setting Tomcat JDBC Pool attributes for sampledb database:
 [ACEQL HTTP START]  -> driverClassName =org.postgresql.Driver
-[ACEQL HTTP START]  -> url =jdbc:postgresql://localhost:5432/kawansoft_example
+[ACEQL HTTP START]  -> url =jdbc:postgresql://localhost:5432/sampledb
 [ACEQL HTTP START]  -> username = user1
 [ACEQL HTTP START]  -> password = ********
-[ACEQL HTTP START] Testing DataSource.getConnection() for kawansoft_example database:
+[ACEQL HTTP START] Testing DataSource.getConnection() for sampledb database:
 [ACEQL HTTP START]  -> Connection OK!
-[ACEQL HTTP START] kawansoft_example Configurators:
+[ACEQL HTTP START] sampledb Configurators:
 [ACEQL HTTP START]  -> databaseConfiguratorClassName:
 [ACEQL HTTP START]     org.kawanfw.sql.api.server.DefaultDatabaseConfigurator
 [ACEQL HTTP START] Configurators Status: OK.
@@ -299,7 +299,7 @@ Set the database name to the databases property:
 
 ```properties
 # Databasenames separated by commas
-databases = kawansoft_example
+databases = sampledb
 ```
 
 Change the 4 JDBC properties values accordingly to your JDBC Driver, your database URL, and your database username/password. Each property name must be prefixed with the database name and a dot.
@@ -308,10 +308,10 @@ Example for PostgreSQL:
 
 ```properties
 # PostgreSQL example
-kawansoft_example.driverClassName= org.postgresql.Driver
-kawansoft_example.url=jdbc:postgresql://localhost:5432/kawansoft_example
-kawansoft_example.username=user1  
-kawansoft_example.password=password1
+sampledb.driverClassName= org.postgresql.Driver
+sampledb.url=jdbc:postgresql://localhost:5432/sampledb
+sampledb.username=user1  
+sampledb.password=password1
 ```
 
 Leave the default **localhost** value for the Host field.
@@ -335,14 +335,14 @@ The console will display the properties used, test that the `Connection` is esta
 [ACEQL HTTP START]  ->  keepAliveTime: 10, workQueue: ArrayBlockingQueue(50000)]
 [ACEQL HTTP START] Setting Default Connector attribute values:
 [ACEQL HTTP START] Setting Context attribute values:
-[ACEQL HTTP START] Setting Tomcat JDBC Pool attributes forkawansoft_example database:
+[ACEQL HTTP START] Setting Tomcat JDBC Pool attributes forsampledb database:
 [ACEQL HTTP START]  -> driverClassName = org.postgresql.Driver
-[ACEQL HTTP START]  -> url = jdbc:postgresql://localhost:5432/kawansoft_example
+[ACEQL HTTP START]  -> url = jdbc:postgresql://localhost:5432/sampledb
 [ACEQL HTTP START]  -> username = user1
 [ACEQL HTTP START]  -> password = ********
-[ACEQL HTTP START] Testing DataSource.getConnection() forkawansoft_example database:
+[ACEQL HTTP START] Testing DataSource.getConnection() forsampledb database:
 [ACEQL HTTP START]  -> Connection OK!
-[ACEQL HTTP START] kawansoft_example Configurators:
+[ACEQL HTTP START] sampledb Configurators:
 [ACEQL HTTP START]  -> databaseConfiguratorClassName:
 [ACEQL HTTP START]     org.kawanfw.sql.api.server.DefaultDatabaseConfigurator
 [ACEQL HTTP START] Configurators Status: OK.
@@ -378,11 +378,11 @@ AceQL can be accessed from client side:
 
 ## cURL 
 
-So via cURL we connect to a database `kawansoft_example` with the identifiers `(MyUsername, MySecret)`:
+So via cURL we connect to a database `sampledb` with the identifiers `(MyUsername, MySecret)`:
 
 ```bash
 $ curl --data-urlencode "password=MySecret" \
- http://localhost:9090/aceql/database/kawansoft_example/username/MyUsername/connect
+ http://localhost:9090/aceql/database/sampledb/username/MyUsername/connect
 ```
 
 le/username/MyUsername/connect
@@ -532,7 +532,7 @@ From now, you can read the [API User Guide](https://www.aceql.com/DocDownload?do
        {
            // Port number is the port number used to start the Web Server:
            string server = "https://www.aceql.com:9443/aceql";
-           string database = "kawansoft_example";
+           string database = "sampledb";
 
            string connectionString = $"Server={server}; Database={database}";
 
@@ -658,7 +658,7 @@ From now on, you can read the [C# Client SDK User Guide](https://www.aceql.com/D
      String url = "http://localhost:9090/aceql";
 
      // The remote database to use:
-     String database = "kawansoft_example";
+     String database = "sampledb";
 
      // (username, password) for authentication on server side.
      // No authentication will be done for our Quick Start:
@@ -778,7 +778,7 @@ $ pip install aceql
               url = "http://localhost:9090/aceql"
 
               # The remote database to use:
-              database = "kawansoft_example"
+              database = "sampledb"
 
               # (username, password) for authentication on server side.
               # No authentication will be done for our Quick Start:

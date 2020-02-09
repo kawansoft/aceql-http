@@ -226,13 +226,13 @@ In case of error:
 
 ### login call – cURL example 
 
-All the following examples use a MySQL database named `kawansoft_example`.
+All the following examples use a MySQL database named `sampledb`.
 
-Connection to the [kawansoft_example](http://www.aceql.com/rest/soft/4.1/src/kawansoft_example.txt) database with (MyUsername, MySecret) credentials:
+Connection to the [sampledb](http://www.aceql.com/rest/soft/4.1/src/sampledb.txt) database with (MyUsername, MySecret) credentials:
 
 ```bash
 $ curl \
-http://localhost:9090/aceql/database/kawansoft_example/username/\
+http://localhost:9090/aceql/database/sampledb/username/\
 MyUsername/login?password=MySecret
 ```
 

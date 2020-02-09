@@ -1,24 +1,24 @@
 /*
  * This file is part of AceQL HTTP.
- * AceQL HTTP: SQL Over HTTP                                     
+ * AceQL HTTP: SQL Over HTTP
  * Copyright (C) 2020,  KawanSoft SAS
- * (http://www.kawansoft.com). All rights reserved.                                
- *                                                                               
- * AceQL HTTP is free software; you can redistribute it and/or                 
- * modify it under the terms of the GNU Lesser General Public                    
- * License as published by the Free Software Foundation; either                  
- * version 2.1 of the License, or (at your option) any later version.            
- *                                                                               
- * AceQL HTTP is distributed in the hope that it will be useful,               
- * but WITHOUT ANY WARRANTY; without even the implied warranty of                
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU             
- * Lesser General Public License for more details.                               
- *                                                                               
- * You should have received a copy of the GNU Lesser General Public              
- * License along with this library; if not, write to the Free Software           
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  
+ * (http://www.kawansoft.com). All rights reserved.
+ *
+ * AceQL HTTP is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * AceQL HTTP is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
  * 02110-1301  USA
- * 
+ *
  * Any modifications to this file must keep this entire header
  * intact.
  */
@@ -31,7 +31,7 @@ import org.apache.tomcat.jdbc.pool.PoolProperties;
 
 /**
  * @author Nicolas de Pomereu
- * 
+ *
  */
 public class TestTomcatJdbcPoolBehavior {
 
@@ -39,7 +39,7 @@ public class TestTomcatJdbcPoolBehavior {
     private static DataSource dataSource = null;
 
     /**
-     * 
+     *
      */
     public TestTomcatJdbcPoolBehavior() {
 	// TODO Auto-generated constructor stub
@@ -51,7 +51,7 @@ public class TestTomcatJdbcPoolBehavior {
 
 	// Driver parameters to use:
 	String driverClassName = "org.postgresql.Driver";
-	String url = "jdbc:postgresql://localhost:5432/kawansoft_example";
+	String url = "jdbc:postgresql://localhost:5432/sampledb";
 	String username = "user1";
 	String password = "password1";
 

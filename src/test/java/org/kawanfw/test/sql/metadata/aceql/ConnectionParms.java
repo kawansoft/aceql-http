@@ -88,7 +88,7 @@ public class ConnectionParms {
 	Connection con = null;
 	Class.forName("org.gjt.mm.mysql.Driver").newInstance();
 
-	con = DriverManager.getConnection("jdbc:mysql://localhost:3306/kawansoft_example", "user1", "password1");
+	con = DriverManager.getConnection("jdbc:mysql://localhost:3306/sampledb", "user1", "password1");
 	return con;
     }
 
@@ -104,7 +104,7 @@ public class ConnectionParms {
 	Connection con = null;
 	Class.forName("org.postgresql.Driver").newInstance();
 
-	con = DriverManager.getConnection("jdbc:postgresql://localhost:5432/kawansoft_example", "postgres", "327qm9y3");
+	con = DriverManager.getConnection("jdbc:postgresql://localhost:5432/sampledb", "postgres", "327qm9y3");
 	return con;
     }
 
@@ -120,7 +120,7 @@ public class ConnectionParms {
 	Connection con = null;
 	Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver").newInstance();
 
-	con = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;database=kawansoft_example", "user1",
+	con = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;database=sampledb", "user1",
 		"password1");
 	return con;
     }
@@ -130,7 +130,7 @@ public class ConnectionParms {
 	Connection con = null;
 	Class.forName("oracle.jdbc.driver.OracleDriver").newInstance();
 
-	con = DriverManager.getConnection("jdbc:oracle:thin:kawansoft_example@//localhost:1521/XE", "user1",
+	con = DriverManager.getConnection("jdbc:oracle:thin:sampledb@//localhost:1521/XE", "user1",
 		"password1");
 
 	return con;

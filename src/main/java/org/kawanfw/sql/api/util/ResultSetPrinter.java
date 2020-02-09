@@ -1,24 +1,24 @@
 /*
  * This file is part of AceQL HTTP.
- * AceQL HTTP: SQL Over HTTP                                     
+ * AceQL HTTP: SQL Over HTTP
  * Copyright (C) 2020,  KawanSoft SAS
- * (http://www.kawansoft.com). All rights reserved.                                
- *                                                                               
- * AceQL HTTP is free software; you can redistribute it and/or                 
- * modify it under the terms of the GNU Lesser General Public                    
- * License as published by the Free Software Foundation; either                  
- * version 2.1 of the License, or (at your option) any later version.            
- *                                                                               
- * AceQL HTTP is distributed in the hope that it will be useful,               
- * but WITHOUT ANY WARRANTY; without even the implied warranty of                
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU             
- * Lesser General Public License for more details.                               
- *                                                                               
- * You should have received a copy of the GNU Lesser General Public              
- * License along with this library; if not, write to the Free Software           
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  
+ * (http://www.kawansoft.com). All rights reserved.
+ *
+ * AceQL HTTP is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * AceQL HTTP is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
  * 02110-1301  USA
- * 
+ *
  * Any modifications to this file must keep this entire header
  * intact.
  */
@@ -39,7 +39,7 @@ import org.kawanfw.sql.transport.TransportConverter;
 import org.kawanfw.sql.util.FrameworkDebug;
 
 /**
- * 
+ *
  * Tool to display the content of any JDBC <code>ResultSet</code> on a print
  * stream. <br>
  * (Code extracted/adapted from
@@ -52,40 +52,40 @@ import org.kawanfw.sql.util.FrameworkDebug;
  * <li>Binary/BLOB columns are not displayed.</li>
  * </ul>
  * <br>
- * Example on our test database
- * <a href="http://www.aceql.com/soft/4.0/src/kawansoft_example.txt"
- * >kawansoft_example</a>: <blockquote>
- * 
+ * Example on our sampledb test database
+ * <a href="http://www.aceql.com/soft/4.1/src/sampledb.txt"
+ * >sampledb</a>: <blockquote>
+ *
  * <pre>
  * String sql = &quot;select * from customer limit 5&quot;;
  * PreparedStatement preparedStatement = connection.prepareStatement(sql);
  * ResultSet rs = preparedStatement.executeQuery();
- * 
+ *
  * // Print the result set on System.out:
  * ResultSetPrinter resultSetPrinter = new ResultSetPrinter(rs, System.out);
  * resultSetPrinter.print();
- * 
+ *
  * rs.first();
  * System.out.println();
- * 
+ *
  * // Print the result set on System.out with CSV format:
  * resultSetPrinter = new ResultSetPrinter(rs, System.out, true);
  * resultSetPrinter.print();
- * 
+ *
  * preparedStatement.close();
  * rs.close();
  * </pre>
- * 
+ *
  * </blockquote> Will produce the following output: <blockquote>
- * 
+ *
  * <pre>
- * customer_id | customer_title | fname | lname    | addressline      | town        | zipcode | phone       
+ * customer_id | customer_title | fname | lname    | addressline      | town        | zipcode | phone
  * ----------------------------------------------------------------------------------------------------------
- *           1 | Sir            | John  | Smith_1  | 1, César Avenue  | JavaLand_1  | 145     | 1-12345678  
- *           2 | Sir            | John  | Smith_2  | 2, César Avenue  | JavaLand_2  | 245     | 2-12345678  
- *           3 | Sir            | John  | Smith_3  | 3, César Avenue  | JavaLand_3  | 345     | 3-12345678  
- *           4 | Sir            | John  | Smith_4  | 4, César Avenue  | JavaLand_4  | 445     | 4-12345678  
- *           5 | Sir            | John  | Smith_5  | 5, César Avenue  | JavaLand_5  | 545     | 5-12345678  
+ *           1 | Sir            | John  | Smith_1  | 1, César Avenue  | JavaLand_1  | 145     | 1-12345678
+ *           2 | Sir            | John  | Smith_2  | 2, César Avenue  | JavaLand_2  | 245     | 2-12345678
+ *           3 | Sir            | John  | Smith_3  | 3, César Avenue  | JavaLand_3  | 345     | 3-12345678
+ *           4 | Sir            | John  | Smith_4  | 4, César Avenue  | JavaLand_4  | 445     | 4-12345678
+ *           5 | Sir            | John  | Smith_5  | 5, César Avenue  | JavaLand_5  | 545     | 5-12345678
  * (5 rows)
  * &nbsp;
  * customer_id;customer_title;fname;lname;addressline;town;zipcode;phone
@@ -94,11 +94,11 @@ import org.kawanfw.sql.util.FrameworkDebug;
  * 3;Sir;John;Smith_3;3, César Avenue;JavaLand_3;345;3-12345678
  * 4;Sir;John;Smith_4;4, César Avenue;JavaLand_4;445;4-12345678
  * 5;Sir;John;Smith_5;5, César Avenue;JavaLand_5;545;5-12345678
- * 
+ *
  * </pre>
- * 
+ *
  * </blockquote>
- * 
+ *
  * @author Nicolas de Pomereu
  * @since 1.0
  */
@@ -130,7 +130,7 @@ public class ResultSetPrinter {
     /**
      * Constructor to use to display a human readable or a CSV formatted
      * <code>ResultSet</code>
-     * 
+     *
      * @param resultSet
      *            the result set to display
      * @param printStream
@@ -157,7 +157,7 @@ public class ResultSetPrinter {
 
     /**
      * Constructor to use to display a human readable <code>ResultSet</code>.
-     * 
+     *
      * @param resultSet
      *            the result set to display
      * @param printStream
@@ -240,7 +240,7 @@ public class ResultSetPrinter {
 
     /**
      * Prints the first line of a text
-     * 
+     *
      * @param str
      *            the text
      * @return the first line of the text
@@ -428,7 +428,7 @@ public class ResultSetPrinter {
 
     /**
      * Returns true if the column is a binary type
-     * 
+     *
      * @param columnType
      *            the sql column type
      * @param columnName
@@ -449,7 +449,7 @@ public class ResultSetPrinter {
 
     /**
      * Returns true if column is numeric
-     * 
+     *
      * @param colType
      *            the meta column type
      * @return true if column is numeric
@@ -469,7 +469,7 @@ public class ResultSetPrinter {
 
     /**
      * Fills the value of the result set column with surrounding blanks.
-     * 
+     *
      * @param size
      *            the size to fill with blanks
      * @param str
@@ -515,7 +515,7 @@ public class ResultSetPrinter {
 
     /**
      * Fills the header with surrounding blanks.
-     * 
+     *
      * @param label
      *            the header label
      * @param size

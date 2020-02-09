@@ -52,7 +52,7 @@ import org.kawanfw.sql.servlet.ServerSqlManager;
  * of the table, else {@code false}.</li>
  * <li>{@code update}: {@code true} if the username has the right to update rows
  * of the table, else {@code false}.</li>
- * <li>An optional comments line.</li>
+ * <li>Optional comments for the rule.</li>
  * </ul>
  * </ul>
  * Note that:
@@ -67,7 +67,7 @@ import org.kawanfw.sql.servlet.ServerSqlManager;
  * for the same CSV column.
  * </ul>
  * See an example of CSV file: <a href=
- * "https://www.aceql.com/rest/soft/4.1/src/kawansoft_example_rules_manager.csv">kawansoft_example_rules_manager.csv</a>
+ * "https://www.aceql.com/rest/soft/4.1/src/sampledb_rules_manager.csv">sampledb_rules_manager.csv</a>
  * <br>
  * <br>
  *

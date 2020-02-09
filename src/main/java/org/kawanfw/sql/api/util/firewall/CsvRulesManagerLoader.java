@@ -284,7 +284,7 @@ public class CsvRulesManagerLoader {
 
     public static void main(String[] argv) throws Exception {
 
-	String database = "kawansoft_example";
+	String database = "sampledb";
 
 	Set<String> tableSet = new HashSet<String>();
 	tableSet.add("all");
@@ -293,7 +293,7 @@ public class CsvRulesManagerLoader {
 	tableSet.add("orderlog");
 	tableSet.add("documentation");
 
-	File file = new File("I:\\_dev_awake\\aceql-http-main\\aceql-http\\conf\\kawansoft_example_rules_manager.csv");
+	File file = new File("I:\\_dev_awake\\aceql-http-main\\aceql-http\\conf\\sampledb_rules_manager.csv");
 	CsvRulesManagerLoader csvRulesManagerLoader = new CsvRulesManagerLoader(file, database, tableSet);
 	csvRulesManagerLoader.load();
 
