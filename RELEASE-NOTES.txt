@@ -10,11 +10,13 @@ Introduction
 AceQL HTTP is a secure framework of REST like HTTP APIs that allow to 
 access to remote SQL databases over HTTP from any device that supports HTTP. 
 
-AceQL HTTP is provided with two client SDKs:
-- The AceQL Java Client SDK allows to wrap the HTTP APIs using JDBC calls 
-  in their code, just like they would for a local database.
+AceQL HTTP is provided with three client SDKs:
 - The AceQL C# Client SDK allows to wrap the HTTP APIs using Microsoft SQL 
   Server like calls in their code, just like they would for a local database.
+- The AceQL Java Client SDK allows to wrap the HTTP APIs using JDBC calls 
+  in their code, just like they would for a local database.
+- The AceQL Python Client SDK allows SQL calls to be encoded with standard 
+  unmodified DB-API 2.0 syntax.
 
 Security has been taken into account from the design: It as allowed to specify 
 and code strong security rules in order to protect the databases. 
