@@ -316,7 +316,6 @@ Most AceQL configuration is carried out by defining properties in the
 
 The file is organized in Sections. Only the first 3 Sections must be configured in order to start the AceQL Manager.
 
-- **License Info Section  (Professional Edition only).**
 - **AceQL Manager servlet Section.**
 - **Tomcat JDBC Connection Pool Section**.
 - Configurators Section .
@@ -667,7 +666,7 @@ It will display a JSON string and should display a status of `"OK"` and the curr
 ```json
 {                                            
   "status":"OK",                           
-  "version":"AceQL HTTP v4.1 – 15-Jan-2019"
+  "version":"AceQL HTTP v4.1 – 13-Feb-2019"
 }         
 ```
 
@@ -709,7 +708,7 @@ The [DatabaseConfigurator](http://www.aceql.com/rest/soft/4.1/javadoc/org/kawanf
 - Define the directories where the Blobs/Clobs are located for upload & download.
 - Define some Java code to execute before/after a `Connection.close()`.
 - Define the Logger to use to trap server Exceptions and warning messages.
-- Define the maximum number of rows that      may be returned to the client.
+- Define the maximum number of rows that may be returned to the client.
 
 AceQL comes with a default `DatabaseConfigurator` implementation that may be extended: [DefaultDatabaseConfigurator](http://www.aceql.com/rest/soft/4.1/javadoc/org/kawanfw/sql/api/server/DefaultDatabaseConfigurator.html).
 
@@ -815,10 +814,6 @@ The `DatabaseConfigurator` interface contains other methods that you can impleme
  **`getBlobsDirectory`**:
 
 Implement this method if you want to choose the directories where the Blobs/Clobs are located for upload & download.
-
-**`getConnectionMaxAge`**:
-
-Implement this method if you want to define the maximum number of minutes a `Connection` can live before it's closed and released in the pool.
 
 **`close`**:
 
