@@ -217,8 +217,39 @@ $ aceql-server -start -host localhost –port 9090
 
 The console will display the properties used, test that the Connection is established on the server side and tell if everything is OK:
 
-```
-
+```bash
+[ACEQL HTTP START] Starting AceQL HTTP Web Server...
+[ACEQL HTTP START] AceQL HTTP Community v4.1 - 13-Feb-2020
+[ACEQL HTTP START] Using properties file: 
+[ACEQL HTTP START]  -> /home/mike/aceql-http/conf/aceql-server.properties
+[ACEQL HTTP START] Testing Declared Configurators:
+[ACEQL HTTP START] Setting System Properties:
+[ACEQL HTTP START] Creating ThreadPoolExecutor:
+[ACEQL HTTP START]  -> [corePoolSize: 100, maximumPoolSize: 200, unit: SECONDS, 
+[ACEQL HTTP START]  ->  keepAliveTime: 10, workQueue: ArrayBlockingQueue(50000)]
+[ACEQL HTTP START] Setting Default Connector base attributes:
+[ACEQL HTTP START]  -> maxThreads = 300
+[ACEQL HTTP START] Setting Tomcat JDBC Pool attributes for sampledb database:
+[ACEQL HTTP START]  -> driverClassName = org.postgresql.Driver
+[ACEQL HTTP START]  -> url = jdbc:postgresql://localhost:5432/sampledb
+[ACEQL HTTP START]  -> username = user1
+[ACEQL HTTP START]  -> password = ********
+[ACEQL HTTP START]  -> initialSize = 10
+[ACEQL HTTP START]  -> minIdle = 10
+[ACEQL HTTP START]  -> maxIdle = 50
+[ACEQL HTTP START]  -> maxActive = 50
+[ACEQL HTTP START]  -> rollbackOnReturn = true
+[ACEQL HTTP START] Testing DataSource.getConnection() for sampledb database:
+[ACEQL HTTP START]  -> Connection OK!
+[ACEQL HTTP START] Loading servlets:
+[ACEQL HTTP START]  -> Servlet defaultPoolsInfo [url-pattern: /default_pools_info] successfully loaded.
+[ACEQL HTTP START] Database sampledb DatabaseConfigurator class:
+[ACEQL HTTP START]  -> org.kawanfw.sql.api.server.DefaultDatabaseConfigurator
+[ACEQL HTTP START] Database sampledb SQLFirewallManager class: 
+[ACEQL HTTP START]   -> org.kawanfw.sql.api.server.firewall.DefaultSqlFirewallManager
+[ACEQL HTTP START] Configurators Status: OK.
+[ACEQL HTTP START] URL for client side: http://localhost:9090/aceql
+[ACEQL HTTP START] AceQL HTTP Web Server OK. Running on port 9090
 ```
 
  Don’t take care of INFO warnings displays.
