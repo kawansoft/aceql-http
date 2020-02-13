@@ -337,7 +337,7 @@ The console will display the properties used, test that the `Connection` is esta
 [ACEQL HTTP START] Starting AceQL HTTP Web Server...
 [ACEQL HTTP START] AceQL HTTP Community v4.1 - 13-Feb-2020
 [ACEQL HTTP START] Using properties file: 
-[ACEQL HTTP START]  -> /home/mike/aceql-http-4.1/conf/aceql-server.properties
+[ACEQL HTTP START]  -> c:\.aceql-http\conf\aceql-server.properties
 [ACEQL HTTP START] Testing Declared Configurators:
 [ACEQL HTTP START] Setting System Properties:
 [ACEQL HTTP START] Creating ThreadPoolExecutor:
