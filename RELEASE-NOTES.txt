@@ -25,14 +25,15 @@ AceQL HTTP is licensed through the GNU Lesser General Public License
 (LGPL v2.1).
 
 
-AceQL HTTP Version 4.1 - 12-Feb-2020
+AceQL HTTP Version 4.1 - 13-Feb-2020
 ------------------------------------
 
 What's New:
 
 - The new CsvRulesManager SqlFirewallManager implementation allows to
   fine control access to SQL tables without any Java programming.
-  Rules are declared in a CSV file that is loaded and checked at runtime.
+  Rules are declared in a CSV file that is loaded at server startup. 
+  Rules are checked for each incoming SQL call. 
   See the User Guides & Javadoc for more info.
 
 
