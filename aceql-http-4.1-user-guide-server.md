@@ -675,7 +675,7 @@ If not, the configuration errors are detailed for correction.
 
 ## Database Configurators
 
-Advanced and security server configurations are implemented via Java classes called “Database Configurators” in our terminology. A Database Configurator is a user-developed Java class that implements the `DatabaseConfigurator` interface built in AceQL. The `DatabaseConfigurator` concrete instance is dynamically loaded by the AceQL Manager at bootstrap time, using Dependency Injection (DI). The methods of the `DatabaseConfigurator` instance are then called internally by the AceQL Manager servlet when necessary.
+Advanced server configurations are implemented via Java classes called “Database Configurators” in our terminology. A Database Configurator is a user-developed Java class that implements the `DatabaseConfigurator` interface built in AceQL. The `DatabaseConfigurator` concrete instance is dynamically loaded by the AceQL Manager at bootstrap time, using Dependency Injection (DI). The methods of the `DatabaseConfigurator` instance are then called internally by the AceQL Manager servlet when necessary.
 
 **Note that AceQL comes with a default `DatabaseConfigurator` class: `DefaultDatabaseConfigurator`. You are not required to write your own `DatabaseConfigurator` (e.g. for a simple environment to test AceQL.)**
 

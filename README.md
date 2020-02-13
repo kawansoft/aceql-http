@@ -45,7 +45,7 @@ AceQL HTTP is authorized through an Open Source license: [AceQL Open Source Lice
 
 - The AceQL Web Server.
 
-- User  Configuration classes injected at runtime, called "Configurators" in this document. These are server classes that ensure both security and configuration.
+- User configuration classes injected at runtime, these are server classes that ensure both security and configuration. 
 
 - The AceQL Client SDKs for [C#](https://github.com/kawansoft/AceQL.Client) ,  [Java](https://github.com/kawansoft/aceql-http-client-sdk) and [Python](https://github.com/kawansoft/aceql-http-client-python) that allow you to wrap AceQL HTTP API calls using fluent code: 
 
