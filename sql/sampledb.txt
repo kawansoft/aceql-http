@@ -1,8 +1,7 @@
 
 --
--- Kawansoft example database tested with :
---  SQL Server 2008 R2+
-
+-- Sampledb SQL database for AceQL usage tested with:
+--  PostgreSQL 8.4.1+,
 
 CREATE TABLE user_login
 (               
@@ -34,9 +33,9 @@ CREATE TABLE customer
 
 CREATE TABLE product_image
 (
-    product_id  integer         not null,
-    name        varchar(64)     not null,
-    image       VarBinary(max)  null, 
+    product_id  integer     not null,
+    name        varchar(64) not null,
+    image       oid         null, 
         PRIMARY KEY(product_id)
 );
 
@@ -46,15 +45,15 @@ CREATE TABLE product_image
 
 CREATE TABLE orderlog
 (
-    customer_id     integer         not null,
-    item_id         integer         not null,
-    description     varchar(64)     not null,
-    item_cost	    numeric         null,
-    date_placed     date            not null,
-    date_shipped    datetime 	    null, 
-    jpeg_image      VarBinary(max) 	null, 
-    is_delivered    integer         null,
-    quantity        integer         not null,    
+    customer_id     integer     not null,
+    item_id         integer     not null,
+    description     varchar(64) not null,
+    item_cost	    numeric     null,
+    date_placed     date        not null,
+    date_shipped    timestamp 	null, 
+    jpeg_image      oid 	    null, 
+    is_delivered    integer     null,
+    quantity        integer     not null,    
          PRIMARY KEY(customer_id, item_id)
 );
 
@@ -64,7 +63,7 @@ CREATE TABLE orderlog
 
 CREATE TABLE customer_auto
 (
-    customer_id     int         not null IDENTITY(1, 1),    
+    customer_id     serial      not null,
     customer_title  char(4)     null,
     fname           varchar(32) null,
     lname           varchar(32) not null,
@@ -82,7 +81,7 @@ CREATE TABLE customer_auto
 CREATE TABLE documentation
 (
     item_id         integer     not null,
-    item_doc VarChar(max) NOT NULL,         
+    item_doc        text        NOT NULL,         
          PRIMARY KEY(item_id)
 );
 

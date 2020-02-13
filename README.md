@@ -1,4 +1,4 @@
-# AceQL HTTP v4.0 - January 2020, 15
+# AceQL HTTP v4.1 - February 2020, 13
 
 # Quick Start Guide
 
@@ -6,7 +6,7 @@
 
    * [Overview](#overview)
    * [Server Side Settings](#server-side-settings)
-      * [Create the kawansoft_example database](#create-the-kawansoft_example-database)
+      * [Create the sampledb database](#create-the-sampledb-database)
       * [Linux/Unix Installation &amp; Server Startup](#linuxunix-installation--server-startup)
          * [Download &amp; installation](#download--installation)
          * [Update the PATH (Optional)](#update-the-path-optional)
@@ -102,17 +102,17 @@ The execution of each AceQL HTTP API statement is conditioned by optional rules,
 
 # Server Side Settings
 
-## Create the kawansoft_example database
+## Create the sampledb database
 
-Download the database `kawansoft_example` schema corresponding to your database engine: 
+Download the database `sampledb` schema corresponding to your database engine: 
 
-- [kawansoft_example_mysq.txt](https://www.aceql.com/rest/soft/4.0/src/kawansoft_example_mysql.txt )
-- [kawansoft_example_postgresql.txt](https://www.aceql.com/rest/soft/4.0/src/kawansoft_example_postgresql.txt)
-- [kawansoft_example_ms_sql_serverl.txt](https://www.aceql.com/rest/soft/4.0/src/kawansoft_example_ms_sql_server.txt)
-- [kawansoft_example_oracle_database.txt](https://www.aceql.com/rest/soft/4.0/src/kawansoft_example_oracle_database.txt)
+- [sampledb_mysq.txt](https://www.aceql.com/rest/soft/4.1/src/sampledb_mysql.txt )
+- [sampledb_postgresql.txt](https://www.aceql.com/rest/soft/4.1/src/sampledb_postgresql.txt)
+- [sampledb_ms_sql_serverl.txt](https://www.aceql.com/rest/soft/4.1/src/sampledb_ms_sql_server.txt)
+- [sampledb_oracle_database.txt](https://www.aceql.com/rest/soft/4.1/src/sampledb_oracle_database.txt)
 
 
-For other databases engines, just tailor the file as indicated: [kawansoft_example_other_databases.txt](https://www.aceql.com/rest/soft/4.0/src/kawansoft_example_other_databases.txt)
+For other databases engines, just tailor the file as indicated: [sampledb_other_databases.txt](https://www.aceql.com/rest/soft/4.1/src/sampledb_other_databases.txt)
 
 Then launch the script that will create the tables in a database
 
@@ -125,7 +125,7 @@ AceQL requires the installation of Java version 8+.
 Open a terminal and download with `Wget` 
 
 ```bash
-$ wget https://www.aceql.com/rest/soft/4.0/download/aceql-http-4.0.run
+$ wget https://www.aceql.com/rest/soft/4.1/download/aceql-http-4.1.run
 ```
 
 If you get a certificate error message, do one of the following:
@@ -136,17 +136,17 @@ If you get a certificate error message, do one of the following:
 In following lines we will assume that the Open Source edition is chosen. (Operating mode is the same for Pro edition).
 
 ```bash
-chmod +x aceql-http-4.0.run
-./aceql-http-4.0.run 
+chmod +x aceql-http-4.1.run
+./aceql-http-4.1.run 
 ```
 
-This will create the `aceql-http-4.0` folder.
+This will create the `aceql-http-4.1` folder.
 
-The full path to the `aceql-http-4.0` installation folder will be surnamed `ACEQL_HOME` in following text.
+The full path to the `aceql-http-4.1` installation folder will be surnamed `ACEQL_HOME` in following text.
 
-Example: if you run `aceql-http-4.0.run` from `/home/mike`, then software is installed in
+Example: if you run `aceql-http-4.1.run` from `/home/mike`, then software is installed in
 
- `/home/mike/aceql-http-4.0` which is the value of `ACEQL_HOME`.
+ `/home/mike/aceql-http-4.1` which is the value of `ACEQL_HOME`.
 
 ### Update the PATH (Optional)
 
@@ -154,10 +154,10 @@ Open a shell session and make sure java binary is in the PATH by typing  `Java �
 
 Add java to your PATH if the command does not display Java version.
 
-Add to your PATH the path to the bin directory of `aceql-http-4.0` installation:
+Add to your PATH the path to the bin directory of `aceql-http-4.1` installation:
 
 ```bash
-$ PATH=$PATH:/path/to/aceql-http-4.0/bin/;export PATH
+$ PATH=$PATH:/path/to/aceql-http-4.1/bin/;export PATH
 ```
 
 ### Testing AceQL HTTP Web server installation
@@ -171,7 +171,7 @@ $ aceql-server -version
 It will display a line with all version info, like:
 
 ```
-AceQL HTTP Community v4.0 - 15-Jan-2020
+AceQL HTTP Community v4.1 - 13-Feb-2020
 ```
 
 ### Configure JDBC parameters in aceql-server.properties file
@@ -188,7 +188,7 @@ Set the database name to the `databases` property:
 
 ```ini
 # Database names separated by commas
-databases = kawansoft_example
+databases = sampledb
 ```
 
 Change the 4 JDBC properties values accordingly to your JDBC Driver, your database URL, and your database username/password. Each property name must be prefixed with the database name and a dot:
@@ -197,10 +197,10 @@ Example for PostgreSQL:
 
 ```properties
 # PostgreSQL example
-kawansoft_example.driverClassName= org.postgresql.Driver
-kawansoft_example.url=jdbc:postgresql://localhost:5432/kawansoft_example
-kawansoft_example.username=user1  
-kawansoft_example.password=password1
+sampledb.driverClassName= org.postgresql.Driver
+sampledb.url=jdbc:postgresql://localhost:5432/sampledb
+sampledb.username=user1  
+sampledb.password=password1
 ```
 
 ### Add your JDBC driver to AceQL installation 
@@ -218,29 +218,7 @@ $ aceql-server -start -host localhost –port 9090
 The console will display the properties used, test that the Connection is established on the server side and tell if everything is OK:
 
 ```
-[ACEQL HTTP START] Starting AceQL HTTP Web Server...
-[ACEQL HTTP START] AceQL HTTP Community v4.0 - 15-Jan-2020
-[ACEQL HTTP START] Using properties file:
-[ACEQL HTTP START]  -> /home/mike/aceql-http-4.0/conf/aceql-server.properties
-[ACEQL HTTP START] Setting System Properties:
-[ACEQL HTTP START] Creating ThreadPoolExecutor:
-[ACEQL HTTP START]  -> [corePoolSize: 100, maximumPoolSize: 200, unit: SECONDS,       
-                    keepAliveTime: 10, workQueue: ArrayBlockingQueue(50000)]
-[ACEQL HTTP START] Setting Default Connector attribute values:
-[ACEQL HTTP START] Setting Context attribute values:
-[ACEQL HTTP START] Setting Tomcat JDBC Pool attributes for kawansoft_example database:
-[ACEQL HTTP START]  -> driverClassName =org.postgresql.Driver
-[ACEQL HTTP START]  -> url =jdbc:postgresql://localhost:5432/kawansoft_example
-[ACEQL HTTP START]  -> username = user1
-[ACEQL HTTP START]  -> password = ********
-[ACEQL HTTP START] Testing DataSource.getConnection() for kawansoft_example database:
-[ACEQL HTTP START]  -> Connection OK!
-[ACEQL HTTP START] kawansoft_example Configurators:
-[ACEQL HTTP START]  -> databaseConfiguratorClassName:
-[ACEQL HTTP START]     org.kawanfw.sql.api.server.DefaultDatabaseConfigurator
-[ACEQL HTTP START] Configurators Status: OK.
-[ACEQL HTTP START] URL for client side: http://localhost:9090/aceql
-[ACEQL HTTP START] AceQL HTTP Web Server OK. Running on port 9090.
+
 ```
 
  Don’t take care of INFO warnings displays.
@@ -265,13 +243,13 @@ AceQL requires the installation of Java version 8+ (64-bit only).
 
 Because the software installs and runs a Windows Service, you must be logged as a Windows Administrator to install AceQL.
 
-Download [aceql-http-4.0.0.1-Setup-x64.exe](https://www.aceql.com/SoftwareDownload?software=AceQL-HTTP-4.0.0.1-Setup-x64.exe&version=4.0) 
+Download [aceql-http-4.1-Setup-x64.exe](https://www.aceql.com/SoftwareDownload?software=AceQL-HTTP-4.1-Setup-x64.exe&version=4.1) 
 
 Run the installer.
 
 It will run AceQL at end of installation and display the Window:
 
-<img src="https://www.aceql.com/rest/soft/4.0/img/aceql_windows_gui_home.png" alt="AceQ HTTP GUI Main Windows"/>
+<img src="https://www.aceql.com/rest/soft/4.1/img/aceql_windows_gui_home.png" alt="AceQ HTTP GUI Main Windows"/>
 
 **N.B:** Because of a bug in early versions of Java 9 on Windows, the interface will appear "ugly"  or "blurred" on Java 9 if you have increased Windows Screen Resolution Options to 125% or 150%. See https://goo.gl/PAVvrd for more info. Set back Windows Screen Resolution to 100% for clean display.
 
@@ -299,7 +277,7 @@ Set the database name to the databases property:
 
 ```properties
 # Databasenames separated by commas
-databases = kawansoft_example
+databases = sampledb
 ```
 
 Change the 4 JDBC properties values accordingly to your JDBC Driver, your database URL, and your database username/password. Each property name must be prefixed with the database name and a dot.
@@ -308,10 +286,10 @@ Example for PostgreSQL:
 
 ```properties
 # PostgreSQL example
-kawansoft_example.driverClassName= org.postgresql.Driver
-kawansoft_example.url=jdbc:postgresql://localhost:5432/kawansoft_example
-kawansoft_example.username=user1  
-kawansoft_example.password=password1
+sampledb.driverClassName= org.postgresql.Driver
+sampledb.url=jdbc:postgresql://localhost:5432/sampledb
+sampledb.username=user1  
+sampledb.password=password1
 ```
 
 Leave the default **localhost** value for the Host field.
@@ -324,30 +302,39 @@ Click on `Start Server  `. This will open a console.
 
 The console will display the properties used, test that the `Connection` is established on the server side and tell if everything is OK:
 
-```
+```bash
 [ACEQL HTTP START] Starting AceQL HTTP Web Server...
-[ACEQL HTTP START] AceQL HTTP Community v4.0 - 15-Jan-2020
-[ACEQL HTTP START] Using properties file:
-[ACEQL HTTP START]  -> c:\.aceql-http\conf\aceql-server.properties
+[ACEQL HTTP START] AceQL HTTP Community v4.1 - 13-Feb-2020
+[ACEQL HTTP START] Using properties file: 
+[ACEQL HTTP START]  -> /home/mike/aceql-http-4.1/conf/aceql-server.properties
+[ACEQL HTTP START] Testing Declared Configurators:
 [ACEQL HTTP START] Setting System Properties:
 [ACEQL HTTP START] Creating ThreadPoolExecutor:
 [ACEQL HTTP START]  -> [corePoolSize: 100, maximumPoolSize: 200, unit: SECONDS, 
 [ACEQL HTTP START]  ->  keepAliveTime: 10, workQueue: ArrayBlockingQueue(50000)]
-[ACEQL HTTP START] Setting Default Connector attribute values:
-[ACEQL HTTP START] Setting Context attribute values:
-[ACEQL HTTP START] Setting Tomcat JDBC Pool attributes forkawansoft_example database:
+[ACEQL HTTP START] Setting Default Connector base attributes:
+[ACEQL HTTP START]  -> maxThreads = 300
+[ACEQL HTTP START] Setting Tomcat JDBC Pool attributes for sampledb database:
 [ACEQL HTTP START]  -> driverClassName = org.postgresql.Driver
-[ACEQL HTTP START]  -> url = jdbc:postgresql://localhost:5432/kawansoft_example
+[ACEQL HTTP START]  -> url = jdbc:postgresql://localhost:5432/sampledb
 [ACEQL HTTP START]  -> username = user1
 [ACEQL HTTP START]  -> password = ********
-[ACEQL HTTP START] Testing DataSource.getConnection() forkawansoft_example database:
+[ACEQL HTTP START]  -> initialSize = 10
+[ACEQL HTTP START]  -> minIdle = 10
+[ACEQL HTTP START]  -> maxIdle = 50
+[ACEQL HTTP START]  -> maxActive = 50
+[ACEQL HTTP START]  -> rollbackOnReturn = true
+[ACEQL HTTP START] Testing DataSource.getConnection() for sampledb database:
 [ACEQL HTTP START]  -> Connection OK!
-[ACEQL HTTP START] kawansoft_example Configurators:
-[ACEQL HTTP START]  -> databaseConfiguratorClassName:
-[ACEQL HTTP START]     org.kawanfw.sql.api.server.DefaultDatabaseConfigurator
+[ACEQL HTTP START] Loading servlets:
+[ACEQL HTTP START]  -> Servlet defaultPoolsInfo [url-pattern: /default_pools_info] successfully loaded.
+[ACEQL HTTP START] Database sampledb DatabaseConfigurator class:
+[ACEQL HTTP START]  -> org.kawanfw.sql.api.server.DefaultDatabaseConfigurator
+[ACEQL HTTP START] Database sampledb SQLFirewallManager class: 
+[ACEQL HTTP START]   -> org.kawanfw.sql.api.server.firewall.DefaultSqlFirewallManager
 [ACEQL HTTP START] Configurators Status: OK.
-[ACEQL HTTP START] URL for client side:http://localhost:9090/aceql
-[ACEQL HTTP START] AceQL HTTP Web Server OK. Running on port 9090.
+[ACEQL HTTP START] URL for client side: http://localhost:9090/aceql
+[ACEQL HTTP START] AceQL HTTP Web Server OK. Running on port 9090
 ```
 
  If everything is OK, last line will display: 
@@ -378,11 +365,11 @@ AceQL can be accessed from client side:
 
 ## cURL 
 
-So via cURL we connect to a database `kawansoft_example` with the identifiers `(MyUsername, MySecret)`:
+So via cURL we connect to a database `sampledb` with the identifiers `(MyUsername, MySecret)`:
 
 ```bash
 $ curl --data-urlencode "password=MySecret" \
- http://localhost:9090/aceql/database/kawansoft_example/username/MyUsername/connect
+ http://localhost:9090/aceql/database/sampledb/username/MyUsername/connect
 ```
 
 le/username/MyUsername/connect
@@ -504,7 +491,7 @@ $ curl \
 
 On the server side, the authentication info is purged and the JDBC connection is released in the pool. (A server thread regularly releases phantom connections that were not closed from the client side.)
 
-From now, you can read the [API User Guide](https://www.aceql.com/DocDownload?doc=https://github.com/kawansoft/aceql-http/blob/master/aceql-http-4.0-user-guide-api.md) to learn how to:
+From now, you can read the [API User Guide](https://www.aceql.com/DocDownload?doc=https://github.com/kawansoft/aceql-http/blob/master/aceql-http-4.1-user-guide-api.md) to learn how to:
 
 - Query or modify the `Connection` properties.
 - Create SQL transactions.
@@ -517,7 +504,7 @@ From now, you can read the [API User Guide](https://www.aceql.com/DocDownload?do
 
 2. Install the [AceQL.Client](https://www.nuget.org/packages/AceQL.Client) package with NuGet.
 
-3. Download this C# source file: [MyRemoteConnection.cs](https://www.aceql.com/rest/soft/4.0/src/MyRemoteConnection.cs). Then insert it in your project. 
+3. Download this C# source file: [MyRemoteConnection.cs](https://www.aceql.com/rest/soft/4.1/src/MyRemoteConnection.cs). Then insert it in your project. 
 
 4. The  connection to the remote database is created  using `AceQLConnection` class and passing the URL of the AceQL Servlet Manager of your configuration: 
 
@@ -532,7 +519,7 @@ From now, you can read the [API User Guide](https://www.aceql.com/DocDownload?do
        {
            // Port number is the port number used to start the Web Server:
            string server = "https://www.aceql.com:9443/aceql";
-           string database = "kawansoft_example";
+           string database = "sampledb";
 
            string connectionString = $"Server={server}; Database={database}";
 
@@ -620,7 +607,7 @@ From now, you can read the [API User Guide](https://www.aceql.com/DocDownload?do
 
 
 
-The `SelectCustomerAndOrderLogAsync()` method of [MyRemoteConnection.cs](https://www.aceql.com/rest/soft/4.0/src/MyRemoteConnection.cs) displays back the inserted values.
+The `SelectCustomerAndOrderLogAsync()` method of [MyRemoteConnection.cs](https://www.aceql.com/rest/soft/4.1/src/MyRemoteConnection.cs) displays back the inserted values.
 
 From now on, you can read the [C# Client SDK User Guide](https://www.aceql.com/DocDownload?doc=https://github.com/kawansoft/AceQL.Client/blob/master/README.md).
 
@@ -631,14 +618,14 @@ From now on, you can read the [C# Client SDK User Guide](https://www.aceql.com/D
    ```xml
    <groupId>com.aceql</groupId>
    <artifactId>aceql-http-client-sdk</artifactId>
-   <version>4.0</version>
+   <version>4.1</version>
    ```
 
-2. If you don’t use Maven: the [aceql-http-client-all-4.0.jar](https://www.aceql.com/SoftwareDownload?software=aceql-http-client-sdk-all-4.0.jar&version=4) file contains the SDK with all dependencies.
+2. If you don’t use Maven: the [aceql-http-client-all-4.1.jar](https://www.aceql.com/SoftwareDownload?software=aceql-http-client-sdk-all-4.1.jar&version=4) file contains the SDK with all dependencies.
 
 3. Create an `org.kawanfw.sql.api.client.quickstart` package in your IDE.
 
-4. Download this Java source file: [MyRemoteConnection.java](https://www.aceql.com/rest/soft/4.0/src/MyRemoteConnection.java). Then insert it in the package. 
+4. Download this Java source file: [MyRemoteConnection.java](https://www.aceql.com/rest/soft/4.1/src/MyRemoteConnection.java). Then insert it in the package. 
 
 5. The  connection to the remote database is  created  using `AceQLConnection` class  and passing the URL of the AceQL Servlet Manager of your configuration:
 
@@ -658,7 +645,7 @@ From now on, you can read the [C# Client SDK User Guide](https://www.aceql.com/D
      String url = "http://localhost:9090/aceql";
 
      // The remote database to use:
-     String database = "kawansoft_example";
+     String database = "sampledb";
 
      // (username, password) for authentication on server side.
      // No authentication will be done for our Quick Start:
@@ -746,9 +733,9 @@ From now on, you can read the [C# Client SDK User Guide](https://www.aceql.com/D
    }
    ```
 
-The `selectCustomerAndOrderLog` method of [MyRemoteConnection.java](https://www.aceql.com/rest/soft/4.0/src/MyRemoteConnection.java) displays back the inserted values.
+The `selectCustomerAndOrderLog` method of [MyRemoteConnection.java](https://www.aceql.com/rest/soft/4.1/src/MyRemoteConnection.java) displays back the inserted values.
 
-From now on, you can read the [Java Client SDK User Guide](https://www.aceql.com/DocDownload?doc=https://github.com/kawansoft/aceql-http-client-sdk/blob/master/README.md) or run through the [SDK Javadoc](https://www.aceql.com/rest/soft/4.0/javadoc_sdk).
+From now on, you can read the [Java Client SDK User Guide](https://www.aceql.com/DocDownload?doc=https://github.com/kawansoft/aceql-http-client-sdk/blob/master/README.md) or run through the [SDK Javadoc](https://www.aceql.com/rest/soft/4.1/javadoc_sdk).
 
 ## Python Client SDK
 
@@ -761,7 +748,7 @@ The aceql module supports Python 2.6–2.7 & 3.4–3.8.
 $ pip install aceql
 ```
 
-3.    Download this Python class: [my_remote_connection.py](https://www.aceql.com/rest/soft/4.0/src/my_remote_connection.py)
+3.    Download this Python class: [my_remote_connection.py](https://www.aceql.com/rest/soft/4.1/src/my_remote_connection.py)
 
 4.    The  connection to the remote database is  created  using a [DB API 2.0](https://www.python.org/dev/peps/pep-0249/)  `Connection` class and passing the URL of the AceQL Servlet Manager of your configuration:
 
@@ -778,7 +765,7 @@ $ pip install aceql
               url = "http://localhost:9090/aceql"
 
               # The remote database to use:
-              database = "kawansoft_example"
+              database = "sampledb"
 
               # (username, password) for authentication on server side.
               # No authentication will be done for our Quick Start:
@@ -836,13 +823,13 @@ $ pip install aceql
 
 
 
-The `select_customer_and_orderlog` method of [my_remote_connection.py](https://www.aceql.com/rest/soft/4.0/src/my_remote_connection.py) displays back the inserted values.
+The `select_customer_and_orderlog` method of [my_remote_connection.py](https://www.aceql.com/rest/soft/4.1/src/my_remote_connection.py) displays back the inserted values.
 
 From now on, you can read the [Python Client SDK User Guide](https://www.aceql.com/DocDownload?doc=https://github.com/kawansoft/aceql-http-client-python/blob/master/README.md).
 
 # From now on…
 
-You can read the [Server User Guide](https://www.aceql.com/DocDownload?doc=https://github.com/kawansoft/aceql-http/blob/master/aceql-http-4.0-user-guide-server.md). You will learn:
+You can read the [Server User Guide](https://www.aceql.com/DocDownload?doc=https://github.com/kawansoft/aceql-http/blob/master/aceql-http-4.1-user-guide-server.md). You will learn:
 
 - How to create a Connection Pool.
 - How to create a strong authentication on the server for your legitimate users.

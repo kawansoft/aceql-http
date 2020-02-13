@@ -42,7 +42,7 @@ import org.kawanfw.sql.api.server.DefaultDatabaseConfigurator;
  * implementation for all methods.</b>
  *
  * @author Nicolas de Pomereu
- *
+ * @since 4.0
  */
 public class DefaultSqlFirewallManager implements SqlFirewallManager {
 
@@ -94,6 +94,9 @@ public class DefaultSqlFirewallManager implements SqlFirewallManager {
 	return true;
     }
 
+    /**
+     * Logs the info using {@link DefaultDatabaseConfigurator#getLogger()} {@code Logger}.
+     */
     @Override
     public void runIfStatementRefused(String username, String database, Connection connection, String ipAddress,
 	    boolean isMetadataQuery, String sql, List<Object> parameterValues) throws IOException, SQLException {
@@ -101,10 +104,12 @@ public class DefaultSqlFirewallManager implements SqlFirewallManager {
 	String logInfo = null;
 
 	if (isMetadataQuery) {
-	    logInfo = "Client " + username + " (IP: " + ipAddress + ") has been denied executing a Metadata Query API.";
+	    logInfo = "Client username " + username + " (IP: " + ipAddress
+		    + ") has been denied by DefaultSqlFirewallManager SqlFirewallManager executing a Metadata Query API.";
 	} else {
-	    logInfo = "Client " + username + " (IP: " + ipAddress + ") has been denied executing sql statement: " + sql
-		    + " with parameters: " + parameterValues;
+	    logInfo = "Client username " + username + " (IP: " + ipAddress
+		    + ") has been denied by DefaultSqlFirewallManager SqlFirewallManager executing sql statement: "
+		    + sql + " with parameters: " + parameterValues;
 	}
 
 	DefaultDatabaseConfigurator defaultDatabaseConfigurator = new DefaultDatabaseConfigurator();

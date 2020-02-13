@@ -27,13 +27,18 @@ package org.kawanfw.sql.api.server.firewall;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import org.kawanfw.sql.api.server.DefaultDatabaseConfigurator;
 
 /**
  * Firewall manager that denies any update of the the database. The database is
  * thus guaranteed to be accessed in read only from client side.
  *
  * @author Nicolas de Pomereu
- *
+ * @since 4.0
  */
 public class DenyExecuteUpdateManager extends DefaultSqlFirewallManager implements SqlFirewallManager {
 
@@ -45,5 +50,18 @@ public class DenyExecuteUpdateManager extends DefaultSqlFirewallManager implemen
 	    throws IOException, SQLException {
 	return false;
     }
+    /**
+     * Logs the info using {@link DefaultDatabaseConfigurator#getLogger()} {@code Logger}.
+     */
+    @Override
+    public void runIfStatementRefused(String username, String database, Connection connection, String ipAddress,
+	    boolean isMetadataQuery, String sql, List<Object> parameterValues) throws IOException, SQLException {
+	String logInfo = "Client username " + username + " (IP: " + ipAddress
+		+ ") has been denied by DenyExecuteUpdateManager SqlFirewallManager executing the datadase write statement: "
+		+ sql + ".";
 
+	DefaultDatabaseConfigurator defaultDatabaseConfigurator = new DefaultDatabaseConfigurator();
+	Logger logger = defaultDatabaseConfigurator.getLogger();
+	logger.log(Level.WARNING, logInfo);
+    }
 }

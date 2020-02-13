@@ -138,17 +138,25 @@ public class ServerSqlManagerInit {
 
 		databaseConfigurators.put(database, databaseConfigurator);
 
-		System.out.println(SqlTag.SQL_PRODUCT_START + " " + database + " Database Configurator:");
+		System.out.println(SqlTag.SQL_PRODUCT_START + " Database " + database + " DatabaseConfigurator class:");
 		System.out.println(SqlTag.SQL_PRODUCT_START + "  -> " + databaseConfiguratorClassName);
 	    }
 
 	    for (String database : databases) {
-		System.out.println(SqlTag.SQL_PRODUCT_START + " " + database + " SQL Firewall Manager(s):");
 
 		List<String> sqlFirewallClassNames = ServletParametersStore.getSqlFirewallClassNames(database);
 		classNameToLoad = sqlFirewallClassNames.toString();
 
-		SqlFirewallsCreator sqlFirewallsCreator = new SqlFirewallsCreator(sqlFirewallClassNames);
+		String tagSQLFirewallManager = null;
+		if (sqlFirewallClassNames.size() == 0)
+		    tagSQLFirewallManager = " SQLFirewallManager class: ";
+		else
+		    tagSQLFirewallManager = " SQLFirewallManager classes: ";
+
+		System.out.println(SqlTag.SQL_PRODUCT_START + " Database " + database + tagSQLFirewallManager);
+
+		DatabaseConfigurator databaseConfigurator = databaseConfigurators.get(database);
+		SqlFirewallsCreator sqlFirewallsCreator = new SqlFirewallsCreator(sqlFirewallClassNames, database, databaseConfigurator);
 		List<SqlFirewallManager> sqlFirewallManagers = sqlFirewallsCreator.getSqlFirewalls();
 		sqlFirewallMap.put(database, sqlFirewallManagers);
 

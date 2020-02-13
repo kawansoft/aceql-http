@@ -1,0 +1,6 @@
+username;table;delete;insert;select;update;optional comments
+public;all;false;false;true;false;SELECT is allowed on all tables for all users
+user1;all;true;true;true;true;user1 is allowed to execute all DML operations except DELETE
+user2;customer;false;true;true;true;user2 is allowed to execute all DML operations on  customer, orderlog and documentation, except DELETE
+user2;orderlog;false;true;true;true;
+user2;documentation;false;true;true;true;

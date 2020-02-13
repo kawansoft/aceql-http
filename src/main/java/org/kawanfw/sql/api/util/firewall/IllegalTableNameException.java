@@ -22,31 +22,29 @@
  * Any modifications to this file must keep this entire header
  * intact.
  */
-package org.kawanfw.test.run.server;
+package org.kawanfw.sql.api.util.firewall;
 
-import org.kawanfw.sql.WebServer;
+import java.io.File;
 
-/**
- * @author Nicolas de Pomereu
- *
- */
-public class SqlWebServerStop {
+public class IllegalTableNameException extends IllegalArgumentException {
 
-    /**
-     * no constructor
-     */
-    private SqlWebServerStop() {
+    private static final long serialVersionUID = -1392006668676537022L;
 
+    private String table = null;
+    private int lineNumber = -1;
+
+    public IllegalTableNameException(File file, String table, int lineNumber) {
+	super(file.getName() + ": " + "table \"" + table + "\" does no exists in database (line " + lineNumber + ").");
+	this.table = table;
+	this.lineNumber = lineNumber;
     }
 
-    /**
-     * @param args
-     * @throws Exception
-     */
-    public static void main(String[] args) throws Exception {
-	String[] args2 = { "-stop" };
-	WebServer.main(args2);
-
-	// No need to stop SSL, main port stops will halt server
+    public String getTable() {
+	return table;
     }
+
+    public int getLineNumber() {
+	return lineNumber;
+    }
+
 }

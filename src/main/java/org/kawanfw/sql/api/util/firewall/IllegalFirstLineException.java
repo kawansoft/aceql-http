@@ -22,31 +22,25 @@
  * Any modifications to this file must keep this entire header
  * intact.
  */
-package org.kawanfw.test.run.server;
+package org.kawanfw.sql.api.util.firewall;
 
-import org.kawanfw.sql.WebServer;
+import java.io.File;
 
-/**
- * @author Nicolas de Pomereu
- *
- */
-public class SqlWebServerStop {
+public class IllegalFirstLineException extends IllegalArgumentException {
 
-    /**
-     * no constructor
-     */
-    private SqlWebServerStop() {
+    private static final long serialVersionUID = -7299666473941182269L;
+
+    public IllegalFirstLineException(File file, String s) {
+	super(file.getName() + ":  " + s);
+    }
+
+    public IllegalFirstLineException(Throwable cause) {
+	super(cause);
+    }
+
+    public IllegalFirstLineException(String message, Throwable cause) {
+	super(message, cause);
 
     }
 
-    /**
-     * @param args
-     * @throws Exception
-     */
-    public static void main(String[] args) throws Exception {
-	String[] args2 = { "-stop" };
-	WebServer.main(args2);
-
-	// No need to stop SSL, main port stops will halt server
-    }
 }

@@ -27,13 +27,18 @@ package org.kawanfw.sql.api.server.firewall;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import org.kawanfw.sql.api.server.DefaultDatabaseConfigurator;
 
 /**
  * Firewall manager that denies any call of the the raw <code>Statement</code>
  * class. (Calling Statements without parameters is forbidden).
  *
  * @author Nicolas de Pomereu
- *
+ * @since 4.0
  */
 public class DenyStatementClassManager extends DefaultSqlFirewallManager implements SqlFirewallManager {
 
@@ -46,4 +51,20 @@ public class DenyStatementClassManager extends DefaultSqlFirewallManager impleme
 	    throws IOException, SQLException {
 	return false;
     }
+
+    /**
+     * Logs the info using {@link DefaultDatabaseConfigurator#getLogger()} {@code Logger}.
+     */
+    @Override
+    public void runIfStatementRefused(String username, String database, Connection connection, String ipAddress,
+	    boolean isMetadataQuery, String sql, List<Object> parameterValues) throws IOException, SQLException {
+	String logInfo = "Client username " + username + " (IP: " + ipAddress
+		+ ") has been denied by DenyStatementClassManager SqlFirewallManager executing the statement: " + sql
+		+ ".";
+
+	DefaultDatabaseConfigurator defaultDatabaseConfigurator = new DefaultDatabaseConfigurator();
+	Logger logger = defaultDatabaseConfigurator.getLogger();
+	logger.log(Level.WARNING, logInfo);
+    }
+
 }

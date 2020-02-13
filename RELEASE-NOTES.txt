@@ -1,6 +1,6 @@
 
                      AceQL HTTP
-                     Version 4.0
+                     Version 4.1
                     Release Notes
 
 
@@ -10,17 +10,31 @@ Introduction
 AceQL HTTP is a secure framework of REST like HTTP APIs that allow to 
 access to remote SQL databases over HTTP from any device that supports HTTP. 
 
-AceQL HTTP is provided with two client SDKs:
-- The AceQL Java Client SDK allows to wrap the HTTP APIs using JDBC calls 
-  in their code, just like they would for a local database.
+AceQL HTTP is provided with three client SDKs:
 - The AceQL C# Client SDK allows to wrap the HTTP APIs using Microsoft SQL 
   Server like calls in their code, just like they would for a local database.
+- The AceQL Java Client SDK allows to wrap the HTTP APIs using JDBC calls 
+  in their code, just like they would for a local database.
+- The AceQL Python Client SDK allows SQL calls to be encoded with standard 
+  unmodified DB-API 2.0 syntax.
 
 Security has been taken into account from the design: It as allowed to specify 
 and code strong security rules in order to protect the databases. 
 
 AceQL HTTP is licensed through the GNU Lesser General Public License 
 (LGPL v2.1).
+
+
+AceQL HTTP Version 4.1 - 13-Feb-2020
+------------------------------------
+
+What's New:
+
+- The new CsvRulesManager SqlFirewallManager implementation allows to
+  fine control access to SQL tables without any Java programming.
+  Rules are declared in a CSV file that is loaded at server startup. 
+  Rules are checked for each incoming SQL call. 
+  See the User Guides & Javadoc for more info.
 
 
 AceQL HTTP Version 4.0 - 15-Jan-2020

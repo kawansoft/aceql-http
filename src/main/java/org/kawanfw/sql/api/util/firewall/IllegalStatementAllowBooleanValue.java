@@ -22,31 +22,29 @@
  * Any modifications to this file must keep this entire header
  * intact.
  */
-package org.kawanfw.test.run.server;
+package org.kawanfw.sql.api.util.firewall;
 
-import org.kawanfw.sql.WebServer;
+import java.io.File;
 
-/**
- * @author Nicolas de Pomereu
- *
- */
-public class SqlWebServerStop {
+public class IllegalStatementAllowBooleanValue extends IllegalArgumentException {
 
-    /**
-     * no constructor
-     */
-    private SqlWebServerStop() {
+    private String statement = null;
+    private int lineNumber = -1;
 
+    private static final long serialVersionUID = 3329147381309094047L;
+
+    public IllegalStatementAllowBooleanValue(File file, String value, String statement, int lineNumber) {
+	super(file.getName() + ": " + "value \"" + value + "\" is not of expected \"false\" or \"true\" for \"" + statement + "\" column (line " + lineNumber + ").");
+	this.statement = statement;
+	this.lineNumber = lineNumber;
     }
 
-    /**
-     * @param args
-     * @throws Exception
-     */
-    public static void main(String[] args) throws Exception {
-	String[] args2 = { "-stop" };
-	WebServer.main(args2);
-
-	// No need to stop SSL, main port stops will halt server
+    public String getStatement() {
+        return statement;
     }
+
+    public int getLineNumber() {
+        return lineNumber;
+    }
+
 }
