@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Map;
+import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.FileHandler;
 import java.util.logging.Handler;
@@ -39,7 +40,9 @@ import java.util.logging.SimpleFormatter;
 import javax.sql.DataSource;
 
 import org.apache.commons.lang3.SystemUtils;
+import org.kawanfw.sql.servlet.ServerSqlManager;
 import org.kawanfw.sql.tomcat.TomcatSqlModeStore;
+import org.kawanfw.sql.tomcat.TomcatStarterUtil;
 import org.kawanfw.sql.util.Tag;
 
 /**
@@ -83,7 +86,23 @@ public class DefaultDatabaseConfigurator implements DatabaseConfigurator {
     @Override
     public boolean login(String username, char[] password, String database,
 	    String ipAddress) throws IOException, SQLException {
-	return true;
+
+	File file = ServerSqlManager.getAceqlServerProperties();
+	Properties properties = TomcatStarterUtil.getProperties(file);
+
+	String url = properties.getProperty("default.login.webService.url");
+	String timeoutSecondsStr = properties.getProperty("default.login.webService.timeoutSeconds");
+
+	// Accept free login if no Web Service URL defined or is localhost
+	if (url == null || url.contentEquals("localhost")) {
+	    return true;
+	}
+
+	int timeoutSeconds = Integer.parseInt(timeoutSecondsStr);
+
+	boolean authenticated = false;
+	return authenticated;
+
     }
 
     /**
@@ -169,7 +188,7 @@ public class DefaultDatabaseConfigurator implements DatabaseConfigurator {
      * @return 0 (no limit).
      */
     @Override
-    public int getMaxRows() throws IOException, SQLException {
+    public int getMaxRows(String username, String database) throws IOException, SQLException {
 	return 0;
     }
 

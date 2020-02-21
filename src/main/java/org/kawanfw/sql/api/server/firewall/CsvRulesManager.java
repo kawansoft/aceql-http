@@ -263,7 +263,14 @@ public class CsvRulesManager extends DefaultSqlFirewallManager implements SqlFir
      * @throws FileNotFoundException
      */
     private static File getCsvFile(String database) throws FileNotFoundException {
-	File dir = ServerSqlManager.getAceqlServerPropertiesDirectory();
+	File file = ServerSqlManager.getAceqlServerProperties();
+	if (file == null) {
+	    throw new NullPointerException("file is null!");
+	}
+	if (!file.exists()) {
+	    throw new FileNotFoundException("The properties file does not exist: " + file);
+	}
+	File dir = ServerSqlManager.getAceqlServerProperties().getParentFile();
 	File csvFile = new File(dir + File.separator + database + "_rules_manager.csv");
 
 	if (!csvFile.exists()) {

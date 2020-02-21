@@ -275,6 +275,9 @@ public class ServerSqlManagerInit {
 	System.out.println(SqlTag.SQL_PRODUCT_START + " " + "Using properties file: ");
 	System.out.println(SqlTag.SQL_PRODUCT_START + "  -> " + propertiesFile);
 
+	// Set properties file. Will be used elsewhere
+	// (for CsvRulesManager load file, per example).
+	ServerSqlManager.setAceqlServerProperties(propertiesFile);
 	Properties properties = TomcatStarterUtil.getProperties(propertiesFile);
 
 	TomcatStarterUtil.setInitParametersInStore(properties);

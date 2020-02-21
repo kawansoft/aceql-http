@@ -57,22 +57,23 @@ public class ServerSqlUtil {
     /**
      * Set the maximum rows to return to the client side
      *
-     * @param statement
-     *            the statement to set
-     * @param databaseConfigurator
-     *            the DatabaseConfigurator which contains the
-     *            getMaxRowsToReturn() method
+     * @param username
+     * @param database
+     * @param statement            the statement to set
+     * @param databaseConfigurator the DatabaseConfigurator which contains the
+     *                             getMaxRowsToReturn() method
+     *
+     *
      * @throws SQLException
+     * @throws IOException
      */
-    public static void setMaxRowsToReturn(Statement statement,
-	    DatabaseConfigurator databaseConfigurator)
-	    throws SQLException, IOException {
+    public static void setMaxRowsToReturn(String username, String database, Statement statement,
+	    DatabaseConfigurator databaseConfigurator) throws SQLException, IOException {
 
-	int maxRowsToReturn = databaseConfigurator.getMaxRows();
+	int maxRowsToReturn = databaseConfigurator.getMaxRows(username, database);
 
 	if (maxRowsToReturn > 0) {
-	    if (statement.getMaxRows() == 0
-		    || (statement.getMaxRows() > maxRowsToReturn)) {
+	    if (statement.getMaxRows() == 0 || (statement.getMaxRows() > maxRowsToReturn)) {
 		statement.setFetchSize(0); // To avoid any possible conflict
 		statement.setMaxRows(maxRowsToReturn);
 	    }

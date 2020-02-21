@@ -70,8 +70,8 @@ public class ServerSqlManager extends HttpServlet {
 
     public static String CR_LF = System.getProperty("line.separator");
 
-    /* The directory used for the properties file */
-    private static File aceqlServerPropertiesDirectory = null;
+    /** The properties file */
+    private static File aceqlServerProperties = null;
 
     public static final String DATABASE_CONFIGURATOR_CLASS_NAME = "databaseConfiguratorClassName";
     public static final String SQL_FIREWALL_MANAGER_CLASS_NAMES = "sqlFirewallManagerClassNames";
@@ -94,6 +94,8 @@ public class ServerSqlManager extends HttpServlet {
 
     /** The SessionConfigurator instance */
     private static SessionConfigurator sessionConfigurator = null;
+
+
 
     /** The Exception thrown at init */
     private Exception exception = null;
@@ -147,12 +149,12 @@ public class ServerSqlManager extends HttpServlet {
         return sqlFirewallMap;
     }
 
-    public static File getAceqlServerPropertiesDirectory() {
-        return aceqlServerPropertiesDirectory;
+    public static File getAceqlServerProperties() {
+        return aceqlServerProperties;
     }
 
-    public static void setAceqlServerPropertiesDirectory(File aceqlServerPropertiesDirectory) {
-        ServerSqlManager.aceqlServerPropertiesDirectory = aceqlServerPropertiesDirectory;
+    public static void setAceqlServerProperties(File aceqlServerProperties) {
+	ServerSqlManager.aceqlServerProperties = aceqlServerProperties;
     }
 
     /**
@@ -529,5 +531,7 @@ public class ServerSqlManager extends HttpServlet {
 	    System.out.println(new Date() + " " + s);
 	}
     }
+
+
 
 }

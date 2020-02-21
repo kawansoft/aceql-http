@@ -1,24 +1,24 @@
 /*
  * This file is part of AceQL HTTP.
- * AceQL HTTP: SQL Over HTTP                                     
+ * AceQL HTTP: SQL Over HTTP
  * Copyright (C) 2020,  KawanSoft SAS
- * (http://www.kawansoft.com). All rights reserved.                                
- *                                                                               
- * AceQL HTTP is free software; you can redistribute it and/or                 
- * modify it under the terms of the GNU Lesser General Public                    
- * License as published by the Free Software Foundation; either                  
- * version 2.1 of the License, or (at your option) any later version.            
- *                                                                               
- * AceQL HTTP is distributed in the hope that it will be useful,               
- * but WITHOUT ANY WARRANTY; without even the implied warranty of                
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU             
- * Lesser General Public License for more details.                               
- *                                                                               
- * You should have received a copy of the GNU Lesser General Public              
- * License along with this library; if not, write to the Free Software           
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  
+ * (http://www.kawansoft.com). All rights reserved.
+ *
+ * AceQL HTTP is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * AceQL HTTP is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
  * 02110-1301  USA
- * 
+ *
  * Any modifications to this file must keep this entire header
  * intact.
  */
@@ -47,9 +47,9 @@ import org.kawanfw.sql.version.Version;
 
 /**
  * Configures Tomcat from the properties file and start it.
- * 
+ *
  * @author Nicolas de Pomereu
- * 
+ *
  */
 public class TomcatStarter {
 
@@ -71,14 +71,14 @@ public class TomcatStarter {
 
     /**
      * Constructor
-     * 
+     *
      * @param host
      *            the host of the Web Server
      * @param port
      *            the port of the Web Server
      * @param propertiesFile
      *            properties file to use for configuration of the Web Server
-     * 
+     *
      */
     public TomcatStarter(String host, int port, File propertiesFile) {
 
@@ -102,7 +102,7 @@ public class TomcatStarter {
 
     /**
      * Start the server
-     * 
+     *
      * @throws IOException
      * @throws LifecycleException
      * @throws ConnectException
@@ -136,6 +136,7 @@ public class TomcatStarter {
 		SqlTag.SQL_PRODUCT_START + " " + "Using properties file: ");
 	System.out.println(SqlTag.SQL_PRODUCT_START + "  -> " + propertiesFile);
 
+	ServerSqlManager.setAceqlServerProperties(propertiesFile);
 	Properties properties = TomcatStarterUtil.getProperties(propertiesFile);
 
 	// System.out.println("TomcatEmbedUtil.available(" + port + "): " +
@@ -256,7 +257,7 @@ public class TomcatStarter {
 
     /**
      * Add a Servlet using properties with the index
-     * 
+     *
      * @param properties
      *            the properties than contain all servlet & configurators info
      * @param rootCtx
@@ -275,7 +276,7 @@ public class TomcatStarter {
 	@SuppressWarnings("unused")
 	org.apache.catalina.Wrapper wrapper = Tomcat.addServlet(rootCtx,
 		aceQLManagerServletCallName, new ServerSqlManager());
-	wrapper.setAsyncSupported(true); 
+	wrapper.setAsyncSupported(true);
 	rootCtx.addServletMappingDecoded("/*", aceQLManagerServletCallName);
 
 	TomcatStarterUtil.setInitParametersInStore(properties);
@@ -290,13 +291,13 @@ public class TomcatStarter {
 
     /**
      * Test the servlet
-     * 
+     *
      * @param properties
      *            the properties than contain all servlet & configurators info
      * @param sslScheme
      *            the ssl scheme
      * @return the status
-     * 
+     *
      * @throws MalformedURLException
      * @throws IOException
      */
@@ -329,10 +330,10 @@ public class TomcatStarter {
 
     /**
      * Call the Server SQL Manager Servlet to test everything is OK.
-     * 
+     *
      * @param url
      *            the url of the servlet
-     * 
+     *
      * @return the return status. "Should be OK.
      * @throws MalformedURLException
      * @throws IOException
@@ -359,7 +360,7 @@ public class TomcatStarter {
     /**
      * Create a user.home/.kawansoft/tomcat-embedded-temp directory This will be
      * used by Tomcat for temporary files.
-     * 
+     *
      * @return user.home/.kawansoft/tomcat-embedded-temp directory
      */
     private File getBaseDir() {

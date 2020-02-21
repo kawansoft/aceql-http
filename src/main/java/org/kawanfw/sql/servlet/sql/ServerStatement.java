@@ -341,8 +341,6 @@ public class ServerStatement {
      * - The result set as a List of Maps for SELECT statements. <br>
      * - The return code for other statements
      *
-     * @param sqlOrder the qsql order
-     * @param sqlParms the sql parameters
      * @param out      the writer where to write to result set output
      *
      *
@@ -436,7 +434,7 @@ public class ServerStatement {
 
 		try {
 
-		    ServerSqlUtil.setMaxRowsToReturn(statement, databaseConfigurator);
+		    ServerSqlUtil.setMaxRowsToReturn(username, database, statement, databaseConfigurator);
 		    debug("sqlorder: " + sqlOrder);
 
 		    rs = statement.executeQuery(sqlOrder);

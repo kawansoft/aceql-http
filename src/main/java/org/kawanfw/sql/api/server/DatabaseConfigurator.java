@@ -138,17 +138,17 @@ public interface DatabaseConfigurator {
 
 
     /**
-     * Allows to define the maximum rows per request to be returned to the
-     * client. If this limit is exceeded, the excess rows are silently dropped.
+     * Allows to define the maximum rows per request to be returned to the client.
+     * If this limit is exceeded, the excess rows are silently dropped.
      *
-     * @return the maximum rows per request to be returned to the client; zero
-     *         means there is no limit
-     * @throws IOException
-     *             if an IOException occurs
-     * @throws SQLException
-     *             if a SQLException occurs
+     * @param username   the client username to check the max rows for.
+     * @param database   the database name as defined in the JDBC URL field
+     * @return the maximum rows per request to be returned to the client; zero means
+     *         there is no limit
+     * @throws IOException  if an IOException occurs
+     * @throws SQLException if a SQLException occurs
      */
-    public int getMaxRows() throws IOException, SQLException;
+    public int getMaxRows(String username, String database) throws IOException, SQLException;
 
     /**
      * Allows to define the directory into which Blobs/Clobs are uploaded by
