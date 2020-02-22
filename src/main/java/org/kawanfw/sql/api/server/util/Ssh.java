@@ -24,15 +24,10 @@
  */
 package org.kawanfw.sql.api.server.util;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.InetAddress;
-import java.util.Properties;
 
 import org.kawanfw.sql.api.server.DatabaseConfigurator;
-import org.kawanfw.sql.util.FrameworkFileUtil;
 import org.kawanfw.sql.util.Tag;
 
 import com.jcraft.jsch.JSch;
@@ -55,86 +50,6 @@ public class Ssh {
 
     /** The IP address */
     private static String ipAddress = null;
-
-    /**
-     * Tries to open a SSH session on a host for authentication.
-     * <ul>
-     * <li>If the {@code user.home/.kawansoft/sshAuth.properties} file exists:
-     * <br>
-     * the {@code (username, password)} couple is checked against the SSH server
-     * of the host defined with the properties {@code host} for the hostname and
-     * {@code port} for the port in the
-     * {@code user.home/.kawansoft/sshAuth.properties} file.</li>
-     * <li>If {@code sshAuth.properties} file does not exists: <br>
-     * the host IP is used as hostname value and port is 22.</li>
-     * </ul>
-     * {@code user.home} is the one of the running servlet container.
-     * <p>
-     * The internal SSH client Java library used is
-     * <a href="http://www.jcraft.com/jsch/">JSch</a>. <br>
-     * Note that there is no host key checking ({@code "StrictHostKeyChecking"}
-     * is set to {@code "no"}).
-     *
-     * @param username
-     *            the username sent by the client login
-     * @param password
-     *            the password to connect to the server
-     *
-     * @return <code>true</code> if the user is able to open a SSH session with
-     *         the passed parameters
-     *
-     * @throws IOException
-     *             if a {@code host} or {@code port} property can not be found
-     *             in the {@code sshAuth.properties} or error reading property
-     *             file or IP address of the host can not be accessed.
-     * @throws NumberFormatException
-     *             if the {@code port} property is no numeric
-     *
-     */
-    public static boolean login(String username, char[] password)
-	    throws IOException, NumberFormatException {
-	String host = null;
-	int port = -1;
-
-	String userHomeKawanSoft = FrameworkFileUtil
-		.getUserHomeDotKawansoftDir();
-	File file = new File(
-		userHomeKawanSoft + File.separator + "sshAuth.properties");
-
-	if (file.exists()) {
-	    Properties prop = new Properties();
-
-	    try (InputStream in = new FileInputStream(file);) {
-		prop.load(in);
-	    }
-
-	    host = prop.getProperty("host");
-	    String portStr = prop.getProperty("port");
-
-	    if (host == null) {
-		throw new IOException(Tag.PRODUCT
-			+ " property host not found in sshAuth.properties file.");
-	    }
-
-	    if (portStr == null) {
-		throw new IOException(Tag.PRODUCT
-			+ " property port not found in sshAuth.properties file.");
-	    }
-
-	    port = Integer.parseInt(portStr);
-
-	} else {
-	    host = getIpAddress();
-	    port = 22;
-
-	    if (host.equals(UNKNOWN_IP_ADDRESS)) {
-		throw new IOException(Tag.PRODUCT
-			+ " Can not retrieve IP address of the host.");
-	    }
-	}
-
-	return login(host, port, username, password);
-    }
 
     /**
      * Tries to open a SSH session on a passed host for authentication.
