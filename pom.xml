@@ -81,23 +81,28 @@
 			<version>3.1.0</version>
 		</dependency>
 
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.8.6</version>
+		</dependency>
 
-    <dependency>
-        <groupId>com.google.code.gson</groupId>
-        <artifactId>gson</artifactId>
-        <version>2.8.6</version>
-    </dependency>
-       
-    <dependency>
-        <groupId>us.fatehi</groupId>
-        <artifactId>schemacrawler</artifactId>
-        <version>16.3.0</version>
-    </dependency>
+		<dependency>
+			<groupId>us.fatehi</groupId>
+			<artifactId>schemacrawler</artifactId>
+			<version>16.3.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.github.jsqlparser</groupId>
+			<artifactId>jsqlparser</artifactId>
+			<version>3.1</version>
+		</dependency>
 
 	<dependency>
-	    <groupId>com.github.jsqlparser</groupId>
-	    <artifactId>jsqlparser</artifactId>
-	    <version>3.1</version>
+	    <groupId>com.github.waffle</groupId>
+	    <artifactId>waffle-jna</artifactId>
+	    <version>1.8.2</version>
 	</dependency>
 
 	</dependencies>
