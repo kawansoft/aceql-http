@@ -32,7 +32,7 @@ import java.util.logging.Logger;
 
 /**
  *
- * Interface that defines the databas configurations for AceQL HTTP.
+ * Interface that defines the database configurations for AceQL HTTP.
  * <p>
  * The implemented methods will be called by AceQL when a client program,
  * referred by a user username, asks for a JDBC operation from the Client side.

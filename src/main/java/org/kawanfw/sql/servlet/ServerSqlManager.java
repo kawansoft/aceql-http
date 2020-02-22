@@ -95,8 +95,6 @@ public class ServerSqlManager extends HttpServlet {
     /** The SessionConfigurator instance */
     private static SessionConfigurator sessionConfigurator = null;
 
-
-
     /** The Exception thrown at init */
     private Exception exception = null;
 
@@ -143,14 +141,15 @@ public class ServerSqlManager extends HttpServlet {
 
     /**
      * Returns the list of SqlFirewallManager
+     *
      * @return the list of SqlFirewallManager
      */
     public static Map<String, List<SqlFirewallManager>> getSqlFirewallMap() {
-        return sqlFirewallMap;
+	return sqlFirewallMap;
     }
 
     public static File getAceqlServerProperties() {
-        return aceqlServerProperties;
+	return aceqlServerProperties;
     }
 
     public static void setAceqlServerProperties(File aceqlServerProperties) {
@@ -486,7 +485,6 @@ public class ServerSqlManager extends HttpServlet {
 	return requestUri.endsWith("/login") || requestUri.endsWith("/connect");
     }
 
-
     /**
      * Write a line of string on the servlet output stream. Will add the necessary
      * CR_LF
@@ -531,7 +529,5 @@ public class ServerSqlManager extends HttpServlet {
 	    System.out.println(new Date() + " " + s);
 	}
     }
-
-
 
 }

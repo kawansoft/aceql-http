@@ -26,8 +26,11 @@ package org.kawanfw.sql.api.server;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.StringReader;
+import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
@@ -37,9 +40,16 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
+import javax.json.JsonString;
+import javax.json.JsonStructure;
 import javax.sql.DataSource;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
+import org.kawanfw.sql.api.server.util.SimpleHttpClient;
 import org.kawanfw.sql.servlet.ServerSqlManager;
 import org.kawanfw.sql.tomcat.TomcatSqlModeStore;
 import org.kawanfw.sql.tomcat.TomcatStarterUtil;
@@ -56,9 +66,8 @@ import org.kawanfw.sql.util.Tag;
  * releases it into the pool.</li>
  * </ul>
  * <p>
- * <b>WARNING</b>: This default implementation will
- * allow to start immediate remote SQL calls but is <b>*not*</b> at all secured.
- * <br>
+ * <b>WARNING</b>: This default implementation will allow to start immediate
+ * remote SQL calls but is <b>*not*</b> at all secured. <br>
  * <b>It is highly recommended to override this class with a secured
  * implementation for the other methods.</b>
  * <p>
@@ -69,6 +78,8 @@ public class DefaultDatabaseConfigurator implements DatabaseConfigurator {
 
     /** The map of data sources to use for connection pooling */
     private Map<String, DataSource> dataSourceSet = new ConcurrentHashMap<>();
+
+    private Properties properties = null;
 
     private static Logger ACEQL_LOGGER = null;
 
@@ -81,16 +92,20 @@ public class DefaultDatabaseConfigurator implements DatabaseConfigurator {
     }
 
     /**
-     * @return <code>true</code>. (Client is always granted access).
+     * @return <code>true</code> if the Authentication Web Service defined in
+     *         {@code aceql-server.properties} returns the JSON String <code>{"status"="OK"}</code>, else <code>false</code> .
      */
     @Override
-    public boolean login(String username, char[] password, String database,
-	    String ipAddress) throws IOException, SQLException {
+    public boolean login(String username, char[] password, String database, String ipAddress)
+	    throws IOException, SQLException {
 
-	File file = ServerSqlManager.getAceqlServerProperties();
-	Properties properties = TomcatStarterUtil.getProperties(file);
+	if (properties == null) {
+	    File file = ServerSqlManager.getAceqlServerProperties();
+	    properties = TomcatStarterUtil.getProperties(file);
+	}
 
 	String url = properties.getProperty("default.login.webService.url");
+	String method = properties.getProperty("default.login.webService.method");
 	String timeoutSecondsStr = properties.getProperty("default.login.webService.timeoutSeconds");
 
 	// Accept free login if no Web Service URL defined or is localhost
@@ -98,28 +113,80 @@ public class DefaultDatabaseConfigurator implements DatabaseConfigurator {
 	    return true;
 	}
 
-	int timeoutSeconds = Integer.parseInt(timeoutSecondsStr);
+	if (method == null) {
+	    method = "POST";
+	}
 
-	boolean authenticated = false;
-	return authenticated;
+	if (timeoutSecondsStr == null) {
+	    timeoutSecondsStr = "0";
+	}
+
+	if (!StringUtils.isNumeric(timeoutSecondsStr)) {
+	    throw new IllegalArgumentException(
+		    "The default.login.webService.timeoutSeconds property is not numeric: " + timeoutSecondsStr);
+	}
+
+	int timeoutSeconds = Integer.parseInt(timeoutSecondsStr);
+	int connectTimeout = timeoutSeconds * 1000;
+	int readTimeout = timeoutSeconds * 1000;
+
+	SimpleHttpClient simpleHttpClient = new SimpleHttpClient(connectTimeout, readTimeout);
+	String jsonResult = null;
+	Map<String, String> parametersMap = new HashMap<>();
+	parametersMap.put("username", username);
+	parametersMap.put("password", new String(password));
+
+	try {
+	    if (method.equalsIgnoreCase("post")) {
+		jsonResult = simpleHttpClient.callWithPost(new URL(url), parametersMap);
+	    } else {
+		jsonResult = simpleHttpClient.callWithGet(url, parametersMap);
+	    }
+	} catch (Exception e) {
+	    Logger logger = getLogger();
+	    logger.log(Level.SEVERE, "Username " + username + " can not authenticate. Error when calling SimpleHttpClient: "
+		    + e.getMessage());
+	    return false;
+	}
+
+	if (jsonResult == null) {
+	    return false;
+	}
+
+	try {
+	    JsonReader reader = Json.createReader(new StringReader(jsonResult));
+	    JsonStructure jsonst = reader.read();
+
+	    JsonObject object = (JsonObject) jsonst;
+	    JsonString status = (JsonString) object.get("status");
+
+	    if (status != null && status.getString().equals("OK")) {
+	        return true;
+	    } else {
+	        return false;
+	    }
+	} catch (Exception e) {
+	    Logger logger = getLogger();
+	    logger.log(Level.SEVERE, "Error when parsing jsonResult of AWS: "
+		    + e.getMessage());
+	    return false;
+	}
 
     }
 
     /**
      * Returns a {@code Connection} from
-     * <a href="http://tomcat.apache.org/tomcat-8.5-doc/jdbc-pool.html" >Tomcat
-     * JDBC Connection Pool</a>.<br>
+     * <a href="http://tomcat.apache.org/tomcat-8.5-doc/jdbc-pool.html" >Tomcat JDBC
+     * Connection Pool</a>.<br>
      * <br>
-     * the {@code Connection} is extracted from the {@code DataSource} created
-     * by the embedded Tomcat JDBC Pool. The JDBC parameters used to create the
-     * {@code DataSource} are defined in the properties file passed at start-up
-     * of AceQL.
+     * the {@code Connection} is extracted from the {@code DataSource} created by
+     * the embedded Tomcat JDBC Pool. The JDBC parameters used to create the
+     * {@code DataSource} are defined in the properties file passed at start-up of
+     * AceQL.
      *
-     * @param database
-     *            the database name to extract the {@code Connection} for.
+     * @param database the database name to extract the {@code Connection} for.
      *
-     * @return the {@code Connection} extracted from Tomcat JDBC Connection
-     *         Pool.
+     * @return the {@code Connection} extracted from Tomcat JDBC Connection Pool.
      */
     @Override
     public Connection getConnection(String database) throws SQLException {
@@ -136,15 +203,13 @@ public class DefaultDatabaseConfigurator implements DatabaseConfigurator {
 
 		    String message = Tag.PRODUCT_USER_CONFIG_FAIL
 			    + " the \"driverClassName\" property is not defined in the properties file for database "
-			    + database
-			    + " or the Db Vendor is not supported in this version.";
+			    + database + " or the Db Vendor is not supported in this version.";
 		    // ServerLogger.getLogger().log(Level.WARNING, message);
 		    throw new SQLException(message);
 		} else {
 		    String message = Tag.PRODUCT_USER_CONFIG_FAIL
 			    + " the \"driverClassName\" property is not defined in the properties file for database "
-			    + database
-			    + " or the servlet name does not match the url pattern in your web.xml";
+			    + database + " or the servlet name does not match the url pattern in your web.xml";
 		    // ServerLogger.getLogger().log(Level.WARNING, message);
 		    throw new SQLException(message);
 		}
@@ -157,7 +222,6 @@ public class DefaultDatabaseConfigurator implements DatabaseConfigurator {
 	Connection connection = dataSource.getConnection();
 	return connection;
     }
-
 
     /**
      * Closes the connection acquired by
@@ -185,11 +249,27 @@ public class DefaultDatabaseConfigurator implements DatabaseConfigurator {
     }
 
     /**
-     * @return 0 (no limit).
+     * @return the value of the property {@code default.maxRows} defined in the {@code aceql-server.properties} file at server startup.
+     * If property does not exist, returns 0.
      */
     @Override
     public int getMaxRows(String username, String database) throws IOException, SQLException {
-	return 0;
+
+	int maxRows = 0;
+	if (properties == null) {
+	    File file = ServerSqlManager.getAceqlServerProperties();
+	    properties = TomcatStarterUtil.getProperties(file);
+	}
+
+	String maxRowsStr = properties.getProperty("default.maxRows");
+
+	if (!StringUtils.isNumeric(maxRowsStr)) {
+	    throw new IllegalArgumentException("The default.maxRows property is not numeric: " + maxRowsStr);
+	}
+
+	maxRows = Integer.parseInt(maxRowsStr);
+
+	return maxRows;
     }
 
     /**
@@ -197,8 +277,7 @@ public class DefaultDatabaseConfigurator implements DatabaseConfigurator {
      *         {@code user.home} is the one of the servlet container).
      */
     @Override
-    public File getBlobsDirectory(String username)
-	    throws IOException, SQLException {
+    public File getBlobsDirectory(String username) throws IOException, SQLException {
 	String userHome = System.getProperty("user.home");
 	if (!userHome.endsWith(File.separator)) {
 	    userHome += File.separator;
@@ -228,14 +307,12 @@ public class DefaultDatabaseConfigurator implements DatabaseConfigurator {
 	    return ACEQL_LOGGER;
 	}
 
-	File logDir = new File(SystemUtils.USER_HOME + File.separator
-		+ ".kawansoft" + File.separator + "log");
+	File logDir = new File(SystemUtils.USER_HOME + File.separator + ".kawansoft" + File.separator + "log");
 	logDir.mkdirs();
 
 	String pattern = logDir.toString() + File.separator + "AceQL.log";
 
-	ACEQL_LOGGER = Logger
-		.getLogger(DefaultDatabaseConfigurator.class.getName());
+	ACEQL_LOGGER = Logger.getLogger(DefaultDatabaseConfigurator.class.getName());
 	Handler fh = new FileHandler(pattern, 200 * 1024 * 1024, 2, true);
 	fh.setFormatter(new SimpleFormatter());
 	ACEQL_LOGGER.addHandler(fh);
