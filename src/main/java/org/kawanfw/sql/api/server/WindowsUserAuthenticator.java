@@ -30,19 +30,18 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Properties;
 
-import org.apache.commons.lang3.StringUtils;
-import org.kawanfw.sql.api.server.util.SshLogin;
+import org.kawanfw.sql.api.server.util.WindowsLogin;
 import org.kawanfw.sql.servlet.ServerSqlManager;
 import org.kawanfw.sql.tomcat.TomcatStarterUtil;
 
 /**
  * A concrete {@code UserAuthenticator} that extends allows zero-code remote
- * client {@code (username, password)} authentication against a SSH server.
+ * client {@code (username, password)} authentication against a Web Service.
  *
  * @author Nicolas de Pomereu
  *
  */
-public class SshUserAuthenticator implements UserAuthenticator {
+public class WindowsUserAuthenticator implements UserAuthenticator {
 
     private Properties properties = null;
 
@@ -50,7 +49,7 @@ public class SshUserAuthenticator implements UserAuthenticator {
      * Constructor. {@code UserAuthenticator} implementation must have no
      * constructor or a unique no parameters constructor.
      */
-    public SshUserAuthenticator() {
+    public WindowsUserAuthenticator() {
 
     }
 
@@ -63,24 +62,9 @@ public class SshUserAuthenticator implements UserAuthenticator {
 	    properties = TomcatStarterUtil.getProperties(file);
 	}
 
-	String host = properties.getProperty("sshUserAuthenticator.host");
-	String portStr = properties.getProperty("sshUserAuthenticator.port");
+	String domain = properties.getProperty("windowsUserAuthenticator.domain");
 
-	if (host == null) {
-	    throw new NullPointerException("The sshUserAuthenticator.host property is null!");
-	}
-
-	if (portStr == null) {
-	    portStr = "22";
-	}
-
-	if (!StringUtils.isNumeric(portStr)) {
-	    throw new IllegalArgumentException("The sshUserAuthenticator.port property is not numeric: " + portStr);
-	}
-
-	int port = Integer.parseInt(portStr);
-
-	boolean authenticated = SshLogin.login(host, port, username, password);
+	boolean authenticated = WindowsLogin.login(username, domain, new String(password));
 	return authenticated;
     }
 }

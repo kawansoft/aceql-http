@@ -49,7 +49,7 @@ public class JdbcDriverParms {
     public static String SQL_SERVER_JTDS_DRIVER_CLASS_NAME = "net.sourceforge.jtds.jdbc.Driver";
     public static String SQL_SERVER_JTDS_URL = "jdbc:jtds:sqlserver://localhost:1433/sampledb";
 
-    // MS JDBC Driver (Test deferred because of bug with Java 6 u29. Does not
+    // MS JDBC Driver (WaffleTest deferred because of bug with Java 6 u29. Does not
     // work!)
     public static String SQL_SERVER_MS_DRIVER_CLASS_NAME = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
     // "jdbc:sqlserver://localhost:1433;integratedSecurity=true;";

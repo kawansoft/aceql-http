@@ -150,7 +150,7 @@ public class CsvRulesManager extends DefaultSqlFirewallManager implements SqlFir
 	for (String table : tables) {
 	    table = table.toLowerCase();
 
-	    // Test public with all tables
+	    // WaffleTest public with all tables
 	    DatabaseUserTableTriplet databaseUserTableTriplet = new DatabaseUserTableTriplet(database, "public", "all");
 	    TableAllowStatements tableAllowStatements = mapTableAllowStatementsSet.get(databaseUserTableTriplet);
 
@@ -162,7 +162,7 @@ public class CsvRulesManager extends DefaultSqlFirewallManager implements SqlFir
 		}
 	    }
 
-	    // Test public with the passed table
+	    // WaffleTest public with the passed table
 	    databaseUserTableTriplet = new DatabaseUserTableTriplet(database, "public", table);
 	    tableAllowStatements = mapTableAllowStatementsSet.get(databaseUserTableTriplet);
 
@@ -175,7 +175,7 @@ public class CsvRulesManager extends DefaultSqlFirewallManager implements SqlFir
 		}
 	    }
 
-	    // Test username woth all tables
+	    // WaffleTest username woth all tables
 	    databaseUserTableTriplet = new DatabaseUserTableTriplet(database, username, "all");
 	    tableAllowStatements = mapTableAllowStatementsSet.get(databaseUserTableTriplet);
 
@@ -188,7 +188,7 @@ public class CsvRulesManager extends DefaultSqlFirewallManager implements SqlFir
 		}
 	    }
 
-	    // Test direct values
+	    // WaffleTest direct values
 	    databaseUserTableTriplet = new DatabaseUserTableTriplet(database, username, table);
 	    tableAllowStatements = mapTableAllowStatementsSet.get(databaseUserTableTriplet);
 

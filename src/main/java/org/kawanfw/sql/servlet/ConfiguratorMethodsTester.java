@@ -72,7 +72,7 @@ public class ConfiguratorMethodsTester {
     }
 
     /**
-     * Test the configurators main methods to see if they throw Exceptions
+     * WaffleTest the configurators main methods to see if they throw Exceptions
      */
 
     public void testMethods() {
@@ -86,7 +86,7 @@ public class ConfiguratorMethodsTester {
 	debug("Before commonsConfigurator.login.");
 
 	if (exception == null) {
-	    // Test that the login method does not throw an Exception
+	    // WaffleTest that the login method does not throw an Exception
 	    @SuppressWarnings("unused")
 	    boolean isOk = false;
 

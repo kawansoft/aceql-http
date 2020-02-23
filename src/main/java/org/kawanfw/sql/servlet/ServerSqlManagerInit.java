@@ -104,7 +104,7 @@ public class ServerSqlManagerInit {
 	    System.out.println(SqlTag.SQL_PRODUCT_START + " " + Version.getServerVersion());
 	}
 
-	// Test the only thing we can test in DatabaseConfigurator
+	// WaffleTest the only thing we can test in DatabaseConfigurator
 	// getBlobsDirectory()
 
 	try {

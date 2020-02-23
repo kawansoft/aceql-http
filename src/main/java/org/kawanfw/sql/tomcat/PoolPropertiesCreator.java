@@ -133,7 +133,7 @@ public class PoolPropertiesCreator {
 
 	    propertyName = propertyName.trim();
 
-	    // Test that the property is a field of PoolProperties
+	    // WaffleTest that the property is a field of PoolProperties
 	    if (propertyName.startsWith(database + ".")) {
 
 		propertyName = StringUtils.substringAfter(propertyName, database + ".");

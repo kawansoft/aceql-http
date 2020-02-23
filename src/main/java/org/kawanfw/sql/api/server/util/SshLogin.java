@@ -27,7 +27,7 @@ package org.kawanfw.sql.api.server.util;
 import java.io.IOException;
 import java.net.InetAddress;
 
-import org.kawanfw.sql.api.server.DatabaseConfigurator;
+import org.kawanfw.sql.api.server.UserAuthenticator;
 import org.kawanfw.sql.util.Tag;
 
 import com.jcraft.jsch.JSch;
@@ -37,14 +37,14 @@ import com.jcraft.jsch.Session;
 /**
  *
  * This class provides static methods for SSH authentication to be used directly
- * in {@link DatabaseConfigurator#login(String, char[], String, String)}
+ * in {@link UserAuthenticator#login(String, char[], String, String)}
  * implementations.
  *
  * @see org.kawanfw.sql.api.server.SshAuthDatabaseConfigurator
  *
  * @author Nicolas de Pomereu
  */
-public class Ssh {
+public class SshLogin {
 
     private static final String UNKNOWN_IP_ADDRESS = "unknown_ip_address";
 
