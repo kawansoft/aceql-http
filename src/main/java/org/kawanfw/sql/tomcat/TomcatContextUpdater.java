@@ -113,7 +113,7 @@ public class TomcatContextUpdater {
 		propertyValue = propertyValue.trim();
 	    }
 
-	    // WaffleTest that the property is a field of cContect
+	    // Test that the property is a field of cContect
 	    // Property name must starts with context.
 	    if (propertyName.startsWith("context.")) {
 

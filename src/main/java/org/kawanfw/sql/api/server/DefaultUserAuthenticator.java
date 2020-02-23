@@ -22,15 +22,37 @@
  * Any modifications to this file must keep this entire header
  * intact.
  */
-package org.kawanfw.sql.version;
+
+package org.kawanfw.sql.api.server;
+
+import java.io.IOException;
+import java.sql.SQLException;
 
 /**
- * Contains the package Version info
+ * A concrete and unsafe {@code UserAuthenticator} that always grant access to
+ * remote client users. <br>
+ * This class will be automatically loaded if no {@code UserAuthenticator} has
+ * been declared in the aceql-server.properties file
+ *
+ * @author Nicolas de Pomereu
+ *
  */
+public class DefaultUserAuthenticator implements UserAuthenticator {
 
-public class VersionValues {
-    public static final String VERSION = "v5.0";
-    public static final String DATE = "23-Feb-2020";
+    /**
+     * Constructor. {@code UserAuthenticator} implementation must have no
+     * constructor or a unique no parameters constructor.
+     */
+    public DefaultUserAuthenticator() {
+
+    }
+
+    /**
+     * @return <code>true</code>. (Client is always granted access).
+     */
+    @Override
+    public boolean login(String username, char[] password, String database, String ipAddress)
+	    throws IOException, SQLException {
+	return true;
+    }
 }
-
-// End

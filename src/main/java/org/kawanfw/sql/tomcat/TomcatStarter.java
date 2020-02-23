@@ -290,7 +290,7 @@ public class TomcatStarter {
     }
 
     /**
-     * WaffleTest the servlet
+     * Test the servlet
      *
      * @param properties
      *            the properties than contain all servlet & configurators info

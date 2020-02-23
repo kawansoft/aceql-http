@@ -535,7 +535,7 @@ public class ServerPreparedStatementParameters {
 		Connection connection = preparedStatement.getConnection();
 		String sql = request.getParameter(HttpParameter.SQL);
 
-		// WaffleTest if we are in PostgreSQL with OID column for large file
+		// Test if we are in PostgreSQL with OID column for large file
 		if (PostgreSqlUtil.isPostgreSqlStatementWithOID(connection, sql)) {
 
 			debug("column is OID! " + parameterIndex);

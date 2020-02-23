@@ -42,7 +42,7 @@ import org.kawanfw.sql.util.FrameworkDebug;
 import org.kawanfw.sql.version.Version;
 
 /**
- * @author Nicolas de Pomereu WaffleTest ServerSqlManager doGet method
+ * @author Nicolas de Pomereu Test ServerSqlManager doGet method
  */
 public class ServerSqlManagerDoGetTester {
 
@@ -72,7 +72,7 @@ public class ServerSqlManagerDoGetTester {
 	    String status = "</font><font face=\"Arial\" color=\"green\">"
 		    + "OK & Running.";
 
-	    // WaffleTest configurators, only if not already thrown Exception:
+	    // Test configurators, only if not already thrown Exception:
 
 	    if (exception != null) {
 

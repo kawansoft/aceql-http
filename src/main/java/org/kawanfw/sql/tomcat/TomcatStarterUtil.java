@@ -24,7 +24,6 @@
  */
 package org.kawanfw.sql.tomcat;
 
-import static org.kawanfw.sql.servlet.ServerSqlManager.DATABASE_CONFIGURATOR_CLASS_NAME;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -114,7 +113,7 @@ public class TomcatStarterUtil {
 	for (String database : databases) {
 	    // Database configurator
 	    String databaseConfiguratorClassName = properties.getProperty(
-		    database + "." + DATABASE_CONFIGURATOR_CLASS_NAME);
+		    database + "." + ServerSqlManager.DATABASE_CONFIGURATOR_CLASS_NAME);
 
 	    if (databaseConfiguratorClassName != null) {
 		loadInstance(databaseConfiguratorClassName);
@@ -482,17 +481,23 @@ public class TomcatStarterUtil {
 	Set<String> databases = getDatabaseNames(properties);
 	ServletParametersStore.setDatabaseNames(databases);
 
+	String userAuthenticatorClassName = TomcatStarterUtil
+		.trimSafe(properties.getProperty(ServerSqlManager.USER_AUTHENTICATOR_CLASS_NAME));
+	if (userAuthenticatorClassName != null && ! userAuthenticatorClassName.isEmpty()) {
+	    ServletParametersStore.setUserAuthenticatorClassName(userAuthenticatorClassName);
+	}
+
 	for (String database : databases) {
 	    // Set the configurator to use for this database
 	    String databaseConfiguratorClassName = TomcatStarterUtil
 		    .trimSafe(properties.getProperty(
-			    database + "." + DATABASE_CONFIGURATOR_CLASS_NAME));
+			    database + "." + ServerSqlManager.DATABASE_CONFIGURATOR_CLASS_NAME));
 
 	    if (databaseConfiguratorClassName != null
 		    && !databaseConfiguratorClassName.isEmpty()) {
 		ServletParametersStore.setInitParameter(database,
 			new InitParamNameValuePair(
-				DATABASE_CONFIGURATOR_CLASS_NAME,
+				ServerSqlManager.DATABASE_CONFIGURATOR_CLASS_NAME,
 				databaseConfiguratorClassName));
 	    }
 

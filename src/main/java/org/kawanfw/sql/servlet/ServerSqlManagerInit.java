@@ -41,6 +41,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.kawanfw.sql.api.server.DatabaseConfigurationException;
 import org.kawanfw.sql.api.server.DatabaseConfigurator;
+import org.kawanfw.sql.api.server.UserAuthenticator;
 import org.kawanfw.sql.api.server.blob.BlobDownloadConfigurator;
 import org.kawanfw.sql.api.server.blob.BlobUploadConfigurator;
 import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
@@ -62,6 +63,9 @@ public class ServerSqlManagerInit {
 
     private static boolean DEBUG = FrameworkDebug.isSet(ServerSqlManager.class);
     public static String CR_LF = System.getProperty("line.separator");
+
+    /** The UserAuthenticator instance */
+    private static UserAuthenticator userAuthenticator = null;
 
     /** The map of (database, DatabaseConfigurator) */
     private static Map<String, DatabaseConfigurator> databaseConfigurators = new ConcurrentHashMap<>();
@@ -104,7 +108,7 @@ public class ServerSqlManagerInit {
 	    System.out.println(SqlTag.SQL_PRODUCT_START + " " + Version.getServerVersion());
 	}
 
-	// WaffleTest the only thing we can test in DatabaseConfigurator
+	// Test the only thing we can test in DatabaseConfigurator
 	// getBlobsDirectory()
 
 	try {
@@ -114,6 +118,16 @@ public class ServerSqlManagerInit {
 	    if (!TomcatSqlModeStore.isTomcatEmbedded()) {
 		createDataSources(config);
 	    }
+
+	    String userAuthenticatorClassName = ServletParametersStore.getUserAuthenticatorClassName();
+
+	    classNameToLoad = userAuthenticatorClassName;
+	    UserAuthenticatorCreator userAuthenticatorCreator = new UserAuthenticatorCreator(userAuthenticatorClassName);
+	    userAuthenticator = userAuthenticatorCreator.getUserAuthenticator();
+	    userAuthenticatorClassName = userAuthenticatorCreator.getUserAuthenticatorClassName();
+
+	    System.out.println(SqlTag.SQL_PRODUCT_START + " UserAuthenticator class:");
+	    System.out.println(SqlTag.SQL_PRODUCT_START + "  -> " + userAuthenticatorClassName);
 
 	    Set<String> databases = ServletParametersStore.getDatabaseNames();
 
@@ -287,6 +301,9 @@ public class ServerSqlManagerInit {
 
     }
 
+    public UserAuthenticator getUserAuthenticator() {
+        return userAuthenticator;
+    }
 
     public Map<String, DatabaseConfigurator> getDatabaseConfigurators() {
         return databaseConfigurators;

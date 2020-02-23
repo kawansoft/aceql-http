@@ -52,6 +52,8 @@ public class ServletParametersStore {
     private static String blobDownloadConfiguratorClassName = null;
     private static String blobUploadConfiguratorClassName = null;
 
+    private static String userAuthenticatorClassName = null;
+
     private static String sessionConfiguratorClassName = null;
     private static String jwtSessionConfiguratorSecretValue = null;
     private static Set<String> userServlets = new HashSet<>();
@@ -244,6 +246,14 @@ public class ServletParametersStore {
 
     public static void setSqlFirewallClassNames(String database, List<String> sqlFirewallClassNames) {
 	sqlFirewallClassNamesMap.put(database, sqlFirewallClassNames);
+    }
+
+    public static String getUserAuthenticatorClassName() {
+        return userAuthenticatorClassName;
+    }
+
+    public static void setUserAuthenticatorClassName(String userAuthenticatorClassName) {
+	ServletParametersStore.userAuthenticatorClassName = userAuthenticatorClassName;
     }
 
 
