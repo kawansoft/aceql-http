@@ -34,7 +34,7 @@ import org.kawanfw.sql.api.server.UserAuthenticator;
  * A concrete and unsafe {@code UserAuthenticator} that always grant access to
  * remote client users. <br>
  * This class will be automatically loaded if no {@code UserAuthenticator} has
- * been declared in the aceql-server.properties file
+ * been declared in the aceql-server.properties file.
  *
  * @author Nicolas de Pomereu
  *

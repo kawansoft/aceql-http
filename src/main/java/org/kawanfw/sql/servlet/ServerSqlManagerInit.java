@@ -50,6 +50,8 @@ import org.kawanfw.sql.servlet.creator.BlobDownloadConfiguratorCreator;
 import org.kawanfw.sql.servlet.creator.BlobUploadConfiguratorCreator;
 import org.kawanfw.sql.servlet.creator.DatabaseConfiguratorCreator;
 import org.kawanfw.sql.servlet.creator.SessionConfiguratorCreator;
+import org.kawanfw.sql.servlet.creator.SqlFirewallsCreator;
+import org.kawanfw.sql.servlet.creator.UserAuthenticatorCreator;
 import org.kawanfw.sql.tomcat.ServletParametersStore;
 import org.kawanfw.sql.tomcat.ThreadPoolExecutorStore;
 import org.kawanfw.sql.tomcat.TomcatSqlModeStore;

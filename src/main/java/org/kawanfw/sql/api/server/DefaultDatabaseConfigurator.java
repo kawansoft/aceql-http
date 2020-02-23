@@ -35,12 +35,12 @@ import java.util.logging.FileHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
 
 import javax.sql.DataSource;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
+import org.kawanfw.sql.api.server.util.NoFormatter;
 import org.kawanfw.sql.servlet.ServerSqlManager;
 import org.kawanfw.sql.tomcat.TomcatSqlModeStore;
 import org.kawanfw.sql.tomcat.TomcatStarterUtil;
@@ -164,7 +164,7 @@ public class DefaultDatabaseConfigurator implements DatabaseConfigurator {
 	    properties = TomcatStarterUtil.getProperties(file);
 	}
 
-	String maxRowsStr = properties.getProperty("default.maxRows");
+	String maxRowsStr = properties.getProperty("defaultDatabaseConfigurator.maxRows");
 
 	if (!StringUtils.isNumeric(maxRowsStr)) {
 	    throw new IllegalArgumentException("The default.maxRows property is not numeric: " + maxRowsStr);
@@ -217,7 +217,7 @@ public class DefaultDatabaseConfigurator implements DatabaseConfigurator {
 
 	ACEQL_LOGGER = Logger.getLogger(DefaultDatabaseConfigurator.class.getName());
 	Handler fh = new FileHandler(pattern, 200 * 1024 * 1024, 2, true);
-	fh.setFormatter(new SimpleFormatter());
+	fh.setFormatter(new NoFormatter());
 	ACEQL_LOGGER.addHandler(fh);
 	return ACEQL_LOGGER;
 
