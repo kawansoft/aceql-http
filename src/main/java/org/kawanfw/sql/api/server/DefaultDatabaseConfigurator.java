@@ -26,11 +26,8 @@ package org.kawanfw.sql.api.server;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.StringReader;
-import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
@@ -40,16 +37,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
-import javax.json.JsonString;
-import javax.json.JsonStructure;
 import javax.sql.DataSource;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
-import org.kawanfw.sql.api.server.util.SimpleHttpClient;
 import org.kawanfw.sql.servlet.ServerSqlManager;
 import org.kawanfw.sql.tomcat.TomcatSqlModeStore;
 import org.kawanfw.sql.tomcat.TomcatStarterUtil;
@@ -65,12 +56,6 @@ import org.kawanfw.sql.util.Tag;
  * <li>{@link #close(Connection)} that closes the {@code Connection} and thus
  * releases it into the pool.</li>
  * </ul>
- * <p>
- * <b>WARNING</b>: This default implementation will allow to start immediate
- * remote SQL calls but is <b>*not*</b> at all secured. <br>
- * <b>It is highly recommended to override this class with a secured
- * implementation for the other methods.</b>
- * <p>
  *
  * @author Nicolas de Pomereu
  */
@@ -91,88 +76,6 @@ public class DefaultDatabaseConfigurator implements DatabaseConfigurator {
 
     }
 
-    /**
-     * @return <code>true</code> if the Authentication Web Service defined in
-     *         {@code aceql-server.properties} returns the JSON String <code>{"status"="OK"}</code>, else <code>false</code> .
-     */
-    @Override
-    public boolean login(String username, char[] password, String database, String ipAddress)
-	    throws IOException, SQLException {
-
-	if (properties == null) {
-	    File file = ServerSqlManager.getAceqlServerProperties();
-	    properties = TomcatStarterUtil.getProperties(file);
-	}
-
-	String url = properties.getProperty("default.login.webService.url");
-	String method = properties.getProperty("default.login.webService.method");
-	String timeoutSecondsStr = properties.getProperty("default.login.webService.timeoutSeconds");
-
-	// Accept free login if no Web Service URL defined or is localhost
-	if (url == null || url.contentEquals("localhost")) {
-	    return true;
-	}
-
-	if (method == null) {
-	    method = "POST";
-	}
-
-	if (timeoutSecondsStr == null) {
-	    timeoutSecondsStr = "0";
-	}
-
-	if (!StringUtils.isNumeric(timeoutSecondsStr)) {
-	    throw new IllegalArgumentException(
-		    "The default.login.webService.timeoutSeconds property is not numeric: " + timeoutSecondsStr);
-	}
-
-	int timeoutSeconds = Integer.parseInt(timeoutSecondsStr);
-	int connectTimeout = timeoutSeconds * 1000;
-	int readTimeout = timeoutSeconds * 1000;
-
-	SimpleHttpClient simpleHttpClient = new SimpleHttpClient(connectTimeout, readTimeout);
-	String jsonResult = null;
-	Map<String, String> parametersMap = new HashMap<>();
-	parametersMap.put("username", username);
-	parametersMap.put("password", new String(password));
-
-	try {
-	    if (method.equalsIgnoreCase("post")) {
-		jsonResult = simpleHttpClient.callWithPost(new URL(url), parametersMap);
-	    } else {
-		jsonResult = simpleHttpClient.callWithGet(url, parametersMap);
-	    }
-	} catch (Exception e) {
-	    Logger logger = getLogger();
-	    logger.log(Level.SEVERE, "Username " + username + " can not authenticate. Error when calling SimpleHttpClient: "
-		    + e.getMessage());
-	    return false;
-	}
-
-	if (jsonResult == null) {
-	    return false;
-	}
-
-	try {
-	    JsonReader reader = Json.createReader(new StringReader(jsonResult));
-	    JsonStructure jsonst = reader.read();
-
-	    JsonObject object = (JsonObject) jsonst;
-	    JsonString status = (JsonString) object.get("status");
-
-	    if (status != null && status.getString().equals("OK")) {
-	        return true;
-	    } else {
-	        return false;
-	    }
-	} catch (Exception e) {
-	    Logger logger = getLogger();
-	    logger.log(Level.SEVERE, "Error when parsing jsonResult of AWS: "
-		    + e.getMessage());
-	    return false;
-	}
-
-    }
 
     /**
      * Returns a {@code Connection} from

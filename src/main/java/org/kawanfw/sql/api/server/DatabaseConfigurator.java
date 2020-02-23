@@ -40,8 +40,6 @@ import java.util.logging.Logger;
  * A concrete implementation should be developed on the server side in order to:
  * <ul>
  * <li>Define how to extract a JDBC Connection from a Connection Pool.</li>
- * <li>Define with <code>login</code> method if a client username and password
- * are allowed for connection.</li>
  * <li>Define the directories where the Blobs/Clobs are located for upload and download.</li>
  * <li>Define some Java code to execute before/after a
  * <code>Connection.close()</code>.
@@ -60,43 +58,7 @@ import java.util.logging.Logger;
 
 public interface DatabaseConfigurator {
 
-    /**
-     * Allows to authenticate the remote {@code (username, password)} couple
-     * sent by the client side.
-     * <p>
-     * The AceQL HTTP Server will call the method in order to grant or not
-     * client access.
-     * <p>
-     * Typical usage would be to check the (username, password) couple against a
-     * table in a SQL database or against a LDAP, etc.
-     *
-     * It's possible to use current Connection with a database by calling
-     * {@link #getConnection(String)}. <br>
-     * <br>
-     * The method allows to retrieve:
-     * <ul>
-     * <li>The name of the database to which the client wants to connect.</li>
-     * <li>The IP address of the client.</li>
-     * </ul>
-     *
-     * @param username
-     *            the username sent by the client
-     * @param password
-     *            the password to connect to the server
-     * @param database
-     *            the database name to which the client wants to connect
-     * @param ipAddress
-     *            the IP address of the client user
-     * @return <code>true</code> if the (username, password) couple is
-     *         correct/valid. If false, the client side will not be authorized
-     *         to send any command.
-     * @throws IOException
-     *             if an IOException occurs
-     * @throws SQLException
-     *             if a SQLException occurs
-     */
-    public boolean login(String username, char[] password, String database,
-	    String ipAddress) throws IOException, SQLException;
+
 
     /**
      * <p>
