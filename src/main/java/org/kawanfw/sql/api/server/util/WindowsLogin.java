@@ -34,7 +34,7 @@ import waffle.windows.auth.impl.WindowsAuthProviderImpl;
  * directly in {@link UserAuthenticator#login(String, char[], String, String)}
  * implementations.
  *
- * @see org.kawanfw.sql.api.server.WindowsUserAuthenticator
+ * @see org.kawanfw.sql.api.server.auth.WindowsUserAuthenticator
  *
  * @author Nicolas de Pomereu
  */

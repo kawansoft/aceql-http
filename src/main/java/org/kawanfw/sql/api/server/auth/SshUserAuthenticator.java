@@ -23,7 +23,7 @@
  * intact.
  */
 
-package org.kawanfw.sql.api.server;
+package org.kawanfw.sql.api.server.auth;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,6 +31,7 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 import org.apache.commons.lang3.StringUtils;
+import org.kawanfw.sql.api.server.UserAuthenticator;
 import org.kawanfw.sql.api.server.util.SshLogin;
 import org.kawanfw.sql.servlet.ServerSqlManager;
 import org.kawanfw.sql.tomcat.TomcatStarterUtil;

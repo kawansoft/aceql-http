@@ -23,7 +23,7 @@
  * intact.
  */
 
-package org.kawanfw.sql.api.server;
+package org.kawanfw.sql.api.server.auth;
 
 import java.io.File;
 import java.io.IOException;
@@ -43,6 +43,8 @@ import javax.json.JsonString;
 import javax.json.JsonStructure;
 
 import org.apache.commons.lang3.StringUtils;
+import org.kawanfw.sql.api.server.DefaultDatabaseConfigurator;
+import org.kawanfw.sql.api.server.UserAuthenticator;
 import org.kawanfw.sql.api.server.util.SimpleHttpClient;
 import org.kawanfw.sql.servlet.ServerSqlManager;
 import org.kawanfw.sql.tomcat.TomcatStarterUtil;

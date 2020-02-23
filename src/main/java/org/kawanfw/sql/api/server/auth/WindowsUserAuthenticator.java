@@ -23,36 +23,49 @@
  * intact.
  */
 
-package org.kawanfw.sql.api.server;
+package org.kawanfw.sql.api.server.auth;
 
+import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Properties;
+
+import org.kawanfw.sql.api.server.UserAuthenticator;
+import org.kawanfw.sql.api.server.util.WindowsLogin;
+import org.kawanfw.sql.servlet.ServerSqlManager;
+import org.kawanfw.sql.tomcat.TomcatStarterUtil;
 
 /**
- * A concrete and unsafe {@code UserAuthenticator} that always grant access to
- * remote client users. <br>
- * This class will be automatically loaded if no {@code UserAuthenticator} has
- * been declared in the aceql-server.properties file
+ * A concrete {@code UserAuthenticator} that extends allows zero-code remote
+ * client {@code (username, password)} authentication against a Web Service.
  *
  * @author Nicolas de Pomereu
  *
  */
-public class DefaultUserAuthenticator implements UserAuthenticator {
+public class WindowsUserAuthenticator implements UserAuthenticator {
+
+    private Properties properties = null;
 
     /**
      * Constructor. {@code UserAuthenticator} implementation must have no
      * constructor or a unique no parameters constructor.
      */
-    public DefaultUserAuthenticator() {
+    public WindowsUserAuthenticator() {
 
     }
 
-    /**
-     * @return <code>true</code>. (Client is always granted access).
-     */
     @Override
     public boolean login(String username, char[] password, String database, String ipAddress)
 	    throws IOException, SQLException {
-	return true;
+
+	if (properties == null) {
+	    File file = ServerSqlManager.getAceqlServerProperties();
+	    properties = TomcatStarterUtil.getProperties(file);
+	}
+
+	String domain = properties.getProperty("windowsUserAuthenticator.domain");
+
+	boolean authenticated = WindowsLogin.login(username, domain, new String(password));
+	return authenticated;
     }
 }
