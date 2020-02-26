@@ -167,7 +167,7 @@ public class DefaultDatabaseConfigurator implements DatabaseConfigurator {
 	String maxRowsStr = properties.getProperty("defaultDatabaseConfigurator.maxRows");
 
 	if (!StringUtils.isNumeric(maxRowsStr)) {
-	    throw new IllegalArgumentException("The default.maxRows property is not numeric: " + maxRowsStr);
+	    throw new IllegalArgumentException("The defaultDatabaseConfigurator.maxRows property is not numeric: " + maxRowsStr);
 	}
 
 	maxRows = Integer.parseInt(maxRowsStr);
