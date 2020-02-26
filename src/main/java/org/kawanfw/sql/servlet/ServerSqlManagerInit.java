@@ -133,30 +133,7 @@ public class ServerSqlManagerInit {
 
 	    Set<String> databases = ServletParametersStore.getDatabaseNames();
 
-	    for (String database : databases) {
-		databaseConfiguratorClassName = ServletParametersStore.getInitParameter(database,
-			ServerSqlManager.DATABASE_CONFIGURATOR_CLASS_NAME);
 
-		debug("databaseConfiguratorClassName    : " + databaseConfiguratorClassName);
-
-		// Check spelling with first letter capitalized
-
-		if (databaseConfiguratorClassName == null || databaseConfiguratorClassName.isEmpty()) {
-		    String capitalized = StringUtils.capitalize(ServerSqlManager.DATABASE_CONFIGURATOR_CLASS_NAME);
-		    databaseConfiguratorClassName = ServletParametersStore.getInitParameter(database, capitalized);
-		}
-
-		// Call the specific DatabaseConfigurator class to use
-		classNameToLoad = databaseConfiguratorClassName;
-		DatabaseConfiguratorCreator databaseConfiguratorCreator = new DatabaseConfiguratorCreator(databaseConfiguratorClassName);
-		DatabaseConfigurator databaseConfigurator = databaseConfiguratorCreator.getDatabaseConfigurator();
-		databaseConfiguratorClassName = databaseConfiguratorCreator.getDatabaseConfiguratorClassName();
-
-		databaseConfigurators.put(database, databaseConfigurator);
-
-		System.out.println(SqlTag.SQL_PRODUCT_START + " Loading Database " + database + " DatabaseConfigurator class:");
-		System.out.println(SqlTag.SQL_PRODUCT_START + "  -> " + databaseConfiguratorClassName);
-	    }
 
 	    for (String database : databases) {
 
@@ -182,6 +159,31 @@ public class ServerSqlManagerInit {
 		for (String sqlFirewallClassName : sqlFirewallClassNames) {
 		    System.out.println(SqlTag.SQL_PRODUCT_START + "   -> " + sqlFirewallClassName);
 		}
+	    }
+
+	    for (String database : databases) {
+		databaseConfiguratorClassName = ServletParametersStore.getInitParameter(database,
+			ServerSqlManager.DATABASE_CONFIGURATOR_CLASS_NAME);
+
+		debug("databaseConfiguratorClassName    : " + databaseConfiguratorClassName);
+
+		// Check spelling with first letter capitalized
+
+		if (databaseConfiguratorClassName == null || databaseConfiguratorClassName.isEmpty()) {
+		    String capitalized = StringUtils.capitalize(ServerSqlManager.DATABASE_CONFIGURATOR_CLASS_NAME);
+		    databaseConfiguratorClassName = ServletParametersStore.getInitParameter(database, capitalized);
+		}
+
+		// Call the specific DatabaseConfigurator class to use
+		classNameToLoad = databaseConfiguratorClassName;
+		DatabaseConfiguratorCreator databaseConfiguratorCreator = new DatabaseConfiguratorCreator(databaseConfiguratorClassName);
+		DatabaseConfigurator databaseConfigurator = databaseConfiguratorCreator.getDatabaseConfigurator();
+		databaseConfiguratorClassName = databaseConfiguratorCreator.getDatabaseConfiguratorClassName();
+
+		databaseConfigurators.put(database, databaseConfigurator);
+
+		System.out.println(SqlTag.SQL_PRODUCT_START + " Loading Database " + database + " DatabaseConfigurator class:");
+		System.out.println(SqlTag.SQL_PRODUCT_START + "  -> " + databaseConfiguratorClassName);
 	    }
 
 	    // Load Configurators for Blobs/Clobs
