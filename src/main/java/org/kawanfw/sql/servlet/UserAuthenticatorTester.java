@@ -26,7 +26,7 @@ package org.kawanfw.sql.servlet;
 
 import java.util.Date;
 
-import org.kawanfw.sql.api.server.UserAuthenticator;
+import org.kawanfw.sql.api.server.auth.UserAuthenticator;
 import org.kawanfw.sql.util.FrameworkDebug;
 
 /**

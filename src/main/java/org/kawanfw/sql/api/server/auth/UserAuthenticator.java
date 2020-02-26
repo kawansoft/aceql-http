@@ -22,7 +22,7 @@
  * Any modifications to this file must keep this entire header
  * intact.
  */
-package org.kawanfw.sql.api.server;
+package org.kawanfw.sql.api.server.auth;
 
 import java.io.IOException;
 import java.sql.SQLException;

@@ -44,7 +44,6 @@ import javax.json.JsonStructure;
 
 import org.apache.commons.lang3.StringUtils;
 import org.kawanfw.sql.api.server.DefaultDatabaseConfigurator;
-import org.kawanfw.sql.api.server.UserAuthenticator;
 import org.kawanfw.sql.api.server.util.SimpleHttpClient;
 import org.kawanfw.sql.servlet.ServerSqlManager;
 import org.kawanfw.sql.tomcat.TomcatStarterUtil;
@@ -86,6 +85,7 @@ public class WebServiceUserAuthenticator implements UserAuthenticator {
 
 	String url = properties.getProperty("webServiceUserAuthenticator.url");
 	String timeoutSecondsStr = properties.getProperty("webServiceUserAuthenticator.timeoutSeconds");
+	String httpTraceStr = properties.getProperty("webServiceUserAuthenticator.httpTrace");
 
 	// Accept free login if no Web Service URL defined or is localhost
 	if (url == null || url.contentEquals("localhost")) {
@@ -106,6 +106,13 @@ public class WebServiceUserAuthenticator implements UserAuthenticator {
 	int readTimeout = timeoutSeconds * 1000;
 
 	SimpleHttpClient simpleHttpClient = new SimpleHttpClient(connectTimeout, readTimeout);
+	if (Boolean.parseBoolean(httpTraceStr)) {
+	    SimpleHttpClient.TRACE_ON = true;
+	}
+	else {
+	    SimpleHttpClient.TRACE_ON = false;
+	}
+
 	String jsonResult = null;
 	Map<String, String> parametersMap = new HashMap<>();
 	parametersMap.put("username", username);
@@ -125,6 +132,8 @@ public class WebServiceUserAuthenticator implements UserAuthenticator {
 	if (jsonResult == null) {
 	    return false;
 	}
+
+	jsonResult = jsonResult.trim();
 
 	try {
 	    JsonReader reader = Json.createReader(new StringReader(jsonResult));

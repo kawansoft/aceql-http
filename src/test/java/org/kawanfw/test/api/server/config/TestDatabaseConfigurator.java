@@ -52,82 +52,18 @@ public class TestDatabaseConfigurator extends DefaultDatabaseConfigurator
     }
 
 
-
-//    /**
-//     * @return <code><b>true</b></code> if all following requirements are met:
-//     *         <ul>
-//     *         <li>Statement does not contain SQL comments.</li>
-//     *         <li>Statement does not contain ";" character.</li>
-//     *         <li>Statement is a DML statement: DELETE / INSERT / SELECT /
-//     *         UPDATE.</li>
-//     *         <li>Table must be: CUSTOMER / ORDERLOG / USER_LOGIN</li>
-//     *         </ul>
-//     */
-//
-//    @Override
-//    public boolean allowSqlRunAfterAnalysis(String username,
-//	    Connection connection, String ipAddress, String sql,
-//	    boolean isPreparedStatement, List<Object> parameterValues)
-//	    throws IOException, SQLException {
-//
-//	debug("Begin allowSqlRunAfterAnalysis");
-//	debug("sql            : " + sql);
-//	debug("parameterValues: " + parameterValues);
-//
-//	// We will start statement analysis on the sql string.
-//	StatementAnalyzer statementAnalyzer = new StatementAnalyzer(sql,
-//		parameterValues);
-//
-//	List<String> tables = statementAnalyzer.getTables();
-//	if (! tables.isEmpty() && tables.get(0)
-//		.equalsIgnoreCase("DUSTOMER")) {
-//	    return false;
-//	}
-//
-//	// No comments
-//	if (statementAnalyzer.isWithComments()) {
-//	    return false;
-//	}
-//
-//	// No DDL
-//	if (statementAnalyzer.isDdl()) {
-//	    return false;
-//	}
-//
-//	// No DCL
-//	if (statementAnalyzer.isDcl()) {
-//	    return false;
-//	}
-//
-//	// ok, accept statement
-//	return true;
-//    }
-
-    // @Override
-    // public boolean encryptResultSet() throws IOException ,SQLException
-    // {
-    // return true;
-    // }
-    //
-
-    // /**
-    // * @return 50
-    // */
-    // @Override
-    // public int getMaxRowsToReturn() throws IOException, SQLException {
-    // return maxRowToReturn;
-    // }
-
-    @SuppressWarnings("unused")
-    private int maxRowToReturn = 0;
-
     /**
-     * @param maxRowToReturn
-     *            the maxRowToReturn to set
+     * @return <code><b>true</b></code> if all following requirements are met:
+     *         <ul>
+     *         <li>Statement does not contain SQL comments.</li>
+     *         <li>Statement does not contain ";" character.</li>
+     *         <li>Statement is a DML statement: DELETE / INSERT / SELECT /
+     *         UPDATE.</li>
+     *         <li>Table must be: CUSTOMER / ORDERLOG / USER_LOGIN</li>
+     *         </ul>
      */
-    public void setMaxRowToReturn(int maxRowToReturn) {
-	this.maxRowToReturn = maxRowToReturn;
-    }
+
+
 
     /**
      * @param s

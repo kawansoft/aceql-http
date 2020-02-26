@@ -29,7 +29,8 @@ import org.apache.commons.io.IOUtils;
  */
 public class SimpleHttpClient {
 
-    private static boolean TRACE_ON = false;
+    /** If true, calls will be traced */
+    public static boolean TRACE_ON = false;
 
     private Proxy proxy = null;
     private int connectTimeout = 0;
@@ -77,7 +78,7 @@ public class SimpleHttpClient {
 		IOUtils.copy(in, out);
 
 		result = out.toString("UTF-8");
-		trace("result: " + result);
+		trace("result :" + result + ":");
 	    }
 	}
 	return result;

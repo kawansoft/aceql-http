@@ -41,7 +41,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.kawanfw.sql.api.server.DatabaseConfigurationException;
 import org.kawanfw.sql.api.server.DatabaseConfigurator;
-import org.kawanfw.sql.api.server.UserAuthenticator;
+import org.kawanfw.sql.api.server.auth.UserAuthenticator;
 import org.kawanfw.sql.api.server.blob.BlobDownloadConfigurator;
 import org.kawanfw.sql.api.server.blob.BlobUploadConfigurator;
 import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
@@ -128,7 +128,7 @@ public class ServerSqlManagerInit {
 	    userAuthenticator = userAuthenticatorCreator.getUserAuthenticator();
 	    userAuthenticatorClassName = userAuthenticatorCreator.getUserAuthenticatorClassName();
 
-	    System.out.println(SqlTag.SQL_PRODUCT_START + " UserAuthenticator class:");
+	    System.out.println(SqlTag.SQL_PRODUCT_START + " Loading UserAuthenticator class:");
 	    System.out.println(SqlTag.SQL_PRODUCT_START + "  -> " + userAuthenticatorClassName);
 
 	    Set<String> databases = ServletParametersStore.getDatabaseNames();
@@ -146,7 +146,7 @@ public class ServerSqlManagerInit {
 		    databaseConfiguratorClassName = ServletParametersStore.getInitParameter(database, capitalized);
 		}
 
-		// Call the specific Configurator class to use
+		// Call the specific DatabaseConfigurator class to use
 		classNameToLoad = databaseConfiguratorClassName;
 		DatabaseConfiguratorCreator databaseConfiguratorCreator = new DatabaseConfiguratorCreator(databaseConfiguratorClassName);
 		DatabaseConfigurator databaseConfigurator = databaseConfiguratorCreator.getDatabaseConfigurator();
@@ -154,7 +154,7 @@ public class ServerSqlManagerInit {
 
 		databaseConfigurators.put(database, databaseConfigurator);
 
-		System.out.println(SqlTag.SQL_PRODUCT_START + " Database " + database + " DatabaseConfigurator class:");
+		System.out.println(SqlTag.SQL_PRODUCT_START + " Loading Database " + database + " DatabaseConfigurator class:");
 		System.out.println(SqlTag.SQL_PRODUCT_START + "  -> " + databaseConfiguratorClassName);
 	    }
 
@@ -169,7 +169,7 @@ public class ServerSqlManagerInit {
 		else
 		    tagSQLFirewallManager = " SQLFirewallManager classes: ";
 
-		System.out.println(SqlTag.SQL_PRODUCT_START + " Database " + database + tagSQLFirewallManager);
+		System.out.println(SqlTag.SQL_PRODUCT_START + " Loading Database " + database + tagSQLFirewallManager);
 
 		DatabaseConfigurator databaseConfigurator = databaseConfigurators.get(database);
 		SqlFirewallsCreator sqlFirewallsCreator = new SqlFirewallsCreator(sqlFirewallClassNames, database, databaseConfigurator);
@@ -193,7 +193,7 @@ public class ServerSqlManagerInit {
 
 	    if (!blobDownloadConfiguratorClassName
 		    .equals(org.kawanfw.sql.api.server.blob.DefaultBlobDownloadConfigurator.class.getName())) {
-		System.out.println(SqlTag.SQL_PRODUCT_START + " blobDownloadConfiguratorClassName: ");
+		System.out.println(SqlTag.SQL_PRODUCT_START + " Loading blobDownloadConfiguratorClassName: ");
 		System.out.println(SqlTag.SQL_PRODUCT_START + " " + blobDownloadConfiguratorClassName);
 	    }
 
@@ -205,7 +205,7 @@ public class ServerSqlManagerInit {
 
 	    if (!blobUploadConfiguratorClassName
 		    .equals(org.kawanfw.sql.api.server.blob.DefaultBlobUploadConfigurator.class.getName())) {
-		System.out.println(SqlTag.SQL_PRODUCT_START + " blobUploadConfiguratorClassName: ");
+		System.out.println(SqlTag.SQL_PRODUCT_START + " Loading blobUploadConfiguratorClassName: ");
 		System.out.println(SqlTag.SQL_PRODUCT_START + " " + blobUploadConfiguratorClassName);
 	    }
 
@@ -218,7 +218,7 @@ public class ServerSqlManagerInit {
 
 	    if (!sessionManagerConfiguratorClassName
 		    .equals(org.kawanfw.sql.api.server.session.DefaultSessionConfigurator.class.getName())) {
-		System.out.println(SqlTag.SQL_PRODUCT_START + " sessionManagerConfiguratorClassName: ");
+		System.out.println(SqlTag.SQL_PRODUCT_START + " Loading sessionManagerConfiguratorClassName: ");
 		System.out.println(SqlTag.SQL_PRODUCT_START + "  -> " + sessionManagerConfiguratorClassName);
 	    }
 
@@ -243,7 +243,7 @@ public class ServerSqlManagerInit {
 	}
 
 	if (exception == null) {
-	    System.out.println(SqlTag.SQL_PRODUCT_START + " Configurators Status: OK.");
+	    System.out.println(SqlTag.SQL_PRODUCT_START + " Loaded classes Status: OK.");
 
 	    if (!TomcatSqlModeStore.isTomcatEmbedded()) {
 		String runningMessage = SqlTag.SQL_PRODUCT_START + " " + Version.PRODUCT.NAME + " Start OK.";
@@ -253,7 +253,7 @@ public class ServerSqlManagerInit {
 	} else {
 	    exception.printStackTrace();
 	    if (!TomcatSqlModeStore.isTomcatEmbedded()) {
-		String errorMessage1 = SqlTag.SQL_PRODUCT_START + "  -> Configurators Status: KO.";
+		String errorMessage1 = SqlTag.SQL_PRODUCT_START + "  -> Loaded classes Status: KO.";
 		String errorMessage2 = initErrrorMesage;
 		String errorMessage3 = ExceptionUtils.getStackTrace(exception);
 

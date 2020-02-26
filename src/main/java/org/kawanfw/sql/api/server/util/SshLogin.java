@@ -27,7 +27,7 @@ package org.kawanfw.sql.api.server.util;
 import java.io.IOException;
 import java.net.InetAddress;
 
-import org.kawanfw.sql.api.server.UserAuthenticator;
+import org.kawanfw.sql.api.server.auth.UserAuthenticator;
 import org.kawanfw.sql.util.Tag;
 
 import com.jcraft.jsch.JSch;

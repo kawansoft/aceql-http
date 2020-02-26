@@ -6,8 +6,8 @@ package org.kawanfw.sql.servlet.creator;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
-import org.kawanfw.sql.api.server.UserAuthenticator;
 import org.kawanfw.sql.api.server.auth.DefaultUserAuthenticator;
+import org.kawanfw.sql.api.server.auth.UserAuthenticator;
 
 /**
  * @author Nicolas de Pomereu

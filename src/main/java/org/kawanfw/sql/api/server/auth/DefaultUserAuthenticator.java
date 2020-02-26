@@ -28,8 +28,6 @@ package org.kawanfw.sql.api.server.auth;
 import java.io.IOException;
 import java.sql.SQLException;
 
-import org.kawanfw.sql.api.server.UserAuthenticator;
-
 /**
  * A concrete and unsafe {@code UserAuthenticator} that always grant access to
  * remote client users. <br>

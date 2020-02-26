@@ -30,7 +30,6 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Properties;
 
-import org.kawanfw.sql.api.server.UserAuthenticator;
 import org.kawanfw.sql.api.server.util.WindowsLogin;
 import org.kawanfw.sql.servlet.ServerSqlManager;
 import org.kawanfw.sql.tomcat.TomcatStarterUtil;

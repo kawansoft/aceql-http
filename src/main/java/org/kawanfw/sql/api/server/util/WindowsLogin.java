@@ -24,7 +24,7 @@
  */
 package org.kawanfw.sql.api.server.util;
 
-import org.kawanfw.sql.api.server.UserAuthenticator;
+import org.kawanfw.sql.api.server.auth.UserAuthenticator;
 
 import waffle.windows.auth.impl.WindowsAuthProviderImpl;
 

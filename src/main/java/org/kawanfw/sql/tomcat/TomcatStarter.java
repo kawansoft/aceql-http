@@ -151,7 +151,8 @@ public class TomcatStarter {
 	tomcat.setHostname(host);
 	tomcat.setPort(port);
 
-	TomcatStarterUtil.testConfigurators(properties);
+	//NO: do in the Creators in org.kawanfw.sql.servlet.creator package
+	//TomcatStarterUtil.testConfigurators(properties);
 
 	// Very important to allow port reuse without System.exit()
 	// See
