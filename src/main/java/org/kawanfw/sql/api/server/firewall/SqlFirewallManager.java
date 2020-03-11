@@ -59,12 +59,19 @@ import org.kawanfw.sql.api.server.StatementAnalyzer;
  * don't require any coding. The classes may be chained. See each Javadoc for
  * more details:
  * <ul>
- * <li>{@link CsvRulesManager}</li>
- * <li>{@link DenyDclManager}</li>
- * <li>{@link DenyDdlManager}</li>
- * <li>{@link DenyExecuteUpdateManager}</li>
- * <li>{@link DenyMetadataQueryManager}</li>
- * <li>{@link DenyStatementClassManager}</li>
+ * <li>{@link CsvRulesManager}: manager that apply rules written in a CSV
+ * file.</li>
+ * <li>{@link DenyDclManager}: manager that denies any DCL (Data Control
+ * Language) call.</li>
+ * <li>{@link DenyDdlManager}: manager that denies any DDL (Data Definition
+ * Language) call.</li>
+ * <li>{@link DenyExecuteUpdateManager}: manager that denies any update of the
+ * the database.</li>
+ * <li>{@link DenyMetadataQueryManager}: manager that denies the use of the
+ * AceQL Metadata Query API.</li>
+ * <li>{@link DenyStatementClassManager}: manager that denies any call of the
+ * the raw Statement Java class. (Calling Statements without parameters is
+ * forbidden).</li>
  * </ul>
  * <p>
  * Note that the helper class {@link StatementAnalyzer} allows to do some simple
