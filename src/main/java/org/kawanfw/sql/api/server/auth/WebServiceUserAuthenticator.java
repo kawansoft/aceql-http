@@ -47,15 +47,16 @@ import org.kawanfw.sql.api.server.DefaultDatabaseConfigurator;
 import org.kawanfw.sql.api.server.util.SimpleHttpClient;
 import org.kawanfw.sql.servlet.ServerSqlManager;
 import org.kawanfw.sql.tomcat.TomcatStarterUtil;
+import org.kawanfw.sql.util.Tag;
 
 /**
  * A concrete {@code UserAuthenticator} that extends allows zero-code remote
- * client {@code (username, password)} authentication against the Windows
- * machine on which the AceQL instance is running.
+ * client {@code (username, password)} authentication against a Web Service.
  *
  * @author Nicolas de Pomereu
- *
+ * @since 5.0
  */
+
 public class WebServiceUserAuthenticator implements UserAuthenticator {
 
     private Properties properties = null;
@@ -124,7 +125,7 @@ public class WebServiceUserAuthenticator implements UserAuthenticator {
 	    if (logger == null) {
 		logger = new DefaultDatabaseConfigurator().getLogger();
 	    }
-	    logger.log(Level.SEVERE, "Username " + username
+	    logger.log(Level.SEVERE, Tag.PRODUCT + "Username " + username
 		    + " can not authenticate. Error when calling SimpleHttpClient: " + e.getMessage());
 	    return false;
 	}
@@ -151,7 +152,7 @@ public class WebServiceUserAuthenticator implements UserAuthenticator {
 	    if (logger == null) {
 		logger = new DefaultDatabaseConfigurator().getLogger();
 	    }
-	    logger.log(Level.SEVERE, "Error when parsing jsonResult of Authentication Web Service: " + e.getMessage());
+	    logger.log(Level.SEVERE, Tag.PRODUCT + " Error when parsing jsonResult of Authentication Web Service: " + e.getMessage());
 	    return false;
 	}
 

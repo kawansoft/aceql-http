@@ -29,21 +29,29 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.commons.lang3.StringUtils;
-import org.kawanfw.sql.api.server.util.SshLogin;
+import org.kawanfw.sql.api.server.DefaultDatabaseConfigurator;
 import org.kawanfw.sql.servlet.ServerSqlManager;
 import org.kawanfw.sql.tomcat.TomcatStarterUtil;
+import org.kawanfw.sql.util.Tag;
+
+import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.JSchException;
+import com.jcraft.jsch.Session;
 
 /**
  * A concrete {@code UserAuthenticator} that extends allows zero-code remote
  * client {@code (username, password)} authentication against a SSH server.
  *
  * @author Nicolas de Pomereu
- *
+ * @since 5.0
  */
 public class SshUserAuthenticator implements UserAuthenticator {
 
+    private Logger logger = null;
     private Properties properties = null;
 
     /**
@@ -80,7 +88,36 @@ public class SshUserAuthenticator implements UserAuthenticator {
 
 	int port = Integer.parseInt(portStr);
 
-	boolean authenticated = SshLogin.login(host, port, username, password);
-	return authenticated;
+	// Create a JSch Session with passed values
+	JSch jsch = new JSch();
+	Session session = null;
+
+	try {
+	    session = jsch.getSession(username, host, port);
+	} catch (JSchException e) {
+	    if (logger == null) {
+		logger = new DefaultDatabaseConfigurator().getLogger();
+	    }
+	    logger.log(Level.SEVERE, Tag.PRODUCT + " username: " + username + " or host:" + host + " is invalid.");
+	}
+
+	session.setPassword(new String(password));
+	session.setConfig("StrictHostKeyChecking", "no");
+
+	// Ok try to connect
+	boolean connected = false;
+	try {
+	    session.connect();
+	    connected = true;
+	    session.disconnect();
+	} catch (JSchException e) {
+	    if (logger == null) {
+		logger = new DefaultDatabaseConfigurator().getLogger();
+	    }
+	   logger.log(Level.WARNING, Tag.PRODUCT + "SSH connection impossible for " + username + "@"
+		    + host + ":" + port + ". (" + e.toString() + ")");
+	}
+
+	return connected;
     }
 }

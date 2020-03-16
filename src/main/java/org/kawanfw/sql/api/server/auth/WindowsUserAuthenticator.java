@@ -29,20 +29,29 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import org.kawanfw.sql.api.server.util.WindowsLogin;
+import org.kawanfw.sql.api.server.DefaultDatabaseConfigurator;
 import org.kawanfw.sql.servlet.ServerSqlManager;
 import org.kawanfw.sql.tomcat.TomcatStarterUtil;
+import org.kawanfw.sql.util.Tag;
+
+import waffle.windows.auth.impl.WindowsAuthProviderImpl;
+
 
 /**
  * A concrete {@code UserAuthenticator} that extends allows zero-code remote
- * client {@code (username, password)} authentication against a Web Service.
+ * client {@code (username, password)} authentication against the Windows
+ * machine on which the AceQL instance is running.
  *
  * @author Nicolas de Pomereu
+ * @since 5.0
  *
  */
 public class WindowsUserAuthenticator implements UserAuthenticator {
 
+    private Logger logger = null;
     private Properties properties = null;
 
     /**
@@ -64,7 +73,25 @@ public class WindowsUserAuthenticator implements UserAuthenticator {
 
 	String domain = properties.getProperty("windowsUserAuthenticator.domain");
 
-	boolean authenticated = WindowsLogin.login(username, domain, new String(password));
-	return authenticated;
+	try {
+	    WindowsAuthProviderImpl windowsAuthProviderImpl = new WindowsAuthProviderImpl();
+	    windowsAuthProviderImpl.logonDomainUser(username, domain, new String(password));
+	    return true;
+	} catch (Exception exception) {
+
+	    if (logger == null) {
+		logger = new DefaultDatabaseConfigurator().getLogger();
+	    }
+
+	    if (exception instanceof com.sun.jna.platform.win32.Win32Exception) {
+		logger.log(Level.WARNING, Tag.PRODUCT + " WindowsLogin.login refused for " + username);
+	    } else {
+		// Better to trace stack trace in case of Waffle problem...
+		logger.log(Level.WARNING, Tag.PRODUCT + " AceQL WindowsLogin.login call failure (Waffle Library): " + exception.toString());
+	    }
+
+	    return false;
+	}
+
     }
 }

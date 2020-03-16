@@ -35,6 +35,7 @@ import java.sql.SQLException;
  * been declared in the aceql-server.properties file.
  *
  * @author Nicolas de Pomereu
+ * @since 5.0
  *
  */
 public class DefaultUserAuthenticator implements UserAuthenticator {

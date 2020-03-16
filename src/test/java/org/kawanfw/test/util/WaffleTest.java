@@ -27,7 +27,7 @@ package org.kawanfw.test.util;
 import java.io.File;
 
 import org.apache.commons.io.FileUtils;
-import org.kawanfw.sql.api.server.util.WindowsLogin;
+import org.kawanfw.sql.api.server.auth.WindowsUserAuthenticator;
 
 import waffle.windows.auth.IWindowsAccount;
 import waffle.windows.auth.IWindowsAuthProvider;
@@ -56,8 +56,7 @@ public class WaffleTest {
 	String username = "ndepomereu@kawansoft.com";
 	String password = FileUtils.readFileToString(new File("I:\\__NDP\\_MyPasswords\\login.txt"), "UTF-8");
 
-	WindowsLogin.DEBUG = true;
-	boolean logged = WindowsLogin.login(username, ".", password);
+	boolean logged = new WindowsUserAuthenticator().login(username, password.toCharArray(), ".", "10.0.0.0");
 	System.out.println("logged: " + logged);
 
 	boolean doContinue = false;
