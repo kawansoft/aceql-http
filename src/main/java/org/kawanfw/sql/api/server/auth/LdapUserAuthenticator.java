@@ -22,34 +22,35 @@
  * Any modifications to this file must keep this entire header
  * intact.
  */
-
 package org.kawanfw.sql.api.server.auth;
 
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Hashtable;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.naming.CommunicationException;
+import javax.naming.Context;
+import javax.naming.NamingException;
+import javax.naming.directory.DirContext;
+import javax.naming.directory.InitialDirContext;
 
 import org.kawanfw.sql.api.server.DefaultDatabaseConfigurator;
 import org.kawanfw.sql.servlet.ServerSqlManager;
 import org.kawanfw.sql.tomcat.TomcatStarterUtil;
 import org.kawanfw.sql.util.Tag;
 
-import waffle.windows.auth.impl.WindowsAuthProviderImpl;
-
-
 /**
  * A concrete {@code UserAuthenticator} that allows zero-code remote
- * client {@code (username, password)} authentication against the Windows
- * machine on which the AceQL instance is running.
+ * client {@code (username, password)} authentication against a LDAP server.
  *
  * @author Nicolas de Pomereu
  * @since 5.0
- *
  */
-public class WindowsUserAuthenticator implements UserAuthenticator {
+public class LdapUserAuthenticator implements UserAuthenticator {
 
     private Logger logger = null;
     private Properties properties = null;
@@ -58,12 +59,16 @@ public class WindowsUserAuthenticator implements UserAuthenticator {
      * Constructor. {@code UserAuthenticator} implementation must have no
      * constructor or a unique no parameters constructor.
      */
-    public WindowsUserAuthenticator() {
+    public LdapUserAuthenticator() {
 
     }
 
-    /* (non-Javadoc)
-     * @see org.kawanfw.sql.api.server.auth.UserAuthenticator#login(java.lang.String, char[], java.lang.String, java.lang.String)
+    /*
+     * (non-Javadoc)
+     *
+     * @see
+     * org.kawanfw.sql.api.server.auth.UserAuthenticator#login(java.lang.String,
+     * char[], java.lang.String, java.lang.String)
      */
     @Override
     public boolean login(String username, char[] password, String database, String ipAddress)
@@ -74,27 +79,49 @@ public class WindowsUserAuthenticator implements UserAuthenticator {
 	    properties = TomcatStarterUtil.getProperties(file);
 	}
 
-	String domain = properties.getProperty("windowsUserAuthenticator.domain");
+	String url = properties.getProperty("ldapUserAuthenticator.url");
+
+	if (url == null) {
+	    throw new NullPointerException(getInitTag() + "The ldapUserAuthenticator.url property is null!");
+	}
+
+	// Set up the environment for creating the initial context
+	Hashtable<String, String> env = new Hashtable<>();
+	env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
+	env.put(Context.PROVIDER_URL, url);
+
+	// Authenticate
+	// env.put(Context.SECURITY_AUTHENTICATION, "simple");
+	env.put(Context.SECURITY_PRINCIPAL, username);
+	env.put(Context.SECURITY_CREDENTIALS, new String(password));
+
+	// Create the initial context
+	DirContext ctx = null;
+
+	if (logger == null) {
+	    logger = new DefaultDatabaseConfigurator().getLogger();
+	}
 
 	try {
-	    WindowsAuthProviderImpl windowsAuthProviderImpl = new WindowsAuthProviderImpl();
-	    windowsAuthProviderImpl.logonDomainUser(username, domain, new String(password));
-	    return true;
-	} catch (Exception exception) {
-
-	    if (logger == null) {
-		logger = new DefaultDatabaseConfigurator().getLogger();
-	    }
-
-	    if (exception instanceof com.sun.jna.platform.win32.Win32Exception) {
-		logger.log(Level.WARNING, getInitTag() + "WindowsLogin.login refused for " + username);
-	    } else {
-		// Better to trace stack trace in case of Waffle problem...
-		logger.log(Level.WARNING, getInitTag() + "AceQL WindowsLogin.login call failure (Waffle Library): " + exception.toString());
-	    }
-
+	    // If we pass this, we are authenticated
+	    ctx = new InitialDirContext(env);
+	    // System.out.println(ctx.getEnvironment());
+	} catch (CommunicationException e) {
+	    throw new IOException(getInitTag() + "Impossible to connect to server: " + url);
+	} catch (NamingException e) {
+	    logger.log(Level.WARNING, getInitTag() + LdapUserAuthenticator.class.getName() +  " Unable to authenticate user: " + username);
 	    return false;
+	} finally {
+	    if (ctx != null) {
+		try {
+		    ctx.close();
+		} catch (NamingException e) {
+		    logger.log(Level.WARNING, getInitTag() + LdapUserAuthenticator.class.getName()  + " InitialDirContext.close() Exception: " + e);
+		}
+	    }
 	}
+
+	return true;
 
     }
 
@@ -102,6 +129,7 @@ public class WindowsUserAuthenticator implements UserAuthenticator {
      * @return the beginning of the log line
      */
     private String getInitTag() {
-	return Tag.PRODUCT + " " + WindowsUserAuthenticator.class.getSimpleName() + ": ";
+	return Tag.PRODUCT + " " + LdapUserAuthenticator.class.getSimpleName() + ": ";
     }
+
 }

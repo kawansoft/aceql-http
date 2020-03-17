@@ -25,12 +25,12 @@ AceQL HTTP is licensed through the GNU Lesser General Public License
 (LGPL v2.1).
 
 
-AceQL HTTP Version 5.0 - 13-Feb-2020
+AceQL HTTP Version 5.0 - 17-Mar-2020
 ------------------------------------
 
 What's New:
 
-- The software has be rewritten to allow quick start & standard usage to anyone 
+- The software has been rewritten to allow quick start & standard usage to anyone 
   without any coding and without code injection: standard but complete 
   configuration may done entirely by defining values in the aceql-server.properties 
   file. 
@@ -40,13 +40,14 @@ What's New:
 - The new authentication architecture allows to plug-and-play existing built-in
   authentication classes without any coding or code injection, just by defining
   values in the aceql-server.properties file.
-  Version provides default authentication against an SSH Server, against a
-  Windows Server and against a Web Service. 
-  Advanced authentication usage is nonetheless supported through code injection 
-  (LDAP, Active Directory, etc.).
+  This version provides default authentication against a LDAP server, against a 
+  SSH Server, against a Windows Server and against a Web Service. 
+  Your own legacy authentication usage is nonetheless supported through code 
+  injection with Java classes.
   
 - The aceql-server.properties file has been reorganized and simplified.
 
+ - Tomcat base libraries have been updated to 8.5.51 (Security requirements). 
 
 AceQL HTTP Version 4.1 - 13-Feb-2020
 ------------------------------------

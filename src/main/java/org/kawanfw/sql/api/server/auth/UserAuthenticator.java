@@ -43,8 +43,8 @@ public interface UserAuthenticator {
      * The AceQL HTTP Server will call the method in order to grant or not client
      * access.
      * <p>
-     * Typical usage would be to check the (username, password) couple against a
-     * table in a SQL database, against a SSH server or against a LDAP, etc.
+     * Typical usage would be to check the (username, password) couple against a LDAP
+     * server or against a SSH server, etc.
      *
      * The method allows to retrieve:
      * <ul>

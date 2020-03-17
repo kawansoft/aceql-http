@@ -15,12 +15,12 @@ import javax.naming.directory.InitialDirContext;
  * @author Nicolas de Pomereu
  *
  */
-public class Ldap {
+public class LdapSample {
 
     /**
      *
      */
-    public Ldap() {
+    public LdapSample() {
 	// TODO Auto-generated constructor stub
     }
 
@@ -31,11 +31,10 @@ public class Ldap {
 
 //	String server = "www.zflexldap.com";
 //	int port = 389;
-//	String distinguishedName = "cn=ro_admin, ou=sysadmins, dc=zflexsoftware, dc=com";
+//	String distinguishedName = "cn=ro_admin, ou=sysadmins, dc=zflexsoftware, dc=com"; /* "uid=guest1,ou=users,ou=guests,dc=zflexsoftware,dc=com"; */
 //	String password = "guest1password";
-//	distinguishedName = "uid=guest1,ou=users,ou=guests,dc=zflexsoftware,dc=com";
 
-	String server = "ldap.forumsys.com ";
+	String server = "ldap.forumsys.com";
 	int port = 389;
 	String distinguishedName = "cn=read-only-admin,dc=example,dc=com";
 	String password = "password";
@@ -43,7 +42,6 @@ public class Ldap {
 	// Set up the environment for creating the initial context
 	Hashtable<String, String> env = new Hashtable<>();
 	env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
-
 	env.put(Context.PROVIDER_URL, "ldap://" + server + ":" + port);
 
 	// Authenticate

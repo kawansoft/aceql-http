@@ -22,10 +22,10 @@ import java.util.Map;
 import org.apache.commons.io.IOUtils;
 
 /**
- * Simple HttpClient to use for our AWS (Authentication Web Service)
+ * Simple HttpClient to use for the AceQL AWS (Authentication Web Service)
  *
  * @author Nicolas de Pomereu
- *
+ * @since 5.0
  */
 public class SimpleHttpClient {
 
@@ -52,13 +52,17 @@ public class SimpleHttpClient {
 
     /**
      * Allows to call a remote URL in POST mode and pass parameters.
-     * @param url		the URL to call
-     * @param parametersMap	the parameters, empty if none. (Cannot be null).
-     * @return	the valued returned by the call
-     * @throws IOException
-     * @throws ProtocolException
-     * @throws SocketTimeoutException
-     * @throws UnsupportedEncodingException
+     *
+     * @param url           the URL to call
+     * @param parametersMap the parameters, empty if none. (Cannot be null).
+     * @return the value returned by the call
+     *
+     * @throws IOException                  if an IOException occurs
+     * @throws ProtocolException            if a ProtocolException occurs
+     * @throws SocketTimeoutException       if a if a ProtocolException occurs
+     *                                      occurs
+     * @throws UnsupportedEncodingException if a if a ProtocolException occurs
+     *                                      occurs
      */
     public String callWithPost(URL url, Map<String, String> parametersMap)
 	    throws IOException, ProtocolException, SocketTimeoutException, UnsupportedEncodingException {
@@ -85,14 +89,20 @@ public class SimpleHttpClient {
     }
 
     /**
-     * Allows to call a remote URL in GET mode and pass parameters.
-     * @param url		the URL to call
-     * @param parametersMap	the parameters, empty if none. (Cannot be null).
-     * @return	the valued returned by the call
-     * @throws IOException
-     * @throws ProtocolException
-     * @throws SocketTimeoutException
-     * @throws UnsupportedEncodingException
+     * Allows to call a remote URL in GET mode and pass parameters. Result is put in
+     * String.
+     *
+     * @param url           the URL to call
+     * @param parametersMap the parameters, empty if none. (Cannot be null).
+     * @return the value returned by the call
+     *
+     * @throws MalformedURLException if a MalformedURLException occurs
+     * @throws IOException                  if an IOException occurs
+     * @throws ProtocolException            if a ProtocolException occurs
+     * @throws SocketTimeoutException       if a if a ProtocolException occurs
+     *                                      occurs
+     * @throws UnsupportedEncodingException if a if a ProtocolException occurs
+     *                                      occurs
      */
     public String callWithGet(String url, Map<String, String> parametersMap)
 	    throws MalformedURLException, IOException, ProtocolException, UnsupportedEncodingException {
@@ -127,11 +137,12 @@ public class SimpleHttpClient {
     /**
      * Gets and InputStream from execution.
      *
-     * @param url
-     * @return
-     * @throws MalformedURLException
-     * @throws IOException
-     * @throws ProtocolException
+     * @param url the URL to call
+     * @return	the result of the call
+     *
+     * @throws MalformedURLException if a MalformedURLException occurs
+     * @throws IOException           if an IOException occurs
+     * @throws ProtocolException     if a ProtocolException occurs
      */
     private InputStream callWithGetReturnStream(String url)
 	    throws MalformedURLException, IOException, ProtocolException {
@@ -216,11 +227,11 @@ public class SimpleHttpClient {
     }
 
     /**
-     * Formats & URL encode the the post data for POST.
+     * Formats and URL encode the the post data for POST.
      *
-     * @param params the parameter names and values
+     * @param requestParams the parameter names and values
      * @return the formated and URL encoded string for the POST.
-     * @throws UnsupportedEncodingException
+     * @throws UnsupportedEncodingException if an UnsupportedEncodingException occurs
      */
     public static String getPostDataString(Map<String, String> requestParams) throws UnsupportedEncodingException {
 	StringBuilder result = new StringBuilder();
@@ -247,6 +258,7 @@ public class SimpleHttpClient {
 
     /**
      * Gets the connect timeout.
+     *
      * @return the connect timeout.
      */
     public int getConnectTimeout() {
@@ -255,6 +267,7 @@ public class SimpleHttpClient {
 
     /**
      * Get the read timeout.
+     *
      * @return the read timeout.
      */
     public int getReadTimeout() {
@@ -263,6 +276,7 @@ public class SimpleHttpClient {
 
     /**
      * Gets the HTTP status code
+     *
      * @return the HTTP status code
      */
     public int getHttpStatusCode() {
@@ -271,6 +285,7 @@ public class SimpleHttpClient {
 
     /**
      * Gets the HTTP status message
+     *
      * @return the HTTP status message
      */
 

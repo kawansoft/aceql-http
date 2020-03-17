@@ -43,7 +43,7 @@ import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 
 /**
- * A concrete {@code UserAuthenticator} that extends allows zero-code remote
+ * A concrete {@code UserAuthenticator} that allows zero-code remote
  * client {@code (username, password)} authentication against a SSH server.
  *
  * @author Nicolas de Pomereu
@@ -62,6 +62,9 @@ public class SshUserAuthenticator implements UserAuthenticator {
 
     }
 
+    /* (non-Javadoc)
+     * @see org.kawanfw.sql.api.server.auth.UserAuthenticator#login(java.lang.String, char[], java.lang.String, java.lang.String)
+     */
     @Override
     public boolean login(String username, char[] password, String database, String ipAddress)
 	    throws IOException, SQLException {
@@ -75,7 +78,7 @@ public class SshUserAuthenticator implements UserAuthenticator {
 	String portStr = properties.getProperty("sshUserAuthenticator.port");
 
 	if (host == null) {
-	    throw new NullPointerException("The sshUserAuthenticator.host property is null!");
+	    throw new NullPointerException(getInitTag() + "The sshUserAuthenticator.host property is null!");
 	}
 
 	if (portStr == null) {
@@ -83,7 +86,7 @@ public class SshUserAuthenticator implements UserAuthenticator {
 	}
 
 	if (!StringUtils.isNumeric(portStr)) {
-	    throw new IllegalArgumentException("The sshUserAuthenticator.port property is not numeric: " + portStr);
+	    throw new IllegalArgumentException(getInitTag() + "The sshUserAuthenticator.port property is not numeric: " + portStr);
 	}
 
 	int port = Integer.parseInt(portStr);
@@ -98,7 +101,7 @@ public class SshUserAuthenticator implements UserAuthenticator {
 	    if (logger == null) {
 		logger = new DefaultDatabaseConfigurator().getLogger();
 	    }
-	    logger.log(Level.SEVERE, Tag.PRODUCT + " username: " + username + " or host:" + host + " is invalid.");
+	    logger.log(Level.SEVERE, getInitTag() + "username: " + username + " or host:" + host + " is invalid.");
 	}
 
 	session.setPassword(new String(password));
@@ -114,10 +117,17 @@ public class SshUserAuthenticator implements UserAuthenticator {
 	    if (logger == null) {
 		logger = new DefaultDatabaseConfigurator().getLogger();
 	    }
-	   logger.log(Level.WARNING, Tag.PRODUCT + "SSH connection impossible for " + username + "@"
+	   logger.log(Level.WARNING, getInitTag() + "SSH connection impossible for " + username + "@"
 		    + host + ":" + port + ". (" + e.toString() + ")");
 	}
 
 	return connected;
+    }
+
+    /**
+     * @return the beginning of the log line
+     */
+    private String getInitTag() {
+	return Tag.PRODUCT + " " + SshUserAuthenticator.class.getSimpleName() + ": ";
     }
 }

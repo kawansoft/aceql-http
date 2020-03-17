@@ -39,6 +39,7 @@ public class UserAuthenticatorCreator {
     private static String[] PREDEFINED_CLASS_NAMES = {
 	    org.kawanfw.sql.api.server.auth.DefaultUserAuthenticator.class.getSimpleName(),
 	    org.kawanfw.sql.api.server.auth.SshUserAuthenticator.class.getSimpleName(),
+	    org.kawanfw.sql.api.server.auth.LdapUserAuthenticator.class.getSimpleName(),
 	    org.kawanfw.sql.api.server.auth.WebServiceUserAuthenticator.class.getSimpleName(),
 	    org.kawanfw.sql.api.server.auth.WindowsUserAuthenticator.class.getSimpleName() };
 
