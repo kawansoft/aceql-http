@@ -25,12 +25,12 @@ AceQL HTTP is licensed through the GNU Lesser General Public License
 (LGPL v2.1).
 
 
-AceQL HTTP Version 5.0 - 17-Mar-2020
+AceQL HTTP Version 5.0 - 20-Mar-2020
 ------------------------------------
 
 What's New:
 
-- The software has been rewritten to allow quick start & standard usage to anyone 
+- The software has been rewritten to allow quick start & standard usage 
   without any coding and without code injection: standard but complete 
   configuration may done entirely by defining values in the aceql-server.properties 
   file. 
@@ -47,7 +47,8 @@ What's New:
   
 - The aceql-server.properties file has been reorganized and simplified.
 
- - Tomcat base libraries have been updated to 8.5.51 (Security requirements). 
+- Tomcat base libraries have been updated to 8.5.51 (Security requirements). 
+
 
 AceQL HTTP Version 4.1 - 13-Feb-2020
 ------------------------------------

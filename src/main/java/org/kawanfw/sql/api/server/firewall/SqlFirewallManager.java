@@ -69,7 +69,7 @@ import org.kawanfw.sql.api.server.StatementAnalyzer;
  * the database.</li>
  * <li>{@link DenyMetadataQueryManager}: manager that denies the use of the
  * AceQL Metadata Query API.</li>
- * <li>{@link DenyStatementClassManager}: manager that denies any call of the
+ * <li>{@link DenyStatementClassManager}: manager that denies any call of
  * the raw Statement Java class. (Calling Statements without parameters is
  * forbidden).</li>
  * </ul>
