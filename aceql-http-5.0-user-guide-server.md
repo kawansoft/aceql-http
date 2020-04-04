@@ -100,9 +100,7 @@ This User Guide covers:
 
 -  **Standard Usage / Quickstart** : this part describes how to run through complete setup using only configuration files and CSV files.  (No programming, compiling, etc. is necessary.)
 
-- **Advanced Usage** : this part describes advanced setup and fine tuning. It includes powerful configuration and customization using injection code of  your own Java classes.
-
-  
+-  **Advanced Usage** : this part describes advanced setup and fine tuning. It includes powerful configuration and customization using injection code of  your own Java classes.
 
 ## Technical operating environment
 
@@ -235,7 +233,7 @@ The file is organized in Sections.  Only the first Section must be configured in
 3. SQL Firewall Managers Section.
 4. SSL Configuration Section.
 
-## Tomcat JDBC Connection Pool Section
+### Tomcat JDBC Connection Pool Section
 
 This section allows you to define: 
 
@@ -285,7 +283,7 @@ as defined in [Common Attributes](http://tomcat.apache.org/tomcat-8.5-doc/jdbc-p
 
 Note: It is not mandatory to use Tomcat JDBC Connection Pool. If you want to use another preferred Connection Pool system, just comment the `driverClassName` property. Implementing another Connection Pool system is described in [Database Configurators](#database-configurators).
 
-## User Authentication Section 
+### User Authentication Section 
 
 This section allows to define how to authenticate a remote use client that connects to the AceQL Server.
 
@@ -306,7 +304,7 @@ Just select in the `aceql-server.properties` section the  `userAuthenticatorClas
 
 All the rest will be done automatically once the AceQL server is started.
 
-### The WebServiceUserAuthenticator usage
+#### The WebServiceUserAuthenticator usage
 
 AceQL allows to authenticate remote client users against a Web service that is  developed and deployed on you web infrastructure by your organization. This allows you to develop or use an existing a specific authentication program that is decoupled from AceQL. You can thus use whatever technology stack to authenticate remote client users, and wrap it in a Web service that is called by AceQL when a remote client user wants to authenticate.
 
@@ -318,7 +316,7 @@ The Web service must just implement these features:
     - The JSON string `{"status"="OK"}` if the authentication succeeds.
    - The JSON string `{"status"="FAIL"}` if the authentication fails.
 
-## SQL Firewall Managers Section
+### SQL Firewall Managers Section
 
 The SQL Firewall Managers Section allows to define SQL firewall rulesets to use for each database.
 
@@ -333,7 +331,7 @@ A `SqlFirewallManager` concrete implementation allows to:
 
 Multiple `SqlFirewallManager` may be defined and chained. 
 
-AceQL provides 5 built-in (and ready to use without any coding)  SQL Firewall Managers:
+AceQL provides several built-in (and ready to use without any coding)  SQL Firewall Managers:
 
 | SQL Firewall Manager Name   | Details                                                      |
 | --------------------------- | ------------------------------------------------------------ |
@@ -365,7 +363,7 @@ sampledb.sqlFirewallManagerClassNames=\
 
 After AceQL server restart, remote clients won't be allowed to execute DDL statements or to update the database.
 
-### The CsvRulesManagerSQL Firewall Manager
+#### The CsvRulesManagerSQL Firewall Manager
 
 The `CsvRulesManagerSQL` manager allows to define detailed rules just using a CSV file.
 
@@ -397,7 +395,7 @@ The CSV file contains the rules for accessing the tables, with semicolon for sep
 
   Here is an example of a documented CSV File: [sampledb_rules_manager.csv](http://www.aceql.com/rest/soft/5.0/src/sampledb_rules_manager.csv).
 
-## SSL Configuration Section
+### SSL Configuration Section
 
 This section is optional. It allows you to configure the [Tomcat  HTTP Connector](http://tomcat.apache.org/tomcat-8.5-doc/config/http.html) in order to use SSL when calling AceQL Manager Servlet from the client side. 
 
@@ -516,7 +514,7 @@ where:
 
 The `aceqlhttp` wrapper allows to run AceQL program as a Linux service.
 
-- Click [here](https://www.aceql.com/rest/soft/4.1/src/aceqlhttp.sh) to download `aceqlhttp.sh`
+- Click [here](https://www.aceql.com/rest/soft/5.0/src/aceqlhttp.sh) to download `aceqlhttp.sh`
 - Copy aceqlhttp.sh to `/etc/init.d/aceqlhttp` (requires root privilege). 
 - `sudo chmod +x /etc/init.d/aceqlhttp`
 - Then edit `/etc/init.d/aceqlhttp` and:
@@ -532,7 +530,7 @@ Then:
 - Test that it restarts: `sudo service aceqlhttp restart`
 
 
-Then check the content of the log file defined by LOG_PATH_NAME and which defaults to: `/var/log/aceqlhttp.out`.
+Then check the content of the log file defined by `LOG_PATH_NAME` and which defaults to: `/var/log/aceqlhttp.out`.
 
 ## Starting/Stopping the AceQL WebServer from Windows
 
@@ -559,7 +557,7 @@ Or for Maven users:
 <artifactId>aceql-http</artifactId>
 <version>5.0</version>
 ```
-### AceQL Servlet Name Configuration
+## AceQL Servlet Name Configuration
 
 Thie AceQL Manager servlet Section in the `aceql-server.proprties` file allows you to define the name of the AceQL SQL Manager Servlet to call from the client side. The default name is `aceql`. It is the name that will be used in the URL by client calls:
 
@@ -610,17 +608,19 @@ connector.maxThreads=300
 
 ## ThreadPoolExecutor Configuration
 
+The AceQL Manager serlvet is executed in [asynchronous  mode](https://docs.oracle.com/javaee/7/tutorial/servlets012.htm). 
+
 The **ThreadPoolExecutor Section** Allows to define the parameters of the `java.util.concurrent.ThreadPoolExecutor` instance used to execute all servlet requests in async mode.
 
 The properties to set in the `aceql-server.properties` file are:
 
 | Property             | Role                                                         |
 | -------------------- | ------------------------------------------------------------ |
-| `corePoolSize`       | The number of threads to keep in the pool, even if they are idle |
-| `maximumPoolSize`    | The maximum number of threads to allow in the pool           |
-| `unit`               | The time unit for the `keepAliveTime` argument               |
-| `keepAliveTime`      | When the number of threads is greater than the core, this is <br/>the maximum time that excess idle threads will wait for new tasks <br/>before terminating |
-| `workQueueClassName` | The `BlockingQueue` class to use in `ThreadPoolExecutor` constructor |
+| `corePoolSize`       | The number of threads to keep in the pool, even if they are idle. |
+| `maximumPoolSize`    | The maximum number of threads to allow in the pool.          |
+| `unit`               | The time unit for the `keepAliveTime` argument.              |
+| `keepAliveTime`      | When the number of threads is greater than the core, this is <br/>the maximum time that excess idle threads will wait for new tasks <br/>before terminating. |
+| `workQueueClassName` | The `BlockingQueue` class to use in `ThreadPoolExecutor` constructor. |
 | `capacity`           | The initial capacity of the `BloquingQueue<Runnable>` <br/>(0 for no or default initial capacity.) |
 
 The properties are passed to the first  `ThreadPoolExecutor` constructor. See https://bit.ly/2QkMg5S.
@@ -630,4 +630,90 @@ See `ThreadPoolExecutor` class Javadoc for more info: https://bit.ly/2MBYQrd.
 Default values should be appropriate for most AceQL configurations. 
 
 ## Session Management 
+
+### SessionConfigurator interface
+
+After server authentication succeeds (through the [UserAuthenticator.login()](https://www.aceql.com/rest/soft/5.0/javadoc/org/kawanfw/sql/api/server/auth/UserAuthenticator.html#login-java.lang.String-char:A-java.lang.String-java.lang.String-) method), the AceQL Manager builds an authentication session id that is sent back to the client and will be used by each succeeding client call in order to authenticate the calls. 
+
+Session security is managed by implementing the [SessionConfigurator](https://www.aceql.com/rest/soft/5.0/javadoc/org/kawanfw/sql/api/server/session/SessionConfigurator.html) interface that defines how to generate and verify the session id for (username, database) sessions. 
+
+Interface implementation allows you to:  
+
+- Define how to generate a session id after client /login call
+- Define the session’s lifetime
+- Define how to verify that the stored session is valid and not expired
+
+### Session management default implementation
+
+The default mechanism that builds an authentication session id is coded in the class 
+
+[DefaultSessionConfigurator](https://www.aceql.com/rest/soft/5.0/javadoc/org/kawanfw/sql/api/server/session/DefaultSessionConfigurator.html): 
+
+- Session ids are generated using a `SecureRandom` with the [SessionIdentifierGenerator](http://www.aceql.com/rest/soft/5.0/javadoc/org/kawanfw/sql/api/server/session/SessionIdentifierGenerator.html) class.
+- Session info (username, database) and session date/time creation are stored in a `HashMap`, whose key is the session id.
+- Session id is sent by client side at each  API call.  AceQL verifies that the `HashMap`  contains the username and that the session is not expired to grant access to the API execution.
+
+Benefits of this implementation are: 
+
+- Session ids are short and generate less HTTP traffic.
+- Because session ids are short, they are  easy to use “manually” (with cURL, etc.)
+
+The disadvantage is that session information is stored on the server side.
+
+### Session management using JWT
+
+Session management using JWT is coded in [JwtSessionConfigurator](https://www.aceql.com/rest/soft/5.0/javadoc/org/kawanfw/sql/api/server/session/JwtSessionConfigurator.html).
+
+Session management is done using self-contained JWT (JSON Web Token). 
+
+See <https://jwt.io> for more information on JWT. 
+
+A benefit of JWT is that no session information is stored on the server and that it allows full stateless mode.
+
+A disadvantage of JWT is that the tokens are much longer and thus generate more http traffic and are less convenient to use "manually" (with cURL, etc.). 
+
+#### Activating JwtSessionConfigurator 
+
+Edit the `aceql-server.properties` file and uncomment the two lines:
+
+```properties
+sessionConfiguratorClassName=JwtSessionConfigurator
+jwtSessionConfiguratorSecret=changeit
+```
+
+Change the `jwtSessionConfiguratorSecret` property change it value with your own secret value.
+
+Restart the AceQL Web Server for activation. 
+
+### Creating your own session management 
+
+If you want to create your session management using your own session id generation and security rules, you can implement  the [SessionConfigurator](https://www.aceql.com/rest/soft/5.0/javadoc/org/kawanfw/sql/api/server/session/SessionConfigurator.html) in your own class, and then: 
+
+Add your class in the CLASSPATH.
+
+Add you class name in the `SessionConfigurator` section in your `aceql-server.properties` file: 
+
+```properties
+sessionConfiguratorClassName=com.acme.MySessionConfigurator
+```
+
+Restart the AceQL Web Server for activation. 
+
+## Advanced Firewall Configuration
+
+AceQL provides several built-in and ready to use SQL Firewall Managers, as described earlier in the **Firewall Configuration** chapter. But you may plug-in your own implementation or third party SQL firewalling tools. 
+
+The [SqlFirewallManager](http://www.aceql.com/rest/soft/4.1/javadoc/org/kawanfw/sql/api/server/firewall/SqlFirewallManager.html) interface allows you to code your own firewall rulesets.
+
+After coding you own `SqlFirewallManager` implementation just declare the full class name in the `sqlFirewallManagerClassNames` property. Note that SQL Firewall Manager may be chained: you may declare several classes.
+
+The following example defines two firewalls to chain for the `sampledb` database:
+
+```properties
+sampledb.sqlFirewallManagerClassNames=\
+    com.mycompany.firewall.MySqlFirewallManager1\
+    com.mycompany.firewall.MySqlFirewallManager2
+```
+
+
 
