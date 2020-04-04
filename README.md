@@ -171,7 +171,7 @@ $ aceql-server -version
 It will display a line with all version info, like:
 
 ```
-AceQL HTTP Community v5.0 - 18-Mar-2020
+AceQL HTTP Community v5.0 - 04-Apr-2020
 ```
 
 ### Configure JDBC parameters in aceql-server.properties file
