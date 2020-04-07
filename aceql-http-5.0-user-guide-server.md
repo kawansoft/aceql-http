@@ -1,4 +1,4 @@
-# AceQL HTTP v5.0   - April 4,  2020
+# AceQL HTTP v5.0   - April 7,  2020
 
 # Server Installation and Configuration Guide  
 
@@ -714,6 +714,5 @@ sampledb.sqlFirewallManagerClassNames=\
     com.mycompany.firewall.MySqlFirewallManager1\
     com.mycompany.firewall.MySqlFirewallManager2
 ```
-
 
 

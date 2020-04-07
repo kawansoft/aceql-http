@@ -1,4 +1,4 @@
-# AceQL HTTP v5.0 - March 2020, 19
+# AceQL HTTP v5.0 - April 2020, 7
 
 # Quick Start Guide
 
@@ -171,7 +171,7 @@ $ aceql-server -version
 It will display a line with all version info, like:
 
 ```
-AceQL HTTP Community v5.0 - 04-Apr-2020
+AceQL HTTP Community v5.0 - 07-Apr-2020
 ```
 
 ### Configure JDBC parameters in aceql-server.properties file
@@ -219,7 +219,7 @@ The console will display the properties used, test that the Connection is establ
 
 ```bash
 [ACEQL HTTP START] Starting AceQL HTTP Web Server...
-[ACEQL HTTP START] AceQL HTTP Community v5.0 - 18-Mar-2020
+[ACEQL HTTP START] AceQL HTTP Community v5.0 - 07-Apr-2020
 [ACEQL HTTP START] Using properties file: 
 [ACEQL HTTP START]  -> /home/mike/aceql-http/conf/aceql-server.properties
 [ACEQL HTTP START] Setting System Properties:
@@ -441,7 +441,7 @@ We view the inserted customer:
 
 ```bash
 $ curl \
- --data-urlencode "sql=select * from customer" --data"pretty_printing=true" \
+ --data-urlencode "sql=select * from customer" \
  http://localhost:9090/aceql/session/mn7andp2tt049iaeaskr28j9ch/execute_query
 ```
 
@@ -503,7 +503,7 @@ Which returns:
 }      
 ```
 
- And now we query back our customer, but without pretty printing and ask to GZIP the result:
+ And now we query back our customer and ask to GZIP the result:
 
 ```bash
 $ curl \
