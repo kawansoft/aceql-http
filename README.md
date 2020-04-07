@@ -336,10 +336,9 @@ The console will display the properties used, test that the `Connection` is esta
 
 ```bash
 [ACEQL HTTP START] Starting AceQL HTTP Web Server...
-[ACEQL HTTP START] AceQL HTTP Community v5.0 - 18-Mar-2020
+[ACEQL HTTP START] AceQL HTTP Community v5.0 - 07-Apr-2020
 [ACEQL HTTP START] Using properties file: 
-[ACEQL HTTP START]  -> c:\.aceql-http\conf\aceql-server.properties
-[ACEQL HTTP START] Testing Declared Configurators:
+[ACEQL HTTP START]  -> I:\_dev_awake\aceql-http-main\aceql-http\conf\aceql-server.properties
 [ACEQL HTTP START] Setting System Properties:
 [ACEQL HTTP START] Creating ThreadPoolExecutor:
 [ACEQL HTTP START]  -> [corePoolSize: 100, maximumPoolSize: 200, unit: SECONDS, 
@@ -360,11 +359,13 @@ The console will display the properties used, test that the `Connection` is esta
 [ACEQL HTTP START]  -> Connection OK!
 [ACEQL HTTP START] Loading servlets:
 [ACEQL HTTP START]  -> Servlet defaultPoolsInfo [url-pattern: /default_pools_info] successfully loaded.
-[ACEQL HTTP START] Database sampledb DatabaseConfigurator class:
+[ACEQL HTTP START] Loading UserAuthenticator class:
+[ACEQL HTTP START]  -> org.kawanfw.sql.api.server.auth.DefaultUserAuthenticator
+[ACEQL HTTP START] Loading Database sampledb DatabaseConfigurator class:
 [ACEQL HTTP START]  -> org.kawanfw.sql.api.server.DefaultDatabaseConfigurator
-[ACEQL HTTP START] Database sampledb SQLFirewallManager class: 
+[ACEQL HTTP START] Loading Database sampledb SQLFirewallManager class: 
 [ACEQL HTTP START]   -> org.kawanfw.sql.api.server.firewall.DefaultSqlFirewallManager
-[ACEQL HTTP START] Configurators Status: OK.
+[ACEQL HTTP START] Loaded classes Status: OK.
 [ACEQL HTTP START] URL for client side: http://localhost:9090/aceql
 [ACEQL HTTP START] AceQL HTTP Web Server OK. Running on port 9090
 ```
@@ -507,7 +508,7 @@ Which returns:
 
 ```bash
 $ curl \
- --data"pretty_printing=true&gzip_result=true" \
+ --data"gzip_result=true" \
  --data-urlencode \ 
  "sql=select customer_id, customer_title,fname from customer" \
  http://localhost:9090/aceql/session/mn7andp2tt049iaeaskr28j9ch/\
