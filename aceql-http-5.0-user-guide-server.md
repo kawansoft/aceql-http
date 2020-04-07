@@ -4,7 +4,7 @@
 
 <img src="https://www.aceql.com/favicon.png" alt="AceQL HTTP Icon"/> 
 
-   * [Fundamentals](#fundamentals)
+  * [Fundamentals](#fundamentals)
       * [Overview](#overview)
       * [Technical operating environment](#technical-operating-environment)
    * [Download and Installation](#download-and-installation)
@@ -19,7 +19,7 @@
          * [User Authentication Section](#user-authentication-section)
             * [The WebServiceUserAuthenticator usage](#the-webserviceuserauthenticator-usage)
          * [SQL Firewall Managers Section](#sql-firewall-managers-section)
-            * [The CsvRulesManagerSQL Firewall Manager](#the-csvrulesmanagersql-firewall-manager)
+            * [The CsvRulesManager SQL Firewall Manager](#the-csvrulesmanager-sql-firewall-manager)
          * [SSL Configuration Section](#ssl-configuration-section)
       * [Starting/Stopping the AceQL Web Server from Linux/Unix](#startingstopping-the-aceql-web-server-from-linuxunix)
          * [Add your JDBC driver to the AceQL installation](#add-your-jdbc-driver-to-the-aceql-installation)
@@ -48,6 +48,7 @@
       * [Interacting with the JDBC Pool at runtime](#interacting-with-the-jdbc-pool-at-runtime)
       * [Running the AceQL Web Server](#running-the-aceql-web-server)
          * [Running the AceQL Web Server without Windows Desktop](#running-the-aceql-web-server-without-windows-desktop)
+         * [Starting/Stopping the AceQL WebServer from a Java program](#startingstopping-the-aceql-webserver-from-a-java-program)
          * [Running AceQL HTTP in a Java EE servlet container](#running-aceql-http-in-a-java-ee-servlet-container)
             * [Installation](#installation)
             * [AceQL servlet configuration in web.xml](#aceql-servlet-configuration-in-webxml)
@@ -81,7 +82,7 @@ AceQL HTTP is authorized through an Open Source license: [AceQL Open Source Lice
 
 - The AceQL Web Server.
 
-- Configuration classes injected at runtime. These are server classes that ensure both security and configuration.
+- Configuration Java classes injected at runtime. These are server classes that ensure both security and configuration. (Many built-in classes are provided and most configuration may be done without any coding).
 
 - The AceQL Client SDKs for [C#](https://github.com/kawansoft/AceQL.Client) ,  [Java](https://github.com/kawansoft/aceql-http-client-sdk) and [Python](https://github.com/kawansoft/aceql-http-client-python) that allow you to wrap AceQL HTTP API calls using fluent code: 
 
@@ -134,7 +135,7 @@ AceQL HTTP is authorized through an Open Source license: [AceQL Open Source Lice
     ```
 
 
-The execution of each AceQL HTTP API statement is conditioned by optional rules, defined in configuration classes called "Configurators."
+The execution of each AceQL HTTP API statement is conditioned by optional rules, defined in properties files and built-in or programmed configuration classes.
 
 The AceQL Web Server embeds its own [Tomcat 8.5](http://tomcat.apache.org/tomcat-8.5-doc/) servlet container in order to run AceQL without any Java EE servlet container.
 
@@ -416,9 +417,9 @@ sampledb.sqlFirewallManagerClassNames=\
 
 After AceQL server restart, remote clients won't be allowed to execute DDL statements or to update the database.
 
-#### The CsvRulesManagerSQL Firewall Manager
+#### The CsvRulesManager SQL Firewall Manager
 
-The [CsvRulesManagerSQL](https://www.aceql.com/rest/soft/5.0/javadoc/org/kawanfw/sql/api/server/firewall/CsvRulesManager.html) manager allows to define detailed rules just using a CSV file.
+The [CsvRulesManager](https://www.aceql.com/rest/soft/5.0/javadoc/org/kawanfw/sql/api/server/firewall/CsvRulesManager.html) manager allows to define detailed rules just using a CSV file.
 
 It checks each SQL request against the content of a CSV File. The CSV file is loaded in memory at AceQL server startup. 
 
@@ -633,7 +634,7 @@ Your concrete implementations is passed to the AceQL as properties of the **Data
 
 ## Advanced Authentication Configuration
 
-in order to give access access to remote client users to the AceQL server, you may develop entirely your own authentication mechanism. This is done through your own implementation of the [UserAuthenticator](https://www.aceql.com/rest/soft/5.0/javadoc/org/kawanfw/sql/api/server/auth/UserAuthenticator.html) interface: overload the login `UserAuthenticator.login()` in your concrete class implementation.
+in order to give access access to remote client users to the AceQL server, you may develop entirely your own authentication mechanism. This is done through your own implementation of the [UserAuthenticator](https://www.aceql.com/rest/soft/5.0/javadoc/org/kawanfw/sql/api/server/auth/UserAuthenticator.html) interface: overload the login method `UserAuthenticator.login()` in your concrete class implementation.
 
 Your concrete implementations is passed to the AceQL as properties of the **User Authentication Section**  in the `aceql-server.properties` file, as described in the section
 
@@ -784,12 +785,11 @@ The API  [DataSourceStore](https://www.aceql.com/rest/soft/5.0/javadoc/org/kawan
 
 If you don’t have access to the Windows Desktop interface (running in a cloud instance, etc.)  you can still run the AceQL HTTP Web Server from the command line.
 
-- Open Sure Edition: see `<installation-directory>\AceQL\bin\aceql-server.bat` script.
-- Professional Edition:  see `<installation-directory>\AceQLPro\bin\aceql-server.bat` script.
+- see `<installation-directory>\AceQL\bin\aceql-server.bat` script.
 
 You can also start/top the AceQL Web Server from you java programs, as explained in next section.
 
-Starting/Stopping the AceQL WebServer from a Java program
+### Starting/Stopping the AceQL WebServer from a Java program
 
 You may start or stop the AceQL Server from a Java program calling the [WebServerApi](https://www.aceql.com/rest/soft/5.0/javadoc/org/kawanfw/sql/api/server/web/WebServerApi.html) API.
 

@@ -95,8 +95,7 @@ public class ServerCallableStatement {
 	this.response = response;
 	this.connection = connection;
 
-	String prettyPrinting = request.getParameter(HttpParameter.PRETTY_PRINTING);
-	doPrettyPrinting = Boolean.valueOf(prettyPrinting);
+	doPrettyPrinting = true; // Always pretty printing
     }
 
     /**

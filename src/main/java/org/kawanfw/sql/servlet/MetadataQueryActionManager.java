@@ -128,14 +128,10 @@ public class MetadataQueryActionManager {
 
 	if (!allow) {
 	    Map<Integer, String> parameters = new HashMap<>();
-	    String prettyPrinting = request.getParameter(HttpParameter.PRETTY_PRINTING);
-
-	    System.err.println("prettyPrinting: " + prettyPrinting);
 
 	    List<Object> values = new ArrayList<>();
 	    String message = JsonSecurityMessage.prepStatementNotAllowedBuild(sql,
-		    "Metadata Query API calls are not allowed!", parameters, values,
-		    Boolean.parseBoolean(prettyPrinting));
+		    "Metadata Query API calls are not allowed!", parameters, values, true);
 	    throw new SecurityException(message);
 	}
 

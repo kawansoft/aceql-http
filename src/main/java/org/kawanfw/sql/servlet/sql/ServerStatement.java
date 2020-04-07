@@ -93,10 +93,7 @@ public class ServerStatement {
 	this.response = response;
 	this.sqlFirewallManagers = sqlFirewallManagers;
 	this.connection = connection;
-
-	String prettyPrinting = request.getParameter(HttpParameter.PRETTY_PRINTING);
-	// doPrettyPrinting = new Boolean(prettyPrinting);
-	doPrettyPrinting = Boolean.valueOf(prettyPrinting);
+	doPrettyPrinting = true; // Always pretty printing
 
     }
 
