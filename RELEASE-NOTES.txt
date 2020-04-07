@@ -18,7 +18,7 @@ AceQL HTTP is provided with three client SDKs:
 - The AceQL Python Client SDK allows SQL calls to be encoded with standard 
   unmodified DB-API 2.0 syntax.
 
-Security has been taken into account from the design: It as allowed to specify 
+Security has been taken into account from the design: it is allowed to specify 
 and code strong security rules in order to protect the databases. 
 
 AceQL HTTP is licensed through the GNU Lesser General Public License 
