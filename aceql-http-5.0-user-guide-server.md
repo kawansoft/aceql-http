@@ -4,7 +4,60 @@
 
 <img src="https://www.aceql.com/favicon.png" alt="AceQL HTTP Icon"/> 
 
-
+   * [Fundamentals](#fundamentals)
+      * [Overview](#overview)
+      * [Technical operating environment](#technical-operating-environment)
+   * [Download and Installation](#download-and-installation)
+      * [Linux / Unix Installation](#linux--unix-installation)
+         * [Update the PATH (Optional)](#update-the-path-optional)
+         * [Testing server installation](#testing-server-installation)
+      * [Windows Installation](#windows-installation)
+   * [Standard Usage / Quickstart](#standard-usage--quickstart)
+      * [The AceQL Manager servlet](#the-aceql-manager-servlet)
+      * [The aceql-server.properties file](#the-aceql-serverproperties-file)
+         * [Tomcat JDBC Connection Pool Section](#tomcat-jdbc-connection-pool-section)
+         * [User Authentication Section](#user-authentication-section)
+            * [The WebServiceUserAuthenticator usage](#the-webserviceuserauthenticator-usage)
+         * [SQL Firewall Managers Section](#sql-firewall-managers-section)
+            * [The CsvRulesManagerSQL Firewall Manager](#the-csvrulesmanagersql-firewall-manager)
+         * [SSL Configuration Section](#ssl-configuration-section)
+      * [Starting/Stopping the AceQL Web Server from Linux/Unix](#startingstopping-the-aceql-web-server-from-linuxunix)
+         * [Add your JDBC driver to the AceQL installation](#add-your-jdbc-driver-to-the-aceql-installation)
+         * [Starting the AceQL Web Server](#starting-the-aceql-web-server)
+         * [Examples](#examples)
+            * [Starting the AceQL Web Server on port 9090](#starting-the-aceql-web-server-on-port-9090)
+            * [Starting the AceQL Web Server on port 9091](#starting-the-aceql-web-server-on-port-9091)
+         * [Using SSL from the client side](#using-ssl-from-the-client-side)
+         * [Stopping the AceQL Web Server](#stopping-the-aceql-web-server)
+         * [Linux: running the AceQL Web server as a service](#linux-running-the-aceql-web-server-as-a-service)
+      * [Starting/Stopping the AceQL WebServer from Windows](#startingstopping-the-aceql-webserver-from-windows)
+   * [Advanced Usage](#advanced-usage)
+      * [Development Environment](#development-environment)
+      * [AceQL Servlet Name Configuration](#aceql-servlet-name-configuration)
+      * [Advanced Connection Pool Management](#advanced-connection-pool-management)
+      * [Advanced Authentication Configuration](#advanced-authentication-configuration)
+      * [Tomcat HTTP Connector Configuration](#tomcat-http-connector-configuration)
+      * [ThreadPoolExecutor Configuration](#threadpoolexecutor-configuration)
+      * [Session Management](#session-management)
+         * [SessionConfigurator interface](#sessionconfigurator-interface)
+         * [Session management default implementation](#session-management-default-implementation)
+         * [Session management using JWT](#session-management-using-jwt)
+            * [Activating JwtSessionConfigurator](#activating-jwtsessionconfigurator)
+         * [Creating your own session management](#creating-your-own-session-management)
+      * [Advanced Firewall Configuration](#advanced-firewall-configuration)
+      * [Interacting with the JDBC Pool at runtime](#interacting-with-the-jdbc-pool-at-runtime)
+      * [Running the AceQL Web Server](#running-the-aceql-web-server)
+         * [Running the AceQL Web Server without Windows Desktop](#running-the-aceql-web-server-without-windows-desktop)
+         * [Running AceQL HTTP in a Java EE servlet container](#running-aceql-http-in-a-java-ee-servlet-container)
+            * [Installation](#installation)
+            * [AceQL servlet configuration in web.xml](#aceql-servlet-configuration-in-webxml)
+         * [Testing the servlet configuration](#testing-the-servlet-configuration)
+   * [AceQL internals](#aceql-internals)
+      * [State management / Stateful Mode](#state-management--stateful-mode)
+      * [Data transport](#data-transport)
+         * [Transport format](#transport-format)
+         * [Content streaming and memory management](#content-streaming-and-memory-management)
+      * [Managing temporary files](#managing-temporary-files)
 
 # Fundamentals
 
@@ -281,7 +334,7 @@ You may add other properties supported by Tomcat JDBC Connection Pool,
 
 as defined in [Common Attributes](http://tomcat.apache.org/tomcat-8.5-doc/jdbc-pool.html#Common_Attributes)  and in [Enhanced Attributes](http://tomcat.apache.org/tomcat-8.5-doc/jdbc-pool.html#Tomcat_JDBC_Enhanced_Attributes).
 
-Note: It is not mandatory to use Tomcat JDBC Connection Pool. If you want to use another preferred Connection Pool system, just comment the `driverClassName` property. Implementing another Connection Pool system is described in [Database Configurators](#database-configurators).
+Note: It is not mandatory to use Tomcat JDBC Connection Pool. If you want to use another preferred Connection Pool system, just comment the `driverClassName` property. Implementing another Connection Pool system is described in [Advanced Connection Pool Management](#advanced-connection-pool-management).
 
 ### User Authentication Section 
 
@@ -320,9 +373,9 @@ The Web service must just implement these features:
 
 The SQL Firewall Managers Section allows to define SQL firewall rulesets to use for each database.
 
-The rulesets are defines through one or more "SQL Firewall Managers",  Java classes that are injected at AceQL Server startup. A SQL Firewall Manager It a built-in or user-developed Java class that implements the `SqlFirewallManager` interface built in AceQL.  
+The rulesets are defines through one or more "SQL Firewall Managers",  Java classes that are injected at AceQL Server startup. A SQL Firewall Manager It a built-in or user-developed Java class that implements the   [SqlFirewallManager](https://www.aceql.com/rest/soft/5.0/javadoc/org/kawanfw/sql/api/server/firewall/SqlFirewallManager.html) interface built in AceQL.  
 
-A `SqlFirewallManager` concrete implementation allows to: 
+A `SqlFirewallManager`concrete implementation allows to: 
 
 - Define if a client user has the right to call a `Statement.executeUpdate` (i.e. call a statement that updates the database).
 - Define if a client user has the right to call a raw `Statement` that is not a `PreparedStatement`.
@@ -365,7 +418,7 @@ After AceQL server restart, remote clients won't be allowed to execute DDL state
 
 #### The CsvRulesManagerSQL Firewall Manager
 
-The `CsvRulesManagerSQL` manager allows to define detailed rules just using a CSV file.
+The [CsvRulesManagerSQL](https://www.aceql.com/rest/soft/5.0/javadoc/org/kawanfw/sql/api/server/firewall/CsvRulesManager.html) manager allows to define detailed rules just using a CSV file.
 
 It checks each SQL request against the content of a CSV File. The CSV file is loaded in memory at AceQL server startup. 
 
@@ -610,7 +663,7 @@ connector.maxThreads=300
 
 The AceQL Manager serlvet is executed in [asynchronous  mode](https://docs.oracle.com/javaee/7/tutorial/servlets012.htm). 
 
-The **ThreadPoolExecutor Section** Allows to define the parameters of the `java.util.concurrent.ThreadPoolExecutor` instance used to execute all servlet requests in async mode.
+The **ThreadPoolExecutor Section** Allows to define the parameters of the [java.util.concurrent.ThreadPoolExecutor](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/ThreadPoolExecutor.html) instance used to execute all servlet requests in async mode.
 
 The properties to set in the `aceql-server.properties` file are:
 
@@ -625,7 +678,7 @@ The properties to set in the `aceql-server.properties` file are:
 
 The properties are passed to the first  `ThreadPoolExecutor` constructor. See https://bit.ly/2QkMg5S.
 
-See `ThreadPoolExecutor` class Javadoc for more info: https://bit.ly/2MBYQrd.
+See `ThreadPoolExecutor` class [Javadoc](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/ThreadPoolExecutor.html) for more info
 
 Default values should be appropriate for most AceQL configurations. 
 
@@ -701,7 +754,7 @@ Restart the AceQL Web Server for activation.
 
 ## Advanced Firewall Configuration
 
-AceQL provides several built-in and ready to use SQL Firewall Managers, as described earlier in the **Firewall Configuration** chapter. But you may plug-in your own implementation or third party SQL firewalling tools. 
+AceQL provides several built-in and ready to use SQL Firewall Managers, as described earlier in the  [SQL Firewall Managers Section](#sql-firewall-managers-section) chapter. But you may plug-in your own implementation or third party SQL firewalling tools. 
 
 The [SqlFirewallManager](http://www.aceql.com/rest/soft/4.1/javadoc/org/kawanfw/sql/api/server/firewall/SqlFirewallManager.html) interface allows you to code your own firewall rulesets.
 
@@ -738,7 +791,7 @@ You can also start/top the AceQL Web Server from you java programs, as explained
 
 Starting/Stopping the AceQL WebServer from a Java program
 
-You may start or stop the AceQL Server from a Java program calling the [WebServerApi](https://www.aceql.com/rest/soft/4.1/javadoc/org/kawanfw/sql/api/server/web/WebServerApi.html) API.
+You may start or stop the AceQL Server from a Java program calling the [WebServerApi](https://www.aceql.com/rest/soft/5.0/javadoc/org/kawanfw/sql/api/server/web/WebServerApi.html) API.
 
 ### Running AceQL HTTP in a Java EE servlet container
 
@@ -756,7 +809,7 @@ If you have coded your own Configurators, deploy the classes in the `/classes` d
 
 #### AceQL servlet configuration in web.xml
 
-Create and configure the aceql-server.properties file like normal, as described in [The aceql-server.properties file](#the-aceql-serverproperties-file). Do not configure the Tomcat Connector sections that will not be used.
+Create and configure the `aceql-server.properties` file like normal, as described in [The aceql-server.properties file](#the-aceql-serverproperties-file). Do not configure the **Tomcat Connector sections** that will not be used.
 
 In `web.xml`, define the AceQL Manager servlet that is defined in `the aceql-server.properties` file. This dual definition is required. The servlet class is. `org.kawanfw.sql.servlet.ServerSqlManager`. 
 
