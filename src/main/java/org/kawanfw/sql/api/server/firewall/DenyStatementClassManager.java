@@ -34,7 +34,7 @@ import java.util.logging.Logger;
 import org.kawanfw.sql.api.server.DefaultDatabaseConfigurator;
 
 /**
- * Firewall manager that denies any call of the the raw <code>Statement</code>
+ * Firewall manager that denies any call of the raw <code>Statement</code>
  * class. (Calling Statements without parameters is forbidden).
  *
  * @author Nicolas de Pomereu

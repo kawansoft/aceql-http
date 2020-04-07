@@ -44,7 +44,7 @@ import org.kawanfw.sql.api.server.StatementAnalyzer;
  * <li>Define if a client user has the right to call a raw
  * <code>Statement</code> that is not a <code>PreparedStatement</code>.</li>
  * <li>Define if a client user has the right to call a the AceQL Metadata
- * API..</li>
+ * API.</li>
  * <li>Define a specific piece of Java code to analyze the source code of the
  * SQL statement before allowing or not it's execution.</li>
  * </ul>
@@ -66,7 +66,7 @@ import org.kawanfw.sql.api.server.StatementAnalyzer;
  * <li>{@link DenyDdlManager}: manager that denies any DDL (Data Definition
  * Language) call.</li>
  * <li>{@link DenyExecuteUpdateManager}: manager that denies any update of the
- * the database.</li>
+ *  database.</li>
  * <li>{@link DenyMetadataQueryManager}: manager that denies the use of the
  * AceQL Metadata Query API.</li>
  * <li>{@link DenyStatementClassManager}: manager that denies any call of
