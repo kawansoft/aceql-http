@@ -131,7 +131,7 @@ Notes:
 - The table designates the tested version. Prior versions *should* work correctly with their corresponding JDBC 4.0 driver.
 - AceQL will support all     subsequent versions of each database.
 
-# Download & Installation
+# Download and Installation
 
 ## Linux / Unix Installation 
 
@@ -191,7 +191,7 @@ Call the `aceql-server` script to display the AceQL version:
 It will display a line with all version info, like:
 
 ```
-AceQL HTTP Community v5.0 - 04-Apr-2020
+AceQL HTTP Community v5.0 - 07-Apr-2020
 ```
 
 
@@ -715,4 +715,161 @@ sampledb.sqlFirewallManagerClassNames=\
     com.mycompany.firewall.MySqlFirewallManager2
 ```
 
+## Interacting with the JDBC Pool at runtime
+
+The Servlets Section in `aceql-server.properties` allow to define you own servlets in order to interact with AceQL Web Server with different actions :
+
+- query info about JDBC pools in use,
+- modify a pool size,
+- etc.
+
+The API  [DataSourceStore](https://www.aceql.com/rest/soft/5.0/javadoc/org/kawanfw/sql/api/server/DataSourceStore.html) class allows to retrieve for each database the Tomcat [org.apache.tomcat.jdbc.pool.DataSource](https://tomcat.apache.org/tomcat-8.5-doc/api/org/apache/tomcat/jdbc/pool/DataSource.html) corresponding to the Tomcat JDBC Pool created at AceQL Web server startup. 
+
+## Running the AceQL Web Server
+
+### Running the AceQL Web Server without Windows Desktop
+
+If you don’t have access to the Windows Desktop interface (running in a cloud instance, etc.)  you can still run the AceQL HTTP Web Server from the command line.
+
+- Open Sure Edition: see `<installation-directory>\AceQL\bin\aceql-server.bat` script.
+- Professional Edition:  see `<installation-directory>\AceQLPro\bin\aceql-server.bat` script.
+
+You can also start/top the AceQL Web Server from you java programs, as explained in next section.
+
+Starting/Stopping the AceQL WebServer from a Java program
+
+You may start or stop the AceQL Server from a Java program calling the [WebServerApi](https://www.aceql.com/rest/soft/4.1/javadoc/org/kawanfw/sql/api/server/web/WebServerApi.html) API.
+
+### Running AceQL HTTP in a Java EE servlet container
+
+AceQL server side may be run inside a Java EE servlet container such as Tomcat.
+
+This option may be preferred by users who already have a Java EE servlet container configured with all Connectors & SSL options, etc., and do want to recode the options in the `aceql-server.properties` file. 
+
+#### Installation
+
+Install the files of installation directory `webapp/WEB-INF/lib` in the lib directory of your webapp.
+
+If your JavaEE servlet container is *not* Tomcat >=7, it may not contain the Tomcat JDBC Pool: add `webapp/WEB-INF/lib-tomcat/tomcat-jdbc-8.5.xx.jar` jar in the /lib directory of you webapp.
+
+If you have coded your own Configurators, deploy the classes in the `/classes` directory of your webapp.
+
+#### AceQL servlet configuration in web.xml
+
+Create and configure the aceql-server.properties file like normal, as described in [The aceql-server.properties file](#the-aceql-serverproperties-file). Do not configure the Tomcat Connector sections that will not be used.
+
+In `web.xml`, define the AceQL Manager servlet that is defined in `the aceql-server.properties` file. This dual definition is required. The servlet class is. `org.kawanfw.sql.servlet.ServerSqlManager`. 
+
+Example:
+
+Assuming the `aceql-server.properties` file is stored in `c:\Users\Mike` and you have defined the following aceQLManagerServletCallName in `aceql-server.properties`**:**
+
+```properties
+aceQLManagerServletCallName=aceql
+```
+
+then your `web.xml` should contain the following code:
+
+```xml
+<servlet>
+    <servlet-name>aceql</servlet-name>
+    <servlet-class>org.kawanfw.sql.servlet.ServerSqlManager</servlet-class>
+
+    <init-param>
+        <param-name>properties</param-name>
+        <param-value>c:\Users\Mike\aceql-server.properties</param-value>
+    </init-param>
+</servlet>
+
+<!—- Allows you to see immediately in servet container if servlet is OK or KO --> 
+< load-on-startup>1</load-on-startup >
+
+<servlet-mapping>
+    <!-- Note the trailing /* in url-pattern --> 
+    <servlet-name>aceql</servlet-name>
+    <url-pattern>/aceql/*</url-pattern>
+</servlet-mapping>
+```
+
+Note the trailing `/*` in the URL pattern: this is required by the AceQL Manager that uses both the servlet name and elements in servlet path values to execute actions requested by the client side.
+
+### Testing the servlet configuration 
+
+After restarting your server, check you web server logs. 
+
+AceQL start statuses are written on standard output stream. 
+
+Type the HTTP address of each of your AceQL Manager servlets into a browser.
+
+Example corresponding to previous web.xml:
+
+`http://www.yourhost.com/path-to-webapp/aceql`
+
+It will display a JSON string and should display a status of `"OK"` and the current AceQL version: 
+
+```json
+{
+    "status": "OK",
+    "version": "AceQL HTTP v5.0 - 07-Apr-2020"
+}         
+```
+
+If not, the configuration errors are detailed for correction. 
+
+# AceQL internals
+
+## State management / Stateful Mode
+
+ AceQL runs in "Stateful Mode":  when creating a session on the client side with `/login` API, the AceQL servlet that is contacted extracts a JDBC `Connection` from the connection pool (with `DatabaseConfigurator.getConnection(`)) and stores it in memory in a static Java `Map`. 
+
+The server's JDBC Connection is persistent, attributed to the client user, and will not be used by other users: the same `Connection` will be used for each JDBC call until the end of the session. This allows you SQL transactions to be created.
+
+The `Connection` will be released from the AceQL Manager Servlet memory and released into the connection pool by a client side  `/close` or `/logout` API call. 
+
+A server side background thread will release phantom Connections that were not closed by the client side. 
+
+**Therefore, it is important for client applications to explicitly and systematically call `/logout` API before the application exits, in order to avoid phantom Connections to persist for a period of time on the server.**
+
+## Data transport  
+
+### Transport format 
+
+AceQL transfers the least possible amount of meta-information:
+
+- Request parameters are transported in UTF-8 format
+- JSON format is used for data and class transport.
+
+### Content streaming and memory management
+
+All requests are streamed: 
+
+- Output requests (from the client side) are streamed directly from the socket to the server to avoid     buffering any content body
+- Input responses (for the client side) are streamed directly from the socket to the server to efficiently read the response body
+
+Large content (`ResultSet`, Blobs/Clobs…) is transferred using files. It is never loaded in memory. Streaming techniques are always used to read and write this content. 
+
+## Managing temporary files 
+
+AceQL uses temporary files, these temporary files contain: 
+
+- Contents of Result Sets
+- Contents of Blobs and Clobs
+
+Temporary files are created to allow streaming and/or to allow the earliest possible release of SQL resources and network resources.
+
+These temporary files are automatically cleaned (deleted) by AceQL on the server side.  
+
+If you want to ensure that temporary files will be cleaned, you can access the temporary directories:
+
+1. `ResultSet`  data is dumped in `user.home/.kawansoft/tmp` directory
+
+1. The uploaded/downloaded Blob or Clob files are located in the directory defined by `DatabaseConfigurator.getBlobsDirectory()`. Default `DefaultDatabaseConfigurator.getBlobsDirectory()` implementation stores the Blob/Clob files in `user.home/.aceql-server-root/username`.
+
+Where:
+
+-   `user.home` =  the user.home of the user that started the AceQL Web Server.
+
+-   `username` = the username of the client user.
+
+___________________
 
