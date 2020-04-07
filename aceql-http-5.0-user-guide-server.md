@@ -677,7 +677,7 @@ The properties to set in the `aceql-server.properties` file are:
 | `workQueueClassName` | The `BlockingQueue` class to use in `ThreadPoolExecutor` constructor. |
 | `capacity`           | The initial capacity of the `BloquingQueue<Runnable>` <br/>(0 for no or default initial capacity.) |
 
-The properties are passed to the first  `ThreadPoolExecutor` constructor. See https://bit.ly/2QkMg5S.
+The properties are passed to the first  `ThreadPoolExecutor` [constructor](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/ThreadPoolExecutor.html#ThreadPoolExecutor(int,%20int,%20long,%20java.util.concurrent.TimeUnit,%20java.util.concurrent.BlockingQueue)).
 
 See `ThreadPoolExecutor` class [Javadoc](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/ThreadPoolExecutor.html) for more info
 
