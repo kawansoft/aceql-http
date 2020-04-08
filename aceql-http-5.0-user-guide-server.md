@@ -350,9 +350,9 @@ AceQL provides 5 built-in (and ready to use without any coding) User Authenticat
 | User Authenticator Name       | Role                                                         | Parameters                                    |
 | ----------------------------- | ------------------------------------------------------------ | --------------------------------------------- |
 | `LdapUserAuthenticator`       | Authenticates the remote client (username, password) against a LDAP server. | URL of the LDAP server                        |
-| `SshUserAuthenticator`        | Authenticates the remote client(username, password) against a SSH server. | IP or host & port of the SSH server           |
-| `WebServiceUserAuthenticator` | Authenticates the remote client(username, password) against a Web service. (See below). | URL of the Web service  & connection timeout. |
-| `WindowsUserAuthenticator`    | Authenticates the remote client(username, password) against the Windows server on which the AceQL server is running. | The Windows domain (optional).                |
+| `SshUserAuthenticator`        | Authenticates the remote client (username, password) against a SSH server. | IP or host & port of the SSH server           |
+| `WebServiceUserAuthenticator` | Authenticates the remote client (username, password) against a Web service. (See below). | URL of the Web service  & connection timeout. |
+| `WindowsUserAuthenticator`    | Authenticates the remote client (username, password) against the Windows server on which the AceQL server is running. | The Windows domain (optional).                |
 
 Just select in the `aceql-server.properties` section the  `userAuthenticatorClassName` to use, and fill the required parameters.
 
@@ -364,7 +364,7 @@ AceQL allows to authenticate remote client users against a Web service that is  
 
 The Web service must just implement these features:
 
-- It must accept 2 POST parameters `username` and `password`.
+- It must accept the 2 POST parameters `username` and `password`.
 
  - It must return either:
     - The JSON string `{"status"="OK"}` if the authentication succeeds.
