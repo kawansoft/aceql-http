@@ -29,17 +29,21 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Map;
+import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.FileHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
 
 import javax.sql.DataSource;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
+import org.kawanfw.sql.api.server.util.NoFormatter;
+import org.kawanfw.sql.servlet.ServerSqlManager;
 import org.kawanfw.sql.tomcat.TomcatSqlModeStore;
+import org.kawanfw.sql.tomcat.TomcatStarterUtil;
 import org.kawanfw.sql.util.Tag;
 
 /**
@@ -52,13 +56,6 @@ import org.kawanfw.sql.util.Tag;
  * <li>{@link #close(Connection)} that closes the {@code Connection} and thus
  * releases it into the pool.</li>
  * </ul>
- * <p>
- * <b>WARNING</b>: This default implementation will
- * allow to start immediate remote SQL calls but is <b>*not*</b> at all secured.
- * <br>
- * <b>It is highly recommended to override this class with a secured
- * implementation for the other methods.</b>
- * <p>
  *
  * @author Nicolas de Pomereu
  */
@@ -66,6 +63,8 @@ public class DefaultDatabaseConfigurator implements DatabaseConfigurator {
 
     /** The map of data sources to use for connection pooling */
     private Map<String, DataSource> dataSourceSet = new ConcurrentHashMap<>();
+
+    private Properties properties = null;
 
     private static Logger ACEQL_LOGGER = null;
 
@@ -77,30 +76,20 @@ public class DefaultDatabaseConfigurator implements DatabaseConfigurator {
 
     }
 
-    /**
-     * @return <code>true</code>. (Client is always granted access).
-     */
-    @Override
-    public boolean login(String username, char[] password, String database,
-	    String ipAddress) throws IOException, SQLException {
-	return true;
-    }
 
     /**
      * Returns a {@code Connection} from
-     * <a href="http://tomcat.apache.org/tomcat-8.5-doc/jdbc-pool.html" >Tomcat
-     * JDBC Connection Pool</a>.<br>
+     * <a href="http://tomcat.apache.org/tomcat-8.5-doc/jdbc-pool.html" >Tomcat JDBC
+     * Connection Pool</a>.<br>
      * <br>
-     * the {@code Connection} is extracted from the {@code DataSource} created
-     * by the embedded Tomcat JDBC Pool. The JDBC parameters used to create the
-     * {@code DataSource} are defined in the properties file passed at start-up
-     * of AceQL.
+     * the {@code Connection} is extracted from the {@code DataSource} created by
+     * the embedded Tomcat JDBC Pool. The JDBC parameters used to create the
+     * {@code DataSource} are defined in the properties file passed at start-up of
+     * AceQL.
      *
-     * @param database
-     *            the database name to extract the {@code Connection} for.
+     * @param database the database name to extract the {@code Connection} for.
      *
-     * @return the {@code Connection} extracted from Tomcat JDBC Connection
-     *         Pool.
+     * @return the {@code Connection} extracted from Tomcat JDBC Connection Pool.
      */
     @Override
     public Connection getConnection(String database) throws SQLException {
@@ -117,15 +106,13 @@ public class DefaultDatabaseConfigurator implements DatabaseConfigurator {
 
 		    String message = Tag.PRODUCT_USER_CONFIG_FAIL
 			    + " the \"driverClassName\" property is not defined in the properties file for database "
-			    + database
-			    + " or the Db Vendor is not supported in this version.";
+			    + database + " or the Db Vendor is not supported in this version.";
 		    // ServerLogger.getLogger().log(Level.WARNING, message);
 		    throw new SQLException(message);
 		} else {
 		    String message = Tag.PRODUCT_USER_CONFIG_FAIL
 			    + " the \"driverClassName\" property is not defined in the properties file for database "
-			    + database
-			    + " or the servlet name does not match the url pattern in your web.xml";
+			    + database + " or the servlet name does not match the url pattern in your web.xml";
 		    // ServerLogger.getLogger().log(Level.WARNING, message);
 		    throw new SQLException(message);
 		}
@@ -138,7 +125,6 @@ public class DefaultDatabaseConfigurator implements DatabaseConfigurator {
 	Connection connection = dataSource.getConnection();
 	return connection;
     }
-
 
     /**
      * Closes the connection acquired by
@@ -166,11 +152,32 @@ public class DefaultDatabaseConfigurator implements DatabaseConfigurator {
     }
 
     /**
-     * @return 0 (no limit).
+     * @return the value of the property {@code default.maxRows} defined in the {@code aceql-server.properties} file at server startup.
+     * If property does not exist, returns 0.
      */
     @Override
-    public int getMaxRows() throws IOException, SQLException {
-	return 0;
+    public int getMaxRows(String username, String database) throws IOException, SQLException {
+
+	int maxRows = 0;
+	if (properties == null) {
+	    File file = ServerSqlManager.getAceqlServerProperties();
+	    properties = TomcatStarterUtil.getProperties(file);
+	}
+
+	String maxRowsStr = properties.getProperty("defaultDatabaseConfigurator.maxRows");
+
+	// No limit if not set
+	if (maxRowsStr == null) {
+	    return 0;
+	}
+
+	if (!StringUtils.isNumeric(maxRowsStr)) {
+	    throw new IllegalArgumentException("The defaultDatabaseConfigurator.maxRows property is not numeric: " + maxRowsStr);
+	}
+
+	maxRows = Integer.parseInt(maxRowsStr);
+
+	return maxRows;
     }
 
     /**
@@ -178,8 +185,7 @@ public class DefaultDatabaseConfigurator implements DatabaseConfigurator {
      *         {@code user.home} is the one of the servlet container).
      */
     @Override
-    public File getBlobsDirectory(String username)
-	    throws IOException, SQLException {
+    public File getBlobsDirectory(String username) throws IOException, SQLException {
 	String userHome = System.getProperty("user.home");
 	if (!userHome.endsWith(File.separator)) {
 	    userHome += File.separator;
@@ -209,16 +215,14 @@ public class DefaultDatabaseConfigurator implements DatabaseConfigurator {
 	    return ACEQL_LOGGER;
 	}
 
-	File logDir = new File(SystemUtils.USER_HOME + File.separator
-		+ ".kawansoft" + File.separator + "log");
+	File logDir = new File(SystemUtils.USER_HOME + File.separator + ".kawansoft" + File.separator + "log");
 	logDir.mkdirs();
 
 	String pattern = logDir.toString() + File.separator + "AceQL.log";
 
-	ACEQL_LOGGER = Logger
-		.getLogger(DefaultDatabaseConfigurator.class.getName());
+	ACEQL_LOGGER = Logger.getLogger(DefaultDatabaseConfigurator.class.getName());
 	Handler fh = new FileHandler(pattern, 200 * 1024 * 1024, 2, true);
-	fh.setFormatter(new SimpleFormatter());
+	fh.setFormatter(new NoFormatter());
 	ACEQL_LOGGER.addHandler(fh);
 	return ACEQL_LOGGER;
 

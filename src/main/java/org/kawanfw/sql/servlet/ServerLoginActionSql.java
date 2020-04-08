@@ -37,6 +37,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.kawanfw.sql.api.server.DatabaseConfigurator;
+import org.kawanfw.sql.api.server.auth.UserAuthenticator;
 import org.kawanfw.sql.api.server.session.SessionConfigurator;
 import org.kawanfw.sql.servlet.connection.ConnectionStore;
 import org.kawanfw.sql.servlet.connection.ConnectionUtil;
@@ -118,6 +119,8 @@ public class ServerLoginActionSql extends HttpServlet {
 
 	    debug("calling login");
 
+	    UserAuthenticator userAuthenticator = ServerSqlManager.getUserAuthenticator();
+
 	    String database = request.getParameter(HttpParameter.DATABASE);
 
 	    DatabaseConfigurator databaseConfigurator = ServerSqlManager
@@ -133,7 +136,7 @@ public class ServerLoginActionSql extends HttpServlet {
 	    }
 
 	    String ipAddress = request.getRemoteAddr();
-	    boolean isOk = databaseConfigurator.login(username,
+	    boolean isOk = userAuthenticator.login(username,
 		    password.toCharArray(), database, ipAddress);
 
 	    debug("login isOk: " + isOk + " (login: " + username + ")");

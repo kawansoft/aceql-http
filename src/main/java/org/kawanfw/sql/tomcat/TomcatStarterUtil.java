@@ -24,7 +24,6 @@
  */
 package org.kawanfw.sql.tomcat;
 
-import static org.kawanfw.sql.servlet.ServerSqlManager.DATABASE_CONFIGURATOR_CLASS_NAME;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -62,7 +61,7 @@ import org.kawanfw.sql.util.SqlTag;
 public class TomcatStarterUtil {
 
     /** Universal and clean line separator */
-    private static String CR_LF = System.getProperty("line.separator");
+    static String CR_LF = System.getProperty("line.separator");
 
     private static final String ERROR_MESSAGE = "D" + "b" + " V" + "e" + "n"
 	    + "d" + "or" + " is" + " " + "no" + "t" + " sup" + "po" + "rt"
@@ -97,85 +96,6 @@ public class TomcatStarterUtil {
 
 	for (String database : databases) {
 	    createAndStoreDataSource(properties, database.trim());
-	}
-
-    }
-
-    public static void testConfigurators(Properties properties) {
-
-	if (properties == null) {
-	    throw new IllegalArgumentException("properties is null");
-	}
-
-	System.out.println(
-		SqlTag.SQL_PRODUCT_START + " Testing Declared Configurators:");
-
-	Set<String> databases = getDatabaseNames(properties);
-	for (String database : databases) {
-	    // Database configurator
-	    String databaseConfiguratorClassName = properties.getProperty(
-		    database + "." + DATABASE_CONFIGURATOR_CLASS_NAME);
-
-	    if (databaseConfiguratorClassName != null) {
-		loadInstance(databaseConfiguratorClassName);
-
-		System.out.println(SqlTag.SQL_PRODUCT_START + "  -> " + database
-			+ " Database Configurator " + CR_LF
-			+ SqlTag.SQL_PRODUCT_START + "     "
-			+ databaseConfiguratorClassName + " OK.");
-	    }
-	}
-
-	String className = properties.getProperty(
-		ServerSqlManager.BLOB_DOWNLOAD_CONFIGURATOR_CLASS_NAME);
-
-	if (className != null) {
-	    loadInstance(className);
-
-	    System.out.println(SqlTag.SQL_PRODUCT_START + "  -> Configurator "
-		    + className + " OK.");
-	}
-
-	className = properties.getProperty(
-		ServerSqlManager.BLOB_UPLOAD_CONFIGURATOR_CLASS_NAME);
-
-	if (className != null) {
-	    loadInstance(className);
-
-	    System.out.println(SqlTag.SQL_PRODUCT_START + "  -> Configurator "
-		    + className + " OK.");
-	}
-
-	className = properties
-		.getProperty(ServerSqlManager.SESSION_CONFIGURATOR_CLASS_NAME);
-
-	if (className != null) {
-	    loadInstance(className);
-
-	    System.out.println(SqlTag.SQL_PRODUCT_START + "  -> Configurator "
-		    + className + " OK.");
-	}
-
-    }
-
-    private static void loadInstance(String configuratorClassName) {
-	Class<?> c = null;
-
-	try {
-	    c = Class.forName(configuratorClassName);
-
-	    // @SuppressWarnings("unused")
-	    // Object theObject = c.newInstance();
-	    Constructor<?> constructor = c.getConstructor();
-	    @SuppressWarnings("unused")
-	    Object theObject = constructor.newInstance();
-
-	} catch (Exception e) {
-	    throw new IllegalArgumentException(
-		    "Exception when loading Configurator "
-			    + configuratorClassName + ": " + e.toString() + ". "
-			    + SqlTag.PLEASE_CORRECT,
-		    e);
 	}
 
     }
@@ -442,10 +362,6 @@ public class TomcatStarterUtil {
 	    throw new IllegalArgumentException("file can not be null!");
 	}
 
-	// Sets the irecotry of the poperties file. Will be used elsewere
-	// (for CsvRulesManager load file, per example).
-	ServerSqlManager.setAceqlServerPropertiesDirectory(file.getParentFile());
-
 	if (!file.exists()) {
 	    throw new DatabaseConfigurationException(
 		    "properties file not found: " + file);
@@ -459,7 +375,6 @@ public class TomcatStarterUtil {
 	Properties properties;
 
 	try (InputStream in = new FileInputStream(file);) {
-
 	    properties = new LinkedProperties(linkedProperties);
 	    properties.load(in);
 	}
@@ -487,17 +402,23 @@ public class TomcatStarterUtil {
 	Set<String> databases = getDatabaseNames(properties);
 	ServletParametersStore.setDatabaseNames(databases);
 
+	String userAuthenticatorClassName = TomcatStarterUtil
+		.trimSafe(properties.getProperty(ServerSqlManager.USER_AUTHENTICATOR_CLASS_NAME));
+	if (userAuthenticatorClassName != null && ! userAuthenticatorClassName.isEmpty()) {
+	    ServletParametersStore.setUserAuthenticatorClassName(userAuthenticatorClassName);
+	}
+
 	for (String database : databases) {
 	    // Set the configurator to use for this database
 	    String databaseConfiguratorClassName = TomcatStarterUtil
 		    .trimSafe(properties.getProperty(
-			    database + "." + DATABASE_CONFIGURATOR_CLASS_NAME));
+			    database + "." + ServerSqlManager.DATABASE_CONFIGURATOR_CLASS_NAME));
 
 	    if (databaseConfiguratorClassName != null
 		    && !databaseConfiguratorClassName.isEmpty()) {
 		ServletParametersStore.setInitParameter(database,
 			new InitParamNameValuePair(
-				DATABASE_CONFIGURATOR_CLASS_NAME,
+				ServerSqlManager.DATABASE_CONFIGURATOR_CLASS_NAME,
 				databaseConfiguratorClassName));
 	    }
 

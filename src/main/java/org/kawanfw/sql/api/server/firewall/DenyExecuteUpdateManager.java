@@ -34,7 +34,7 @@ import java.util.logging.Logger;
 import org.kawanfw.sql.api.server.DefaultDatabaseConfigurator;
 
 /**
- * Firewall manager that denies any update of the the database. The database is
+ * Firewall manager that denies any update of the database. The database is
  * thus guaranteed to be accessed in read only from client side.
  *
  * @author Nicolas de Pomereu

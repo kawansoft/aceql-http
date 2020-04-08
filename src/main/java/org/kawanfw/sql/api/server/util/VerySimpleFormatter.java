@@ -22,15 +22,31 @@
  * Any modifications to this file must keep this entire header
  * intact.
  */
-package org.kawanfw.sql.version;
+package org.kawanfw.sql.api.server.util;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.logging.Formatter;
+import java.util.logging.LogRecord;
 
 /**
- * Contains the package Version info
+ * A very simple formatter on one line Stolen on
+ * https://stackoverflow.com/questions/194765/how-do-i-get-java-logging-output-to-appear-on-a-single-line
+ *
+ * @author Nicolas de Pomereu
+ *
  */
+public class VerySimpleFormatter extends Formatter {
 
-public class VersionValues {
-    public static final String VERSION = "v5.0";
-    public static final String DATE = "08-Apr-2020";
+
+
+    private static final String PATTERN = "yyyy-MM-dd HH:mm:ss.SSS";
+
+    @Override
+    public String format(final LogRecord record) {
+	return String.format("%1$s %2$-7s %3$s\n", new SimpleDateFormat(PATTERN).format(new Date(record.getMillis())),
+		record.getLevel().getName(),
+		formatMessage(record));
+    }
+
 }
-
-// End

@@ -1,24 +1,24 @@
 /*
  * This file is part of AceQL HTTP.
- * AceQL HTTP: SQL Over HTTP                                     
+ * AceQL HTTP: SQL Over HTTP
  * Copyright (C) 2020,  KawanSoft SAS
- * (http://www.kawansoft.com). All rights reserved.                                
- *                                                                               
- * AceQL HTTP is free software; you can redistribute it and/or                 
- * modify it under the terms of the GNU Lesser General Public                    
- * License as published by the Free Software Foundation; either                  
- * version 2.1 of the License, or (at your option) any later version.            
- *                                                                               
- * AceQL HTTP is distributed in the hope that it will be useful,               
- * but WITHOUT ANY WARRANTY; without even the implied warranty of                
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU             
- * Lesser General Public License for more details.                               
- *                                                                               
- * You should have received a copy of the GNU Lesser General Public              
- * License along with this library; if not, write to the Free Software           
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  
+ * (http://www.kawansoft.com). All rights reserved.
+ *
+ * AceQL HTTP is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * AceQL HTTP is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
  * 02110-1301  USA
- * 
+ *
  * Any modifications to this file must keep this entire header
  * intact.
  */
@@ -71,9 +71,11 @@ import org.kawanfw.sql.util.SqlReturnCode;
 
 /**
  * @author Nicolas de Pomereu
- * 
+ *
  */
 public class ResultSetWriter {
+
+    private static final String NULL = "NULL";
 
     private static final String NULL_STREAM = "NULL_STREAM";
 
@@ -141,7 +143,7 @@ public class ResultSetWriter {
 
     /**
      * Constructor for tests
-     * 
+     *
      * @param out
      * @param sqlOrder
      */
@@ -153,14 +155,14 @@ public class ResultSetWriter {
 
     /**
      * Code extracted and modified for OReilly jdbc book in french.
-     * 
+     *
      * Process the ResultSet and print it on the outPutStream <br>
      * - Each row is a line of a List of column values <br>
-     * 
+     *
      * @param resultSet the Result Set to process and print on the output stream
      * @param br        the writer where to redirect the result set content, one
      *                  Json line per rs.next();
-     * 
+     *
      */
     public void write(ResultSet resultSet) throws SQLException, IOException {
 	try {
@@ -277,7 +279,7 @@ public class ResultSetWriter {
 			}
 
 			if (resultSet.wasNull()) {
-			    columnValueStr = "NULL";
+			    columnValueStr = NULL;
 			} else if (columnValue == null) {
 			    columnValueStr = null;
 			} else {
@@ -289,7 +291,7 @@ public class ResultSetWriter {
 		    debug("columnValueStr : " + columnValueStr);
 
 		    // Case we - maybe - have an URL:
-		    columnValueStr = urlFormater(resultSet, columnIndex, columnValueStr);
+		    //columnValueStr = urlFormater(resultSet, columnIndex, columnValueStr);
 
 		    // if (isCharacterType(columnType)) {
 		    // debugStringType(columnValueStr);
@@ -301,25 +303,6 @@ public class ResultSetWriter {
 		    gen.writeStartObject();
 
 		    if (StringUtils.isNumeric(columnValueStr)) {
-
-			// if (columnValue instanceof Integer) {
-			// gen.write(columnName, new
-			// Integer(columnValueStr).intValue());
-			// } else if (columnValue instanceof Double) {
-			// gen.write(columnName, new
-			// Double(columnValueStr).doubleValue());
-			// } else if (columnValue instanceof Float) {
-			// gen.write(columnName, new
-			// Float(columnValueStr).floatValue());
-			// } else if (columnValue instanceof Long) {
-			// gen.write(columnName, new
-			// Long(columnValueStr).longValue());
-			// } else if (columnValue instanceof BigDecimal) {
-			// gen.write(columnName, new
-			// BigDecimal(columnValueStr));
-			// } else {
-			// gen.write(columnName, columnValueStr);
-			// }
 
 			if (columnValue instanceof Integer) {
 			    gen.write(columnName, Integer.parseInt(columnValueStr));
@@ -370,13 +353,22 @@ public class ResultSetWriter {
     private String formatDateTimeColumn(ResultSet rs, int columnType, int columnIndex) throws SQLException {
 	if (columnType == Types.DATE) {
 	    Date date = rs.getDate(columnIndex);
+
+	    if (date == null) {
+		return NULL;
+	    }
+
 	    long milliseconds = date.getTime();
 
 	    // return new Long(milliseconds).toString();
 	    return Long.toString(milliseconds);
-
 	} else if (columnType == Types.TIME) {
 	    Time time = rs.getTime(columnIndex);
+
+	    if (time == null) {
+		return NULL;
+	    }
+
 	    long milliseconds = time.getTime();
 
 	    // return new Long(milliseconds).toString();
@@ -384,6 +376,11 @@ public class ResultSetWriter {
 	}
 	if (columnType == Types.TIMESTAMP) {
 	    Timestamp time = rs.getTimestamp(columnIndex);
+
+	    if (time == null) {
+		return NULL;
+	    }
+
 	    long milliseconds = time.getTime();
 
 	    // return new Long(milliseconds).toString();
@@ -432,7 +429,7 @@ public class ResultSetWriter {
 
     /**
      * Says if a column is N Type
-     * 
+     *
      * @param columnType the SQL Column Type
      * @return true if a column is N Type
      */
@@ -446,7 +443,7 @@ public class ResultSetWriter {
 
     /**
      * Format the column as an java.sqlArray
-     * 
+     *
      * @param resultSet
      * @param columnIndex
      * @return
@@ -455,6 +452,10 @@ public class ResultSetWriter {
      */
     private String formatArrayColumn(ResultSet resultSet, int columnIndex) throws SQLException, IOException {
 	Array array = resultSet.getArray(columnIndex);
+
+	if (array == null) {
+	    return NULL;
+	}
 
 	Object[] objects = (Object[]) array.getArray();
 	String arrayStr = "{";
@@ -478,7 +479,7 @@ public class ResultSetWriter {
 
     /**
      * Format the column as a RowId
-     * 
+     *
      * @param resultSet
      * @param columnIndex
      * @return
@@ -487,6 +488,10 @@ public class ResultSetWriter {
      */
     private String formatRowIdColumn(ResultSet resultSet, int columnIndex) throws SQLException, IOException {
 	RowId rowId = resultSet.getRowId(columnIndex);
+
+	if (rowId == null) {
+	    return NULL;
+	}
 
 	String sessionId = request.getParameter(HttpParameter.SESSION_ID);
 	String connectionId = request.getParameter(HttpParameter.CONNECTION_ID);
@@ -511,7 +516,7 @@ public class ResultSetWriter {
 
     /**
      * Format - if detected - an URL
-     * 
+     *
      * @param resultSet
      * @param columnIndex
      * @param columnValueStr
@@ -537,7 +542,7 @@ public class ResultSetWriter {
 
     /**
      * Returns true if engine is terradata
-     * 
+     *
      * @param resultSet the result set in use
      * @returns true if engine is terradata
      * @throws SQLException
@@ -575,14 +580,14 @@ public class ResultSetWriter {
     /**
      * the binary content is dumped in a server file that will be available for the
      * client the name of the file will be stored in the output stream ;
-     * 
+     *
      * @param resultSet   the result set in progress to send back to the client side
      * @param columnIndex the column index
      * @param columnType  the column type
      * @param columnName  the column name
      * @param columnTable the table name of the column
      * @return the formated binary column
-     * 
+     *
      * @throws SQLException
      */
     private String formatBinaryColumn(ResultSet resultSet, int columnIndex, int columnType, String columnName,
@@ -641,7 +646,7 @@ public class ResultSetWriter {
 
     /**
      * return true if the column is a binary type
-     * 
+     *
      * @param resultSet   used to get back the Connection for PostgreSQL meta query
      * @param columnType  the sql column type
      * @param columnName  the sql column name
@@ -674,12 +679,12 @@ public class ResultSetWriter {
     /**
      * the CLOB content is dumped in a server file that will be available for the
      * client the name of the file will be stored in the output stream ;
-     * 
+     *
      * @param resultSet   the result set in progress to send back to the client side
      * @param columnIndex the column index
-     * 
+     *
      * @return the formated binary column
-     * 
+     *
      * @throws SQLException
      */
     private String formatClobColumn(ResultSet resultSet, int columnIndex) throws SQLException, IOException {
@@ -722,7 +727,7 @@ public class ResultSetWriter {
 
     /**
      * Write a Clob file, html encoded or not
-     * 
+     *
      * @param br           the buffered reader on the clob
      * @param hostFileName the host file name to create in base 64
      */
@@ -745,7 +750,7 @@ public class ResultSetWriter {
 
     /**
      * return true if the column is a Types.CLOB || Types.NCLOB
-     * 
+     *
      * @param columnType the sql column type
      * @return true if it's (N)CLOB
      */

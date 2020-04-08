@@ -22,49 +22,46 @@
  * Any modifications to this file must keep this entire header
  * intact.
  */
-package org.kawanfw.sql.servlet.sql.json_return;
+package org.kawanfw.test.api.server.auth;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.io.File;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.Date;
 
-import javax.json.Json;
-import javax.json.stream.JsonGenerator;
-import javax.json.stream.JsonGeneratorFactory;
+import org.kawanfw.sql.api.server.auth.LdapUserAuthenticator;
+import org.kawanfw.sql.servlet.ServerSqlManager;
 
 /**
  * @author Nicolas de Pomereu
  *
  */
-public class JsonUtil {
-
-    /** Always force pretty printing */
-    public static final boolean DEFAULT_PRETTY_PRINTING = true;
+public class LdapUserAuthenticatorTest {
 
     /**
-     * protected
+     * Tests a login using SSH.
+     * @throws IOException
+     * @throws SQLException
      */
-    protected JsonUtil() {
+    public static void test() throws IOException, SQLException {
 
+	String user = "cn=read-only-admin,dc=example,dc=com";
+	String password = "password";
+
+	ServerSqlManager.setAceqlServerProperties(new File("I:\\_dev_awake\\aceql-http-main\\aceql-http\\conf\\aceql-server.properties"));
+	LdapUserAuthenticator ldapUserAuthenticator = new LdapUserAuthenticator();
+
+	boolean logged = ldapUserAuthenticator.login(user, password.toCharArray(), "database", "10.0.0.10");
+	System.out.println(new Date() + " LdapUserAuthenticator logged: " + logged);
     }
 
     /**
-     * JsonGeneratorFactory getter with pretty printing on/off
-     *
-     * @param prettyPrintingif
-     *            true, JSON will be pretty printed
-     * @return
+     * @param args
      */
-    public static JsonGeneratorFactory getJsonGeneratorFactory(
-	    boolean prettyPrinting) {
-	Map<String, Object> properties = new HashMap<>(1);
-	if (prettyPrinting) {
-	    // Putting any value sets the pretty printing to true... So test
-	    // must be done
-	    properties.put(JsonGenerator.PRETTY_PRINTING, prettyPrinting);
-	}
-
-	JsonGeneratorFactory jf = Json.createGeneratorFactory(properties);
-	return jf;
+    public static void main(String[] args) throws Exception {
+	test();
     }
+
+
 
 }

@@ -1,4 +1,4 @@
-# AceQL HTTP v4.1 - Feb 13, 2020
+# AceQL HTTP v5.0 - April 7, 2020
 
 # API User Guide
 
@@ -56,7 +56,7 @@
 
 The AceQL HTTP API allows you to execute SQL queries and updates on remote databases using pure HTTP calls, with a fluent and simple to use REST like API.
 
-The Server operation is described in [Server Installation and Configuration Guide](https://github.com/kawansoft/aceql-http/blob/master/aceql-http-4.1-user-guide-server.md).
+The Server operation is described in [Server Installation and Configuration Guide](https://github.com/kawansoft/aceql-http/blob/master/aceql-http-5.0-user-guide-server.md).
 
 This document describes all AceQL URLs to use in your HTTP calls. It also contains easy to copy and paste examples in cURL.
 
@@ -182,7 +182,7 @@ Note that we will use two shortcuts through this User Guide in order to simplify
 
 - **server** is the shortcut for the scheme, server name, and port of the URL to call. Possible values for server are: <http://localhost:9090>, <https://www.acme.com>, etc.
 
-- **aceql** is the shortcut for the AceQL Server servlet path. aceql is also the default configuration value. Any other value is possible, see [Server Installation and Configuration Guide](https://github.com/kawansoft/aceql-http/blob/master/aceql-http-4.1-user-guide-server.md).
+- **aceql** is the shortcut for the AceQL Server servlet path. aceql is also the default configuration value. Any other value is possible, see [Server Installation and Configuration Guide](https://github.com/kawansoft/aceql-http/blob/master/aceql-http-5.0-user-guide-server.md).
 
 | URL  parameter | Description                   |
 | -------------- | ----------------------------- |
@@ -228,7 +228,7 @@ In case of error:
 
 All the following examples use a MySQL database named `sampledb`.
 
-Connection to the [sampledb](http://www.aceql.com/rest/soft/4.1/src/sampledb.txt) database with (MyUsername, MySecret) credentials:
+Connection to the [sampledb](http://www.aceql.com/rest/soft/5.0/src/sampledb.txt) database with (MyUsername, MySecret) credentials:
 
 ```bash
 $ curl \
@@ -472,13 +472,12 @@ The query result is returned in the form of a JSON stream.
 | session_id    | The session_id value returned by `login`.                    |
 | connection_id | The ID that refers the `java.sql.Connection` to use on server.<br>Optional: if not passed, server will use the one created at login. |
 
-| Request parameter  | Requested | Description                              |
-| ------------------ | --------- | ---------------------------------------- |
-| sql                | Yes       | The SQL statement.                       |
+| Request parameter  | Requested | Description                                                  |
+| ------------------ | --------- | ------------------------------------------------------------ |
+| sql                | Yes       | The SQL statement.                                           |
 | prepared_statement | No        | true or false. Defaults to false.  Says if the statement is to be executed as a prepared statement on  remote server. |
 | gzip_result        | No        | true or false. Defaults to false.  Says if the query result is returned  compressed with the GZIP file format. |
 | column_types       | No        | true or false. Defaults to false.  Says if the column types must be included in the JSON stream. |
-| pretty_printing    | No        | true or false. Defaults to false.  Says if the JSON stream will be pretty printed. |
 | param_type_{i}     | No        | For prepared statements only.  Allows to define the parameter type of parameter of i index. See values below. |
 | param_value_{i}    | No        | For prepared statements only.  Allows to define the parameter value of parameter of i index. |
 
@@ -562,10 +561,10 @@ In case of error:
 
 ### execute_query call – cURL examples
 
-Let’s call a select on the previously inserted row. We ask for a pretty printing and to include the column types:
+Let’s call a select on the previously inserted row. We ask to include the column types:
 
 ```bash
-$ curl  --data"pretty_printing=true" --data "column_types=true" \
+$ curl --data "column_types=true" \
 --data-urlencode \
 "sql=select customer_id,customer_title, fname from customer" \ 
 http://localhost:9090/aceql/session/hli7ppunldk07mg8ae4dvv70kc/\
@@ -601,7 +600,7 @@ The call will return:
 }
 ```
 
-Same call, but as a more secure prepared statement with a where condition, a prepared statement parameter and without pretty printing:
+Same call, but as a more secure prepared statement with a where condition, a prepared statement parameter:
 
 ```bash
 $ curl --data "prepared_statement=true" --data"column_types=true" \ 

@@ -1,24 +1,24 @@
 /*
  * This file is part of AceQL HTTP.
- * AceQL HTTP: SQL Over HTTP                                     
+ * AceQL HTTP: SQL Over HTTP
  * Copyright (C) 2020,  KawanSoft SAS
- * (http://www.kawansoft.com). All rights reserved.                                
- *                                                                               
- * AceQL HTTP is free software; you can redistribute it and/or                 
- * modify it under the terms of the GNU Lesser General Public                    
- * License as published by the Free Software Foundation; either                  
- * version 2.1 of the License, or (at your option) any later version.            
- *                                                                               
- * AceQL HTTP is distributed in the hope that it will be useful,               
- * but WITHOUT ANY WARRANTY; without even the implied warranty of                
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU             
- * Lesser General Public License for more details.                               
- *                                                                               
- * You should have received a copy of the GNU Lesser General Public              
- * License along with this library; if not, write to the Free Software           
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  
+ * (http://www.kawansoft.com). All rights reserved.
+ *
+ * AceQL HTTP is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * AceQL HTTP is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
  * 02110-1301  USA
- * 
+ *
  * Any modifications to this file must keep this entire header
  * intact.
  */
@@ -26,22 +26,22 @@ package org.kawanfw.sql.servlet;
 
 import java.util.Date;
 
-import org.kawanfw.sql.api.server.DatabaseConfigurator;
+import org.kawanfw.sql.api.server.auth.UserAuthenticator;
 import org.kawanfw.sql.util.FrameworkDebug;
 
 /**
  * Tests that all configurators methods are correct. set properties if not, with
  * Exception & associated message.
- * 
+ *
  * @author Nicolas de Pomereu
- * 
+ *
  */
-public class ConfiguratorMethodsTester {
+public class UserAuthenticatorTester {
 
     private static boolean DEBUG = FrameworkDebug
-	    .isSet(ConfiguratorMethodsTester.class);
+	    .isSet(UserAuthenticatorTester.class);
 
-    private DatabaseConfigurator databaseConfigurator = null;
+    private UserAuthenticator userAuthenticator = null;
 
     /** The Exception */
     private Exception exception = null;
@@ -49,14 +49,14 @@ public class ConfiguratorMethodsTester {
     /** The init error message trapped */
     private String initErrrorMesage = null;
 
-    public ConfiguratorMethodsTester(
-	    DatabaseConfigurator databaseConfigurator) {
+    public UserAuthenticatorTester(
+	    UserAuthenticator userAuthenticator) {
 	super();
-	this.databaseConfigurator = databaseConfigurator;
+	this.userAuthenticator = userAuthenticator;
     }
 
     /**
-     * 
+     *
      * @return the Exception thrown
      */
     public Exception getException() {
@@ -64,7 +64,7 @@ public class ConfiguratorMethodsTester {
     }
 
     /**
-     * 
+     *
      * @return the the label of the exception thrown
      */
     public String getInitErrrorMesage() {
@@ -94,7 +94,7 @@ public class ConfiguratorMethodsTester {
 
 		debug("In commonsConfigurator.login.");
 
-		isOk = databaseConfigurator.login("dummy",
+		isOk = userAuthenticator.login("dummy",
 			"dummy".toCharArray(), "dummy", "127.0.0.1");
 
 		debug("After new commonsConfigurator.login.");

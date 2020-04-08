@@ -41,6 +41,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.kawanfw.sql.api.server.DatabaseConfigurationException;
 import org.kawanfw.sql.api.server.DatabaseConfigurator;
+import org.kawanfw.sql.api.server.auth.UserAuthenticator;
 import org.kawanfw.sql.api.server.blob.BlobDownloadConfigurator;
 import org.kawanfw.sql.api.server.blob.BlobUploadConfigurator;
 import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
@@ -49,6 +50,8 @@ import org.kawanfw.sql.servlet.creator.BlobDownloadConfiguratorCreator;
 import org.kawanfw.sql.servlet.creator.BlobUploadConfiguratorCreator;
 import org.kawanfw.sql.servlet.creator.DatabaseConfiguratorCreator;
 import org.kawanfw.sql.servlet.creator.SessionConfiguratorCreator;
+import org.kawanfw.sql.servlet.creator.SqlFirewallsCreator;
+import org.kawanfw.sql.servlet.creator.UserAuthenticatorCreator;
 import org.kawanfw.sql.tomcat.ServletParametersStore;
 import org.kawanfw.sql.tomcat.ThreadPoolExecutorStore;
 import org.kawanfw.sql.tomcat.TomcatSqlModeStore;
@@ -62,6 +65,9 @@ public class ServerSqlManagerInit {
 
     private static boolean DEBUG = FrameworkDebug.isSet(ServerSqlManager.class);
     public static String CR_LF = System.getProperty("line.separator");
+
+    /** The UserAuthenticator instance */
+    private static UserAuthenticator userAuthenticator = null;
 
     /** The map of (database, DatabaseConfigurator) */
     private static Map<String, DatabaseConfigurator> databaseConfigurators = new ConcurrentHashMap<>();
@@ -109,14 +115,47 @@ public class ServerSqlManagerInit {
 
 	try {
 	    // Previously created by Tomcat
+
+	    if (!TomcatSqlModeStore.isTomcatEmbedded()) {
+		String propertiesFileStr = config.getInitParameter("properties");
+
+		if (propertiesFileStr == null || propertiesFileStr.isEmpty()) {
+		    throw new DatabaseConfigurationException(Tag.PRODUCT_USER_CONFIG_FAIL
+			    + " AceQL servlet param-name \"properties\" not set. Impossible to load the AceQL Server properties file.");
+		}
+		File propertiesFile = new File(propertiesFileStr);
+
+		if (!propertiesFile.exists()) {
+		    throw new DatabaseConfigurationException(
+			    Tag.PRODUCT_USER_CONFIG_FAIL + " properties file not found: " + propertiesFile);
+		}
+
+		Properties properties = TomcatStarterUtil.getProperties(propertiesFile);
+
+		ThreadPoolExecutorStore threadPoolExecutorStore = new ThreadPoolExecutorStore(properties);
+		threadPoolExecutorStore.create();
+	    }
+
 	    threadPoolExecutor = ThreadPoolExecutorStore.getThreadPoolExecutor();
 
 	    if (!TomcatSqlModeStore.isTomcatEmbedded()) {
 		createDataSources(config);
 	    }
 
+	    String userAuthenticatorClassName = ServletParametersStore.getUserAuthenticatorClassName();
+
+	    classNameToLoad = userAuthenticatorClassName;
+	    UserAuthenticatorCreator userAuthenticatorCreator = new UserAuthenticatorCreator(userAuthenticatorClassName);
+	    userAuthenticator = userAuthenticatorCreator.getUserAuthenticator();
+	    userAuthenticatorClassName = userAuthenticatorCreator.getUserAuthenticatorClassName();
+
+	    System.out.println(SqlTag.SQL_PRODUCT_START + " Loading UserAuthenticator class:");
+	    System.out.println(SqlTag.SQL_PRODUCT_START + "  -> " + userAuthenticatorClassName);
+
 	    Set<String> databases = ServletParametersStore.getDatabaseNames();
 
+	    //WARNING: Database configurator must be loaded prior to firewalls
+	    //         because a getConnection() is used to test SqlFirewallManager
 	    for (String database : databases) {
 		databaseConfiguratorClassName = ServletParametersStore.getInitParameter(database,
 			ServerSqlManager.DATABASE_CONFIGURATOR_CLASS_NAME);
@@ -130,7 +169,7 @@ public class ServerSqlManagerInit {
 		    databaseConfiguratorClassName = ServletParametersStore.getInitParameter(database, capitalized);
 		}
 
-		// Call the specific Configurator class to use
+		// Call the specific DatabaseConfigurator class to use
 		classNameToLoad = databaseConfiguratorClassName;
 		DatabaseConfiguratorCreator databaseConfiguratorCreator = new DatabaseConfiguratorCreator(databaseConfiguratorClassName);
 		DatabaseConfigurator databaseConfigurator = databaseConfiguratorCreator.getDatabaseConfigurator();
@@ -138,12 +177,11 @@ public class ServerSqlManagerInit {
 
 		databaseConfigurators.put(database, databaseConfigurator);
 
-		System.out.println(SqlTag.SQL_PRODUCT_START + " Database " + database + " DatabaseConfigurator class:");
+		System.out.println(SqlTag.SQL_PRODUCT_START + " Loading Database " + database + " DatabaseConfigurator class:");
 		System.out.println(SqlTag.SQL_PRODUCT_START + "  -> " + databaseConfiguratorClassName);
 	    }
 
 	    for (String database : databases) {
-
 		List<String> sqlFirewallClassNames = ServletParametersStore.getSqlFirewallClassNames(database);
 		classNameToLoad = sqlFirewallClassNames.toString();
 
@@ -153,7 +191,7 @@ public class ServerSqlManagerInit {
 		else
 		    tagSQLFirewallManager = " SQLFirewallManager classes: ";
 
-		System.out.println(SqlTag.SQL_PRODUCT_START + " Database " + database + tagSQLFirewallManager);
+		System.out.println(SqlTag.SQL_PRODUCT_START + " Loading Database " + database + tagSQLFirewallManager);
 
 		DatabaseConfigurator databaseConfigurator = databaseConfigurators.get(database);
 		SqlFirewallsCreator sqlFirewallsCreator = new SqlFirewallsCreator(sqlFirewallClassNames, database, databaseConfigurator);
@@ -168,6 +206,7 @@ public class ServerSqlManagerInit {
 		}
 	    }
 
+
 	    // Load Configurators for Blobs/Clobs
 	    String blobDownloadConfiguratorClassName = ServletParametersStore.getBlobDownloadConfiguratorClassName();
 	    classNameToLoad = blobDownloadConfiguratorClassName;
@@ -177,7 +216,7 @@ public class ServerSqlManagerInit {
 
 	    if (!blobDownloadConfiguratorClassName
 		    .equals(org.kawanfw.sql.api.server.blob.DefaultBlobDownloadConfigurator.class.getName())) {
-		System.out.println(SqlTag.SQL_PRODUCT_START + " blobDownloadConfiguratorClassName: ");
+		System.out.println(SqlTag.SQL_PRODUCT_START + " Loading blobDownloadConfiguratorClassName: ");
 		System.out.println(SqlTag.SQL_PRODUCT_START + " " + blobDownloadConfiguratorClassName);
 	    }
 
@@ -189,7 +228,7 @@ public class ServerSqlManagerInit {
 
 	    if (!blobUploadConfiguratorClassName
 		    .equals(org.kawanfw.sql.api.server.blob.DefaultBlobUploadConfigurator.class.getName())) {
-		System.out.println(SqlTag.SQL_PRODUCT_START + " blobUploadConfiguratorClassName: ");
+		System.out.println(SqlTag.SQL_PRODUCT_START + " Loading blobUploadConfiguratorClassName: ");
 		System.out.println(SqlTag.SQL_PRODUCT_START + " " + blobUploadConfiguratorClassName);
 	    }
 
@@ -202,7 +241,7 @@ public class ServerSqlManagerInit {
 
 	    if (!sessionManagerConfiguratorClassName
 		    .equals(org.kawanfw.sql.api.server.session.DefaultSessionConfigurator.class.getName())) {
-		System.out.println(SqlTag.SQL_PRODUCT_START + " sessionManagerConfiguratorClassName: ");
+		System.out.println(SqlTag.SQL_PRODUCT_START + " Loading sessionManagerConfiguratorClassName: ");
 		System.out.println(SqlTag.SQL_PRODUCT_START + "  -> " + sessionManagerConfiguratorClassName);
 	    }
 
@@ -227,7 +266,7 @@ public class ServerSqlManagerInit {
 	}
 
 	if (exception == null) {
-	    System.out.println(SqlTag.SQL_PRODUCT_START + " Configurators Status: OK.");
+	    System.out.println(SqlTag.SQL_PRODUCT_START + " Loaded classes Status: OK.");
 
 	    if (!TomcatSqlModeStore.isTomcatEmbedded()) {
 		String runningMessage = SqlTag.SQL_PRODUCT_START + " " + Version.PRODUCT.NAME + " Start OK.";
@@ -237,7 +276,7 @@ public class ServerSqlManagerInit {
 	} else {
 	    exception.printStackTrace();
 	    if (!TomcatSqlModeStore.isTomcatEmbedded()) {
-		String errorMessage1 = SqlTag.SQL_PRODUCT_START + "  -> Configurators Status: KO.";
+		String errorMessage1 = SqlTag.SQL_PRODUCT_START + "  -> Loaded classes Status: KO.";
 		String errorMessage2 = initErrrorMesage;
 		String errorMessage3 = ExceptionUtils.getStackTrace(exception);
 
@@ -275,6 +314,9 @@ public class ServerSqlManagerInit {
 	System.out.println(SqlTag.SQL_PRODUCT_START + " " + "Using properties file: ");
 	System.out.println(SqlTag.SQL_PRODUCT_START + "  -> " + propertiesFile);
 
+	// Set properties file. Will be used elsewhere
+	// (for CsvRulesManager load file, per example).
+	ServerSqlManager.setAceqlServerProperties(propertiesFile);
 	Properties properties = TomcatStarterUtil.getProperties(propertiesFile);
 
 	TomcatStarterUtil.setInitParametersInStore(properties);
@@ -284,6 +326,9 @@ public class ServerSqlManagerInit {
 
     }
 
+    public UserAuthenticator getUserAuthenticator() {
+        return userAuthenticator;
+    }
 
     public Map<String, DatabaseConfigurator> getDatabaseConfigurators() {
         return databaseConfigurators;

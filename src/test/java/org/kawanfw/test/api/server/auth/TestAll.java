@@ -22,15 +22,27 @@
  * Any modifications to this file must keep this entire header
  * intact.
  */
-package org.kawanfw.sql.version;
+package org.kawanfw.test.api.server.auth;
+
+import java.util.Date;
 
 /**
- * Contains the package Version info
+ * Test all built in Authenticator classes.
+ * @author Nicolas de Pomereu
+ *
  */
+public class TestAll {
 
-public class VersionValues {
-    public static final String VERSION = "v5.0";
-    public static final String DATE = "08-Apr-2020";
+    /**
+     * @param args
+     */
+    public static void main(String[] args) throws Exception {
+	System.out.println(new Date() + " Begin...");
+	LdapUserAuthenticatorTest.test();
+	SshUserAuthenticatorTest.test();
+	WebServiceUserAuthenticatorTest.test();
+	WindowsUserAuthenticatorTest.test();
+	System.out.println(new Date() + " End...");
+    }
+
 }
-
-// End

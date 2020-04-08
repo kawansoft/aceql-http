@@ -47,6 +47,7 @@ import org.apache.commons.lang3.SystemUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.kawanfw.sql.api.server.DatabaseConfigurator;
+import org.kawanfw.sql.api.server.auth.UserAuthenticator;
 import org.kawanfw.sql.api.server.blob.BlobDownloadConfigurator;
 import org.kawanfw.sql.api.server.blob.BlobUploadConfigurator;
 import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
@@ -70,10 +71,11 @@ public class ServerSqlManager extends HttpServlet {
 
     public static String CR_LF = System.getProperty("line.separator");
 
-    /* The directory used for the properties file */
-    private static File aceqlServerPropertiesDirectory = null;
+    /** The properties file */
+    private static File aceqlServerProperties = null;
 
     public static final String DATABASE_CONFIGURATOR_CLASS_NAME = "databaseConfiguratorClassName";
+    public static final String USER_AUTHENTICATOR_CLASS_NAME = "userAuthenticatorClassName";
     public static final String SQL_FIREWALL_MANAGER_CLASS_NAMES = "sqlFirewallManagerClassNames";
     public static final String BLOB_DOWNLOAD_CONFIGURATOR_CLASS_NAME = "blobDownloadConfiguratorClassName";
     public static final String BLOB_UPLOAD_CONFIGURATOR_CLASS_NAME = "blobUploadConfiguratorClassName";
@@ -85,6 +87,9 @@ public class ServerSqlManager extends HttpServlet {
 
     /** The map of (database, List<SqlFirewallManager>) */
     private static Map<String, List<SqlFirewallManager>> sqlFirewallMap = new ConcurrentHashMap<>();
+
+    /** The UserAuthenticator instance */
+    private static UserAuthenticator userAuthenticator = null;
 
     /** The BlobUploadConfigurator instance */
     private static BlobUploadConfigurator blobUploadConfigurator = null;
@@ -103,6 +108,10 @@ public class ServerSqlManager extends HttpServlet {
 
     /** The executor to use */
     private ThreadPoolExecutor threadPoolExecutor = null;
+
+    public static UserAuthenticator getUserAuthenticator() {
+        return userAuthenticator;
+    }
 
     /**
      * @return the blobUploadConfigurator
@@ -141,18 +150,19 @@ public class ServerSqlManager extends HttpServlet {
 
     /**
      * Returns the list of SqlFirewallManager
+     *
      * @return the list of SqlFirewallManager
      */
     public static Map<String, List<SqlFirewallManager>> getSqlFirewallMap() {
-        return sqlFirewallMap;
+	return sqlFirewallMap;
     }
 
-    public static File getAceqlServerPropertiesDirectory() {
-        return aceqlServerPropertiesDirectory;
+    public static File getAceqlServerProperties() {
+	return aceqlServerProperties;
     }
 
-    public static void setAceqlServerPropertiesDirectory(File aceqlServerPropertiesDirectory) {
-        ServerSqlManager.aceqlServerPropertiesDirectory = aceqlServerPropertiesDirectory;
+    public static void setAceqlServerProperties(File aceqlServerProperties) {
+	ServerSqlManager.aceqlServerProperties = aceqlServerProperties;
     }
 
     /**
@@ -162,6 +172,7 @@ public class ServerSqlManager extends HttpServlet {
     public void init(ServletConfig config) throws ServletException {
 	super.init(config);
 	ServerSqlManagerInit serverSqlManagerInit = new ServerSqlManagerInit(config);
+	userAuthenticator = serverSqlManagerInit.getUserAuthenticator();
 	databaseConfigurators = serverSqlManagerInit.getDatabaseConfigurators();
 	sqlFirewallMap = serverSqlManagerInit.getSqlFirewallMap();
 	blobUploadConfigurator = serverSqlManagerInit.getBlobUploadConfigurator();
@@ -341,7 +352,6 @@ public class ServerSqlManager extends HttpServlet {
 		writeLine(out, errorReturn.build());
 		return;
 	    }
-
 	}
 
 	// Display version if we just call the servlet
@@ -483,7 +493,6 @@ public class ServerSqlManager extends HttpServlet {
     private boolean isLoginAction(String requestUri) {
 	return requestUri.endsWith("/login") || requestUri.endsWith("/connect");
     }
-
 
     /**
      * Write a line of string on the servlet output stream. Will add the necessary

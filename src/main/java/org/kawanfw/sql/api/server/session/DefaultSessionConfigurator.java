@@ -24,12 +24,9 @@
  */
 package org.kawanfw.sql.api.server.session;
 
-import java.io.File;
 import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
-import org.apache.commons.lang3.SystemUtils;
 
 /**
  * Default implementation of session management:
@@ -78,11 +75,6 @@ public class DefaultSessionConfigurator implements SessionConfigurator {
     @Override
     public String generateSessionId(String username, String database) {
 	String sessionId = sessionIdentifierGenerator.nextSessionId();
-
-	if (new File(SystemUtils.USER_HOME + File.separator + "aceql_fixed_session.txt").exists()) {
-	    sessionId = "64qssfsku57i99nkpjtap8hho5";
-	}
-
 	SessionInfo sessionInfo = new SessionInfo(sessionId, username,
 		database);
 	sessionInfoStore.put(sessionId, sessionInfo);
