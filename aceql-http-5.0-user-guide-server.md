@@ -864,7 +864,7 @@ It will display a JSON string and should display a status of `"OK"` and the curr
 ```json
 {
     "status": "OK",
-    "version": "AceQL HTTP v5.0 - 07-Apr-2020"
+    "version": "AceQL HTTP v5.0 - 08-Apr-2020"
 }         
 ```
 
