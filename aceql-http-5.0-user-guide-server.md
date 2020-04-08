@@ -4,7 +4,7 @@
 
 <img src="https://www.aceql.com/favicon.png" alt="AceQL HTTP Icon"/> 
 
-  * [Fundamentals](#fundamentals)
+   * [Fundamentals](#fundamentals)
       * [Overview](#overview)
       * [Technical operating environment](#technical-operating-environment)
    * [Download and Installation](#download-and-installation)
@@ -21,6 +21,7 @@
          * [SQL Firewall Managers Section](#sql-firewall-managers-section)
             * [The CsvRulesManager SQL Firewall Manager](#the-csvrulesmanager-sql-firewall-manager)
          * [SSL Configuration Section](#ssl-configuration-section)
+         * [Sample aceql-server.properties file](#sample-aceql-serverproperties-file)
       * [Starting/Stopping the AceQL Web Server from Linux/Unix](#startingstopping-the-aceql-web-server-from-linuxunix)
          * [Add your JDBC driver to the AceQL installation](#add-your-jdbc-driver-to-the-aceql-installation)
          * [Starting the AceQL Web Server](#starting-the-aceql-web-server)
@@ -476,6 +477,12 @@ To create an SSL Certificate, refer to:
 
 - Tomcat 8.5 [Prepare the Certificate Keystore.](http://tomcat.apache.org/tomcat-8.5-doc/ssl-howto.html#Prepare_the_Certificate_Keystore)
 - Oracle [JDK Security Tools](http://docs.oracle.com/javase/7/docs/technotes/tools/#security).
+
+### Sample aceql-server.properties file
+
+Here is a documented example of an aceql-server.properties file:
+
+[aceql-server.properties](https://www.aceql.com/rest/soft/5.0/src/aceql-server.properties). 
 
 ## Starting/Stopping the AceQL Web Server from Linux/Unix
 
