@@ -1,4 +1,4 @@
-# AceQL HTTP v5.0 - April 2020, 7
+# AceQL HTTP v5.0 - April 2020, 8
 
 # Quick Start Guide
 
@@ -336,7 +336,7 @@ The console will display the properties used, test that the `Connection` is esta
 
 ```bash
 [ACEQL HTTP START] Starting AceQL HTTP Web Server...
-[ACEQL HTTP START] AceQL HTTP Community v5.0 - 07-Apr-2020
+[ACEQL HTTP START] AceQL HTTP Community v5.0 - 08-Apr-2020
 [ACEQL HTTP START] Using properties file: 
 [ACEQL HTTP START]  -> I:\_dev_awake\aceql-http-main\aceql-http\conf\aceql-server.properties
 [ACEQL HTTP START] Setting System Properties:

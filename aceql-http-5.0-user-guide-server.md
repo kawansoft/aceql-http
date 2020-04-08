@@ -1,4 +1,4 @@
-# AceQL HTTP v5.0   - April 7,  2020
+# AceQL HTTP v5.0   - April 8,  2020
 
 # Server Installation and Configuration Guide  
 
@@ -245,7 +245,7 @@ Call the `aceql-server` script to display the AceQL version:
 It will display a line with all version info, like:
 
 ```
-AceQL HTTP Community v5.0 - 07-Apr-2020
+AceQL HTTP Community v5.0 - 08-Apr-2020
 ```
 
 
@@ -803,7 +803,7 @@ This option may be preferred by users who already have a Java EE servlet contain
 
 Install the files of installation directory `webapp/WEB-INF/lib` in the lib directory of your webapp.
 
-If your JavaEE servlet container is *not* Tomcat >=7, it may not contain the Tomcat JDBC Pool: add `webapp/WEB-INF/lib-tomcat/tomcat-jdbc-8.5.xx.jar` jar in the /lib directory of you webapp.
+If your JavaEE servlet container is *not* Tomcat >=7, it may not contain the Tomcat JDBC Pool: add `webapp/WEB-INF/lib-tomcat/tomcat-jdbc-8.5.xx.jar` jar in the /lib directory of your webapp.
 
 If you have coded your own Configurators, deploy the classes in the `/classes` directory of your webapp.
 
@@ -827,7 +827,8 @@ then your `web.xml` should contain the following code:
 <servlet>
     <servlet-name>aceql</servlet-name>
     <servlet-class>org.kawanfw.sql.servlet.ServerSqlManager</servlet-class>
-
+	<async-supported>true</async-supported>
+    
     <init-param>
         <param-name>properties</param-name>
         <param-value>c:\Users\Mike\aceql-server.properties</param-value>
@@ -835,7 +836,7 @@ then your `web.xml` should contain the following code:
 </servlet>
 
 <!—- Allows you to see immediately in servet container if servlet is OK or KO --> 
-< load-on-startup>1</load-on-startup >
+<load-on-startup>1</load-on-startup >
 
 <servlet-mapping>
     <!-- Note the trailing /* in url-pattern --> 

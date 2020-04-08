@@ -291,7 +291,7 @@ public class ResultSetWriter {
 		    debug("columnValueStr : " + columnValueStr);
 
 		    // Case we - maybe - have an URL:
-		    columnValueStr = urlFormater(resultSet, columnIndex, columnValueStr);
+		    //columnValueStr = urlFormater(resultSet, columnIndex, columnValueStr);
 
 		    // if (isCharacterType(columnType)) {
 		    // debugStringType(columnValueStr);

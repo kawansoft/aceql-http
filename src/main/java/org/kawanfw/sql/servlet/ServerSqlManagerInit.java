@@ -115,6 +115,27 @@ public class ServerSqlManagerInit {
 
 	try {
 	    // Previously created by Tomcat
+
+	    if (!TomcatSqlModeStore.isTomcatEmbedded()) {
+		String propertiesFileStr = config.getInitParameter("properties");
+
+		if (propertiesFileStr == null || propertiesFileStr.isEmpty()) {
+		    throw new DatabaseConfigurationException(Tag.PRODUCT_USER_CONFIG_FAIL
+			    + " AceQL servlet param-name \"properties\" not set. Impossible to load the AceQL Server properties file.");
+		}
+		File propertiesFile = new File(propertiesFileStr);
+
+		if (!propertiesFile.exists()) {
+		    throw new DatabaseConfigurationException(
+			    Tag.PRODUCT_USER_CONFIG_FAIL + " properties file not found: " + propertiesFile);
+		}
+
+		Properties properties = TomcatStarterUtil.getProperties(propertiesFile);
+
+		ThreadPoolExecutorStore threadPoolExecutorStore = new ThreadPoolExecutorStore(properties);
+		threadPoolExecutorStore.create();
+	    }
+
 	    threadPoolExecutor = ThreadPoolExecutorStore.getThreadPoolExecutor();
 
 	    if (!TomcatSqlModeStore.isTomcatEmbedded()) {
