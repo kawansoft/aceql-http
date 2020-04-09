@@ -395,7 +395,7 @@ AceQL provides several built-in (and ready to use without any coding)  SQL Firew
 | `DenyDdlManager`            | Manager that denies any DDL (Data Definition Language) call. |
 | `DenyExecuteUpdateManager`  | Manager that denies any update of the database. (The database will be accessed in read only mode). |
 | `DenyMetadataQueryManager`  | Manager that denies the use of the AceQL Metadata Query API. |
-| `DenyStatementClassManager` | manager that denies any call of he raw Statement Java class. (Calling Statements without parameters is forbidden). |
+| `DenyStatementClassManager` | Manager that denies any call of he raw `Statement` Java class. (Calling Statements without parameters is forbidden). |
 
 Only the following property must be defined per database name if you want to add SQL Firewall Managers:
 
