@@ -35,7 +35,7 @@ What's New:
   configuration may done entirely by defining values in the 
   aceql-server.properties file. 
   Sophisticated firewalling can be done through a CSV File without any coding.
-  Advanced usage is still possible through code injection with Java classes. 
+  Advanced usage is still possible through code injection using Java classes. 
   
 - The new authentication architecture allows to plug-and-play existing built-in
   authentication classes without any coding or code injection, just by defining
@@ -48,7 +48,7 @@ What's New:
 - The aceql-server.properties file has been reorganized and simplified.
 
 - JSON parser javax.json has been updated to 1.1.4. Tomcat base libraries
-  have been updated to 8.3.51 because of Security requirements.
+  have been updated to 8.3.53 because of Security requirements.
    
 
 AceQL HTTP Version 4.1 - 13-Feb-2020
