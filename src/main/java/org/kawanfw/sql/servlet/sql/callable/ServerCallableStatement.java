@@ -287,8 +287,10 @@ public class ServerCallableStatement {
 		    JsonGenerator gen = jf.createGenerator(out);
 		    gen.writeStartObject().write("status", "OK");
 
-		    ResultSetWriter resultSetWriter = new ResultSetWriter(request, out, username, sqlOrder, gen);
+		    ResultSetWriter resultSetWriter = new ResultSetWriter(request, username, sqlOrder, gen);
 		    resultSetWriter.write(rs);
+
+		    ServerSqlManager.writeLine(out);
 
 		    /*
 		     * KEEP THAT AS MODEL gen.writeStartArray("stored_procedure_out");
