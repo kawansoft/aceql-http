@@ -866,7 +866,7 @@ From now on, you can read the [Python Client SDK User Guide](https://www.aceql.c
 
 # From now on…
 
-You can read the [Server User Guide](https://www.aceql.com/DocDownload?doc=https://github.com/kawansoft/aceql-http/blob/master/aceql-http-5.0.1-user-guide-server.md). You will learn:
+You can read the [Server User Guide](https://github.com/kawansoft/aceql-http/blob/master/README.md). You will learn:
 
 - How to create a Connection Pool.
 - How to create a strong authentication on the server for your legitimate users.
