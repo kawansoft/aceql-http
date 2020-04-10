@@ -448,7 +448,8 @@ The CSV file contains the rules for accessing the tables, with semicolon for sep
 - `public` value may be used for the `username` column and means any username. At execution time: if a rule with `public` returns true for a CSV column, the rule supersedes other declared rules declared for specific users for the same CSV column.  
 - `all` value is allowed for `table` column and means any table. At execution time: If a rule with `all` returns true for a CSV column, the rule supersedes other specific rules declared for specific tables for the same CSV column. 
 
-  Here is an example of a documented CSV File: [sampledb_rules_manager.csv](http://www.aceql.com/rest/soft/5.0.1/src/sampledb_rules_manager.csv).
+
+Here is an example of a documented CSV File: [sampledb_rules_manager.csv](http://www.aceql.com/rest/soft/5.0.1/src/sampledb_rules_manager.csv).
 
 ### SSL Configuration Section
 
