@@ -29,8 +29,8 @@ AceQL HTTP Version 5.0.1 - 10-Apr-2020
 --------------------------------------
 
 Bugs fixed:
-- SELECT with more than 20Kb output could randomly fail, because of 
-  a bug in Glassfish javax.json JSON parser that inserts a \r\n at 
+- SELECT calls with more than 20Kb output could randomly fail, because 
+  of a bug in Glassfish javax.json JSON parser that inserts a \r\n at 
   each 20Kb output.
   This has been fixed by calling JsonGenerator.flush() on each
   SQL row dump.
