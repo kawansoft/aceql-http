@@ -468,7 +468,7 @@ The following properties are mandatory and must be defined:
 
 | **Mandatory Property Name** | **Property Role**                             |
 | --------------------------- | --------------------------------------------- |
-| `sslConnector.scheme`       | Scheme to  use. Must be set to "https"        |
+| `sslConnector.scheme`       | Scheme to  use. Must be set to `"https"`      |
 | `sslConnector.keystoreFile` | The file  containing the SSL/TLS certificates |
 | `sslConnector.keystorePass` | The keystore  password                        |
 | `sslConnector.keyPass`      | The certificate  password                     |
