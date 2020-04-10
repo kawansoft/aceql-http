@@ -1,31 +1,69 @@
-# AceQL HTTP v5.0.1 - April 2020, 10
+# AceQL HTTP v5.0.1   - April 10,  2020
 
-# Quick Start Guide
+# Server Installation and Configuration Guide  
 
-<img src="https://www.aceql.com/favicon.png" alt="AceQ HTTP Icon"/>
+<img src="https://www.aceql.com/favicon.png" alt="AceQL HTTP Icon"/> 
 
-   * [Overview](#overview)
-   * [Server Side Settings](#server-side-settings)
-      * [Create the sampledb database](#create-the-sampledb-database)
-      * [Linux/Unix Installation &amp; Server Startup](#linuxunix-installation--server-startup)
-         * [Download &amp; installation](#download--installation)
+   * [Fundamentals](#fundamentals)
+      * [Overview](#overview)
+      * [Technical operating environment](#technical-operating-environment)
+   * [Download and Installation](#download-and-installation)
+      * [Linux / Unix Installation](#linux--unix-installation)
          * [Update the PATH (Optional)](#update-the-path-optional)
-         * [Testing AceQL HTTP Web server installation](#testing-aceql-http-web-server-installation)
-         * [Configure JDBC parameters in aceql-server.properties file](#configure-jdbc-parameters-in-aceql-serverproperties-file)
-         * [Add your JDBC driver to AceQL installation](#add-your-jdbc-driver-to-aceql-installation)
-         * [Start the AceQL HTTP Web Server](#start-the-aceql-http-web-server)
-      * [Windows Installation &amp; Server Startup](#windows-installation--server-startup)
-         * [Add your JDBC driver to AceQL installation](#add-your-jdbc-driver-to-aceql-installation-1)
-         * [Configure JDBC parameters in aceql-server.properties file](#configure-jdbc-parameters-in-aceql-serverproperties-file-1)
-         * [Start the AceQL Web Server](#start-the-aceql-web-server)
-   * [Client Side](#client-side)
-      * [cURL](#curl)
-      * [C# Client SDK](#c-client-sdk)
-      * [Java Client SDK](#java-client-sdk)
-      * [Python Client SDK](#python-client-sdk)
-   * [From now on…](#from-now-on)
+         * [Testing server installation](#testing-server-installation)
+      * [Windows Installation](#windows-installation)
+   * [Standard Usage / Quickstart](#standard-usage--quickstart)
+      * [The AceQL Manager servlet](#the-aceql-manager-servlet)
+      * [The aceql-server.properties file](#the-aceql-serverproperties-file)
+         * [Tomcat JDBC Connection Pool Section](#tomcat-jdbc-connection-pool-section)
+         * [User Authentication Section](#user-authentication-section)
+            * [The WebServiceUserAuthenticator usage](#the-webserviceuserauthenticator-usage)
+         * [SQL Firewall Managers Section](#sql-firewall-managers-section)
+            * [The CsvRulesManager SQL Firewall Manager](#the-csvrulesmanager-sql-firewall-manager)
+         * [SSL Configuration Section](#ssl-configuration-section)
+         * [Sample aceql-server.properties file](#sample-aceql-serverproperties-file)
+      * [Starting/Stopping the AceQL Web Server from Linux/Unix](#startingstopping-the-aceql-web-server-from-linuxunix)
+         * [Add your JDBC driver to the AceQL installation](#add-your-jdbc-driver-to-the-aceql-installation)
+         * [Starting the AceQL Web Server](#starting-the-aceql-web-server)
+         * [Examples](#examples)
+            * [Starting the AceQL Web Server on port 9090](#starting-the-aceql-web-server-on-port-9090)
+            * [Starting the AceQL Web Server on port 9091](#starting-the-aceql-web-server-on-port-9091)
+         * [Using SSL from the client side](#using-ssl-from-the-client-side)
+         * [Stopping the AceQL Web Server](#stopping-the-aceql-web-server)
+         * [Linux: running the AceQL Web server as a service](#linux-running-the-aceql-web-server-as-a-service)
+      * [Starting/Stopping the AceQL WebServer from Windows](#startingstopping-the-aceql-webserver-from-windows)
+   * [Advanced Usage](#advanced-usage)
+      * [Development Environment](#development-environment)
+      * [AceQL Servlet Name Configuration](#aceql-servlet-name-configuration)
+      * [Advanced Connection Pool Management](#advanced-connection-pool-management)
+      * [Advanced Authentication Configuration](#advanced-authentication-configuration)
+      * [Tomcat HTTP Connector Configuration](#tomcat-http-connector-configuration)
+      * [ThreadPoolExecutor Configuration](#threadpoolexecutor-configuration)
+      * [Session Management](#session-management)
+         * [SessionConfigurator interface](#sessionconfigurator-interface)
+         * [Session management default implementation](#session-management-default-implementation)
+         * [Session management using JWT](#session-management-using-jwt)
+            * [Activating JwtSessionConfigurator](#activating-jwtsessionconfigurator)
+         * [Creating your own session management](#creating-your-own-session-management)
+      * [Advanced Firewall Configuration](#advanced-firewall-configuration)
+      * [Interacting with the JDBC Pool at runtime](#interacting-with-the-jdbc-pool-at-runtime)
+      * [Running the AceQL Web Server](#running-the-aceql-web-server)
+         * [Running the AceQL Web Server without Windows Desktop](#running-the-aceql-web-server-without-windows-desktop)
+         * [Starting/Stopping the AceQL WebServer from a Java program](#startingstopping-the-aceql-webserver-from-a-java-program)
+         * [Running AceQL HTTP in a Java EE servlet container](#running-aceql-http-in-a-java-ee-servlet-container)
+            * [Installation](#installation)
+            * [AceQL servlet configuration in web.xml](#aceql-servlet-configuration-in-webxml)
+         * [Testing the servlet configuration](#testing-the-servlet-configuration)
+   * [AceQL internals](#aceql-internals)
+      * [State management / Stateful Mode](#state-management--stateful-mode)
+      * [Data transport](#data-transport)
+         * [Transport format](#transport-format)
+         * [Content streaming and memory management](#content-streaming-and-memory-management)
+      * [Managing temporary files](#managing-temporary-files)
 
-# Overview
+# Fundamentals
+
+## Overview
 
 AceQL HTTP is a library of REST like APIs that allows you access to remote SQL databases over HTTP from any device that supports HTTP. This software has been designed to handle heavy traffic in production environments.
 
@@ -45,7 +83,7 @@ AceQL HTTP is authorized through an Open Source license: [AceQL Open Source Lice
 
 - The AceQL Web Server.
 
-- User configuration classes injected at runtime, these are server classes that ensure both security and configuration. Many built-in classes are provided and most configuration may be done without any coding.
+- Configuration Java classes injected at runtime. These are server classes that ensure both security and configuration. Many built-in classes are provided and most configuration may be done without any coding.
 
 - The AceQL Client SDKs for [C#](https://github.com/kawansoft/AceQL.Client) ,  [Java](https://github.com/kawansoft/aceql-http-client-sdk) and [Python](https://github.com/kawansoft/aceql-http-client-python) that allow you to wrap AceQL HTTP API calls using fluent code: 
 
@@ -98,784 +136,801 @@ AceQL HTTP is authorized through an Open Source license: [AceQL Open Source Lice
     ```
 
 
-The execution of each AceQL HTTP API statement is conditioned by optional rules, defined in configuration classes called "Configurators."
+The execution of each AceQL HTTP API statement is conditioned by optional rules, defined in properties files and built-in or programmed configuration classes.
 
-# Server Side Settings
+The AceQL Web Server embeds its own [Tomcat 8.5](http://tomcat.apache.org/tomcat-8.5-doc/) servlet container in order to run AceQL without any Java EE servlet container.
 
-## Create the sampledb database
+Note that AceQL can run inside any Java EE servlet container (see [Running AceQL HTTP in a Java EE servlet container)](#running-aceql-http-in-a-java-ee-servlet-container). 
 
-Download the database `sampledb` schema corresponding to your database engine: 
+**No Tomcat 8.5 expertise is required in order to configure and use the AceQL Web Server:**
 
-- [sampledb_mysq.txt](https://www.aceql.com/rest/soft/5.0.1/src/sampledb_mysql.txt )
-- [sampledb_postgresql.txt](https://www.aceql.com/rest/soft/5.0.1/src/sampledb_postgresql.txt)
-- [sampledb_ms_sql_serverl.txt](https://www.aceql.com/rest/soft/5.0.1/src/sampledb_ms_sql_server.txt)
-- [sampledb_oracle_database.txt](https://www.aceql.com/rest/soft/5.0.1/src/sampledb_oracle_database.txt)
+- All Tomcat configuration values are optional: AceQL uses Tomcat 8.5 default values if no user configuration is done.
+- You may only be required to read short portions of the Tomcat 8.5 user documentation for using SSL & Certificates.
 
+The AceQL Web Server consists of one Java jar. It is started by calling a Java class on the command line. All configuration elements are defined in a Java `.properties` file, named **aceql-server.properties** file in this document.
 
-For other databases engines, just tailor the file as indicated: [sampledb_other_databases.txt](https://www.aceql.com/rest/soft/5.0.1/src/sampledb_other_databases.txt)
+All communication between the client and the server uses HTTP/ HTTPS protocols. . 
 
-Then launch the script that will create the tables in a database
+This User Guide covers:
 
-## Linux/Unix Installation & Server Startup 
+-  **Standard Usage / Quickstart**: this part describes how to run through complete setup using only configuration files and CSV files.  (No programming, compiling, etc. is necessary.)
 
-AceQL requires the installation of Java version 8+.
+-  **Advanced Usage**: this part describes advanced setup and fine tuning. It includes powerful configuration and customization using injection code of  your own Java classes.
 
-### Download & installation
+## Technical operating environment
 
-Open a terminal and download with `Wget` 
+The AceQL HTTP server side is entirely written in Java, and functions identically under Microsoft Windows, Linux, and all versions of UNIX that support Java 8+,Servlet 3.1+ and JDBC 4.0+.
+
+The only required third party installation is a Java 8+.
+
+The following environments are supported in this version:
+
+| **Databases**                   |
+| ------------------------------- |
+| Actian Ingres 10+               |
+| IBM DB2  9.7+                   |
+| IBM  Informix 11.70+.           |
+| MariaDB  10.0+                  |
+| Microsoft  SQL Server 2008 R2+  |
+| MS Access  2010+                |
+| Oracle Database  11g Release 2+ |
+| Oracle  MySQL 5.5+              |
+| PostgreSQL  8.4.1+              |
+| Sybase  ASE 15.7+               |
+| Sybase  SQL Anywhere 12+        |
+| Teradata  Database 13+          |
+
+Notes:
+
+- All these databases have been intensively tested with AceQL.
+- The table designates the tested version. Prior versions *should* work correctly with their corresponding JDBC 4.0 driver.
+- AceQL will support all     subsequent versions of each database.
+
+# Download and Installation
+
+## Linux / Unix Installation 
+
+Open a terminal and download with Wget.
 
 ```bash
-$ wget https://www.aceql.com/rest/soft/5.0.1/download/aceql-http-5.0.1.run
+wget https://www.aceql.com/rest/soft/5.0.1/download/aceql-http-5.0.1.run
 ```
 
 If you get a certificate error message, do one of the following:
 
-1. If the problem is that a known root CA is missing and when you are using Ubuntu or Debian,  then you can solve the problem with this one line: `sudo apt-getinstall ca-certificates`. Then retry the `Wget` call.
-2. Retry the `Wget` call with `--no-check-certificate` at end of command line. Then check the PGP signature of the downloaded file using the corresponding `.asc` signature file available on [download page](https://www.aceql.com/download) using the PGP hyperlink.
+1. If the problem is that a known root CA is missing and when you are using Ubuntu or Debian,  then you can solve the problem with this one line: `sudo apt-getinstall ca-certificates`. Then retry the Wget call.
+2. Retry the Wget call with `--no-check-certificate` at end of command line. Then check the PGP signature of the downloaded file using the corresponding `.asc` signature file available on [download page](https://www.aceql.com/download) using the PGP hyperlink.
 
-In following lines we will assume that the Open Source edition is chosen. (Operating mode is the same for Pro edition).
+Make the file executable and then run it:
 
 ```bash
-chmod +x aceql-http-5.0.1.run
-./aceql-http-5.0.1.run 
+chmod+x aceql-http-5.0.1.run                                       
+./aceql-http-5.0.1.run
 ```
 
-This will create the `aceql-http-5.0.1` folder.
+This will create the `aceql-http-5.0.1` folder that you can move where you want.
 
-The full path to the `aceql-http-5.0.1` installation folder will be surnamed `ACEQL_HOME` in following text.
+The full path to the final `aceql-http-5.0.1` installation folder will be surnamed **ACEQL_HOME** in following text.
 
-Example: if you run `aceql-http-5.0.1.run` from `/home/mike`, then software is installed in
+Example: if you run `aceql-http-5.0.1.run` from `/home/mike`, then software is installed in `/home/mike/aceql-http-5.0.1` which is the value of **ACEQL_HOME.**
 
- `/home/mike/aceql-http-5.0.1` which is the value of `ACEQL_HOME`.
+### Update the PATH (Optional) 
 
-### Update the PATH (Optional)
+Open a shell session and make sure `java` binary is in the PATH by typing 
 
-Open a shell session and make sure java binary is in the PATH by typing  `Java –version` on the command line. 
+`Java –version` on the command line. 
+
+Add `java` to your PATH if the command does not display Java version. 
+
+Add to your PATH the path to the bin directory of aceql-http-5.0.1 installation:
+
+```bash
+$ PATH=$PATH:/path/to/aceql-http-5.0.1/bin/
+export PATH
+```
+
+### Testing server installation
+
+Open a shell session and make sure java binary is in the PATH by typing
+
+`Java –version` on the command line. 
 
 Add java to your PATH if the command does not display Java version.
 
-Add to your PATH the path to the bin directory of `aceql-http-5.0.1` installation:
+Call the `aceql-server` script to display the AceQL version:
 
-```bash
-$ PATH=$PATH:/path/to/aceql-http-5.0.1/bin/;export PATH
 ```
-
-### Testing AceQL HTTP Web server installation
-
- Call the `aceql-server` script to display the AceQL version:
-
-```bash
-$ aceql-server -version
+ $ aceql-server -version
 ```
 
 It will display a line with all version info, like:
 
 ```
-AceQL HTTP Community v5.0.1 - 10-Apr-2020
+AceQL HTTP Community v5.0.1 - 08-Apr-2020
 ```
 
-### Configure JDBC parameters in aceql-server.properties file
 
- The AceQL HTTP Web Server configuration is done in property file whose surname is 
 
-`aceql-server.properties`.
+## Windows Installation
 
-AceQL uses the default file `ACEQL_HOME/conf/aceql-server.properties`
-
-Edit `ACEQL_HOME/conf/aceql-server.properties` and go to the `"Tomcat JDBC Connection Pool Section"`. 
-
-Set the database name to the `databases` property:
-
-```ini
-# Database names separated by commas
-databases = sampledb
-```
-
-Change the 4 JDBC properties values accordingly to your JDBC Driver, your database URL, and your database username/password. Each property name must be prefixed with the database name and a dot:
-
-Example for PostgreSQL:
-
-```properties
-# PostgreSQL example
-sampledb.driverClassName= org.postgresql.Driver
-sampledb.url=jdbc:postgresql://localhost:5432/sampledb
-sampledb.username=user1  
-sampledb.password=password1
-```
-
-### Add your JDBC driver to AceQL installation 
-
-Drop you JDBC driver jar into `ACEQL_HOME/lib-jdbc` directory.
-
-### Start the AceQL HTTP Web Server
-
-We will use for our example the port 9090. You may use any port if 9090 is not free.
-
-```bash
-$ aceql-server -start -host localhost –port 9090
-```
-
-The console will display the properties used, test that the Connection is established on the server side and tell if everything is OK:
-
-```bash
-[ACEQL HTTP START] Starting AceQL HTTP Web Server...
-[ACEQL HTTP START] AceQL HTTP Community v5.0.1 - 10-Apr-2020
-[ACEQL HTTP START] Using properties file: 
-[ACEQL HTTP START]  -> /home/mike/aceql-http/conf/aceql-server.properties
-[ACEQL HTTP START] Setting System Properties:
-[ACEQL HTTP START] Creating ThreadPoolExecutor:
-[ACEQL HTTP START]  -> [corePoolSize: 100, maximumPoolSize: 200, unit: SECONDS, 
-[ACEQL HTTP START]  ->  keepAliveTime: 10, workQueue: ArrayBlockingQueue(50000)]
-[ACEQL HTTP START] Setting Default Connector base attributes:
-[ACEQL HTTP START]  -> maxThreads = 300
-[ACEQL HTTP START] Setting Tomcat JDBC Pool attributes for sampledb database:
-[ACEQL HTTP START]  -> driverClassName = org.postgresql.Driver
-[ACEQL HTTP START]  -> url = jdbc:postgresql://localhost:5432/sampledb
-[ACEQL HTTP START]  -> username = user1
-[ACEQL HTTP START]  -> password = ********
-[ACEQL HTTP START]  -> initialSize = 10
-[ACEQL HTTP START]  -> minIdle = 10
-[ACEQL HTTP START]  -> maxIdle = 50
-[ACEQL HTTP START]  -> maxActive = 50
-[ACEQL HTTP START]  -> rollbackOnReturn = true
-[ACEQL HTTP START] Testing DataSource.getConnection() for sampledb database:
-[ACEQL HTTP START]  -> Connection OK!
-[ACEQL HTTP START] Loading servlets:
-[ACEQL HTTP START]  -> Servlet defaultPoolsInfo [url-pattern: /default_pools_info] successfully loaded.
-[ACEQL HTTP START] Loading UserAuthenticator class:
-[ACEQL HTTP START]  -> org.kawanfw.sql.api.server.auth.DefaultUserAuthenticator
-[ACEQL HTTP START] Loading Database sampledb DatabaseConfigurator class:
-[ACEQL HTTP START]  -> org.kawanfw.sql.api.server.DefaultDatabaseConfigurator
-[ACEQL HTTP START] Loading Database sampledb SQLFirewallManager class: 
-[ACEQL HTTP START]   -> org.kawanfw.sql.api.server.firewall.DefaultSqlFirewallManager
-[ACEQL HTTP START] Loaded classes Status: OK.
-[ACEQL HTTP START] URL for client side: http://localhost:9090/aceql
-[ACEQL HTTP START] AceQL HTTP Web Server OK. Running on port 9090
-```
-
- Don’t take care of INFO warnings displays.
-
-If everything is OK, last line will display: 
-
-```bash
-[ACEQL HTTP START] AceQL HTTP Web Server OK. Running on port 9090.
-```
-
- If any, configuration errors are displayed with the tag
-
-```bash
-[ACEQL HTTP START FAILURE][USER CONFIGURATION]
-```
-
-We are now ready to send SQL requests from client side!
-
-## Windows Installation & Server Startup 
-
-AceQL requires the installation of Java version 8+ (64-bit only).
+[Download AceQL Windows Installer.](https://www.aceql.com/download)
 
 Because the software installs and runs a Windows Service, you must be logged as a Windows Administrator to install AceQL.
-
-Download [aceql-http-5.0.1-Setup-x64.exe](https://www.aceql.com/SoftwareDownload?software=AceQL-HTTP-5.0.1-Setup-x64.exe&version=5.0.1) 
 
 Run the installer.
 
 It will run AceQL at end of installation and display the Window:
 
-<img src="https://www.aceql.com/rest/soft/5.0.1/img/aceql_windows_gui_home.png" alt="AceQ HTTP GUI Main Windows"/>
+<img src="https://www.aceql.com/rest/soft/5.0.1/img/aceql_windows_gui_home.png" alt="AceQ HTTP GUI Main Windows"/> 
 
 **N.B:** Because of a bug in early versions of Java 9 on Windows, the interface will appear "ugly"  or "blurred" on Java 9 if you have increased Windows Screen Resolution Options to 125% or 150%. See https://goo.gl/PAVvrd for more info. Set back Windows Screen Resolution to 100% for clean display.
 
-### Add your JDBC driver to AceQL installation
+# Standard Usage / Quickstart 
 
-A recent PostgreSQL  JDBC driver is pre-installed. (We could not pre-install other vendor drivers due to license restrictions). Skip this paragraph if you are a PostgreSQL user.
+## The AceQL Manager servlet
 
-In order to install your JDBC Driver:
+All HTTP commands sent by the client side are received by the AceQL Manager [servlet](http://en.wikipedia.org/wiki/Java_Servlet). The AceQL Manager servlet then: 
 
-1. Quit completely AceQL with `Ctrl-Q` (or `File` menu & `Quit` item).
-2. Add your JDBC Driver to your `CLASSPATH` or copy it to the `\lib-jdbc` subdirectory of the main installation directory.
-3. Restart AceQL. Then verify that your JDBC Driver is in your current `CLASSPATH` with the `Display CLASSPATH` button. 
+- Authenticates the client call
+- Extracts a JDBC Connection from the connection pool 
+- Analyzes the JDBC statement that was received
+- Executes the statement if the  JDBC statement matches the rules defined by the SQL Firewall Managers (see below)
+- Sends the result of the statement back to the client side
 
-### Configure JDBC parameters in aceql-server.properties file 
+## The aceql-server.properties file
 
- The AceQL HTTP Web Server configuration is done in property file whose surname is  `aceqlserver.properties`.
+Most AceQL configuration is carried out by defining properties in the `aceql-server.propertie`  file, except the hostname and port, which are passed as start parameters.
 
- A default prefilled `aceql-server.properties` file is set on in the interface
+The file is organized in Sections.  Only the first Section must be configured in order to start the AceQL Manager. The Sections 2 to 4 allow to secure Aceql and are optional . (The subsequent Sections are covered later in Advanced Usage):
 
-Click `Edit` button to change `aceql-server.properties` content and go to the:
+1. **Tomcat JDBC Connection Pool Section**.
+2. User Authentication Section.
+3. SQL Firewall Managers Section.
+4. SSL Configuration Section.
 
- `"Tomcat JDBC Connection Pool Section"`.
+### Tomcat JDBC Connection Pool Section
 
-Set the database name to the databases property:
+This section allows you to define: 
+
+1. The names of the databases to use.
+2. The JDBC parameters used to build the embedded [The Tomcat 8.5 JDBC Connection Pool](http://tomcat.apache.org/tomcat-8.5-doc/jdbc-pool.html) for each database. 
+
+
+The databases are defined with the databases property. If there are more than one database, separate each name with a comma:
 
 ```properties
-# Databasenames separated by commas
-databases = sampledb
+# Database names separated by commas
+databases = my_database1, my_database2 
 ```
 
-Change the 4 JDBC properties values accordingly to your JDBC Driver, your database URL, and your database username/password. Each property name must be prefixed with the database name and a dot.
+Only the following four properties must be defined per database name if you want to use the Tomcat JDBC Connection Pool: 
 
-Example for PostgreSQL:
+| **Property**      | **Value**                                                    |
+| ----------------- | ------------------------------------------------------------ |
+| `driverClassName` | The fully qualified Java class name of the JDBC driver to be used. |
+| `url`             | The  connection URL to be passed to our JDBC driver to establish a connection. |
+| `username`        | The  connection username to be passed to our JDBC driver to establish a  connection. |
+| `password`        | The  connection password to be passed to our JDBC driver to establish a  connection. |
+
+Each property must be prefixed with the associated database name defined in databases property and a dot.
+
+Example :
 
 ```properties
-# PostgreSQL example
-sampledb.driverClassName= org.postgresql.Driver
-sampledb.url=jdbc:postgresql://localhost:5432/sampledb
-sampledb.username=user1  
-sampledb.password=password1
+# Database names separated by commas
+databases = my_database1, my_database2 
+
+# Mandatory JDBC properties:
+my_database1.driverClassName = org.postgresql.Driver
+my_database1.url= jdbc:postgresql://localhost:5432/sampledb 
+my_database1.username= user1  
+my_database1.password= password1 
+
+my_database2.driverClassName = oracle.jdbc.driver.OracleDriver
+my_database2.url= jdbc:oracle:thin:my_database2@//localhost:1521/XE 
+my_database2.username= user2 
+my_database2.password= password2
 ```
 
-Leave the default **localhost** value for the Host field.
+You may add other properties supported by Tomcat JDBC Connection Pool,
 
-You may set any port value for the `Port` field if port 9090 is not free on your machine.
+as defined in [Common Attributes](http://tomcat.apache.org/tomcat-8.5-doc/jdbc-pool.html#Common_Attributes)  and in [Enhanced Attributes](http://tomcat.apache.org/tomcat-8.5-doc/jdbc-pool.html#Tomcat_JDBC_Enhanced_Attributes).
 
-### Start the AceQL Web Server
+Note: It is not mandatory to use Tomcat JDBC Connection Pool. If you want to use another preferred Connection Pool system, just comment the `driverClassName` property. Implementing another Connection Pool system is described in [Advanced Connection Pool Management](#advanced-connection-pool-management).
 
-Click on `Start Server  `. This will open a console.
+### User Authentication Section 
 
-The console will display the properties used, test that the `Connection` is established on the server side and tell if everything is OK:
+This section allows to define how to authenticate a remote use client that connects to the AceQL Server.
+
+Authentication is defined through the injection of  an "User Authenticator", a Java class that is injected at AceQL Server startup. It is a built-in or user-developed Java class that implements the `UserAuthenticator` interface built in AceQL.  
+
+The `login` method of the class is called when a remote client first connects to the AceQL and pass it's credentials (username and password). If the `login` method returns `true`, user access is granted, otherwise the user access is denied.
+
+AceQL provides 5 built-in (and ready to use without any coding) User Authenticators:
+
+| User Authenticator Name       | Role                                                         | Parameters                                    |
+| ----------------------------- | ------------------------------------------------------------ | --------------------------------------------- |
+| `LdapUserAuthenticator`       | Authenticates the remote client (username, password) against a LDAP server. | URL of the LDAP server                        |
+| `SshUserAuthenticator`        | Authenticates the remote client (username, password) against a SSH server. | IP or host & port of the SSH server           |
+| `WebServiceUserAuthenticator` | Authenticates the remote client (username, password) against a Web service. (See below). | URL of the Web service  & connection timeout. |
+| `WindowsUserAuthenticator`    | Authenticates the remote client (username, password) against the Windows server on which the AceQL server is running. | The Windows domain (optional).                |
+
+Just select in the `aceql-server.properties` section the  `userAuthenticatorClassName` to use, and fill the required parameters.
+
+All the rest will be done automatically once the AceQL server is started.
+
+#### The WebServiceUserAuthenticator usage
+
+AceQL allows to authenticate remote client users against a Web service that is  developed and deployed on you web infrastructure by your organization. This allows you to develop or use an existing a specific authentication program that is decoupled from AceQL. You can thus use whatever technology stack to authenticate remote client users, and wrap it in a Web service that is called by AceQL when a remote client user wants to authenticate.
+
+The Web service must just implement these features:
+
+- It must accept the 2 POST parameters `username` and `password`.
+
+ - It must return either:
+    - The JSON string `{"status"="OK"}` if the authentication succeeds.
+   - The JSON string `{"status"="FAIL"}` if the authentication fails.
+
+### SQL Firewall Managers Section
+
+The SQL Firewall Managers Section allows to define SQL firewall rulesets to use for each database.
+
+The rulesets are defines through one or more "SQL Firewall Managers",  Java classes that are injected at AceQL Server startup. A SQL Firewall Manager It a built-in or user-developed Java class that implements the   [SqlFirewallManager](https://www.aceql.com/rest/soft/5.0.1/javadoc/org/kawanfw/sql/api/server/firewall/SqlFirewallManager.html) interface built in AceQL.  
+
+A `SqlFirewallManager`concrete implementation allows to: 
+
+- Define if a client user has the right to call a `Statement.executeUpdate` (i.e. call a statement that updates the database).
+- Define if a client user has the right to call a raw `Statement` that is not a `PreparedStatement`.
+- Define if a client user has the right to call a the AceQL Metadata API.
+- Define a specific piece of Java code to analyze the source code of the SQL statement before allowing or not it's execution.
+
+Multiple `SqlFirewallManager` may be defined and chained. 
+
+AceQL provides several built-in (and ready to use without any coding)  SQL Firewall Managers:
+
+| SQL Firewall Manager Name   | Details                                                      |
+| --------------------------- | ------------------------------------------------------------ |
+| `CsvRulesManager`           | Manager that apply rules written in a CSV file. (See below). |
+| `DenyDclManager`            | Manager that denies any DCL (Data Control Language) call.    |
+| `DenyDdlManager`            | Manager that denies any DDL (Data Definition Language) call. |
+| `DenyExecuteUpdateManager`  | Manager that denies any update of the database. (The database will be accessed in read only mode). |
+| `DenyMetadataQueryManager`  | Manager that denies the use of the AceQL Metadata Query API. |
+| `DenyStatementClassManager` | Manager that denies any call of he raw `Statement` Java class. (Calling Statements without parameters is forbidden). |
+
+Only the following property must be defined per database name if you want to add SQL Firewall Managers:
+
+`sqlFirewallManagerClassNames`.
+
+`SqlFirewallManager` may be chained in property value by separating class names by a comma.  
+When `SqlFirewallManager` classes are chained, an AND condition is applied to all the `SqlFirewallManager` execution conditions in order to compute final allow.
+For example, the `allowExecuteUpdate()` of each chained `SqlFirewallManager` instance must return true in order to allow updates of the database.
+
+The following example defines two built in firewalls to chain for the `sampledb` database:
+ - First `DenyDdlManager` will deny to pass DDL statements such as
+    DROP, CREATE TABLE, etc.
+ - Second`DenyExecuteUpdateManager` will deny write access to database,
+
+```properties
+sampledb.sqlFirewallManagerClassNames=\
+    DenyDclManager,\
+    DenyExecuteUpdateManager
+```
+
+After AceQL server restart, remote clients won't be allowed to execute DDL statements or to update the database.
+
+#### The CsvRulesManager SQL Firewall Manager
+
+The [CsvRulesManager](https://www.aceql.com/rest/soft/5.0.1/javadoc/org/kawanfw/sql/api/server/firewall/CsvRulesManager.html) manager allows to define detailed rules just using a CSV file.
+
+It checks each SQL request against the content of a CSV File. The CSV file is loaded in memory at AceQL server startup. 
+
+The name of the CSV file that will be used by a database is:  `<database>_rules_manager.csv`, where `<database>` is the name of the database declared in the `aceql.properties` files.
+The file must be located in the same directory as the  `aceql.properties` file used when starting the AceQL server.
+
+The CSV file contains the rules for accessing the tables, with semicolon for separator:  
+
+- First line contains the element names:  
+
+   `username;table;delete;insert;select;update;optional comments`
+
+- Subsequent lines contain the rules, with the values for each element:  
+  - `username`: AceQL username of the connected client.
+  - `table`: the table name to access. Name must not include dots and prefixes.
+  - `delete`: `true` if the username has the right to delete rows of the table, else `false`.
+  - `insert`: `true` if the username has the right to insert rows in the table, else `false`.
+  - `select`: `true` if the username has the right to select rows of the table, else `false`.
+  - `update`: `true` if the username has the right to update rows of the table, else `false`.
+  - Optional comments for the rule.
+
+
+ Note that:  
+
+- `public` value may be used for the `username` column and means any username. At execution time: if a rule with `public` returns true for a CSV column, the rule supersedes other declared rules declared for specific users for the same CSV column.  
+- `all` value is allowed for `table` column and means any table. At execution time: If a rule with `all` returns true for a CSV column, the rule supersedes other specific rules declared for specific tables for the same CSV column. 
+
+  Here is an example of a documented CSV File: [sampledb_rules_manager.csv](http://www.aceql.com/rest/soft/5.0.1/src/sampledb_rules_manager.csv).
+
+### SSL Configuration Section
+
+This section is optional. It allows you to configure the [Tomcat  HTTP Connector](http://tomcat.apache.org/tomcat-8.5-doc/config/http.html) in order to use SSL when calling AceQL Manager Servlet from the client side. 
+
+It also allows you to define the SSL Certificate to be used.
+
+Set the `SSLEnabled` property to true, in order to say that the HTTP Connector will accept SSL calls from client side.
+
+Each property must be prefixed by `sslConnector`.
+
+*Note: If `SSLEnabled` is set to `true`, AceQL HTTP Web server will accept only SSL connections, i.e. a non SSL call from client side with `http` scheme will fail.*
+
+To define SSL HTTP Connector attribute values, refer to the Tomcat 8.5 [SSL Support](http://tomcat.apache.org/tomcat-8.5-doc/config/http.html#SSL_Support) documentation. 
+
+The following properties are mandatory and must be defined:
+
+| **Mandatory Property Name** | **Property Role**                             |
+| --------------------------- | --------------------------------------------- |
+| `sslConnector.scheme`       | Scheme to  use. Must be set to `"https"`      |
+| `sslConnector.keystoreFile` | The file  containing the SSL/TLS certificates |
+| `sslConnector.keystorePass` | The keystore  password                        |
+| `sslConnector.keyPass`      | The certificate  password                     |
+
+To create an SSL Certificate, refer to:
+
+- Tomcat 8.5 [Prepare the Certificate Keystore.](http://tomcat.apache.org/tomcat-8.5-doc/ssl-howto.html#Prepare_the_Certificate_Keystore)
+- Oracle [JDK Security Tools](http://docs.oracle.com/javase/7/docs/technotes/tools/#security).
+
+### Sample aceql-server.properties file
+
+Here is a documented example of an aceql-server.properties file:
+
+[aceql-server.properties](https://www.aceql.com/rest/soft/5.0.1/src/aceql-server.properties). 
+
+## Starting/Stopping the AceQL Web Server from Linux/Unix
+
+### Add your JDBC driver to the AceQL installation
+
+Before starting the AceQL Web Server, drop you JDBC driver jar into
+
+`ACEQL_HOME/lib-jdbc directory` or add it to the Java CLASSPATH.
+
+### Starting the AceQL Web Server
+
+Open a shell and type: 
 
 ```bash
-[ACEQL HTTP START] Starting AceQL HTTP Web Server...
-[ACEQL HTTP START] AceQL HTTP Community v5.0.1 - 10-Apr-2020
-[ACEQL HTTP START] Using properties file: 
-[ACEQL HTTP START]  -> I:\_dev_awake\aceql-http-main\aceql-http\conf\aceql-server.properties
-[ACEQL HTTP START] Setting System Properties:
-[ACEQL HTTP START] Creating ThreadPoolExecutor:
-[ACEQL HTTP START]  -> [corePoolSize: 100, maximumPoolSize: 200, unit: SECONDS, 
-[ACEQL HTTP START]  ->  keepAliveTime: 10, workQueue: ArrayBlockingQueue(50000)]
-[ACEQL HTTP START] Setting Default Connector base attributes:
-[ACEQL HTTP START]  -> maxThreads = 300
-[ACEQL HTTP START] Setting Tomcat JDBC Pool attributes for sampledb database:
-[ACEQL HTTP START]  -> driverClassName = org.postgresql.Driver
-[ACEQL HTTP START]  -> url = jdbc:postgresql://localhost:5432/sampledb
-[ACEQL HTTP START]  -> username = user1
-[ACEQL HTTP START]  -> password = ********
-[ACEQL HTTP START]  -> initialSize = 10
-[ACEQL HTTP START]  -> minIdle = 10
-[ACEQL HTTP START]  -> maxIdle = 50
-[ACEQL HTTP START]  -> maxActive = 50
-[ACEQL HTTP START]  -> rollbackOnReturn = true
-[ACEQL HTTP START] Testing DataSource.getConnection() for sampledb database:
-[ACEQL HTTP START]  -> Connection OK!
-[ACEQL HTTP START] Loading servlets:
-[ACEQL HTTP START]  -> Servlet defaultPoolsInfo [url-pattern: /default_pools_info] successfully loaded.
-[ACEQL HTTP START] Loading UserAuthenticator class:
-[ACEQL HTTP START]  -> org.kawanfw.sql.api.server.auth.DefaultUserAuthenticator
-[ACEQL HTTP START] Loading Database sampledb DatabaseConfigurator class:
-[ACEQL HTTP START]  -> org.kawanfw.sql.api.server.DefaultDatabaseConfigurator
-[ACEQL HTTP START] Loading Database sampledb SQLFirewallManager class: 
-[ACEQL HTTP START]   -> org.kawanfw.sql.api.server.firewall.DefaultSqlFirewallManager
-[ACEQL HTTP START] Loaded classes Status: OK.
-[ACEQL HTTP START] URL for client side: http://localhost:9090/aceql
+$ aceql-server -start -host <hostname> -port <port number> -properties <file>
+```
+
+where:
+
+- `-host <hostname>` hostname of the Web server
+
+- `-port <port number>`  port number of the Web server. Defaults to 9090
+
+- `-properties <file>`  properties file to use for this SQL Web server Session. Defaults to `ACEQL_HOME/conf/aceql-server.properties`.
+
+
+The console will display the properties used and will end with this line if everything is OK (assuming you choose 9090 for port.)
+
+```bash
 [ACEQL HTTP START] AceQL HTTP Web Server OK. Running on port 9090
 ```
 
- If everything is OK, last line will display: 
+If configuration errors occur, they are displayed with the tag 
 
-```bash
-[ACEQL HTTP START] AceQL HTTP Server OK. Running on port 9090.
+```
+[ACEQL HTTP START FAILURE] - USER CONFIGURATION FAILURE]
 ```
 
-If any, configuration errors are displayed with the tag:
+### Examples
 
-```bash
-[ACEQL HTTP START FAILURE][ USER CONFIGURATION]
+#### Starting the AceQL Web Server on port 9090
+
+```bas
+$ aceql-server -start -host localhost
 ```
 
- We are now ready to send SQL requests from client side!
+The URL to use on the client side will be: `http://localhost:9090/aceql` 
 
-#  Client Side
+assuming the AceQL Manager Servlet Section contains the following line: 
 
-AceQL can be accessed from client side:
-
-- **Using any command line tool to make HTTP calls**. We will provide examples with [cURL](https://curl.haxx.se/).
-
-
-- **Using the C# Client SDK with C#** SQL regular syntax, same as with SQL Server Client  classes. The C# Client SDK wraps all http communications aspects. Jump to [C# Client SDK](#c-client-sdk).
-- **Using the Java Client SDK**  that allows regular JDBC calls and wraps all HTTP communications aspects. Jump to [Java  Client SDK](#java-client-sdk).
-- **Using the Python Client SDK** that allows regular [DB API 2.0](https://www.python.org/dev/peps/pep-0249/) SQL calls and wraps all HTTP communications aspects. Jump to [Python Client SDK](#python-client-sdk).
-- Using  any other language that supports HTTP GET & POST calls. 
-
-## cURL 
-
-So via cURL we connect to a database `sampledb` with the identifiers `(MyUsername, MySecret)`:
-
-```bash
-$ curl --data-urlencode "password=MySecret" \
- http://localhost:9090/aceql/database/sampledb/username/MyUsername/connect
+```properties
+aceQLManagerServletCallName=aceql 
 ```
 
-le/username/MyUsername/connect
-
- The command returns a JSON stream with a unique session identifier and a connection identifier:
+#### Starting the AceQL Web Server on port 9091
 
 ```bash
-{                                             
-   "status":"OK",                            
-   "session_id":"mn7andp2tt049iaeaskr28j9ch"
-   "connection_id":"1628176139"
-}
+$ aceql-server -start -host www.acme.org -port 9091
 ```
 
-On the server side, a JDBC connection is extracted from the connection pool created by the server at startup. The connection will remain ours during the session.
+The URL to use on the client side will be: `http://www.acme.org:9091/aceql` 
 
-We will use the session identifier to authenticate all subsequent calls.
+assuming the AceQL Manager Servlet Section contains the following line:
 
-We insert a customer into the database:
+```properties
+aceQLManagerServletCallName=aceql 
+```
+
+### Using SSL from the client side
+
+Assuming you have enabled SSL and defined a Certificate in the 
+
+`aceql-server.properties` file, the URL to use on the client side will be:
+
+`https://www.acme.org:9091/aceql`  
+
+### Stopping the AceQL Web Server
+
+To stop a running instance of the AceQL Web Server:
 
 ```bash
-$ curl --data-urlencode \
- "sql=insert into customer values (1,'Sir', 'Doe', 'John', '1 Madison Ave', 'New York', 'NY  10010', NULL)" \ 
- http://localhost:9090/aceql/session/mn7andp2tt049iaeaskr28j9ch/execute_update
+$ aceql-server-stop -port <port number>
 ```
 
-Which returns:
+where:
 
-```bash
-{                    
-   "status":"OK",  
-   "row_count":1    
-}                   
+`-port <port number>`  port number of the Web server. Defaults to 9090
+
+### Linux: running the AceQL Web server as a service
+
+The `aceqlhttp` wrapper allows to run AceQL program as a Linux service.
+
+- Click [here](https://www.aceql.com/rest/soft/5.0.1/src/aceqlhttp.sh) to download `aceqlhttp.sh`
+- Copy aceqlhttp.sh to `/etc/init.d/aceqlhttp` (requires root privilege). 
+- `sudo chmod +x /etc/init.d/aceqlhttp`
+- Then edit `/etc/init.d/aceqlhttp` and:
+  - Modify JAVA_HOME to the path of you Java installation.
+  - Modify ACEQL_HOME to the path of your AceQL installation.
+  - Modify ACEQL_HOST and ACEQL_PORT with your hostname and port.
+  - Modify CLASSPATH if you plan to use a Database Configurator (See [Database Configurators](#database-configurators)).
+
+Then: 
+
+- Test that it runs: `sudo service aceqlhttp start`
+- Test that it stop: `sudo service aceqlhttp stop`
+- Test that it restarts: `sudo service aceqlhttp restart`
+
+
+Then check the content of the log file defined by `LOG_PATH_NAME` and which defaults to: `/var/log/aceqlhttp.out`.
+
+## Starting/Stopping the AceQL WebServer from Windows
+
+Server maybe started within the current JVM, or as a Windows Service.
+
+If you wish to run the AceQL HTTP Server as a Windows Service, it is highly recommended to test your configuration by starting once the server in Standard Mode.
+
+The running options are fully described in the user interface help.
+
+# Advanced Usage
+
+## Development Environment
+
+Setting up a development environment will allow you to develop your own Java classes that will be injected at runtime.
+
+Create a “Server” project and add the jars of the:
+
+- `<installation-directory>\AceQL\lib-server subdirectory & <installation-directory>\AceQL\lib-jdbc` to your development CLASSPATH .
+
+Or for Maven users:
+
+```xml
+<groupId>com.aceql</groupId>
+<artifactId>aceql-http</artifactId>
+<version>5.0.1</version>
+```
+## AceQL Servlet Name Configuration
+
+Thie AceQL Manager servlet Section in the `aceql-server.proprties` file allows you to define the name of the AceQL SQL Manager Servlet to call from the client side. The default name is `aceql`. It is the name that will be used in the URL by client calls:
+
+```properties
+aceQLManagerServletCallName=aceql
 ```
 
-We view the inserted customer:
+## Advanced Connection Pool Management
 
-```bash
-$ curl \
- --data-urlencode "sql=select * from customer" \
- http://localhost:9090/aceql/session/mn7andp2tt049iaeaskr28j9ch/execute_query
+You may define your own preferred connection pool implementation, instead of using the default Tomcat JDBC Connection Pool.
+
+This is done through your own implementation of the [DatabaseConfigurator](http://www.aceql.com/rest/soft/5.0.1/javadoc/org/kawanfw/sql/api/server/DatabaseConfigurator.html) interface: overload the `DatabaseConfigurator.getConnection()` method in your concrete class implementation.
+
+Your concrete implementations is passed to the AceQL as properties of the **Database Configurators Section** in the `aceql-server.properties` file, as described in the section:
+
+- The  `databaseConfiguratorClassName` property lets you define your concrete implementation of `DatabaseConfigurator`.
+- You `DatabaseConfigurator` classes must be added to the CLASSPATH before the start of the AceQL Server.
+
+ Instances are loaded using a non-args constructor.
+
+## Advanced Authentication Configuration
+
+in order to give access access to remote client users to the AceQL server, you may develop entirely your own authentication mechanism. This is done through your own implementation of the [UserAuthenticator](https://www.aceql.com/rest/soft/5.0.1/javadoc/org/kawanfw/sql/api/server/auth/UserAuthenticator.html) interface: overload the login method `UserAuthenticator.login()` in your concrete class implementation.
+
+Your concrete implementations is passed to the AceQL as properties of the **User Authentication Section**  in the `aceql-server.properties` file, as described in the section
+
+- The  **userAuthenticatorClassName** property lets you define your concrete implementation of `UserAuthentication`.
+- You `UserAuthentication`classes must be added to the CLASSPATH before the start of the AceQL Server.
+
+ Instances are loaded using a non-args constructor.
+
+## Tomcat HTTP Connector Configuration 
+
+[Tomcat  HTTP Connectors](http://tomcat.apache.org/tomcat-8.5-doc/config/http.html) allow fine tuning of Tomcat 8.5.
+
+It is possible to define properties for a unique HTTP Connector that will either accept HTTP or secured HTTPS calls. The properties must be defined in the **HTTP Connector Attributes Section.**
+
+This section is optional. If no value is defined, default Tomcat values will be used for the default HTTP Connector. 
+
+You may define all [attributes](http://tomcat.apache.org/tomcat-8.5-doc/config/http.html#Attributes) defined in the [Tomcat  HTTP Connector](http://tomcat.apache.org/tomcat-8.5-doc/config/http.html) documentation, except SSL attributes that must be defined in the **SSL Configuration Section**.
+
+Each property must be prefixed by `connector`.
+
+```properties
+# Example: Change default maxThreads from 200 to 300
+connector.maxThreads=300  
 ```
 
-This returns the JSON stream:                                
-
-```bash
-{  
-    "status":"OK",                                               
-  	"query_rows":[                                                 
-      {                                                          
-          "row_1":[                                              
-              {                                                   
-                  "customer_id":1                                
-              },                                                   
-              {                                                   
-                  "customer_title":"Sir "                         
-              },                                                   
-              {                                                   
-                  "fname":"John"                                   
-              },                                                   
-              {                                                   
-                  "lname":"Doe"                                   
-              },                                                   
-              {                                                   
-                  "addressline":"1600 Pennsylvania Ave NW"         
-              },                                                   
-              {                                                   
-                  "town":"Washington"                             
-              },                                                   
-              {                                                   
-                  "zipcode":"DC 20500  "                           
-              },                                                   
-              {                                                   
-                  "phone":"NULL"                                   
-              }                                                   
-          ]                                                       
-      }                                                           
-  ],                                                               
-  "row_count":1     
-}
-```
-Let’s update our customer using a prepared statement:
-
-```bash
-$ curl --data"prepared_statement=true" \
- --data "param_type_1=VARCHAR&param_value_1=Jim" \
- --data "param_type_2=INTEGER&param_value_2=1"\
- --data-urlencode"sql=update customer set fname=? where customer_id=?" \
- http://localhost:9090/aceql/session/mn7andp2tt049iaeaskr28j9ch/\
- execute_update
-```
-
-Which returns:
-
-```bash
-{                    
-   "status":"OK",  
-   "row_count":1    
-}      
-```
-
- And now we query back our customer and ask to GZIP the result:
-
-```bash
-$ curl \
- --data"gzip_result=true" \
- --data-urlencode \ 
- "sql=select customer_id, customer_title,fname from customer" \
- http://localhost:9090/aceql/session/mn7andp2tt049iaeaskr28j9ch/\
- execute_query>result.gzip
-```
-
- And we end with a clean close of our session:
-
-```bash
-$ curl \
- http://localhost:9090/aceql/session/mn7andp2tt049iaeaskr28j9ch/disconnect
-```
-
-On the server side, the authentication info is purged and the JDBC connection is released in the pool. (A server thread regularly releases phantom connections that were not closed from the client side.)
-
-From now, you can read the [API User Guide](https://www.aceql.com/DocDownload?doc=https://github.com/kawansoft/aceql-http/blob/master/aceql-http-5.0.1-user-guide-api.md) to learn how to:
-
-- Query or modify the `Connection` properties.
-- Create SQL transactions.
-- Insert Blobs in the database.
-- Retrieve Blobs from the database.
-
-## C# Client SDK 
-
-1. Create the “AceQL.MyRemoteConnection” Windows Classic Desktop Console App in Visual Studio. 
-
-2. Install the [AceQL.Client](https://www.nuget.org/packages/AceQL.Client) package with NuGet.
-
-3. Download this C# source file: [MyRemoteConnection.cs](https://www.aceql.com/rest/soft/5.0.1/src/MyRemoteConnection.cs). Then insert it in your project. 
-
-4. The  connection to the remote database is created  using `AceQLConnection` class and passing the URL of the AceQL Servlet Manager of your configuration: 
-
-   ```C#
-       /// <summary>
-       /// RemoteConnection Quick Start client example.
-       /// Creates a Connection to a remote database and open it.
-       /// </summary>
-       /// <returns>The connection to the remote database</returns>
-       /// <exception cref="AceQLException">If any Exception occurs.</exception>
-       public static async Task<AceQLConnection> ConnectionBuilderAsync()
-       {
-           // Port number is the port number used to start the Web Server:
-           string server = "https://www.aceql.com:9443/aceql";
-           string database = "sampledb";
-
-           string connectionString = $"Server={server}; Database={database}";
-
-           // (username, password) for authentication on server side.
-           // No authentication will be done for our Quick Start:
-           string username = "MyUsername";
-           char[] password = { 'M', 'y', 'S', 'e', 'c', 'r', 'e', 't' };
-
-           AceQLConnection connection = new AceQLConnection(connectionString)
-           {
-               Credential = new AceQLCredential(username, password)
-           };
-
-           // Opens the connection with the remote database.
-           // On the server side, a JDBC connection is extracted from the connection 
-           // pool created by the server at startup. The connection will remain ours 
-           // during the session.
-           await connection.OpenAsync();
-
-           return connection;
-       }
-   ```
-
-5. Build and run. It will insert a new `customer` and a new `orderlog`:
-
-   ```C#
-       /// <summary>
-       /// Example of 2 INSERT in the same transaction.
-       /// </summary>
-       /// <param name="customerId">The customer ID.</param>
-       /// <param name="itemId">the item ID.</param>
-       /// <exception cref="AceQLException">If any Exception occurs.</exception>
-       public async Task InsertCustomerAndOrderLogAsync(int customerId, int itemId)
-       {
-           // Create a transaction
-           AceQLTransaction transaction = await connection.BeginTransactionAsync();
-
-           string sql = "insert into customer values " + "" +
-               "(@parm1, @parm2, @parm3, @parm4, @parm5, @parm6, @parm7, @parm8)";
-
-           AceQLCommand command = new AceQLCommand(sql, connection);
-           try
-           {
-               command.Parameters.AddWithValue("@parm1", customerId);
-               command.Parameters.AddWithValue("@parm2", "Sir");
-               command.Parameters.AddWithValue("@parm3", "Doe");
-               command.Parameters.AddWithValue("@parm4", "John");
-               // Alternate syntax
-               command.Parameters.Add(new AceQLParameter("@parm5", "1 Madison Ave"));
-               command.Parameters.AddWithValue("@parm6", "New York");
-               command.Parameters.AddWithValue("@parm7", "NY 10010");
-               command.Parameters.Add(new AceQLParameter("@parm8", AceQLNullType.VARCHAR));
-
-               await command.ExecuteNonQueryAsync();
-
-               sql = "insert into orderlog values " +
-                           "(@customer_id, @item_id, @description, " +
-                               "@item_cost, @date_placed, @date_shipped, " +
-                               "@jpeg_image, @is_delivered, @quantity)";
-
-               command = new AceQLCommand(sql, connection);
-
-               command.Parameters.AddWithValue("@customer_id", customerId);
-               command.Parameters.AddWithValue("@item_id", itemId);
-               command.Parameters.AddWithValue("@description", "Item Description");
-               command.Parameters.AddWithValue("@item_cost", 99D);
-               command.Parameters.AddWithValue("@date_placed", DateTime.Now);
-               command.Parameters.AddWithValue("@date_shipped", DateTime.Now);
-               // No blob in our Quick start
-               command.Parameters.Add(new AceQLParameter("@jpeg_image",
-                   AceQLNullType.BLOB));
-               command.Parameters.AddWithValue("@is_delivered", 1);
-               command.Parameters.AddWithValue("@quantity", 1);
-
-               await command.ExecuteNonQueryAsync();
-               await transaction.CommitAsync();
-           }
-           catch (Exception e)
-           {
-               await transaction.RollbackAsync();
-               throw e;
-           }
-       }
-   ```
-
-
-
-The `SelectCustomerAndOrderLogAsync()` method of [MyRemoteConnection.cs](https://www.aceql.com/rest/soft/5.0.1/src/MyRemoteConnection.cs) displays back the inserted values.
-
-From now on, you can read the [C# Client SDK User Guide](https://www.aceql.com/DocDownload?doc=https://github.com/kawansoft/AceQL.Client/blob/master/README.md).
-
-## Java Client SDK
-
-1. Maven:
-
-   ```xml
-   <groupId>com.aceql</groupId>
-   <artifactId>aceql-http-client-sdk</artifactId>
-   <version>4.0.2</version>
-   ```
-
-<<<<<<< HEAD
-2. If you don’t use Maven: the [aceql-http-client-all-4.0.2.jar](https://www.aceql.com/SoftwareDownload?software=aceql-http-client-sdk-all-4.0.2.jar&version=5.0) file contains the SDK with all dependencies.
-=======
-2. If you don’t use Maven: the [aceql-http-client-all-4.0.2.jar](https://www.aceql.com/SoftwareDownload?software=aceql-http-client-sdk-all-4.0.2.jar&version=5.0.1) file contains the SDK with all dependencies.
->>>>>>> refs/heads/5.0.1
-
-3. Create an `org.kawanfw.sql.api.client.quickstart` package in your IDE.
-
-4. Download this Java source file: [MyRemoteConnection.java](https://www.aceql.com/rest/soft/5.0.1/src/MyRemoteConnection.java). Then insert it in the package. 
-
-5. The  connection to the remote database is  created  using `AceQLConnection` class  and passing the URL of the AceQL Servlet Manager of your configuration:
-
-   ```java
-   /**
-    * Remote Connection Quick Start client example. Creates a Connection to a
-    * remote database.
-    * 
-    * @return the Connection to the remote database
-    * @throws SQLException
-    *             if a database access error occurs
-    */
-   public static Connection remoteConnectionBuilder() throws SQLException {
-
-     // The URL of the AceQL Server servlet
-     // Port number is the port number used to start the Web Server:
-     String url = "http://localhost:9090/aceql";
-
-     // The remote database to use:
-     String database = "sampledb";
-
-     // (username, password) for authentication on server side.
-     // No authentication will be done for our Quick Start:
-     String username = "MyUsername";
-     char[] password = { 'M', 'y', 'S', 'e', 'c', 'r', 'e', 't' };
-
-     // Attempt to establish a connection to the remote database:
-     Connection connection = new AceQLConnection(url, database, username,
-         password);
-
-     return connection;
-   }
-   ```
-
-6. Compile and run from your IDE the `MyRemoteConnection` class. It will insert a new `customer` and a new `orderlog`:
-
-   ```java
-   /** 
-    * Example of 2 INSERT in the same transaction.
-    * 
-    * @param customerId
-    *            the Customer Id
-    * @param itemId
-    *            the Item Id
-    * 
-    * @throws SQLException
-    */
-   public void insertCustomerAndOrderLog(int customerId, int itemId)
-       throws SQLException {
-
-     connection.setAutoCommit(false);
-
-     try {
-         // Create a Customer
-         String sql = "INSERT INTO CUSTOMER VALUES ( ?, ?, ?, ?, ?, ?, ?, ? )";
-         PreparedStatement prepStatement = connection.prepareStatement(sql);
-
-         int i = 1;
-         prepStatement.setInt(i++, customerId);
-         prepStatement.setString(i++, "Sir");
-         prepStatement.setString(i++, "Doe");
-         prepStatement.setString(i++, "John");
-         prepStatement.setString(i++, "1 Madison Ave");
-         prepStatement.setString(i++, "New York");
-         prepStatement.setString(i++, "NY 10010");
-         prepStatement.setString(i++, null);
-
-         prepStatement.executeUpdate();
-         prepStatement.close();
-
-         // Uncomment following line to test transaction behavior
-         // if (true) throw new SQLException("Exception thrown.");
-
-         // Create an Order for this Customer
-         sql = "INSERT INTO ORDERLOG VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )";
-
-         // Create a new Prepared Statement
-         prepStatement = connection.prepareStatement(sql);
-
-         i = 1;
-         long now = new java.util.Date().getTime();
-
-         prepStatement.setInt(i++, customerId);
-         prepStatement.setInt(i++, itemId);
-         prepStatement.setString(i++, "Item Description");
-         prepStatement.setBigDecimal(i++, new BigDecimal("99.99"));
-         prepStatement.setDate(i++, new java.sql.Date(now));
-         prepStatement.setTimestamp(i++, new Timestamp(now));
-         // No Blob in this example.
-         prepStatement.setBinaryStream(i++, null);
-         prepStatement.setInt(i++, 1);
-         prepStatement.setInt(i++, 2);
-
-         prepStatement.executeUpdate();
-         prepStatement.close();
-
-         System.out.println("Insert done!");
-     } catch (SQLException e) {
-         e.printStackTrace();
-         connection.rollback();
-         throw e;
-     } finally {
-         connection.setAutoCommit(true);
-     }
-   }
-   ```
-
-The `selectCustomerAndOrderLog` method of [MyRemoteConnection.java](https://www.aceql.com/rest/soft/5.0.1/src/MyRemoteConnection.java) displays back the inserted values.
-
-From now on, you can read the [Java Client SDK User Guide](https://www.aceql.com/DocDownload?doc=https://github.com/kawansoft/aceql-http-client-sdk/blob/master/README.md) or run through the [SDK Javadoc](https://www.aceql.com/rest/soft/5.0.1/javadoc_sdk).
-
-## Python Client SDK
-
-The aceql module supports Python 2.6–2.7 & 3.4–3.8. 
-
-1. Create a new project with your favorite IDE. 
-2. Install aceql module:
-
-```bash
-$ pip install aceql
+## ThreadPoolExecutor Configuration
+
+The AceQL Manager serlvet is executed in [asynchronous  mode](https://docs.oracle.com/javaee/7/tutorial/servlets012.htm). 
+
+The **ThreadPoolExecutor Section** Allows to define the parameters of the [java.util.concurrent.ThreadPoolExecutor](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/ThreadPoolExecutor.html) instance used to execute all servlet requests in async mode.
+
+The properties to set in the `aceql-server.properties` file are:
+
+| Property             | Role                                                         | Default Value        |
+| -------------------- | ------------------------------------------------------------ | -------------------- |
+| `corePoolSize`       | The number of threads to keep in the pool, even if they are idle. | 100                  |
+| `maximumPoolSize`    | The maximum number of threads to allow in the pool.          | 200                  |
+| `unit`               | The time unit for the `keepAliveTime` argument.              | `SECONDS`            |
+| `keepAliveTime`      | When the number of threads is greater than the core, this is <br/>the maximum time that excess idle threads will wait for new tasks <br/>before terminating. | 10                   |
+| `workQueueClassName` | The `BlockingQueue` class to use in `ThreadPoolExecutor` constructor. | `ArrayBlockingQueue` |
+| `capacity`           | The initial capacity of the `BloquingQueue<Runnable>` <br/>(0 for no or default initial capacity.) | 50000                |
+
+The properties are passed to the first  `ThreadPoolExecutor` [constructor](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/ThreadPoolExecutor.html#ThreadPoolExecutor(int,%20int,%20long,%20java.util.concurrent.TimeUnit,%20java.util.concurrent.BlockingQueue)).
+
+See `ThreadPoolExecutor` class [Javadoc](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/ThreadPoolExecutor.html) for more info
+
+Default values should be appropriate for most AceQL configurations. 
+
+## Session Management 
+
+### SessionConfigurator interface
+
+After server authentication succeeds (through the [UserAuthenticator.login()](https://www.aceql.com/rest/soft/5.0.1/javadoc/org/kawanfw/sql/api/server/auth/UserAuthenticator.html#login-java.lang.String-char:A-java.lang.String-java.lang.String-) method), the AceQL Manager builds an authentication session id that is sent back to the client and will be used by each succeeding client call in order to authenticate the calls. 
+
+Session security is managed by implementing the [SessionConfigurator](https://www.aceql.com/rest/soft/5.0.1/javadoc/org/kawanfw/sql/api/server/session/SessionConfigurator.html) interface that defines how to generate and verify the session id for (username, database) sessions. 
+
+Interface implementation allows you to:  
+
+- Define how to generate a session id after client /login call
+- Define the session’s lifetime
+- Define how to verify that the stored session is valid and not expired
+
+### Session management default implementation
+
+The default mechanism that builds an authentication session id is coded in the class 
+
+[DefaultSessionConfigurator](https://www.aceql.com/rest/soft/5.0.1/javadoc/org/kawanfw/sql/api/server/session/DefaultSessionConfigurator.html): 
+
+- Session ids are generated using a `SecureRandom` with the [SessionIdentifierGenerator](http://www.aceql.com/rest/soft/5.0.1/javadoc/org/kawanfw/sql/api/server/session/SessionIdentifierGenerator.html) class.
+- Session info (username, database) and session date/time creation are stored in a `HashMap`, whose key is the session id.
+- Session id is sent by client side at each  API call.  AceQL verifies that the `HashMap`  contains the username and that the session is not expired to grant access to the API execution.
+
+Benefits of this implementation are: 
+
+- Session ids are short and generate less HTTP traffic.
+- Because session ids are short, they are  easy to use “manually” (with cURL, etc.)
+
+The disadvantage is that session information is stored on the server side.
+
+### Session management using JWT
+
+Session management using JWT is coded in [JwtSessionConfigurator](https://www.aceql.com/rest/soft/5.0.1/javadoc/org/kawanfw/sql/api/server/session/JwtSessionConfigurator.html).
+
+Session management is done using self-contained JWT (JSON Web Token). 
+
+See <https://jwt.io> for more information on JWT. 
+
+A benefit of JWT is that no session information is stored on the server and that it allows full stateless mode.
+
+A disadvantage of JWT is that the tokens are much longer and thus generate more http traffic and are less convenient to use "manually" (with cURL, etc.). 
+
+#### Activating JwtSessionConfigurator 
+
+Edit the `aceql-server.properties` file and uncomment the two lines:
+
+```properties
+sessionConfiguratorClassName=JwtSessionConfigurator
+jwtSessionConfiguratorSecret=changeit
 ```
 
-3.    Download this Python class: [my_remote_connection.py](https://www.aceql.com/rest/soft/5.0.1/src/my_remote_connection.py)
+Change the `jwtSessionConfiguratorSecret` property change it value with your own secret value.
 
-4.    The  connection to the remote database is  created  using a [DB API 2.0](https://www.python.org/dev/peps/pep-0249/)  `Connection` class and passing the URL of the AceQL Servlet Manager of your configuration:
+Restart the AceQL Web Server for activation. 
 
-      ```python
-          @staticmethod
-          def remote_connection_builder():
-              """Remote Connection Quick Start client example.
+### Creating your own session management 
 
-              Creates a Connection to a remote database.
-              """
+If you want to create your session management using your own session id generation and security rules, you can implement  the [SessionConfigurator](https://www.aceql.com/rest/soft/5.0.1/javadoc/org/kawanfw/sql/api/server/session/SessionConfigurator.html) in your own class, and then: 
 
-              # The URL of the AceQL Server servlet
-              # Port number is the port number used to start the Web Server:
-              url = "http://localhost:9090/aceql"
+Add your class in the CLASSPATH.
 
-              # The remote database to use:
-              database = "sampledb"
+Add you class name in the `SessionConfigurator` section in your `aceql-server.properties` file: 
 
-              # (username, password) for authentication on server side.
-              # No authentication will be done for our Quick Start:
-              username = "MyUsername"
-              password = "myPassword"
+```properties
+sessionConfiguratorClassName=com.acme.MySessionConfigurator
+```
 
-              # Attempt to establish a connection to the remote database.
-              # On the server side, a JDBC connection is extracted from the
-              # connection pool created by the server at startup.
-              # The connection will remain ours during the session.
-              connection = aceql.connect(url, database, username, password)
-              return connection
-      ```
+Restart the AceQL Web Server for activation. 
 
+## Advanced Firewall Configuration
 
-5.    Run from your IDE the `my_remote_connection.py` module.  It will insert a new `customer` and a new `orderlog`: 
+AceQL provides several built-in and ready to use SQL Firewall Managers, as described earlier in the  [SQL Firewall Managers Section](#sql-firewall-managers-section) chapter. But you may plug-in your own implementation or third party SQL firewalling tools. 
 
-      ```python
-          def insert_customer_and_order_log(self, customer_id, item_id):
-              """Example of 2 INSERT in the same transaction
-                 using a customer id and an item id.
-              """
+The [SqlFirewallManager](http://www.aceql.com/rest/soft/4.1/javadoc/org/kawanfw/sql/api/server/firewall/SqlFirewallManager.html) interface allows you to code your own firewall rulesets.
 
-              self.connection.set_auto_commit(False)
-              cursor = self.connection.cursor()
+After coding you own `SqlFirewallManager` implementation just declare the full class name in the `sqlFirewallManagerClassNames` property. Note that SQL Firewall Manager may be chained: you may declare several classes.
 
-              try:
-                  # Create a Customer
-                  sql = "insert into customer values (?, ?, ?, ?, ?, ?, ?, ?)"
-                  params = (customer_id, 'Sir', 'John', 'Smith', '1 Madison Ave',
-                            'New York', 'NY 10010', '+1 212-586-7000')
-                  cursor.execute(sql, params)
+The following example defines two firewalls to chain for the `sampledb` database:
 
-                  # Create an Order for this Customer
-                  sql = "insert into orderlog values ( ?, ?, ?, ?, ?, ?, ?, ?, ? )"
+```properties
+sampledb.sqlFirewallManagerClassNames=\
+    com.mycompany.firewall.MySqlFirewallManager1\
+    com.mycompany.firewall.MySqlFirewallManager2
+```
 
-                  the_datetime = datetime.now()
-                  the_date = the_datetime.date()
+## Interacting with the JDBC Pool at runtime
 
-                  # (None, SqlNullType.BLOB) means to set the jpeg_image BLOB
-                  # column to NULL on server:
-                  params = (customer_id, item_id, "Item Description", 9999,
-                            the_date, the_datetime, (None, SqlNullType.BLOB), 1, 2)
-                  cursor.execute(sql, params)
+The Servlets Section in `aceql-server.properties` allow to define you own servlets in order to interact with AceQL Web Server with different actions :
 
-                  self.connection.commit()
-              except Error as e:
-                  print(e)
-                  self.connection.rollback()
-                  raise e
-              finally:
-                  self.connection.set_auto_commit(True)
-                  cursor.close()
-      ```
+- query info about JDBC pools in use,
+- modify a pool size,
+- etc.
 
+The API  [DataSourceStore](https://www.aceql.com/rest/soft/5.0.1/javadoc/org/kawanfw/sql/api/server/DataSourceStore.html) class allows to retrieve for each database the Tomcat [org.apache.tomcat.jdbc.pool.DataSource](https://tomcat.apache.org/tomcat-8.5-doc/api/org/apache/tomcat/jdbc/pool/DataSource.html) corresponding to the Tomcat JDBC Pool created at AceQL Web server startup. 
 
+## Running the AceQL Web Server
 
-The `select_customer_and_orderlog` method of [my_remote_connection.py](https://www.aceql.com/rest/soft/5.0.1/src/my_remote_connection.py) displays back the inserted values.
+### Running the AceQL Web Server without Windows Desktop
 
-From now on, you can read the [Python Client SDK User Guide](https://www.aceql.com/DocDownload?doc=https://github.com/kawansoft/aceql-http-client-python/blob/master/README.md).
+If you don’t have access to the Windows Desktop interface (running in a cloud instance, etc.)  you can still run the AceQL HTTP Web Server from the command line.
 
-# From now on…
+- see `<installation-directory>\AceQL\bin\aceql-server.bat` script.
 
-You can read the [Server User Guide](https://www.aceql.com/DocDownload?doc=https://github.com/kawansoft/aceql-http/blob/master/aceql-http-5.0.1-user-guide-server.md). You will learn:
+You can also start/top the AceQL Web Server from you java programs, as explained in next section.
 
-- How to create a Connection Pool.
-- How to create a strong authentication on the server for your legitimate users.
-- How to secure accesses to your SQL databases.
+### Starting/Stopping the AceQL WebServer from a Java program
 
+You may start or stop the AceQL Server from a Java program calling the [WebServerApi](https://www.aceql.com/rest/soft/5.0.1/javadoc/org/kawanfw/sql/api/server/web/WebServerApi.html) API.
 
+### Running AceQL HTTP in a Java EE servlet container
 
-------
+AceQL server side may be run inside a Java EE servlet container such as Tomcat.
 
+This option may be preferred by users who already have a Java EE servlet container configured with all Connectors & SSL options, etc., and do want to recode the options in the `aceql-server.properties` file. 
 
+#### Installation
 
+Install the files of installation directory `webapp/WEB-INF/lib` in the lib directory of your webapp.
+
+If your JavaEE servlet container is *not* Tomcat >=7, it may not contain the Tomcat JDBC Pool: add `webapp/WEB-INF/lib-tomcat/tomcat-jdbc-8.5.xx.jar` jar in the /lib directory of your webapp.
+
+If you have coded your own Configurators, deploy the classes in the `/classes` directory of your webapp.
+
+#### AceQL servlet configuration in web.xml
+
+Create and configure the `aceql-server.properties` file like normal, as described in [The aceql-server.properties file](#the-aceql-serverproperties-file). Do not configure the **Tomcat Connector sections** that will not be used.
+
+In `web.xml`, define the AceQL Manager servlet that is defined in `the aceql-server.properties` file. This dual definition is required. The servlet class is. `org.kawanfw.sql.servlet.ServerSqlManager`. 
+
+Example:
+
+Assuming the `aceql-server.properties` file is stored in `c:\Users\Mike` and you have defined the following aceQLManagerServletCallName in `aceql-server.properties`**:**
+
+```properties
+aceQLManagerServletCallName=aceql
+```
+
+then your `web.xml` should contain the following code:
+
+```xml
+<servlet>
+    <servlet-name>aceql</servlet-name>
+    <servlet-class>org.kawanfw.sql.servlet.ServerSqlManager</servlet-class>
+	<async-supported>true</async-supported>
+    
+    <init-param>
+        <param-name>properties</param-name>
+        <param-value>c:\Users\Mike\aceql-server.properties</param-value>
+    </init-param>
+</servlet>
+
+<!—- Allows you to see immediately in servet container if servlet is OK or KO --> 
+<load-on-startup>1</load-on-startup >
+
+<servlet-mapping>
+    <!-- Note the trailing /* in url-pattern --> 
+    <servlet-name>aceql</servlet-name>
+    <url-pattern>/aceql/*</url-pattern>
+</servlet-mapping>
+```
+
+Note the trailing `/*` in the URL pattern: this is required by the AceQL Manager that uses both the servlet name and elements in servlet path values to execute actions requested by the client side.
+
+### Testing the servlet configuration 
+
+After restarting your server, check you web server logs. 
+
+AceQL start statuses are written on standard output stream. 
+
+Type the HTTP address of each of your AceQL Manager servlets into a browser.
+
+Example corresponding to previous web.xml:
+
+`http://www.yourhost.com/path-to-webapp/aceql`
+
+It will display a JSON string and should display a status of `"OK"` and the current AceQL version: 
+
+```json
+{
+    "status": "OK",
+    "version": "AceQL HTTP v5.0.1 - 08-Apr-2020"
+}         
+```
+
+If not, the configuration errors are detailed for correction. 
+
+# AceQL internals
+
+## State management / Stateful Mode
+
+ AceQL runs in "Stateful Mode":  when creating a session on the client side with `/login` API, the AceQL servlet that is contacted extracts a JDBC `Connection` from the connection pool (with `DatabaseConfigurator.getConnection(`)) and stores it in memory in a static Java `Map`. 
+
+The server's JDBC Connection is persistent, attributed to the client user, and will not be used by other users: the same `Connection` will be used for each JDBC call until the end of the session. This allows you SQL transactions to be created.
+
+The `Connection` will be released from the AceQL Manager Servlet memory and released into the connection pool by a client side  `/close` or `/logout` API call. 
+
+A server side background thread will release phantom Connections that were not closed by the client side. 
+
+**Therefore, it is important for client applications to explicitly and systematically call `/logout` API before the application exits, in order to avoid phantom Connections to persist for a period of time on the server.**
+
+## Data transport  
+
+### Transport format 
+
+AceQL transfers the least possible amount of meta-information:
+
+- Request parameters are transported in UTF-8 format
+- JSON format is used for data and class transport.
+
+### Content streaming and memory management
+
+All requests are streamed: 
+
+- Output requests (from the client side) are streamed directly from the socket to the server to avoid     buffering any content body
+- Input responses (for the client side) are streamed directly from the socket to the server to efficiently read the response body
+
+Large content (`ResultSet`, Blobs/Clobs…) is transferred using files. It is never loaded in memory. Streaming techniques are always used to read and write this content. 
+
+## Managing temporary files 
+
+AceQL uses temporary files, these temporary files contain: 
+
+- Contents of Result Sets
+- Contents of Blobs and Clobs
+
+Temporary files are created to allow streaming and/or to allow the earliest possible release of SQL resources and network resources.
+
+These temporary files are automatically cleaned (deleted) by AceQL on the server side.  
+
+If you want to ensure that temporary files will be cleaned, you can access the temporary directories:
+
+1. `ResultSet`  data is dumped in `user.home/.kawansoft/tmp` directory
+
+1. The uploaded/downloaded Blob or Clob files are located in the directory defined by `DatabaseConfigurator.getBlobsDirectory()`. Default `DefaultDatabaseConfigurator.getBlobsDirectory()` implementation stores the Blob/Clob files in `user.home/.aceql-server-root/username`.
+
+Where:
+
+-   `user.home` =  the user.home of the user that started the AceQL Web Server.
+
+-   `username` = the username of the client user.
+
+___________________
 
