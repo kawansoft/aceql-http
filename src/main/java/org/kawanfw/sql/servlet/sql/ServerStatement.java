@@ -295,12 +295,37 @@ public class ServerStatement {
 		    JsonGenerator gen = jf.createGenerator(out);
 		    gen.writeStartObject().write("status", "OK");
 
-		    ResultSetWriter resultSetWriter = new ResultSetWriter(request, out, username, sqlOrder, gen);
+		    ResultSetWriter resultSetWriter = new ResultSetWriter(request, username, sqlOrder, gen);
 		    resultSetWriter.write(rs);
+
+		    ServerSqlManager.writeLine(out);
 
 		    gen.writeEnd(); // .write("status", "OK")
 		    gen.flush();
 		    gen.close();
+
+		    /*
+		    String file = FrameworkFileUtil.getKawansoftTempDir() + File.separator + "result_set_out_new.txt";
+		    try (OutputStream outFile = new BufferedOutputStream(new FileOutputStream(file))) {
+			JsonGenerator gen = jf.createGenerator(outFile);
+			gen.writeStartObject().write("status", "OK");
+
+			ResultSetWriter resultSetWriter = new ResultSetWriter(request, outFile, username, sqlOrder,
+				gen);
+			resultSetWriter.write(rs);
+
+			ServerSqlManager.writeLine(outFile);
+
+			gen.writeEnd(); // .write("status", "OK")
+			gen.flush();
+			gen.close();
+		    }
+
+		    try (InputStream in = new BufferedInputStream(new FileInputStream(file))) {
+			IOUtils.copy(in, out);
+		    }
+		    */
+
 
 		} finally {
 
@@ -441,8 +466,10 @@ public class ServerStatement {
 		    JsonGenerator gen = jf.createGenerator(out);
 		    gen.writeStartObject().write("status", "OK");
 
-		    ResultSetWriter resultSetWriter = new ResultSetWriter(request, out, username, sqlOrder, gen);
+		    ResultSetWriter resultSetWriter = new ResultSetWriter(request, username, sqlOrder, gen);
 		    resultSetWriter.write(rs);
+
+		    ServerSqlManager.writeLine(out);
 
 		    gen.writeEnd(); // .write("status", "OK")
 		    gen.flush();

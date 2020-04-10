@@ -83,9 +83,6 @@ public class ResultSetWriter {
 
     public static String CR_LF = System.getProperty("line.separator");
 
-    /** Writer for the result set */
-    private OutputStream out = null;
-
     /** The username in use */
     private String username = null;
 
@@ -118,14 +115,11 @@ public class ResultSetWriter {
 
     /**
      * @param request  the http request
-     * @param out      the buffered Writer for the result set
      * @param username the client username
      * @param sqlOrder the sql order
      * @param gen      The JSon Generator
      */
-    public ResultSetWriter(HttpServletRequest request, OutputStream out, String username, String sqlOrder,
-	    JsonGenerator gen) {
-	this.out = out;
+    public ResultSetWriter(HttpServletRequest request, String username, String sqlOrder, JsonGenerator gen) {
 
 	this.username = username;
 	this.sqlOrder = sqlOrder;
@@ -149,7 +143,6 @@ public class ResultSetWriter {
      */
     public ResultSetWriter(OutputStream out, String sqlOrder) {
 	super();
-	this.out = out;
 	this.sqlOrder = sqlOrder;
     }
 
@@ -327,6 +320,7 @@ public class ResultSetWriter {
 		}
 
 		gen.writeEnd(); // line_i
+		gen.flush();
 	    }
 
 	    gen.writeEnd(); // .writeStartObject();
@@ -334,7 +328,7 @@ public class ResultSetWriter {
 
 	    gen.write("row_count", row_count);
 
-	    ServerSqlManager.writeLine(out);
+	    //ServerSqlManager.writeLine(out);
 
 	} finally {
 	    resultSet.close();
