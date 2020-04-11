@@ -583,7 +583,7 @@ The `aceqlhttp` wrapper allows to run AceQL program as a Linux service.
   - Modify JAVA_HOME to the path of you Java installation.
   - Modify ACEQL_HOME to the path of your AceQL installation.
   - Modify ACEQL_HOST and ACEQL_PORT with your hostname and port.
-  - Modify CLASSPATH if you plan to use a Database Configurator (See [Database Configurators](#database-configurators)).
+  - Modify CLASSPATH if you plan to inject your own Java classes (See [Advanced Usage](#advanced-usage)).
 
 Then: 
 
