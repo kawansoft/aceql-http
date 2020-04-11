@@ -642,7 +642,7 @@ Your concrete implementations is passed to the AceQL as properties of the **Data
 
 ## Advanced Authentication Configuration
 
-In order to give access access to remote client users to the AceQL server, you may develop entirely your own authentication mechanism. This is done through your own implementation of the [UserAuthenticator](https://www.aceql.com/rest/soft/5.0.1/javadoc/org/kawanfw/sql/api/server/auth/UserAuthenticator.html) interface: overload the login method `UserAuthenticator.login()` in your concrete class implementation.
+In order to give access to remote client users to the AceQL server, you may develop entirely your own authentication mechanism. This is done through your own implementation of the [UserAuthenticator](https://www.aceql.com/rest/soft/5.0.1/javadoc/org/kawanfw/sql/api/server/auth/UserAuthenticator.html) interface: overload the login method `UserAuthenticator.login()` in your concrete class implementation.
 
 Your concrete implementations is passed to the AceQL as properties of the **User Authentication Section**  in the `aceql-server.properties` file, as described in the section
 
@@ -767,7 +767,7 @@ AceQL provides several built-in and ready to use SQL Firewall Managers, as descr
 
 The [SqlFirewallManager](http://www.aceql.com/rest/soft/4.1/javadoc/org/kawanfw/sql/api/server/firewall/SqlFirewallManager.html) interface allows you to code your own firewall rulesets.
 
-After coding you own `SqlFirewallManager` implementation just declare the full class name in the `sqlFirewallManagerClassNames` property. Note that SQL Firewall Manager may be chained: you may declare several classes.
+After coding you own `SqlFirewallManager` implementation just declare the full class name in the `sqlFirewallManagerClassNames` property. Note that SQL Firewall Managers may be chained: you may declare several classes.
 
 The following example defines two firewalls to chain for the `sampledb` database:
 
