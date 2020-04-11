@@ -205,6 +205,8 @@ public class DefaultPoolsInfo extends HttpServlet {
 				    + "default_pools_info_password.txt"),
 			    "UTF-8");
 
+	    System.out.println("storedPassword: " + storedPassword + ":");
+
 	    if (storedPassword == null
 		    || !storedPassword.trim().equals(password)) {
 		throw new IllegalArgumentException(
