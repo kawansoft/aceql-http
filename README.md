@@ -380,7 +380,7 @@ The rulesets are defines through one or more "SQL Firewall Managers",  Java clas
 A `SqlFirewallManager`concrete implementation allows to: 
 
 - Define if a client user has the right to call a `Statement.executeUpdate` (i.e. call a statement that updates the database).
-- Define if a client user has the right to call a raw `Statement` that is not a `PreparedStatement`.
+- Define if a client user has the right to call a raw JDBC `Statement` that is not a `PreparedStatement`.
 - Define if a client user has the right to call a the [AceQL Metadata API](https://github.com/kawansoft/aceql-http/blob/master/aceql-http-5.0.1-user-guide-api.md#db_schema_download).
 - Define a specific piece of Java code to analyze the source code of the SQL statement before allowing or not it's execution.
 
@@ -402,7 +402,7 @@ Only the following property must be defined per database name if you want to add
 `sqlFirewallManagerClassNames`.
 
 `SqlFirewallManager` may be chained in property value by separating class names by a comma.  
-When `SqlFirewallManager` classes are chained, an AND condition is applied to all the `SqlFirewallManager` execution conditions in order to compute final allow.
+When `SqlFirewallManager` classes are chained, an `AND` condition is applied to all the `SqlFirewallManager` execution conditions in order to compute final allow.
 For example, the `allowExecuteUpdate()` of each chained `SqlFirewallManager` instance must return true in order to allow updates of the database.
 
 The following example defines two built in firewalls to chain for the `sampledb` database:
@@ -416,7 +416,7 @@ sampledb.sqlFirewallManagerClassNames=\
     DenyExecuteUpdateManager
 ```
 
-After AceQL server restart, remote clients won't be allowed to execute DDL statements or to update the database.
+After AceQL server restart, remote clients won't be allowed to execute DDL statements nor to update the database.
 
 #### The CsvRulesManager SQL Firewall Manager
 
@@ -763,11 +763,11 @@ Restart the AceQL Web Server for activation.
 
 ## Advanced Firewall Configuration
 
-AceQL provides several built-in and ready to use SQL Firewall Managers, as described earlier in the  [SQL Firewall Managers Section](#sql-firewall-managers-section) chapter. But you may plug-in your own implementation or third party SQL firewalling tools. 
+AceQL provides several built-in and ready to use SQL Firewall Managers, as described earlier in the  [SQL Firewall Managers Section](#sql-firewall-managers-section) chapter. You also may plug-in your own implementation or third party SQL firewalling tools. 
 
-The [SqlFirewallManager](http://www.aceql.com/rest/soft/4.1/javadoc/org/kawanfw/sql/api/server/firewall/SqlFirewallManager.html) interface allows you to code your own firewall rulesets.
+The [SqlFirewallManager](http://www.aceql.com/rest/soft/4.1/javadoc/org/kawanfw/sql/api/server/firewall/SqlFirewallManager.html) interface allows you to code your own firewall rulesets or plug a third party software.
 
-After coding you own `SqlFirewallManager` implementation just declare the full class name in the `sqlFirewallManagerClassNames` property. Note that SQL Firewall Managers may be chained: you may declare several classes.
+After coding you own `SqlFirewallManager` implementation, just declare the full class name in the `sqlFirewallManagerClassNames` property. Remember that SQL Firewall Managers may be chained: you may declare several classes.
 
 The following example defines two firewalls to chain for the `sampledb` database:
 
