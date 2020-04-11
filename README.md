@@ -346,7 +346,7 @@ Authentication is defined through the injection of  an "User Authenticator", a J
 
 The `login` method of the class is called when a remote client first connects to the AceQL and pass it's credentials (username and password). If the `login` method returns `true`, user access is granted, otherwise the user access is denied.
 
-AceQL provides 5 built-in (and ready to use without any coding) User Authenticators:
+AceQL provides four built-in (and ready to use without any coding) User Authenticators:
 
 | User Authenticator Name       | Role                                                         | Parameters                                    |
 | ----------------------------- | ------------------------------------------------------------ | --------------------------------------------- |
