@@ -375,13 +375,13 @@ The Web service must just implement these features:
 
 The SQL Firewall Managers Section allows to define SQL firewall rulesets to use for each database.
 
-The rulesets are defines through one or more "SQL Firewall Managers",  Java classes that are injected at AceQL Server startup. A SQL Firewall Manager It a built-in or user-developed Java class that implements the   [SqlFirewallManager](https://www.aceql.com/rest/soft/5.0.1/javadoc/org/kawanfw/sql/api/server/firewall/SqlFirewallManager.html) interface built in AceQL.  
+The rulesets are defines through one or more "SQL Firewall Managers",  Java classes that are injected at AceQL Server startup. A SQL Firewall Manager It a built-in or user-developed Java class that implements the   [SqlFirewallManager](https://www.aceql.com/rest/soft/5.0.1/javadoc/org/kawanfw/sql/api/server/firewall/SqlFirewallManager.html) interface.
 
 A `SqlFirewallManager`concrete implementation allows to: 
 
 - Define if a client user has the right to call a `Statement.executeUpdate` (i.e. call a statement that updates the database).
 - Define if a client user has the right to call a raw `Statement` that is not a `PreparedStatement`.
-- Define if a client user has the right to call a the AceQL Metadata API.
+- Define if a client user has the right to call a the [AceQL Metadata API](https://github.com/kawansoft/aceql-http/blob/master/aceql-http-5.0.1-user-guide-api.md#db_schema_download).
 - Define a specific piece of Java code to analyze the source code of the SQL statement before allowing or not it's execution.
 
 Multiple `SqlFirewallManager` may be defined and chained. 
