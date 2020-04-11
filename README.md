@@ -153,9 +153,9 @@ All communication between the client and the server uses HTTP/ HTTPS protocols. 
 
 This User Guide covers:
 
--  **Standard Usage / Quickstart**: this part describes how to run through complete setup using only configuration files and CSV files.  (No programming, compiling, etc. is necessary.)
+-  **Quickstart**: this part describes how to run through complete setup using only configuration files and CSV files.  (No programming and compiling are necessary.)
 
--  **Advanced Usage**: this part describes advanced setup and fine tuning. It includes powerful configuration and customization using injection code of  your own Java classes.
+-  **Advanced Usage**: this part describes advanced setup and fine tuning. It includes powerful configuration and customization using injection code of  your own or third party Java classes.
 
 ## Technical operating environment
 
@@ -246,7 +246,7 @@ Call the `aceql-server` script to display the AceQL version:
 It will display a line with all version info, like:
 
 ```
-AceQL HTTP Community v5.0.1 - 08-Apr-2020
+AceQL HTTP Community v5.0.1 - 10-Apr-2020
 ```
 
 
