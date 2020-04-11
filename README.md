@@ -672,7 +672,7 @@ connector.maxThreads=300
 
 The AceQL Manager serlvet is executed in [asynchronous  mode](https://docs.oracle.com/javaee/7/tutorial/servlets012.htm). 
 
-The **ThreadPoolExecutor Section** Allows to define the parameters of the [java.util.concurrent.ThreadPoolExecutor](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/ThreadPoolExecutor.html) instance used to execute all servlet requests in async mode.
+The **ThreadPoolExecutor Section** allows to define the parameters of the [java.util.concurrent.ThreadPoolExecutor](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/ThreadPoolExecutor.html) instance used to execute all servlet requests in async mode.
 
 The properties to set in the `aceql-server.properties` file are:
 
