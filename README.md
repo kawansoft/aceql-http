@@ -621,7 +621,7 @@ Or for Maven users:
 ```
 ## AceQL Servlet Name Configuration
 
-Thie AceQL Manager servlet Section in the `aceql-server.proprties` file allows you to define the name of the AceQL SQL Manager Servlet to call from the client side. The default name is `aceql`. It is the name that will be used in the URL by client calls:
+The **AceQL Manager servlet Section** in the `aceql-server.proprties` file allows you to define the name of the AceQL SQL Manager Servlet to call from the client side. The default name is `aceql`. It is the name that will be used in the URL by client calls:
 
 ```properties
 aceQLManagerServletCallName=aceql
@@ -642,7 +642,7 @@ Your concrete implementations is passed to the AceQL as properties of the **Data
 
 ## Advanced Authentication Configuration
 
-in order to give access access to remote client users to the AceQL server, you may develop entirely your own authentication mechanism. This is done through your own implementation of the [UserAuthenticator](https://www.aceql.com/rest/soft/5.0.1/javadoc/org/kawanfw/sql/api/server/auth/UserAuthenticator.html) interface: overload the login method `UserAuthenticator.login()` in your concrete class implementation.
+In order to give access access to remote client users to the AceQL server, you may develop entirely your own authentication mechanism. This is done through your own implementation of the [UserAuthenticator](https://www.aceql.com/rest/soft/5.0.1/javadoc/org/kawanfw/sql/api/server/auth/UserAuthenticator.html) interface: overload the login method `UserAuthenticator.login()` in your concrete class implementation.
 
 Your concrete implementations is passed to the AceQL as properties of the **User Authentication Section**  in the `aceql-server.properties` file, as described in the section
 
