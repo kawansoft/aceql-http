@@ -681,7 +681,7 @@ The properties to set in the `aceql-server.properties` file are:
 | `corePoolSize`       | The number of threads to keep in the pool, even if they are idle. | 100                  |
 | `maximumPoolSize`    | The maximum number of threads to allow in the pool.          | 200                  |
 | `unit`               | The time unit for the `keepAliveTime` argument.              | `SECONDS`            |
-| `keepAliveTime`      | When the number of threads is greater than the core, this is <br/>the maximum time that excess idle threads will wait for new tasks <br/>before terminating. | 10                   |
+| `keepAliveTime`      | When the number of threads is greater than the core, this is the maximum time that excess idle threads will wait for new tasks before terminating. | 10                   |
 | `workQueueClassName` | The `BlockingQueue` class to use in `ThreadPoolExecutor` constructor. | `ArrayBlockingQueue` |
 | `capacity`           | The initial capacity of the `BloquingQueue<Runnable>` <br/>(0 for no or default initial capacity.) | 50000                |
 
