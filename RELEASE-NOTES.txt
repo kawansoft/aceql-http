@@ -43,7 +43,7 @@ What's New:
 
 - The software has been rewritten to allow quick start & standard usage 
   without any coding and without code injection: standard but complete 
-  configuration may done entirely by defining values in the 
+  configuration may be done entirely by defining values in the 
   aceql-server.properties file. 
   Sophisticated firewalling can be done through a CSV File without any coding.
   Advanced usage is still possible through code injection using Java classes. 
