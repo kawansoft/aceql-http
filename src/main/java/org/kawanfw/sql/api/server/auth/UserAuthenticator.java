@@ -29,7 +29,23 @@ import java.sql.SQLException;
 
 /**
  * Interface that defines how to authenticate a remote client that wants to
- * create an AceQL session.
+ * create an AceQL session. <br>
+ * <br>
+ * Following built-in and ready to use classes are provided. No coding is required.
+ * See each Javadoc for more details:
+ * <ul>
+ * <li>{@link LdapUserAuthenticator}: authenticates the remote client (username,
+ * password) against a LDAP server.</li>
+ * <li>{@link SshUserAuthenticator}: authenticates the remote client (username,
+ * password) against a SSH server.</li>
+ * <li>{@link WebServiceUserAuthenticator}: authenticates the remote client
+ * (username, password) against a Web service.</li>
+ * <li>{@link WindowsUserAuthenticator}: authenticates the remote client
+ * (username, password) against the Windows server on which the AceQL server is
+ * running.</li>
+ *
+ *
+ * </ul>
  *
  * @author Nicolas de Pomereu
  * @since 5.0
@@ -43,8 +59,8 @@ public interface UserAuthenticator {
      * The AceQL HTTP Server will call the method in order to grant or not client
      * access.
      * <p>
-     * Typical usage would be to check the (username, password) couple against a LDAP
-     * server or against a SSH server, etc.
+     * Typical usage would be to check the (username, password) couple against a
+     * LDAP server or against a SSH server, etc.
      *
      * The method allows to retrieve:
      * <ul>
