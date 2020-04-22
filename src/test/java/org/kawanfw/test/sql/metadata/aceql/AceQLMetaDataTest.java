@@ -42,7 +42,7 @@ public class AceQLMetaDataTest {
      * @param args
      */
     public static void main(String[] args) throws Exception {
-	Connection connection = ConnectionParms.getConnection(3);
+	Connection connection = ConnectionParms.getConnection(ConnectionParms.SQL_SERVER_CONNECTION);
 
 	DatabaseMetaData databaseMetaData = connection.getMetaData();
 	String databaseProductName = databaseMetaData.getDatabaseProductName();

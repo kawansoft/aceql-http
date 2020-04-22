@@ -38,10 +38,13 @@ import org.apache.commons.lang3.SystemUtils;
 public class SchemaInfoAccessor {
 
     private Connection connection = null;
+    private String database = null;
     private String failureReason = null;
 
-    public SchemaInfoAccessor(Connection connection) {
+
+    public SchemaInfoAccessor(Connection connection, String database) {
 	this.connection = connection;
+	this.database = database;
     }
 
     public boolean isAccessible() {
@@ -64,7 +67,7 @@ public class SchemaInfoAccessor {
      * @throws SQLException
      */
     public SchemaInfoSC getSchemaInfoSC( ) throws SQLException {
-	return new SchemaInfoSC(connection);
+	return new SchemaInfoSC(connection, database);
     }
 
 

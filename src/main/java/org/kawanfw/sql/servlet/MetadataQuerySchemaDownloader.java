@@ -51,12 +51,14 @@ public class MetadataQuerySchemaDownloader {
     private HttpServletResponse response = null;
     private Connection connection = null;
     private AceQLMetaData aceQLMetaData = null;
+    private String database = null;
 
-    public MetadataQuerySchemaDownloader(HttpServletRequest request, HttpServletResponse response, Connection connection, AceQLMetaData aceQLMetaData) {
+    public MetadataQuerySchemaDownloader(HttpServletRequest request, HttpServletResponse response, Connection connection, AceQLMetaData aceQLMetaData, String database) {
 	this.request = request;
 	this.response = response;
 	this.connection = connection;
 	this.aceQLMetaData = aceQLMetaData;
+	this.database = database;
     }
 
     /**
@@ -94,7 +96,7 @@ public class MetadataQuerySchemaDownloader {
 	    return;
 	}
 
-	SchemaInfoAccessor schemaInfoAccessor = new SchemaInfoAccessor(connection);
+	SchemaInfoAccessor schemaInfoAccessor = new SchemaInfoAccessor(connection, database);
 	if (!schemaInfoAccessor.isAccessible()) {
 	    OutputStream out = response.getOutputStream();
 	    JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_BAD_REQUEST,
