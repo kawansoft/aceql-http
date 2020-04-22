@@ -1,4 +1,4 @@
-# AceQL HTTP v5.0.1 - April 10, 2020
+# AceQL HTTP v5.0.1 - April 22, 2020
 
 # API User Guide
 
@@ -56,7 +56,7 @@
 
 The AceQL HTTP API allows you to execute SQL queries and updates on remote databases using pure HTTP calls, with a fluent and simple to use REST like API.
 
-The Server operation is described in [Server Installation and Configuration Guide](https://github.com/kawansoft/aceql-http/blob/master/README.md).
+The Server operation is described in [Server Installation and Configuration Guide](https://github.com/kawansoft/aceql-http/blob/master/aceql-http-5.0.1-user-guide-server.md).
 
 This document describes all AceQL URLs to use in your HTTP calls. It also contains easy to copy and paste examples in cURL.
 
@@ -182,7 +182,7 @@ Note that we will use two shortcuts through this User Guide in order to simplify
 
 - **server** is the shortcut for the scheme, server name, and port of the URL to call. Possible values for server are: <http://localhost:9090>, <https://www.acme.com>, etc.
 
-- **aceql** is the shortcut for the AceQL Server servlet path. aceql is also the default configuration value. Any other value is possible, see [Server Installation and Configuration Guide](https://github.com/kawansoft/aceql-http/blob/master/README.md).
+- **aceql** is the shortcut for the AceQL Server servlet path. aceql is also the default configuration value. Any other value is possible, see [Server Installation and Configuration Guide](https://github.com/kawansoft/aceql-http/blob/master/aceql-http-5.0.1-user-guide-server.md).
 
 | URL  parameter | Description                   |
 | -------------- | ----------------------------- |
@@ -1126,7 +1126,7 @@ Allows to close the session and to release all the server JDBC `Connection`s  in
 
 |                                                              |
 | ------------------------------------------------------------ |
-| It is important to always call `logout` at end of session in order to  close all the JDBC `Connection` and release them in the pool. <br />See [Server Installation and Configuration Guide](https://github.com/kawansoft/aceql-http/blob/master/README.md) for more info. |
+| It is important to always call `logout` at end of session in order to  close all the JDBC `Connection` and release them in the pool. <br />See [Server Installation and  Configuration Guide](https://github.com/kawansoft/aceql-http/blob/master/aceql-http-4.1-user-guide-server.md) for more info. |
 
 ### Server response to logout call
 
