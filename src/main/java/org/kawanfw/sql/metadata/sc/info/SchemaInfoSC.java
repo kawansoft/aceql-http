@@ -78,7 +78,7 @@ public class SchemaInfoSC {
     /**
      * Constructor.
      * @param connection
-     * @param database TODO
+     * @param database
      * @throws SQLException
      */
     public SchemaInfoSC(Connection connection, String database) throws SQLException {
@@ -194,9 +194,6 @@ public class SchemaInfoSC {
 	}
 
 	if (sqlUtil.isSQLServer()) {
-	    //AceQLMetaData aceQLMetaData = new AceQLMetaData(connection);
-	    //String catalog = aceQLMetaData.getCatalogs().get(0);
-	    //Pattern pattern = Pattern.compile(catalog + ".dbo", Pattern.CASE_INSENSITIVE);
 	    Pattern pattern = Pattern.compile(database + ".dbo", Pattern.CASE_INSENSITIVE);
 	    optionsBuilder.includeSchemas(new RegularExpressionInclusionRule(pattern));
 
