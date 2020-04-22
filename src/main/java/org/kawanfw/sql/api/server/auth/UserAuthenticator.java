@@ -33,6 +33,7 @@ import java.sql.SQLException;
  * <br>
  * Following built-in and ready to use classes are provided. No coding is required.
  * See each Javadoc for more details:
+ * <br>
  * <ul>
  * <li>{@link LdapUserAuthenticator}: authenticates the remote client (username,
  * password) against a LDAP server.</li>

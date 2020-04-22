@@ -13,22 +13,22 @@ import org.kawanfw.sql.api.server.DefaultDatabaseConfigurator;
  *
  * <pre>
  * <code>
-< : __ac_lt__
-> : __ac_gt__
+&lt; : __ac_lt__
+&gt; : __ac_gt__
 : : __ac_colon__
 " : __ac_dbquote__
 / : __ac_fslash__
 \ : __ac_bslash__
 | : __ac_vbar__
 ? : __ac_qmark__
-** : __ac_aster__
+&lowast; : __ac_aster__
  </code>
  * </pre>
  *
  * Spaces are also replaced with {@code __ac_sp__}.
  * @see DefaultDatabaseConfigurator#getBlobsDirectory(String)
  * @author Nicolas de Pomereu
- * @since 5.0.1
+ * @since 5.0.2
  *
  */
 public class UsernameConverter {
