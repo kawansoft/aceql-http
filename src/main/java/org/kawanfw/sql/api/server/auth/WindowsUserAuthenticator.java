@@ -39,11 +39,12 @@ import org.kawanfw.sql.util.Tag;
 
 import waffle.windows.auth.impl.WindowsAuthProviderImpl;
 
-
 /**
- * A concrete {@code UserAuthenticator} that allows zero-code remote
- * client {@code (username, password)} authentication against the Windows
- * machine on which the AceQL instance is running.
+ * A concrete {@link UserAuthenticator} that allows zero-code remote client
+ * {@code (username, password)} authentication against the Windows machine on
+ * which the AceQL instance is running. <br>
+ * (There a no mandatory properties to define in the {@code aceql-server.properties}
+ * file.)
  *
  * @author Nicolas de Pomereu
  * @since 5.0
@@ -62,8 +63,12 @@ public class WindowsUserAuthenticator implements UserAuthenticator {
 
     }
 
-    /* (non-Javadoc)
-     * @see org.kawanfw.sql.api.server.auth.UserAuthenticator#login(java.lang.String, char[], java.lang.String, java.lang.String)
+    /*
+     * (non-Javadoc)
+     *
+     * @see
+     * org.kawanfw.sql.api.server.auth.UserAuthenticator#login(java.lang.String,
+     * char[], java.lang.String, java.lang.String)
      */
     @Override
     public boolean login(String username, char[] password, String database, String ipAddress)
@@ -90,7 +95,8 @@ public class WindowsUserAuthenticator implements UserAuthenticator {
 		logger.log(Level.WARNING, getInitTag() + "WindowsLogin.login refused for " + username);
 	    } else {
 		// Better to trace stack trace in case of Waffle problem...
-		logger.log(Level.WARNING, getInitTag() + "AceQL WindowsLogin.login call failure (Waffle Library): " + exception.toString());
+		logger.log(Level.WARNING, getInitTag() + "AceQL WindowsLogin.login call failure (Waffle Library): "
+			+ exception.toString());
 	    }
 
 	    return false;

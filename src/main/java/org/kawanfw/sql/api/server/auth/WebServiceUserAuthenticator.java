@@ -50,8 +50,24 @@ import org.kawanfw.sql.tomcat.TomcatStarterUtil;
 import org.kawanfw.sql.util.Tag;
 
 /**
- * A concrete {@code UserAuthenticator} that allows zero-code remote
- * client {@code (username, password)} authentication against a Web Service.
+ * A concrete {@link UserAuthenticator} that allows zero-code remote client
+ * {@code (username, password)} authentication against a Web service. <br>
+ * <br>
+ * The URL of the Web service is define in
+ * {@code the webServiceUserAuthenticator.url} in the
+ * {@code aceql-server.properties} file. <br>
+ * <br>
+ * The Web service must just implement these features:
+ * <Ul>
+ * <li>It must accept the 2 POST parameters username and password.</li>
+ * <li>It must return either:</li>
+ * <ul>
+ * <li>The JSON string <code>{"status"="OK"}</code> if the authentication
+ * succeeds.</li>
+ * <li>The JSON string <code>{"status"="FAIL"}</code> if the authentication
+ * fails.</li>
+ * </ul>
+ * </ul>
  *
  * @author Nicolas de Pomereu
  * @since 5.0
@@ -70,8 +86,12 @@ public class WebServiceUserAuthenticator implements UserAuthenticator {
 
     }
 
-    /* (non-Javadoc)
-     * @see org.kawanfw.sql.api.server.auth.UserAuthenticator#login(java.lang.String, char[], java.lang.String, java.lang.String)
+    /*
+     * (non-Javadoc)
+     *
+     * @see
+     * org.kawanfw.sql.api.server.auth.UserAuthenticator#login(java.lang.String,
+     * char[], java.lang.String, java.lang.String)
      */
     /**
      * @return <code>true</code> if the Authentication Web Service defined in
@@ -112,8 +132,7 @@ public class WebServiceUserAuthenticator implements UserAuthenticator {
 	SimpleHttpClient simpleHttpClient = new SimpleHttpClient(connectTimeout, readTimeout);
 	if (Boolean.parseBoolean(httpTraceStr)) {
 	    SimpleHttpClient.TRACE_ON = true;
-	}
-	else {
+	} else {
 	    SimpleHttpClient.TRACE_ON = false;
 	}
 
@@ -128,7 +147,7 @@ public class WebServiceUserAuthenticator implements UserAuthenticator {
 	    if (logger == null) {
 		logger = new DefaultDatabaseConfigurator().getLogger();
 	    }
-	    logger.log(Level.SEVERE,  getInitTag() + "Username " + username
+	    logger.log(Level.SEVERE, getInitTag() + "Username " + username
 		    + " can not authenticate. Error when calling SimpleHttpClient: " + e.getMessage());
 	    return false;
 	}
@@ -155,7 +174,8 @@ public class WebServiceUserAuthenticator implements UserAuthenticator {
 	    if (logger == null) {
 		logger = new DefaultDatabaseConfigurator().getLogger();
 	    }
-	    logger.log(Level.SEVERE, getInitTag() + "Error when parsing jsonResult of Authentication Web Service: " + e.getMessage());
+	    logger.log(Level.SEVERE,
+		    getInitTag() + "Error when parsing jsonResult of Authentication Web Service: " + e.getMessage());
 	    return false;
 	}
 

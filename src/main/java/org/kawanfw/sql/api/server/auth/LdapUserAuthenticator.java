@@ -44,8 +44,12 @@ import org.kawanfw.sql.tomcat.TomcatStarterUtil;
 import org.kawanfw.sql.util.Tag;
 
 /**
- * A concrete {@code UserAuthenticator} that allows zero-code remote
- * client {@code (username, password)} authentication against a LDAP server.
+ * A concrete {@link UserAuthenticator} that allows zero-code remote client
+ * {@code (username, password)} authentication against a LDAP server. <br>
+ * <br>
+ * The LDAP server that authenticates the users is defined in the
+ * {@code ldapUserAuthenticator.url} property in the
+ * {@code aceql-server.properties} file.
  *
  * @author Nicolas de Pomereu
  * @since 5.0

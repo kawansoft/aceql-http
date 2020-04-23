@@ -171,7 +171,7 @@ $ aceql-server -version
 It will display a line with all version info, like:
 
 ```
-AceQL HTTP Community v5.0.2 - 10-Apr-2020
+AceQL HTTP Community v5.0.2 - 22-Apr-2020
 ```
 
 ### Configure JDBC parameters in aceql-server.properties file
@@ -219,7 +219,7 @@ The console will display the properties used, test that the Connection is establ
 
 ```bash
 [ACEQL HTTP START] Starting AceQL HTTP Web Server...
-[ACEQL HTTP START] AceQL HTTP Community v5.0.2 - 10-Apr-2020
+[ACEQL HTTP START] AceQL HTTP Community v5.0.2 - 22-Apr-2020
 [ACEQL HTTP START] Using properties file: 
 [ACEQL HTTP START]  -> /home/mike/aceql-http/conf/aceql-server.properties
 [ACEQL HTTP START] Setting System Properties:

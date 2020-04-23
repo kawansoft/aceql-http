@@ -43,8 +43,12 @@ import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 
 /**
- * A concrete {@code UserAuthenticator} that allows zero-code remote
+ * A concrete {@link UserAuthenticator} that allows zero-code remote
  * client {@code (username, password)} authentication against a SSH server.
+ * <br><br>
+ * The SSH server that authenticates the users is defined in the
+ * {@code sshUserAuthenticator.host} property in the
+ * {@code aceql-server.properties} file.
  *
  * @author Nicolas de Pomereu
  * @since 5.0

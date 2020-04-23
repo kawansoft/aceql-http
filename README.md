@@ -184,7 +184,7 @@ Notes:
 
 - All these databases have been intensively tested with AceQL.
 - The table designates the tested version. Prior versions *should* work correctly with their corresponding JDBC 4.0 driver.
-- AceQL will support all     subsequent versions of each database.
+- AceQL will support all subsequent versions of each database.
 
 # Download and Installation
 
@@ -246,7 +246,7 @@ Call the `aceql-server` script to display the AceQL version:
 It will display a line with all version info, like:
 
 ```
-AceQL HTTP Community v5.0.2 - 10-Apr-2020
+AceQL HTTP Community v5.0.2 - 22-Apr-2020
 ```
 
 
@@ -261,7 +261,7 @@ Run the installer.
 
 It will run AceQL at end of installation and display the Window:
 
-<img src="https://www.aceql.com/rest/soft/5.0.2/img/aceql_windows_gui_home.png" alt="AceQ HTTP GUI Main Windows"/> 
+<img src="https://www.aceql.com/rest/soft/5.0.1/img/aceql_windows_gui_home.png" alt="AceQ HTTP GUI Main Windows"/> 
 
 **N.B:** Because of a bug in early versions of Java 9 on Windows, the interface will appear "ugly"  or "blurred" on Java 9 if you have increased Windows Screen Resolution Options to 125% or 150%. See https://goo.gl/PAVvrd for more info. Set back Windows Screen Resolution to 100% for clean display.
 
@@ -872,7 +872,7 @@ It will display a JSON string and should display a status of `"OK"` and the curr
 ```json
 {
     "status": "OK",
-    "version": "AceQL HTTP v5.0.2 - 10-Apr-2020"
+    "version": "AceQL HTTP v5.0.2 - 22-Apr-2020"
 }         
 ```
 
