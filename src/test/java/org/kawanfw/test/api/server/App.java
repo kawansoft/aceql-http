@@ -46,7 +46,7 @@ public class App {
 	System.out.println(new Date() + " Begin...");
 	File file = new File("c:\\test\\sc.out.html");
 
-	SchemaInfoAccessor schemaInfoAccessor = new SchemaInfoAccessor(connection);
+	SchemaInfoAccessor schemaInfoAccessor = new SchemaInfoAccessor(connection, "sampledb");
 	System.out.println("schemaInfoAccessor: " + schemaInfoAccessor.isAccessible());
 
 	if (schemaInfoAccessor.isAccessible()) {

@@ -41,6 +41,7 @@ import javax.sql.DataSource;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.kawanfw.sql.api.server.util.NoFormatter;
+import org.kawanfw.sql.api.server.util.UsernameConverter;
 import org.kawanfw.sql.servlet.ServerSqlManager;
 import org.kawanfw.sql.tomcat.TomcatSqlModeStore;
 import org.kawanfw.sql.tomcat.TomcatStarterUtil;
@@ -190,6 +191,10 @@ public class DefaultDatabaseConfigurator implements DatabaseConfigurator {
 	if (!userHome.endsWith(File.separator)) {
 	    userHome += File.separator;
 	}
+
+	// Escape invalid chars, mostly for Windows
+	username = UsernameConverter.fromSpecialChars(username);
+
 	userHome += ".aceql-server-root" + File.separator + username;
 	File userHomeDir = new File(userHome);
 	userHomeDir.mkdirs();

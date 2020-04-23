@@ -55,9 +55,8 @@ import org.kawanfw.sql.api.server.StatementAnalyzer;
  * implementation that is *not* secured and should be extended:
  * {@link DefaultSqlFirewallManager}.
  * <p>
- * The framework is also provided with built in / ready to use classes that
- * don't require any coding. The classes may be chained. See each Javadoc for
- * more details:
+ * Built in and ready to use classes that don't require any coding are included.
+ * The classes may be chained. See each Javadoc for more details:
  * <ul>
  * <li>{@link CsvRulesManager}: manager that apply rules written in a CSV
  * file.</li>
@@ -66,11 +65,11 @@ import org.kawanfw.sql.api.server.StatementAnalyzer;
  * <li>{@link DenyDdlManager}: manager that denies any DDL (Data Definition
  * Language) call.</li>
  * <li>{@link DenyExecuteUpdateManager}: manager that denies any update of the
- *  database.</li>
+ * database.</li>
  * <li>{@link DenyMetadataQueryManager}: manager that denies the use of the
  * AceQL Metadata Query API.</li>
- * <li>{@link DenyStatementClassManager}: manager that denies any call of
- * the raw Statement Java class. (Calling Statements without parameters is
+ * <li>{@link DenyStatementClassManager}: manager that denies any call of the
+ * raw Statement Java class. (Calling Statements without parameters is
  * forbidden).</li>
  * </ul>
  * <p>

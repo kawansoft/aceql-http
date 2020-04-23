@@ -65,6 +65,7 @@ import schemacrawler.tools.options.TextOutputFormat;
 public class SchemaInfoSC {
 
     private Connection connection = null;
+    private String database = null;
     private SchemaInfoLevel schemaInfoLevel = SchemaInfoLevelBuilder.standard();
 
     private String SC_NAME= "SchemaCrawler";
@@ -77,14 +78,20 @@ public class SchemaInfoSC {
     /**
      * Constructor.
      * @param connection
+     * @param database
      * @throws SQLException
      */
-    public SchemaInfoSC(Connection connection) throws SQLException {
+    public SchemaInfoSC(Connection connection, String database) throws SQLException {
 	if (connection == null) {
 	    throw new NullPointerException("connection is null!");
 	}
+	if (database == null) {
+	    throw new NullPointerException("database is null!");
+	}
 
 	this.connection = connection;
+	this.database = database;
+
 	AceQLMetaData aceQLMetaData = new AceQLMetaData(connection);
 	List<String> tables = aceQLMetaData.getTableNames();
 	for (String tableName : tables) {
@@ -92,8 +99,8 @@ public class SchemaInfoSC {
 	}
     }
 
-    public SchemaInfoSC(Connection connection, SchemaInfoLevel schemaInfoLevel) throws SQLException {
-	this(connection);
+    public SchemaInfoSC(Connection connection, SchemaInfoLevel schemaInfoLevel, String database) throws SQLException {
+	this(connection, database);
 	if (schemaInfoLevel == null) {
 	    throw new NullPointerException("schemaInfoLevel is null!");
 	}
@@ -187,9 +194,7 @@ public class SchemaInfoSC {
 	}
 
 	if (sqlUtil.isSQLServer()) {
-	    AceQLMetaData aceQLMetaData = new AceQLMetaData(connection);
-	    String catalog = aceQLMetaData.getCatalogs().get(0);
-	    Pattern pattern = Pattern.compile(catalog + ".dbo", Pattern.CASE_INSENSITIVE);
+	    Pattern pattern = Pattern.compile(database + ".dbo", Pattern.CASE_INSENSITIVE);
 	    optionsBuilder.includeSchemas(new RegularExpressionInclusionRule(pattern));
 
 //	    Pattern pattern = Pattern.compile("db_accessadmin|db_backupoperator|db_datareader|db_datawriter|db_ddladmin|db_denydatareader|db_denydatawriter|db_owner|db_securityadmin|guest|INFORMATION_SCHEMA|sys", Pattern.CASE_INSENSITIVE);

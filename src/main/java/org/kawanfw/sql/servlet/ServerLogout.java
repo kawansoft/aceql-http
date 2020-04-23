@@ -1,24 +1,24 @@
 /*
  * This file is part of AceQL HTTP.
- * AceQL HTTP: SQL Over HTTP                                     
+ * AceQL HTTP: SQL Over HTTP
  * Copyright (C) 2020,  KawanSoft SAS
- * (http://www.kawansoft.com). All rights reserved.                                
- *                                                                               
- * AceQL HTTP is free software; you can redistribute it and/or                 
- * modify it under the terms of the GNU Lesser General Public                    
- * License as published by the Free Software Foundation; either                  
- * version 2.1 of the License, or (at your option) any later version.            
- *                                                                               
- * AceQL HTTP is distributed in the hope that it will be useful,               
- * but WITHOUT ANY WARRANTY; without even the implied warranty of                
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU             
- * Lesser General Public License for more details.                               
- *                                                                               
- * You should have received a copy of the GNU Lesser General Public              
- * License along with this library; if not, write to the Free Software           
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  
+ * (http://www.kawansoft.com). All rights reserved.
+ *
+ * AceQL HTTP is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * AceQL HTTP is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
  * 02110-1301  USA
- * 
+ *
  * Any modifications to this file must keep this entire header
  * intact.
  */
@@ -48,92 +48,92 @@ import org.kawanfw.sql.util.FrameworkDebug;
  */
 public class ServerLogout {
 
-	private static boolean DEBUG = FrameworkDebug.isSet(ServerLogout.class);;
+    private static boolean DEBUG = FrameworkDebug.isSet(ServerLogout.class);;
 
-	// A space
-	public static final String SPACE = " ";
+    // A space
+    public static final String SPACE = " ";
 
-	private static final long TWENTY_MINUTES_IN_MILLISECONDS = 1000 * 60 * 20;
+    private static final long TWENTY_MINUTES_IN_MILLISECONDS = 1000 * 60 * 20;
 
-	public static void logout(HttpServletRequest request, HttpServletResponse response,
-			DatabaseConfigurator databaseConfigurator) throws IOException {
+    public static void logout(HttpServletRequest request, HttpServletResponse response,
+	    DatabaseConfigurator databaseConfigurator) throws IOException {
 
-		PrintWriter out = response.getWriter();
+	PrintWriter out = response.getWriter();
 
-		try {
-			response.setContentType("text/html");
+	try {
+	    response.setContentType("text/html");
 
-			String username = request.getParameter(HttpParameter.USERNAME);
-			String sessionId = request.getParameter(HttpParameter.SESSION_ID);
+	    String username = request.getParameter(HttpParameter.USERNAME);
+	    String sessionId = request.getParameter(HttpParameter.SESSION_ID);
 
-			SessionConfigurator sessionConfigurator = ServerSqlManager.getSessionManagerConfigurator();
-			sessionConfigurator.remove(sessionId);
+	    SessionConfigurator sessionConfigurator = ServerSqlManager.getSessionManagerConfigurator();
+	    sessionConfigurator.remove(sessionId);
 
-			Set<Connection> connections = ConnectionStore.getAllConnections(username, sessionId);
+	    Set<Connection> connections = ConnectionStore.getAllConnections(username, sessionId);
 
-			for (Connection connection : connections) {
-				// ConnectionCloser.freeConnection(connection, databaseConfigurator);
-				databaseConfigurator.close(connection);
-			}
+	    for (Connection connection : connections) {
+		// ConnectionCloser.freeConnection(connection, databaseConfigurator);
+		databaseConfigurator.close(connection);
+	    }
 
-			ConnectionStore.removeAll(username, sessionId);
+	    ConnectionStore.removeAll(username, sessionId);
 
-			deleteOldBlobFiles(databaseConfigurator, username);
+	    deleteOldBlobFiles(databaseConfigurator, username);
 
-			String jSonReturn = JsonOkReturn.build();
+	    String jSonReturn = JsonOkReturn.build();
 
-			if (DEBUG) {
-				System.err.println("jSonReturn: " + jSonReturn);
-				System.err.println(sessionId);
-			}
+	    if (DEBUG) {
+		System.err.println("jSonReturn: " + jSonReturn);
+		System.err.println(sessionId);
+	    }
 
-			out.println(jSonReturn);
+	    out.println(jSonReturn);
 
-		} catch (Exception e) {
+	} catch (Exception e) {
 
-			JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-					JsonErrorReturn.ERROR_ACEQL_FAILURE, e.getMessage(), ExceptionUtils.getStackTrace(e));
-			out.println(errorReturn.build());
-
-		}
-	}
-
-	/**
-	 * Delete all files, but do throw error if problem, except development control
-	 * null pointer exception
-	 * 
-	 * @param databaseConfigurator
-	 * @param username
-	 */
-	private static void deleteOldBlobFiles(DatabaseConfigurator databaseConfigurator, String username)
-			throws IOException, SQLException {
-
-		if (databaseConfigurator == null) {
-			throw new NullPointerException("databaseConfigurator is null!");
-		}
-
-		if (username == null) {
-			throw new NullPointerException("username is null!");
-		}
-
-		// Delete all files
-		File blobDirectory = databaseConfigurator.getBlobsDirectory(username);
-		if (blobDirectory == null || !blobDirectory.exists()) {
-			return;
-		}
-
-		File[] files = blobDirectory.listFiles();
-
-		if (files == null) {
-			return;
-		}
-
-		for (File file : files) {
-			if (file.lastModified() < System.currentTimeMillis() - TWENTY_MINUTES_IN_MILLISECONDS) {
-				file.delete();
-			}
-		}
+	    JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+		    JsonErrorReturn.ERROR_ACEQL_FAILURE, e.getMessage(), ExceptionUtils.getStackTrace(e));
+	    out.println(errorReturn.build());
 
 	}
+    }
+
+    /**
+     * Delete all files, but do throw error if problem, except development control
+     * null pointer exception
+     *
+     * @param databaseConfigurator
+     * @param username
+     */
+    private static void deleteOldBlobFiles(DatabaseConfigurator databaseConfigurator, String username)
+	    throws IOException, SQLException {
+
+	if (databaseConfigurator == null) {
+	    throw new NullPointerException("databaseConfigurator is null!");
+	}
+
+	if (username == null) {
+	    throw new NullPointerException("username is null!");
+	}
+
+	// Delete all files
+	File blobDirectory = databaseConfigurator.getBlobsDirectory(username);
+	if (blobDirectory == null || !blobDirectory.exists()) {
+	    return;
+	}
+
+	File[] files = blobDirectory.listFiles();
+
+	if (files == null) {
+	    return;
+	}
+
+	for (File file : files) {
+	    if (file.lastModified() < System.currentTimeMillis() - TWENTY_MINUTES_IN_MILLISECONDS) {
+		file.delete();
+	    }
+	}
+
+    }
 
 }

@@ -1,6 +1,6 @@
 
                      AceQL HTTP
-                    Version 5.0.1
+                    Version 5.0.2
                     Release Notes
 
 
@@ -24,6 +24,19 @@ and code strong security rules in order to protect the databases.
 AceQL HTTP is licensed through the GNU Lesser General Public License 
 (LGPL v2.1).
 
+
+AceQL HTTP Version 5.0.2 - 22-Apr-2020
+--------------------------------------
+
+What's New:
+- Javadoc has been enhanced for the UserAuthenticator interface and for 
+  the provided implementation classes.
+- Special chars (in escaped format) are now supported in LDAP Distinguished Names.
+
+Bugs fixed:
+- The schema produced by the db_schema_download API would not include correctly 
+  the database tables with MS SQL Server. This has been fixed.
+ 
 
 AceQL HTTP Version 5.0.1 - 10-Apr-2020
 --------------------------------------

@@ -29,10 +29,10 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 /**
- * A concrete and unsafe {@code UserAuthenticator} that always grant access to
+ * A concrete and unsafe {@link UserAuthenticator} that always grant access to
  * remote client users. <br>
  * This class will be automatically loaded if no {@code UserAuthenticator} has
- * been declared in the aceql-server.properties file.
+ * been declared in the {@code aceql-server.properties} file.
  *
  * @author Nicolas de Pomereu
  * @since 5.0

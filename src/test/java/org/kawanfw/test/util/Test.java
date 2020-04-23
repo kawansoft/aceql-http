@@ -20,6 +20,8 @@ public class Test {
      * @param args
      */
     public static void main(String[] args) {
+
+
 	System.out.println(org.kawanfw.sql.api.server.auth.UserAuthenticator.class.getPackage().getName());
 
     }
