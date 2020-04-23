@@ -58,15 +58,15 @@ import org.kawanfw.sql.util.Tag;
  * {@code aceql-server.properties} file. <br>
  * <br>
  * The Web service must just implement these features:
- * <Ul>
- * <li>It must accept the 2 POST parameters username and password.</li>
- * <li>It must return either:</li>
+ * <ul>
+ * <li>It must accept the 2 POST parameters {@code username} and {@code password}.</li>
+ * <li>It must return either:
  * <ul>
  * <li>The JSON string <code>{"status"="OK"}</code> if the authentication
  * succeeds.</li>
  * <li>The JSON string <code>{"status"="FAIL"}</code> if the authentication
  * fails.</li>
- * </ul>
+ * </ul></li>
  * </ul>
  *
  * @author Nicolas de Pomereu

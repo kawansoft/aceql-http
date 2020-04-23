@@ -29,7 +29,8 @@ AceQL HTTP Version 5.0.2 - 22-Apr-2020
 --------------------------------------
 
 What's New:
-- Javadoc has been enhanced in the UserAuthenticator interface.
+- Javadoc has been enhanced for the UserAuthenticator interface and for 
+  the provided implementation classes.
 - Special chars (in escaped format) are now supported in LDAP Distinguished Names.
 
 Bugs fixed:
