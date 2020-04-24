@@ -159,7 +159,7 @@ This User Guide covers:
 
 ## Technical operating environment
 
-The AceQL HTTP server side is entirely written in Java, and functions identically under Microsoft Windows, Linux, and all versions of UNIX that support Java 8+,Servlet 3.1+ and JDBC 4.0+.
+The AceQL HTTP server side is entirely written in Java, and functions identically under Microsoft Windows, Linux, and all versions of UNIX that support Java 8+ ,Servlet 3.1+ and JDBC 4.0+.
 
 The only required third party installation is a Java 8+.
 
@@ -263,7 +263,7 @@ It will run AceQL at end of installation and display the Window:
 
 <img src="https://www.aceql.com/rest/soft/5.0.1/img/aceql_windows_gui_home.png" alt="AceQ HTTP GUI Main Windows"/> 
 
-**N.B:** Because of a bug in early versions of Java 9 on Windows, the interface will appear "ugly"  or "blurred" on Java 9 if you have increased Windows Screen Resolution Options to 125% or 150%. See https://goo.gl/PAVvrd for more info. Set back Windows Screen Resolution to 100% for clean display.
+**N.B:** Because of a bug in all Java versions > 8 on Windows, the interface will appear "ugly"  or "blurred" on Java version > 8 if you have increased Windows Screen Resolution Options to 125% or 150%.  See [Java Bug Database](https://bugs.java.com/bugdatabase/view_bug.do?bug_id=JDK-8194165) for more info. Set back Windows Screen Resolution to 100% for clean display.
 
 # Quickstart
 

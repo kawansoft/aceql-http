@@ -25,6 +25,15 @@ AceQL HTTP is licensed through the GNU Lesser General Public License
 (LGPL v2.1).
 
 
+WINDOWS VERSION ONLY - AceQL HTTP  Version 5.0.2b - 25-Apr-2020
+---------------------------------------------------------------
+
+What's New:
+- Support for Java 13 and 14. 
+  It is highly recommended to upgrade to this AceQL version on all 
+  Windows installations using Java > 8.
+
+
 AceQL HTTP Version 5.0.2 - 22-Apr-2020
 --------------------------------------
 

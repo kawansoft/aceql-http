@@ -1,24 +1,24 @@
 /*
  * This file is part of AceQL HTTP.
- * AceQL HTTP: SQL Over HTTP                                     
+ * AceQL HTTP: SQL Over HTTP
  * Copyright (C) 2020,  KawanSoft SAS
- * (http://www.kawansoft.com). All rights reserved.                                
- *                                                                               
- * AceQL HTTP is free software; you can redistribute it and/or                 
- * modify it under the terms of the GNU Lesser General Public                    
- * License as published by the Free Software Foundation; either                  
- * version 2.1 of the License, or (at your option) any later version.            
- *                                                                               
- * AceQL HTTP is distributed in the hope that it will be useful,               
- * but WITHOUT ANY WARRANTY; without even the implied warranty of                
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU             
- * Lesser General Public License for more details.                               
- *                                                                               
- * You should have received a copy of the GNU Lesser General Public              
- * License along with this library; if not, write to the Free Software           
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  
+ * (http://www.kawansoft.com). All rights reserved.
+ *
+ * AceQL HTTP is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * AceQL HTTP is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
  * 02110-1301  USA
- * 
+ *
  * Any modifications to this file must keep this entire header
  * intact.
  */
@@ -35,9 +35,9 @@ import javax.json.JsonString;
 import javax.json.JsonStructure;
 
 /**
- * 
+ *
  * Analyses the JSON result sent by server
- * 
+ *
  * @author Nicolas de Pomereu
  *
  */
@@ -55,7 +55,7 @@ class ResultAnalyzer {
 
     /**
      * Constructor
-     * 
+     *
      * @param jsonResult
      * @param httpStatusCode
      * @param httpStatusMessage
@@ -74,7 +74,7 @@ class ResultAnalyzer {
 
     /**
      * Says if status is OK
-     * 
+     *
      * @return true if status is OK
      */
     public boolean isStatusOk() {
@@ -105,7 +105,7 @@ class ResultAnalyzer {
 
     /**
      * Returns the result for key name "result"
-     * 
+     *
      * @param name
      * @return the value
      */
@@ -115,7 +115,7 @@ class ResultAnalyzer {
 
     /**
      * Returns the value for a name
-     * 
+     *
      * @param name
      * @return the value
      */
@@ -148,7 +148,7 @@ class ResultAnalyzer {
 
     /**
      * Says if the JSON Stream is invalid
-     * 
+     *
      * @return rue if JSOn stream is invalid
      */
     private boolean isInvalidJsonStream() {
@@ -165,7 +165,7 @@ class ResultAnalyzer {
 
     /**
      * Returns the int value for a name
-     * 
+     *
      * @param name
      * @return the value
      */
@@ -221,7 +221,7 @@ class ResultAnalyzer {
 
     /**
      * Returns the error_type in case of failure
-     * 
+     *
      * @return the error_type in case of failure, -1 if no error
      */
     public int getErrorType() {
@@ -257,7 +257,7 @@ class ResultAnalyzer {
 
     /**
      * Returns the error_message in case of failure
-     * 
+     *
      * @return the error_message in case of failure, null if no error
      */
     public String getErrorMessage() {
@@ -299,7 +299,7 @@ class ResultAnalyzer {
 
     /**
      * Returns the stack_trace in case of failure
-     * 
+     *
      * @return the stack_trace in case of failure, null if no stack_trace
      */
     public String getStackTrace() {
@@ -341,7 +341,7 @@ class ResultAnalyzer {
 
     /**
      * Returns the Exception raised when parsing JSON stream
-     * 
+     *
      * @return the Exception raised when parsing JSON stream
      */
     public Exception getParseException() {
