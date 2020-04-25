@@ -125,7 +125,7 @@ AceQL requires the installation of Java version 8+.
 Open a terminal and download with `Wget` 
 
 ```bash
-$ wget https://www.aceql.com/rest/soft/5.0.2/download/aceql-http-5.0.2.run
+$ wget https://www.aceql.com/soft/download/5.0.2/aceql-http-5.0.2.run
 ```
 
 If you get a certificate error message, do one of the following:
