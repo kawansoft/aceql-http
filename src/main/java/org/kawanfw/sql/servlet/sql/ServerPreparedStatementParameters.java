@@ -257,7 +257,6 @@ public class ServerPreparedStatementParameters {
 	    else if (paramType.equalsIgnoreCase(AceQLTypes.BIGINT)) {
 
 		if (isInParameter(paramDirection)) {
-		    // Long theLong = new Long(paramValue);
 		    Long theLong = Long.parseLong(paramValue);
 
 		    preparedStatement.setLong(paramIndex, theLong.longValue());
@@ -268,11 +267,10 @@ public class ServerPreparedStatementParameters {
 	    } else if (paramType.equalsIgnoreCase(AceQLTypes.REAL)) {
 
 		if (isInParameter(paramDirection)) {
-		    // loat theFloat = new Float(paramValue);
 		    Float theFloat = Float.parseFloat(paramValue);
 
-		    preparedStatement.setFloat(paramIndex, theFloat.longValue());
-		    parameterValues.put(paramIndex, theFloat.longValue());
+		    preparedStatement.setFloat(paramIndex, theFloat.floatValue());
+		    parameterValues.put(paramIndex, theFloat.floatValue());
 		}
 		registerOutParameter(paramIndex, paramType, paramDirection);
 
@@ -280,7 +278,6 @@ public class ServerPreparedStatementParameters {
 		    || paramType.equalsIgnoreCase(AceQLTypes.DOUBLE_PRECISION)) {
 
 		if (isInParameter(paramDirection)) {
-		    // Double theDouble = new Double(paramValue);
 		    Double theDouble = Double.valueOf(paramValue);
 
 		    preparedStatement.setDouble(paramIndex, theDouble);
@@ -294,7 +291,6 @@ public class ServerPreparedStatementParameters {
 	    // TIMESTAMP java.sql.Timestamp
 	    else if (paramType.equalsIgnoreCase(AceQLTypes.DATE)) {
 		if (isInParameter(paramDirection)) {
-		    // long timemilliseconds = new Long(paramValue).longValue();
 		    long timemilliseconds = Long.parseLong(paramValue);
 
 		    java.sql.Date theDateTime = new java.sql.Date(timemilliseconds);
@@ -305,7 +301,6 @@ public class ServerPreparedStatementParameters {
 
 	    } else if (paramType.equalsIgnoreCase(AceQLTypes.TIME)) {
 		if (isInParameter(paramDirection)) {
-		    // long timemilliseconds = new Long(paramValue).longValue();
 		    long timemilliseconds = Long.parseLong(paramValue);
 
 		    java.sql.Time theDateTime = new java.sql.Time(timemilliseconds);
@@ -317,7 +312,6 @@ public class ServerPreparedStatementParameters {
 	    } else if (paramType.equalsIgnoreCase(AceQLTypes.TIMESTAMP)) {
 
 		if (isInParameter(paramDirection)) {
-		    // long timemilliseconds = new Long(paramValue).longValue();
 		    long timemilliseconds = Long.parseLong(paramValue);
 
 		    java.sql.Timestamp theDateTime = new java.sql.Timestamp(timemilliseconds);
