@@ -651,15 +651,10 @@ From now on, you can read the [C# Client SDK User Guide](https://www.aceql.com/D
    ```xml
    <groupId>com.aceql</groupId>
    <artifactId>aceql-http-client-sdk</artifactId>
-   <version>4.0.2</version>
+   <version>4.1</version>
    ```
 
-<<<<<<< HEAD
-2. If you don’t use Maven: the [aceql-http-client-all-4.0.2.jar](https://www.aceql.com/SoftwareDownload?software=aceql-http-client-sdk-all-4.0.2.jar&version=5.0) file contains the SDK with all dependencies.
-=======
-2. If you don’t use Maven: the [aceql-http-client-all-4.0.2.jar](https://www.aceql.com/SoftwareDownload?software=aceql-http-client-sdk-all-4.0.2.jar&version=5.0.3) file contains the SDK with all dependencies.
->>>>>>> refs/heads/5.0.3
-
+2. If you don’t use Maven: the [aceql-http-client-all-4.1.jar](https://www.aceql.com/SoftwareDownload?software=aceql-http-client-sdk-all-4.1.jar&version=5.0.3) file contains the SDK with all dependencies.
 3. Create an `org.kawanfw.sql.api.client.quickstart` package in your IDE.
 
 4. Download this Java source file: [MyRemoteConnection.java](https://www.aceql.com/rest/soft/5.0.3/src/MyRemoteConnection.java). Then insert it in the package. 
