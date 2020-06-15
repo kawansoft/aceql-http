@@ -1,6 +1,6 @@
 
                      AceQL HTTP
-                    Version 5.0.2
+                    Version 5.0.3
                     Release Notes
 
 
@@ -25,10 +25,30 @@ AceQL HTTP is licensed through the GNU Lesser General Public License
 (LGPL v2.1).
 
 
+
+AceQL HTTP Version 5.0.2 - 15-Jun-2020
+--------------------------------------
+
+What's New:
+
+- Windows interface signals when user tries to reopen the app instead
+  of redisplaying it from the task bar. 
+  
+- Tomcat base libraries have been updated to 8.3.56 because of Security 
+  requirements.
+
+Bugs fixed:
+
+- Float values could be rounded. This could be a problem for Python client SDK.
+  This has been fixed.
+
+
+
 WINDOWS VERSION ONLY - AceQL HTTP  Version 5.0.2b - 25-Apr-2020
 ---------------------------------------------------------------
 
 What's New:
+
 - Support for Java 13 and 14. 
   It is highly recommended to upgrade to this AceQL version on all 
   Windows installations using Java > 8.
@@ -38,11 +58,13 @@ AceQL HTTP Version 5.0.2 - 22-Apr-2020
 --------------------------------------
 
 What's New:
+
 - Javadoc has been enhanced for the UserAuthenticator interface and for 
   the provided implementation classes.
 - Special chars (in escaped format) are now supported in LDAP Distinguished Names.
 
 Bugs fixed:
+
 - The schema produced by the db_schema_download API would not include correctly 
   the database tables with MS SQL Server. This has been fixed.
  
@@ -51,6 +73,7 @@ AceQL HTTP Version 5.0.1 - 10-Apr-2020
 --------------------------------------
 
 Bugs fixed:
+
 - SELECT calls with more than 20Kb output could randomly fail because 
   of a bug in Glassfish javax.json JSON parser that inserts a \r\n at 
   each 20Kb output.
