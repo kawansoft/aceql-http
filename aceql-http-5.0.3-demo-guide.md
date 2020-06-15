@@ -336,7 +336,7 @@ The console will display the properties used, test that the `Connection` is esta
 
 ```bash
 [ACEQL HTTP START] Starting AceQL HTTP Web Server...
-[ACEQL HTTP START] AceQL HTTP Community v5.0.3 - 10-Apr-2020
+[ACEQL HTTP START] AceQL HTTP Community v5.0.3 - 15-Jun-2020
 [ACEQL HTTP START] Using properties file: 
 [ACEQL HTTP START]  -> I:\_dev_awake\aceql-http-main\aceql-http\conf\aceql-server.properties
 [ACEQL HTTP START] Setting System Properties:

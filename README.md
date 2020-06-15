@@ -1,4 +1,4 @@
-# AceQL HTTP v5.0.3   - June 6,  2020
+# AceQL HTTP v5.0.3   - June 15,  2020
 
 # Server Installation and Configuration Guide  
 
@@ -246,7 +246,7 @@ Call the `aceql-server` script to display the AceQL version:
 It will display a line with all version info, like:
 
 ```
-AceQL HTTP Community v5.0.3 - 22-Apr-2020
+AceQL HTTP Community v5.0.3 - 15-Jun-2020
 ```
 
 
@@ -870,7 +870,7 @@ It will display a JSON string and should display a status of `"OK"` and the curr
 ```json
 {
     "status": "OK",
-    "version": "AceQL HTTP v5.0.3 - 22-Apr-2020"
+    "version": "AceQL HTTP v5.0.3 - 15-Jun-2020"
 }         
 ```
 
