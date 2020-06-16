@@ -388,7 +388,7 @@ AceQL provides several built-in (and ready to use without any coding)  SQL Firew
 
 | SQL Firewall Manager Name   | Details                                                      |
 | --------------------------- | ------------------------------------------------------------ |
-| `CsvRulesManager`           | Manager that apply rules written in a CSV file. (See below). |
+| `CsvRulesManager`           | Manager that applies rules written in a CSV file. (See below). |
 | `DenyDclManager`            | Manager that denies any DCL (Data Control Language) call.    |
 | `DenyDdlManager`            | Manager that denies any DDL (Data Definition Language) call. |
 | `DenyExecuteUpdateManager`  | Manager that denies any update of the database. (The database will be accessed in read only mode). |
