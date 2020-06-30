@@ -245,9 +245,16 @@ public class ResultSetWriter {
 				columnTable);
 			debug("isBinaryColumn:columnValueStr: " + columnValueStr);
 		    } else if (isNStringColumn(columnType)) {
-			columnValueStr = resultSet.getNString(columnIndex);
-			// columnValueStr =
-			// HtmlConverter.toHtml(columnValueStr);
+			columnValue = resultSet.getNString(columnIndex);
+
+			if (resultSet.wasNull()) {
+			    columnValueStr = NULL;
+			} else if (columnValue == null) {
+			    columnValueStr = null;
+			} else {
+			    columnValueStr = columnValue.toString();
+			}
+
 		    } else if (isClobColumn(columnType)) {
 			columnValueStr = formatClobColumn(resultSet, columnIndex);
 		    } else if (columnType == Types.ARRAY) {

@@ -1,6 +1,6 @@
 
                      AceQL HTTP
-                    Version 5.0.3
+                    Version 5.0.4
                     Release Notes
 
 
@@ -24,6 +24,13 @@ and code strong security rules in order to protect the databases.
 AceQL HTTP is licensed through the GNU Lesser General Public License 
 (LGPL v2.1).
 
+
+AceQL HTTP Version 5.0.3 - 15-Jun-2020
+--------------------------------------
+
+Bugs fixed:
+
+- nvarchar, nchar, ntext would not support NULL values. This has been fixed.
 
 
 AceQL HTTP Version 5.0.3 - 15-Jun-2020
