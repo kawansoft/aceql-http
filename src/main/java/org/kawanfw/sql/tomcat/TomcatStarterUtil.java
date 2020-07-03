@@ -315,7 +315,7 @@ public class TomcatStarterUtil {
 			    "Connection is null. Please verify all the values in properties file.");
 		}
 
-		// Futur usage
+		// Future usage
 		// Checks that DB Vendor is supported
 		boolean isOk = DbEngineManager.checkDb(properties, connection);
 		if (!isOk) {

@@ -109,9 +109,6 @@ import org.kawanfw.sql.util.FrameworkDebug;
  */
 public class DefaultPoolsInfo extends HttpServlet {
 
-    /**
-     *
-     */
     private static final long serialVersionUID = 6129302507495768396L;
     private static boolean DEBUG = FrameworkDebug.isSet(DefaultPoolsInfo.class);
 
@@ -122,26 +119,20 @@ public class DefaultPoolsInfo extends HttpServlet {
      * HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
     @Override
-    public void doGet(HttpServletRequest request, HttpServletResponse response)
-	    throws IOException {
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
 	executeRequest(request, response);
     }
 
     /**
-     * Execute the client sent SQL request. Exception are trapped, cleanly
-     * returned to client side and logged on DatabaseConfigurator.getLogger()
-     * Logger.
+     * Execute the client sent SQL request. Exception are trapped, cleanly returned
+     * to client side and logged on DatabaseConfigurator.getLogger() Logger.
      *
-     * @param request
-     *            the http request
-     * @param response
-     *            the http response
-     * @throws IOException
-     *             if any IOException occurs
+     * @param request  the http request
+     * @param response the http response
+     * @throws IOException if any IOException occurs
      */
-    private void executeRequest(HttpServletRequest request,
-	    HttpServletResponse response) throws IOException {
+    private void executeRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
 	OutputStream out = null;
 
@@ -162,19 +153,14 @@ public class DefaultPoolsInfo extends HttpServlet {
     /**
      * Execute the client request
      *
-     * @param request
-     *            the http request
-     * @param response
-     *            the http response
-     * @param out
-     *            the output stream to write result to client
-     * @throws IOException
-     *             if any IOException occurs
+     * @param request  the http request
+     * @param response the http response
+     * @param out      the output stream to write result to client
+     * @throws IOException         if any IOException occurs
      * @throws SQLException
      * @throws FileUploadException
      */
-    private void executeRequestInTryCatch(HttpServletRequest request,
-	    HttpServletResponse response, OutputStream out)
+    private void executeRequestInTryCatch(HttpServletRequest request, HttpServletResponse response, OutputStream out)
 	    throws IOException, SQLException, FileUploadException {
 
 	debug("Starting...");
@@ -186,10 +172,8 @@ public class DefaultPoolsInfo extends HttpServlet {
 
 	if (password == null || password.isEmpty()) {
 	    out = response.getOutputStream();
-	    JsonErrorReturn errorReturn = new JsonErrorReturn(response,
-		    HttpServletResponse.SC_FORBIDDEN,
-		    JsonErrorReturn.ERROR_ACEQL_UNAUTHORIZED,
-		    JsonErrorReturn.INVALID_USERNAME_OR_PASSWORD);
+	    JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_FORBIDDEN,
+		    JsonErrorReturn.ERROR_ACEQL_UNAUTHORIZED, JsonErrorReturn.INVALID_USERNAME_OR_PASSWORD);
 	    ServerSqlManager.writeLine(out, errorReturn.build());
 
 	    return;
@@ -198,26 +182,16 @@ public class DefaultPoolsInfo extends HttpServlet {
 	String storedPassword = null;
 
 	try {
-	    storedPassword = FileUtils
-		    .readFileToString(
-			    new File(SystemUtils.USER_HOME + File.separator
-				    + ".kawansoft" + File.separator
-				    + "default_pools_info_password.txt"),
-			    "UTF-8");
+	    storedPassword = FileUtils.readFileToString(new File(SystemUtils.USER_HOME + File.separator + ".kawansoft"
+		    + File.separator + "default_pools_info_password.txt"), "UTF-8");
 
-	    System.out.println("storedPassword: " + storedPassword + ":");
-
-	    if (storedPassword == null
-		    || !storedPassword.trim().equals(password)) {
-		throw new IllegalArgumentException(
-			JsonErrorReturn.INVALID_USERNAME_OR_PASSWORD);
+	    if (storedPassword == null || !storedPassword.trim().equals(password)) {
+		throw new IllegalArgumentException(JsonErrorReturn.INVALID_USERNAME_OR_PASSWORD);
 	    }
 	} catch (Exception e) {
 	    out = response.getOutputStream();
-	    JsonErrorReturn errorReturn = new JsonErrorReturn(response,
-		    HttpServletResponse.SC_FORBIDDEN,
-		    JsonErrorReturn.ERROR_ACEQL_UNAUTHORIZED,
-		    JsonErrorReturn.INVALID_USERNAME_OR_PASSWORD);
+	    JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_FORBIDDEN,
+		    JsonErrorReturn.ERROR_ACEQL_UNAUTHORIZED, JsonErrorReturn.INVALID_USERNAME_OR_PASSWORD);
 	    ServerSqlManager.writeLine(out, errorReturn.build());
 	    return;
 	}
@@ -230,10 +204,8 @@ public class DefaultPoolsInfo extends HttpServlet {
 
 	    out = response.getOutputStream();
 
-	    JsonErrorReturn errorReturn = new JsonErrorReturn(response,
-		    HttpServletResponse.SC_BAD_REQUEST,
-		    JsonErrorReturn.ERROR_ACEQL_ERROR,
-		    JsonErrorReturn.NO_DATASOURCES_DEFINED);
+	    JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_BAD_REQUEST,
+		    JsonErrorReturn.ERROR_ACEQL_ERROR, JsonErrorReturn.NO_DATASOURCES_DEFINED);
 	    ServerSqlManager.writeLine(out, errorReturn.build());
 
 	    return;
@@ -260,23 +232,20 @@ public class DefaultPoolsInfo extends HttpServlet {
 
 	    if (setDatabase == null || setDatabase.equals(database)) {
 		String doSet = request.getParameter("setMinIdle");
-		if (doSet != null && !doSet.isEmpty()
-			&& StringUtils.isNumeric(doSet)) {
+		if (doSet != null && !doSet.isEmpty() && StringUtils.isNumeric(doSet)) {
 		    if (StringUtils.isNumeric(doSet)) {
 			dataSourceProxy.setMinIdle(Integer.parseInt(doSet));
 		    }
 		}
 		doSet = request.getParameter("setMaxIdle");
-		if (doSet != null && !doSet.isEmpty()
-			&& StringUtils.isNumeric(doSet)) {
+		if (doSet != null && !doSet.isEmpty() && StringUtils.isNumeric(doSet)) {
 		    if (StringUtils.isNumeric(doSet)) {
 			dataSourceProxy.setMaxIdle(Integer.parseInt(doSet));
 		    }
 		}
 
 		doSet = request.getParameter("setMaxActive");
-		if (doSet != null && !doSet.isEmpty()
-			&& StringUtils.isNumeric(doSet)) {
+		if (doSet != null && !doSet.isEmpty() && StringUtils.isNumeric(doSet)) {
 		    if (StringUtils.isNumeric(doSet)) {
 			dataSourceProxy.setMaxActive(Integer.parseInt(doSet));
 		    }
@@ -285,38 +254,20 @@ public class DefaultPoolsInfo extends HttpServlet {
 
 	    gen.writeStartObject().write("database", database).writeEnd();
 
-	    gen.writeStartObject()
-		    .write("getBorrowedCount()", dataSourceProxy.getBorrowedCount())
+	    gen.writeStartObject().write("getBorrowedCount()", dataSourceProxy.getBorrowedCount()).writeEnd();
+	    gen.writeStartObject().write("getMaxActive()", dataSourceProxy.getMaxActive()).writeEnd();
+	    gen.writeStartObject().write("getMaxIdle()", dataSourceProxy.getMaxIdle()).writeEnd();
+	    gen.writeStartObject().write("getMinIdle()", dataSourceProxy.getMinIdle()).writeEnd();
+	    gen.writeStartObject().write("getNumActive()", dataSourceProxy.getNumActive()).writeEnd();
+	    gen.writeStartObject().write("getNumIdle()", dataSourceProxy.getNumIdle()).writeEnd();
+	    gen.writeStartObject().write("getReconnectedCount()", dataSourceProxy.getReconnectedCount()).writeEnd();
+	    gen.writeStartObject().write("getReleasedCount()", dataSourceProxy.getReleasedCount()).writeEnd();
+	    gen.writeStartObject().write("getReleasedIdleCount()", dataSourceProxy.getReleasedIdleCount()).writeEnd();
+	    gen.writeStartObject().write("getRemoveAbandonedCount()", dataSourceProxy.getRemoveAbandonedCount())
 		    .writeEnd();
-	    gen.writeStartObject()
-		    .write("getMaxActive()", dataSourceProxy.getMaxActive())
-		    .writeEnd();
-	    gen.writeStartObject()
-		    .write("getMaxIdle()", dataSourceProxy.getMaxIdle()).writeEnd();
-	    gen.writeStartObject()
-		    .write("getMinIdle()", dataSourceProxy.getMinIdle()).writeEnd();
-	    gen.writeStartObject()
-		    .write("getNumActive()", dataSourceProxy.getNumActive())
-		    .writeEnd();
-	    gen.writeStartObject()
-		    .write("getNumIdle()", dataSourceProxy.getNumIdle()).writeEnd();
-	    gen.writeStartObject().write("getReconnectedCount()",
-		    dataSourceProxy.getReconnectedCount()).writeEnd();
-	    gen.writeStartObject()
-		    .write("getReleasedCount()", dataSourceProxy.getReleasedCount())
-		    .writeEnd();
-	    gen.writeStartObject().write("getReleasedIdleCount()",
-		    dataSourceProxy.getReleasedIdleCount()).writeEnd();
-	    gen.writeStartObject().write("getRemoveAbandonedCount()",
-		    dataSourceProxy.getRemoveAbandonedCount()).writeEnd();
-	    gen.writeStartObject()
-		    .write("getReturnedCount()", dataSourceProxy.getReturnedCount())
-		    .writeEnd();
-	    gen.writeStartObject().write("getSize()", dataSourceProxy.getSize())
-		    .writeEnd();
-	    gen.writeStartObject()
-		    .write("getWaitCount()", dataSourceProxy.getWaitCount())
-		    .writeEnd();
+	    gen.writeStartObject().write("getReturnedCount()", dataSourceProxy.getReturnedCount()).writeEnd();
+	    gen.writeStartObject().write("getSize()", dataSourceProxy.getSize()).writeEnd();
+	    gen.writeStartObject().write("getWaitCount()", dataSourceProxy.getWaitCount()).writeEnd();
 
 	}
 
@@ -331,8 +282,8 @@ public class DefaultPoolsInfo extends HttpServlet {
     }
 
     /**
-     * Method called by children Servlet for debug purpose Println is done only
-     * if class name name is in kawansoft-debug.ini
+     * Method called by children Servlet for debug purpose Println is done only if
+     * class name name is in kawansoft-debug.ini
      */
     private static void debug(String s) {
 	if (DEBUG) {
