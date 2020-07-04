@@ -216,7 +216,6 @@ public class ServletParametersStore {
      */
     public static void setJwtSessionConfiguratorSecretValue(String jwtSessionConfiguratorSecretValue) {
 	ServletParametersStore.jwtSessionConfiguratorSecretValue = jwtSessionConfiguratorSecretValue;
-
     }
 
     /**

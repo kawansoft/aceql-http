@@ -24,7 +24,6 @@
  */
 package org.kawanfw.sql.api.server.session;
 
-import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.Map;
 
@@ -80,6 +79,11 @@ public class JwtSessionConfigurator implements SessionConfigurator {
 	try {
 	    String secret = ServletParametersStore
 		    .getJwtSessionConfiguratorSecretValue();
+
+	    if (secret == null || secret.isEmpty()) {
+		throw new IllegalArgumentException("The jwtSessionConfiguratorSecret property value defined in the AceQL properties file cannot be null.");
+	    }
+
 	    Algorithm algorithm = Algorithm.HMAC256(secret);
 
 	    /*
@@ -101,10 +105,8 @@ public class JwtSessionConfigurator implements SessionConfigurator {
 
 	    String token = builder.sign(algorithm);
 	    return token;
-
-	} catch (UnsupportedEncodingException exception) {
-	    throw new IllegalArgumentException(exception);
-	} catch (JWTCreationException exception) {
+	}
+	catch (JWTCreationException exception) {
 	    // Invalid Signing configuration / Couldn't convert Claims.
 	    throw new IllegalArgumentException(exception);
 	}
@@ -227,11 +229,8 @@ public class JwtSessionConfigurator implements SessionConfigurator {
 //		return false;
 //	    }
 
-	} catch (UnsupportedEncodingException exception) {
-	    System.err.println(exception);
-	    // UTF-8 encoding not supported
-	    return false;
-	} catch (JWTVerificationException exception) {
+	}
+	catch (JWTVerificationException exception) {
 	    System.err.println(exception);
 	    return false;
 	}
