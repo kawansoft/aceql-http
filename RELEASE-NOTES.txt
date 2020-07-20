@@ -34,7 +34,6 @@ What's New:
 - The conf/aceql-server.properties includes now an example of the usage of
   the Tomcat JDBC Pool removeAbandoned & removeAbandonedTimeout properties.
 
-
 Bugs fixed:
 
 - nvarchar, nchar, ntext would not support NULL values. This has been fixed.
