@@ -26,6 +26,7 @@ package com.aceql.client.jdbc.http;
 
 import java.io.StringReader;
 import java.net.HttpURLConnection;
+import java.util.Objects;
 
 import javax.json.Json;
 import javax.json.JsonNumber;
@@ -120,9 +121,7 @@ class ResultAnalyzer {
      * @return the value
      */
     public String getValue(String name) {
-	if (name == null) {
-	    throw new NullPointerException("name is null!");
-	}
+	Objects.requireNonNull(name, "name cannot be null!");
 
 	if (isInvalidJsonStream()) {
 	    return null;
@@ -170,9 +169,7 @@ class ResultAnalyzer {
      * @return the value
      */
     public int getIntvalue(String name) {
-	if (name == null) {
-	    throw new NullPointerException("name is null!");
-	}
+	Objects.requireNonNull(name, "name cannot be null!");
 
 	if (isInvalidJsonStream()) {
 	    return -1;

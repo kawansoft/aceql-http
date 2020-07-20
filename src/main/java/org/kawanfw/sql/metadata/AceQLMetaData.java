@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import org.kawanfw.sql.api.util.SqlUtil;
@@ -251,9 +252,8 @@ public class AceQLMetaData {
      * @throws SQLException it any SQL Exception occurs
      */
     public List<ExportedKey> getExportedKeys(String tableName) throws SQLException {
-	if (tableName == null) {
-	    throw new NullPointerException("tableName is null!");
-	}
+
+	Objects.requireNonNull(tableName, "tableName cannot be null!");
 
 	if (!tableNamesSet.contains(tableName.toLowerCase())) {
 	    throw new IllegalArgumentException("table does not exists: " + tableName);
@@ -322,9 +322,7 @@ public class AceQLMetaData {
      * @throws SQLException it any SQL Exception occurs
      */
     public List<ImportedKey> getImportedKeys(String tableName) throws SQLException {
-	if (tableName == null) {
-	    throw new NullPointerException("tableName is null!");
-	}
+	Objects.requireNonNull(tableName, "tableName cannot be null!");
 
 	if (!tableNamesSet.contains(tableName.toLowerCase())) {
 	    throw new IllegalArgumentException("table does not exists: " + tableName);
@@ -368,9 +366,7 @@ public class AceQLMetaData {
      * @throws SQLException it any SQL Exception occurs
      */
     public List<PrimaryKey> getPrimaryKeys(String tableName) throws SQLException {
-	if (tableName == null) {
-	    throw new NullPointerException("tableName is null!");
-	}
+	Objects.requireNonNull(tableName, "tableName cannot be null!");
 
 	if (!tableNamesSet.contains(tableName.toLowerCase())) {
 	    throw new IllegalArgumentException("table does not exists: " + tableName);
@@ -425,10 +421,7 @@ public class AceQLMetaData {
      * @throws SQLException it any SQL Exception occurs
      */
     public List<Index> getIndexes(String tableName) throws SQLException {
-	if (tableName == null) {
-	    throw new NullPointerException("tableName is null!");
-	}
-
+	Objects.requireNonNull(tableName, "tableName cannot be null!");
 	if (!tableNamesSet.contains(tableName.toLowerCase())) {
 	    throw new IllegalArgumentException("table does not exists: " + tableName);
 	}
@@ -505,9 +498,7 @@ public class AceQLMetaData {
      * @throws SQLException it any SQL Exception occurs
      */
     public List<Column> getColumns(String tableName) throws SQLException {
-	if (tableName == null) {
-	    throw new NullPointerException("tableName is null!");
-	}
+	Objects.requireNonNull(tableName, "tableName cannot be null!");
 
 	if (!tableNamesSet.contains(tableName.toLowerCase())) {
 	    throw new IllegalArgumentException("table does not exists: " + tableName);
@@ -601,10 +592,7 @@ public class AceQLMetaData {
      * @throws SQLException it any SQL Exception occurs
      */
     public Table getTable(String tableName) throws SQLException {
-	if (tableName == null) {
-	    throw new NullPointerException("tableName is null!");
-	}
-
+	Objects.requireNonNull(tableName, "tableName cannot be null!");
 	if (!tableNamesSet.contains(tableName.toLowerCase())) {
 	    throw new IllegalArgumentException("table does not exists: " + tableName);
 	}

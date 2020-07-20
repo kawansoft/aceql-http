@@ -18,6 +18,7 @@ import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Map;
+import java.util.Objects;
 
 import org.apache.commons.io.IOUtils;
 
@@ -67,13 +68,8 @@ public class SimpleHttpClient {
     public String callWithPost(URL url, Map<String, String> parametersMap)
 	    throws IOException, ProtocolException, SocketTimeoutException, UnsupportedEncodingException {
 
-	if (url == null) {
-	    throw new NullPointerException("url is null!");
-	}
-
-	if (parametersMap == null) {
-	    throw new NullPointerException("parametersMap is null!");
-	}
+	Objects.requireNonNull(url, "url cannot be null!");
+	Objects.requireNonNull(parametersMap, "parametersMap cannot be null!");
 
 	String result = null;
 	try (InputStream in = callWithPostReturnStream(url, parametersMap);) {
@@ -96,7 +92,7 @@ public class SimpleHttpClient {
      * @param parametersMap the parameters, empty if none. (Cannot be null).
      * @return the value returned by the call
      *
-     * @throws MalformedURLException if a MalformedURLException occurs
+     * @throws MalformedURLException        if a MalformedURLException occurs
      * @throws IOException                  if an IOException occurs
      * @throws ProtocolException            if a ProtocolException occurs
      * @throws SocketTimeoutException       if a if a ProtocolException occurs
@@ -138,7 +134,7 @@ public class SimpleHttpClient {
      * Gets and InputStream from execution.
      *
      * @param url the URL to call
-     * @return	the result of the call
+     * @return the result of the call
      *
      * @throws MalformedURLException if a MalformedURLException occurs
      * @throws IOException           if an IOException occurs
@@ -231,7 +227,8 @@ public class SimpleHttpClient {
      *
      * @param requestParams the parameter names and values
      * @return the formated and URL encoded string for the POST.
-     * @throws UnsupportedEncodingException if an UnsupportedEncodingException occurs
+     * @throws UnsupportedEncodingException if an UnsupportedEncodingException
+     *                                      occurs
      */
     public static String getPostDataString(Map<String, String> requestParams) throws UnsupportedEncodingException {
 	StringBuilder result = new StringBuilder();

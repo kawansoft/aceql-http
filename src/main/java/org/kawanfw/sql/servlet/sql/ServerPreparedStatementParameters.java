@@ -47,6 +47,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.TreeMap;
 import java.util.Vector;
 
@@ -107,10 +108,7 @@ public class ServerPreparedStatementParameters {
      */
     public ServerPreparedStatementParameters(PreparedStatement preparedStatement, HttpServletRequest request) {
 
-	if (preparedStatement == null) {
-	    throw new NullPointerException("preparedStatement is nul!");
-	}
-
+	Objects.requireNonNull(preparedStatement, "preparedStatement cannot be null!");
 	this.preparedStatement = preparedStatement;
 	this.request = request;
     }
@@ -385,9 +383,7 @@ public class ServerPreparedStatementParameters {
     }
 
     public static boolean isInParameter(String parameterDirection) {
-	if (parameterDirection == null) {
-	    throw new NullPointerException("parameterDirection is null");
-	}
+	Objects.requireNonNull(parameterDirection, "parameterDirection cannot be null!");
 
 	if (parameterDirection.equals(ParameterDirection.IN) || parameterDirection.equals(ParameterDirection.INOUT)) {
 	    return true;
@@ -397,10 +393,7 @@ public class ServerPreparedStatementParameters {
     }
 
     public static boolean isOutParameter(String parameterDirection) {
-	if (parameterDirection == null) {
-	    throw new NullPointerException("parameterDirection is null");
-	}
-
+	Objects.requireNonNull(parameterDirection, "parameterDirection cannot be null!");
 	if (parameterDirection.equals(ParameterDirection.OUT) || parameterDirection.equals(ParameterDirection.INOUT)) {
 	    return true;
 	} else {

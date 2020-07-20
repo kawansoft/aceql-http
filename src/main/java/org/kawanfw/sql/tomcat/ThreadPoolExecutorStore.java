@@ -1,24 +1,24 @@
 /*
  * This file is part of AceQL HTTP.
- * AceQL HTTP: SQL Over HTTP                                     
+ * AceQL HTTP: SQL Over HTTP
  * Copyright (C) 2020,  KawanSoft SAS
- * (http://www.kawansoft.com). All rights reserved.                                
- *                                                                               
- * AceQL HTTP is free software; you can redistribute it and/or                 
- * modify it under the terms of the GNU Lesser General Public                    
- * License as published by the Free Software Foundation; either                  
- * version 2.1 of the License, or (at your option) any later version.            
- *                                                                               
- * AceQL HTTP is distributed in the hope that it will be useful,               
- * but WITHOUT ANY WARRANTY; without even the implied warranty of                
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU             
- * Lesser General Public License for more details.                               
- *                                                                               
- * You should have received a copy of the GNU Lesser General Public              
- * License along with this library; if not, write to the Free Software           
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  
+ * (http://www.kawansoft.com). All rights reserved.
+ *
+ * AceQL HTTP is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * AceQL HTTP is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
  * 02110-1301  USA
- * 
+ *
  * Any modifications to this file must keep this entire header
  * intact.
  */
@@ -27,6 +27,7 @@ package org.kawanfw.sql.tomcat;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -48,22 +49,17 @@ public class ThreadPoolExecutorStore {
 
     /**
      * Constructor
-     * 
+     *
      * @param properties
      *            the ThreadPoolExecutor configuration is the properties
      */
     public ThreadPoolExecutorStore(Properties properties) {
-
-	if (properties == null) {
-	    throw new NullPointerException("properties is null!");
-	}
-
-	this.properties = properties;
+	this.properties = Objects.requireNonNull(properties, "properties cannot be null!");;
     }
 
     /**
      * Creates the ThreadPoolExecutor that will be used using properties
-     * 
+     *
      * @throws ClassNotFoundException
      * @throws SecurityException
      * @throws NoSuchMethodException
@@ -170,7 +166,7 @@ public class ThreadPoolExecutorStore {
 
     /**
      * Gets the static instance of ThreadPoolExecutor to be used in main servlet
-     * 
+     *
      * @return the threadPoolExecutor the instance to be used in main servlet
      */
     public static ThreadPoolExecutor getThreadPoolExecutor() {

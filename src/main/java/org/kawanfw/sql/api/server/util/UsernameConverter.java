@@ -3,6 +3,8 @@
  */
 package org.kawanfw.sql.api.server.util;
 
+import java.util.Objects;
+
 import org.kawanfw.sql.api.server.DefaultDatabaseConfigurator;
 
 /**
@@ -26,6 +28,7 @@ import org.kawanfw.sql.api.server.DefaultDatabaseConfigurator;
  * </pre>
  *
  * Spaces are also replaced with {@code __ac_sp__}.
+ *
  * @see DefaultDatabaseConfigurator#getBlobsDirectory(String)
  * @author Nicolas de Pomereu
  * @since 5.0.2
@@ -79,9 +82,7 @@ public class UsernameConverter {
      * @return the string without special Windows characters
      */
     public static String fromSpecialChars(String string) {
-	if (string == null) {
-	    throw new NullPointerException("string is null!");
-	}
+	 Objects.requireNonNull(string, "string cannot be null!");
 
 	string = string.replace(" ", AC_SP);
 	string = string.replace("<", AC_LT);

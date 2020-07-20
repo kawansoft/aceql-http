@@ -32,6 +32,7 @@ import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadPoolExecutor;
 
@@ -209,9 +210,7 @@ public class ServerSqlManager extends HttpServlet {
 	asyncContext.addListener(new ServerAsyncListener());
 
 	// Just in case
-	if (threadPoolExecutor == null) {
-	    throw new NullPointerException("threadPoolExecutor is null");
-	}
+	Objects.requireNonNull(threadPoolExecutor, "threadPoolExecutor cannot be null!");
 
 	threadPoolExecutor.execute(new Runnable() {
 	    @Override

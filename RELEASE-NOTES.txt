@@ -1,6 +1,6 @@
 
                      AceQL HTTP
-                    Version 5.0.4
+                     Version 5.1
                     Release Notes
 
 
@@ -23,6 +23,19 @@ and code strong security rules in order to protect the databases.
 
 AceQL HTTP is licensed through the GNU Lesser General Public License 
 (LGPL v2.1).
+
+
+AceQL HTTP Version 5.1 - 20-Jul-2020
+------------------------------------
+
+What's New:
+
+- NullPointerException throws are replaced by Objects.requireNonNull().
+  This is easier for API uesrs to debug NullPointerExceptions.
+- Code has been refactored to isolate completely the HTTP stack used
+  and to follow industry best standards.
+- Tomcat base libraries have been updated to 8.5.57 because of security 
+  requirements.
 
 
 AceQL HTTP Version 5.0.4 - 04-Jul-2020

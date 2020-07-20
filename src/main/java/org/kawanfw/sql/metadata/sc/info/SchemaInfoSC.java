@@ -35,6 +35,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -82,15 +83,9 @@ public class SchemaInfoSC {
      * @throws SQLException
      */
     public SchemaInfoSC(Connection connection, String database) throws SQLException {
-	if (connection == null) {
-	    throw new NullPointerException("connection is null!");
-	}
-	if (database == null) {
-	    throw new NullPointerException("database is null!");
-	}
 
-	this.connection = connection;
-	this.database = database;
+	this.connection = Objects.requireNonNull(connection, "connection cannot be null!");
+	this.database = Objects.requireNonNull(database, "database cannot be null!");
 
 	AceQLMetaData aceQLMetaData = new AceQLMetaData(connection);
 	List<String> tables = aceQLMetaData.getTableNames();
@@ -101,12 +96,9 @@ public class SchemaInfoSC {
 
     public SchemaInfoSC(Connection connection, SchemaInfoLevel schemaInfoLevel, String database) throws SQLException {
 	this(connection, database);
-	if (schemaInfoLevel == null) {
-	    throw new NullPointerException("schemaInfoLevel is null!");
-	}
 
 	this.connection = connection;
-	this.schemaInfoLevel = schemaInfoLevel;
+	this.schemaInfoLevel = Objects.requireNonNull(schemaInfoLevel, "schemaInfoLevel cannot be null!");
 
 
     }
@@ -122,9 +114,7 @@ public class SchemaInfoSC {
     */
     public void buildOnFile(File file, AceQLOutputFormat outputFormat, String table) throws SQLException, IOException  {
 
-	if (file == null) {
-	    throw new NullPointerException("file is null!");
-	}
+	Objects.requireNonNull(file, "file cannot be null!");
 
 	if (table != null) {
 	    if (! tableSet.contains(table.toLowerCase()) && ! tableSet.contains(table.toUpperCase())) {
@@ -171,9 +161,7 @@ public class SchemaInfoSC {
     public void buildOnWriter(BufferedWriter writer, final AceQLOutputFormat outputFormat, String table)
 	    throws SQLException, IOException {
 
-	if (writer == null) {
-	    throw new NullPointerException("file is null!");
-	}
+	 Objects.requireNonNull(writer, "writer cannot be null!");
 
 	// Create the options
 	final SchemaCrawlerOptionsBuilder optionsBuilder = SchemaCrawlerOptionsBuilder.builder()

@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
@@ -108,13 +109,8 @@ public class ServerLogout {
     private static void deleteOldBlobFiles(DatabaseConfigurator databaseConfigurator, String username)
 	    throws IOException, SQLException {
 
-	if (databaseConfigurator == null) {
-	    throw new NullPointerException("databaseConfigurator is null!");
-	}
-
-	if (username == null) {
-	    throw new NullPointerException("username is null!");
-	}
+	Objects.requireNonNull(databaseConfigurator, "databaseConfigurator cannot be null!");
+	Objects.requireNonNull(username, "username cannot be null!");
 
 	// Delete all files
 	File blobDirectory = databaseConfigurator.getBlobsDirectory(username);

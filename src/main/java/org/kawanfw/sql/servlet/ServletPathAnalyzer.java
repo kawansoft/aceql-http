@@ -25,6 +25,7 @@
 package org.kawanfw.sql.servlet;
 
 import java.util.Date;
+import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
 import org.kawanfw.sql.util.FrameworkDebug;
@@ -53,9 +54,7 @@ public class ServletPathAnalyzer {
 
     public boolean isConnectionModifierOrReader(String requestUri) {
 
-        if (requestUri == null) {
-            throw new NullPointerException("urlContent is null");
-        }
+	Objects.requireNonNull(requestUri, "requestUri cannot be null!");
 
         if (requestUri.endsWith("/get_connection")) {
             connectionModifierOrReader = "get_connection";
@@ -136,9 +135,7 @@ public class ServletPathAnalyzer {
     }
 
     public boolean isVersionAction(String urlContent) {
-        if (urlContent == null) {
-            throw new NullPointerException("urlContent is null");
-        }
+	Objects.requireNonNull(urlContent, "urlContent cannot be null!");
 
         if (urlContent.endsWith("/get_version")) {
             return true;
@@ -148,9 +145,7 @@ public class ServletPathAnalyzer {
     }
 
     public boolean isBlobAction(String urlContent) {
-        if (urlContent == null) {
-            throw new NullPointerException("urlContent is null");
-        }
+	Objects.requireNonNull(urlContent, "urlContent cannot be null!");
 
         if (urlContent.endsWith("/blob_upload")) {
             blobAction = "blob_upload";
@@ -172,24 +167,17 @@ public class ServletPathAnalyzer {
     }
 
     public String getBlobAction() {
-        if (blobAction == null) {
-            throw new NullPointerException("blobAction is null. Call isBlobAction() before");
-        }
+        Objects.requireNonNull(blobAction, "blobAction cannot be null. Call isBlobAction() before");
         return blobAction;
     }
 
     public String getConnectionModifierOrReader() {
-
-        if (connectionModifierOrReader == null) {
-            throw new NullPointerException("connectionModifierOrReader is null. Call isConnectionModifier() before");
-        }
+        Objects.requireNonNull(connectionModifierOrReader, "connectionModifierOrReader cannot be null. Call isConnectionModifier() before");
         return connectionModifierOrReader;
     }
 
     public boolean isExecuteUpdateOrQueryStatement(String urlContent) {
-        if (urlContent == null) {
-            throw new NullPointerException("urlContent is null");
-        }
+	Objects.requireNonNull(urlContent, "urlContent cannot be null!");
 
         if (urlContent.endsWith("/execute_update")) {
             sqlStatement = "execute_update";
@@ -211,9 +199,7 @@ public class ServletPathAnalyzer {
     }
 
     public boolean isMetadataQuery(final String urlContent) {
-        if (urlContent == null) {
-            throw new NullPointerException("urlContent is null");
-        }
+	Objects.requireNonNull(urlContent, "urlContent cannot be null!");
 
         if (!urlContent.contains("/metadata_query/")) {
             return false;
@@ -234,9 +220,7 @@ public class ServletPathAnalyzer {
 
     public void buildElements(String servletName, String urlContent) {
 
-        if (urlContent == null) {
-            throw new NullPointerException("urlContent is null");
-        }
+	Objects.requireNonNull(urlContent, "urlContent cannot be null!");
 
         if (!urlContent.contains("/session/")) {
             throw new IllegalArgumentException("Request does not contain /session/ subpath in path");

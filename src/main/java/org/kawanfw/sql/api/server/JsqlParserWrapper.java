@@ -5,6 +5,7 @@ package org.kawanfw.sql.api.server;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import net.sf.jsqlparser.statement.Block;
 import net.sf.jsqlparser.statement.Commit;
@@ -55,8 +56,7 @@ class JsqlParserWrapper {
     private boolean isTCL = false;
 
     public JsqlParserWrapper(Statement statement) {
-	if (statement == null) throw new NullPointerException("statement is null!");
-	this.statement = statement;
+	this.statement =Objects.requireNonNull(statement, "statement cannot be null!");
 
 	parse();
     }

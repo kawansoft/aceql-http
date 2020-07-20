@@ -28,6 +28,7 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Hashtable;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -84,10 +85,7 @@ public class LdapUserAuthenticator implements UserAuthenticator {
 	}
 
 	String url = properties.getProperty("ldapUserAuthenticator.url");
-
-	if (url == null) {
-	    throw new NullPointerException(getInitTag() + "The ldapUserAuthenticator.url property is null!");
-	}
+	Objects.requireNonNull(url, getInitTag() + "The ldapUserAuthenticator.url property cannot be null!");
 
 	// Set up the environment for creating the initial context
 	Hashtable<String, String> env = new Hashtable<>();
@@ -113,14 +111,16 @@ public class LdapUserAuthenticator implements UserAuthenticator {
 	} catch (CommunicationException e) {
 	    throw new IOException(getInitTag() + "Impossible to connect to server: " + url);
 	} catch (NamingException e) {
-	    logger.log(Level.WARNING, getInitTag() + LdapUserAuthenticator.class.getName() +  " Unable to authenticate user: " + username);
+	    logger.log(Level.WARNING,
+		    getInitTag() + LdapUserAuthenticator.class.getName() + " Unable to authenticate user: " + username);
 	    return false;
 	} finally {
 	    if (ctx != null) {
 		try {
 		    ctx.close();
 		} catch (NamingException e) {
-		    logger.log(Level.WARNING, getInitTag() + LdapUserAuthenticator.class.getName()  + " InitialDirContext.close() Exception: " + e);
+		    logger.log(Level.WARNING, getInitTag() + LdapUserAuthenticator.class.getName()
+			    + " InitialDirContext.close() Exception: " + e);
 		}
 	    }
 	}

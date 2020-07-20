@@ -1,24 +1,24 @@
 /*
  * This file is part of AceQL HTTP.
- * AceQL HTTP: SQL Over HTTP                                     
+ * AceQL HTTP: SQL Over HTTP
  * Copyright (C) 2020,  KawanSoft SAS
- * (http://www.kawansoft.com). All rights reserved.                                
- *                                                                               
- * AceQL HTTP is free software; you can redistribute it and/or                 
- * modify it under the terms of the GNU Lesser General Public                    
- * License as published by the Free Software Foundation; either                  
- * version 2.1 of the License, or (at your option) any later version.            
- *                                                                               
- * AceQL HTTP is distributed in the hope that it will be useful,               
- * but WITHOUT ANY WARRANTY; without even the implied warranty of                
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU             
- * Lesser General Public License for more details.                               
- *                                                                               
- * You should have received a copy of the GNU Lesser General Public              
- * License along with this library; if not, write to the Free Software           
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  
+ * (http://www.kawansoft.com). All rights reserved.
+ *
+ * AceQL HTTP is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * AceQL HTTP is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
  * 02110-1301  USA
- * 
+ *
  * Any modifications to this file must keep this entire header
  * intact.
  */
@@ -43,6 +43,7 @@ import java.net.URLEncoder;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -51,10 +52,10 @@ import org.apache.commons.io.IOUtils;
 
 /**
  * @author Nicolas de Pomereu
- * 
+ *
  *         AceQL Rest wrapper for AceQL http/REST apis that take care of all
  *         http calls and operations.
- * 
+ *
  *         All Exceptions are trapped with a {#link AceQLException} that allows
  *         to retrieve the detail of the Exceptions
  */
@@ -90,7 +91,7 @@ public class AceQLHttpApi {
 
     /**
      * Sets the read timeout.
-     * 
+     *
      * @param readTimeout
      *            an <code>int</code> that specifies the read timeout value, in
      *            milliseconds, to be used when an http connection is
@@ -103,7 +104,7 @@ public class AceQLHttpApi {
 
     /**
      * Sets the connect timeout.
-     * 
+     *
      * @param connectTimeout
      *            Sets a specified timeout value, in milliseconds, to be used
      *            when opening a communications link to the remote server. If
@@ -118,7 +119,7 @@ public class AceQLHttpApi {
 
     /**
      * Login on the AceQL server and connect to a database
-     * 
+     *
      * @param serverUrl
      *            the url of the AceQL server. Example:
      *            http://localhost:9090/aceql
@@ -142,23 +143,11 @@ public class AceQLHttpApi {
 	    throws AceQLException {
 
 	try {
-	    if (database == null) {
-		throw new NullPointerException("database is null!");
-	    }
-	    if (serverUrl == null) {
-		throw new NullPointerException("serverUrl is null!");
-	    }
-	    if (username == null) {
-		throw new NullPointerException("username is null!");
-	    }
-	    if (password == null) {
-		throw new NullPointerException("password is null!");
-	    }
 
-	    this.serverUrl = serverUrl;
-	    this.username = username;
-	    this.password = password;
-	    this.database = database;
+	    this.serverUrl = Objects.requireNonNull(serverUrl, "serverUrl cannot be null!");
+	    this.username = Objects.requireNonNull(username, "username cannot be null!");
+	    this.password = Objects.requireNonNull(password, "password cannot be null!");
+	    this.database = Objects.requireNonNull(database, "database cannot be null!");
 	    this.proxy = proxy;
 	    this.passwordAuthentication = passwordAuthentication;
 
@@ -201,7 +190,7 @@ public class AceQLHttpApi {
 
     /**
      * Login on the AceQL server and connect to a database
-     * 
+     *
      * @param serverUrl
      *            the url of the AceQL server. Example:
      *            http://localhost:9090/aceql
@@ -236,9 +225,7 @@ public class AceQLHttpApi {
 
 	try {
 
-	    if (commandName == null) {
-		throw new NullPointerException("commandName is null!");
-	    }
+	    Objects.requireNonNull(commandName, "commandName cannot be null!");
 
 	    String result = callWithGet(commandName, commandOption);
 
@@ -265,9 +252,7 @@ public class AceQLHttpApi {
 
 	try {
 
-	    if (commandName == null) {
-		throw new NullPointerException("commandName is null!");
-	    }
+	    Objects.requireNonNull(commandName, "commandName cannot be null!");
 
 	    String result = callWithGet(commandName, commandOption);
 
@@ -437,6 +422,7 @@ public class AceQLHttpApi {
 
 	    Authenticator authenticator = new Authenticator() {
 
+		@Override
 		public PasswordAuthentication getPasswordAuthentication() {
 		    return new PasswordAuthentication(proxyAuthUsername,
 			    proxyPassword);
@@ -474,7 +460,7 @@ public class AceQLHttpApi {
 
     /**
      * Says if trace is on
-     * 
+     *
      * @return true if trace is on
      */
     public static boolean isTraceOn() {
@@ -483,7 +469,7 @@ public class AceQLHttpApi {
 
     /**
      * Sets the trace on/off
-     * 
+     *
      * @param TRACE_ON
      *            if true, trace will be on
      */
@@ -493,7 +479,7 @@ public class AceQLHttpApi {
 
     /**
      * Returns the cancelled value set by the progress indicator
-     * 
+     *
      * @return the cancelled value set by the progress indicator
      */
     public AtomicBoolean getCancelled() {
@@ -504,12 +490,12 @@ public class AceQLHttpApi {
      * Sets the shareable canceled variable that will be used by the progress
      * indicator to notify this instance that the user has cancelled the current
      * blob/clob upload or download.
-     * 
+     *
      * @param cancelled
      *            the shareable canceled variable that will be used by the
      *            progress indicator to notify this instance that the end user
      *            has cancelled the current blob/clob upload or download
-     * 
+     *
      */
     public void setCancelled(AtomicBoolean cancelled) {
 	this.cancelled = cancelled;
@@ -518,10 +504,10 @@ public class AceQLHttpApi {
     /**
      * Returns the sharable progress variable that will store blob/clob upload
      * or download progress between 0 and 100
-     * 
+     *
      * @return the sharable progress variable that will store blob/clob upload
      *         or download progress between 0 and 100
-     * 
+     *
      */
     public AtomicInteger getProgress() {
 	return progress;
@@ -531,7 +517,7 @@ public class AceQLHttpApi {
      * Sets the sharable progress variable that will store blob/clob upload or
      * download progress between 0 and 100. Will be used by progress indicators
      * to show the progress.
-     * 
+     *
      * @param progress
      *            the sharable progress variable
      */
@@ -548,7 +534,7 @@ public class AceQLHttpApi {
 
     /**
      * Says the query result is returned compressed with the GZIP file format.
-     * 
+     *
      * @return the gzipResult
      */
     public boolean isGzipResult() {
@@ -557,7 +543,7 @@ public class AceQLHttpApi {
 
     /**
      * Says if JSON contents are to be pretty printed. Defaults to false.
-     * 
+     *
      * @param prettyPrinting
      *            if true, JSON contents are to be pretty printed
      */
@@ -567,7 +553,7 @@ public class AceQLHttpApi {
 
     /**
      * Define if result sets are compressed before download. Defaults to true.
-     * 
+     *
      * @param gzipResult
      *            if true, sets are compressed before download
      */
@@ -577,7 +563,7 @@ public class AceQLHttpApi {
 
     /**
      * Calls /get_version API
-     * 
+     *
      * @throws AceQLException
      *             if any Exception occurs
      */
@@ -588,7 +574,7 @@ public class AceQLHttpApi {
 
     /**
      * Gets the SDK version
-     * 
+     *
      * @throws AceQLException
      *             if any Exception occurs
      */
@@ -598,7 +584,7 @@ public class AceQLHttpApi {
 
     /**
      * Calls /disconnect API
-     * 
+     *
      * @throws AceQLException
      *             if any Exception occurs
      */
@@ -608,7 +594,7 @@ public class AceQLHttpApi {
 
     /**
      * Calls /commit API
-     * 
+     *
      * @throws AceQLException
      *             if any Exception occurs
      */
@@ -618,7 +604,7 @@ public class AceQLHttpApi {
 
     /**
      * Calls /rollback API
-     * 
+     *
      * @throws AceQLException
      *             if any Exception occurs
      */
@@ -628,7 +614,7 @@ public class AceQLHttpApi {
 
     /**
      * Calls /set_transaction_isolation_level API
-     * 
+     *
      * @param level
      *            the isolation level
      * @throws AceQLException
@@ -640,7 +626,7 @@ public class AceQLHttpApi {
 
     /**
      * Calls /set_holdability API
-     * 
+     *
      * @param holdability
      *            the holdability
      * @throws AceQLException
@@ -737,7 +723,7 @@ public class AceQLHttpApi {
 
     /**
      * Calls /execute_update API
-     * 
+     *
      * @param sql
      *            an SQL <code>INSERT</code>, <code>UPDATE</code> or
      *            <code>DELETE</code> statement or an SQL statement that returns
@@ -758,10 +744,7 @@ public class AceQLHttpApi {
 	    Map<String, String> statementParameters) throws AceQLException {
 
 	try {
-	    if (sql == null) {
-		throw new NullPointerException("sql is null!");
-	    }
-
+	    Objects.requireNonNull(sql, "sql cannot be null!");
 	    String action = "execute_update";
 
 	    Map<String, String> parametersMap = new HashMap<String, String>();
@@ -815,7 +798,7 @@ public class AceQLHttpApi {
 
     /**
      * Calls /execute_query API
-     * 
+     *
      * @param sql
      *            an SQL <code>INSERT</code>, <code>UPDATE</code> or
      *            <code>DELETE</code> statement or an SQL statement that returns
@@ -835,10 +818,7 @@ public class AceQLHttpApi {
 	    Map<String, String> statementParameters) throws AceQLException {
 
 	try {
-	    if (sql == null) {
-		throw new NullPointerException("sql is null!");
-	    }
-
+	    Objects.requireNonNull(sql, "sql cannot be null!");
 	    String action = "execute_query";
 
 	    Map<String, String> parametersMap = new HashMap<String, String>();
@@ -880,7 +860,7 @@ public class AceQLHttpApi {
 
     /**
      * Calls /blob_upload API
-     * 
+     *
      * @param blobId
      *            the Blob/Clob Id
      * @param inputStream
@@ -892,13 +872,8 @@ public class AceQLHttpApi {
 	    long totalLength) throws AceQLException {
 
 	try {
-	    if (blobId == null) {
-		throw new NullPointerException("blobId is null!");
-	    }
-
-	    if (inputStream == null) {
-		throw new NullPointerException("inputStream is null!");
-	    }
+	    Objects.requireNonNull(blobId, "blobId cannot be null!");
+	    Objects.requireNonNull(inputStream, "inputStream cannot be null!");
 
 	    // if (file == null) {
 	    // throw new NullPointerException("file is null!");
@@ -1000,7 +975,7 @@ public class AceQLHttpApi {
 
     /**
      * Calls /get_blob_length API
-     * 
+     *
      * @param blobId
      *            the Blob/Clob Id
      * @return the server Blob/Clob length
@@ -1010,10 +985,7 @@ public class AceQLHttpApi {
     public long getBlobLength(String blobId) throws AceQLException {
 
 	try {
-
-	    if (blobId == null) {
-		throw new NullPointerException("blobId is null!");
-	    }
+	    Objects.requireNonNull(blobId, "blobId cannot be null!");
 
 	    String action = "get_blob_length";
 
@@ -1059,7 +1031,7 @@ public class AceQLHttpApi {
 
     /**
      * Calls /blob_download API
-     * 
+     *
      * @param blobId
      *            the Blob/Clob Id
      * @return the input stream containing either an error, or the result set in
@@ -1071,9 +1043,7 @@ public class AceQLHttpApi {
 
 	try {
 
-	    if (blobId == null) {
-		throw new NullPointerException("blobId is null!");
-	    }
+	    Objects.requireNonNull(blobId, "blobId cannot be null!");
 
 	    String action = "blob_download";
 
@@ -1104,7 +1074,7 @@ public class AceQLHttpApi {
 
     /**
      * Formats & URL encode the the post data for POST.
-     * 
+     *
      * @param params
      *            the parameter names and values
      * @return the formated and URL encoded string for the POST.
