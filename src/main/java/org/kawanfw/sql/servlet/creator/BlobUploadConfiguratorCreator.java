@@ -33,8 +33,11 @@ import org.kawanfw.sql.api.server.blob.DefaultBlobUploadConfigurator;
 
 public class BlobUploadConfiguratorCreator {
 
+    private BlobUploadConfigurator blobUploadConfigurator = null;
+    private String blobUploadConfiguratorClassName = null;
+
     private static String[] PREDEFINED_CLASS_NAMES = {
-	    org.kawanfw.sql.api.server.blob.DefaultBlobUploadConfigurator.class.getSimpleName(),
+	    DefaultBlobUploadConfigurator.class.getSimpleName(),
 	    };
 
     /**
@@ -48,7 +51,7 @@ public class BlobUploadConfiguratorCreator {
 	for (int i = 0; i < PREDEFINED_CLASS_NAMES.length; i++) {
 	    if (PREDEFINED_CLASS_NAMES[i].equals(theClassName)) {
 		// Add prefix package
-		theClassName = org.kawanfw.sql.api.server.blob.DefaultBlobUploadConfigurator.class.getPackage()
+		theClassName = DefaultBlobUploadConfigurator.class.getPackage()
 			.getName() + "." + theClassName;
 		return theClassName;
 	    }
@@ -57,21 +60,18 @@ public class BlobUploadConfiguratorCreator {
 	return theClassName;
     }
 
-    private BlobUploadConfigurator blobUploadConfigurator = null;
-    private String blobUploadConfiguratorClassName = null;
-
-    public BlobUploadConfiguratorCreator(String theBlobUploadConfiguratorClassName)
+    public BlobUploadConfiguratorCreator(final String theBlobUploadConfiguratorClassName)
 	    throws ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException,
 	    InvocationTargetException, NoSuchMethodException, SecurityException {
 
 	if (theBlobUploadConfiguratorClassName != null && !theBlobUploadConfiguratorClassName.isEmpty()) {
 
-	    theBlobUploadConfiguratorClassName = getNameWithPackage(theBlobUploadConfiguratorClassName);
+	    String theBlobUploadConfiguratorClassNameNew = getNameWithPackage(theBlobUploadConfiguratorClassName);
 
-	    Class<?> c = Class.forName(theBlobUploadConfiguratorClassName);
+	    Class<?> c = Class.forName(theBlobUploadConfiguratorClassNameNew);
 	    Constructor<?> constructor = c.getConstructor();
 	    blobUploadConfigurator = (BlobUploadConfigurator) constructor.newInstance();
-	    this.blobUploadConfiguratorClassName = theBlobUploadConfiguratorClassName;
+	    this.blobUploadConfiguratorClassName = theBlobUploadConfiguratorClassNameNew;
 	} else {
 	    blobUploadConfigurator = new DefaultBlobUploadConfigurator();
 	    this.blobUploadConfiguratorClassName = blobUploadConfigurator.getClass().getName();

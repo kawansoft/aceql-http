@@ -36,8 +36,11 @@ import org.kawanfw.sql.api.server.blob.DefaultBlobDownloadConfigurator;
  */
 public class BlobDownloadConfiguratorCreator {
 
+    private BlobDownloadConfigurator blobDownloadConfigurator = null;
+    private String blobDownloadConfiguratorClassName = null;
+
     private static String[] PREDEFINED_CLASS_NAMES = {
-	    org.kawanfw.sql.api.server.blob.DefaultBlobDownloadConfigurator.class.getSimpleName(),
+	   DefaultBlobDownloadConfigurator.class.getSimpleName(),
 	    };
 
     /**
@@ -51,7 +54,7 @@ public class BlobDownloadConfiguratorCreator {
 	for (int i = 0; i < PREDEFINED_CLASS_NAMES.length; i++) {
 	    if (PREDEFINED_CLASS_NAMES[i].equals(theClassName)) {
 		// Add prefix package
-		theClassName = org.kawanfw.sql.api.server.blob.DefaultBlobDownloadConfigurator.class.getPackage()
+		theClassName = DefaultBlobDownloadConfigurator.class.getPackage()
 			.getName() + "." + theClassName;
 		return theClassName;
 	    }
@@ -60,22 +63,18 @@ public class BlobDownloadConfiguratorCreator {
 	return theClassName;
     }
 
-
-    private BlobDownloadConfigurator blobDownloadConfigurator = null;
-    private String blobDownloadConfiguratorClassName = null;
-
-    public BlobDownloadConfiguratorCreator(String theBlobDownloadConfiguratorClassName)
+    public BlobDownloadConfiguratorCreator(final String theBlobDownloadConfiguratorClassName)
 	    throws ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException,
 	    InvocationTargetException, NoSuchMethodException, SecurityException {
 
 	if (theBlobDownloadConfiguratorClassName != null && !theBlobDownloadConfiguratorClassName.isEmpty()) {
 
-	    theBlobDownloadConfiguratorClassName = getNameWithPackage(theBlobDownloadConfiguratorClassName);
+	    String theBlobDownloadConfiguratorClassNameNew = getNameWithPackage(theBlobDownloadConfiguratorClassName);
 
-	    Class<?> c = Class.forName(theBlobDownloadConfiguratorClassName);
+	    Class<?> c = Class.forName(theBlobDownloadConfiguratorClassNameNew);
 	    Constructor<?> constructor = c.getConstructor();
 	    blobDownloadConfigurator = (BlobDownloadConfigurator) constructor.newInstance();
-	    this.blobDownloadConfiguratorClassName = theBlobDownloadConfiguratorClassName;
+	    this.blobDownloadConfiguratorClassName = theBlobDownloadConfiguratorClassNameNew;
 	} else {
 	    blobDownloadConfigurator = new DefaultBlobDownloadConfigurator();
 	    this.blobDownloadConfiguratorClassName = blobDownloadConfigurator.getClass().getName();

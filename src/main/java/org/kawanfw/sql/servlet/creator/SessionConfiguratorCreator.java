@@ -28,6 +28,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
 import org.kawanfw.sql.api.server.session.DefaultSessionConfigurator;
+import org.kawanfw.sql.api.server.session.JwtSessionConfigurator;
 import org.kawanfw.sql.api.server.session.SessionConfigurator;
 
 /**
@@ -36,9 +37,12 @@ import org.kawanfw.sql.api.server.session.SessionConfigurator;
  */
 public class SessionConfiguratorCreator {
 
+    private String sessionConfiguratorClassName = null;
+    private SessionConfigurator sessionConfigurator = null;
+
     private static String[] PREDEFINED_CLASS_NAMES = {
-	    org.kawanfw.sql.api.server.session.DefaultSessionConfigurator.class.getSimpleName(),
-	    org.kawanfw.sql.api.server.session.JwtSessionConfigurator.class.getSimpleName()
+	    DefaultSessionConfigurator.class.getSimpleName(),
+	    JwtSessionConfigurator.class.getSimpleName()
 	    };
 
     /**
@@ -52,7 +56,7 @@ public class SessionConfiguratorCreator {
 	for (int i = 0; i < PREDEFINED_CLASS_NAMES.length; i++) {
 	    if (PREDEFINED_CLASS_NAMES[i].equals(theClassName)) {
 		// Add prefix package
-		theClassName = org.kawanfw.sql.api.server.session.SessionConfigurator.class.getPackage()
+		theClassName = SessionConfigurator.class.getPackage()
 			.getName() + "." + theClassName;
 		return theClassName;
 	    }
@@ -61,21 +65,19 @@ public class SessionConfiguratorCreator {
 	return theClassName;
     }
 
-    private String sessionConfiguratorClassName = null;
-    private SessionConfigurator sessionConfigurator = null;
 
-    public SessionConfiguratorCreator(String theSessionConfiguratorClassName)
+    public SessionConfiguratorCreator(final String theSessionConfiguratorClassName)
 	    throws ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException,
 	    InvocationTargetException, NoSuchMethodException, SecurityException {
 
 	if (theSessionConfiguratorClassName != null && !theSessionConfiguratorClassName.isEmpty()) {
 
-	    theSessionConfiguratorClassName = getNameWithPackage(theSessionConfiguratorClassName);
+	    String theSessionConfiguratorClassNameNew = getNameWithPackage(theSessionConfiguratorClassName);
 
-	    Class<?> c = Class.forName(theSessionConfiguratorClassName);
+	    Class<?> c = Class.forName(theSessionConfiguratorClassNameNew);
 	    Constructor<?> constructor = c.getConstructor();
 	    sessionConfigurator = (SessionConfigurator) constructor.newInstance();
-	    this.sessionConfiguratorClassName = theSessionConfiguratorClassName;
+	    this.sessionConfiguratorClassName = theSessionConfiguratorClassNameNew;
 	} else {
 	    sessionConfigurator = new DefaultSessionConfigurator();
 	    this.sessionConfiguratorClassName = sessionConfigurator.getClass().getName();

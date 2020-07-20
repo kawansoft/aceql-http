@@ -54,7 +54,7 @@ public class ThreadPoolExecutorStore {
      *            the ThreadPoolExecutor configuration is the properties
      */
     public ThreadPoolExecutorStore(Properties properties) {
-	this.properties = Objects.requireNonNull(properties, "properties cannot be null!");;
+	this.properties = Objects.requireNonNull(properties, "properties cannot be null!");
     }
 
     /**
