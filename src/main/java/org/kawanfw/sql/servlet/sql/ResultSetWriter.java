@@ -36,16 +36,10 @@ import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Writer;
 import java.math.BigDecimal;
-import java.net.URL;
-import java.sql.Array;
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.RowId;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Time;
-import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.List;
 import java.util.Set;
@@ -159,7 +153,7 @@ public class ResultSetWriter {
 		throw new SQLException("resultSet is null!");
 	    }
 
-	    String productName = getDatabaseProductName(resultSet);
+	    String productName = ResultSetWriterUtil.getDatabaseProductName(resultSet);
 	    isTerradata = productName.equals(SqlUtil.TERADATA) ? true : false;
 	    isPostgreSQL = productName.equals(SqlUtil.POSTGRESQL) ? true : false;
 
@@ -197,16 +191,16 @@ public class ResultSetWriter {
 			columnValueStr = formatBinaryColumn(resultSet, columnIndex, columnType, columnName,
 				columnTable);
 			debug("isBinaryColumn:columnValueStr: " + columnValueStr);
-		    } else if (isNStringColumn(columnType)) {
+		    } else if (ResultSetWriterUtil.isNStringColumn(columnType)) {
 			columnValue = resultSet.getNString(columnIndex);
-			columnValueStr = treatNullValue(resultSet, columnValue);
+			columnValueStr = ResultSetWriterUtil.treatNullValue(resultSet, columnValue);
 
 		    } else if (isClobColumn(columnType)) {
 			columnValueStr = formatClobColumn(resultSet, columnIndex);
 		    } else if (columnType == Types.ARRAY) {
-			columnValueStr = formatArrayColumn(resultSet, columnIndex);
-		    } else if (isDateTime(columnType)) {
-			columnValueStr = formatDateTimeColumn(resultSet, columnType, columnIndex);
+			columnValueStr = ResultSetWriterUtil.formatArrayColumn(resultSet, columnIndex);
+		    } else if (ResultSetWriterUtil.isDateTime(columnType)) {
+			columnValueStr = ResultSetWriterUtil.formatDateTimeColumn(resultSet, columnType, columnIndex);
 		    } else if (columnType == Types.ROWID) {
 			columnValueStr = formatRowIdColumn(resultSet, columnIndex);
 		    } else {
@@ -223,7 +217,7 @@ public class ResultSetWriter {
 				    + " " + columnName, e);
 			}
 
-			columnValueStr = treatNullValue(resultSet, columnValue);
+			columnValueStr = ResultSetWriterUtil.treatNullValue(resultSet, columnValue);
 		    }
 
 		    debug("columnValueStr : " + columnValueStr);
@@ -263,31 +257,12 @@ public class ResultSetWriter {
 
 	    gen.write("row_count", row_count);
 
-	    //ServerSqlManager.writeLine(out);
+	    // ServerSqlManager.writeLine(out);
 
 	} finally {
 	    resultSet.close();
 	    // NO! IOUtils.closeQuietly(out);
 	}
-    }
-
-    /**
-     * If wa have a ResultSet.wasNull() ==> value is "NULL" for transport to client side.
-     * @param resultSet
-     * @param columnValue
-     * @return
-     * @throws SQLException
-     */
-    private String treatNullValue(ResultSet resultSet, Object columnValue) throws SQLException {
-	String columnValueStr;
-	if (resultSet.wasNull()) {
-	    columnValueStr = NULL;
-	} else if (columnValue == null) {
-	    columnValueStr = null;
-	} else {
-	    columnValueStr = columnValue.toString();
-	}
-	return columnValueStr;
     }
 
     /**
@@ -297,7 +272,7 @@ public class ResultSetWriter {
      * @param columnName
      * @param columnTable
      */
-    private void debugColumnInfo(int columnIndex, int columnType, String columnTypeName, String columnName,
+    public void debugColumnInfo(int columnIndex, int columnType, String columnTypeName, String columnName,
 	    String columnTable) {
 	debug("");
 	debug("columnIndex    : " + columnIndex);
@@ -305,156 +280,6 @@ public class ResultSetWriter {
 	debug("columnTypeName : " + columnTypeName);
 	debug("columnName     : " + columnName);
 	debug("columnTable    : " + columnTable);
-    }
-
-    /**
-     * Write the column types. Maybe required by client SDKs.
-     * @param columnTypeList
-     */
-    private void writeColumnTypes(List<Integer> columnTypeList) {
-	if (doColumnTypes) {
-	gen.writeStartArray("column_types");
-	for (int i = 0; i < columnTypeList.size(); i++) {
-	    int columnType = columnTypeList.get(i);
-	    gen.write(JavaSqlConversion.fromJavaToSql(columnType));
-	}
-	gen.writeEnd();
-	}
-    }
-
-    private boolean isDateTime(int columnType) {
-	if (columnType == Types.DATE || columnType == Types.TIME || columnType == Types.TIMESTAMP) {
-	    return true;
-	} else {
-	    return false;
-	}
-    }
-
-    private String formatDateTimeColumn(ResultSet rs, int columnType, int columnIndex) throws SQLException {
-	if (columnType == Types.DATE) {
-	    Date date = rs.getDate(columnIndex);
-
-	    if (date == null) {
-		return NULL;
-	    }
-
-	    long milliseconds = date.getTime();
-
-	    // return new Long(milliseconds).toString();
-	    return Long.toString(milliseconds);
-	} else if (columnType == Types.TIME) {
-	    Time time = rs.getTime(columnIndex);
-
-	    if (time == null) {
-		return NULL;
-	    }
-
-	    long milliseconds = time.getTime();
-
-	    // return new Long(milliseconds).toString();
-	    return Long.toString(milliseconds);
-	}
-	if (columnType == Types.TIMESTAMP) {
-	    Timestamp time = rs.getTimestamp(columnIndex);
-
-	    if (time == null) {
-		return NULL;
-	    }
-
-	    long milliseconds = time.getTime();
-
-	    // return new Long(milliseconds).toString();
-	    return Long.toString(milliseconds);
-	} else {
-	    throw new IllegalArgumentException("columnType is not a Time/Timestamp: " + columnType);
-	}
-    }
-
-    // NUMERIC java.math.BigDecimal
-    // DECIMAL java.math.BigDecimal
-    // BIGINT long Long
-    // REAL float Float
-    // FLOAT double Double
-    // DOUBLE PRECISION double Double
-    public static boolean isNumericType(int columnType) {
-
-	if (columnType == Types.SMALLINT || columnType == Types.INTEGER || columnType == Types.NUMERIC
-		|| columnType == Types.DECIMAL || columnType == Types.BIGINT || columnType == Types.REAL
-		|| columnType == Types.FLOAT || columnType == Types.DOUBLE) {
-	    return true;
-	} else {
-	    return false;
-	}
-
-    }
-
-    // /**
-    // * @param columnValueStr
-    // * @throws UnsupportedEncodingException
-    // */
-    // public void debugStringType(String columnValueStr)
-    // throws UnsupportedEncodingException {
-    // if (DEBUG) {
-    // byte[] utf8 = columnValueStr.getBytes("UTF-8");
-    // String hexString = CodecHex.encodeHexString(utf8);
-    // String sBase64 = Base64.byteArrayToBase64(utf8);
-    //
-    // System.out.println();
-    // System.out.println("columnValueStr : " + columnValueStr);
-    // System.out.println("columnValueStrHtml: " + columnValueStr);
-    // System.out.println("hexString : " + hexString);
-    // System.out.println("sBase64 : " + sBase64);
-    // }
-    // }
-
-    /**
-     * Says if a column is N Type
-     *
-     * @param columnType the SQL Column Type
-     * @return true if a column is N Type
-     */
-    private boolean isNStringColumn(int columnType) {
-	if (columnType == Types.NCHAR || columnType == Types.NVARCHAR || columnType == Types.LONGNVARCHAR) {
-	    return true;
-	} else {
-	    return false;
-	}
-    }
-
-    /**
-     * Format the column as an java.sqlArray
-     *
-     * @param resultSet
-     * @param columnIndex
-     * @return
-     * @throws SQLException
-     * @throws IOException
-     */
-    private String formatArrayColumn(ResultSet resultSet, int columnIndex) throws SQLException, IOException {
-	Array array = resultSet.getArray(columnIndex);
-
-	if (array == null) {
-	    return NULL;
-	}
-
-	Object[] objects = (Object[]) array.getArray();
-	String arrayStr = "{";
-	for (int i = 0; i < objects.length; i++) {
-	    arrayStr += objects[i] + ",";
-	}
-
-	if (arrayStr.contains(",")) {
-	    arrayStr = StringUtils.substringBeforeLast(arrayStr, ",");
-	}
-
-	arrayStr += "}";
-	return arrayStr;
-
-	/*
-	 * ArrayHttp arrayHttp = new ArrayHttp(array); ArrayTransporter arrayTransporter
-	 * = new ArrayTransporter(); String base64 =
-	 * arrayTransporter.toBase64(arrayHttp); return base64;
-	 */
     }
 
     /**
@@ -494,68 +319,23 @@ public class ResultSetWriter {
 	// return base64;
     }
 
-    /**
-     * Format - if detected - an URL
-     *
-     * @param resultSet
-     * @param columnIndex
-     * @param columnValueStr
-     * @return
-     */
-    public String urlFormater(ResultSet resultSet, int columnIndex, String columnValueStr) {
 
-	try {
-	    URL url = resultSet.getURL(columnIndex);
-	    if (url != null) {
-		// Its an URL!
-		// UrlTransporter urlTransporter = new UrlTransporter();
-		// columnValueStr = urlTransporter.toBase64(url);
-		columnValueStr = url.toString();
+    /**
+     * Write the column types. Maybe required by client SDKs.
+     *
+     * @param columnTypeList
+     */
+    private void writeColumnTypes(List<Integer> columnTypeList) {
+	if (doColumnTypes) {
+	    gen.writeStartArray("column_types");
+	    for (int i = 0; i < columnTypeList.size(); i++) {
+		int columnType = columnTypeList.get(i);
+		gen.write(JavaSqlConversion.fromJavaToSql(columnType));
 	    }
-
-	} catch (Exception e) {
-	    // Do nothing. It's not an URL
-	}
-
-	return columnValueStr;
-    }
-
-    /**
-     * Returns true if engine is terradata
-     *
-     * @param resultSet the result set in use
-     * @returns true if engine is terradata
-     * @throws SQLException
-     */
-    private String getDatabaseProductName(ResultSet resultSet) throws SQLException {
-
-	Statement statement = resultSet.getStatement();
-
-	// happens on Metadata requests, we don' care about the result:
-	if (statement == null) {
-	    return "unknown";
-	} else {
-	    Connection connection = statement.getConnection();
-	    return new SqlUtil(connection).getDatabaseProductName();
+	    gen.writeEnd();
 	}
     }
 
-    /**
-     * Says if a columns is char/string type
-     *
-     * @param columnType
-     * @return
-     */
-    @SuppressWarnings("unused")
-    private boolean isCharacterType(int columnType) {
-	if (columnType == Types.CHAR || columnType == Types.NCHAR || columnType == Types.VARCHAR
-		|| columnType == Types.NVARCHAR || columnType == Types.LONGVARCHAR
-		|| columnType == Types.LONGNVARCHAR) {
-	    return true;
-	} else {
-	    return false;
-	}
-    }
 
     /**
      * the binary content is dumped in a server file that will be available for the
