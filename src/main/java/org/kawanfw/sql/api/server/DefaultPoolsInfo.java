@@ -138,7 +138,7 @@ public class DefaultPoolsInfo extends HttpServlet {
 
 	try {
 
-	    executeRequestInTryCatch(request, response, out);
+	    executeRequestInTryCatch(request, response);
 
 	} catch (Exception e) {
 
@@ -150,17 +150,17 @@ public class DefaultPoolsInfo extends HttpServlet {
 	}
     }
 
+
     /**
      * Execute the client request
      *
      * @param request  the http request
      * @param response the http response
-     * @param out      the output stream to write result to client
      * @throws IOException         if any IOException occurs
      * @throws SQLException
      * @throws FileUploadException
      */
-    private void executeRequestInTryCatch(HttpServletRequest request, HttpServletResponse response, OutputStream out)
+    private void executeRequestInTryCatch(HttpServletRequest request, HttpServletResponse response)
 	    throws IOException, SQLException, FileUploadException {
 
 	debug("Starting...");
@@ -171,7 +171,7 @@ public class DefaultPoolsInfo extends HttpServlet {
 	String password = request.getParameter("password");
 
 	if (password == null || password.isEmpty()) {
-	    out = response.getOutputStream();
+	    OutputStream out = response.getOutputStream();
 	    JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_FORBIDDEN,
 		    JsonErrorReturn.ERROR_ACEQL_UNAUTHORIZED, JsonErrorReturn.INVALID_USERNAME_OR_PASSWORD);
 	    ServerSqlManager.writeLine(out, errorReturn.build());
@@ -189,7 +189,7 @@ public class DefaultPoolsInfo extends HttpServlet {
 		throw new IllegalArgumentException(JsonErrorReturn.INVALID_USERNAME_OR_PASSWORD);
 	    }
 	} catch (Exception e) {
-	    out = response.getOutputStream();
+	    OutputStream out  = response.getOutputStream();
 	    JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_FORBIDDEN,
 		    JsonErrorReturn.ERROR_ACEQL_UNAUTHORIZED, JsonErrorReturn.INVALID_USERNAME_OR_PASSWORD);
 	    ServerSqlManager.writeLine(out, errorReturn.build());
@@ -202,7 +202,7 @@ public class DefaultPoolsInfo extends HttpServlet {
 
 	if (dataSources == null || dataSources.isEmpty()) {
 
-	    out = response.getOutputStream();
+	    OutputStream out = response.getOutputStream();
 
 	    JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_BAD_REQUEST,
 		    JsonErrorReturn.ERROR_ACEQL_ERROR, JsonErrorReturn.NO_DATASOURCES_DEFINED);
@@ -232,23 +232,17 @@ public class DefaultPoolsInfo extends HttpServlet {
 
 	    if (setDatabase == null || setDatabase.equals(database)) {
 		String doSet = request.getParameter("setMinIdle");
-		if (doSet != null && !doSet.isEmpty() && StringUtils.isNumeric(doSet)) {
-		    if (StringUtils.isNumeric(doSet)) {
-			dataSourceProxy.setMinIdle(Integer.parseInt(doSet));
-		    }
+		if (doSet != null && !doSet.isEmpty() && StringUtils.isNumeric(doSet) && StringUtils.isNumeric(doSet)) {
+		    dataSourceProxy.setMinIdle(Integer.parseInt(doSet));
 		}
 		doSet = request.getParameter("setMaxIdle");
-		if (doSet != null && !doSet.isEmpty() && StringUtils.isNumeric(doSet)) {
-		    if (StringUtils.isNumeric(doSet)) {
-			dataSourceProxy.setMaxIdle(Integer.parseInt(doSet));
-		    }
+		if (doSet != null && !doSet.isEmpty() && StringUtils.isNumeric(doSet) && StringUtils.isNumeric(doSet)) {
+		    dataSourceProxy.setMaxIdle(Integer.parseInt(doSet));
 		}
 
 		doSet = request.getParameter("setMaxActive");
-		if (doSet != null && !doSet.isEmpty() && StringUtils.isNumeric(doSet)) {
-		    if (StringUtils.isNumeric(doSet)) {
-			dataSourceProxy.setMaxActive(Integer.parseInt(doSet));
-		    }
+		if (doSet != null && !doSet.isEmpty() && StringUtils.isNumeric(doSet) && StringUtils.isNumeric(doSet)) {
+		    dataSourceProxy.setMaxActive(Integer.parseInt(doSet));
 		}
 	    }
 
@@ -275,7 +269,7 @@ public class DefaultPoolsInfo extends HttpServlet {
 	gen.writeEnd();
 	gen.close();
 
-	out = response.getOutputStream();
+	OutputStream out = response.getOutputStream();
 	String outString = writer.toString();
 	ServerSqlManager.writeLine(out, outString);
 

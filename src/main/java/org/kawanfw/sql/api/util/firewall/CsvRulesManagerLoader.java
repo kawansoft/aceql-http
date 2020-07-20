@@ -31,6 +31,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.ConcurrentSkipListSet;
@@ -76,22 +77,9 @@ public class CsvRulesManagerLoader {
      * @param tableSet the table names of the database to check.
      */
     public CsvRulesManagerLoader(File file, String database, Set<String> tableSet) {
-
-	if (file == null) {
-	    throw new NullPointerException("file is null!");
-	}
-
-	if (database == null) {
-	    throw new NullPointerException("database is null!");
-	}
-
-	if (tableSet == null) {
-	    throw new NullPointerException("tableSet is null!");
-	}
-
-	this.database = database;
-	this.file = file;
-	this.tableSet = tableSet;
+	this.database = Objects.requireNonNull(database, "file cannot be null!");
+	this.file = Objects.requireNonNull(file, "file cannot be null!");
+	this.tableSet = Objects.requireNonNull(tableSet, "tableSet cannot be null!");
     }
 
     /**

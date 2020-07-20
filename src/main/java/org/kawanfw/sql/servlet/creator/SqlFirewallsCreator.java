@@ -33,7 +33,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.kawanfw.sql.api.server.DatabaseConfigurator;
+import org.kawanfw.sql.api.server.firewall.CsvRulesManager;
 import org.kawanfw.sql.api.server.firewall.DefaultSqlFirewallManager;
+import org.kawanfw.sql.api.server.firewall.DenyDclManager;
+import org.kawanfw.sql.api.server.firewall.DenyDdlManager;
+import org.kawanfw.sql.api.server.firewall.DenyExecuteUpdateManager;
+import org.kawanfw.sql.api.server.firewall.DenyMetadataQueryManager;
+import org.kawanfw.sql.api.server.firewall.DenyStatementClassManager;
 import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
 
 /*
@@ -63,13 +69,13 @@ import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
 public class SqlFirewallsCreator {
 
     private static String[] PREDEFINED_CLASS_NAMES = {
-	    org.kawanfw.sql.api.server.firewall.CsvRulesManager.class.getSimpleName(),
-	    org.kawanfw.sql.api.server.firewall.DefaultSqlFirewallManager.class.getSimpleName(),
-	    org.kawanfw.sql.api.server.firewall.DenyDclManager.class.getSimpleName(),
-	    org.kawanfw.sql.api.server.firewall.DenyDdlManager.class.getSimpleName(),
-	    org.kawanfw.sql.api.server.firewall.DenyExecuteUpdateManager.class.getSimpleName(),
-	    org.kawanfw.sql.api.server.firewall.DenyMetadataQueryManager.class.getSimpleName(),
-	    org.kawanfw.sql.api.server.firewall.DenyStatementClassManager.class.getSimpleName(),
+	    CsvRulesManager.class.getSimpleName(),
+	    DefaultSqlFirewallManager.class.getSimpleName(),
+	    DenyDclManager.class.getSimpleName(),
+	    DenyDdlManager.class.getSimpleName(),
+	    DenyExecuteUpdateManager.class.getSimpleName(),
+	    DenyMetadataQueryManager.class.getSimpleName(),
+	    DenyStatementClassManager.class.getSimpleName(),
 	    };
 
     private List<String> sqlFirewallClassNames = new ArrayList<>();
@@ -110,7 +116,6 @@ public class SqlFirewallsCreator {
 	    this.sqlFirewallManagers.add(sqlFirewallManager);
 	    this.sqlFirewallClassNames.add(sqlFirewallClassName);
 	}
-
     }
 
     /**
@@ -119,14 +124,14 @@ public class SqlFirewallsCreator {
      * @param theClassName
      * @return
      */
-    private static String getNameWithPackage(String theClassName) {
+    private static String getNameWithPackage(final String theClassName) {
 
 	for (int i = 0; i < PREDEFINED_CLASS_NAMES.length; i++) {
 	    if (PREDEFINED_CLASS_NAMES[i].equals(theClassName)) {
 		// Add prefix package
-		theClassName = org.kawanfw.sql.api.server.firewall.SqlFirewallManager.class.getPackage()
+		String theClassNameNew = SqlFirewallManager.class.getPackage()
 			.getName() + "." + theClassName;
-		return theClassName;
+		return theClassNameNew;
 	    }
 	}
 

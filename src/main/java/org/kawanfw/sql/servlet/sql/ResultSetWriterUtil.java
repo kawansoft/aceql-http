@@ -66,11 +66,7 @@ public class ResultSetWriterUtil {
     }
 
     public static boolean isDateTime(int columnType) {
-	if (columnType == Types.DATE || columnType == Types.TIME || columnType == Types.TIMESTAMP) {
-	    return true;
-	} else {
-	    return false;
-	}
+	return columnType == Types.DATE || columnType == Types.TIME || columnType == Types.TIMESTAMP;
     }
 
     public static String formatDateTimeColumn(ResultSet rs, int columnType, int columnIndex) throws SQLException {
@@ -120,14 +116,9 @@ public class ResultSetWriterUtil {
     // FLOAT double Double
     // DOUBLE PRECISION double Double
     public static boolean isNumericType(int columnType) {
-
-	if (columnType == Types.SMALLINT || columnType == Types.INTEGER || columnType == Types.NUMERIC
+	return columnType == Types.SMALLINT || columnType == Types.INTEGER || columnType == Types.NUMERIC
 		|| columnType == Types.DECIMAL || columnType == Types.BIGINT || columnType == Types.REAL
-		|| columnType == Types.FLOAT || columnType == Types.DOUBLE) {
-	    return true;
-	} else {
-	    return false;
-	}
+		|| columnType == Types.FLOAT || columnType == Types.DOUBLE;
 
     }
 
@@ -138,11 +129,7 @@ public class ResultSetWriterUtil {
      * @return true if a column is N Type
      */
     public static boolean isNStringColumn(int columnType) {
-	if (columnType == Types.NCHAR || columnType == Types.NVARCHAR || columnType == Types.LONGNVARCHAR) {
-	    return true;
-	} else {
-	    return false;
-	}
+	return columnType == Types.NCHAR || columnType == Types.NVARCHAR || columnType == Types.LONGNVARCHAR;
     }
 
     /**
@@ -190,7 +177,9 @@ public class ResultSetWriterUtil {
      * @param columnValueStr
      * @return
      */
-    public static String urlFormater(ResultSet resultSet, int columnIndex, String columnValueStr) {
+    public static String urlFormater(ResultSet resultSet, int columnIndex, final String columnValueStr) {
+
+	String columnValueStrNew =  columnValueStr;
 
 	try {
 	    URL url = resultSet.getURL(columnIndex);
@@ -198,14 +187,14 @@ public class ResultSetWriterUtil {
 		// Its an URL!
 		// UrlTransporter urlTransporter = new UrlTransporter();
 		// columnValueStr = urlTransporter.toBase64(url);
-		columnValueStr = url.toString();
+		columnValueStrNew = url.toString();
 	    }
 
 	} catch (Exception e) {
 	    // Do nothing. It's not an URL
 	}
 
-	return columnValueStr;
+	return columnValueStrNew;
     }
 
     /**
@@ -235,13 +224,9 @@ public class ResultSetWriterUtil {
      * @return
      */
     public static boolean isCharacterType(int columnType) {
-	if (columnType == Types.CHAR || columnType == Types.NCHAR || columnType == Types.VARCHAR
+	return columnType == Types.CHAR || columnType == Types.NCHAR || columnType == Types.VARCHAR
 		|| columnType == Types.NVARCHAR || columnType == Types.LONGVARCHAR
-		|| columnType == Types.LONGNVARCHAR) {
-	    return true;
-	} else {
-	    return false;
-	}
+		|| columnType == Types.LONGNVARCHAR;
     }
 
 

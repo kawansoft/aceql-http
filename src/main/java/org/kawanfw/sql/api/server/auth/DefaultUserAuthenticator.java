@@ -41,14 +41,6 @@ import java.sql.SQLException;
 public class DefaultUserAuthenticator implements UserAuthenticator {
 
     /**
-     * Constructor. {@code UserAuthenticator} implementation must have no
-     * constructor or a unique no parameters constructor.
-     */
-    public DefaultUserAuthenticator() {
-
-    }
-
-    /**
      * @return <code>true</code>. (Client is always granted access).
      */
     @Override

@@ -43,8 +43,8 @@ import waffle.windows.auth.impl.WindowsAuthProviderImpl;
  * A concrete {@link UserAuthenticator} that allows zero-code remote client
  * {@code (username, password)} authentication against the Windows machine on
  * which the AceQL instance is running. <br>
- * (There a no mandatory properties to define in the {@code aceql-server.properties}
- * file.)
+ * (There a no mandatory properties to define in the
+ * {@code aceql-server.properties} file.)
  *
  * @author Nicolas de Pomereu
  * @since 5.0
@@ -54,14 +54,6 @@ public class WindowsUserAuthenticator implements UserAuthenticator {
 
     private Logger logger = null;
     private Properties properties = null;
-
-    /**
-     * Constructor. {@code UserAuthenticator} implementation must have no
-     * constructor or a unique no parameters constructor.
-     */
-    public WindowsUserAuthenticator() {
-
-    }
 
     /*
      * (non-Javadoc)
@@ -85,19 +77,23 @@ public class WindowsUserAuthenticator implements UserAuthenticator {
 	    WindowsAuthProviderImpl windowsAuthProviderImpl = new WindowsAuthProviderImpl();
 	    windowsAuthProviderImpl.logonDomainUser(username, domain, new String(password));
 	    return true;
+	} catch (com.sun.jna.platform.win32.Win32Exception Wwn32Exception) {
+	    if (logger == null) {
+		logger = new DefaultDatabaseConfigurator().getLogger();
+	    }
+	    logger.log(Level.WARNING, getInitTag() + "WindowsLogin.login refused for " + username);
+
+	    return false;
+
 	} catch (Exception exception) {
 
 	    if (logger == null) {
 		logger = new DefaultDatabaseConfigurator().getLogger();
 	    }
 
-	    if (exception instanceof com.sun.jna.platform.win32.Win32Exception) {
-		logger.log(Level.WARNING, getInitTag() + "WindowsLogin.login refused for " + username);
-	    } else {
-		// Better to trace stack trace in case of Waffle problem...
-		logger.log(Level.WARNING, getInitTag() + "AceQL WindowsLogin.login call failure (Waffle Library): "
-			+ exception.toString());
-	    }
+	    // Better to trace stack trace in case of Waffle problem...
+	    logger.log(Level.WARNING,
+		    getInitTag() + "AceQL WindowsLogin.login call failure (Waffle Library): " + exception.toString());
 
 	    return false;
 	}

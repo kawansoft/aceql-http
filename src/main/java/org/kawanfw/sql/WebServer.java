@@ -179,25 +179,25 @@ public class WebServer {
 	    System.out.println(e.getMessage());
 	    System.out.println();
 	    printUsage(options);
-	    SystemExitWrapper();
+	    SystemExitWrapperMinusOne();
 	}
 
 	if (cmd.hasOption("help")) {
 	    printUsage(options);
-	    SystemExitWrapper();
+	    SystemExitWrapperMinusOne();
 	}
 
 	if (cmd.hasOption("version")) {
 	    System.out.println(Version.getServerVersion());
 	    System.out.println();
-	    System.exit(0);
+	    systemExitWrapperZero();
 	}
 
 	if (!cmd.hasOption("start") && !cmd.hasOption("stop")) {
 	    System.err.println("Missing start or stop option." + " " + SqlTag.PLEASE_CORRECT);
 	    System.out.println();
 	    printUsage(options);
-	    SystemExitWrapper();
+	    SystemExitWrapperMinusOne();
 	}
 
 	int port = WebServerApi.DEFAULT_PORT;
@@ -246,7 +246,7 @@ public class WebServer {
 		    e.getCause().printStackTrace();
 		}
 		System.err.println();
-		SystemExitWrapper();
+		SystemExitWrapperMinusOne();
 	    }
 
 	    catch (ConnectException e) {
@@ -258,18 +258,18 @@ public class WebServer {
 		System.err.println(SqlTag.SQL_PRODUCT_START_FAILURE + " " + "Unknow host: " + e.getMessage());
 		printCauseException(e);
 		System.err.println();
-		SystemExitWrapper();
+		SystemExitWrapperMinusOne();
 
 	    } catch (IOException e) {
 		System.err.println(SqlTag.SQL_PRODUCT_START_FAILURE + " " + e.getMessage());
 		printCauseException(e);
 		System.err.println();
-		SystemExitWrapper();
+		SystemExitWrapperMinusOne();
 	    } catch (Exception e) {
 		System.err.println(SqlTag.SQL_PRODUCT_START_FAILURE);
 		e.printStackTrace();
 		System.err.println();
-		SystemExitWrapper();
+		SystemExitWrapperMinusOne();
 	    }
 
 	} else {
@@ -281,11 +281,11 @@ public class WebServer {
 		System.out.println(
 			Version.PRODUCT.NAME + " Web server running on port " + port + " successfully stopped!");
 		System.out.println();
-		System.exit(0);
+		systemExitWrapperZero();
 	    } catch (ConnectException e) {
 		System.err.println(e.getMessage());
 		System.err.println();
-		SystemExitWrapper();
+		SystemExitWrapperMinusOne();
 	    } catch (IOException e) {
 		System.err.println("Impossible to stop the SQL Web server running on port " + port);
 		System.err.println(e.getMessage());
@@ -296,9 +296,16 @@ public class WebServer {
 		}
 
 		System.err.println();
-		SystemExitWrapper();
+		SystemExitWrapperMinusOne();
 	    }
 	}
+    }
+
+    /**
+     * 
+     */
+    private static void systemExitWrapperZero() {
+	System.exit(0);
     }
 
     /**
@@ -312,10 +319,11 @@ public class WebServer {
 	}
     }
 
+
     /**
      *
      */
-    private static void SystemExitWrapper() {
+    private static void SystemExitWrapperMinusOne() {
 	System.exit(-1);
     }
 
@@ -354,7 +362,7 @@ public class WebServer {
     private static void displayErrorAndExit(String message) {
 	System.err.println(message + " " + SqlTag.PLEASE_CORRECT);
 	System.err.println();
-	SystemExitWrapper();
+	SystemExitWrapperMinusOne();
     }
 
     /**

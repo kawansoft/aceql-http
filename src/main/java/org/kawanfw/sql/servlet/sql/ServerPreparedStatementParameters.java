@@ -153,10 +153,8 @@ public class ServerPreparedStatementParameters {
 		debug("index: " + i + " / type " + requestParamType + " / direction: " + parameterDirection
 			+ " / value: " + requestParamValue);
 
-		if (isInParameter(parameterDirection)) {
-		    if (requestParamValue == null || requestParamValue.isEmpty()) {
-			throw new SQLException("No parameter value for IN parameter index " + i);
-		    }
+		if (isInParameter(parameterDirection) && (requestParamValue == null || requestParamValue.isEmpty())) {
+		    throw new SQLException("No parameter value for IN parameter index " + i);
 		}
 
 	    } else {
@@ -384,21 +382,12 @@ public class ServerPreparedStatementParameters {
 
     public static boolean isInParameter(String parameterDirection) {
 	Objects.requireNonNull(parameterDirection, "parameterDirection cannot be null!");
-
-	if (parameterDirection.equals(ParameterDirection.IN) || parameterDirection.equals(ParameterDirection.INOUT)) {
-	    return true;
-	} else {
-	    return false;
-	}
+	return parameterDirection.equals(ParameterDirection.IN) || parameterDirection.equals(ParameterDirection.INOUT);
     }
 
     public static boolean isOutParameter(String parameterDirection) {
 	Objects.requireNonNull(parameterDirection, "parameterDirection cannot be null!");
-	if (parameterDirection.equals(ParameterDirection.OUT) || parameterDirection.equals(ParameterDirection.INOUT)) {
-	    return true;
-	} else {
-	    return false;
-	}
+	return parameterDirection.equals(ParameterDirection.OUT) || parameterDirection.equals(ParameterDirection.INOUT);
     }
 
     /**
@@ -609,13 +598,6 @@ public class ServerPreparedStatementParameters {
 	if (DEBUG) {
 	    System.out.println(new Date() + " " + s);
 	}
-    }
-
-    /**
-     * @param args
-     */
-    public static void main(String[] args) throws Exception {
-
     }
 
 }

@@ -52,22 +52,12 @@ public class ServerSqlDispatchUtil {
      * @param action the action asked by the client side
      * @return true if the action is for Awake FILE
      */
-    @SuppressWarnings("unused")
     public static boolean isActionForBlob(String action) {
-        if (action.equals(HttpParameter.BLOB_UPLOAD) || action.equals(HttpParameter.BLOB_DOWNLOAD)) {
-            return true;
-        } else {
-            return false;
-        }
+	return action.equals(HttpParameter.BLOB_UPLOAD) || action.equals(HttpParameter.BLOB_DOWNLOAD);
     }
 
     public static  boolean isStatement(String action) {
-        if (action.equals(HttpParameter.EXECUTE_UPDATE) || action.equals(HttpParameter.EXECUTE_QUERY)) {
-            return true;
-        } else {
-            return false;
-        }
-
+	return action.equals(HttpParameter.EXECUTE_UPDATE) || action.equals(HttpParameter.EXECUTE_QUERY);
     }
 
 }

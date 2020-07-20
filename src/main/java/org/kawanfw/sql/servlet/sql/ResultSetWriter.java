@@ -131,7 +131,7 @@ public class ResultSetWriter {
      * @param out
      * @param sqlOrder
      */
-    public ResultSetWriter(OutputStream out, String sqlOrder) {
+    public ResultSetWriter(String sqlOrder) {
 	super();
 	this.sqlOrder = sqlOrder;
     }
@@ -186,10 +186,9 @@ public class ResultSetWriter {
 		    Object columnValue = null;
 		    String columnValueStr = null;
 
-		    if (isBinaryColumn(resultSet, columnType, columnName, columnTable)) {
+		    if (isBinaryColumn(resultSet, columnType, columnName)) {
 			debug("isBinaryColumn: true");
-			columnValueStr = formatBinaryColumn(resultSet, columnIndex, columnType, columnName,
-				columnTable);
+			columnValueStr = formatBinaryColumn(resultSet, columnIndex, columnType);
 			debug("isBinaryColumn:columnValueStr: " + columnValueStr);
 		    } else if (ResultSetWriterUtil.isNStringColumn(columnType)) {
 			columnValue = resultSet.getNString(columnIndex);
@@ -209,14 +208,9 @@ public class ResultSetWriter {
 			    debug("columnValue: " + columnValue);
 
 			} catch (Exception e) {
-			    debug("Exception     : " + e.toString());
-			    debug("columnType    : " + columnType);
-			    debug("columnTypeName: " + columnTypeNameList.get(i));
-			    debug("columnName    : " + columnName);
 			    throw new SQLException(columnType + "Type/TypeName/ColName " + columnTypeNameList.get(i)
 				    + " " + columnName, e);
 			}
-
 			columnValueStr = ResultSetWriterUtil.treatNullValue(resultSet, columnValue);
 		    }
 
@@ -245,7 +239,6 @@ public class ResultSetWriter {
 		    }
 
 		    gen.writeEnd();
-
 		}
 
 		gen.writeEnd(); // line_i
@@ -336,7 +329,6 @@ public class ResultSetWriter {
 	}
     }
 
-
     /**
      * the binary content is dumped in a server file that will be available for the
      * client the name of the file will be stored in the output stream ;
@@ -344,14 +336,11 @@ public class ResultSetWriter {
      * @param resultSet   the result set in progress to send back to the client side
      * @param columnIndex the column index
      * @param columnType  the column type
-     * @param columnName  the column name
-     * @param columnTable the table name of the column
      * @return the formated binary column
      *
      * @throws SQLException
      */
-    private String formatBinaryColumn(ResultSet resultSet, int columnIndex, int columnType, String columnName,
-	    String columnTable) throws SQLException, IOException {
+    private String formatBinaryColumn(ResultSet resultSet, int columnIndex, int columnType) throws SQLException, IOException {
 	String columnValueStr;
 
 	String fileName = FrameworkFileUtil.getUniqueId() + ".blob";
@@ -404,16 +393,16 @@ public class ResultSetWriter {
 	return columnValueStr;
     }
 
+
     /**
      * return true if the column is a binary type
      *
      * @param resultSet   used to get back the Connection for PostgreSQL meta query
      * @param columnType  the sql column type
      * @param columnName  the sql column name
-     * @param columnTable the table name of the column
      * @return true if it's a binary type
      */
-    private boolean isBinaryColumn(ResultSet resultSet, int columnType, String columnName, String columnTable)
+    private boolean isBinaryColumn(ResultSet resultSet, int columnType, String columnName)
 	    throws SQLException, IOException {
 	if (columnType == Types.BINARY || columnType == Types.VARBINARY || columnType == Types.LONGVARBINARY
 		|| columnType == Types.BLOB) {
@@ -522,11 +511,7 @@ public class ResultSetWriter {
 	    return false;
 	}
 
-	if (columnType == Types.CLOB || columnType == Types.LONGVARCHAR || columnType == Types.NCLOB) {
-	    return true;
-	} else {
-	    return false;
-	}
+	return columnType == Types.CLOB || columnType == Types.LONGVARCHAR || columnType == Types.NCLOB;
     }
 
     /**

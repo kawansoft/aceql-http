@@ -38,12 +38,6 @@ public class ServletPathAnalyzer {
 
     private static boolean DEBUG = FrameworkDebug.isSet(ServletPathAnalyzer.class);
 
-    /**
-     *
-     */
-    public ServletPathAnalyzer() {
-    }
-
     private String connectionModifierOrReader = null;
     private String sqlStatement = null;
     private String blobAction = null;

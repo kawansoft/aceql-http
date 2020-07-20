@@ -69,7 +69,7 @@ public class SchemaInfoSC {
     private String database = null;
     private SchemaInfoLevel schemaInfoLevel = SchemaInfoLevelBuilder.standard();
 
-    private String SC_NAME= "SchemaCrawler";
+    private String SC_NAME = "SchemaCrawler";
     private String SC_VERSION = Version.getVersion();
 
     private String ACEQL_NAME = "AceQL";
@@ -78,6 +78,7 @@ public class SchemaInfoSC {
 
     /**
      * Constructor.
+     *
      * @param connection
      * @param database
      * @throws SQLException
@@ -100,32 +101,34 @@ public class SchemaInfoSC {
 	this.connection = connection;
 	this.schemaInfoLevel = Objects.requireNonNull(schemaInfoLevel, "schemaInfoLevel cannot be null!");
 
-
     }
 
-
     /***
-    * Builds file with the chosen HTML/Text formatted schema, and for all tables or a single one.
-    * @param file		the file to write the schema on.
-    * @param outputFormat	AceQLOutputFormat.html or AceQLOutputFormat.text. Defaults to html if null.
-    * @param table		the table to select. null for all.
+     * Builds file with the chosen HTML/Text formatted schema, and for all tables or
+     * a single one.
+     *
+     * @param file         the file to write the schema on.
+     * @param outputFormat AceQLOutputFormat.html or AceQLOutputFormat.text.
+     *                     Defaults to html if null.
+     * @param table        the table to select. null for all.
      * @throws SQLException
      * @throws IOException
-    */
-    public void buildOnFile(File file, AceQLOutputFormat outputFormat, String table) throws SQLException, IOException  {
+     */
+    public void buildOnFile(File file, final AceQLOutputFormat outputFormat, String table)
+	    throws SQLException, IOException {
 
 	Objects.requireNonNull(file, "file cannot be null!");
 
-	if (table != null) {
-	    if (! tableSet.contains(table.toLowerCase()) && ! tableSet.contains(table.toUpperCase())) {
-		throw new SQLException("table does not exist:" + table);
-	    }
+	if (table != null && (!tableSet.contains(table.toLowerCase()) && !tableSet.contains(table.toUpperCase()))) {
+	    throw new SQLException("table does not exist:" + table);
 	}
 
-	File temp = new File(file.toString()+".tmp");
+	File temp = new File(file.toString() + ".tmp");
 
-	if (outputFormat == null) {
-	    outputFormat = AceQLOutputFormat.html;
+	AceQLOutputFormat outputFormatNew = outputFormat;
+
+	if (outputFormatNew == null) {
+	    outputFormatNew = AceQLOutputFormat.html;
 	}
 
 	try (BufferedWriter writer = new BufferedWriter(new FileWriter(temp));) {
@@ -161,7 +164,7 @@ public class SchemaInfoSC {
     public void buildOnWriter(BufferedWriter writer, final AceQLOutputFormat outputFormat, String table)
 	    throws SQLException, IOException {
 
-	 Objects.requireNonNull(writer, "writer cannot be null!");
+	Objects.requireNonNull(writer, "writer cannot be null!");
 
 	// Create the options
 	final SchemaCrawlerOptionsBuilder optionsBuilder = SchemaCrawlerOptionsBuilder.builder()
@@ -211,22 +214,17 @@ public class SchemaInfoSC {
 	executable.setConnection(connection);
 	try {
 	    executable.execute();
+	} catch (IOException ioException) {
+	    throw ioException;
 	} catch (Exception exception) {
-	    if (exception instanceof IOException) {
-		IOException ioexception = (IOException)exception;
-		throw ioexception;
-	    }
-	    else {
-		throw new SQLException(exception);
-	    }
+	    throw new SQLException(exception);
 	}
     }
 
     private static OutputFormat getOutputFormatFromAceQL(AceQLOutputFormat outputFormat) {
 	if (outputFormat.equals(AceQLOutputFormat.html)) {
 	    return TextOutputFormat.html;
-	}
-	else {
+	} else {
 	    return TextOutputFormat.text;
 	}
     }

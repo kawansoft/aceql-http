@@ -46,14 +46,14 @@ public class BlobUploadConfiguratorCreator {
      * @param theClassName
      * @return
      */
-    private static String getNameWithPackage(String theClassName) {
+    private static String getNameWithPackage(final String theClassName) {
 
 	for (int i = 0; i < PREDEFINED_CLASS_NAMES.length; i++) {
 	    if (PREDEFINED_CLASS_NAMES[i].equals(theClassName)) {
 		// Add prefix package
-		theClassName = DefaultBlobUploadConfigurator.class.getPackage()
+		String theClassNameNew = DefaultBlobUploadConfigurator.class.getPackage()
 			.getName() + "." + theClassName;
-		return theClassName;
+		return theClassNameNew;
 	    }
 	}
 

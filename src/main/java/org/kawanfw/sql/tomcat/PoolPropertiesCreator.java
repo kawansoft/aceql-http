@@ -100,8 +100,8 @@ public class PoolPropertiesCreator {
 	// Class.forName("org.apache.tomcat.jdbc.pool.PoolProperties");
 	// theObject = theClass.newInstance();
 
-	theClass = org.apache.tomcat.jdbc.pool.PoolProperties.class;
-	theObject = new org.apache.tomcat.jdbc.pool.PoolProperties();
+	theClass = PoolProperties.class;
+	theObject = new PoolProperties();
 
 	Method[] allMethods = theClass.getDeclaredMethods();
 	Field[] fieldsArray = theClass.getDeclaredFields();

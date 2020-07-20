@@ -78,14 +78,6 @@ public class WebServiceUserAuthenticator implements UserAuthenticator {
     private Properties properties = null;
     private Logger logger = null;
 
-    /**
-     * Constructor. {@code UserAuthenticator} implementation must have no
-     * constructor or a unique no parameters constructor.
-     */
-    public WebServiceUserAuthenticator() {
-
-    }
-
     /*
      * (non-Javadoc)
      *
@@ -165,11 +157,8 @@ public class WebServiceUserAuthenticator implements UserAuthenticator {
 	    JsonObject object = (JsonObject) jsonst;
 	    JsonString status = (JsonString) object.get("status");
 
-	    if (status != null && status.getString().equals("OK")) {
-		return true;
-	    } else {
-		return false;
-	    }
+	    return status != null && status.getString().equals("OK");
+
 	} catch (Exception e) {
 	    if (logger == null) {
 		logger = new DefaultDatabaseConfigurator().getLogger();

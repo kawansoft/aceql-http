@@ -1,24 +1,24 @@
 /*
  * This file is part of AceQL HTTP.
- * AceQL HTTP: SQL Over HTTP                                     
+ * AceQL HTTP: SQL Over HTTP
  * Copyright (C) 2020,  KawanSoft SAS
- * (http://www.kawansoft.com). All rights reserved.                                
- *                                                                               
- * AceQL HTTP is free software; you can redistribute it and/or                 
- * modify it under the terms of the GNU Lesser General Public                    
- * License as published by the Free Software Foundation; either                  
- * version 2.1 of the License, or (at your option) any later version.            
- *                                                                               
- * AceQL HTTP is distributed in the hope that it will be useful,               
- * but WITHOUT ANY WARRANTY; without even the implied warranty of                
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU             
- * Lesser General Public License for more details.                               
- *                                                                               
- * You should have received a copy of the GNU Lesser General Public              
- * License along with this library; if not, write to the Free Software           
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  
+ * (http://www.kawansoft.com). All rights reserved.
+ *
+ * AceQL HTTP is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * AceQL HTTP is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
  * 02110-1301  USA
- * 
+ *
  * Any modifications to this file must keep this entire header
  * intact.
  */
@@ -38,34 +38,34 @@ import oracle.jdbc.driver.OracleConnection;
 
 /*
  * This file is part of AceQL HTTP.
- * AceQL HTTP: SQL Over HTTP                                     
+ * AceQL HTTP: SQL Over HTTP
  * Copyright (C) 2020,  KawanSoft SAS
- * (http://www.kawansoft.com). All rights reserved.                                
- *                                                                               
- * AceQL HTTP is free software; you can redistribute it and/or                 
- * modify it under the terms of the GNU Lesser General Public                    
- * License as published by the Free Software Foundation; either                  
- * version 2.1 of the License, or (at your option) any later version.            
- *                                                                               
- * AceQL HTTP is distributed in the hope that it will be useful,               
- * but WITHOUT ANY WARRANTY; without even the implied warranty of                
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU             
- * Lesser General Public License for more details.                               
- *                                                                               
- * You should have received a copy of the GNU Lesser General Public              
- * License along with this library; if not, write to the Free Software           
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  
+ * (http://www.kawansoft.com). All rights reserved.
+ *
+ * AceQL HTTP is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * AceQL HTTP is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
  * 02110-1301  USA
- * 
+ *
  * Any modifications to this file must keep this entire header
  * intact.
  */
 
 /*
- * 
+ *
  * This class needs an oracle driver jar to compile. (Example: ojdbc6.jar with
  * Oracle Database 11g.)
- * 
+ *
  * If you don't use Oracle, just comment the code between the two tags: // BEGIN
  * COMMENT & // END COMMENT to allow compilation.
  */
@@ -83,15 +83,15 @@ public class DbEngineManager {
 
     /**
      * Add a " limit 1 " clause to a sqlOrder.
-     * 
+     *
      * @param sqlOrder
      *            the sql order
      * @return the sql order with safely added " limit 1 "
      */
-    public static String addLmt1(String sqlOrder, Connection connection)
+    public static String addLmt1(final String sqlOrderParm, Connection connection)
 	    throws SQLException {
 
-	sqlOrder = sqlOrder.trim();
+	String sqlOrder = sqlOrderParm.trim();
 
 	if (!sqlOrder.toLowerCase().startsWith("select ")) {
 	    return sqlOrder;
@@ -163,7 +163,7 @@ public class DbEngineManager {
 
     /**
      * Prints the product name and the SQL Order with the LIMIT 1 or equivalent
-     * 
+     *
      * @param databaseProductName
      * @param sqlOrder
      */
@@ -175,7 +175,7 @@ public class DbEngineManager {
 
     /**
      * Checks the DBVendor and license validity and throws a
-     * 
+     *
      * @param properties
      *            properties that contains license info
      * @param connection
@@ -190,7 +190,7 @@ public class DbEngineManager {
 
     /**
      * Creates an Array for db
-     * 
+     *
      * @param connection
      *            the JDBC connection
      * @param typeName
@@ -225,7 +225,7 @@ public class DbEngineManager {
 
     /**
      * Returns true if Oracle Version is >= 12.1 (12.c)
-     * 
+     *
      * @param connection
      * @return true if Oracle Version is >= 12.1 (12.c)
      * @throws SQLException
