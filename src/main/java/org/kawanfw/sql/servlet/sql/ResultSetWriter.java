@@ -41,18 +41,14 @@ import java.sql.Array;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.RowId;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.sql.Types;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.Vector;
 
 import javax.json.stream.JsonGenerator;
 import javax.servlet.http.HttpServletRequest;
@@ -167,59 +163,21 @@ public class ResultSetWriter {
 	    isTerradata = productName.equals(SqlUtil.TERADATA) ? true : false;
 	    isPostgreSQL = productName.equals(SqlUtil.POSTGRESQL) ? true : false;
 
-	    ResultSetMetaData meta = resultSet.getMetaData();
-	    int cols = meta.getColumnCount();
+	    ColumnInfoCreator columnInfoCreator = new ColumnInfoCreator(resultSet, isPostgreSQL);
+	    List<Integer> columnTypeList = columnInfoCreator.getColumnTypeList();
+	    List<String> columnTypeNameList = columnInfoCreator.getColumnTypeNameList();
+	    List<String> columnNameList = columnInfoCreator.getColumnNameList();
+	    List<String> columnTableList = columnInfoCreator.getColumnTableList();
 
-	    int row_count = 0;
-
-	    List<Integer> columnTypeList = new Vector<Integer>();
-	    List<String> columnTypeNameList = new Vector<String>();
-	    List<String> columnNameList = new Vector<String>();
-	    List<String> columnTableList = new Vector<String>();
-
-	    // Loop on Columns
-	    for (int i = 1; i <= cols; i++) {
-		columnTypeList.add(meta.getColumnType(i));
-		columnNameList.add(meta.getColumnName(i).toLowerCase());
-		columnTypeNameList.add(meta.getColumnTypeName(i));
-
-		if (isPostgreSQL) {
-		    columnTableList.add(PostgreSqlUtil.getTableName(resultSet, i));
-		} else {
-		    columnTableList.add(meta.getTableName(i));
-		}
-
-		debug("");
-		debug("meta.getColumnType(" + i + ")    : " + meta.getColumnType(i));
-		debug("meta.getColumnTypeName(" + i + "): " + meta.getColumnTypeName(i));
-		debug("meta.getColumnName(" + i + ")    : " + meta.getColumnName(i));
-		debug("meta.getTableName(" + i + ")     : " + meta.getTableName(i));
-	    }
-
-	    // Ok, dump the column Map<String, Integer> == (Column name, column
-	    // pos starting 9)
-	    Map<String, Integer> mapColumnNames = new LinkedHashMap<String, Integer>();
-
-	    for (int i = 0; i < columnNameList.size(); i++) {
-		mapColumnNames.put(columnNameList.get(i), i);
-	    }
-
-	    if (doColumnTypes) {
-		gen.writeStartArray("column_types");
-		for (int i = 0; i < columnTypeList.size(); i++) {
-		    int columnType = columnTypeList.get(i);
-		    gen.write(JavaSqlConversion.fromJavaToSql(columnType));
-		}
-		gen.writeEnd();
-	    }
+	    writeColumnTypes(columnTypeList);
 
 	    gen.writeStartArray("query_rows").writeStartObject();
 
+	    int row_count = 0;
 	    // Loop result Set
 	    while (resultSet.next()) {
 
 		row_count++;
-
 		gen.writeStartArray("row_" + row_count);
 
 		for (int i = 0; i < columnTypeList.size(); i++) {
@@ -229,12 +187,7 @@ public class ResultSetWriter {
 		    String columnName = columnNameList.get(i);
 		    String columnTable = columnTableList.get(i);
 
-		    debug("");
-		    debug("columnIndex    : " + columnIndex);
-		    debug("columnType     : " + columnType);
-		    debug("columnTypeName : " + columnTypeName);
-		    debug("columnName     : " + columnName);
-		    debug("columnTable    : " + columnTable);
+		    debugColumnInfo(columnIndex, columnType, columnTypeName, columnName, columnTable);
 
 		    Object columnValue = null;
 		    String columnValueStr = null;
@@ -246,14 +199,7 @@ public class ResultSetWriter {
 			debug("isBinaryColumn:columnValueStr: " + columnValueStr);
 		    } else if (isNStringColumn(columnType)) {
 			columnValue = resultSet.getNString(columnIndex);
-
-			if (resultSet.wasNull()) {
-			    columnValueStr = NULL;
-			} else if (columnValue == null) {
-			    columnValueStr = null;
-			} else {
-			    columnValueStr = columnValue.toString();
-			}
+			columnValueStr = treatNullValue(resultSet, columnValue);
 
 		    } else if (isClobColumn(columnType)) {
 			columnValueStr = formatClobColumn(resultSet, columnIndex);
@@ -269,7 +215,6 @@ public class ResultSetWriter {
 			    debug("columnValue: " + columnValue);
 
 			} catch (Exception e) {
-			    // int intValue = resultSet.getInt(columnName);
 			    debug("Exception     : " + e.toString());
 			    debug("columnType    : " + columnType);
 			    debug("columnTypeName: " + columnTypeNameList.get(i));
@@ -278,27 +223,10 @@ public class ResultSetWriter {
 				    + " " + columnName, e);
 			}
 
-			if (resultSet.wasNull()) {
-			    columnValueStr = NULL;
-			} else if (columnValue == null) {
-			    columnValueStr = null;
-			} else {
-			    columnValueStr = columnValue.toString();
-			}
-
+			columnValueStr = treatNullValue(resultSet, columnValue);
 		    }
 
 		    debug("columnValueStr : " + columnValueStr);
-
-		    // Case we - maybe - have an URL:
-		    //columnValueStr = urlFormater(resultSet, columnIndex, columnValueStr);
-
-		    // if (isCharacterType(columnType)) {
-		    // debugStringType(columnValueStr);
-		    // columnValueStr = HtmlConverter
-		    // .toHtml(columnValueStr);
-		    // debug("columnValueStr HTML encoded: " + columnValueStr);
-		    // }
 
 		    gen.writeStartObject();
 
@@ -340,6 +268,57 @@ public class ResultSetWriter {
 	} finally {
 	    resultSet.close();
 	    // NO! IOUtils.closeQuietly(out);
+	}
+    }
+
+    /**
+     * If wa have a ResultSet.wasNull() ==> value is "NULL" for transport to client side.
+     * @param resultSet
+     * @param columnValue
+     * @return
+     * @throws SQLException
+     */
+    private String treatNullValue(ResultSet resultSet, Object columnValue) throws SQLException {
+	String columnValueStr;
+	if (resultSet.wasNull()) {
+	    columnValueStr = NULL;
+	} else if (columnValue == null) {
+	    columnValueStr = null;
+	} else {
+	    columnValueStr = columnValue.toString();
+	}
+	return columnValueStr;
+    }
+
+    /**
+     * @param columnIndex
+     * @param columnType
+     * @param columnTypeName
+     * @param columnName
+     * @param columnTable
+     */
+    private void debugColumnInfo(int columnIndex, int columnType, String columnTypeName, String columnName,
+	    String columnTable) {
+	debug("");
+	debug("columnIndex    : " + columnIndex);
+	debug("columnType     : " + columnType);
+	debug("columnTypeName : " + columnTypeName);
+	debug("columnName     : " + columnName);
+	debug("columnTable    : " + columnTable);
+    }
+
+    /**
+     * Write the column types. Maybe required by client SDKs.
+     * @param columnTypeList
+     */
+    private void writeColumnTypes(List<Integer> columnTypeList) {
+	if (doColumnTypes) {
+	gen.writeStartArray("column_types");
+	for (int i = 0; i < columnTypeList.size(); i++) {
+	    int columnType = columnTypeList.get(i);
+	    gen.write(JavaSqlConversion.fromJavaToSql(columnType));
+	}
+	gen.writeEnd();
 	}
     }
 
