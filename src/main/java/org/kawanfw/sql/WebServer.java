@@ -70,26 +70,23 @@ public class WebServer {
     /**
      * Prints usage
      *
-     * @param options
-     *            the CLI Options
+     * @param options the CLI Options
      */
     private static void printUsage(Options options) {
 	// automatically generate the help statement
 	HelpFormatter formatter = new HelpFormatter();
 	formatter.setWidth(400);
 
-	String fromAceqlServerScript = System
-		.getProperty("from.aceql-server.script");
+	String fromAceqlServerScript = System.getProperty("from.aceql-server.script");
 
 	String help = null;
 
-	if (fromAceqlServerScript != null
-		&& fromAceqlServerScript.equals("true")) {
-	    help = "aceql-server -start -host <hostname> -port <port> -properties <file>"
-		    + CR_LF + "or " + CR_LF + "-stop -port <port> ";
+	if (fromAceqlServerScript != null && fromAceqlServerScript.equals("true")) {
+	    help = "aceql-server -start -host <hostname> -port <port> -properties <file>" + CR_LF + "or " + CR_LF
+		    + "-stop -port <port> ";
 	} else {
-	    help = "java org.kawanfw.sql.WebServer -start -host <hostname> -port <port> -properties <file>"
-		    + CR_LF + "or " + CR_LF + "-stop -port <port> ";
+	    help = "java org.kawanfw.sql.WebServer -start -host <hostname> -port <port> -properties <file>" + CR_LF
+		    + "or " + CR_LF + "-stop -port <port> ";
 	}
 
 	formatter.printHelp(help, options);
@@ -117,17 +114,16 @@ public class WebServer {
 	String propertiesOptionMesssage = getPropertiesOptionMessage();
 
 	@SuppressWarnings("static-access")
-	Option propertiesOption = OptionBuilder.withArgName("file").hasArg()
-		.withDescription(propertiesOptionMesssage).create("properties");
+	Option propertiesOption = OptionBuilder.withArgName("file").hasArg().withDescription(propertiesOptionMesssage)
+		.create("properties");
 
 	@SuppressWarnings("static-access")
-	Option hostOption = OptionBuilder.withArgName("hostname").hasArg()
-		.withDescription("hostname of the Web server").create("host");
+	Option hostOption = OptionBuilder.withArgName("hostname").hasArg().withDescription("hostname of the Web server")
+		.create("host");
 
 	@SuppressWarnings("static-access")
 	Option portOption = OptionBuilder.withArgName("port number").hasArg()
-		.withDescription("port number of the Web server. Defaults to "
-			+ WebServerApi.DEFAULT_PORT)
+		.withDescription("port number of the Web server. Defaults to " + WebServerApi.DEFAULT_PORT)
 		.create("port");
 
 	options.addOption(propertiesOption);
@@ -152,21 +148,18 @@ public class WebServer {
     /**
      * Starts or stops the AceQL Web Server.
      *
-     * @param args
-     *            the arguments of Web Server start/stop.
+     * @param args the arguments of Web Server start/stop.
      *
-     * @throws ParseException
-     *             if any Exception when parsing command line
-     * @throws IOException
-     *             if any I/O Exception
-     * @throws ConnectException
-     *             if server is unable to connect to specified or default 9090
-     *             port
-     * @throws DatabaseConfigurationException
-     *             if any error in configuration properties file
+     * @throws ParseException                 if any Exception when parsing command
+     *                                        line
+     * @throws IOException                    if any I/O Exception
+     * @throws ConnectException               if server is unable to connect to
+     *                                        specified or default 9090 port
+     * @throws DatabaseConfigurationException if any error in configuration
+     *                                        properties file
      */
-    public static void main(String[] args) throws ParseException, IOException,
-	    ConnectException, DatabaseConfigurationException {
+    public static void main(String[] args)
+	    throws ParseException, IOException, ConnectException, DatabaseConfigurationException {
 
 	if (args.length > 0) {
 	    debug("args[0]: " + args[0] + ":");
@@ -186,12 +179,12 @@ public class WebServer {
 	    System.out.println(e.getMessage());
 	    System.out.println();
 	    printUsage(options);
-	    System.exit(-1);
+	    SystemExitWrapper();
 	}
 
 	if (cmd.hasOption("help")) {
 	    printUsage(options);
-	    System.exit(-1);
+	    SystemExitWrapper();
 	}
 
 	if (cmd.hasOption("version")) {
@@ -201,11 +194,10 @@ public class WebServer {
 	}
 
 	if (!cmd.hasOption("start") && !cmd.hasOption("stop")) {
-	    System.err.println("Missing start or stop option." + " "
-		    + SqlTag.PLEASE_CORRECT);
+	    System.err.println("Missing start or stop option." + " " + SqlTag.PLEASE_CORRECT);
 	    System.out.println();
 	    printUsage(options);
-	    System.exit(-1);
+	    SystemExitWrapper();
 	}
 
 	int port = WebServerApi.DEFAULT_PORT;
@@ -216,16 +208,14 @@ public class WebServer {
 	    try {
 		port = Integer.parseInt(portStr);
 	    } catch (Exception e) {
-		displayErrorAndExit(
-			"The port parameter is not numeric: " + portStr + ".",
-			options);
+		displayErrorAndExit("The port parameter is not numeric: " + portStr + ".");
 	    }
 	}
 
 	if (cmd.hasOption("start")) {
 
 	    if (!cmd.hasOption("host")) {
-		displayErrorAndExit("Missing host option.", options);
+		displayErrorAndExit("Missing host option.");
 	    }
 
 	    String host = cmd.getOptionValue("host");
@@ -237,7 +227,7 @@ public class WebServer {
 		propertiesFile = getDefaultPropertiesFile();
 
 		if (propertiesFile == null) {
-		    displayErrorAndExit("Missing properties option.", options);
+		    displayErrorAndExit("Missing properties option.");
 		}
 
 	    } else {
@@ -248,48 +238,38 @@ public class WebServer {
 	    try {
 		webServerApi.startServer(host, port, propertiesFile);
 	    } catch (IllegalArgumentException e) {
-		System.err.println(SqlTag.SQL_PRODUCT_START_FAILURE + " "
-			+ SqlTag.USER_CONFIGURATION_FAILURE + " "
+		System.err.println(SqlTag.SQL_PRODUCT_START_FAILURE + " " + SqlTag.USER_CONFIGURATION_FAILURE + " "
 			+ e.getMessage());
 		if (e.getCause() == null) {
-		    // e.printStackTrace();
+		    System.err.println("e.getCause() is null.");
 		} else {
 		    e.getCause().printStackTrace();
 		}
 		System.err.println();
-		System.exit(-1);
+		SystemExitWrapper();
 	    }
 
 	    catch (ConnectException e) {
-		System.err.println(SqlTag.SQL_PRODUCT_START_FAILURE + " "
-			+ e.getMessage());
+		System.err.println(SqlTag.SQL_PRODUCT_START_FAILURE + " " + e.getMessage());
 		e.printStackTrace();
 		System.err.println();
 		System.exit((-1));
-	    }
-
-	    catch (IOException e) {
-
-		if (e instanceof UnknownHostException) {
-		    System.err.println(SqlTag.SQL_PRODUCT_START_FAILURE + " "
-			    + "Unknow host: " + e.getMessage());
-		} else {
-		    System.err.println(SqlTag.SQL_PRODUCT_START_FAILURE + " "
-			    + e.getMessage());
-		}
-
-		if (e.getCause() == null) {
-		    e.printStackTrace();
-		} else {
-		    e.getCause().printStackTrace();
-		}
+	    } catch (UnknownHostException e) {
+		System.err.println(SqlTag.SQL_PRODUCT_START_FAILURE + " " + "Unknow host: " + e.getMessage());
+		printCauseException(e);
 		System.err.println();
-		System.exit(-1);
+		SystemExitWrapper();
+
+	    } catch (IOException e) {
+		System.err.println(SqlTag.SQL_PRODUCT_START_FAILURE + " " + e.getMessage());
+		printCauseException(e);
+		System.err.println();
+		SystemExitWrapper();
 	    } catch (Exception e) {
 		System.err.println(SqlTag.SQL_PRODUCT_START_FAILURE);
 		e.printStackTrace();
 		System.err.println();
-		System.exit(-1);
+		SystemExitWrapper();
 	    }
 
 	} else {
@@ -299,40 +279,51 @@ public class WebServer {
 		webServerApi.stopServer(port);
 
 		System.out.println(
-			Version.PRODUCT.NAME + " Web server running on port "
-				+ port + " successfully stopped!");
+			Version.PRODUCT.NAME + " Web server running on port " + port + " successfully stopped!");
 		System.out.println();
 		System.exit(0);
+	    } catch (ConnectException e) {
+		System.err.println(e.getMessage());
+		System.err.println();
+		SystemExitWrapper();
 	    } catch (IOException e) {
+		System.err.println("Impossible to stop the SQL Web server running on port " + port);
+		System.err.println(e.getMessage());
 
-		if (e instanceof ConnectException) {
-		    System.err.println(e.getMessage());
-		} else {
-		    System.err.println(
-			    "Impossible to stop the SQL Web server running on port "
-				    + port);
-		    System.err.println(e.getMessage());
-
-		    if (e.getCause() != null) {
-			System.err.println("Java Exception Stack Trace:");
-			e.printStackTrace();
-		    }
-
+		if (e.getCause() != null) {
+		    System.err.println("Java Exception Stack Trace:");
+		    e.printStackTrace();
 		}
 
 		System.err.println();
-		System.exit(-1);
+		SystemExitWrapper();
 	    }
 	}
-
     }
 
     /**
-     * if ACEQL_HOME is set by calling script, we have a default properties
-     * files
+     * @param e
+     */
+    private static void printCauseException(IOException e) {
+	if (e.getCause() == null) {
+	    e.printStackTrace();
+	} else {
+	    e.getCause().printStackTrace();
+	}
+    }
+
+    /**
      *
-     * @return ACEQL_HOME/conf/aceql-server.properties if ACEQL_HOME env var is
-     *         set, else null
+     */
+    private static void SystemExitWrapper() {
+	System.exit(-1);
+    }
+
+    /**
+     * if ACEQL_HOME is set by calling script, we have a default properties files
+     *
+     * @return ACEQL_HOME/conf/aceql-server.properties if ACEQL_HOME env var is set,
+     *         else null
      */
     private static File getDefaultPropertiesFile() {
 
@@ -346,11 +337,10 @@ public class WebServer {
 	    aceqlHome = aceqlHome.replaceAll("\"", "");
 
 	    if (aceqlHome.endsWith(File.separator)) {
-		aceqlHome = StringUtils.substringBeforeLast(aceqlHome,
-			File.separator);
+		aceqlHome = StringUtils.substringBeforeLast(aceqlHome, File.separator);
 	    }
-	    defaultPropertiesFile = new File(aceqlHome + File.separator + "conf"
-		    + File.separator + "aceql-server.properties");
+	    defaultPropertiesFile = new File(
+		    aceqlHome + File.separator + "conf" + File.separator + "aceql-server.properties");
 	}
 
 	return defaultPropertiesFile;
@@ -359,15 +349,12 @@ public class WebServer {
     /**
      * Displays the error message and exit Java
      *
-     * @param message
-     *            The message to display before exit
-     * @param options
-     *            the options passed
+     * @param message The message to display before exit
      */
-    private static void displayErrorAndExit(String message, Options options) {
+    private static void displayErrorAndExit(String message) {
 	System.err.println(message + " " + SqlTag.PLEASE_CORRECT);
 	System.err.println();
-	System.exit(-1);
+	SystemExitWrapper();
     }
 
     /**

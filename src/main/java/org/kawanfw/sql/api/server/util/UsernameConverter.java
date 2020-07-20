@@ -58,8 +58,8 @@ public class UsernameConverter {
      * @param string the string with replaced characters
      * @return the string with original spaces and Windows characters
      */
-    public static String toSpecialChars(String string) {
-	string = string.replace(AC_SP, " ");
+    public static String toSpecialChars(final String stringParm) {
+	String string = stringParm.replace(AC_SP, " ");
 	string = string.replace(AC_LT, "<");
 	string = string.replace(AC_GT, ">");
 	string = string.replace(AC_COLON, ":");
@@ -78,12 +78,12 @@ public class UsernameConverter {
      * @param string the string to replace from the Windows special characters
      * @return the string without special Windows characters
      */
-    public static String fromSpecialChars(String string) {
-	if (string == null) {
+    public static String fromSpecialChars(final String stringParm) {
+	if (stringParm == null) {
 	    throw new NullPointerException("string is null!");
 	}
 
-	string = string.replace(" ", AC_SP);
+	String string = stringParm.replace(" ", AC_SP);
 	string = string.replace("<", AC_LT);
 	string = string.replace(">", AC_GT);
 	string = string.replace(":", AC_COLON);
