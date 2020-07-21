@@ -61,14 +61,6 @@ import org.apache.tomcat.util.http.fileupload.util.Streams;
 public class DefaultBlobUploadConfigurator implements BlobUploadConfigurator {
     private static boolean DEBUG = false;
 
-    /**
-     * Constructor. {@code BlobUploadConfigurator} implementation must have no
-     * constructor or a unique no parms constructor.
-     */
-    public DefaultBlobUploadConfigurator() {
-
-    }
-
     // Max file size
     @SuppressWarnings("unused")
     private static final int MAX_FILE_SIZE = 1024 * 1024 * 20;

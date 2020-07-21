@@ -75,7 +75,7 @@ public class ServerStatement {
 
     private Boolean doPrettyPrinting;
 
-    private List<SqlFirewallManager> sqlFirewallManagers = new ArrayList<>();
+    private List<SqlFirewallManager> sqlFirewallManagers;
 
     /**
      * Default Constructor

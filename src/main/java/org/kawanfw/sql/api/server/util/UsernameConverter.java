@@ -3,6 +3,8 @@
  */
 package org.kawanfw.sql.api.server.util;
 
+import java.util.Objects;
+
 import org.kawanfw.sql.api.server.DefaultDatabaseConfigurator;
 
 /**
@@ -80,7 +82,7 @@ public class UsernameConverter {
      */
     public static String fromSpecialChars(final String stringParm) {
 	if (stringParm == null) {
-	    throw new NullPointerException("string is null!");
+	    Objects.requireNonNull(stringParm, "stringParm cannot be null!");
 	}
 
 	String string = stringParm.replace(" ", AC_SP);

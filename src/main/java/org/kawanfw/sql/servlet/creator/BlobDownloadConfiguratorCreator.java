@@ -39,9 +39,7 @@ public class BlobDownloadConfiguratorCreator {
     private BlobDownloadConfigurator blobDownloadConfigurator = null;
     private String blobDownloadConfiguratorClassName = null;
 
-    private static String[] PREDEFINED_CLASS_NAMES = {
-	   DefaultBlobDownloadConfigurator.class.getSimpleName(),
-	    };
+    private static String[] PREDEFINED_CLASS_NAMES = { DefaultBlobDownloadConfigurator.class.getSimpleName(), };
 
     /**
      * Allows to add automatically the package for predefined classes
@@ -54,8 +52,8 @@ public class BlobDownloadConfiguratorCreator {
 	for (int i = 0; i < PREDEFINED_CLASS_NAMES.length; i++) {
 	    if (PREDEFINED_CLASS_NAMES[i].equals(theClassName)) {
 		// Add prefix package
-		String theClassNameNew = DefaultBlobDownloadConfigurator.class.getPackage()
-			.getName() + "." + theClassName;
+		String theClassNameNew = DefaultBlobDownloadConfigurator.class.getPackage().getName() + "."
+			+ theClassName;
 		return theClassNameNew;
 	    }
 	}
@@ -83,13 +81,11 @@ public class BlobDownloadConfiguratorCreator {
     }
 
     public BlobDownloadConfigurator getBlobDownloadConfigurator() {
-        return blobDownloadConfigurator;
+	return blobDownloadConfigurator;
     }
 
     public String getBlobDownloadConfiguratorClassName() {
-        return blobDownloadConfiguratorClassName;
+	return blobDownloadConfiguratorClassName;
     }
-
-
 
 }

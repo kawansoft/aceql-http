@@ -1,24 +1,24 @@
 /*
  * This file is part of AceQL HTTP.
- * AceQL HTTP: SQL Over HTTP                                     
+ * AceQL HTTP: SQL Over HTTP
  * Copyright (C) 2020,  KawanSoft SAS
- * (http://www.kawansoft.com). All rights reserved.                                
- *                                                                               
- * AceQL HTTP is free software; you can redistribute it and/or                 
- * modify it under the terms of the GNU Lesser General Public                    
- * License as published by the Free Software Foundation; either                  
- * version 2.1 of the License, or (at your option) any later version.            
- *                                                                               
- * AceQL HTTP is distributed in the hope that it will be useful,               
- * but WITHOUT ANY WARRANTY; without even the implied warranty of                
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU             
- * Lesser General Public License for more details.                               
- *                                                                               
- * You should have received a copy of the GNU Lesser General Public              
- * License along with this library; if not, write to the Free Software           
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  
+ * (http://www.kawansoft.com). All rights reserved.
+ *
+ * AceQL HTTP is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * AceQL HTTP is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
  * 02110-1301  USA
- * 
+ *
  * Any modifications to this file must keep this entire header
  * intact.
  */
@@ -40,12 +40,12 @@ import org.kawanfw.sql.util.SqlTag;
 
 /**
  * @author Nicolas de Pomereu
- * 
+ *
  *         Creates a PoolProperties from the passed Properties on constructor.
  *         <br>
  *         Uses reflection to call all setXxx methods of PoolProperties using
  *         the property names.
- * 
+ *
  */
 public class TomcatContextUpdater {
 
@@ -66,7 +66,7 @@ public class TomcatContextUpdater {
 
     /**
      * Constructor.
-     * 
+     *
      * @param context
      * @param properties
      */
@@ -148,10 +148,10 @@ public class TomcatContextUpdater {
     /**
      * Call the method corresponding to the property name with the property
      * value.
-     * 
+     *
      * @param propertyName
      * @param propertyValue
-     * 
+     *
      * @throws NoSuchMethodException
      * @throws SecurityException
      * @throws InvocationTargetException
@@ -173,16 +173,6 @@ public class TomcatContextUpdater {
 	// }
 
 	Class<?>[] pType = methodNamesAndParms.get(theMethod);
-
-	// if (pType[0] == String.class) {
-	// System.out.println(SqlTag.SQL_PRODUCT_START + "poolProperties." +
-	// theMethod
-	// + "(\"" + propertyValueToDisplay + "\")");
-	// } else {
-	// System.out.println(SqlTag.SQL_PRODUCT_START + "poolProperties." +
-	// theMethod
-	// + "(" + propertyValueToDisplay + ")");
-	// }
 
 	System.out.println(SqlTag.SQL_PRODUCT_START + "  -> " + propertyName
 		+ " = " + propertyValueToDisplay);
@@ -208,7 +198,7 @@ public class TomcatContextUpdater {
 
     /**
      * Print debug info
-     * 
+     *
      * @param s
      */
 

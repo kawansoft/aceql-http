@@ -211,6 +211,20 @@ public class DefaultPoolsInfo extends HttpServlet {
 	    return;
 	}
 
+	writeOutpuMain(request, response, setDatabase, dataSources);
+
+    }
+
+    /**
+     * @param request
+     * @param response
+     * @param setDatabase
+     * @param dataSources
+     * @throws NumberFormatException
+     * @throws IOException
+     */
+    private void writeOutpuMain(HttpServletRequest request, HttpServletResponse response, String setDatabase,
+	    Map<String, DataSource> dataSources) throws NumberFormatException, IOException {
 	StringWriter writer = new StringWriter();
 
 	JsonGeneratorFactory jf = JsonUtil.getJsonGeneratorFactory(true);
@@ -226,43 +240,7 @@ public class DefaultPoolsInfo extends HttpServlet {
 	gen.writeStartArray("databases");
 
 	for (String database : databases) {
-
-	    DataSource datasource = dataSources.get(database);
-	    DataSourceProxy dataSourceProxy = (org.apache.tomcat.jdbc.pool.DataSource) datasource;
-
-	    if (setDatabase == null || setDatabase.equals(database)) {
-		String doSet = request.getParameter("setMinIdle");
-		if (doSet != null && !doSet.isEmpty() && StringUtils.isNumeric(doSet) && StringUtils.isNumeric(doSet)) {
-		    dataSourceProxy.setMinIdle(Integer.parseInt(doSet));
-		}
-		doSet = request.getParameter("setMaxIdle");
-		if (doSet != null && !doSet.isEmpty() && StringUtils.isNumeric(doSet) && StringUtils.isNumeric(doSet)) {
-		    dataSourceProxy.setMaxIdle(Integer.parseInt(doSet));
-		}
-
-		doSet = request.getParameter("setMaxActive");
-		if (doSet != null && !doSet.isEmpty() && StringUtils.isNumeric(doSet) && StringUtils.isNumeric(doSet)) {
-		    dataSourceProxy.setMaxActive(Integer.parseInt(doSet));
-		}
-	    }
-
-	    gen.writeStartObject().write("database", database).writeEnd();
-
-	    gen.writeStartObject().write("getBorrowedCount()", dataSourceProxy.getBorrowedCount()).writeEnd();
-	    gen.writeStartObject().write("getMaxActive()", dataSourceProxy.getMaxActive()).writeEnd();
-	    gen.writeStartObject().write("getMaxIdle()", dataSourceProxy.getMaxIdle()).writeEnd();
-	    gen.writeStartObject().write("getMinIdle()", dataSourceProxy.getMinIdle()).writeEnd();
-	    gen.writeStartObject().write("getNumActive()", dataSourceProxy.getNumActive()).writeEnd();
-	    gen.writeStartObject().write("getNumIdle()", dataSourceProxy.getNumIdle()).writeEnd();
-	    gen.writeStartObject().write("getReconnectedCount()", dataSourceProxy.getReconnectedCount()).writeEnd();
-	    gen.writeStartObject().write("getReleasedCount()", dataSourceProxy.getReleasedCount()).writeEnd();
-	    gen.writeStartObject().write("getReleasedIdleCount()", dataSourceProxy.getReleasedIdleCount()).writeEnd();
-	    gen.writeStartObject().write("getRemoveAbandonedCount()", dataSourceProxy.getRemoveAbandonedCount())
-		    .writeEnd();
-	    gen.writeStartObject().write("getReturnedCount()", dataSourceProxy.getReturnedCount()).writeEnd();
-	    gen.writeStartObject().write("getSize()", dataSourceProxy.getSize()).writeEnd();
-	    gen.writeStartObject().write("getWaitCount()", dataSourceProxy.getWaitCount()).writeEnd();
-
+	    writeOutputElementInLoop(request, setDatabase, dataSources, gen, database);
 	}
 
 	gen.writeEnd();
@@ -272,7 +250,53 @@ public class DefaultPoolsInfo extends HttpServlet {
 	OutputStream out = response.getOutputStream();
 	String outString = writer.toString();
 	ServerSqlManager.writeLine(out, outString);
+    }
 
+    /**
+     * @param request
+     * @param setDatabase
+     * @param dataSources
+     * @param gen
+     * @param database
+     * @throws NumberFormatException
+     */
+    private void writeOutputElementInLoop(HttpServletRequest request, String setDatabase,
+	    Map<String, DataSource> dataSources, JsonGenerator gen, String database) throws NumberFormatException {
+	DataSource datasource = dataSources.get(database);
+	DataSourceProxy dataSourceProxy = (org.apache.tomcat.jdbc.pool.DataSource) datasource;
+
+	if (setDatabase == null || setDatabase.equals(database)) {
+	String doSet = request.getParameter("setMinIdle");
+	if (doSet != null && !doSet.isEmpty() && StringUtils.isNumeric(doSet) && StringUtils.isNumeric(doSet)) {
+	    dataSourceProxy.setMinIdle(Integer.parseInt(doSet));
+	}
+	doSet = request.getParameter("setMaxIdle");
+	if (doSet != null && !doSet.isEmpty() && StringUtils.isNumeric(doSet) && StringUtils.isNumeric(doSet)) {
+	    dataSourceProxy.setMaxIdle(Integer.parseInt(doSet));
+	}
+
+	doSet = request.getParameter("setMaxActive");
+	if (doSet != null && !doSet.isEmpty() && StringUtils.isNumeric(doSet) && StringUtils.isNumeric(doSet)) {
+	    dataSourceProxy.setMaxActive(Integer.parseInt(doSet));
+	}
+	}
+
+	gen.writeStartObject().write("database", database).writeEnd();
+
+	gen.writeStartObject().write("getBorrowedCount()", dataSourceProxy.getBorrowedCount()).writeEnd();
+	gen.writeStartObject().write("getMaxActive()", dataSourceProxy.getMaxActive()).writeEnd();
+	gen.writeStartObject().write("getMaxIdle()", dataSourceProxy.getMaxIdle()).writeEnd();
+	gen.writeStartObject().write("getMinIdle()", dataSourceProxy.getMinIdle()).writeEnd();
+	gen.writeStartObject().write("getNumActive()", dataSourceProxy.getNumActive()).writeEnd();
+	gen.writeStartObject().write("getNumIdle()", dataSourceProxy.getNumIdle()).writeEnd();
+	gen.writeStartObject().write("getReconnectedCount()", dataSourceProxy.getReconnectedCount()).writeEnd();
+	gen.writeStartObject().write("getReleasedCount()", dataSourceProxy.getReleasedCount()).writeEnd();
+	gen.writeStartObject().write("getReleasedIdleCount()", dataSourceProxy.getReleasedIdleCount()).writeEnd();
+	gen.writeStartObject().write("getRemoveAbandonedCount()", dataSourceProxy.getRemoveAbandonedCount())
+	    .writeEnd();
+	gen.writeStartObject().write("getReturnedCount()", dataSourceProxy.getReturnedCount()).writeEnd();
+	gen.writeStartObject().write("getSize()", dataSourceProxy.getSize()).writeEnd();
+	gen.writeStartObject().write("getWaitCount()", dataSourceProxy.getWaitCount()).writeEnd();
     }
 
     /**

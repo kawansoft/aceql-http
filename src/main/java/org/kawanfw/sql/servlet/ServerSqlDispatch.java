@@ -64,12 +64,6 @@ public class ServerSqlDispatch {
     private static boolean DEBUG = FrameworkDebug.isSet(ServerSqlDispatch.class);
 
     /**
-     * Constructor
-     */
-    public ServerSqlDispatch() {
-	// Does nothing
-    }
-
     /**
      * Execute the client sent sql request that is already wrapped in the calling
      * try/catch that handles Throwable

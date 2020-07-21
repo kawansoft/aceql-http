@@ -51,14 +51,14 @@ public class SessionConfiguratorCreator {
      * @param theClassName
      * @return
      */
-    private static String getNameWithPackage(String theClassName) {
+    private static String getNameWithPackage(final String theClassName) {
 
 	for (int i = 0; i < PREDEFINED_CLASS_NAMES.length; i++) {
 	    if (PREDEFINED_CLASS_NAMES[i].equals(theClassName)) {
 		// Add prefix package
-		theClassName = SessionConfigurator.class.getPackage()
+		String theClassNameNew = SessionConfigurator.class.getPackage()
 			.getName() + "." + theClassName;
-		return theClassName;
+		return theClassNameNew;
 	    }
 	}
 

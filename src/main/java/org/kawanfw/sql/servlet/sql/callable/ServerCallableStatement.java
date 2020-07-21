@@ -32,7 +32,6 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -74,7 +73,7 @@ public class ServerCallableStatement {
 
     /** The http request */
     private HttpServletRequest request = null;
-    private List<SqlFirewallManager> sqlFirewallManagers = new ArrayList<>();
+    private List<SqlFirewallManager> sqlFirewallManagers;
     private HttpServletResponse response = null;
     private Boolean doPrettyPrinting = false;
 
@@ -93,6 +92,7 @@ public class ServerCallableStatement {
 	    throws SQLException {
 	this.request = request;
 	this.response = response;
+	this.sqlFirewallManagers = sqlFirewallManagers;
 	this.connection = connection;
 
 	doPrettyPrinting = true; // Always pretty printing
