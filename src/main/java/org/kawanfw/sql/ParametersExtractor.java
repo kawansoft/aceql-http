@@ -57,7 +57,7 @@ class ParametersExtractor {
 	CommandLineParser parser = new GnuParser();
 
 	CommandLine cmd = null;
-	cmd = chekParameters(options, parser, cmd);
+	cmd = chekParameters(options, parser);
 
 	port = WebServerApi.DEFAULT_PORT;
 
@@ -103,37 +103,38 @@ class ParametersExtractor {
     /**
      * @param options
      * @param parser
-     * @param cmd
      * @return
      * @throws ParseException
      */
-    private CommandLine chekParameters(Options options, CommandLineParser parser, CommandLine cmd)
+    private CommandLine chekParameters(Options options, CommandLineParser parser)
 	    throws ParseException {
+
+	CommandLine cmd = null;
 	try {
 	    cmd = parser.parse(options, args);
 	} catch (UnrecognizedOptionException e) {
 	    System.out.println(e.getMessage());
 	    System.out.println();
 	    WebServerUtil.printUsage(options);
-	    WebServerUtil.SystemExitWrapperMinusOne();
+	    WebServerUtil.systemExitWrapper(-1);
 	}
 
 	if (cmd.hasOption("help")) {
 	    WebServerUtil.printUsage(options);
-	    WebServerUtil.SystemExitWrapperMinusOne();
+	    WebServerUtil.systemExitWrapper(-1);
 	}
 
 	if (cmd.hasOption("version")) {
 	    System.out.println(Version.getServerVersion());
 	    System.out.println();
-	    WebServerUtil.systemExitWrapperZero();
+	    WebServerUtil.systemExitWrapper(0);
 	}
 
 	if (!cmd.hasOption("start") && !cmd.hasOption("stop")) {
 	    System.err.println("Missing start or stop option." + " " + SqlTag.PLEASE_CORRECT);
 	    System.out.println();
 	    WebServerUtil.printUsage(options);
-	    WebServerUtil.SystemExitWrapperMinusOne();
+	    WebServerUtil.systemExitWrapper(-1);
 	}
 	return cmd;
     }

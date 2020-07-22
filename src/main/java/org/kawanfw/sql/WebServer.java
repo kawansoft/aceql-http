@@ -108,30 +108,30 @@ public class WebServer {
 		e.getCause().printStackTrace();
 	    }
 	    System.err.println();
-	    WebServerUtil.SystemExitWrapperMinusOne();
+	    WebServerUtil.systemExitWrapper(-1);
 	}
 
 	catch (ConnectException e) {
 	    System.err.println(SqlTag.SQL_PRODUCT_START_FAILURE + " " + e.getMessage());
 	    e.printStackTrace();
 	    System.err.println();
-	    WebServerUtil.SystemExitWrapperMinusOne();
+	    WebServerUtil.systemExitWrapper(-1);
 	} catch (UnknownHostException e) {
 	    System.err.println(SqlTag.SQL_PRODUCT_START_FAILURE + " " + "Unknow host: " + e.getMessage());
 	    WebServerUtil.printCauseException(e);
 	    System.err.println();
-	    WebServerUtil.SystemExitWrapperMinusOne();
+	    WebServerUtil.systemExitWrapper(-1);
 
 	} catch (IOException e) {
 	    System.err.println(SqlTag.SQL_PRODUCT_START_FAILURE + " " + e.getMessage());
 	    WebServerUtil.printCauseException(e);
 	    System.err.println();
-	    WebServerUtil.SystemExitWrapperMinusOne();
+	    WebServerUtil.systemExitWrapper(-1);
 	} catch (Exception e) {
 	    System.err.println(SqlTag.SQL_PRODUCT_START_FAILURE);
 	    e.printStackTrace();
 	    System.err.println();
-	    WebServerUtil.SystemExitWrapperMinusOne();
+	    WebServerUtil.systemExitWrapper(-1);
 	}
     }
 
@@ -147,11 +147,11 @@ public class WebServer {
 
 	    System.out.println(Version.PRODUCT.NAME + " Web server running on port " + port + " successfully stopped!");
 	    System.out.println();
-	    WebServerUtil.systemExitWrapperZero();
+	    WebServerUtil.systemExitWrapper(0);
 	} catch (ConnectException e) {
 	    System.err.println(e.getMessage());
 	    System.err.println();
-	    WebServerUtil.SystemExitWrapperMinusOne();
+	    WebServerUtil.systemExitWrapper(-1);
 	} catch (IOException e) {
 	    System.err.println("Impossible to stop the SQL Web server running on port " + port);
 	    System.err.println(e.getMessage());
@@ -162,7 +162,7 @@ public class WebServer {
 	    }
 
 	    System.err.println();
-	    WebServerUtil.SystemExitWrapperMinusOne();
+	    WebServerUtil.systemExitWrapper(0);
 	}
     }
 

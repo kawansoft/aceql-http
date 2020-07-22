@@ -19,9 +19,10 @@ class WebServerUtil {
     /**
     *
     */
-    public static void systemExitWrapperZero() {
-	System.exit(0);
+    public static void systemExitWrapper(int value) {
+	System.exit(-1);
     }
+
 
     /**
      * @param e
@@ -34,12 +35,7 @@ class WebServerUtil {
 	}
     }
 
-    /**
-    *
-    */
-    public static void SystemExitWrapperMinusOne() {
-	System.exit(-1);
-    }
+
 
     /**
      * Prints usage
@@ -75,7 +71,7 @@ class WebServerUtil {
     public static void displayErrorAndExit(String message) {
 	System.err.println(message + " " + SqlTag.PLEASE_CORRECT);
 	System.err.println();
-	SystemExitWrapperMinusOne();
+	systemExitWrapper(-1);
     }
 
 }

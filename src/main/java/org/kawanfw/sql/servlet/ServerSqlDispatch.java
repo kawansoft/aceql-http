@@ -63,9 +63,8 @@ public class ServerSqlDispatch {
     private static boolean DEBUG = FrameworkDebug.isSet(ServerSqlDispatch.class);
 
     /**
-    /**
-     * Execute the client sent sql request that is already wrapped in the calling
-     * try/catch that handles Throwable
+     * /** Execute the client sent sql request that is already wrapped in the
+     * calling try/catch that handles Throwable
      *
      * @param request  the http request
      * @param response the http response
@@ -91,7 +90,7 @@ public class ServerSqlDispatch {
 	String connectionId = request.getParameter(HttpParameter.CONNECTION_ID);
 
 	BaseActionTreater baseActionTreater = new BaseActionTreater(request, response, out);
-	if (! baseActionTreater.treatAndContinue()) {
+	if (!baseActionTreater.treatAndContinue()) {
 	    return;
 	}
 
@@ -106,7 +105,7 @@ public class ServerSqlDispatch {
 	connectionStoreClean();
 
 	ConnectionGetter connectionGetter = new ConnectionGetter(request, response, out);
-	if (! connectionGetter.treatAndContinue()) {
+	if (!connectionGetter.treatAndContinue()) {
 	    return;
 	}
 	Connection connection = connectionGetter.getConnection();
@@ -126,9 +125,9 @@ public class ServerSqlDispatch {
 	dispatch(request, response, out, action, connection, sqlFirewallManagers);
     }
 
-
     /**
      * Treat if action is get_version
+     *
      * @param out
      * @param action
      * @throws IOException
@@ -138,14 +137,14 @@ public class ServerSqlDispatch {
 	    String version = new org.kawanfw.sql.version.Version.PRODUCT().server();
 	    ServerSqlManager.writeLine(out, JsonOkReturn.build("result", version));
 	    return true;
-	}
-	else {
+	} else {
 	    return false;
 	}
     }
 
     /**
      * Dispatch the request.
+     *
      * @param request
      * @param response
      * @param out
@@ -178,10 +177,9 @@ public class ServerSqlDispatch {
 	}
     }
 
-
-
     /**
      * Tread metadata query.
+     *
      * @param request
      * @param response
      * @param out
@@ -200,13 +198,10 @@ public class ServerSqlDispatch {
 		    out, sqlFirewallManagers, connection);
 	    metadataQueryActionManager.execute();
 	    return true;
-	}
-	else {
+	} else {
 	    return false;
 	}
     }
-
-
 
     /**
      * @param response
@@ -219,26 +214,25 @@ public class ServerSqlDispatch {
      * @throws IOException
      */
     private void treatCloseAction(HttpServletResponse response, OutputStream out, String username, String sessionId,
-	    String connectionId, DatabaseConfigurator databaseConfigurator, Connection connection) throws IOException {
+	    final String connectionId, DatabaseConfigurator databaseConfigurator, Connection connection) throws IOException {
 	try {
-	// ConnectionCloser.freeConnection(connection,
-	// databaseConfigurator);
-	databaseConfigurator.close(connection);
-	if (connectionId == null) {
-	    connectionId = ServerLoginActionSql.getConnectionId(connection);
-	}
-	ConnectionStore connectionStore = new ConnectionStore(username, sessionId, connectionId);
-	connectionStore.remove();
-	ServerSqlManager.writeLine(out, JsonOkReturn.build());
+	    // ConnectionCloser.freeConnection(connection,
+	    // databaseConfigurator);
+	    databaseConfigurator.close(connection);
+
+	    String connectionIdNew = connectionId;
+	    if (connectionIdNew == null) {
+		connectionIdNew = ServerLoginActionSql.getConnectionId(connection);
+	    }
+	    ConnectionStore connectionStore = new ConnectionStore(username, sessionId, connectionIdNew);
+	    connectionStore.remove();
+	    ServerSqlManager.writeLine(out, JsonOkReturn.build());
 	} catch (SQLException e) {
-	JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_BAD_REQUEST,
-		JsonErrorReturn.ERROR_JDBC_ERROR, e.getMessage());
-	ServerSqlManager.writeLine(out, errorReturn.build());
+	    JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_BAD_REQUEST,
+		    JsonErrorReturn.ERROR_JDBC_ERROR, e.getMessage());
+	    ServerSqlManager.writeLine(out, errorReturn.build());
 	}
-	return;
     }
-
-
 
     /**
      * @param request
@@ -256,13 +250,10 @@ public class ServerSqlDispatch {
 	    BlobUploader blobUploader = new BlobUploader(request, response);
 	    blobUploader.blobUpload();
 	    return true;
-	}
-	else {
+	} else {
 	    return false;
 	}
     }
-
-
 
     /**
      * Clean connection store.
