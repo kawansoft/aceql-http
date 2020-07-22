@@ -194,12 +194,9 @@ public class ServerStatement {
      * @throws SQLException
      */
     private void executePrepStatement(OutputStream out) throws SQLException, IOException {
-
 	String username = request.getParameter(HttpParameter.USERNAME);
 	String database = request.getParameter(HttpParameter.DATABASE);
 	String sqlOrder = request.getParameter(HttpParameter.SQL);
-
-	debug("sqlOrder        : " + sqlOrder);
 
 	PreparedStatement preparedStatement = null;
 
@@ -207,14 +204,12 @@ public class ServerStatement {
 	ServerPreparedStatementParameters serverPreparedStatementParameters = null;
 
 	try {
-
 	    if (sqlOrder == null || sqlOrder.isEmpty()) {
 		throw new SQLException("A 'sql' statement is required.");
 	    }
 	    preparedStatement = connection.prepareStatement(sqlOrder);
 
 	    debug("before ServerPreparedStatementParameters");
-
 	    serverPreparedStatementParameters = new ServerPreparedStatementParameters(preparedStatement, request);
 
 	    try {
@@ -232,55 +227,14 @@ public class ServerStatement {
 
 	    debug("before executeQuery() / executeUpdate()");
 	    if (isExecuteUpdate()) {
-
-		// boolean allowExecuteUpdate =
-		// DatabaseConfiguratorCall.allowExecuteUpdate(databaseConfigurator, username,
-		// connection);
-
-		checkFirewallForExecuteUpdate(username, database, sqlOrder, serverPreparedStatementParameters,
+		doExecuteUpdate(out, username, database, sqlOrder, preparedStatement, serverPreparedStatementParameters,
 			ipAddress);
-
-		int rc = preparedStatement.executeUpdate();
-
-		StringWriter sw = new StringWriter();
-		JsonGeneratorFactory jf = JsonUtil.getJsonGeneratorFactory(JsonUtil.DEFAULT_PRETTY_PRINTING);
-		JsonGenerator gen = jf.createGenerator(sw);
-
-		gen.writeStartObject().write("status", "OK").write("row_count", rc).writeEnd();
-		gen.close();
-
-		ServerSqlManager.write(out, sw.toString());
 
 	    } else {
 
-		ResultSet rs = null;
-
-		try {
-		    rs = preparedStatement.executeQuery();
-
-		    JsonGeneratorFactory jf = JsonUtil.getJsonGeneratorFactory(doPrettyPrinting);
-
-		    JsonGenerator gen = jf.createGenerator(out);
-		    gen.writeStartObject().write("status", "OK");
-
-		    ResultSetWriter resultSetWriter = new ResultSetWriter(request, username, sqlOrder, gen);
-		    resultSetWriter.write(rs);
-
-		    ServerSqlManager.writeLine(out);
-
-		    gen.writeEnd(); // .write("status", "OK")
-		    gen.flush();
-		    gen.close();
-
-		} finally {
-
-		    if (rs != null) {
-			rs.close();
-		    }
-		}
+		doSelect(out, username, sqlOrder, preparedStatement);
 	    }
 	} catch (SQLException e) {
-
 	    String message = StatementFailure.prepStatementFailureBuild(sqlOrder, e.toString(),
 		    serverPreparedStatementParameters.getParameterTypes(),
 		    serverPreparedStatementParameters.getParameterValues(), doPrettyPrinting);
@@ -301,6 +255,75 @@ public class ServerStatement {
 	    serverPreparedStatementParameters = null;
 
 	}
+    }
+
+    /**
+     * @param out
+     * @param username
+     * @param sqlOrder
+     * @param preparedStatement
+     * @throws SQLException
+     * @throws IOException
+     */
+    private void doSelect(OutputStream out, String username, String sqlOrder, PreparedStatement preparedStatement)
+	    throws SQLException, IOException {
+	ResultSet rs = null;
+
+	try {
+	    rs = preparedStatement.executeQuery();
+
+	    JsonGeneratorFactory jf = JsonUtil.getJsonGeneratorFactory(doPrettyPrinting);
+
+	    JsonGenerator gen = jf.createGenerator(out);
+	    gen.writeStartObject().write("status", "OK");
+
+	    ResultSetWriter resultSetWriter = new ResultSetWriter(request, username, sqlOrder, gen);
+	    resultSetWriter.write(rs);
+
+	    ServerSqlManager.writeLine(out);
+
+	    gen.writeEnd(); // .write("status", "OK")
+	    gen.flush();
+	    gen.close();
+
+	} finally {
+
+	    if (rs != null) {
+		rs.close();
+	    }
+	}
+    }
+
+    /**
+     * Calls the PreparedStatement.executeUpdate() methid.
+     * @param out
+     * @param username
+     * @param database
+     * @param sqlOrder
+     * @param preparedStatement
+     * @param serverPreparedStatementParameters
+     * @param ipAddress
+     * @throws IOException
+     * @throws SQLException
+     * @throws SecurityException
+     */
+    private void doExecuteUpdate(OutputStream out, String username, String database, String sqlOrder,
+	    PreparedStatement preparedStatement, ServerPreparedStatementParameters serverPreparedStatementParameters,
+	    String ipAddress) throws IOException, SQLException, SecurityException {
+
+	checkFirewallForExecuteUpdate(username, database, sqlOrder, serverPreparedStatementParameters,
+		ipAddress);
+
+	int rc = preparedStatement.executeUpdate();
+
+	StringWriter sw = new StringWriter();
+	JsonGeneratorFactory jf = JsonUtil.getJsonGeneratorFactory(JsonUtil.DEFAULT_PRETTY_PRINTING);
+	JsonGenerator gen = jf.createGenerator(sw);
+
+	gen.writeStartObject().write("status", "OK").write("row_count", rc).writeEnd();
+	gen.close();
+
+	ServerSqlManager.write(out, sw.toString());
     }
 
     /**
