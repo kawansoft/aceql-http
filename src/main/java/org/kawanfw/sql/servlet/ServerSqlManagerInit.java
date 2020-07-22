@@ -339,12 +339,14 @@ public class ServerSqlManagerInit {
      * @throws SQLException
      * @throws IOException
      */
-    private String loadSqlFirewallManagers(String classNameToLoad, Set<String> databases)
+    private String loadSqlFirewallManagers(final String classNameToLoad, Set<String> databases)
 	    throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException,
 	    IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException, IOException {
+
+	String classNameToLoadNew = classNameToLoad;
 	for (String database : databases) {
 	    List<String> sqlFirewallClassNames = ServletParametersStore.getSqlFirewallClassNames(database);
-	    classNameToLoad = sqlFirewallClassNames.toString();
+	    classNameToLoadNew = sqlFirewallClassNames.toString();
 
 	    String tagSQLFirewallManager = null;
 	    if (sqlFirewallClassNames.size() == 0)
@@ -361,13 +363,13 @@ public class ServerSqlManagerInit {
 	    sqlFirewallMap.put(database, sqlFirewallManagers);
 
 	    sqlFirewallClassNames = sqlFirewallsCreator.getSqlFirewallClassNames();
-	    classNameToLoad = sqlFirewallClassNames.toString();
+	    classNameToLoadNew = sqlFirewallClassNames.toString();
 
 	    for (String sqlFirewallClassName : sqlFirewallClassNames) {
 		System.out.println(SqlTag.SQL_PRODUCT_START + "   -> " + sqlFirewallClassName);
 	    }
 	}
-	return classNameToLoad;
+	return classNameToLoadNew;
     }
 
     /**
@@ -384,10 +386,12 @@ public class ServerSqlManagerInit {
      * @throws NoSuchMethodException
      * @throws SecurityException
      */
-    private String loadDatabaseConfigurators(String classNameToLoad, Set<String> databases)
+    private String loadDatabaseConfigurators(final String classNameToLoad, Set<String> databases)
 	    throws ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException,
 	    InvocationTargetException, NoSuchMethodException, SecurityException {
 	String databaseConfiguratorClassName;
+	String classNameToLoadNew = classNameToLoad;
+
 	// WARNING: Database configurator must be loaded prior to firewalls
 	// because a getConnection() is used to test SqlFirewallManager
 	for (String database : databases) {
@@ -404,7 +408,7 @@ public class ServerSqlManagerInit {
 	    }
 
 	    // Call the specific DatabaseConfigurator class to use
-	    classNameToLoad = databaseConfiguratorClassName;
+	    classNameToLoadNew = databaseConfiguratorClassName;
 	    DatabaseConfiguratorCreator databaseConfiguratorCreator = new DatabaseConfiguratorCreator(
 		    databaseConfiguratorClassName);
 	    DatabaseConfigurator databaseConfigurator = databaseConfiguratorCreator.getDatabaseConfigurator();
@@ -416,7 +420,7 @@ public class ServerSqlManagerInit {
 		    SqlTag.SQL_PRODUCT_START + " Loading Database " + database + " DatabaseConfigurator class:");
 	    System.out.println(SqlTag.SQL_PRODUCT_START + "  -> " + databaseConfiguratorClassName);
 	}
-	return classNameToLoad;
+	return classNameToLoadNew;
     }
 
     /**

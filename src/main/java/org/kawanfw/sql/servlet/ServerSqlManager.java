@@ -473,6 +473,8 @@ public class ServerSqlManager extends HttpServlet {
 	requestHolder.setParameter(HttpParameter.USERNAME, username);
 	requestHolder.setParameter(HttpParameter.DATABASE, database);
 
+	// Tests exceptions
+	ServerSqlManager.testThrowException();
 	dispatch.executeRequestInTryCatch(requestHolder, response, out);
     }
 
