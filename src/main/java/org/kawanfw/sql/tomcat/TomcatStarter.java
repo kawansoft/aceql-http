@@ -151,71 +151,27 @@ public class TomcatStarter {
 	tomcat.setHostname(host);
 	tomcat.setPort(port);
 
-	//NO: do in the Creators in org.kawanfw.sql.servlet.creator package
-	//TomcatStarterUtil.testConfigurators(properties);
+	tomcatBeforeStartSetConnectors(tomcat, properties);
 
-	// Very important to allow port reuse without System.exit()
-	// See
-	// https://stackoverflow.com/questions/16526027/port-not-getting-free-on-removing-connector-in-embedded-tomcat-7
-	tomcat.getConnector().setProperty("bindOnInit", "false"); // HACK
-
-	// Set the System properties
-	SystemPropUpdater systemPropUpdater = new SystemPropUpdater(properties);
-	systemPropUpdater.update();
-
-	ThreadPoolExecutorStore threadPoolExecutorStore= new ThreadPoolExecutorStore(properties);
-	threadPoolExecutorStore.create();
-
-	// Set & create connectors
-	TomcatConnectorsUpdater tomcatConnectorsUpdater = new TomcatConnectorsUpdater(
-		tomcat, properties);
-
-	tomcatConnectorsUpdater.updateToHttp2Protocol();
-
-	// Set the supplementary default connector values
-	tomcatConnectorsUpdater.setConnectorValues();
-
-	// Set the supplementary ssl connector values on the default connector
-	tomcatConnectorsUpdater.setDefaultConnectorSslValues();
-
-	// Connector connector = tomcat.getConnector();
-	// SSLHostConfig sslHostConfig = new SSLHostConfig();
-	// sslHostConfig.setCertificateKeyAlias(certificateKeyAlias);
-
-	// Code to redirect http to https
-	// tomcat.getConnector().setRedirectPort(sslPort);
-
-	// Set up context,
-	// "" indicates the path of the ROOT context
-	Context rootCtx = tomcat.addContext("", getBaseDir().getAbsolutePath());
-
-	// Set the Context
-	// TomcatContextUpdater tomcatContextUpdater = new TomcatContextUpdater(
-	// rootCtx, properties);
-	// tomcatContextUpdater.setContextvalues();
-
-	// Code to force https
-	// SecurityConstraint securityConstraint = new SecurityConstraint();
-	// securityConstraint.setUserConstraint("CONFIDENTIAL");
-	// SecurityCollection collection = new SecurityCollection();
-	// collection.addPattern("/*");
-	// securityConstraint.addCollection(collection);
-	// rootCtx.addConstraint(securityConstraint);
-
-	// Add a predefined Filter
-	TomcatFilterUtil.addFilterToContext(rootCtx);
-
-	// Add first servlet with no index
-	addAceqlServlet(properties, rootCtx);
+	Context rootCtx = tomcatBeforeStartSetContext(tomcat, properties);
 
 	// Create the dataSources if necessary
 	TomcatStarterUtil.createAndStoreDataSources(properties);
-
 	TomcatStarterUtil.addServlets(properties, rootCtx);
 
 	// ..and we are good to go
 	tomcat.start();
 
+	tomcatAfterStart(tomcat, properties);
+    }
+
+    /**
+     * @param tomcat
+     * @param properties
+     * @throws MalformedURLException
+     * @throws IOException
+     */
+    private void tomcatAfterStart(Tomcat tomcat, Properties properties) throws MalformedURLException, IOException {
 	// System.out.println(SqlTag.SQL_PRODUCT_START);
 	Connector defaultConnector = tomcat.getConnector();
 	@SuppressWarnings("unused")
@@ -254,6 +210,80 @@ public class TomcatStarter {
 		return;
 	    }
 	}
+    }
+
+    /**
+     * @param tomcat
+     * @param properties
+     * @return
+     */
+    private Context tomcatBeforeStartSetContext(Tomcat tomcat, Properties properties) {
+	// Set up context,
+	// "" indicates the path of the ROOT context
+	Context rootCtx = tomcat.addContext("", getBaseDir().getAbsolutePath());
+
+	// Set the Context
+	// TomcatContextUpdater tomcatContextUpdater = new TomcatContextUpdater(
+	// rootCtx, properties);
+	// tomcatContextUpdater.setContextvalues();
+
+	// Code to force https
+	// SecurityConstraint securityConstraint = new SecurityConstraint();
+	// securityConstraint.setUserConstraint("CONFIDENTIAL");
+	// SecurityCollection collection = new SecurityCollection();
+	// collection.addPattern("/*");
+	// securityConstraint.addCollection(collection);
+	// rootCtx.addConstraint(securityConstraint);
+
+	// Add a predefined Filter
+	TomcatFilterUtil.addFilterToContext(rootCtx);
+
+	// Add first servlet with no index
+	addAceqlServlet(properties, rootCtx);
+	return rootCtx;
+    }
+
+    /**
+     * @param tomcat
+     * @param properties
+     * @throws DatabaseConfigurationException
+     * @throws ConnectException
+     */
+    private void tomcatBeforeStartSetConnectors(Tomcat tomcat, Properties properties)
+	    throws DatabaseConfigurationException, ConnectException {
+	//NO: do in the Creators in org.kawanfw.sql.servlet.creator package
+	//TomcatStarterUtil.testConfigurators(properties);
+
+	// Very important to allow port reuse without System.exit()
+	// See
+	// https://stackoverflow.com/questions/16526027/port-not-getting-free-on-removing-connector-in-embedded-tomcat-7
+	tomcat.getConnector().setProperty("bindOnInit", "false"); // HACK
+
+	// Set the System properties
+	SystemPropUpdater systemPropUpdater = new SystemPropUpdater(properties);
+	systemPropUpdater.update();
+
+	ThreadPoolExecutorStore threadPoolExecutorStore= new ThreadPoolExecutorStore(properties);
+	threadPoolExecutorStore.create();
+
+	// Set & create connectors
+	TomcatConnectorsUpdater tomcatConnectorsUpdater = new TomcatConnectorsUpdater(
+		tomcat, properties);
+
+	tomcatConnectorsUpdater.updateToHttp2Protocol();
+
+	// Set the supplementary default connector values
+	tomcatConnectorsUpdater.setConnectorValues();
+
+	// Set the supplementary ssl connector values on the default connector
+	tomcatConnectorsUpdater.setDefaultConnectorSslValues();
+
+	// Connector connector = tomcat.getConnector();
+	// SSLHostConfig sslHostConfig = new SSLHostConfig();
+	// sslHostConfig.setCertificateKeyAlias(certificateKeyAlias);
+
+	// Code to redirect http to https
+	// tomcat.getConnector().setRedirectPort(sslPort);
     }
 
     /**
