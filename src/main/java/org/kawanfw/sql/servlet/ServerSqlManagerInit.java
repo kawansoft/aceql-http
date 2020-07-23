@@ -94,6 +94,7 @@ public class ServerSqlManagerInit {
 
     /** The executor to use */
     private ThreadPoolExecutor threadPoolExecutor = null;
+    private String classNameToLoad;
 
     /**
      * Constructor.
@@ -108,10 +109,7 @@ public class ServerSqlManagerInit {
      * @param config
      */
     private void treat(ServletConfig config) {
-	// Variable use to store the current name when loading, used to
-	// detail
-	// the exception in the catch clauses
-	String classNameToLoad = null;
+	classNameToLoad = null;
 
 	if (!TomcatSqlModeStore.isTomcatEmbedded()) {
 	    System.out.println(SqlTag.SQL_PRODUCT_START + " " + Version.getServerVersion());
@@ -148,16 +146,16 @@ public class ServerSqlManagerInit {
 		createDataSources(config);
 	    }
 
-	    classNameToLoad = loadUserAuthenticator();
+	    loadUserAuthenticator();
 
 	    Set<String> databases = ServletParametersStore.getDatabaseNames();
 
 	    // Load the classes
-	    classNameToLoad = loadDatabaseConfigurators(classNameToLoad, databases);
-	    classNameToLoad = loadSqlFirewallManagers(classNameToLoad, databases);
-	    classNameToLoad = loadBlobDownloadConfigurator();
-	    classNameToLoad = loadBlobUploadConfigurator();
-	    classNameToLoad = loadSessionManagerConfigurator();
+	    loadDatabaseConfigurators(databases);
+	    loadSqlFirewallManagers(databases);
+	    loadBlobDownloadConfigurator();
+	    loadBlobUploadConfigurator();
+	    loadSessionManagerConfigurator();
 
 	} catch (ClassNotFoundException e) {
 	    initErrrorMesage = Tag.PRODUCT_USER_CONFIG_FAIL
@@ -211,7 +209,8 @@ public class ServerSqlManagerInit {
     }
 
     /**
-     * @return
+     * Loads Session Manager Configurator.
+     *
      * @throws ClassNotFoundException
      * @throws InstantiationException
      * @throws IllegalAccessException
@@ -220,28 +219,27 @@ public class ServerSqlManagerInit {
      * @throws NoSuchMethodException
      * @throws SecurityException
      */
-    private String loadSessionManagerConfigurator()
+    private void loadSessionManagerConfigurator()
 	    throws ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException,
 	    InvocationTargetException, NoSuchMethodException, SecurityException {
-	String classNameToLoad;
 	// Load Configurators for SessionManager
 	String sessionManagerConfiguratorClassName = ServletParametersStore.getSessionConfiguratorClassName();
 	classNameToLoad = sessionManagerConfiguratorClassName;
 	SessionConfiguratorCreator sessionConfiguratorCreator = new SessionConfiguratorCreator(
-	    sessionManagerConfiguratorClassName);
+		sessionManagerConfiguratorClassName);
 	sessionConfigurator = sessionConfiguratorCreator.getSessionConfigurator();
 	sessionManagerConfiguratorClassName = sessionConfiguratorCreator.getSessionConfiguratorClassName();
 
 	if (!sessionManagerConfiguratorClassName
-	    .equals(org.kawanfw.sql.api.server.session.DefaultSessionConfigurator.class.getName())) {
-	System.out.println(SqlTag.SQL_PRODUCT_START + " Loading sessionManagerConfiguratorClassName: ");
-	System.out.println(SqlTag.SQL_PRODUCT_START + "  -> " + sessionManagerConfiguratorClassName);
+		.equals(org.kawanfw.sql.api.server.session.DefaultSessionConfigurator.class.getName())) {
+	    System.out.println(SqlTag.SQL_PRODUCT_START + " Loading sessionManagerConfiguratorClassName: ");
+	    System.out.println(SqlTag.SQL_PRODUCT_START + "  -> " + sessionManagerConfiguratorClassName);
 	}
-	return classNameToLoad;
     }
 
     /**
-     * @return
+     * Loads Blob upload configurator.
+     *
      * @throws ClassNotFoundException
      * @throws InstantiationException
      * @throws IllegalAccessException
@@ -250,27 +248,26 @@ public class ServerSqlManagerInit {
      * @throws NoSuchMethodException
      * @throws SecurityException
      */
-    private String loadBlobUploadConfigurator()
+    private void loadBlobUploadConfigurator()
 	    throws ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException,
 	    InvocationTargetException, NoSuchMethodException, SecurityException {
-	String classNameToLoad;
 	String blobUploadConfiguratorClassName = ServletParametersStore.getBlobUploadConfiguratorClassName();
 	classNameToLoad = blobUploadConfiguratorClassName;
 	BlobUploadConfiguratorCreator blobUploadConfiguratorCreator = new BlobUploadConfiguratorCreator(
-	    blobUploadConfiguratorClassName);
+		blobUploadConfiguratorClassName);
 	blobUploadConfigurator = blobUploadConfiguratorCreator.getBlobUploadConfigurator();
 	blobUploadConfiguratorClassName = blobUploadConfiguratorCreator.getBlobUploadConfiguratorClassName();
 
 	if (!blobUploadConfiguratorClassName
-	    .equals(org.kawanfw.sql.api.server.blob.DefaultBlobUploadConfigurator.class.getName())) {
-	System.out.println(SqlTag.SQL_PRODUCT_START + " Loading blobUploadConfiguratorClassName: ");
-	System.out.println(SqlTag.SQL_PRODUCT_START + " " + blobUploadConfiguratorClassName);
+		.equals(org.kawanfw.sql.api.server.blob.DefaultBlobUploadConfigurator.class.getName())) {
+	    System.out.println(SqlTag.SQL_PRODUCT_START + " Loading blobUploadConfiguratorClassName: ");
+	    System.out.println(SqlTag.SQL_PRODUCT_START + " " + blobUploadConfiguratorClassName);
 	}
-	return classNameToLoad;
     }
 
     /**
-     * @return
+     * Loads Blob download configurator.
+     *
      * @throws ClassNotFoundException
      * @throws InstantiationException
      * @throws IllegalAccessException
@@ -279,28 +276,27 @@ public class ServerSqlManagerInit {
      * @throws NoSuchMethodException
      * @throws SecurityException
      */
-    private String loadBlobDownloadConfigurator()
+    private void loadBlobDownloadConfigurator()
 	    throws ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException,
 	    InvocationTargetException, NoSuchMethodException, SecurityException {
-	String classNameToLoad;
 	// Load Configurators for Blobs/Clobs
 	String blobDownloadConfiguratorClassName = ServletParametersStore.getBlobDownloadConfiguratorClassName();
 	classNameToLoad = blobDownloadConfiguratorClassName;
 	BlobDownloadConfiguratorCreator blobDownloadConfiguratorCreator = new BlobDownloadConfiguratorCreator(
-	    blobDownloadConfiguratorClassName);
+		blobDownloadConfiguratorClassName);
 	blobDownloadConfigurator = blobDownloadConfiguratorCreator.getBlobDownloadConfigurator();
 	blobDownloadConfiguratorClassName = blobDownloadConfiguratorCreator.getBlobDownloadConfiguratorClassName();
 
 	if (!blobDownloadConfiguratorClassName
-	    .equals(org.kawanfw.sql.api.server.blob.DefaultBlobDownloadConfigurator.class.getName())) {
-	System.out.println(SqlTag.SQL_PRODUCT_START + " Loading blobDownloadConfiguratorClassName: ");
-	System.out.println(SqlTag.SQL_PRODUCT_START + " " + blobDownloadConfiguratorClassName);
+		.equals(org.kawanfw.sql.api.server.blob.DefaultBlobDownloadConfigurator.class.getName())) {
+	    System.out.println(SqlTag.SQL_PRODUCT_START + " Loading blobDownloadConfiguratorClassName: ");
+	    System.out.println(SqlTag.SQL_PRODUCT_START + " " + blobDownloadConfiguratorClassName);
 	}
-	return classNameToLoad;
     }
 
     /**
-     * @return
+     * loads userAuthenticator.
+     *
      * @throws ClassNotFoundException
      * @throws NoSuchMethodException
      * @throws SecurityException
@@ -309,26 +305,23 @@ public class ServerSqlManagerInit {
      * @throws IllegalArgumentException
      * @throws InvocationTargetException
      */
-    private String loadUserAuthenticator() throws ClassNotFoundException, NoSuchMethodException, SecurityException,
+    private void loadUserAuthenticator() throws ClassNotFoundException, NoSuchMethodException, SecurityException,
 	    InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-	String classNameToLoad;
 	String userAuthenticatorClassName = ServletParametersStore.getUserAuthenticatorClassName();
 
 	classNameToLoad = userAuthenticatorClassName;
-	UserAuthenticatorCreator userAuthenticatorCreator = new UserAuthenticatorCreator(
-	    userAuthenticatorClassName);
+	UserAuthenticatorCreator userAuthenticatorCreator = new UserAuthenticatorCreator(userAuthenticatorClassName);
 	userAuthenticator = userAuthenticatorCreator.getUserAuthenticator();
 	userAuthenticatorClassName = userAuthenticatorCreator.getUserAuthenticatorClassName();
 
 	System.out.println(SqlTag.SQL_PRODUCT_START + " Loading UserAuthenticator class:");
 	System.out.println(SqlTag.SQL_PRODUCT_START + "  -> " + userAuthenticatorClassName);
-	return classNameToLoad;
     }
 
     /**
-     * @param classNameToLoad
+     * loads Firewall Managers.
+     *
      * @param databases
-     * @return
      * @throws ClassNotFoundException
      * @throws NoSuchMethodException
      * @throws SecurityException
@@ -339,14 +332,13 @@ public class ServerSqlManagerInit {
      * @throws SQLException
      * @throws IOException
      */
-    private String loadSqlFirewallManagers(final String classNameToLoad, Set<String> databases)
+    private void loadSqlFirewallManagers(Set<String> databases)
 	    throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException,
 	    IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException, IOException {
 
-	String classNameToLoadNew = classNameToLoad;
 	for (String database : databases) {
 	    List<String> sqlFirewallClassNames = ServletParametersStore.getSqlFirewallClassNames(database);
-	    classNameToLoadNew = sqlFirewallClassNames.toString();
+	    classNameToLoad = sqlFirewallClassNames.toString();
 
 	    String tagSQLFirewallManager = null;
 	    if (sqlFirewallClassNames.size() == 0)
@@ -363,21 +355,19 @@ public class ServerSqlManagerInit {
 	    sqlFirewallMap.put(database, sqlFirewallManagers);
 
 	    sqlFirewallClassNames = sqlFirewallsCreator.getSqlFirewallClassNames();
-	    classNameToLoadNew = sqlFirewallClassNames.toString();
+	    classNameToLoad = sqlFirewallClassNames.toString();
 
 	    for (String sqlFirewallClassName : sqlFirewallClassNames) {
 		System.out.println(SqlTag.SQL_PRODUCT_START + "   -> " + sqlFirewallClassName);
 	    }
 	}
-	return classNameToLoadNew;
     }
 
     /**
-     * Loads the database configurators and
+     * Loads the database configurators.
      *
-     * @param classNameToLoad
      * @param databases
-     * @return
+     *
      * @throws ClassNotFoundException
      * @throws InstantiationException
      * @throws IllegalAccessException
@@ -386,11 +376,10 @@ public class ServerSqlManagerInit {
      * @throws NoSuchMethodException
      * @throws SecurityException
      */
-    private String loadDatabaseConfigurators(final String classNameToLoad, Set<String> databases)
+    private void loadDatabaseConfigurators(Set<String> databases)
 	    throws ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException,
 	    InvocationTargetException, NoSuchMethodException, SecurityException {
 	String databaseConfiguratorClassName;
-	String classNameToLoadNew = classNameToLoad;
 
 	// WARNING: Database configurator must be loaded prior to firewalls
 	// because a getConnection() is used to test SqlFirewallManager
@@ -408,7 +397,7 @@ public class ServerSqlManagerInit {
 	    }
 
 	    // Call the specific DatabaseConfigurator class to use
-	    classNameToLoadNew = databaseConfiguratorClassName;
+	    classNameToLoad = databaseConfiguratorClassName;
 	    DatabaseConfiguratorCreator databaseConfiguratorCreator = new DatabaseConfiguratorCreator(
 		    databaseConfiguratorClassName);
 	    DatabaseConfigurator databaseConfigurator = databaseConfiguratorCreator.getDatabaseConfigurator();
@@ -420,7 +409,6 @@ public class ServerSqlManagerInit {
 		    SqlTag.SQL_PRODUCT_START + " Loading Database " + database + " DatabaseConfigurator class:");
 	    System.out.println(SqlTag.SQL_PRODUCT_START + "  -> " + databaseConfiguratorClassName);
 	}
-	return classNameToLoadNew;
     }
 
     /**

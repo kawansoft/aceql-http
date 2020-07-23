@@ -85,6 +85,9 @@ public class ServletParametersStore {
      * @return
      */
     public static String getServletName() {
+	if (servletName != null) {
+	    servletName = servletName.trim();
+	}
 	return servletName;
     }
 
