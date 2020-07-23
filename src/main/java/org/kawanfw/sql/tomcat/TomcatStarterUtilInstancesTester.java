@@ -9,10 +9,6 @@ import org.kawanfw.sql.util.SqlTag;
 
 public class TomcatStarterUtilInstancesTester {
 
-    public TomcatStarterUtilInstancesTester() {
-	// TODO Auto-generated constructor stub
-    }
-
     public static void testConfigurators(Properties properties) {
 
         if (properties == null) {

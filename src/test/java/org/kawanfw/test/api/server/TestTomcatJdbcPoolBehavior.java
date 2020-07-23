@@ -38,13 +38,6 @@ public class TestTomcatJdbcPoolBehavior {
     /** The data source to use for connection pooling */
     private static DataSource dataSource = null;
 
-    /**
-     *
-     */
-    public TestTomcatJdbcPoolBehavior() {
-	// TODO Auto-generated constructor stub
-    }
-
     public static void createPool() throws Exception {
 	// Modify this code in order to extract a Connection from your
 	// connection pooling system:
