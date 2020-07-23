@@ -38,11 +38,6 @@ import org.kawanfw.sql.servlet.sql.LoggerUtil;
 
 public class ServerAsyncListener implements AsyncListener {
 
-    public ServerAsyncListener() {
-
-    }
-
-
     @Override
     public void onStartAsync(AsyncEvent event) throws IOException {
 	// Do nothing.

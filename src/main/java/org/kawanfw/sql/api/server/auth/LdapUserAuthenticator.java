@@ -60,14 +60,6 @@ public class LdapUserAuthenticator implements UserAuthenticator {
     private Logger logger = null;
     private Properties properties = null;
 
-    /**
-     * Constructor. {@code UserAuthenticator} implementation must have no
-     * constructor or a unique no parameters constructor.
-     */
-    public LdapUserAuthenticator() {
-
-    }
-
     /*
      * (non-Javadoc)
      *

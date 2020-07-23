@@ -108,14 +108,6 @@ public class CsvRulesManager extends DefaultSqlFirewallManager implements SqlFir
     private Map<DatabaseUserTableTriplet, TableAllowStatements> mapTableAllowStatementsSet = null;
 
     /**
-     * Constructor. {@code SqlFirewallManager} implementation must have no
-     * constructor or a unique no parameters constructor.
-     */
-    public CsvRulesManager() {
-
-    }
-
-    /**
      * Allows the execution of the statement if an allowing rules exists in
      * the:&nbsp; <code>&lt;database&gt;_rules_manager.csv</code> file.
      */

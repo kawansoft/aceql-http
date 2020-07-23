@@ -66,13 +66,6 @@ public class ServerLoginActionSql extends HttpServlet {
     public static final String SPACE = " ";
 
     /**
-     * Constructor
-     */
-    public ServerLoginActionSql() {
-
-    }
-
-    /**
      *
      * Execute the login request
      *
