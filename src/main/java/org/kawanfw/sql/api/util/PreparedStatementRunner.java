@@ -105,7 +105,7 @@ public class PreparedStatementRunner {
      *                   order
      */
 
-    public PreparedStatementRunner(Connection connection, String sql, Object... params) {
+    public PreparedStatementRunner(Connection connection, final String sql, Object... params) {
 	if (connection == null) {
 	    throw new IllegalArgumentException("connection can\'t be null");
 	}
@@ -114,13 +114,13 @@ public class PreparedStatementRunner {
 	    throw new IllegalArgumentException("sql preparement statement string can\'t be null");
 	}
 
-	sql = sql.trim();
+	this.sql = sql;
+	this.sql = this.sql.trim();
 
-	while (sql.endsWith(";")) {
-	    sql = StringUtils.removeEnd(sql, ";");
+	while (this.sql.endsWith(";")) {
+	    this.sql = StringUtils.removeEnd(this.sql, ";");
 	}
 
-	this.sql = sql;
 	developedQuery = sql;
 
 	// Build the string of the developed query
