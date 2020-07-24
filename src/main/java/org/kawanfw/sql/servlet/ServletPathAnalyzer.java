@@ -72,11 +72,7 @@ public class ServletPathAnalyzer {
             return true;
         }
 
-        if (checkReadOnlyCommands(requestUri)) {
-            return true;
-        }
-
-        return false;
+        return checkReadOnlyCommands(requestUri);
 
     }
 
