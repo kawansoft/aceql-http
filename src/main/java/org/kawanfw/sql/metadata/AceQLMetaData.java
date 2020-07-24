@@ -234,6 +234,17 @@ public class AceQLMetaData {
 
 	boolean doContinueNew = doContinue;
 
+	if ((sqlUtil.isPostgreSQL() && !schema.equalsIgnoreCase("public"))
+		|| (sqlUtil.isMySQL() && schema != null)
+		|| (sqlUtil.isSQLServer() && !schema.equalsIgnoreCase("dbo"))
+		|| (sqlUtil.isDB2() && (schema == null || !schema.equalsIgnoreCase(databaseMetaData.getUserName())))
+		|| (sqlUtil.isOracle()
+			&& (schema == null || !schema.equalsIgnoreCase(databaseMetaData.getUserName())))) {
+	    doContinueNew = true;
+	}
+
+
+	/*
 	if (sqlUtil.isPostgreSQL() && !schema.equalsIgnoreCase("public")) {
 	    doContinueNew = true;
 	}
@@ -253,6 +264,7 @@ public class AceQLMetaData {
 	if (sqlUtil.isOracle() && (schema == null || !schema.equalsIgnoreCase(databaseMetaData.getUserName()))) {
 	    doContinueNew = true;
 	}
+	*/
 	return doContinueNew;
     }
 

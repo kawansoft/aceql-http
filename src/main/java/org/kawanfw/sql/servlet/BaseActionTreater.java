@@ -17,7 +17,6 @@ public class BaseActionTreater {
     private DatabaseConfigurator databaseConfigurator;
     private OutputStream out;
 
-
     public BaseActionTreater(HttpServletRequest request, HttpServletResponse response, OutputStream out) {
 	super();
 	this.request = request;
@@ -31,48 +30,28 @@ public class BaseActionTreater {
 	String username = request.getParameter(HttpParameter.USERNAME);
 	String database = request.getParameter(HttpParameter.DATABASE);
 	String sessionId = request.getParameter(HttpParameter.SESSION_ID);
-	String connectionId = request.getParameter(HttpParameter.CONNECTION_ID);
 
-	if (action == null || action.isEmpty()) {
-	    JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_BAD_REQUEST,
-		    JsonErrorReturn.ERROR_ACEQL_ERROR, JsonErrorReturn.NO_ACTION_FOUND_IN_REQUEST);
-	    ServerSqlManager.writeLine(out, errorReturn.build());
+	if (isActionNullOrEmpty(action)) {
 	    return false;
 	}
 
-	if (action.equals(HttpParameter.LOGIN) || action.equals(HttpParameter.CONNECT)) {
-	    ServerLoginActionSql serverLoginActionSql = new ServerLoginActionSql();
-	    serverLoginActionSql.executeAction(request, response, out, action);
+	if (isActionLogin(action)) {
 	    return false;
 	}
 
-	databaseConfigurator = ServerSqlManager.getDatabaseConfigurator(database);
-
-	if (databaseConfigurator == null) {
-	    JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_BAD_REQUEST,
-		    JsonErrorReturn.ERROR_ACEQL_ERROR, JsonErrorReturn.DATABASE_DOES_NOT_EXIST + database);
-	    ServerSqlManager.writeLine(out, errorReturn.build());
+	if (isDatabaseConfiguratorNull(database)) {
 	    return false;
 	}
 
-	if (action.equals(HttpParameter.GET_CONNECTION)) {
-	    connectionId = ServerLoginActionSql.getConnectionId(sessionId, request, username, database,
-		    databaseConfigurator);
-	    ServerSqlManager.writeLine(out, JsonOkReturn.build("connection_id", connectionId));
+	if (isActionGetConnection(action, username, database, sessionId)) {
 	    return false;
 	}
 
-	// Redirect if it's a File download request (Blobs/Clobs)
-	if (action.equals(HttpParameter.BLOB_DOWNLOAD)) {
-	    BlobDownloader blobDownloader = new BlobDownloader(request, response, out, username, databaseConfigurator);
-	    blobDownloader.blobDownload();
+	if (isActiobBlobUpload(action, username)) {
 	    return false;
 	}
 
-	// No need to get a SQL connection for getting Blob size
-	if (action.equals(HttpParameter.GET_BLOB_LENGTH)) {
-	    BlobLengthGetter blobLengthGetter = new BlobLengthGetter(request, response, out, username, databaseConfigurator);
-	    blobLengthGetter.getLength();
+	if (isActionDownload(action, username)) {
 	    return false;
 	}
 
@@ -85,10 +64,105 @@ public class BaseActionTreater {
 
     }
 
-    public DatabaseConfigurator getDatabaseConfigurator() {
-        return databaseConfigurator;
+    /**
+     * @param action
+     * @param username
+     * @throws IOException
+     * @throws SQLException
+     */
+    private boolean isActionDownload(String action, String username) throws IOException, SQLException {
+	// No need to get a SQL connection for getting Blob size
+	if (action.equals(HttpParameter.GET_BLOB_LENGTH)) {
+	    BlobLengthGetter blobLengthGetter = new BlobLengthGetter(request, response, out, username,
+		    databaseConfigurator);
+	    blobLengthGetter.getLength();
+	    return true;
+	}
+
+	return false;
     }
 
+    /**
+     * @param action
+     * @param username
+     * @throws IOException
+     * @throws SQLException
+     */
+    private boolean isActiobBlobUpload(String action, String username) throws IOException, SQLException {
+	// Redirect if it's a File download request (Blobs/Clobs)
+	if (action.equals(HttpParameter.BLOB_DOWNLOAD)) {
+	    BlobDownloader blobDownloader = new BlobDownloader(request, response, out, username, databaseConfigurator);
+	    blobDownloader.blobDownload();
+	    return true ;
+	}
+	return false;
+    }
 
+    /**
+     * @param action
+     * @param username
+     * @param database
+     * @param sessionId
+     * @throws SQLException
+     * @throws IOException
+     */
+    private boolean isActionGetConnection(String action, String username, String database, String sessionId)
+	    throws SQLException, IOException {
+	String connectionId;
+	if (action.equals(HttpParameter.GET_CONNECTION)) {
+	    connectionId = ServerLoginActionSql.getConnectionId(sessionId, request, username, database,
+		    databaseConfigurator);
+	    ServerSqlManager.writeLine(out, JsonOkReturn.build("connection_id", connectionId));
+	    return true ;
+	}
+	return false;
+    }
+
+    /**
+     * @param database
+     * @throws IOException
+     */
+    private boolean isDatabaseConfiguratorNull(String database) throws IOException {
+	databaseConfigurator = ServerSqlManager.getDatabaseConfigurator(database);
+
+	if (databaseConfigurator == null) {
+	    JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_BAD_REQUEST,
+		    JsonErrorReturn.ERROR_ACEQL_ERROR, JsonErrorReturn.DATABASE_DOES_NOT_EXIST + database);
+	    ServerSqlManager.writeLine(out, errorReturn.build());
+	    return true;
+	}
+	return false;
+    }
+
+    /**
+     * @param action
+     * @throws IOException
+     */
+    private boolean isActionLogin(String action) throws IOException {
+	if (action.equals(HttpParameter.LOGIN) || action.equals(HttpParameter.CONNECT)) {
+	    ServerLoginActionSql serverLoginActionSql = new ServerLoginActionSql();
+	    serverLoginActionSql.executeAction(request, response, out, action);
+	    return true ;
+	}
+	return false;
+    }
+
+    /**
+     * @param action
+     * @throws IOException
+     */
+    private boolean isActionNullOrEmpty(String action) throws IOException {
+	if (action == null || action.isEmpty()) {
+	    JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_BAD_REQUEST,
+		    JsonErrorReturn.ERROR_ACEQL_ERROR, JsonErrorReturn.NO_ACTION_FOUND_IN_REQUEST);
+	    ServerSqlManager.writeLine(out, errorReturn.build());
+	    return true;
+	}
+	return false;
+    }
+
+    public DatabaseConfigurator getDatabaseConfigurator() {
+	return databaseConfigurator;
+    }
 
 }
