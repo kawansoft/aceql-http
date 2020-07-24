@@ -55,7 +55,83 @@ public class ServletPathAnalyzer {
             return true;
         }
 
-        if (requestUri.endsWith("/close")) {
+        if (requestUri.endsWith("/get_catalog")) {
+            connectionModifierOrReader = "get_catalog";
+            return true;
+        }
+
+        if (checkCloseCommands(requestUri)) {
+            return true;
+        }
+
+        if (checkCommitCommands(requestUri)) {
+            return true;
+        }
+
+        if (checkHoldabilityAndIsolationCommands(requestUri)) {
+            return true;
+        }
+
+        if (checkReadOnlyCommands(requestUri)) {
+            return true;
+        }
+
+        return false;
+
+    }
+
+    /**
+     * @param requestUri
+     */
+    private boolean checkReadOnlyCommands(String requestUri) {
+	if (requestUri.endsWith("/set_read_only/true") || requestUri.endsWith("/set_read_only/false")) {
+            connectionModifierOrReader = "set_read_only";
+            actionValue = StringUtils.substringAfterLast(requestUri, "/");
+            return true;
+        }
+
+        if (requestUri.endsWith("/is_read_only")) {
+            connectionModifierOrReader = "is_read_only";
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @param requestUri
+     */
+    private boolean checkHoldabilityAndIsolationCommands(String requestUri) {
+	if (requestUri.contains("/set_holdability/")) {
+            connectionModifierOrReader = "set_holdability";
+            actionValue = StringUtils.substringAfterLast(requestUri, "/");
+            return true;
+        }
+
+        if (requestUri.endsWith("/get_holdability")) {
+            connectionModifierOrReader = "get_holdability";
+            return true;
+        }
+
+        if (requestUri.endsWith("/get_transaction_isolation_level")) {
+            connectionModifierOrReader = "get_transaction_isolation_level";
+            return true;
+        }
+
+        if (requestUri.contains("/set_transaction_isolation_level/")) {
+            connectionModifierOrReader = "set_transaction_isolation_level";
+            actionValue = StringUtils.substringAfterLast(requestUri, "/");
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @param requestUri
+     */
+    private boolean checkCloseCommands(String requestUri) {
+	if (requestUri.endsWith("/close")) {
             connectionModifierOrReader = "close";
             return true;
         }
@@ -65,13 +141,15 @@ public class ServletPathAnalyzer {
             return true;
         }
 
-        if (requestUri.endsWith("/commit")) {
-            connectionModifierOrReader = "commit";
-            return true;
-        }
+        return false;
+    }
 
-        if (requestUri.endsWith("/get_catalog")) {
-            connectionModifierOrReader = "get_catalog";
+    /**
+     * @param requestUri
+     */
+    private boolean checkCommitCommands(String requestUri) {
+	if (requestUri.endsWith("/commit")) {
+            connectionModifierOrReader = "commit";
             return true;
         }
 
@@ -86,46 +164,13 @@ public class ServletPathAnalyzer {
             return true;
         }
 
-        if (requestUri.endsWith("/set_read_only/true") || requestUri.endsWith("/set_read_only/false")) {
-            connectionModifierOrReader = "set_read_only";
-            actionValue = StringUtils.substringAfterLast(requestUri, "/");
-            return true;
-        }
-
-        if (requestUri.contains("/set_transaction_isolation_level/")) {
-            connectionModifierOrReader = "set_transaction_isolation_level";
-            actionValue = StringUtils.substringAfterLast(requestUri, "/");
-            return true;
-        }
-
-        if (requestUri.contains("/set_holdability/")) {
-            connectionModifierOrReader = "set_holdability";
-            actionValue = StringUtils.substringAfterLast(requestUri, "/");
-            return true;
-        }
 
         if (requestUri.endsWith("/get_auto_commit")) {
             connectionModifierOrReader = "get_auto_commit";
             return true;
         }
 
-        if (requestUri.endsWith("/is_read_only")) {
-            connectionModifierOrReader = "is_read_only";
-            return true;
-        }
-
-        if (requestUri.endsWith("/get_holdability")) {
-            connectionModifierOrReader = "get_holdability";
-            return true;
-        }
-
-        if (requestUri.endsWith("/get_transaction_isolation_level")) {
-            connectionModifierOrReader = "get_transaction_isolation_level";
-            return true;
-        }
-
         return false;
-
     }
 
     public boolean isVersionAction(String urlContent) {
