@@ -243,11 +243,7 @@ public class StatementAnalyzer {
 	    return false;
 	}
 
-	if (statementName.equalsIgnoreCase(statementTypeToMatch)) {
-	    return true;
-	} else {
-	    return false;
-	}
+	return statementName.equalsIgnoreCase(statementTypeToMatch);
     }
 
     /**

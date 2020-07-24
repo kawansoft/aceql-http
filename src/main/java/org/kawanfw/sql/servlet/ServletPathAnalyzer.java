@@ -130,12 +130,7 @@ public class ServletPathAnalyzer {
 
     public boolean isVersionAction(String urlContent) {
 	Objects.requireNonNull(urlContent, "urlContent cannot be null!");
-
-        if (urlContent.endsWith("/get_version")) {
-            return true;
-        } else {
-            return false;
-        }
+	return urlContent.endsWith("/get_version");
     }
 
     public boolean isBlobAction(String urlContent) {

@@ -168,14 +168,15 @@ public class DefaultSessionConfigurator implements SessionConfigurator {
 	// Check if session is expired.
 	long now = new Date().getTime();
 
-	if (now - sessionInfo.getCreationTime() > getSessionTimelife() * 60
-		* 1000) {
-	    // System.err.println("now - sessionInfo.getCreationTime() >
-	    // getSessionTimelife");
-	    return false;
-	}
+//	if (now - sessionInfo.getCreationTime() > getSessionTimelife() * 60
+//		* 1000) {
+//	    // System.err.println("now - sessionInfo.getCreationTime() >
+//	    // getSessionTimelife");
+//	    return false;
+//	}
 
-	return true;
+	return now - sessionInfo.getCreationTime() <= getSessionTimelife() * 60;
+
     }
 
     /*

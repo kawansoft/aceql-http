@@ -1,24 +1,24 @@
 /*
  * This file is part of AceQL HTTP.
- * AceQL HTTP: SQL Over HTTP                                     
+ * AceQL HTTP: SQL Over HTTP
  * Copyright (C) 2020,  KawanSoft SAS
- * (http://www.kawansoft.com). All rights reserved.                                
- *                                                                               
- * AceQL HTTP is free software; you can redistribute it and/or                 
- * modify it under the terms of the GNU Lesser General Public                    
- * License as published by the Free Software Foundation; either                  
- * version 2.1 of the License, or (at your option) any later version.            
- *                                                                               
- * AceQL HTTP is distributed in the hope that it will be useful,               
- * but WITHOUT ANY WARRANTY; without even the implied warranty of                
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU             
- * Lesser General Public License for more details.                               
- *                                                                               
- * You should have received a copy of the GNU Lesser General Public              
- * License along with this library; if not, write to the Free Software           
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  
+ * (http://www.kawansoft.com). All rights reserved.
+ *
+ * AceQL HTTP is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * AceQL HTTP is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
  * 02110-1301  USA
- * 
+ *
  * Any modifications to this file must keep this entire header
  * intact.
  */
@@ -36,10 +36,10 @@ import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author Nicolas de Pomereu
- * 
+ *
  *         Allow to debug files contained in
  *         user.home/.kanwansoft/kanwansoft-debug.ini.
- * 
+ *
  */
 public class FrameworkDebug {
     /** The file that contain the classes to debug in user.home */
@@ -57,9 +57,8 @@ public class FrameworkDebug {
 
     /**
      * Says if a class must be in debug mode
-     * 
-     * @param clazz
-     *            the class to analyze if debug must be on
+     *
+     * @param clazz the class to analyze if debug must be on
      * @return true if the class must be on debug mode, else false
      */
     public static boolean isSet(Class<?> clazz) {
@@ -68,17 +67,13 @@ public class FrameworkDebug {
 	String className = clazz.getName();
 	String rawClassName = StringUtils.substringAfterLast(className, ".");
 
-	if (CLASSES_TO_DEBUG.contains(className)
-		|| CLASSES_TO_DEBUG.contains(rawClassName)) {
-	    return true;
-	} else {
-	    return false;
-	}
+	return CLASSES_TO_DEBUG.contains(className)
+		|| CLASSES_TO_DEBUG.contains(rawClassName);
     }
 
     /**
      * Load the classes to debug from the file
-     * 
+     *
      * @throws IOException
      */
     private static void load() {
@@ -116,7 +111,7 @@ public class FrameworkDebug {
 	    throw new IllegalArgumentException(
 		    "Wrapped IOException. Impossible to load debug file: "
 			    + file,
-		    e);
+			    e);
 	} catch (IOException e) {
 	    throw new IllegalArgumentException(
 		    "Wrapped IOException. Error reading debug file: " + file,
