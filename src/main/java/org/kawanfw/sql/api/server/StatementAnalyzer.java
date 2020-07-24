@@ -114,11 +114,10 @@ public class StatementAnalyzer {
 	    throw new IllegalArgumentException(Tag.PRODUCT_PRODUCT_FAIL + "parameterValues can not be null!");
 	}
 
-	String sqlNew  = trimAndremoveTrailingSemicolons(sql);
-	this.sql = sqlNew;
+	this.sql = trimAndremoveTrailingSemicolons(sql);
 
 	this.tables = new ArrayList<>();
-	String theStatementName = StringUtils.substringBefore(sql, BLANK);
+	String theStatementName = StringUtils.substringBefore(this.sql, BLANK);
 
 	// Can not treat GRANT, REVOKE or ROLLBACK here, not supported by
 	// CCJSqlParserUtil
@@ -141,7 +140,7 @@ public class StatementAnalyzer {
 	} else {
 	    parsedStatement = null;
 	    try {
-		parsedStatement = CCJSqlParserUtil.parse(sql);
+		parsedStatement = CCJSqlParserUtil.parse(this.sql);
 		JsqlParserWrapper jsqlParserWrapper = new JsqlParserWrapper(parsedStatement);
 		this.isDCL = jsqlParserWrapper.isDCL();
 		this.isDDL = jsqlParserWrapper.isDDL();
@@ -165,7 +164,7 @@ public class StatementAnalyzer {
 	}
 
 	if (this.statementName == null) {
-	    this.statementName = StringUtils.substringBefore(sql, BLANK);
+	    this.statementName = StringUtils.substringBefore(this.sql, BLANK);
 	}
 
 	this.parameterValues = parameterValues;
