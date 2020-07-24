@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
+import org.kawanfw.sql.api.util.SqlUtil;
 import org.kawanfw.sql.util.FrameworkDebug;
 
 /**
@@ -39,11 +40,23 @@ public class ColumnInfoCreator {
      * @param isPostgreSQL
      *
      * @throws SQLException
+     * @deprecated Use {@link #ColumnInfoCreator(ResultSet)} instead
      */
     public ColumnInfoCreator(ResultSet resultSet, boolean isPostgreSQL) throws SQLException {
+        this(resultSet);
+    }
+
+    /**
+     * Constructor.
+     * @param resultSet
+     * @throws SQLException
+     */
+    public ColumnInfoCreator(ResultSet resultSet) throws SQLException {
 	this.resultSet = resultSet;
 	this.meta = resultSet.getMetaData();
-	this.isPostgreSQL = isPostgreSQL;
+
+	String productName = ResultSetWriterUtil.getDatabaseProductName(resultSet);
+	this.isPostgreSQL = productName.equals(SqlUtil.POSTGRESQL) ? true : false;
 
 	create();
     }

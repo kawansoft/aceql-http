@@ -24,17 +24,7 @@
  */
 package org.kawanfw.sql.servlet.sql;
 
-import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.Reader;
-import java.io.Writer;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -42,21 +32,14 @@ import java.sql.RowId;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.List;
-import java.util.Set;
 
 import javax.json.stream.JsonGenerator;
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.kawanfw.sql.api.server.DatabaseConfigurator;
-import org.kawanfw.sql.api.util.SqlUtil;
 import org.kawanfw.sql.servlet.HttpParameter;
-import org.kawanfw.sql.servlet.ServerSqlManager;
 import org.kawanfw.sql.servlet.connection.ConnectionStore;
 import org.kawanfw.sql.util.FrameworkDebug;
-import org.kawanfw.sql.util.FrameworkFileUtil;
-import org.kawanfw.sql.util.HtmlConverter;
 import org.kawanfw.sql.util.SqlReturnCode;
 
 /**
@@ -66,8 +49,6 @@ import org.kawanfw.sql.util.SqlReturnCode;
 public class ResultSetWriter {
 
     private static final String NULL = "NULL";
-
-    private static final String NULL_STREAM = "NULL_STREAM";
 
     private static boolean DEBUG = FrameworkDebug.isSet(ResultSetWriter.class);
 
@@ -79,28 +60,14 @@ public class ResultSetWriter {
     /** the sql order */
     private String sqlOrder = null;
 
-    /** The html encoding to use for Clob downloads */
-    private boolean htmlEncondingOn = true;
-
-    /** Special treatment required for PostgreSQL for blobs */
-    private boolean isPostgreSQL;
-
-    /** Special treatment required for Terradata for blobs */
-    private boolean isTerradata = false;
 
     /**
      * Says if ResultSet Meta Data must be downloaded from server along with
      * ResultSet
      */
     private boolean JoinResultSetMetaData = false;
-
     private HttpServletRequest request;
-
-    /** The set of columns that are OID (Types.BIGINT) */
-    private Set<String> typeBigIntColumnNames = null;
-
     private Boolean doColumnTypes = false;
-
     private JsonGenerator gen = null;
 
     /**
@@ -154,10 +121,8 @@ public class ResultSetWriter {
 	    }
 
 	    String productName = ResultSetWriterUtil.getDatabaseProductName(resultSet);
-	    isTerradata = productName.equals(SqlUtil.TERADATA) ? true : false;
-	    isPostgreSQL = productName.equals(SqlUtil.POSTGRESQL) ? true : false;
 
-	    ColumnInfoCreator columnInfoCreator = new ColumnInfoCreator(resultSet, isPostgreSQL);
+	    ColumnInfoCreator columnInfoCreator = new ColumnInfoCreator(resultSet);
 	    List<Integer> columnTypeList = columnInfoCreator.getColumnTypeList();
 	    List<String> columnTypeNameList = columnInfoCreator.getColumnTypeNameList();
 	    List<String> columnNameList = columnInfoCreator.getColumnNameList();
@@ -186,16 +151,17 @@ public class ResultSetWriter {
 		    Object columnValue = null;
 		    String columnValueStr = null;
 
-		    if (isBinaryColumn(resultSet, columnType, columnName)) {
+		    BinaryColumnFormater binaryColumnFormater = new BinaryColumnFormater(request, resultSet, productName, columnType, columnIndex, columnName);
+		    if (binaryColumnFormater.isBinaryColumn()) {
 			debug("isBinaryColumn: true");
-			columnValueStr = formatBinaryColumn(resultSet, columnIndex, columnType);
+			columnValueStr = binaryColumnFormater.formatAndReturnId();
 			debug("isBinaryColumn:columnValueStr: " + columnValueStr);
 		    } else if (ResultSetWriterUtil.isNStringColumn(columnType)) {
 			columnValue = resultSet.getNString(columnIndex);
 			columnValueStr = ResultSetWriterUtil.treatNullValue(resultSet, columnValue);
-
 		    } else if (isClobColumn(columnType)) {
-			columnValueStr = formatClobColumn(resultSet, columnIndex);
+			ClobColumnFormater clobColumnFormater = new ClobColumnFormater(request, resultSet, columnIndex);
+			columnValueStr = clobColumnFormater.formatAndReturnId();
 		    } else if (columnType == Types.ARRAY) {
 			columnValueStr = ResultSetWriterUtil.formatArrayColumn(resultSet, columnIndex);
 		    } else if (ResultSetWriterUtil.isDateTime(columnType)) {
@@ -215,29 +181,8 @@ public class ResultSetWriter {
 		    }
 
 		    debug("columnValueStr : " + columnValueStr);
-
 		    gen.writeStartObject();
-
-		    if (StringUtils.isNumeric(columnValueStr)) {
-
-			if (columnValue instanceof Integer) {
-			    gen.write(columnName, Integer.parseInt(columnValueStr));
-			} else if (columnValue instanceof Double) {
-			    gen.write(columnName, Double.parseDouble(columnValueStr));
-			} else if (columnValue instanceof Float) {
-			    gen.write(columnName, Float.parseFloat(columnValueStr));
-			} else if (columnValue instanceof Long) {
-			    gen.write(columnName, Long.parseLong(columnValueStr));
-			} else if (columnValue instanceof BigDecimal) {
-			    gen.write(columnName, new BigDecimal(columnValueStr));
-			} else {
-			    gen.write(columnName, columnValueStr);
-			}
-
-		    } else {
-			gen.write(columnName, columnValueStr);
-		    }
-
+		    writeColumn(columnName, columnValue, columnValueStr);
 		    gen.writeEnd();
 		}
 
@@ -255,6 +200,35 @@ public class ResultSetWriter {
 	} finally {
 	    resultSet.close();
 	    // NO! IOUtils.closeQuietly(out);
+	}
+    }
+
+    /**
+     * @param columnName
+     * @param columnValue
+     * @param columnValueStr
+     * @throws NumberFormatException
+     */
+    private void writeColumn(String columnName, Object columnValue, String columnValueStr)
+	    throws NumberFormatException {
+	if (StringUtils.isNumeric(columnValueStr)) {
+
+	if (columnValue instanceof Integer) {
+	    gen.write(columnName, Integer.parseInt(columnValueStr));
+	} else if (columnValue instanceof Double) {
+	    gen.write(columnName, Double.parseDouble(columnValueStr));
+	} else if (columnValue instanceof Float) {
+	    gen.write(columnName, Float.parseFloat(columnValueStr));
+	} else if (columnValue instanceof Long) {
+	    gen.write(columnName, Long.parseLong(columnValueStr));
+	} else if (columnValue instanceof BigDecimal) {
+	    gen.write(columnName, new BigDecimal(columnValueStr));
+	} else {
+	    gen.write(columnName, columnValueStr);
+	}
+
+	} else {
+	gen.write(columnName, columnValueStr);
 	}
     }
 
@@ -327,174 +301,6 @@ public class ResultSetWriter {
 	    }
 	    gen.writeEnd();
 	}
-    }
-
-    /**
-     * the binary content is dumped in a server file that will be available for the
-     * client the name of the file will be stored in the output stream ;
-     *
-     * @param resultSet   the result set in progress to send back to the client side
-     * @param columnIndex the column index
-     * @param columnType  the column type
-     * @return the formated binary column
-     *
-     * @throws SQLException
-     */
-    private String formatBinaryColumn(ResultSet resultSet, int columnIndex, int columnType) throws SQLException, IOException {
-	String columnValueStr;
-
-	String fileName = FrameworkFileUtil.getUniqueId() + ".blob";
-
-	// Maybe null, we want to keep the info
-	InputStream in = null;
-	if (isTerradata) {
-	    in = resultSet.getBlob(columnIndex).getBinaryStream();
-	}
-	// For PostgreSQL columns OID columns have the BIGINT type
-	else if (isPostgreSQL && columnType == Types.BIGINT) {
-	    in = PostgreSqlUtil.getPostgreSqlnputStream(resultSet, columnIndex);
-	} else {
-	    in = resultSet.getBinaryStream(columnIndex);
-	}
-
-	String hostFileName = null;
-
-	String database = request.getParameter(HttpParameter.DATABASE);
-	DatabaseConfigurator databaseConfigurator = ServerSqlManager.getDatabaseConfigurator(database);
-	hostFileName = databaseConfigurator.getBlobsDirectory(username) + File.separator + fileName;
-	debug("formatBinaryColumn:outStream: " + hostFileName);
-
-	try (OutputStream outStream = new BufferedOutputStream(new FileOutputStream(hostFileName));) {
-	    if (in == null) {
-		debug("formatBinaryColumn: in == null");
-
-		// DO NOTHING: just closing will create an empty file
-		outStream.write(NULL_STREAM.getBytes());
-
-	    } else {
-		IOUtils.copy(in, outStream);
-	    }
-	} catch (IOException e) {
-	    throw new SQLException(e);
-	} finally {
-	    if (in != null) {
-		try {
-		    in.close();
-		} catch (Exception e) {
-		    // e.printStackTrace();
-		}
-	    }
-
-	}
-
-	// The column value is a file name with a tag for identification
-	columnValueStr = fileName;
-
-	return columnValueStr;
-    }
-
-
-    /**
-     * return true if the column is a binary type
-     *
-     * @param resultSet   used to get back the Connection for PostgreSQL meta query
-     * @param columnType  the sql column type
-     * @param columnName  the sql column name
-     * @return true if it's a binary type
-     */
-    private boolean isBinaryColumn(ResultSet resultSet, int columnType, String columnName)
-	    throws SQLException, IOException {
-	if (columnType == Types.BINARY || columnType == Types.VARBINARY || columnType == Types.LONGVARBINARY
-		|| columnType == Types.BLOB) {
-	    return true;
-	} else {
-
-	    // Special treatment for PostgreSQL OID which Java long/BIGINT type
-	    if (isPostgreSQL && columnType == Types.BIGINT) {
-		if (typeBigIntColumnNames == null) {
-		    Connection connection = resultSet.getStatement().getConnection();
-		    typeBigIntColumnNames = PostgreSqlUtil.getTypeBigIntColumnNames(connection);
-		}
-
-		if (typeBigIntColumnNames.contains(columnName.trim().toLowerCase())) {
-		    return true;
-		}
-	    }
-
-	    return false;
-	}
-    }
-
-    /**
-     * the CLOB content is dumped in a server file that will be available for the
-     * client the name of the file will be stored in the output stream ;
-     *
-     * @param resultSet   the result set in progress to send back to the client side
-     * @param columnIndex the column index
-     *
-     * @return the formated binary column
-     *
-     * @throws SQLException
-     */
-    private String formatClobColumn(ResultSet resultSet, int columnIndex) throws SQLException, IOException {
-	String columnValueStr;
-
-	String fileName = FrameworkFileUtil.getUniqueId() + ".clob.txt";
-
-	// Maybe null, we want to keep the info
-	Reader reader = resultSet.getCharacterStream(columnIndex);
-	BufferedReader br = new BufferedReader(reader);
-
-	String hostFileName = null;
-
-	// hostFileName = HttpConfigurationUtil.addRootPath(fileConfigurator,
-	// username, fileName);
-
-	String database = request.getParameter(HttpParameter.DATABASE);
-	DatabaseConfigurator databaseConfigurator = ServerSqlManager.getDatabaseConfigurator(database);
-
-	hostFileName = databaseConfigurator.getBlobsDirectory(username) + File.separator + fileName;
-
-	debug("formatClobColumn:writer: " + hostFileName);
-
-	if (reader == null) {
-
-	    try (Writer writer = new BufferedWriter(new FileWriter(hostFileName));) {
-		debug("formatClobColumn.reader == null");
-		writer.write(NULL_STREAM + CR_LF);
-	    }
-	} else {
-
-	    writeClobFile(br, hostFileName);
-
-	}
-
-	// The column value is a file name with a tag for identification
-	columnValueStr = fileName;
-	return columnValueStr;
-    }
-
-    /**
-     * Write a Clob file, html encoded or not
-     *
-     * @param br           the buffered reader on the clob
-     * @param hostFileName the host file name to create in base 64
-     */
-    private void writeClobFile(BufferedReader br, String hostFileName) throws IOException {
-
-	try (Writer writer = new BufferedWriter(new FileWriter(hostFileName));) {
-
-	    String line = null;
-	    while ((line = br.readLine()) != null) {
-
-		if (this.htmlEncondingOn) {
-		    line = HtmlConverter.fromHtml(line);
-		}
-
-		writer.write(line + CR_LF);
-	    }
-	}
-
     }
 
     /**
