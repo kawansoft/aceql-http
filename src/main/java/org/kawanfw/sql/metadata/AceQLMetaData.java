@@ -230,27 +230,30 @@ public class AceQLMetaData {
      * @throws SQLException
      */
     private boolean checkDoContinue(DatabaseMetaData databaseMetaData, String schema, SqlUtil sqlUtil,
-	    boolean doContinue) throws SQLException {
+	    final boolean doContinue) throws SQLException {
+
+	boolean doContinueNew = doContinue;
+
 	if (sqlUtil.isPostgreSQL() && !schema.equalsIgnoreCase("public")) {
-	    doContinue = true;
+	    doContinueNew = true;
 	}
 
 	if (sqlUtil.isMySQL() && schema != null) {
-	    doContinue = true;
+	    doContinueNew = true;
 	}
 
 	if (sqlUtil.isSQLServer() && !schema.equalsIgnoreCase("dbo")) {
-	    doContinue = true;
+	    doContinueNew = true;
 	}
 
 	if (sqlUtil.isDB2() && (schema == null || !schema.equalsIgnoreCase(databaseMetaData.getUserName()))) {
-	    doContinue = true;
+	    doContinueNew = true;
 	}
 
 	if (sqlUtil.isOracle() && (schema == null || !schema.equalsIgnoreCase(databaseMetaData.getUserName()))) {
-	    doContinue = true;
+	    doContinueNew = true;
 	}
-	return doContinue;
+	return doContinueNew;
     }
 
     /**

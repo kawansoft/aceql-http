@@ -130,7 +130,7 @@ public class WebServiceUserAuthenticator implements UserAuthenticator {
 	    return false;
 	}
 
-	return statusIsOk(jsonResult);
+	return statusIsOk(jsonResult.trim());
 
     }
 
@@ -151,7 +151,6 @@ public class WebServiceUserAuthenticator implements UserAuthenticator {
      * @throws IOException
      */
     private boolean statusIsOk(String jsonResult) throws IOException {
-	jsonResult = jsonResult.trim();
 
 	try {
 	    JsonReader reader = Json.createReader(new StringReader(jsonResult));
