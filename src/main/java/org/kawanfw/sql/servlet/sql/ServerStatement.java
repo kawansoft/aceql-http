@@ -171,7 +171,6 @@ public class ServerStatement {
 	} else {
 	    OutputStream outFinal = out;
 	    return outFinal;
-
 	}
     }
 
@@ -424,9 +423,8 @@ public class ServerStatement {
 	    debug("before new SqlSecurityChecker()");
 
 	    String ipAddress = request.getRemoteAddr();
-	    boolean isAllowed = false;
 
-	    checkFirewallGeneral(username, database, sqlOrder, ipAddress, isAllowed);
+	    checkFirewallGeneral(username, database, sqlOrder, ipAddress);
 	    statement = connection.createStatement();
 
 	    debug("before executeQuery() / executeUpdate(sqlOrder)");
@@ -551,19 +549,19 @@ public class ServerStatement {
 	}
     }
 
+
     /**
      * @param username
      * @param database
      * @param sqlOrder
      * @param ipAddress
-     * @param isAllowed
      * @throws IOException
      * @throws SQLException
      * @throws SecurityException
      */
-    private void checkFirewallGeneral(String username, String database, String sqlOrder, String ipAddress,
-	    boolean isAllowed) throws IOException, SQLException, SecurityException {
+    private void checkFirewallGeneral(String username, String database, String sqlOrder, String ipAddress) throws IOException, SQLException, SecurityException {
 	SqlFirewallManager sqlFirewallOnDeny = null;
+	boolean isAllowed = true;
 	for (SqlFirewallManager sqlFirewallManager : sqlFirewallManagers) {
 	    sqlFirewallOnDeny = sqlFirewallManager;
 	    isAllowed = sqlFirewallManager.allowStatementClass(username, database, connection);
