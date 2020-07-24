@@ -33,19 +33,6 @@ public class ColumnInfoCreator {
 
     private Map<String, Integer> mapColumnNames = new LinkedHashMap<String, Integer>();
 
-
-    /**
-     * Constructor.
-     * @param resultSet
-     * @param isPostgreSQL
-     *
-     * @throws SQLException
-     * @deprecated Use {@link #ColumnInfoCreator(ResultSet)} instead
-     */
-    public ColumnInfoCreator(ResultSet resultSet, boolean isPostgreSQL) throws SQLException {
-        this(resultSet);
-    }
-
     /**
      * Constructor.
      * @param resultSet
