@@ -46,8 +46,7 @@ import org.kawanfw.sql.util.FrameworkDebug;
  */
 public class AceQLMetaData {
 
-    private static boolean DEBUG = FrameworkDebug
-	    .isSet(AceQLMetaData.class);
+    private static boolean DEBUG = FrameworkDebug.isSet(AceQLMetaData.class);
 
     private Connection connection = null;
     private String catalog = null;
@@ -157,6 +156,7 @@ public class AceQLMetaData {
 
     /**
      * Returns the non-system table names for the Connection
+     *
      * @param filtertableType the table type to select VIEW, TABLE etc
      * @return the non-system table names for the Connection
      * @throws SQLException it any SQL Exception occurs
@@ -196,30 +196,18 @@ public class AceQLMetaData {
 	    String schema = rs.getString(2);
 	    SqlUtil sqlUtil = new SqlUtil(connection);
 
-	    if (sqlUtil.isPostgreSQL() && !schema.equalsIgnoreCase("public")) {
-		continue;
-	    }
+	    boolean doContinue = false;
 
-	    if (sqlUtil.isMySQL() && schema != null) {
-		continue;
-	    }
+	    doContinue = checkDoContinue(databaseMetaData, schema, sqlUtil, doContinue);
 
-	    if (sqlUtil.isSQLServer() && !schema.equalsIgnoreCase("dbo")) {
-		continue;
-	    }
-
-	    if (sqlUtil.isDB2() && (schema == null || !schema.equalsIgnoreCase(databaseMetaData.getUserName()))) {
-		continue;
-	    }
-
-	    if (sqlUtil.isOracle() && (schema == null || !schema.equalsIgnoreCase(databaseMetaData.getUserName()))) {
+	    if (doContinue) {
 		continue;
 	    }
 
 	    String tableName = rs.getString(3);
 	    String tableType = rs.getString(4);
 
-	    if (filterTableType != null && ! filterTableType.equalsIgnoreCase(tableType)) {
+	    if (filterTableType != null && !filterTableType.equalsIgnoreCase(tableType)) {
 		continue;
 	    }
 
@@ -232,6 +220,38 @@ public class AceQLMetaData {
 	return tableNames;
     }
 
+    /**
+     * Check if continue must be called on maain loop
+     * @param databaseMetaData
+     * @param schema
+     * @param sqlUtil
+     * @param doContinue
+     * @return
+     * @throws SQLException
+     */
+    private boolean checkDoContinue(DatabaseMetaData databaseMetaData, String schema, SqlUtil sqlUtil,
+	    boolean doContinue) throws SQLException {
+	if (sqlUtil.isPostgreSQL() && !schema.equalsIgnoreCase("public")) {
+	    doContinue = true;
+	}
+
+	if (sqlUtil.isMySQL() && schema != null) {
+	    doContinue = true;
+	}
+
+	if (sqlUtil.isSQLServer() && !schema.equalsIgnoreCase("dbo")) {
+	    doContinue = true;
+	}
+
+	if (sqlUtil.isDB2() && (schema == null || !schema.equalsIgnoreCase(databaseMetaData.getUserName()))) {
+	    doContinue = true;
+	}
+
+	if (sqlUtil.isOracle() && (schema == null || !schema.equalsIgnoreCase(databaseMetaData.getUserName()))) {
+	    doContinue = true;
+	}
+	return doContinue;
+    }
 
     /**
      * Returns the non-system table names for the Connection

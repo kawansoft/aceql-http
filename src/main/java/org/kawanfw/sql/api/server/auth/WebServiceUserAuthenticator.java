@@ -121,33 +121,36 @@ public class WebServiceUserAuthenticator implements UserAuthenticator {
 	int connectTimeout = timeoutSeconds * 1000;
 	int readTimeout = timeoutSeconds * 1000;
 
-	SimpleHttpClient simpleHttpClient = new SimpleHttpClient(connectTimeout, readTimeout);
+	setTraceActivity(httpTraceStr);
+
+	Map<String, String> parametersMap = buildParametersMap(username, password);
+
+	String jsonResult = buildJsonResult(username, url, connectTimeout, readTimeout, parametersMap);
+	if (jsonResult == null) {
+	    return false;
+	}
+
+	return statusIsOk(jsonResult);
+
+    }
+
+    /**
+     * @param httpTraceStr
+     */
+    private void setTraceActivity(String httpTraceStr) {
 	if (Boolean.parseBoolean(httpTraceStr)) {
 	    SimpleHttpClient.TRACE_ON = true;
 	} else {
 	    SimpleHttpClient.TRACE_ON = false;
 	}
+    }
 
-	String jsonResult = null;
-	Map<String, String> parametersMap = new HashMap<>();
-	parametersMap.put("username", username);
-	parametersMap.put("password", new String(password));
-
-	try {
-	    jsonResult = simpleHttpClient.callWithPost(new URL(url), parametersMap);
-	} catch (Exception e) {
-	    if (logger == null) {
-		logger = new DefaultDatabaseConfigurator().getLogger();
-	    }
-	    logger.log(Level.SEVERE, getInitTag() + "Username " + username
-		    + " can not authenticate. Error when calling SimpleHttpClient: " + e.getMessage());
-	    return false;
-	}
-
-	if (jsonResult == null) {
-	    return false;
-	}
-
+    /**
+     * @param jsonResult
+     * @return
+     * @throws IOException
+     */
+    private boolean statusIsOk(String jsonResult) throws IOException {
 	jsonResult = jsonResult.trim();
 
 	try {
@@ -167,7 +170,45 @@ public class WebServiceUserAuthenticator implements UserAuthenticator {
 		    getInitTag() + "Error when parsing jsonResult of Authentication Web Service: " + e.getMessage());
 	    return false;
 	}
+    }
 
+    /**
+     * @param username
+     * @param url
+     * @param connectTimeout
+     * @param readTimeout
+     * @param parametersMap
+     * @return
+     * @throws IOException
+     */
+    private String buildJsonResult(String username, String url, int connectTimeout, int readTimeout, Map<String, String> parametersMap) throws IOException {
+	SimpleHttpClient simpleHttpClient = new SimpleHttpClient(connectTimeout, readTimeout);
+
+	String jsonResult = null;
+	try {
+	    jsonResult = simpleHttpClient.callWithPost(new URL(url), parametersMap);
+	} catch (Exception e) {
+	    if (logger == null) {
+		logger = new DefaultDatabaseConfigurator().getLogger();
+	    }
+	    logger.log(Level.SEVERE, getInitTag() + "Username " + username
+		    + " can not authenticate. Error when calling SimpleHttpClient: " + e.getMessage());
+	    return null;
+	}
+
+	return jsonResult;
+    }
+
+    /**
+     * @param username
+     * @param password
+     * @return
+     */
+    private Map<String, String> buildParametersMap(String username, char[] password) {
+	Map<String, String> parametersMap = new HashMap<>();
+	parametersMap.put("username", username);
+	parametersMap.put("password", new String(password));
+	return parametersMap;
     }
 
     /**

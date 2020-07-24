@@ -100,16 +100,17 @@ public class SimpleHttpClient {
      * @throws UnsupportedEncodingException if a if a ProtocolException occurs
      *                                      occurs
      */
-    public String callWithGet(String url, Map<String, String> parametersMap)
+    public String callWithGet(final String url, Map<String, String> parametersMap)
 	    throws MalformedURLException, IOException, ProtocolException, UnsupportedEncodingException {
 
 	String responseBody = null;
 
+	String urlNew = url;
 	if (parametersMap != null && !parametersMap.isEmpty()) {
-	    url += "?" + getPostDataString(parametersMap);
+	    urlNew += "?" + getPostDataString(parametersMap);
 	}
 
-	try (InputStream in = callWithGetReturnStream(url)) {
+	try (InputStream in = callWithGetReturnStream(urlNew)) {
 	    if (in == null)
 		return null;
 

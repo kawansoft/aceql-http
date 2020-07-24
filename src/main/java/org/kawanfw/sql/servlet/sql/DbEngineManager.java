@@ -239,11 +239,7 @@ public class DbEngineManager {
 	if (versionMajor < 12) {
 	    return false;
 	} else if (versionMajor == 12) {
-	    if (versionMinnor >= 1) {
-		return true;
-	    } else {
-		return false;
-	    }
+	    return versionMinnor >= 1;
 	} else {
 	    return true;
 	}
