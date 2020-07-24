@@ -46,6 +46,43 @@ public class ServletPathAnalyzer {
     private String session = null;
     private String connection;
 
+    private String database;
+    private String username;
+
+    private String requestUri;
+    private String servletName;
+    private String action;
+
+    public ServletPathAnalyzer(String requestUri, String servletName) {
+	this.requestUri = requestUri;
+	this.servletName = servletName;
+	treat();
+    }
+
+    private void treat() {
+	if (isLoginAction(requestUri, servletName)) {
+	    action = "login";
+	} else if (isVersionAction(requestUri)) {
+	    action = "get_version";
+	    buildElements(servletName, requestUri);
+	} else if (isConnectionModifierOrReader(requestUri)) {
+	    action = getConnectionModifierOrReader();
+	    buildElements(servletName, requestUri);
+	} else if (isBlobAction(requestUri)) {
+	    action = getBlobAction();
+	    buildElements(servletName, requestUri);
+	} else if (isExecuteUpdateOrQueryStatement(requestUri)) {
+	    action = getSqlStatement();
+	    buildElements(servletName, requestUri);
+	} else if (isMetadataQuery(requestUri)) {
+	    ServletMetadataQuery servletMetadataQuery = new ServletMetadataQuery(requestUri);
+	    action = servletMetadataQuery.getAction();
+	    buildElements(servletName, requestUri);
+	} else {
+	    throw new IllegalArgumentException("Unknown action: " + StringUtils.substringAfterLast(requestUri, "/"));
+	}
+    }
+
     public boolean isConnectionModifierOrReader(String requestUri) {
 
 	Objects.requireNonNull(requestUri, "requestUri cannot be null!");
@@ -169,6 +206,38 @@ public class ServletPathAnalyzer {
         return false;
     }
 
+    public boolean isLoginAction(String requestUri, String servletName) {
+	if (isLoginAction(requestUri)) {
+
+	    if (!requestUri.contains("/" + servletName + "/database/")) {
+		throw new IllegalArgumentException("Request does not contain /database/ subpath in path");
+	    }
+
+	    if (!requestUri.contains("/username/")) {
+		throw new IllegalArgumentException("Request does not contain /username/ subpath in path");
+	    }
+
+	    database = StringUtils.substringBetween(requestUri, "/database/", "/username");
+
+	    // Accept /connect pattern
+	    if (requestUri.endsWith("/connect")) {
+		requestUri = StringUtils.substringBeforeLast(requestUri, "/connect") + "/login";
+	    } else if (requestUri.contains("/connect?")) {
+		requestUri = StringUtils.substringBeforeLast(requestUri, "/connect?") + "/login?";
+	    }
+
+	    username = StringUtils.substringBetween(requestUri, "/username/", "/login");
+	    return true;
+	} else {
+	    return false;
+	}
+
+    }
+
+    private boolean isLoginAction(String requestUri) {
+	return requestUri.endsWith("/login") || requestUri.endsWith("/connect");
+    }
+
     public boolean isVersionAction(String urlContent) {
 	Objects.requireNonNull(urlContent, "urlContent cannot be null!");
 	return urlContent.endsWith("/get_version");
@@ -267,6 +336,16 @@ public class ServletPathAnalyzer {
 
     }
 
+
+
+    public String getDatabase() {
+        return database;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
     public String getSession() {
         return session;
     }
@@ -283,6 +362,10 @@ public class ServletPathAnalyzer {
         return actionValue;
     }
 
+    public String getAction() {
+        return action;
+    }
+
     /**
      * Debug
      */
@@ -291,5 +374,7 @@ public class ServletPathAnalyzer {
             System.out.println(new Date() + " " + s);
         }
     }
+
+
 
 }

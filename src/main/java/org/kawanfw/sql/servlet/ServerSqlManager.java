@@ -43,7 +43,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
@@ -270,26 +269,7 @@ public class ServerSqlManager extends HttpServlet {
 	    throws UnsupportedEncodingException, IOException, SQLException, FileUploadException {
 	request.setCharacterEncoding("UTF-8");
 
-	// Web Display if no Servlet path
-	/*
-	 * Enumeration<String> enumeration = request.getParameterNames();
-	 *
-	 * if (! enumeration.hasMoreElements() &&
-	 * StringUtils.countMatches(request.getRequestURI(), "/") < 2) {
-	 * ServerSqlManagerDoGetTester serverSqlManagerDoGetTester = new
-	 * ServerSqlManagerDoGetTester();
-	 * serverSqlManagerDoGetTester.doGetTest(response, this.getServletName(),
-	 * exception); return; }
-	 */
-
-	// If Init fail, say it cleanly to client, instead of bad 500 Servlet
-	// Error
-	if (exception != null) {
-	    JsonErrorReturn jsonErrorReturn = new JsonErrorReturn(response,
-		    HttpServletResponse.SC_INTERNAL_SERVER_ERROR, JsonErrorReturn.ERROR_ACEQL_ERROR,
-		    initErrrorMesage + " Reason: " + exception.getMessage(), ExceptionUtils.getStackTrace(exception));
-
-	    writeLine(out, jsonErrorReturn.build());
+	if (isExceptionSet(response, out)) {
 	    return;
 	}
 
@@ -321,96 +301,22 @@ public class ServerSqlManager extends HttpServlet {
 	String requestUri = request.getRequestURI();
 
 	String servletName = ServletParametersStore.getServletName();
-
-	if (servletName != null) {
-	    servletName = servletName.trim();
-	}
-
-	if (!requestUri.startsWith("/" + servletName) && !servletPath.startsWith("/" + servletName)) {
-
-	    // System.out.println("servletPath:" + servletPath);
-	    // System.out.println("urlContent :" + urlContent);
-
-	    if (requestUri.equals("/")) {
-		JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_BAD_REQUEST,
-			JsonErrorReturn.ERROR_ACEQL_ERROR,
-			JsonErrorReturn.ACEQL_SERVLET_NOT_FOUND_IN_PATH + servletName);
-		// out.println(errorReturn.build());
-		writeLine(out, errorReturn.build());
-		return;
-	    } else {
-		String servlet = requestUri.substring(1);
-		JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_BAD_REQUEST,
-			JsonErrorReturn.ERROR_ACEQL_ERROR, JsonErrorReturn.UNKNOWN_SERVLET + servlet);
-		// out.println(errorReturn.build());
-		writeLine(out, errorReturn.build());
-		return;
-	    }
-	}
-
-	// Display version if we just call the servlet
-	if (requestUri.endsWith("/" + servletName) || requestUri.endsWith("/" + servletName + "/")) {
-	    String version = org.kawanfw.sql.version.Version.getVersion();
-	    writeLine(out, JsonOkReturn.build("version", version));
+	if (! checkRequestStartsWithAceqlServlet(response, out, servletPath, requestUri, servletName)) {
 	    return;
 	}
 
-	ServletPathAnalyzer servletPathAnalyzer = new ServletPathAnalyzer();
+	if( getVersion(out, requestUri, servletName)) {
+	    return;
+	}
 
 	try {
-	    if (isLoginAction(requestUri)) {
-		action = "login";
-
-		if (!requestUri.contains("/" + servletName + "/database/")) {
-		    throw new IllegalArgumentException("Request does not contain /database/ subpath in path");
-		}
-
-		if (!requestUri.contains("/username/")) {
-		    throw new IllegalArgumentException("Request does not contain /username/ subpath in path");
-		}
-
-		database = StringUtils.substringBetween(requestUri, "/database/", "/username");
-
-		// Accept /connect pattern
-		if (requestUri.endsWith("/connect")) {
-		    requestUri = StringUtils.substringBeforeLast(requestUri, "/connect") + "/login";
-		} else if (requestUri.contains("/connect?")) {
-		    requestUri = StringUtils.substringBeforeLast(requestUri, "/connect?") + "/login?";
-		}
-
-		username = StringUtils.substringBetween(requestUri, "/username/", "/login");
-
-	    } else if (servletPathAnalyzer.isVersionAction(requestUri)) {
-		action = "get_version";
-		servletPathAnalyzer.buildElements(servletName, requestUri);
-		sessionId = servletPathAnalyzer.getSession();
-	    } else if (servletPathAnalyzer.isConnectionModifierOrReader(requestUri)) {
-		action = servletPathAnalyzer.getConnectionModifierOrReader();
-		actionValue = servletPathAnalyzer.getActionValue();
-		servletPathAnalyzer.buildElements(servletName, requestUri);
-		sessionId = servletPathAnalyzer.getSession();
-		connectionId = servletPathAnalyzer.getConnection();
-	    } else if (servletPathAnalyzer.isBlobAction(requestUri)) {
-		action = servletPathAnalyzer.getBlobAction();
-		actionValue = servletPathAnalyzer.getActionValue();
-		servletPathAnalyzer.buildElements(servletName, requestUri);
-		sessionId = servletPathAnalyzer.getSession();
-		connectionId = servletPathAnalyzer.getConnection();
-	    } else if (servletPathAnalyzer.isExecuteUpdateOrQueryStatement(requestUri)) {
-		action = servletPathAnalyzer.getSqlStatement();
-		servletPathAnalyzer.buildElements(servletName, requestUri);
-		sessionId = servletPathAnalyzer.getSession();
-		connectionId = servletPathAnalyzer.getConnection();
-	    } else if (servletPathAnalyzer.isMetadataQuery(requestUri)) {
-		ServletMetadataQuery servletMetadataQuery = new ServletMetadataQuery(requestUri);
-		action = servletMetadataQuery.getAction();
-		servletPathAnalyzer.buildElements(servletName, requestUri);
-		sessionId = servletPathAnalyzer.getSession();
-		connectionId = servletPathAnalyzer.getConnection();
-	    } else {
-		throw new IllegalArgumentException(
-			"Unknown action: " + StringUtils.substringAfterLast(requestUri, "/"));
-	    }
+	    ServletPathAnalyzer servletPathAnalyzer = new ServletPathAnalyzer(requestUri, servletName);
+	    action = servletPathAnalyzer.getAction();
+	    actionValue = servletPathAnalyzer.getActionValue();
+	    database = servletPathAnalyzer.getDatabase();
+	    username = servletPathAnalyzer.getUsername();
+	    sessionId = servletPathAnalyzer.getSession();
+	    connectionId = servletPathAnalyzer.getConnection();
 
 	} catch (Exception e) {
 	    // Happens if bad request ==> 400
@@ -425,28 +331,42 @@ public class ServerSqlManager extends HttpServlet {
 	// In other cases than connect, username & database are null
 	if (username == null && database == null) {
 
-	    boolean isVerified = sessionConfigurator.verifySessionId(sessionId);
-
-	    if (!isVerified) {
-		JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_UNAUTHORIZED,
-			JsonErrorReturn.ERROR_ACEQL_ERROR, JsonErrorReturn.INVALID_SESSION_ID);
-		// out.println(errorReturn.build());
-		writeLine(out, errorReturn.build());
+	    if (! checkSessionIsVerified(response, out, sessionId)) {
 		return;
 	    }
 
 	    username = sessionConfigurator.getUsername(sessionId);
 	    database = sessionConfigurator.getDatabase(sessionId);
 
-	    if (username == null || database == null) {
-		JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_UNAUTHORIZED,
-			JsonErrorReturn.ERROR_ACEQL_ERROR, JsonErrorReturn.INVALID_SESSION_ID);
-		// out.println(errorReturn.build());
-		writeLine(out, errorReturn.build());
+	    if (! checkUsernameAndDatabase(response, out, database, username)) {
 		return;
 	    }
 	}
 
+	debugValues(database, username, sessionId, connectionId, action, actionValue);
+
+	requestHolder.setParameter(HttpParameter.ACTION, action);
+	requestHolder.setParameter(HttpParameter.ACTION_VALUE, actionValue);
+	requestHolder.setParameter(HttpParameter.SESSION_ID, sessionId);
+	requestHolder.setParameter(HttpParameter.CONNECTION_ID, connectionId);
+	requestHolder.setParameter(HttpParameter.USERNAME, username);
+	requestHolder.setParameter(HttpParameter.DATABASE, database);
+
+	// Tests exceptions
+	ServerSqlManager.testThrowException();
+	dispatch.executeRequestInTryCatch(requestHolder, response, out);
+    }
+
+    /**
+     * @param database
+     * @param username
+     * @param sessionId
+     * @param connectionId
+     * @param action
+     * @param actionValue
+     */
+    private void debugValues(String database, String username, String sessionId, String connectionId, String action,
+	    String actionValue) {
 	debug("");
 	debug("action      : " + action);
 	debug("actionValue : " + actionValue);
@@ -454,19 +374,114 @@ public class ServerSqlManager extends HttpServlet {
 	debug("sessionId   : " + sessionId);
 	debug("connectionId: " + connectionId);
 	debug("database    : " + database);
+    }
 
-	requestHolder.setParameter(HttpParameter.ACTION, action);
-	requestHolder.setParameter(HttpParameter.ACTION_VALUE, actionValue);
+    /**
+     * @param response
+     * @param out
+     * @param database
+     * @param username
+     * @throws IOException
+     */
+    private boolean checkUsernameAndDatabase(HttpServletResponse response, OutputStream out, String database,
+	    String username) throws IOException {
+	if (username == null || database == null) {
+	    JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_UNAUTHORIZED,
+		    JsonErrorReturn.ERROR_ACEQL_ERROR, JsonErrorReturn.INVALID_SESSION_ID);
+	    // out.println(errorReturn.build());
+	    writeLine(out, errorReturn.build());
+	    return false;
+	}
+	return true;
+    }
 
-	requestHolder.setParameter(HttpParameter.SESSION_ID, sessionId);
-	requestHolder.setParameter(HttpParameter.CONNECTION_ID, connectionId);
+    /**
+     * @param response
+     * @param out
+     * @param sessionId
+     * @throws IOException
+     */
+    private boolean checkSessionIsVerified(HttpServletResponse response, OutputStream out, String sessionId)
+	    throws IOException {
+	boolean isVerified = sessionConfigurator.verifySessionId(sessionId);
 
-	requestHolder.setParameter(HttpParameter.USERNAME, username);
-	requestHolder.setParameter(HttpParameter.DATABASE, database);
+	if (!isVerified) {
+	    JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_UNAUTHORIZED,
+		    JsonErrorReturn.ERROR_ACEQL_ERROR, JsonErrorReturn.INVALID_SESSION_ID);
+	    // out.println(errorReturn.build());
+	    writeLine(out, errorReturn.build());
+	}
+	return isVerified;
+    }
 
-	// Tests exceptions
-	ServerSqlManager.testThrowException();
-	dispatch.executeRequestInTryCatch(requestHolder, response, out);
+    /**
+     * @param response
+     * @param out
+     * @throws IOException
+     */
+    private boolean isExceptionSet(HttpServletResponse response, OutputStream out) throws IOException {
+	// If Init fail, say it cleanly to client, instead of bad 500 Servlet
+	if (exception != null) {
+	    JsonErrorReturn jsonErrorReturn = new JsonErrorReturn(response,
+		    HttpServletResponse.SC_INTERNAL_SERVER_ERROR, JsonErrorReturn.ERROR_ACEQL_ERROR,
+		    initErrrorMesage + " Reason: " + exception.getMessage(), ExceptionUtils.getStackTrace(exception));
+
+	    writeLine(out, jsonErrorReturn.build());
+	    return true;
+	}
+	return false;
+    }
+
+    /**
+     * @param out
+     * @param requestUri
+     * @param servletName
+     * @throws IOException
+     */
+    private boolean getVersion(OutputStream out, String requestUri, String servletName) throws IOException {
+	// Display version if we just call the servlet
+	if (requestUri.endsWith("/" + servletName) || requestUri.endsWith("/" + servletName + "/")) {
+	    String version = org.kawanfw.sql.version.Version.getVersion();
+	    writeLine(out, JsonOkReturn.build("version", version));
+	    return true;
+	}
+	return false;
+    }
+
+    /**
+     * @param response
+     * @param out
+     * @param servletPath
+     * @param requestUri
+     * @param servletName
+     * @throws IOException
+     */
+    private boolean checkRequestStartsWithAceqlServlet(HttpServletResponse response, OutputStream out, String servletPath,
+	    String requestUri, String servletName) throws IOException {
+	if (!requestUri.startsWith("/" + servletName) && !servletPath.startsWith("/" + servletName)) {
+
+	    // System.out.println("servletPath:" + servletPath);
+	    // System.out.println("urlContent :" + urlContent);
+
+	    if (requestUri.equals("/")) {
+		JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_BAD_REQUEST,
+			JsonErrorReturn.ERROR_ACEQL_ERROR,
+			JsonErrorReturn.ACEQL_SERVLET_NOT_FOUND_IN_PATH + servletName);
+		// out.println(errorReturn.build());
+		writeLine(out, errorReturn.build());
+		return false;
+	    } else {
+		String servlet = requestUri.substring(1);
+		JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_BAD_REQUEST,
+			JsonErrorReturn.ERROR_ACEQL_ERROR, JsonErrorReturn.UNKNOWN_SERVLET + servlet);
+		// out.println(errorReturn.build());
+		writeLine(out, errorReturn.build());
+		return false;
+	    }
+	}
+	else {
+	    return true;
+	}
     }
 
     /**
@@ -480,10 +495,6 @@ public class ServerSqlManager extends HttpServlet {
 	    throw new IllegalArgumentException(
 		    "Exception thrown because user.home/.kawansoft/throw_exception.txt exists!");
 	}
-    }
-
-    private boolean isLoginAction(String requestUri) {
-	return requestUri.endsWith("/login") || requestUri.endsWith("/connect");
     }
 
     /**
