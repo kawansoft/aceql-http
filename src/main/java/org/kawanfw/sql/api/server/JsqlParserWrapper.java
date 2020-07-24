@@ -71,59 +71,64 @@ class JsqlParserWrapper {
 	isDML = false;
 	isTCL = false;
 
-	if (statement instanceof Alter) {
-	    statementName = "ALTER";
-	    isDDL = true;
-	}
-	else if (statement instanceof AlterView) {
-	    statementName = "ALTER";
-	    isDDL = true;
-	}
-	else if (statement instanceof Block) {
-	    statementName = "BLOCK";
+	// Split the parses in order of method to be short
+	parse1();
+	parse2();
+	parse3();
+	parse4();
+	parse5();
+	parse6();
+    }
+
+    /**
+     *
+     */
+    private void parse6() {
+	if (statement instanceof Upsert) {
+	    statementName = "UPSERT";
 	    isDML = true;
 	}
-	else if (statement instanceof Comment) {
-	    statementName = "COMMENT";
-	    isDDL = true;
-	}
-	else if (statement instanceof Commit) {
-	    statementName = "COMMIT";
-	    isTCL = true;
-	}
-	else if (statement instanceof CreateIndex) {
-	    statementName = "CREATE";
-	    isDDL = true;
-	}
-	else if (statement instanceof CreateTable) {
-	    statementName = "CREATE";
-	    isDDL = true;
-	}
-	else if (statement instanceof CreateView) {
-	    statementName = "CREATE";
-	    isDDL = true;
-	}
-	else if (statement instanceof DeclareStatement) {
-	    statementName = "DECLARE";
+	else if (statement instanceof UseStatement) {
+	    statementName = "USE";
 	    isDML = true;
 	}
-	else if (statement instanceof Delete) {
-	    statementName = "DELETE";
+	else if (statement instanceof ValuesStatement) {
+	    statementName = "VALUES";
 	    isDML = true;
 	}
-	else if (statement instanceof DescribeStatement) {
-	    statementName = "DESCRIBE";
+	else {
+	    // Can not extract the statement
+	    statementName = null;
+	}
+    }
+
+    /**
+     *
+     */
+    private void parse5() {
+	if (statement instanceof SetStatement) {
+	    statementName = "SET";
 	    isDML = true;
 	}
-	else if (statement instanceof Drop) {
-	    statementName = "DROP";
+	else if (statement instanceof ShowColumnsStatement) {
+	    statementName = "SHOW COLUMNS";
+	    isDML = true;
+	}
+	else if (statement instanceof Truncate) {
+	    statementName = "TRUNCATE";
 	    isDDL = true;
 	}
-	else if (statement instanceof Execute) {
-	    statementName = "EXECUTE";
+	else if (statement instanceof Update) {
+	    statementName = "UPDATE";
 	    isDML = true;
 	}
-	else if (statement instanceof ExplainStatement) {
+    }
+
+    /**
+     *
+     */
+    private void parse4() {
+	if (statement instanceof ExplainStatement) {
 	    statementName = "EXPLAIN";
 	    isDML = true;
 	}
@@ -143,37 +148,75 @@ class JsqlParserWrapper {
 	    statementName = "SELECT";
 	    isDML = true;
 	}
-	else if (statement instanceof SetStatement) {
-	    statementName = "SET";
+    }
+
+    /**
+     *
+     */
+    private void parse3() {
+	if (statement instanceof Delete) {
+	    statementName = "DELETE";
 	    isDML = true;
 	}
-	else if (statement instanceof ShowColumnsStatement) {
-	    statementName = "SHOW COLUMNS";
+	else if (statement instanceof DescribeStatement) {
+	    statementName = "DESCRIBE";
 	    isDML = true;
 	}
-	else if (statement instanceof Truncate) {
-	    statementName = "TRUNCATE";
+	else if (statement instanceof Drop) {
+	    statementName = "DROP";
 	    isDDL = true;
 	}
-	else if (statement instanceof Update) {
-	    statementName = "UPDATE";
+	else if (statement instanceof Execute) {
+	    statementName = "EXECUTE";
 	    isDML = true;
 	}
-	else if (statement instanceof Upsert) {
-	    statementName = "UPSERT";
+    }
+
+    /**
+     *
+     */
+    private void parse2() {
+	if (statement instanceof CreateIndex) {
+	    statementName = "CREATE";
+	    isDDL = true;
+	}
+	else if (statement instanceof CreateTable) {
+	    statementName = "CREATE";
+	    isDDL = true;
+	}
+	else if (statement instanceof CreateView) {
+	    statementName = "CREATE";
+	    isDDL = true;
+	}
+	else if (statement instanceof DeclareStatement) {
+	    statementName = "DECLARE";
 	    isDML = true;
 	}
-	else if (statement instanceof UseStatement) {
-	    statementName = "USE";
+    }
+
+    /**
+     *
+     */
+    private void parse1() {
+	if (statement instanceof Alter) {
+	    statementName = "ALTER";
+	    isDDL = true;
+	}
+	else if (statement instanceof AlterView) {
+	    statementName = "ALTER";
+	    isDDL = true;
+	}
+	else if (statement instanceof Block) {
+	    statementName = "BLOCK";
 	    isDML = true;
 	}
-	else if (statement instanceof ValuesStatement) {
-	    statementName = "VALUES";
-	    isDML = true;
+	else if (statement instanceof Comment) {
+	    statementName = "COMMENT";
+	    isDDL = true;
 	}
-	else {
-	    // Can not extract the statement
-	    statementName = null;
+	else if (statement instanceof Commit) {
+	    statementName = "COMMIT";
+	    isTCL = true;
 	}
     }
 
