@@ -71,6 +71,7 @@ public class MetadataQuerySchemaDownloader {
 	String tableName = request.getParameter(HttpParameter.TABLE_NAME);
 
 	AceQLOutputFormat aceQLOutputFormat = null;
+
 	if (format == null || format.isEmpty()) {
 	    format = AceQLOutputFormat.html.toString();
 	}
@@ -88,23 +89,26 @@ public class MetadataQuerySchemaDownloader {
 	    return;
 	}
 
-	if (tableName != null && !exists(aceQLMetaData, tableName)) {
-	    OutputStream out = response.getOutputStream();
-	    JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_BAD_REQUEST,
-		    JsonErrorReturn.ERROR_ACEQL_ERROR, JsonErrorReturn.INVALID_TABLE_NAME);
-	    ServerSqlManager.writeLine(out, errorReturn.build());
-	    return;
-	}
-
 	SchemaInfoAccessor schemaInfoAccessor = new SchemaInfoAccessor(connection, database);
-	if (!schemaInfoAccessor.isAccessible()) {
-	    OutputStream out = response.getOutputStream();
-	    JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_BAD_REQUEST,
-		    JsonErrorReturn.ERROR_ACEQL_FAILURE, schemaInfoAccessor.getFailureReason());
-	    ServerSqlManager.writeLine(out, errorReturn.build());
+
+	if (! checkBaseValues(tableName, schemaInfoAccessor)) {
 	    return;
 	}
 
+	buildSchema(tableName, aceQLOutputFormat, schemaInfoAccessor);
+    }
+
+    /**
+     * Builds  the schema.
+     * @param tableName
+     * @param aceQLOutputFormat
+     * @param schemaInfoAccessor
+     * @throws SQLException
+     * @throws IOException
+     * @throws FileNotFoundException
+     */
+    private void buildSchema(String tableName, AceQLOutputFormat aceQLOutputFormat,
+	    SchemaInfoAccessor schemaInfoAccessor) throws SQLException, IOException, FileNotFoundException {
 	SchemaInfoSC schemaInfoSC = schemaInfoAccessor.getSchemaInfoSC();
 	File tempFile = File.createTempFile("sc_output", null);
 	schemaInfoSC.buildOnFile(tempFile, aceQLOutputFormat, tableName);
@@ -116,6 +120,34 @@ public class MetadataQuerySchemaDownloader {
 		OutputStream out = response.getOutputStream();) {
 	    IOUtils.copy(in, out);
 	}
+    }
+
+    /**
+     * Check that he base values tableName & schemaInfoAccessor are OK
+     * @param tableName
+     * @param schemaInfoAccessor
+     * @throws SQLException
+     * @throws IOException
+     */
+    private boolean checkBaseValues(String tableName, SchemaInfoAccessor schemaInfoAccessor)
+	    throws SQLException, IOException {
+	if (tableName != null && !exists(aceQLMetaData, tableName)) {
+	    OutputStream out = response.getOutputStream();
+	    JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_BAD_REQUEST,
+		    JsonErrorReturn.ERROR_ACEQL_ERROR, JsonErrorReturn.INVALID_TABLE_NAME);
+	    ServerSqlManager.writeLine(out, errorReturn.build());
+	    return false;
+	}
+
+	if (!schemaInfoAccessor.isAccessible()) {
+	    OutputStream out = response.getOutputStream();
+	    JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_BAD_REQUEST,
+		    JsonErrorReturn.ERROR_ACEQL_FAILURE, schemaInfoAccessor.getFailureReason());
+	    ServerSqlManager.writeLine(out, errorReturn.build());
+	    return false;
+	}
+
+	return true;
     }
 
     private static boolean exists(AceQLMetaData aceQLMetaData, String tableName) throws SQLException {
