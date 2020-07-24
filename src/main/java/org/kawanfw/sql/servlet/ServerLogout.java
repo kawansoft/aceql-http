@@ -26,7 +26,7 @@ package org.kawanfw.sql.servlet;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.OutputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Objects;
@@ -56,10 +56,9 @@ public class ServerLogout {
 
     private static final long TWENTY_MINUTES_IN_MILLISECONDS = 1000 * 60 * 20;
 
-    public static void logout(HttpServletRequest request, HttpServletResponse response,
-	    DatabaseConfigurator databaseConfigurator) throws IOException {
 
-	PrintWriter out = response.getWriter();
+    public static void logout(HttpServletRequest request, HttpServletResponse response,
+	    OutputStream out, DatabaseConfigurator databaseConfigurator) throws IOException {
 
 	try {
 	    response.setContentType("text/html");
@@ -88,13 +87,13 @@ public class ServerLogout {
 		System.err.println(sessionId);
 	    }
 
-	    out.println(jSonReturn);
+	    ServerSqlManager.writeLine(out, jSonReturn);
 
 	} catch (Exception e) {
 
 	    JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
 		    JsonErrorReturn.ERROR_ACEQL_FAILURE, e.getMessage(), ExceptionUtils.getStackTrace(e));
-	    out.println(errorReturn.build());
+	    ServerSqlManager.writeLine(out, errorReturn.build());
 
 	}
     }

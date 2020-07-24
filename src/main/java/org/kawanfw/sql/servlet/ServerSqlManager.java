@@ -235,11 +235,11 @@ public class ServerSqlManager extends HttpServlet {
      * @param request
      * @param response
      * @throws UnsupportedEncodingException
-     * @throws IOException
      */
     private void handleRequestWrapper(HttpServletRequest request, HttpServletResponse response) {
 	OutputStream out = null;
 	try {
+	    out = response.getOutputStream();
 	    handleRequest(request, response, out);
 	} catch (Throwable e) {
 	    try {
@@ -247,9 +247,6 @@ public class ServerSqlManager extends HttpServlet {
 		PrivateTmpLogger privateTmpLogger = new PrivateTmpLogger(e);
 		privateTmpLogger.log();
 
-		if (out == null) {
-		    out = response.getOutputStream();
-		}
 		ExceptionReturner.logAndReturnException(request, response, out, e);
 	    } catch (IOException ioe) {
 		ioe.printStackTrace(System.out);
@@ -288,7 +285,6 @@ public class ServerSqlManager extends HttpServlet {
 	// If Init fail, say it cleanly to client, instead of bad 500 Servlet
 	// Error
 	if (exception != null) {
-	    out = response.getOutputStream();
 	    JsonErrorReturn jsonErrorReturn = new JsonErrorReturn(response,
 		    HttpServletResponse.SC_INTERNAL_SERVER_ERROR, JsonErrorReturn.ERROR_ACEQL_ERROR,
 		    initErrrorMesage + " Reason: " + exception.getMessage(), ExceptionUtils.getStackTrace(exception));
@@ -331,7 +327,6 @@ public class ServerSqlManager extends HttpServlet {
 	}
 
 	if (!requestUri.startsWith("/" + servletName) && !servletPath.startsWith("/" + servletName)) {
-	    out = response.getOutputStream();
 
 	    // System.out.println("servletPath:" + servletPath);
 	    // System.out.println("urlContent :" + urlContent);
@@ -355,7 +350,6 @@ public class ServerSqlManager extends HttpServlet {
 
 	// Display version if we just call the servlet
 	if (requestUri.endsWith("/" + servletName) || requestUri.endsWith("/" + servletName + "/")) {
-	    out = response.getOutputStream();
 	    String version = org.kawanfw.sql.version.Version.getVersion();
 	    writeLine(out, JsonOkReturn.build("version", version));
 	    return;
@@ -421,7 +415,6 @@ public class ServerSqlManager extends HttpServlet {
 	} catch (Exception e) {
 	    // Happens if bad request ==> 400
 	    String errorMessage = e.getMessage();
-	    out = response.getOutputStream();
 	    JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_BAD_REQUEST,
 		    JsonErrorReturn.ERROR_ACEQL_ERROR, errorMessage);
 	    // out.println(errorReturn.build());
@@ -435,7 +428,6 @@ public class ServerSqlManager extends HttpServlet {
 	    boolean isVerified = sessionConfigurator.verifySessionId(sessionId);
 
 	    if (!isVerified) {
-		out = response.getOutputStream();
 		JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_UNAUTHORIZED,
 			JsonErrorReturn.ERROR_ACEQL_ERROR, JsonErrorReturn.INVALID_SESSION_ID);
 		// out.println(errorReturn.build());
@@ -447,7 +439,6 @@ public class ServerSqlManager extends HttpServlet {
 	    database = sessionConfigurator.getDatabase(sessionId);
 
 	    if (username == null || database == null) {
-		out = response.getOutputStream();
 		JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_UNAUTHORIZED,
 			JsonErrorReturn.ERROR_ACEQL_ERROR, JsonErrorReturn.INVALID_SESSION_ID);
 		// out.println(errorReturn.build());

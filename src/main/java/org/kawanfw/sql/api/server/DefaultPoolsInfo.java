@@ -137,15 +137,9 @@ public class DefaultPoolsInfo extends HttpServlet {
 	OutputStream out = null;
 
 	try {
-
-	    executeRequestInTryCatch(request, response);
-
+	    out = response.getOutputStream();
+	    executeRequestInTryCatch(request, response, out);
 	} catch (Exception e) {
-
-	    if (out == null) {
-		out = response.getOutputStream();
-	    }
-
 	    ExceptionReturner.logAndReturnException(request, response, out, e);
 	}
     }
@@ -156,11 +150,12 @@ public class DefaultPoolsInfo extends HttpServlet {
      *
      * @param request  the http request
      * @param response the http response
+     * @param out TODO
      * @throws IOException         if any IOException occurs
      * @throws SQLException
      * @throws FileUploadException
      */
-    private void executeRequestInTryCatch(HttpServletRequest request, HttpServletResponse response)
+    private void executeRequestInTryCatch(HttpServletRequest request, HttpServletResponse response, OutputStream out)
 	    throws IOException, SQLException, FileUploadException {
 
 	debug("Starting...");
@@ -171,7 +166,6 @@ public class DefaultPoolsInfo extends HttpServlet {
 	String password = request.getParameter("password");
 
 	if (password == null || password.isEmpty()) {
-	    OutputStream out = response.getOutputStream();
 	    JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_FORBIDDEN,
 		    JsonErrorReturn.ERROR_ACEQL_UNAUTHORIZED, JsonErrorReturn.INVALID_USERNAME_OR_PASSWORD);
 	    ServerSqlManager.writeLine(out, errorReturn.build());
@@ -189,7 +183,6 @@ public class DefaultPoolsInfo extends HttpServlet {
 		throw new IllegalArgumentException(JsonErrorReturn.INVALID_USERNAME_OR_PASSWORD);
 	    }
 	} catch (Exception e) {
-	    OutputStream out  = response.getOutputStream();
 	    JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_FORBIDDEN,
 		    JsonErrorReturn.ERROR_ACEQL_UNAUTHORIZED, JsonErrorReturn.INVALID_USERNAME_OR_PASSWORD);
 	    ServerSqlManager.writeLine(out, errorReturn.build());
@@ -201,9 +194,6 @@ public class DefaultPoolsInfo extends HttpServlet {
 	Map<String, DataSource> dataSources = DataSourceStore.getDataSources();
 
 	if (dataSources == null || dataSources.isEmpty()) {
-
-	    OutputStream out = response.getOutputStream();
-
 	    JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_BAD_REQUEST,
 		    JsonErrorReturn.ERROR_ACEQL_ERROR, JsonErrorReturn.NO_DATASOURCES_DEFINED);
 	    ServerSqlManager.writeLine(out, errorReturn.build());
@@ -211,7 +201,7 @@ public class DefaultPoolsInfo extends HttpServlet {
 	    return;
 	}
 
-	writeOutpuMain(request, response, setDatabase, dataSources);
+	writeOutpuMain(request, response, out, setDatabase, dataSources);
 
     }
 
@@ -223,7 +213,7 @@ public class DefaultPoolsInfo extends HttpServlet {
      * @throws NumberFormatException
      * @throws IOException
      */
-    private void writeOutpuMain(HttpServletRequest request, HttpServletResponse response, String setDatabase,
+    private void writeOutpuMain(HttpServletRequest request, HttpServletResponse response, OutputStream out , String setDatabase,
 	    Map<String, DataSource> dataSources) throws NumberFormatException, IOException {
 	StringWriter writer = new StringWriter();
 
@@ -247,7 +237,6 @@ public class DefaultPoolsInfo extends HttpServlet {
 	gen.writeEnd();
 	gen.close();
 
-	OutputStream out = response.getOutputStream();
 	String outString = writer.toString();
 	ServerSqlManager.writeLine(out, outString);
     }

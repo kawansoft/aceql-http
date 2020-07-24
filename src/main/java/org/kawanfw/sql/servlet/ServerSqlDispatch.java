@@ -68,7 +68,7 @@ public class ServerSqlDispatch {
      *
      * @param request  the http request
      * @param response the http response
-     * @param out      the output stream to write result to client
+     * @param out TODO
      * @throws IOException         if any IOException occurs
      * @throws SQLException
      * @throws FileUploadException
@@ -76,7 +76,7 @@ public class ServerSqlDispatch {
     public void executeRequestInTryCatch(HttpServletRequest request, HttpServletResponse response, OutputStream out)
 	    throws IOException, SQLException, FileUploadException {
 
-	if (isBlobUpload(request, response)) {
+	if (isBlobUpload(request, response, out)) {
 	    return;
 	}
 
@@ -95,7 +95,6 @@ public class ServerSqlDispatch {
 	}
 
 	DatabaseConfigurator databaseConfigurator = baseActionTreater.getDatabaseConfigurator();
-	out = response.getOutputStream();
 
 	if (isGetVersion(out, action)) {
 	    return;
@@ -234,20 +233,22 @@ public class ServerSqlDispatch {
 	}
     }
 
+
     /**
      * @param request
      * @param response
+     * @param out TODO
      * @throws IOException
      * @throws FileUploadException
      * @throws SQLException
      */
-    private boolean isBlobUpload(HttpServletRequest request, HttpServletResponse response)
+    private boolean isBlobUpload(HttpServletRequest request, HttpServletResponse response, OutputStream out)
 	    throws IOException, FileUploadException, SQLException {
 	// Immediate catch if we are asking a file upload, because
 	// parameters are in unknown sequence.
 	// We know it's a upload action if it's mime Multipart
 	if (ServletFileUpload.isMultipartContent(request)) {
-	    BlobUploader blobUploader = new BlobUploader(request, response);
+	    BlobUploader blobUploader = new BlobUploader(request, response, out);
 	    blobUploader.blobUpload();
 	    return true;
 	} else {

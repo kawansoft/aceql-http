@@ -52,10 +52,13 @@ public class MetadataQuerySchemaDownloader {
     private Connection connection = null;
     private AceQLMetaData aceQLMetaData = null;
     private String database = null;
+    private OutputStream out;
 
-    public MetadataQuerySchemaDownloader(HttpServletRequest request, HttpServletResponse response, Connection connection, AceQLMetaData aceQLMetaData, String database) {
+
+    public MetadataQuerySchemaDownloader(HttpServletRequest request, HttpServletResponse response, OutputStream out, Connection connection, AceQLMetaData aceQLMetaData, String database) {
 	this.request = request;
 	this.response = response;
+	this.out = out;
 	this.connection = connection;
 	this.aceQLMetaData = aceQLMetaData;
 	this.database = database;
@@ -81,7 +84,6 @@ public class MetadataQuerySchemaDownloader {
 	} else if (format.contentEquals(AceQLOutputFormat.text.toString())) {
 	    aceQLOutputFormat = AceQLOutputFormat.text;
 	} else {
-	    OutputStream out = response.getOutputStream();
 
 	    JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_BAD_REQUEST,
 		    JsonErrorReturn.ERROR_ACEQL_ERROR, JsonErrorReturn.INVALID_OUTPUT_FORMAT);
@@ -116,8 +118,7 @@ public class MetadataQuerySchemaDownloader {
 	String type = aceQLOutputFormat == AceQLOutputFormat.html ? "text/html" : "text/plain";
 	response.setContentType(type);
 
-	try (InputStream in = new BufferedInputStream(new FileInputStream(tempFile));
-		OutputStream out = response.getOutputStream();) {
+	try (InputStream in = new BufferedInputStream(new FileInputStream(tempFile))) {
 	    IOUtils.copy(in, out);
 	}
     }
@@ -132,7 +133,6 @@ public class MetadataQuerySchemaDownloader {
     private boolean checkBaseValues(String tableName, SchemaInfoAccessor schemaInfoAccessor)
 	    throws SQLException, IOException {
 	if (tableName != null && !exists(aceQLMetaData, tableName)) {
-	    OutputStream out = response.getOutputStream();
 	    JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_BAD_REQUEST,
 		    JsonErrorReturn.ERROR_ACEQL_ERROR, JsonErrorReturn.INVALID_TABLE_NAME);
 	    ServerSqlManager.writeLine(out, errorReturn.build());
@@ -140,7 +140,6 @@ public class MetadataQuerySchemaDownloader {
 	}
 
 	if (!schemaInfoAccessor.isAccessible()) {
-	    OutputStream out = response.getOutputStream();
 	    JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_BAD_REQUEST,
 		    JsonErrorReturn.ERROR_ACEQL_FAILURE, schemaInfoAccessor.getFailureReason());
 	    ServerSqlManager.writeLine(out, errorReturn.build());

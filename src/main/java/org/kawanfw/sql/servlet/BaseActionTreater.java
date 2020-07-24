@@ -14,8 +14,8 @@ import org.kawanfw.sql.servlet.sql.json_return.JsonOkReturn;
 public class BaseActionTreater {
     private HttpServletRequest request;
     private HttpServletResponse response;
-    private OutputStream out;
     private DatabaseConfigurator databaseConfigurator;
+    private OutputStream out;
 
 
     public BaseActionTreater(HttpServletRequest request, HttpServletResponse response, OutputStream out) {
@@ -34,7 +34,6 @@ public class BaseActionTreater {
 	String connectionId = request.getParameter(HttpParameter.CONNECTION_ID);
 
 	if (action == null || action.isEmpty()) {
-	    out = response.getOutputStream();
 	    JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_BAD_REQUEST,
 		    JsonErrorReturn.ERROR_ACEQL_ERROR, JsonErrorReturn.NO_ACTION_FOUND_IN_REQUEST);
 	    ServerSqlManager.writeLine(out, errorReturn.build());
@@ -43,14 +42,13 @@ public class BaseActionTreater {
 
 	if (action.equals(HttpParameter.LOGIN) || action.equals(HttpParameter.CONNECT)) {
 	    ServerLoginActionSql serverLoginActionSql = new ServerLoginActionSql();
-	    serverLoginActionSql.executeAction(request, response, action);
+	    serverLoginActionSql.executeAction(request, response, out, action);
 	    return false;
 	}
 
 	databaseConfigurator = ServerSqlManager.getDatabaseConfigurator(database);
 
 	if (databaseConfigurator == null) {
-	    out = response.getOutputStream();
 	    JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_BAD_REQUEST,
 		    JsonErrorReturn.ERROR_ACEQL_ERROR, JsonErrorReturn.DATABASE_DOES_NOT_EXIST + database);
 	    ServerSqlManager.writeLine(out, errorReturn.build());
@@ -58,7 +56,6 @@ public class BaseActionTreater {
 	}
 
 	if (action.equals(HttpParameter.GET_CONNECTION)) {
-	    out = response.getOutputStream();
 	    connectionId = ServerLoginActionSql.getConnectionId(sessionId, request, username, database,
 		    databaseConfigurator);
 	    ServerSqlManager.writeLine(out, JsonOkReturn.build("connection_id", connectionId));
@@ -67,20 +64,20 @@ public class BaseActionTreater {
 
 	// Redirect if it's a File download request (Blobs/Clobs)
 	if (action.equals(HttpParameter.BLOB_DOWNLOAD)) {
-	    BlobDownloader blobDownloader = new BlobDownloader(request, response, username, databaseConfigurator);
+	    BlobDownloader blobDownloader = new BlobDownloader(request, response, out, username, databaseConfigurator);
 	    blobDownloader.blobDownload();
 	    return false;
 	}
 
 	// No need to get a SQL connection for getting Blob size
 	if (action.equals(HttpParameter.GET_BLOB_LENGTH)) {
-	    BlobLengthGetter blobLengthGetter = new BlobLengthGetter(request, response, username, databaseConfigurator);
+	    BlobLengthGetter blobLengthGetter = new BlobLengthGetter(request, response, out, username, databaseConfigurator);
 	    blobLengthGetter.getLength();
 	    return false;
 	}
 
 	if (action.equals(HttpParameter.LOGOUT) || action.equals(HttpParameter.DISCONNECT)) {
-	    ServerLogout.logout(request, response, databaseConfigurator);
+	    ServerLogout.logout(request, response, out, databaseConfigurator);
 	    return false;
 	}
 
