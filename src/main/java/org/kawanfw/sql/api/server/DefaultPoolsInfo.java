@@ -201,20 +201,18 @@ public class DefaultPoolsInfo extends HttpServlet {
 	    return;
 	}
 
-	writeOutpuMain(request, response, out, setDatabase, dataSources);
+	writeOutpuMain(request, out, setDatabase, dataSources);
 
     }
 
     /**
      * @param request
-     * @param response
      * @param setDatabase
      * @param dataSources
      * @throws NumberFormatException
      * @throws IOException
      */
-    private void writeOutpuMain(HttpServletRequest request, HttpServletResponse response, OutputStream out , String setDatabase,
-	    Map<String, DataSource> dataSources) throws NumberFormatException, IOException {
+    private void writeOutpuMain(HttpServletRequest request, OutputStream out, String setDatabase , Map<String, DataSource> dataSources) throws NumberFormatException, IOException {
 	StringWriter writer = new StringWriter();
 
 	JsonGeneratorFactory jf = JsonUtil.getJsonGeneratorFactory(true);
