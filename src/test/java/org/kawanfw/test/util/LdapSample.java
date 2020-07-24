@@ -39,13 +39,6 @@ import javax.naming.directory.InitialDirContext;
 public class LdapSample {
 
     /**
-     *
-     */
-    public LdapSample() {
-	// TODO Auto-generated constructor stub
-    }
-
-    /**
      * @param args
      */
     public static void main(String[] args) throws Exception {

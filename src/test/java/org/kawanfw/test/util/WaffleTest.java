@@ -42,13 +42,6 @@ import waffle.windows.auth.impl.WindowsAuthProviderImpl;
 public class WaffleTest {
 
     /**
-     *
-     */
-    public WaffleTest() {
-	// TODO Auto-generated constructor stub
-    }
-
-    /**
      * @param args
      */
     public static void main(String[] args) throws Exception {

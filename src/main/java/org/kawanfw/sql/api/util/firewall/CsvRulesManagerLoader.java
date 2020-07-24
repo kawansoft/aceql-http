@@ -155,7 +155,10 @@ public class CsvRulesManagerLoader {
 	try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file));) {
 	    String line = null;
 	    line = bufferedReader.readLine();
-	    checkFirstLineIntegrity(line); // If header line is badly formated, throw clean Exception
+
+	    // If header line is badly formated, throw clean Exception
+	    FirstLineChecker firstLineChecker = new FirstLineChecker(file, line);
+	    firstLineChecker.checkValues();
 
 	    int lineNumber = 1;
 	    while ((line = bufferedReader.readLine()) != null) {
@@ -163,53 +166,6 @@ public class CsvRulesManagerLoader {
 		checkCurrentLineIntegrity(line, lineNumber++);
 	    }
 	}
-    }
-
-    /**
-     * Checks that first line integrity
-     *
-     * @param line
-     */
-    private void checkFirstLineIntegrity(String line) {
-
-	String[] elements = line.split(";");
-
-	if (elements.length != HEADER_LINE_NB_ELEMENTS) {
-	    throw new IllegalFirstLineException(file, "There must be " + HEADER_LINE_NB_ELEMENTS
-		    + " column names in CSV file header line. Incorrect header line: " + line);
-	}
-
-	int i = 0;
-	String username = elements[i++];
-	String table = elements[i++];
-	String delete = elements[i++];
-	String insert = elements[i++];
-	String select = elements[i++];
-	String update = elements[i++];
-	String optionalComments = elements[i++];
-
-	if (!username.equalsIgnoreCase("username")) {
-	    throw new IllegalFirstLineException(file, "Missing \"username\" first column on first line.");
-	}
-	if (!table.equalsIgnoreCase("table")) {
-	    throw new IllegalFirstLineException(file, "Missing \"table\" second column on first line.");
-	}
-	if (!delete.equalsIgnoreCase("delete")) {
-	    throw new IllegalFirstLineException(file, "Missing \"delete\" third column on first line.");
-	}
-	if (!insert.equalsIgnoreCase("insert")) {
-	    throw new IllegalFirstLineException(file, "Missing \"insert\" fourth column on first line.");
-	}
-	if (!select.equalsIgnoreCase("select")) {
-	    throw new IllegalFirstLineException(file, "Missing \"select\" fifth column on first line.");
-	}
-	if (!update.equalsIgnoreCase("update")) {
-	    throw new IllegalFirstLineException(file, "Missing \"update\" sixth column on first line.");
-	}
-	if (!optionalComments.equalsIgnoreCase("optional comments")) {
-	    throw new IllegalFirstLineException(file, "Missing \"optional comments\" seventh column on first line.");
-	}
-
     }
 
     private void checkCurrentLineIntegrity(String line, int lineNumber) {

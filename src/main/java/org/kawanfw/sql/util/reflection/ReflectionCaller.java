@@ -97,7 +97,7 @@ public class ReflectionCaller {
 	}.getClass().getEnclosingMethod().getName();
 
 	if (!Invoker.existsMethod(
-		org.kawanfw.sql.api.server.DatabaseConfigurator.class.getName(),
+		DatabaseConfigurator.class.getName(),
 		methodName)) {
 	    return 0;
 	}

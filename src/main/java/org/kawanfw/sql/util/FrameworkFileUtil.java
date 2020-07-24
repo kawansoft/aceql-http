@@ -1,24 +1,24 @@
 /*
  * This file is part of AceQL HTTP.
- * AceQL HTTP: SQL Over HTTP                                     
+ * AceQL HTTP: SQL Over HTTP
  * Copyright (C) 2020,  KawanSoft SAS
- * (http://www.kawansoft.com). All rights reserved.                                
- *                                                                               
- * AceQL HTTP is free software; you can redistribute it and/or                 
- * modify it under the terms of the GNU Lesser General Public                    
- * License as published by the Free Software Foundation; either                  
- * version 2.1 of the License, or (at your option) any later version.            
- *                                                                               
- * AceQL HTTP is distributed in the hope that it will be useful,               
- * but WITHOUT ANY WARRANTY; without even the implied warranty of                
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU             
- * Lesser General Public License for more details.                               
- *                                                                               
- * You should have received a copy of the GNU Lesser General Public              
- * License along with this library; if not, write to the Free Software           
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  
+ * (http://www.kawansoft.com). All rights reserved.
+ *
+ * AceQL HTTP is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * AceQL HTTP is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
  * 02110-1301  USA
- * 
+ *
  * Any modifications to this file must keep this entire header
  * intact.
  */
@@ -39,9 +39,9 @@ import java.util.Vector;
 
 /**
  * Misc file utilities
- * 
+ *
  * @author Nicolas de Pomereu
- * 
+ *
  */
 public class FrameworkFileUtil {
 
@@ -63,7 +63,7 @@ public class FrameworkFileUtil {
 
     /**
      * Build a unique string
-     * 
+     *
      * @return a unique string
      */
     public static synchronized String getUniqueId() {
@@ -76,7 +76,7 @@ public class FrameworkFileUtil {
     /**
      * Returns System.getProperty("user.home") for all devices except for
      * Android which returns java.io.tmpdir/kawansoft-user-home
-     * 
+     *
      * @return System.getProperty("user.home") for all devices except for
      *         Android which returns java.io.tmpdir/kawansoft-user-home
      */
@@ -106,7 +106,7 @@ public class FrameworkFileUtil {
      * Returns System.getProperty("user.home") + File.separator + ".kawansoft
      * for all devices except for Android which returns
      * java.io.tmpdir/kawansoft-user-home/.kawansoft
-     * 
+     *
      * @return System.getProperty("user.home") + File.separator + ".kawansoft
      *         for all devices except for Android which returns
      *         java.io.tmpdir/kawansoft-user-home/.kawansoft
@@ -143,7 +143,7 @@ public class FrameworkFileUtil {
 
     /**
      * Extract the first line of a presumed text file
-     * 
+     *
      * @param file
      *            the presumed text file to extract the first line from
      * @return the first line of the file
@@ -172,13 +172,13 @@ public class FrameworkFileUtil {
 
     /**
      * Return true if the filename is a Linux possible Filename
-     * 
+     *
      * @param filename
      *            the filename to test
      * @return true if the filename is a Linux Filename
      */
     public static boolean isPossibleLinuxFilename(String filename) {
-	if (filename.indexOf("\\") != -1 || // Windows
+	return !(filename.indexOf("\\") != -1 || // Windows
 		filename.indexOf("/") != -1 || // Windows
 		filename.indexOf(":") != -1 || // Windows
 		filename.indexOf("*") != -1 || // Windows
@@ -188,12 +188,7 @@ public class FrameworkFileUtil {
 		filename.indexOf(">") != -1 || // Windows
 		filename.indexOf("|") != -1 || // Windows
 		filename.indexOf("@") != -1 || // Linux
-		filename.indexOf(" ") != -1) // Linux
-	{
-	    return false;
-	} else {
-	    return true;
-	}
+		filename.indexOf(" ") != -1); // Linux
     }
 
     /**
@@ -262,7 +257,7 @@ public class FrameworkFileUtil {
 
     /**
      * Recuse research of a files. Result is stored in m_fileList
-     * 
+     *
      * @param fileList
      *            the initial list
      * @param recurse
@@ -287,12 +282,12 @@ public class FrameworkFileUtil {
 
     /**
      * Extract all files from a list of files, with recurse options
-     * 
+     *
      * @param fileList
      *            the initial list
      * @param recurse
      *            if true, search inside directories
-     * 
+     *
      * @return the extracted all files
      */
     // public static List<File> listAllFiles(List<File> fileList, boolean
@@ -317,9 +312,9 @@ public class FrameworkFileUtil {
     // }
 
     /**
-     * 
+     *
      * Extract the files that are not directories from a file list
-     * 
+     *
      * @param fileList
      *            the initial list (firt level only)
      * @return the file list
@@ -346,9 +341,9 @@ public class FrameworkFileUtil {
     }
 
     /**
-     * 
+     *
      * Extract the directories only from a file list
-     * 
+     *
      * @param fileList
      *            the initial list (firt level only)
      * @return the file list
@@ -369,7 +364,7 @@ public class FrameworkFileUtil {
     /**
      * Put the content of a file as HTML into a String <br>
      * No carriage returns will be included in output String
-     * 
+     *
      * @param fileIn
      *            The HTML text file
      * @return The content in text

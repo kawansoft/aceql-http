@@ -77,7 +77,6 @@ public class BlobLengthGetter {
 
 	out = response.getOutputStream();
 	ServerSqlManager.writeLine(out, JsonOkReturn.build("length", length + ""));
-	return;
     }
 
 }

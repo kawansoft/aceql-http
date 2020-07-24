@@ -69,14 +69,6 @@ public class DefaultDatabaseConfigurator implements DatabaseConfigurator {
 
     private static Logger ACEQL_LOGGER = null;
 
-    /**
-     * Constructor. {@code DatabaseConfigurator} implementation must have no
-     * constructor or a unique no parameters constructor.
-     */
-    public DefaultDatabaseConfigurator() {
-
-    }
-
 
     /**
      * Returns a {@code Connection} from
@@ -186,16 +178,16 @@ public class DefaultDatabaseConfigurator implements DatabaseConfigurator {
      *         {@code user.home} is the one of the servlet container).
      */
     @Override
-    public File getBlobsDirectory(String username) throws IOException, SQLException {
+    public File getBlobsDirectory(final String username) throws IOException, SQLException {
 	String userHome = System.getProperty("user.home");
 	if (!userHome.endsWith(File.separator)) {
 	    userHome += File.separator;
 	}
 
 	// Escape invalid chars, mostly for Windows
-	username = UsernameConverter.fromSpecialChars(username);
+	String usernameNew = UsernameConverter.fromSpecialChars(username);
 
-	userHome += ".aceql-server-root" + File.separator + username;
+	userHome += ".aceql-server-root" + File.separator + usernameNew;
 	File userHomeDir = new File(userHome);
 	userHomeDir.mkdirs();
 	return userHomeDir;

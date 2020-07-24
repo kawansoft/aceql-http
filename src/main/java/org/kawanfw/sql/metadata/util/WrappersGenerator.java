@@ -37,12 +37,6 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class WrappersGenerator {
 
-    /**
-     *
-     */
-    public WrappersGenerator() {
-
-    }
 
     /**
      * @param args

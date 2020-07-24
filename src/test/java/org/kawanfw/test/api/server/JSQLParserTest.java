@@ -19,13 +19,6 @@ import net.sf.jsqlparser.util.TablesNamesFinder;
 public class JSQLParserTest {
 
     /**
-     *
-     */
-    public JSQLParserTest() {
-	// TODO Auto-generated constructor stub
-    }
-
-    /**
      * @param args
      */
     public static void main(String[] args) throws Exception {
