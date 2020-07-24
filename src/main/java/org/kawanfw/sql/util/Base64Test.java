@@ -16,13 +16,6 @@ import org.apache.commons.io.FileUtils;
 public class Base64Test {
 
     /**
-     *
-     */
-    public Base64Test() {
-	// TODO Auto-generated constructor stub
-    }
-
-    /**
      * @param args
      */
     public static void main(String[] args) throws IOException {

@@ -263,9 +263,10 @@ public class SqlTestParms {
 
 	    connection = driver.connect(url, properties);
 
-	} else if (DRIVER_LOADING_METHOD == DRIVER_LOADING_REGISTER) {
-	    // Nothing to do
-	} else {
+//	} else if (DRIVER_LOADING_METHOD == DRIVER_LOADING_REGISTER) {
+//	    // Nothing to do
+	}
+	else {
 	    throw new IllegalArgumentException(
 		    "Loading method not supported: " + DRIVER_LOADING_METHOD);
 	}

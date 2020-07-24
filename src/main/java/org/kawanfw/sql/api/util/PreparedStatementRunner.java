@@ -1,24 +1,24 @@
 /*
  * This file is part of AceQL HTTP.
- * AceQL HTTP: SQL Over HTTP                                     
+ * AceQL HTTP: SQL Over HTTP
  * Copyright (C) 2020,  KawanSoft SAS
- * (http://www.kawansoft.com). All rights reserved.                                
- *                                                                               
- * AceQL HTTP is free software; you can redistribute it and/or                 
- * modify it under the terms of the GNU Lesser General Public                    
- * License as published by the Free Software Foundation; either                  
- * version 2.1 of the License, or (at your option) any later version.            
- *                                                                               
- * AceQL HTTP is distributed in the hope that it will be useful,               
- * but WITHOUT ANY WARRANTY; without even the implied warranty of                
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU             
- * Lesser General Public License for more details.                               
- *                                                                               
- * You should have received a copy of the GNU Lesser General Public              
- * License along with this library; if not, write to the Free Software           
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  
+ * (http://www.kawansoft.com). All rights reserved.
+ *
+ * AceQL HTTP is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * AceQL HTTP is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
  * 02110-1301  USA
- * 
+ *
  * Any modifications to this file must keep this entire header
  * intact.
  */
@@ -35,13 +35,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.kawanfw.sql.util.FrameworkDebug;
 
 /**
- * 
+ *
  * Wrapper class for all kind of prepared statement: query or update <br>
  * Update and Delete are safe because the WHERE clause is mandatory to prevent
  * dramatic errors. <br>
  * <br>
  * Example: <blockquote>
- * 
+ *
  * <pre>
  * // Get a JDBC Connection
  * Connection connection = ...
@@ -60,16 +60,15 @@ import org.kawanfw.sql.util.FrameworkDebug;
  * // close the underlying ResultSet and PreparedStatement
  * preparedStatementRunner.close();
  * </pre>
- * 
+ *
  * </blockquote>
- * 
+ *
  * @author Nicolas de Pomereu
  * @since 1.0
  */
 public class PreparedStatementRunner {
     /** Debug Value */
-    private static boolean DEBUG = FrameworkDebug
-	    .isSet(PreparedStatementRunner.class);
+    private static boolean DEBUG = FrameworkDebug.isSet(PreparedStatementRunner.class);
 
     private static String CR_LF = System.getProperty("line.separator");
 
@@ -99,24 +98,20 @@ public class PreparedStatementRunner {
 
     /**
      * Constructor.
-     * 
-     * @param connection
-     *            the JDBC Connection instance
-     * @param sql
-     *            the prepared statement base SQL request with all the '?'
-     * @param params
-     *            the prepared statement parameters value in the awaited order
+     *
+     * @param connection the JDBC Connection instance
+     * @param sql        the prepared statement base SQL request with all the '?'
+     * @param params     the prepared statement parameters value in the awaited
+     *                   order
      */
 
-    public PreparedStatementRunner(Connection connection, String sql,
-	    Object... params) {
+    public PreparedStatementRunner(Connection connection, String sql, Object... params) {
 	if (connection == null) {
 	    throw new IllegalArgumentException("connection can\'t be null");
 	}
 
 	if (sql == null) {
-	    throw new IllegalArgumentException(
-		    "sql preparement statement string can\'t be null");
+	    throw new IllegalArgumentException("sql preparement statement string can\'t be null");
 	}
 
 	sql = sql.trim();
@@ -142,23 +137,20 @@ public class PreparedStatementRunner {
 
     /**
      * Executes a SQL prepared statement for a query.
-     * 
+     *
      * @return the result set of the prepared statement
-     * 
-     * @throws SQLException
-     *             if a SQL Exception is raised
+     *
+     * @throws SQLException if a SQL Exception is raised
      */
     public ResultSet executeQuery() throws SQLException {
-	prepStatement = connection.prepareStatement(sql,
-		ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+	prepStatement = connection.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 
 	int numberOfIntMarks = StringUtils.countMatches(sql, "?");
 	int numberOfParams = params.size();
 
 	if (numberOfIntMarks != numberOfParams) {
-	    throw new SQLException(
-		    "sql statement numbers of \"?\" do no match number of parameters: "
-			    + numberOfIntMarks + " and " + numberOfParams);
+	    throw new SQLException("sql statement numbers of \"?\" do no match number of parameters: "
+		    + numberOfIntMarks + " and " + numberOfParams);
 	}
 
 	for (int i = 0; i < params.size(); i++) {
@@ -180,11 +172,10 @@ public class PreparedStatementRunner {
 
     /**
      * Executes a SQL prepared statement for an update.
-     * 
+     *
      * @return the return code of the prepared statement
-     * 
-     * @throws SQLException
-     *             if a SQL Exception is raised
+     *
+     * @throws SQLException if a SQL Exception is raised
      */
     public int executeUpdate() throws SQLException {
 	prepStatement = connection.prepareStatement(sql);
@@ -193,9 +184,8 @@ public class PreparedStatementRunner {
 	int numberOfParams = params.size();
 
 	if (numberOfIntMarks != numberOfParams) {
-	    throw new SQLException(
-		    "sql statement numbers of \"?\" do no match number of parameters: "
-			    + numberOfIntMarks + " and " + numberOfParams);
+	    throw new SQLException("sql statement numbers of \"?\" do no match number of parameters: "
+		    + numberOfIntMarks + " and " + numberOfParams);
 	}
 
 	for (int i = 0; i < params.size(); i++) {
@@ -211,20 +201,14 @@ public class PreparedStatementRunner {
 	    throw new SQLException("sql string is not an update: " + sql);
 	}
 
-	if (sqlLower.startsWith(UPDATE) || sqlLower.startsWith(DELETE)) {
-	    if (sqlLower.indexOf(" " + WHERE + " ") == 0) {
-		throw new SQLException(
-			"update and delete are not permitted without a WHERE clause: "
-				+ sql);
-	    }
+	if ((sqlLower.startsWith(UPDATE) || sqlLower.startsWith(DELETE) && sqlLower.indexOf(" " + WHERE + " ") == 0)) {
+	    throw new SQLException("update and delete are not permitted without a WHERE clause: " + sql);
 	}
 
-	if (sqlLower.startsWith(UPDATE) || sqlLower.startsWith(DELETE)
-		|| sqlLower.startsWith(INSERT)) {
+	if (sqlLower.startsWith(UPDATE) || sqlLower.startsWith(DELETE) || sqlLower.startsWith(INSERT)) {
 	    rc = prepStatement.executeUpdate();
 	} else {
-	    throw new SQLException(
-		    "Statement is not INSERT / UPDATE / DELETE: " + sql);
+	    throw new SQLException("Statement is not INSERT / UPDATE / DELETE: " + sql);
 	}
 
 	debug(this.toString());
@@ -234,7 +218,7 @@ public class PreparedStatementRunner {
     /**
      * Returns the developedQuery with substituted '?' by the passed values as
      * parameters.
-     * 
+     *
      * @return the developedQuery with substituted '?' by the passed values as
      *         parameters
      */
@@ -243,24 +227,23 @@ public class PreparedStatementRunner {
     }
 
     /**
-     * Returns a clean representation of the
-     * <code>PreparedStatementRunner</code> instance.
-     * 
-     * @return a clean representation of the
-     *         <code>PreparedStatementRunner</code> instance
+     * Returns a clean representation of the <code>PreparedStatementRunner</code>
+     * instance.
+     *
+     * @return a clean representation of the <code>PreparedStatementRunner</code>
+     *         instance
      */
     @Override
     public String toString() {
-	String string = "Initial query..: " + sql + CR_LF + "Parameters.....: "
-		+ params.toString() + CR_LF + "DevelopedQuery : " + CR_LF
-		+ developedQuery;
+	String string = "Initial query..: " + sql + CR_LF + "Parameters.....: " + params.toString() + CR_LF
+		+ "DevelopedQuery : " + CR_LF + developedQuery;
 
 	return string;
     }
 
     /**
-     * Closes the PreparedStatementRunner. This call is recommended. It will
-     * close the underlying prepared statement & result set.
+     * Closes the PreparedStatementRunner. This call is recommended. It will close
+     * the underlying prepared statement & result set.
      */
     public void close() {
 	try {

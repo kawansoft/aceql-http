@@ -54,14 +54,6 @@ public class DefaultSessionConfigurator implements SessionConfigurator {
     private SessionIdentifierGenerator sessionIdentifierGenerator = new SessionIdentifierGenerator();
     private Map<String, SessionInfo> sessionInfoStore = new ConcurrentHashMap<>();
 
-    /**
-     * Constructor. {@code SessionConfigurator} implementation must have no
-     * constructor or a unique no parms constructor.
-     */
-    public DefaultSessionConfigurator() {
-
-    }
-
     /*
      * (non-Javadoc)
      *

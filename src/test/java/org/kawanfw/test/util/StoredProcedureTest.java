@@ -127,7 +127,7 @@ public class StoredProcedureTest {
 	for (JsonValue jsonValue : jsonArray) {
 	    System.out.println(jsonValue.toString());
 	    JsonObject jsonObject = (JsonObject)jsonValue;
-	    System.out.println(jsonObject.keySet());;
+	    System.out.println(jsonObject.keySet());
 	}
 
     }
