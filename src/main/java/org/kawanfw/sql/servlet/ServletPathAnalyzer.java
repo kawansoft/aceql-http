@@ -206,27 +206,30 @@ public class ServletPathAnalyzer {
         return false;
     }
 
-    public boolean isLoginAction(String requestUri, String servletName) {
-	if (isLoginAction(requestUri)) {
+    public boolean isLoginAction(final String requestUri, String servletName) {
 
-	    if (!requestUri.contains("/" + servletName + "/database/")) {
+	String requestUriNew = requestUri;
+
+	if (isLoginAction(requestUriNew)) {
+
+	    if (!requestUriNew.contains("/" + servletName + "/database/")) {
 		throw new IllegalArgumentException("Request does not contain /database/ subpath in path");
 	    }
 
-	    if (!requestUri.contains("/username/")) {
+	    if (!requestUriNew.contains("/username/")) {
 		throw new IllegalArgumentException("Request does not contain /username/ subpath in path");
 	    }
 
-	    database = StringUtils.substringBetween(requestUri, "/database/", "/username");
+	    database = StringUtils.substringBetween(requestUriNew, "/database/", "/username");
 
 	    // Accept /connect pattern
-	    if (requestUri.endsWith("/connect")) {
-		requestUri = StringUtils.substringBeforeLast(requestUri, "/connect") + "/login";
-	    } else if (requestUri.contains("/connect?")) {
-		requestUri = StringUtils.substringBeforeLast(requestUri, "/connect?") + "/login?";
+	    if (requestUriNew.endsWith("/connect")) {
+		requestUriNew = StringUtils.substringBeforeLast(requestUriNew, "/connect") + "/login";
+	    } else if (requestUriNew.contains("/connect?")) {
+		requestUriNew = StringUtils.substringBeforeLast(requestUriNew, "/connect?") + "/login?";
 	    }
 
-	    username = StringUtils.substringBetween(requestUri, "/username/", "/login");
+	    username = StringUtils.substringBetween(requestUriNew, "/username/", "/login");
 	    return true;
 	} else {
 	    return false;
