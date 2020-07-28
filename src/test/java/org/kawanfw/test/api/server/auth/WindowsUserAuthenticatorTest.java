@@ -47,8 +47,8 @@ public class WindowsUserAuthenticatorTest {
     public static void test() throws IOException, SQLException {
 	ServerSqlManager.setAceqlServerProperties(new File("I:\\_dev_awake\\aceql-http-main\\aceql-http\\conf\\aceql-server.properties"));
 	WindowsUserAuthenticator windowsUserAuthenticator = new WindowsUserAuthenticator();
-	String username = "Nicolas de Pomereu";
-	String password = FileUtils.readFileToString(new File("I:\\__NDP\\_MyPasswords\\login.txt"), "UTF-8");
+	String username = "user1";
+	String password = FileUtils.readFileToString(new File("I:\\__NDP\\_MyPasswords\\login_user1.txt"), "UTF-8");
 
 	boolean logged = windowsUserAuthenticator.login(username, password.toCharArray(), "database", "10.0.0.10");
 	System.out.println(new Date() + " WindowsUserAuthenticator logged: " + logged);

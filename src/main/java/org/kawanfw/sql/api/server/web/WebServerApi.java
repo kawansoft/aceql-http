@@ -57,9 +57,6 @@ public class WebServerApi {
 
     private static boolean DEBUG = FrameworkDebug.isSet(WebServerApi.class);
 
-    /** Universal and clean line separator */
-    private static String CR_LF = System.getProperty("line.separator");
-
     /**
      * Starts the embedded Web Server.
      *
@@ -104,17 +101,17 @@ public class WebServerApi {
 		    "The port " + port + " is not available for starting Web server. " + SqlTag.PLEASE_CORRECT);
 	}
 
-	PortSemaphoreFile portSemaphoreFile = new PortSemaphoreFile(port);
-
-	try {
-	    if (!portSemaphoreFile.exists()) {
-		portSemaphoreFile.create();
-	    }
-	} catch (IOException e) {
-	    throw new IOException("Web server can not start. Impossible to create the semaphore file: "
-		    + portSemaphoreFile.getSemaphoreFile() + CR_LF
-		    + "Create manually the semapahore file to start the Web server on port " + port + ".", e);
-	}
+//	PortSemaphoreFile portSemaphoreFile = new PortSemaphoreFile(port);
+//
+//	try {
+//	    if (!portSemaphoreFile.exists()) {
+//		portSemaphoreFile.create();
+//	    }
+//	} catch (IOException e) {
+//	    throw new IOException("Web server can not start. Impossible to create the semaphore file: "
+//		    + portSemaphoreFile.getSemaphoreFile() + CR_LF
+//		    + "Create manually the semapahore file to start the Web server on port " + port + ".", e);
+//	}
 
 	// Do not use SecureRandom class
 	if (SystemUtils.IS_OS_UNIX) {
@@ -125,7 +122,17 @@ public class WebServerApi {
 	// OK build the Servlet
 	TomcatStarter tomcatStarter = new TomcatStarter(host, port, propertiesFile);
 	tomcatStarter.startTomcat();
+    }
 
+    /**
+     * Says if an AceQL is fully started on specified port.
+     *
+     * @param port	the port on which the server is started
+     * @return
+     */
+    public boolean isServerStarted(int port) {
+	PortSemaphoreFile portSemaphoreFile = new PortSemaphoreFile(port);
+	return portSemaphoreFile.exists();
     }
 
     /**

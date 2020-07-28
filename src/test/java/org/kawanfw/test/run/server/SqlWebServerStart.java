@@ -24,13 +24,19 @@
  */
 package org.kawanfw.test.run.server;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.kawanfw.sql.WebServer;
+import org.kawanfw.sql.api.server.web.WebServerApi;
 
 /**
  * @author Nicolas de Pomereu
  *
  */
 public class SqlWebServerStart {
+
+    private static Map<Integer, String> map = new HashMap<>();
 
     /**
      * no constructor
@@ -45,13 +51,56 @@ public class SqlWebServerStart {
      */
     public static void main(String[] args) throws Exception {
 
-	/*
-	 * try { WebServerApi webServerApi = new WebServerApi();
-	 * webServerApi.stopServer(); } catch (Exception e) { // Ignore }
-	 */
+	map.put(9090, "I:\\_dev_awake\\aceql-http-main\\aceql-http\\conf\\aceql-server.properties");
+	map.put(9091, "I:\\_dev_awake\\aceql-http-main\\aceql-http\\conf\\aceql-server-auth-ldap.properties");
+	map.put(9092, "I:\\_dev_awake\\aceql-http-main\\aceql-http\\conf\\aceql-server-auth-ssh.properties");
+	map.put(9093, "I:\\_dev_awake\\aceql-http-main\\aceql-http\\conf\\aceql-server-auth-windows.properties");
 
-	WebServer.main(new String[] { "-start", "-host", "localhost",
-		"-properties",
-		"I:\\_dev_awake\\aceql-http-main\\aceql-http\\conf\\aceql-server.properties" });
+	start(9090);
+	waitUntilStarted(9090);
+
+	start(9091);
+	waitUntilStarted(9091);
+
+	start(9092);
+	waitUntilStarted(9092);
+
+	start(9093);
+	waitUntilStarted(9093);
     }
+
+    /**
+     * @param port
+     * @throws InterruptedException
+     */
+    public static void waitUntilStarted(int port) throws InterruptedException {
+	while (true) {
+	    Thread.sleep(200);
+	    WebServerApi webServerApi = new WebServerApi();
+	    if (webServerApi.isServerStarted(port)) {
+		break;
+	    }
+	}
+    }
+
+
+    /**
+     *
+     */
+    public static void start(int port) {
+	Thread t = new Thread() {
+	    @Override
+	    public void run() {
+		try {
+		    String fileStr = map.get(port);
+		    String portStr = port + "";
+		    WebServer.main(new String[] { "-start", "-host", "localhost", "-port", portStr, "-properties", fileStr });
+		} catch (Exception e) {
+		    e.printStackTrace();
+		}
+	    }
+	};
+	t.start();
+    }
+
 }
