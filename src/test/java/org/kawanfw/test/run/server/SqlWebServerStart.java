@@ -56,17 +56,20 @@ public class SqlWebServerStart {
 	map.put(9092, "I:\\_dev_awake\\aceql-http-main\\aceql-http\\conf\\aceql-server-auth-ssh.properties");
 	map.put(9093, "I:\\_dev_awake\\aceql-http-main\\aceql-http\\conf\\aceql-server-auth-windows.properties");
 
-	start(9090);
-	waitUntilStarted(9090);
-
 	start(9091);
 	waitUntilStarted(9091);
 
-	start(9092);
-	waitUntilStarted(9092);
-
-	start(9093);
-	waitUntilStarted(9093);
+//	start(9090);
+//	waitUntilStarted(9090);
+//
+//	start(9091);
+//	waitUntilStarted(9091);
+//
+//	start(9092);
+//	waitUntilStarted(9092);
+//
+//	start(9093);
+//	waitUntilStarted(9093);
     }
 
     /**

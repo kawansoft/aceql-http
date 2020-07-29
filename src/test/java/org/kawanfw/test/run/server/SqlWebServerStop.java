@@ -48,6 +48,7 @@ public class SqlWebServerStop {
 	stopOnPort(9091);
 	stopOnPort(9092);
 	stopOnPort(9093);
+	stopOnPort(9094);
     }
 
     /**

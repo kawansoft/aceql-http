@@ -48,7 +48,7 @@ public class LdapUserAuthenticatorTest {
 	String user = "cn=read-only-admin,dc=example,dc=com";
 	String password = "password";
 
-	ServerSqlManager.setAceqlServerProperties(new File("I:\\_dev_awake\\aceql-http-main\\aceql-http\\conf\\aceql-server.properties"));
+	ServerSqlManager.setAceqlServerProperties(new File("I:\\_dev_awake\\aceql-http-main\\aceql-http\\conf\\aceql-server-auth-ldap.properties"));
 	LdapUserAuthenticator ldapUserAuthenticator = new LdapUserAuthenticator();
 
 	boolean logged = ldapUserAuthenticator.login(user, password.toCharArray(), "database", "10.0.0.10");
