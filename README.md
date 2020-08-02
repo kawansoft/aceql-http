@@ -2,7 +2,7 @@
 ![GitHub](https://img.shields.io/github/license/kawansoft/aceql-http) ![Maven Central](https://img.shields.io/maven-central/v/com.aceql/aceql-http) 
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/y/kawansoft/aceql-http) ![GitHub last commit (branch)](https://img.shields.io/github/last-commit/kawansoft/aceql-http/master) ![GitHub contributors](https://img.shields.io/github/contributors/kawansoft/aceql-http)
 
-# AceQL HTTP v5.1   - July 20,  2020
+# AceQL HTTP v5.1   - August 2,  2020
 
 # Server Installation and Configuration Guide  
 

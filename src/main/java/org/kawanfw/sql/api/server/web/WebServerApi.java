@@ -96,6 +96,12 @@ public class WebServerApi {
 		    "The properties file " + propertiesFile + " does not exists. " + SqlTag.PLEASE_CORRECT);
 	}
 
+	/*
+	if (ServerSqlManager.getAceqlServerProperties() != null) {
+	    throw new IllegalArgumentException("AceQL is already started in thi JVM. Cant not start a second instance. Pleade use a new JVM.");
+	}
+	*/
+
 	if (!TomcatStarterUtil.available(port)) {
 	    throw new ConnectException(
 		    "The port " + port + " is not available for starting Web server. " + SqlTag.PLEASE_CORRECT);

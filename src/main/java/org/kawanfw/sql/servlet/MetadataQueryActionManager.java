@@ -136,7 +136,7 @@ public class MetadataQueryActionManager {
 
 	if (action.equals(HttpParameter.METADATA_QUERY_DB_SCHEMA_DOWNLOAD)) {
 	    MetadataQuerySchemaDownloader metadataQuerySchemaDownloader = new MetadataQuerySchemaDownloader(request,
-		    response, out, connection, aceQLMetaData, database);
+		    response, out, connection, aceQLMetaData);
 	    metadataQuerySchemaDownloader.schemaDowload();
 	} else if (action.equals(HttpParameter.METADATA_QUERY_GET_DB_METADATA)) {
 	    JdbcDatabaseMetaData jdbcDatabaseMetaData = aceQLMetaData.getJdbcDatabaseMetaData();

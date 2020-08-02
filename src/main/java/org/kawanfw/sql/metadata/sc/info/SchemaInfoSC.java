@@ -39,6 +39,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
 import org.kawanfw.sql.api.util.SqlUtil;
 import org.kawanfw.sql.metadata.AceQLMetaData;
 import org.kawanfw.sql.metadata.util.FileWordReplacer;
@@ -66,7 +67,6 @@ import schemacrawler.tools.options.TextOutputFormat;
 public class SchemaInfoSC {
 
     private Connection connection = null;
-    private String database = null;
     private SchemaInfoLevel schemaInfoLevel = SchemaInfoLevelBuilder.standard();
 
     private String SC_NAME = "SchemaCrawler";
@@ -76,17 +76,15 @@ public class SchemaInfoSC {
     private String ACEQL_VERSION = VersionValues.VERSION;
     private Set<String> tableSet = new HashSet<>();
 
+
     /**
      * Constructor.
      *
      * @param connection
-     * @param database
      * @throws SQLException
      */
-    public SchemaInfoSC(Connection connection, String database) throws SQLException {
-
+    public SchemaInfoSC(Connection connection) throws SQLException {
 	this.connection = Objects.requireNonNull(connection, "connection cannot be null!");
-	this.database = Objects.requireNonNull(database, "database cannot be null!");
 
 	AceQLMetaData aceQLMetaData = new AceQLMetaData(connection);
 	List<String> tables = aceQLMetaData.getTableNames();
@@ -95,8 +93,8 @@ public class SchemaInfoSC {
 	}
     }
 
-    public SchemaInfoSC(Connection connection, SchemaInfoLevel schemaInfoLevel, String database) throws SQLException {
-	this(connection, database);
+    public SchemaInfoSC(Connection connection, SchemaInfoLevel schemaInfoLevel) throws SQLException {
+	this(connection);
 
 	this.connection = connection;
 	this.schemaInfoLevel = Objects.requireNonNull(schemaInfoLevel, "schemaInfoLevel cannot be null!");
@@ -185,7 +183,10 @@ public class SchemaInfoSC {
 	}
 
 	if (sqlUtil.isSQLServer()) {
-	    Pattern pattern = Pattern.compile(database + ".dbo", Pattern.CASE_INSENSITIVE);
+
+	    DatabaseMetaData databaseMetaData = connection.getMetaData();
+	    String databaseName = getSqlServerDatabaseName(databaseMetaData);
+	    Pattern pattern = Pattern.compile(databaseName + ".dbo", Pattern.CASE_INSENSITIVE);
 	    optionsBuilder.includeSchemas(new RegularExpressionInclusionRule(pattern));
 
 //	    Pattern pattern = Pattern.compile("db_accessadmin|db_backupoperator|db_datareader|db_datawriter|db_ddladmin|db_denydatareader|db_denydatawriter|db_owner|db_securityadmin|guest|INFORMATION_SCHEMA|sys", Pattern.CASE_INSENSITIVE);
@@ -221,6 +222,29 @@ public class SchemaInfoSC {
 	}
     }
 
+    /**
+     * @param databaseMetaData
+     * @return
+     * @throws SQLException
+     */
+    private static String getSqlServerDatabaseName(DatabaseMetaData databaseMetaData) throws SQLException {
+
+	Objects.requireNonNull(databaseMetaData, "databaseMetaData cannot be null!");
+
+	String databaseName = null;
+
+	String [] urlElements = databaseMetaData.getURL().split(";");
+
+
+	for (String element : urlElements) {
+	    if (element.contains("databaseName=")) {
+		databaseName = StringUtils.substringAfter(element, "databaseName=");
+		break;
+	    }
+	}
+	return databaseName;
+
+    }
     private static OutputFormat getOutputFormatFromAceQL(AceQLOutputFormat outputFormat) {
 	if (outputFormat.equals(AceQLOutputFormat.html)) {
 	    return TextOutputFormat.html;

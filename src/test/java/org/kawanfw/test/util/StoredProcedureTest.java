@@ -6,6 +6,7 @@ package org.kawanfw.test.util;
 import java.io.StringReader;
 import java.sql.CallableStatement;
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
@@ -16,8 +17,10 @@ import javax.json.JsonObject;
 import javax.json.JsonReader;
 import javax.json.JsonValue;
 
+import org.apache.commons.lang3.StringUtils;
 import org.kawanfw.sql.api.util.SqlUtil;
 import org.kawanfw.test.parms.ConnectionLoader;
+import org.kawanfw.test.parms.SqlTestParms;
 
 /**
  * @author Nicolas de Pomereu
@@ -31,9 +34,20 @@ public class StoredProcedureTest {
     public static void main(String[] args) throws Exception {
 
 	// Change it to change test SQL engine
-	ConnectionLoader.sqlEngine = SqlUtil.POSTGRESQL;
+	ConnectionLoader.sqlEngine = SqlTestParms.SQLSERVER_MS_DRIVER;
 
 	Connection connection = ConnectionLoader.getLocalConnection();
+	DatabaseMetaData databaseMetaData = connection.getMetaData();
+	System.out.println("databaseMetaData.getURL(): " + databaseMetaData.getURL());
+
+	String databaseName = getSqlServerDatabaseName(databaseMetaData);
+
+	System.out.println("databaseName: " + databaseName + ":");
+
+	boolean doReturn = true;
+	if (doReturn) {
+	    return;
+	}
 
 	if (ConnectionLoader.sqlEngine.equals(SqlUtil.MYSQL)) {
 	    testMySqlStoredProcedure(connection);
@@ -47,6 +61,26 @@ public class StoredProcedureTest {
 
 	connection.close();
 
+    }
+
+    /**
+     * @param databaseMetaData
+     * @return
+     * @throws SQLException
+     */
+    private static String getSqlServerDatabaseName(DatabaseMetaData databaseMetaData) throws SQLException {
+	String databaseName = null;
+
+	String [] urlElements = databaseMetaData.getURL().split(";");
+
+
+	for (String element : urlElements) {
+	    if (element.contains("databaseName=")) {
+		databaseName = StringUtils.substringAfter(element, "databaseName=");
+		break;
+	    }
+	}
+	return databaseName;
     }
 
     public static void testSqlServerSoredProcedure(Connection connection) throws SQLException {

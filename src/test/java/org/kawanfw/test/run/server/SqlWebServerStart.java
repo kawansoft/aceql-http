@@ -51,25 +51,11 @@ public class SqlWebServerStart {
      */
     public static void main(String[] args) throws Exception {
 
-	map.put(9090, "I:\\_dev_awake\\aceql-http-main\\aceql-http\\conf\\aceql-server.properties");
-	map.put(9091, "I:\\_dev_awake\\aceql-http-main\\aceql-http\\conf\\aceql-server-auth-ldap.properties");
-	map.put(9092, "I:\\_dev_awake\\aceql-http-main\\aceql-http\\conf\\aceql-server-auth-ssh.properties");
-	map.put(9093, "I:\\_dev_awake\\aceql-http-main\\aceql-http\\conf\\aceql-server-auth-windows.properties");
+	map.put(9090, "I:\\_dev_awake\\aceql-http-main\\aceql-http\\conf\\aceql-server-four-db.properties");
 
-	start(9091);
-	waitUntilStarted(9091);
+	start(9090);
+	//waitUntilStarted(9090);
 
-//	start(9090);
-//	waitUntilStarted(9090);
-//
-//	start(9091);
-//	waitUntilStarted(9091);
-//
-//	start(9092);
-//	waitUntilStarted(9092);
-//
-//	start(9093);
-//	waitUntilStarted(9093);
     }
 
     /**
