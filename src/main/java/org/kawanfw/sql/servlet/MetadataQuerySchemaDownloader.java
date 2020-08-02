@@ -53,14 +53,6 @@ public class MetadataQuerySchemaDownloader {
     private AceQLMetaData aceQLMetaData = null;
     private OutputStream out;
 
-
-    /**
-     * @deprecated Use {@link #MetadataQuerySchemaDownloader(HttpServletRequest,HttpServletResponse,OutputStream,Connection,AceQLMetaData)} instead
-     */
-    public MetadataQuerySchemaDownloader(HttpServletRequest request, HttpServletResponse response, OutputStream out, Connection connection, AceQLMetaData aceQLMetaData, String database) {
-        this(request, response, out, connection, aceQLMetaData);
-    }
-
     public MetadataQuerySchemaDownloader(HttpServletRequest request, HttpServletResponse response, OutputStream out, Connection connection, AceQLMetaData aceQLMetaData) {
 	this.request = request;
 	this.response = response;
