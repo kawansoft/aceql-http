@@ -51,9 +51,8 @@ public class SqlWebServerStart {
      */
     public static void main(String[] args) throws Exception {
 
-	map.put(9090, "I:\\_dev_awake\\aceql-http-main\\aceql-http\\conf\\aceql-server-four-db.properties");
-
-	start(9090);
+	map.put(9095, "I:\\_dev_awake\\aceql-http-main\\aceql-http\\conf\\aceql-server-firewall.properties");
+	start(9095);
 	//waitUntilStarted(9090);
 
     }
