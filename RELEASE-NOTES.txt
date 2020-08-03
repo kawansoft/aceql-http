@@ -34,12 +34,12 @@ What's New:
 - An error message is displayed if an attempt of calling more than one
   AceQL instance in the JVM is detected.
 - NullPointerException throws are replaced by Objects.requireNonNull().
-  This is easier for API user to debug NullPointerExceptions.
+  This makes easier for API users to debug NullPointerExceptions.
 - Tomcat base libraries have been updated to 8.5.57 because of security 
   requirements.
   
 Bugs fixed:
-- Remote client Windows authentication call could stop the server. This has 
+- Remote client Windows authentication calls could stop the server. This has 
   been fixed.
 - The database schema download could fail for SQL Server. This has
   been fixed.
