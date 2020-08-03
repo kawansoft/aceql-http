@@ -57,7 +57,7 @@ public class UsernameConverter {
      * Replace back space and specials characters forbidden in Windows file name
      * from ASCII string.
      *
-     * @param string the string with replaced characters
+     * @param stringParm the string with replaced characters
      * @return the string with original spaces and Windows characters
      */
     public static String toSpecialChars(final String stringParm) {
@@ -77,7 +77,7 @@ public class UsernameConverter {
     /**
      * Replace Windows special character and spaces by clear ASCII text
      *
-     * @param string the string to replace from the Windows special characters
+     * @param stringParm the string to replace from the Windows special characters
      * @return the string without special Windows characters
      */
     public static String fromSpecialChars(final String stringParm) {
