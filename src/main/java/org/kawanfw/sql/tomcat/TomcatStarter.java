@@ -195,8 +195,8 @@ public class TomcatStarter {
 	// tomcat.getServer().await();
 
 	PortSemaphoreFile portSemaphoreFile = new PortSemaphoreFile(port);
-	try {
 
+	try {
 	    if (!portSemaphoreFile.exists()) {
 		portSemaphoreFile.create();
 	    }

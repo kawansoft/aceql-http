@@ -51,21 +51,15 @@ public class SqlWebServerStart {
      */
     public static void main(String[] args) throws Exception {
 
-	map.put(9095, "I:\\_dev_awake\\aceql-http-main\\aceql-http\\conf\\aceql-server-firewall.properties");
-	start(9095);
-	//waitUntilStarted(9090);
+	int port = 9095;
 
-    }
+	map.put(port, "I:\\_dev_awake\\aceql-http-main\\aceql-http\\conf\\aceql-server-firewall.properties");
+	start(port);
 
-    /**
-     * @param port
-     * @throws InterruptedException
-     */
-    public static void waitUntilStarted(int port) throws InterruptedException {
-	while (true) {
-	    Thread.sleep(200);
+	while(true) {
 	    WebServerApi webServerApi = new WebServerApi();
-	    if (webServerApi.isServerStarted(port)) {
+	    if (webServerApi.isServerRunning(port)) {
+		System.out.println("Server running on port " + port + "...");
 		break;
 	    }
 	}

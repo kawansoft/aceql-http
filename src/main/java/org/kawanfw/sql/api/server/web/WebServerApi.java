@@ -31,6 +31,7 @@ import java.net.ConnectException;
 import org.apache.catalina.LifecycleException;
 import org.apache.commons.lang3.SystemUtils;
 import org.kawanfw.sql.api.server.DatabaseConfigurationException;
+import org.kawanfw.sql.servlet.ServerSqlManager;
 import org.kawanfw.sql.tomcat.TomcatStarter;
 import org.kawanfw.sql.tomcat.TomcatStarterUtil;
 import org.kawanfw.sql.tomcat.util.PortSemaphoreFile;
@@ -51,6 +52,8 @@ import org.kawanfw.sql.version.Version;
  *
  */
 public class WebServerApi {
+
+    public static String CR_LF = System.getProperty("line.separator");
 
     /** The default port to use if parameter is not passed */
     public static final int DEFAULT_PORT = 9090;
@@ -96,11 +99,10 @@ public class WebServerApi {
 		    "The properties file " + propertiesFile + " does not exists. " + SqlTag.PLEASE_CORRECT);
 	}
 
-	/*
 	if (ServerSqlManager.getAceqlServerProperties() != null) {
-	    throw new IllegalArgumentException("AceQL is already started in thi JVM. Cant not start a second instance. Pleade use a new JVM.");
+	    throw new IllegalArgumentException("AceQL is already started in this JVM. Cant not start a second AceQL instance in the same JVM.");
 	}
-	*/
+
 
 	if (!TomcatStarterUtil.available(port)) {
 	    throw new ConnectException(
@@ -128,17 +130,6 @@ public class WebServerApi {
 	// OK build the Servlet
 	TomcatStarter tomcatStarter = new TomcatStarter(host, port, propertiesFile);
 	tomcatStarter.startTomcat();
-    }
-
-    /**
-     * Says if an AceQL is fully started on specified port.
-     *
-     * @param port	the port on which the server is started
-     * @return
-     */
-    public boolean isServerStarted(int port) {
-	PortSemaphoreFile portSemaphoreFile = new PortSemaphoreFile(port);
-	return portSemaphoreFile.exists();
     }
 
     /**
@@ -204,6 +195,26 @@ public class WebServerApi {
 	    throw new ConnectException("WARNING! There is no SQL Web server running on port " + port);
 	}
 
+    }
+
+    /**
+     * Says if the the embedded Web Server is running on on the default port
+     * {@link WebServerApi#DEFAULT_PORT}.
+     * @return true if the Web Server is running on the default port
+     */
+    public boolean isServerRunning() {
+	PortSemaphoreFile portSemaphoreFile = new PortSemaphoreFile(WebServerApi.DEFAULT_PORT);
+	return portSemaphoreFile.exists();
+    }
+
+    /**
+     * Says if the the embedded Web Server is running on the specified port.
+     * @param port           the port of the Web Server
+     * @return true if the Web Server is running on the specified port
+     */
+    public boolean isServerRunning(int port) {
+	PortSemaphoreFile portSemaphoreFile = new PortSemaphoreFile(port);
+	return portSemaphoreFile.exists();
     }
 
     /**

@@ -25,24 +25,23 @@ AceQL HTTP is licensed through the GNU Lesser General Public License
 (LGPL v2.1).
 
 
-AceQL HTTP Version 5.1 - 02-Aug-2020
+AceQL HTTP Version 5.1 - 03-Aug-2020
 ------------------------------------
 
 What's New:
 
-- New WebServerApi.isServerStarted() API allows to test if an AceQL
-  Server is fully started.
+- The new API WebServerAPI.isServerRunning() has been added.
+- An error message is displayed if an attempt of calling more than one
+  AceQL instance in the JVM is detected.
 - NullPointerException throws are replaced by Objects.requireNonNull().
   This is easier for API user to debug NullPointerExceptions.
-- Code has been refactored to isolate completely the HTTP stack used
-  and to follow industry best standards.
 - Tomcat base libraries have been updated to 8.5.57 because of security 
   requirements.
   
 Bugs fixed:
-- Windows authentication could fail because of a missing library. 
-  This has been fixed.
-- The database schema download could faild for SQL Server. This has
+- Remote client Windows authentication call could stop the server. This has 
+  been fixed.
+- The database schema download could fail for SQL Server. This has
   been fixed.
 
 

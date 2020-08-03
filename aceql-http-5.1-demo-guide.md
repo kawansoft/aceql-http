@@ -1,4 +1,4 @@
-# AceQL HTTP v5.1 - July 18, 2020
+# AceQL HTTP v5.1 - August 3, 2020
 
 # Demo Guide
 
@@ -171,7 +171,7 @@ $ aceql-server -version
 It will display a line with all version info, like:
 
 ```
-AceQL HTTP Community v5.1 - 18-Jul-2020
+AceQL HTTP Community v5.1 - 03-Aug-2020
 ```
 
 ### Configure JDBC parameters in aceql-server.properties file
@@ -219,7 +219,7 @@ The console will display the properties used, test that the Connection is establ
 
 ```bash
 [ACEQL HTTP START] Starting AceQL HTTP Web Server...
-[ACEQL HTTP START] AceQL HTTP Community v5.1 - 18-Jul-2020
+[ACEQL HTTP START] AceQL HTTP Community v5.1 - 03-Aug-2020
 [ACEQL HTTP START] Using properties file: 
 [ACEQL HTTP START]  -> /home/mike/aceql-http/conf/aceql-server.properties
 [ACEQL HTTP START] Setting System Properties:
@@ -336,7 +336,7 @@ The console will display the properties used, test that the `Connection` is esta
 
 ```bash
 [ACEQL HTTP START] Starting AceQL HTTP Web Server...
-[ACEQL HTTP START] AceQL HTTP Community v5.1 - 18-Jul-2020
+[ACEQL HTTP START] AceQL HTTP Community v5.1 - 03-Aug-2020
 [ACEQL HTTP START] Using properties file: 
 [ACEQL HTTP START]  -> I:\_dev_awake\aceql-http-main\aceql-http\conf\aceql-server.properties
 [ACEQL HTTP START] Setting System Properties:

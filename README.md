@@ -2,7 +2,7 @@
 ![GitHub](https://img.shields.io/github/license/kawansoft/aceql-http) ![Maven Central](https://img.shields.io/maven-central/v/com.aceql/aceql-http) 
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/y/kawansoft/aceql-http) ![GitHub last commit (branch)](https://img.shields.io/github/last-commit/kawansoft/aceql-http/master) ![GitHub contributors](https://img.shields.io/github/contributors/kawansoft/aceql-http)
 
-# AceQL HTTP v5.1   - August 2,  2020
+# AceQL HTTP v5.1   - August 3,  2020
 
 # Server Installation and Configuration Guide  
 
@@ -250,7 +250,7 @@ Call the `aceql-server` script to display the AceQL version:
 It will display a line with all version info, like:
 
 ```
-AceQL HTTP Community v5.1 - 04-Jul-2020
+AceQL HTTP Community v5.1 - 03-Aug-2020
 ```
 
 
@@ -265,7 +265,7 @@ Run the installer.
 
 It will run AceQL at end of installation and display the Window:
 
-<img src="https://www.aceql.com/rest/soft/5.0.1/img/aceql_windows_gui_home.png" alt="AceQ HTTP GUI Main Windows"/> 
+<img src="https://www.aceql.com/rest/soft/5.1/img/aceql_windows_gui_home.png" alt="AceQ HTTP GUI Main Windows"/> 
 
 **N.B:** Because of a bug in all Java versions > 8 on Windows, the interface will appear "ugly"  or "blurred" on Java version > 8 if you have increased Windows Screen Resolution Options to 125% or 150%.  See [Java Bug Database](https://bugs.java.com/bugdatabase/view_bug.do?bug_id=JDK-8194165) for more info. Set back Windows Screen Resolution to 100% for clean display.
 

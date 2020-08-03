@@ -104,11 +104,11 @@ public class WebServer {
 	} catch (IllegalArgumentException e) {
 	    System.err.println(
 		    SqlTag.SQL_PRODUCT_START_FAILURE + " " + SqlTag.USER_CONFIGURATION_FAILURE + " " + e.getMessage());
-	    if (e.getCause() == null) {
-		System.err.println("e.getCause() is null.");
-	    } else {
+
+	    if (e.getCause() != null) {
 		e.getCause().printStackTrace();
 	    }
+
 	    System.err.println();
 	    WebServerUtil.systemExitWrapper(-1);
 	}
