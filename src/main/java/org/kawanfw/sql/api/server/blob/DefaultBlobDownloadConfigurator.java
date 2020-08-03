@@ -48,14 +48,6 @@ import javax.servlet.http.HttpServletRequest;
 public class DefaultBlobDownloadConfigurator implements BlobDownloadConfigurator {
 
     /**
-     * Constructor. {@code BlobDownloadConfigurator} implementation must have no
-     * constructor or a unique no parms constructor.
-     */
-    public DefaultBlobDownloadConfigurator() {
-
-    }
-
-    /**
      * Simple copy of file to download on Servlet output stream.
      */
     @Override

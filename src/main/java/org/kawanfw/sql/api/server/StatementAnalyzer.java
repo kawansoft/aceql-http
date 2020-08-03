@@ -104,7 +104,7 @@ public class StatementAnalyzer {
      *                        parsedStatement
      * @throws SQLException if the parsed Statement can not be parsed
      */
-    public StatementAnalyzer(String sql, List<Object> parameterValues) throws SQLException {
+    public StatementAnalyzer(final String sql, List<Object> parameterValues) throws SQLException {
 
 	if (sql == null) {
 	    throw new IllegalArgumentException(Tag.PRODUCT_PRODUCT_FAIL + "sql can not be null!");
@@ -114,11 +114,10 @@ public class StatementAnalyzer {
 	    throw new IllegalArgumentException(Tag.PRODUCT_PRODUCT_FAIL + "parameterValues can not be null!");
 	}
 
-	sql = trimAndremoveTrailingSemicolons(sql);
-	this.sql = sql;
+	this.sql = trimAndremoveTrailingSemicolons(sql);
 
 	this.tables = new ArrayList<>();
-	String theStatementName = StringUtils.substringBefore(sql, BLANK);
+	String theStatementName = StringUtils.substringBefore(this.sql, BLANK);
 
 	// Can not treat GRANT, REVOKE or ROLLBACK here, not supported by
 	// CCJSqlParserUtil
@@ -141,7 +140,7 @@ public class StatementAnalyzer {
 	} else {
 	    parsedStatement = null;
 	    try {
-		parsedStatement = CCJSqlParserUtil.parse(sql);
+		parsedStatement = CCJSqlParserUtil.parse(this.sql);
 		JsqlParserWrapper jsqlParserWrapper = new JsqlParserWrapper(parsedStatement);
 		this.isDCL = jsqlParserWrapper.isDCL();
 		this.isDDL = jsqlParserWrapper.isDDL();
@@ -165,7 +164,7 @@ public class StatementAnalyzer {
 	}
 
 	if (this.statementName == null) {
-	    this.statementName = StringUtils.substringBefore(sql, BLANK);
+	    this.statementName = StringUtils.substringBefore(this.sql, BLANK);
 	}
 
 	this.parameterValues = parameterValues;
@@ -198,12 +197,12 @@ public class StatementAnalyzer {
      * @param sql the sql command
      * @return the sql command without the trailing ";"
      */
-    private String trimAndremoveTrailingSemicolons(String sql) {
-	sql = sql.trim();
+    private static String trimAndremoveTrailingSemicolons(final String sql) {
+	String sqlNew = sql.trim();
 	// Remove the trailing ";", there may be some blanks, so we always trim
-	while (sql.endsWith(";")) {
-	    sql = StringUtils.removeEnd(sql, ";");
-	    sql = sql.trim();
+	while (sqlNew.endsWith(";")) {
+	    sqlNew = StringUtils.removeEnd(sqlNew, ";");
+	    sqlNew = sqlNew.trim();
 	}
 	return sql;
     }
@@ -243,11 +242,7 @@ public class StatementAnalyzer {
 	    return false;
 	}
 
-	if (statementName.equalsIgnoreCase(statementTypeToMatch)) {
-	    return true;
-	} else {
-	    return false;
-	}
+	return statementName.equalsIgnoreCase(statementTypeToMatch);
     }
 
     /**

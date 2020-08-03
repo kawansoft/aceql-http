@@ -24,7 +24,7 @@
  */
 package org.kawanfw.test.run.server;
 
-import org.kawanfw.sql.WebServer;
+import org.kawanfw.sql.api.server.web.WebServerApi;
 
 /**
  * @author Nicolas de Pomereu
@@ -44,9 +44,24 @@ public class SqlWebServerStop {
      * @throws Exception
      */
     public static void main(String[] args) throws Exception {
-	String[] args2 = { "-stop" };
-	WebServer.main(args2);
+	stopOnPort(9090);
+	stopOnPort(9091);
+	stopOnPort(9092);
+	stopOnPort(9093);
+	stopOnPort(9094);
+	stopOnPort(9095);
+    }
 
-	// No need to stop SSL, main port stops will halt server
+    /**
+     * @param port
+     */
+    private static void stopOnPort(int port) {
+	WebServerApi webServerApi = new WebServerApi();
+	try {
+	    System.out.println("Stoping AceQL on port: " + port);
+	    webServerApi.stopServer(port);
+	} catch (Exception e) {
+	    System.err.println(e.getMessage());
+	}
     }
 }

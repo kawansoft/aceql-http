@@ -33,13 +33,6 @@ import org.kawanfw.sql.api.server.session.JwtSessionConfigurator;
 public class JwtSessionConfiguratorTest {
 
     /**
-     *
-     */
-    public JwtSessionConfiguratorTest() {
-
-    }
-
-    /**
      * @param args
      */
     public static void main(String[] args) throws Exception {

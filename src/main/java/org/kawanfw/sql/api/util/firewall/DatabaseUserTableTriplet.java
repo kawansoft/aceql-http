@@ -24,6 +24,8 @@
  */
 package org.kawanfw.sql.api.util.firewall;
 
+import java.util.Objects;
+
 /**
  * A triplet that allows to identify a CSV rule of CsvRulesManager SQL Firewall Manager.
  * @author Nicolas de Pomereu
@@ -42,20 +44,9 @@ public class DatabaseUserTableTriplet implements Comparable<DatabaseUserTableTri
      * @param table
      */
     public DatabaseUserTableTriplet(String database, String username, String table) {
-
-	if (database == null) {
-	    throw new NullPointerException("database is null!");
-	}
-	if (username == null) {
-	    throw new NullPointerException("username is null!");
-	}
-	if (table == null) {
-	    throw new NullPointerException("table is null!");
-	}
-
-	this.database = database;
-	this.username = username;
-	this.table = table;
+	this.database = Objects.requireNonNull(database, "database cannot be null!");
+	this.username = Objects.requireNonNull(username, "username cannot be null!");
+	this.table = Objects.requireNonNull(table, "table cannot be null!");
     }
 
     public String getDatabase() {

@@ -31,6 +31,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.ConcurrentSkipListSet;
@@ -61,35 +62,24 @@ public class CsvRulesManagerLoader {
     /** The tables of the current database */
     private Set<String> tableSet = null;
 
-    /** The map that contains for each database/username the table and their rights */
+    /**
+     * The map that contains for each database/username the table and their rights
+     */
     private Map<DatabaseUserTableTriplet, TableAllowStatements> mapTableAllowStatementsSet = new ConcurrentSkipListMap<>();
     private Set<TableAllowStatements> tableAllowStatementsSet = new ConcurrentSkipListSet<>();
 
-
     /**
      * Constructor.
+     *
      * @param file     the file containing all the rule lines: username, table,
      *                 delete, insert, select, update
      * @param database the database name
      * @param tableSet the table names of the database to check.
      */
     public CsvRulesManagerLoader(File file, String database, Set<String> tableSet) {
-
-	if (file == null) {
-	    throw new NullPointerException("file is null!");
-	}
-
-	if (database == null) {
-	    throw new NullPointerException("database is null!");
-	}
-
-	if (tableSet == null) {
-	    throw new NullPointerException("tableSet is null!");
-	}
-
-	this.database = database;
-	this.file = file;
-	this.tableSet = tableSet;
+	this.database = Objects.requireNonNull(database, "file cannot be null!");
+	this.file = Objects.requireNonNull(file, "file cannot be null!");
+	this.tableSet = Objects.requireNonNull(tableSet, "tableSet cannot be null!");
     }
 
     /**
@@ -143,8 +133,8 @@ public class CsvRulesManagerLoader {
 	boolean select = Boolean.parseBoolean(elements[i++]);
 	boolean update = Boolean.parseBoolean(elements[i++]);
 
-	TableAllowStatements tableAllowStatements = new TableAllowStatements(database, username, table, delete,
-		insert, select, update);
+	TableAllowStatements tableAllowStatements = new TableAllowStatements(database, username, table, delete, insert,
+		select, update);
 	return tableAllowStatements;
     }
 
@@ -165,7 +155,10 @@ public class CsvRulesManagerLoader {
 	try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file));) {
 	    String line = null;
 	    line = bufferedReader.readLine();
-	    checkFirstLineIntegrity(line); // If header line is badly formated, throw clean Exception
+
+	    // If header line is badly formated, throw clean Exception
+	    FirstLineChecker firstLineChecker = new FirstLineChecker(file, line);
+	    firstLineChecker.checkValues();
 
 	    int lineNumber = 1;
 	    while ((line = bufferedReader.readLine()) != null) {
@@ -175,111 +168,63 @@ public class CsvRulesManagerLoader {
 	}
     }
 
-      /**
-     * Checks that first line integrity
-     *
-     * @param line
-     */
-    private void checkFirstLineIntegrity(String line) {
-
+    private void checkCurrentLineIntegrity(String line, int lineNumber) {
 	String[] elements = line.split(";");
 
-	if (elements.length != HEADER_LINE_NB_ELEMENTS) {
-	    throw new IllegalFirstLineException(file,
-		    "There must be " + HEADER_LINE_NB_ELEMENTS + " column names in CSV file header line. Incorrect header line: " + line);
+	// Double check...
+	if (elements.length != HEADER_LINE_NB_ELEMENTS && elements.length != HEADER_LINE_NB_ELEMENTS - 1) {
+	    throw new IllegalFirstLineException(file, "There must be " + HEADER_LINE_NB_ELEMENTS + " or "
+		    + (HEADER_LINE_NB_ELEMENTS - 1) + " values in CSV file current line. Incorrect line: " + line);
 	}
 
-	int i = 0;
-	String username = elements[i++];
-	String table = elements[i++];
-	String delete = elements[i++];
-	String insert = elements[i++];
-	String select = elements[i++];
-	String update = elements[i++];
-	String optionalComments = elements[i++];
+	int i = 1;
+	String table = elements[i++].toLowerCase();
+	if (!tableSet.contains(table)) {
+	    throw new IllegalTableNameException(file, table, lineNumber);
+	}
 
-	if (!username.toLowerCase().equals("username")) {
-	    throw new IllegalFirstLineException(file, "Missing \"username\" first column on first line.");
+	String value = null;
+	value = elements[i++].toLowerCase();
+	if (!isStrictBooleanValue(value)) {
+	    throw new IllegalStatementAllowBooleanValue(file, value, "delete", lineNumber);
 	}
-	if (!table.toLowerCase().equals("table")) {
-	    throw new IllegalFirstLineException(file, "Missing \"table\" second column on first line.");
+
+	value = elements[i++].toLowerCase();
+	if (!isStrictBooleanValue(value)) {
+	    throw new IllegalStatementAllowBooleanValue(file, value, "insert", lineNumber);
 	}
-	if (!delete.toLowerCase().equals("delete")) {
-	    throw new IllegalFirstLineException(file, "Missing \"delete\" third column on first line.");
+
+	value = elements[i++].toLowerCase();
+	if (!isStrictBooleanValue(value)) {
+	    throw new IllegalStatementAllowBooleanValue(file, value, "select", lineNumber);
 	}
-	if (!insert.toLowerCase().equals("insert")) {
-	    throw new IllegalFirstLineException(file, "Missing \"insert\" fourth column on first line.");
+
+	value = elements[i++].toLowerCase();
+	if (!isStrictBooleanValue(value)) {
+	    throw new IllegalStatementAllowBooleanValue(file, value, "update", lineNumber);
 	}
-	if (!select.toLowerCase().equals("select")) {
-	    throw new IllegalFirstLineException(file, "Missing \"select\" fifth column on first line.");
+    }
+
+    private boolean isStrictBooleanValue(String booleanValue) {
+	if (booleanValue == null) {
+	    return false;
 	}
-	if (!update.toLowerCase().equals("update")) {
-	    throw new IllegalFirstLineException(file, "Missing \"update\" sixth column on first line.");
-	}
-	if (!optionalComments.toLowerCase().equals("optional comments")) {
-	    throw new IllegalFirstLineException(file, "Missing \"optional comments\" seventh column on first line.");
-	}
+
+	return booleanValue.toLowerCase().contentEquals("false") || booleanValue.toLowerCase().contentEquals("true");
 
     }
 
-    private void checkCurrentLineIntegrity(String line, int lineNumber) {
-   	String[] elements = line.split(";");
-
-   	// Double check...
-   	if (elements.length != HEADER_LINE_NB_ELEMENTS && elements.length != HEADER_LINE_NB_ELEMENTS - 1) {
-   	    throw new IllegalFirstLineException(file,
-   		    "There must be " + HEADER_LINE_NB_ELEMENTS + " or " +  (HEADER_LINE_NB_ELEMENTS -1) + " values in CSV file current line. Incorrect line: " + line);
-   	}
-
-   	int i = 1;
-   	String table = elements[i++].toLowerCase();
-   	if (!tableSet.contains(table)) {
-   	    throw new IllegalTableNameException(file, table, lineNumber);
-   	}
-
-   	String value = null;
-   	value = elements[i++].toLowerCase();
-   	if (!isStrictBooleanValue(value)) {
-   	    throw new IllegalStatementAllowBooleanValue(file, value, "delete", lineNumber);
-   	}
-
-   	value = elements[i++].toLowerCase();
-   	if (!isStrictBooleanValue(value)) {
-   	    throw new IllegalStatementAllowBooleanValue(file, value, "insert", lineNumber);
-   	}
-
-   	value = elements[i++].toLowerCase();
-   	if (!isStrictBooleanValue(value)) {
-   	    throw new IllegalStatementAllowBooleanValue(file, value, "select", lineNumber);
-   	}
-
-   	value = elements[i++].toLowerCase();
-   	if (!isStrictBooleanValue(value)) {
-   	    throw new IllegalStatementAllowBooleanValue(file, value, "update", lineNumber);
-   	}
-       }
-
-       private boolean isStrictBooleanValue(String booleanValue) {
-   	if (booleanValue == null) {
-   	    return false;
-   	}
-   	if (!booleanValue.toLowerCase().contentEquals("false") && !booleanValue.toLowerCase().contentEquals("true")) {
-   	    return false;
-   	}
-   	return true;
-
-       }
     /**
      * Returns the Map of allowed statements per table, per database and username.
+     *
      * @return the Map of allowed statements per table, per database and username.
      */
     public Map<DatabaseUserTableTriplet, TableAllowStatements> getMapTableAllowStatementsSet() {
-        return mapTableAllowStatementsSet;
+	return mapTableAllowStatementsSet;
     }
 
-
     public Set<TableAllowStatements> getTableAllowStatementsSet() {
-        return tableAllowStatementsSet;
+	return tableAllowStatementsSet;
     }
 
     public static void main(String[] argv) throws Exception {
@@ -297,7 +242,8 @@ public class CsvRulesManagerLoader {
 	CsvRulesManagerLoader csvRulesManagerLoader = new CsvRulesManagerLoader(file, database, tableSet);
 	csvRulesManagerLoader.load();
 
-	Map<DatabaseUserTableTriplet, TableAllowStatements> mapTableAllowStatements = csvRulesManagerLoader.getMapTableAllowStatementsSet();
+	Map<DatabaseUserTableTriplet, TableAllowStatements> mapTableAllowStatements = csvRulesManagerLoader
+		.getMapTableAllowStatementsSet();
 
 	for (Map.Entry<DatabaseUserTableTriplet, TableAllowStatements> entry : mapTableAllowStatements.entrySet()) {
 	    DatabaseUserTableTriplet triplet = entry.getKey();
@@ -310,7 +256,6 @@ public class CsvRulesManagerLoader {
 	for (TableAllowStatements tableAllowStatements : tableAllowStatementsSet) {
 	    System.out.println(tableAllowStatements);
 	}
-
 
     }
 }

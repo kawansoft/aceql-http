@@ -35,9 +35,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
 import org.kawanfw.sql.api.util.SqlUtil;
 import org.kawanfw.sql.metadata.AceQLMetaData;
 import org.kawanfw.sql.metadata.util.FileWordReplacer;
@@ -65,32 +67,24 @@ import schemacrawler.tools.options.TextOutputFormat;
 public class SchemaInfoSC {
 
     private Connection connection = null;
-    private String database = null;
     private SchemaInfoLevel schemaInfoLevel = SchemaInfoLevelBuilder.standard();
 
-    private String SC_NAME= "SchemaCrawler";
+    private String SC_NAME = "SchemaCrawler";
     private String SC_VERSION = Version.getVersion();
 
     private String ACEQL_NAME = "AceQL";
     private String ACEQL_VERSION = VersionValues.VERSION;
     private Set<String> tableSet = new HashSet<>();
 
+
     /**
      * Constructor.
+     *
      * @param connection
-     * @param database
      * @throws SQLException
      */
-    public SchemaInfoSC(Connection connection, String database) throws SQLException {
-	if (connection == null) {
-	    throw new NullPointerException("connection is null!");
-	}
-	if (database == null) {
-	    throw new NullPointerException("database is null!");
-	}
-
-	this.connection = connection;
-	this.database = database;
+    public SchemaInfoSC(Connection connection) throws SQLException {
+	this.connection = Objects.requireNonNull(connection, "connection cannot be null!");
 
 	AceQLMetaData aceQLMetaData = new AceQLMetaData(connection);
 	List<String> tables = aceQLMetaData.getTableNames();
@@ -99,43 +93,40 @@ public class SchemaInfoSC {
 	}
     }
 
-    public SchemaInfoSC(Connection connection, SchemaInfoLevel schemaInfoLevel, String database) throws SQLException {
-	this(connection, database);
-	if (schemaInfoLevel == null) {
-	    throw new NullPointerException("schemaInfoLevel is null!");
-	}
+    public SchemaInfoSC(Connection connection, SchemaInfoLevel schemaInfoLevel) throws SQLException {
+	this(connection);
 
 	this.connection = connection;
-	this.schemaInfoLevel = schemaInfoLevel;
-
+	this.schemaInfoLevel = Objects.requireNonNull(schemaInfoLevel, "schemaInfoLevel cannot be null!");
 
     }
 
-
     /***
-    * Builds file with the chosen HTML/Text formatted schema, and for all tables or a single one.
-    * @param file		the file to write the schema on.
-    * @param outputFormat	AceQLOutputFormat.html or AceQLOutputFormat.text. Defaults to html if null.
-    * @param table		the table to select. null for all.
+     * Builds file with the chosen HTML/Text formatted schema, and for all tables or
+     * a single one.
+     *
+     * @param file         the file to write the schema on.
+     * @param outputFormat AceQLOutputFormat.html or AceQLOutputFormat.text.
+     *                     Defaults to html if null.
+     * @param table        the table to select. null for all.
      * @throws SQLException
      * @throws IOException
-    */
-    public void buildOnFile(File file, AceQLOutputFormat outputFormat, String table) throws SQLException, IOException  {
+     */
+    public void buildOnFile(File file, final AceQLOutputFormat outputFormat, String table)
+	    throws SQLException, IOException {
 
-	if (file == null) {
-	    throw new NullPointerException("file is null!");
+	Objects.requireNonNull(file, "file cannot be null!");
+
+	if (table != null && (!tableSet.contains(table.toLowerCase()) && !tableSet.contains(table.toUpperCase()))) {
+	    throw new SQLException("table does not exist:" + table);
 	}
 
-	if (table != null) {
-	    if (! tableSet.contains(table.toLowerCase()) && ! tableSet.contains(table.toUpperCase())) {
-		throw new SQLException("table does not exist:" + table);
-	    }
-	}
+	File temp = new File(file.toString() + ".tmp");
 
-	File temp = new File(file.toString()+".tmp");
+	AceQLOutputFormat outputFormatNew = outputFormat;
 
-	if (outputFormat == null) {
-	    outputFormat = AceQLOutputFormat.html;
+	if (outputFormatNew == null) {
+	    outputFormatNew = AceQLOutputFormat.html;
 	}
 
 	try (BufferedWriter writer = new BufferedWriter(new FileWriter(temp));) {
@@ -171,9 +162,7 @@ public class SchemaInfoSC {
     public void buildOnWriter(BufferedWriter writer, final AceQLOutputFormat outputFormat, String table)
 	    throws SQLException, IOException {
 
-	if (writer == null) {
-	    throw new NullPointerException("file is null!");
-	}
+	Objects.requireNonNull(writer, "writer cannot be null!");
 
 	// Create the options
 	final SchemaCrawlerOptionsBuilder optionsBuilder = SchemaCrawlerOptionsBuilder.builder()
@@ -194,7 +183,10 @@ public class SchemaInfoSC {
 	}
 
 	if (sqlUtil.isSQLServer()) {
-	    Pattern pattern = Pattern.compile(database + ".dbo", Pattern.CASE_INSENSITIVE);
+
+	    DatabaseMetaData databaseMetaData = connection.getMetaData();
+	    String databaseName = getSqlServerDatabaseName(databaseMetaData);
+	    Pattern pattern = Pattern.compile(databaseName + ".dbo", Pattern.CASE_INSENSITIVE);
 	    optionsBuilder.includeSchemas(new RegularExpressionInclusionRule(pattern));
 
 //	    Pattern pattern = Pattern.compile("db_accessadmin|db_backupoperator|db_datareader|db_datawriter|db_ddladmin|db_denydatareader|db_denydatawriter|db_owner|db_securityadmin|guest|INFORMATION_SCHEMA|sys", Pattern.CASE_INSENSITIVE);
@@ -223,22 +215,40 @@ public class SchemaInfoSC {
 	executable.setConnection(connection);
 	try {
 	    executable.execute();
+	} catch (IOException ioException) {
+	    throw ioException;
 	} catch (Exception exception) {
-	    if (exception instanceof IOException) {
-		IOException ioexception = (IOException)exception;
-		throw ioexception;
-	    }
-	    else {
-		throw new SQLException(exception);
-	    }
+	    throw new SQLException(exception);
 	}
     }
 
+    /**
+     * @param databaseMetaData
+     * @return
+     * @throws SQLException
+     */
+    private static String getSqlServerDatabaseName(DatabaseMetaData databaseMetaData) throws SQLException {
+
+	Objects.requireNonNull(databaseMetaData, "databaseMetaData cannot be null!");
+
+	String databaseName = null;
+
+	String [] urlElements = databaseMetaData.getURL().split(";");
+
+
+	for (String element : urlElements) {
+	    if (element.contains("databaseName=")) {
+		databaseName = StringUtils.substringAfter(element, "databaseName=");
+		break;
+	    }
+	}
+	return databaseName;
+
+    }
     private static OutputFormat getOutputFormatFromAceQL(AceQLOutputFormat outputFormat) {
 	if (outputFormat.equals(AceQLOutputFormat.html)) {
 	    return TextOutputFormat.html;
-	}
-	else {
+	} else {
 	    return TextOutputFormat.text;
 	}
     }

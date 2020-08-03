@@ -28,6 +28,7 @@ package org.kawanfw.sql.api.server.auth;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -43,9 +44,9 @@ import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 
 /**
- * A concrete {@link UserAuthenticator} that allows zero-code remote
- * client {@code (username, password)} authentication against a SSH server.
- * <br><br>
+ * A concrete {@link UserAuthenticator} that allows zero-code remote client
+ * {@code (username, password)} authentication against a SSH server. <br>
+ * <br>
  * The SSH server that authenticates the users is defined in the
  * {@code sshUserAuthenticator.host} property in the
  * {@code aceql-server.properties} file.
@@ -58,16 +59,12 @@ public class SshUserAuthenticator implements UserAuthenticator {
     private Logger logger = null;
     private Properties properties = null;
 
-    /**
-     * Constructor. {@code UserAuthenticator} implementation must have no
-     * constructor or a unique no parameters constructor.
-     */
-    public SshUserAuthenticator() {
-
-    }
-
-    /* (non-Javadoc)
-     * @see org.kawanfw.sql.api.server.auth.UserAuthenticator#login(java.lang.String, char[], java.lang.String, java.lang.String)
+    /*
+     * (non-Javadoc)
+     *
+     * @see
+     * org.kawanfw.sql.api.server.auth.UserAuthenticator#login(java.lang.String,
+     * char[], java.lang.String, java.lang.String)
      */
     @Override
     public boolean login(String username, char[] password, String database, String ipAddress)
@@ -81,16 +78,15 @@ public class SshUserAuthenticator implements UserAuthenticator {
 	String host = properties.getProperty("sshUserAuthenticator.host");
 	String portStr = properties.getProperty("sshUserAuthenticator.port");
 
-	if (host == null) {
-	    throw new NullPointerException(getInitTag() + "The sshUserAuthenticator.host property is null!");
-	}
+	Objects.requireNonNull(host, getInitTag() + "The sshUserAuthenticator.host property is null!");
 
 	if (portStr == null) {
 	    portStr = "22";
 	}
 
 	if (!StringUtils.isNumeric(portStr)) {
-	    throw new IllegalArgumentException(getInitTag() + "The sshUserAuthenticator.port property is not numeric: " + portStr);
+	    throw new IllegalArgumentException(
+		    getInitTag() + "The sshUserAuthenticator.port property is not numeric: " + portStr);
 	}
 
 	int port = Integer.parseInt(portStr);
@@ -121,8 +117,8 @@ public class SshUserAuthenticator implements UserAuthenticator {
 	    if (logger == null) {
 		logger = new DefaultDatabaseConfigurator().getLogger();
 	    }
-	   logger.log(Level.WARNING, getInitTag() + "SSH connection impossible for " + username + "@"
-		    + host + ":" + port + ". (" + e.toString() + ")");
+	    logger.log(Level.WARNING, getInitTag() + "SSH connection impossible for " + username + "@" + host + ":"
+		    + port + ". (" + e.toString() + ")");
 	}
 
 	return connected;

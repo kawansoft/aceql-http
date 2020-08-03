@@ -192,7 +192,7 @@ public class JwtSessionConfigurator implements SessionConfigurator {
      */
     @Override
     public void remove(String sessionId) {
-
+	// Nothing to do.
     }
 
     /*

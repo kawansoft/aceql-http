@@ -6,7 +6,6 @@ package org.kawanfw.sql.servlet;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.sql.SQLException;
 
 import javax.servlet.http.HttpServletRequest;
@@ -23,16 +22,19 @@ import org.kawanfw.sql.servlet.util.BlobUtil;
  */
 public class BlobLengthGetter {
 
-    private HttpServletRequest request = null;
-    private HttpServletResponse response = null;
-    private String username = null;
-    private DatabaseConfigurator databaseConfigurator = null;
+    private HttpServletRequest request;
+    private HttpServletResponse response;
+    private OutputStream out;
+    private String username;
+    private DatabaseConfigurator databaseConfigurator;
 
-    public BlobLengthGetter(HttpServletRequest request, HttpServletResponse response, String username,
-	    DatabaseConfigurator databaseConfigurator) {
+
+    public BlobLengthGetter(HttpServletRequest request, HttpServletResponse response, OutputStream out,
+	    String username, DatabaseConfigurator databaseConfigurator) {
 	super();
 	this.request = request;
 	this.response = response;
+	this.out = out;
 	this.username = username;
 	this.databaseConfigurator = databaseConfigurator;
     }
@@ -46,7 +48,6 @@ public class BlobLengthGetter {
      * @throws SQLException
      */
     public void getLength() throws IOException, SQLException {
-	OutputStream out;
 	String blobId = request.getParameter(HttpParameter.BLOB_ID);
 	long length = -1;
 
@@ -57,27 +58,23 @@ public class BlobLengthGetter {
 	}
 
 	if (blobDirectory == null || !blobDirectory.exists()) {
-	    PrintWriter prinWriter = response.getWriter();
 	    JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_NOT_FOUND,
 		    JsonErrorReturn.ERROR_ACEQL_ERROR,
 		    JsonErrorReturn.BLOB_DIRECTORY_DOES_NOT_EXIST + blobDirectory.getName());
-	    prinWriter.println(errorReturn.build());
+	    ServerSqlManager.writeLine(out, errorReturn.build());
 	    return;
 	}
 
 	try {
 	    length = BlobUtil.getBlobLength(blobId, blobDirectory);
 	} catch (Exception e) {
-	    out = response.getOutputStream();
 	    JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_NOT_FOUND,
 		    JsonErrorReturn.ERROR_ACEQL_ERROR, JsonErrorReturn.INVALID_BLOB_ID_DOWNLOAD + blobId);
 	    ServerSqlManager.writeLine(out, errorReturn.build());
 	    return;
 	}
 
-	out = response.getOutputStream();
 	ServerSqlManager.writeLine(out, JsonOkReturn.build("length", length + ""));
-	return;
     }
 
 }

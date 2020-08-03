@@ -28,6 +28,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
 import org.kawanfw.sql.api.server.session.DefaultSessionConfigurator;
+import org.kawanfw.sql.api.server.session.JwtSessionConfigurator;
 import org.kawanfw.sql.api.server.session.SessionConfigurator;
 
 /**
@@ -36,9 +37,12 @@ import org.kawanfw.sql.api.server.session.SessionConfigurator;
  */
 public class SessionConfiguratorCreator {
 
+    private String sessionConfiguratorClassName = null;
+    private SessionConfigurator sessionConfigurator = null;
+
     private static String[] PREDEFINED_CLASS_NAMES = {
-	    org.kawanfw.sql.api.server.session.DefaultSessionConfigurator.class.getSimpleName(),
-	    org.kawanfw.sql.api.server.session.JwtSessionConfigurator.class.getSimpleName()
+	    DefaultSessionConfigurator.class.getSimpleName(),
+	    JwtSessionConfigurator.class.getSimpleName()
 	    };
 
     /**
@@ -47,35 +51,33 @@ public class SessionConfiguratorCreator {
      * @param theClassName
      * @return
      */
-    private static String getNameWithPackage(String theClassName) {
+    private static String getNameWithPackage(final String theClassName) {
 
 	for (int i = 0; i < PREDEFINED_CLASS_NAMES.length; i++) {
 	    if (PREDEFINED_CLASS_NAMES[i].equals(theClassName)) {
 		// Add prefix package
-		theClassName = org.kawanfw.sql.api.server.session.SessionConfigurator.class.getPackage()
+		String theClassNameNew = SessionConfigurator.class.getPackage()
 			.getName() + "." + theClassName;
-		return theClassName;
+		return theClassNameNew;
 	    }
 	}
 
 	return theClassName;
     }
 
-    private String sessionConfiguratorClassName = null;
-    private SessionConfigurator sessionConfigurator = null;
 
-    public SessionConfiguratorCreator(String theSessionConfiguratorClassName)
+    public SessionConfiguratorCreator(final String theSessionConfiguratorClassName)
 	    throws ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException,
 	    InvocationTargetException, NoSuchMethodException, SecurityException {
 
 	if (theSessionConfiguratorClassName != null && !theSessionConfiguratorClassName.isEmpty()) {
 
-	    theSessionConfiguratorClassName = getNameWithPackage(theSessionConfiguratorClassName);
+	    String theSessionConfiguratorClassNameNew = getNameWithPackage(theSessionConfiguratorClassName);
 
-	    Class<?> c = Class.forName(theSessionConfiguratorClassName);
+	    Class<?> c = Class.forName(theSessionConfiguratorClassNameNew);
 	    Constructor<?> constructor = c.getConstructor();
 	    sessionConfigurator = (SessionConfigurator) constructor.newInstance();
-	    this.sessionConfiguratorClassName = theSessionConfiguratorClassName;
+	    this.sessionConfiguratorClassName = theSessionConfiguratorClassNameNew;
 	} else {
 	    sessionConfigurator = new DefaultSessionConfigurator();
 	    this.sessionConfiguratorClassName = sessionConfigurator.getClass().getName();

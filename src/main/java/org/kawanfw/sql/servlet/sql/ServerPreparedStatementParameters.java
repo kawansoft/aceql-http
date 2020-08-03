@@ -47,6 +47,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.TreeMap;
 import java.util.Vector;
 
@@ -107,10 +108,7 @@ public class ServerPreparedStatementParameters {
      */
     public ServerPreparedStatementParameters(PreparedStatement preparedStatement, HttpServletRequest request) {
 
-	if (preparedStatement == null) {
-	    throw new NullPointerException("preparedStatement is nul!");
-	}
-
+	Objects.requireNonNull(preparedStatement, "preparedStatement cannot be null!");
 	this.preparedStatement = preparedStatement;
 	this.request = request;
     }
@@ -124,6 +122,361 @@ public class ServerPreparedStatementParameters {
      */
     public void setParameters() throws SQLException, IllegalArgumentException, IOException {
 
+	buildInOutStatementParametersMap();
+
+	if (inOutStatementParameters.isEmpty()) {
+	    return;
+	}
+
+	for (Map.Entry<Integer, AceQLParameter> entry : inOutStatementParameters.entrySet()) {
+
+	    int paramIndex = entry.getKey();
+	    AceQLParameter aceQLParameter = entry.getValue();
+
+	    String paramType = aceQLParameter.getParameterType();
+	    String paramValue = aceQLParameter.getParameterValue();
+	    String paramDirection = aceQLParameter.getParameterDirection();
+
+	    if (isInParameter(paramDirection) && paramValue.equals("NULL")) {
+		paramValue = null;
+	    }
+
+	    debug(paramIndex + " / " + paramType + " / " + paramValue);
+
+	    parameterTypes.put(paramIndex, paramType);
+	    parameterStringValues.put(paramIndex, paramValue);
+
+	    if (paramValue == null) {
+		registerNullParameter(paramIndex, paramType, paramDirection);
+	    } else if (paramType.equalsIgnoreCase(AceQLTypes.CHAR) || paramType.equalsIgnoreCase(AceQLTypes.CHARACTER)
+		    || paramType.equalsIgnoreCase(AceQLTypes.VARCHAR)) {
+		registerCharParameter(paramIndex, paramType, paramValue, paramDirection);
+	    } else if (paramType.equalsIgnoreCase(AceQLTypes.DECIMAL)
+		    || paramType.equalsIgnoreCase(AceQLTypes.NUMERIC)) {
+		registerDecimalOrNumericParameter(paramIndex, paramType, paramValue, paramDirection);
+	    } else if (paramType.equalsIgnoreCase(AceQLTypes.BIT)) {
+		registerBitParameter(paramIndex, paramType, paramValue, paramDirection);
+	    } else if (paramType.equalsIgnoreCase(AceQLTypes.TINYINT) || paramType.equalsIgnoreCase(AceQLTypes.SMALLINT)
+		    || paramType.equalsIgnoreCase(AceQLTypes.INTEGER)) {
+		registerSmallIntParameter(paramIndex, paramType, paramValue, paramDirection);
+	    }
+	    else if (paramType.equalsIgnoreCase(AceQLTypes.BIGINT)) {
+		registerBigIntParameter(paramIndex, paramType, paramValue, paramDirection);
+	    } else if (paramType.equalsIgnoreCase(AceQLTypes.REAL)) {
+		registerRealParameter(paramIndex, paramType, paramValue, paramDirection);
+	    } else if (paramType.equalsIgnoreCase(AceQLTypes.FLOAT)
+		    || paramType.equalsIgnoreCase(AceQLTypes.DOUBLE_PRECISION)) {
+		registerDoublePrecision(paramIndex, paramType, paramValue, paramDirection);
+	    }
+	    else if (paramType.equalsIgnoreCase(AceQLTypes.DATE)) {
+		registerDateParameter(paramIndex, paramType, paramValue, paramDirection);
+	    } else if (paramType.equalsIgnoreCase(AceQLTypes.TIME)) {
+		registerTimeParameter(paramIndex, paramType, paramValue, paramDirection);
+	    } else if (paramType.equalsIgnoreCase(AceQLTypes.TIMESTAMP)) {
+		registerTimestampParameter(paramIndex, paramType, paramValue, paramDirection);
+	    }
+	    else if (paramType.equalsIgnoreCase(AceQLTypes.LONGVARCHAR)
+		    || paramType.equalsIgnoreCase(AceQLTypes.CLOB)) {
+		registerLongVarcharOrClobParameter(paramIndex, paramValue, paramDirection);
+	    } else if (paramType.equalsIgnoreCase(AceQLTypes.URL)) {
+		registerUrlParameter(paramIndex, paramType, paramValue, paramDirection);
+	    }
+	    else if (paramType.equalsIgnoreCase(AceQLTypes.BINARY) || paramType.equalsIgnoreCase(AceQLTypes.VARBINARY)
+		    || paramType.equalsIgnoreCase(AceQLTypes.LONGVARBINARY)
+		    || paramType.equalsIgnoreCase(AceQLTypes.BLOB)) {
+		registerBinaryParameter(paramIndex, paramValue, paramDirection);
+	    } else {
+		throw new IllegalArgumentException(
+			"Invalid parameter type: " + paramType + " for parameter index " + paramIndex + ".");
+	    }
+	}
+
+    }
+
+    /**
+     * @param paramIndex
+     * @param paramValue
+     * @param paramDirection
+     * @throws IllegalArgumentException
+     * @throws SQLException
+     * @throws IOException
+     */
+    private void registerBinaryParameter(int paramIndex, String paramValue, String paramDirection)
+	    throws IllegalArgumentException, SQLException, IOException {
+	// BINARY byte[]
+	// VARBINARY byte[]
+	// LONGVARBINARY byte[]
+	if (isOutParameter(paramDirection)) {
+	    throw new IllegalArgumentException(
+		    "Invalid OUT direction. Binary stream and Blob parameters can not be OUT (parameter index "
+			    + paramIndex + ").");
+	}
+
+	setBinaryStream(preparedStatement, paramIndex, paramValue);
+	parameterValues.put(paramIndex, paramValue);
+    }
+
+    /**
+     * @param paramIndex
+     * @param paramType
+     * @param paramValue
+     * @param paramDirection
+     * @throws SQLException
+     * @throws IllegalArgumentException
+     */
+    private void registerUrlParameter(int paramIndex, String paramType, String paramValue, String paramDirection)
+	    throws SQLException, IllegalArgumentException {
+	if (isInParameter(paramDirection)) {
+	    try {
+		URL url = new URL(paramValue);
+		preparedStatement.setURL(paramIndex, url);
+		parameterValues.put(paramIndex, paramValue);
+	    } catch (MalformedURLException e) {
+		throw new IllegalArgumentException("The following URL is invalid/malformed: " + paramValue);
+	    }
+	}
+	registerOutParameter(paramIndex, paramType, paramDirection);
+    }
+
+    /**
+     * @param paramIndex
+     * @param paramValue
+     * @param paramDirection
+     * @throws IllegalArgumentException
+     * @throws SQLException
+     * @throws IOException
+     */
+    private void registerLongVarcharOrClobParameter(int paramIndex, String paramValue, String paramDirection)
+    	// LONGVARCHAR String
+	    throws IllegalArgumentException, SQLException, IOException {
+	if (isOutParameter(paramDirection)) {
+	    throw new IllegalArgumentException(
+		    "Invalid OUT direction. Characters stream and Clob parameters can not be OUT. (index "
+			    + paramIndex + ").");
+	}
+
+	setCharacterStream(preparedStatement, paramIndex, paramValue);
+	parameterValues.put(paramIndex, paramValue);
+    }
+
+    /**
+     * @param paramIndex
+     * @param paramType
+     * @param paramValue
+     * @param paramDirection
+     * @throws NumberFormatException
+     * @throws SQLException
+     */
+    private void registerTimestampParameter(int paramIndex, String paramType, String paramValue, String paramDirection)
+	    throws NumberFormatException, SQLException {
+	if (isInParameter(paramDirection)) {
+	    long timemilliseconds = Long.parseLong(paramValue);
+
+	    java.sql.Timestamp theDateTime = new java.sql.Timestamp(timemilliseconds);
+	    preparedStatement.setTimestamp(paramIndex, theDateTime);
+	    parameterValues.put(paramIndex, theDateTime);
+	}
+	registerOutParameter(paramIndex, paramType, paramDirection);
+    }
+
+    /**
+     * @param paramIndex
+     * @param paramType
+     * @param paramValue
+     * @param paramDirection
+     * @throws NumberFormatException
+     * @throws SQLException
+     */
+    private void registerTimeParameter(int paramIndex, String paramType, String paramValue, String paramDirection)
+	    throws NumberFormatException, SQLException {
+	if (isInParameter(paramDirection)) {
+	    long timemilliseconds = Long.parseLong(paramValue);
+
+	    java.sql.Time theDateTime = new java.sql.Time(timemilliseconds);
+	    preparedStatement.setTime(paramIndex, theDateTime);
+	    parameterValues.put(paramIndex, theDateTime);
+	}
+	registerOutParameter(paramIndex, paramType, paramDirection);
+    }
+
+    /**
+     * @param paramIndex
+     * @param paramType
+     * @param paramValue
+     * @param paramDirection
+     * @throws NumberFormatException
+     * @throws SQLException
+     */
+    private void registerDateParameter(int paramIndex, String paramType, String paramValue, String paramDirection)
+	    throws NumberFormatException, SQLException {
+	if (isInParameter(paramDirection)) {
+	    long timemilliseconds = Long.parseLong(paramValue);
+
+	    java.sql.Date theDateTime = new java.sql.Date(timemilliseconds);
+	    preparedStatement.setDate(paramIndex, theDateTime);
+	    parameterValues.put(paramIndex, theDateTime);
+	}
+	registerOutParameter(paramIndex, paramType, paramDirection);
+    }
+
+    /**
+     * @param paramIndex
+     * @param paramType
+     * @param paramValue
+     * @param paramDirection
+     * @throws NumberFormatException
+     * @throws SQLException
+     */
+    private void registerDoublePrecision(int paramIndex, String paramType, String paramValue, String paramDirection)
+	    throws NumberFormatException, SQLException {
+	if (isInParameter(paramDirection)) {
+	    Double theDouble = Double.valueOf(paramValue);
+
+	    preparedStatement.setDouble(paramIndex, theDouble);
+	    parameterValues.put(paramIndex, theDouble.doubleValue());
+	}
+	registerOutParameter(paramIndex, paramType, paramDirection);
+    }
+
+    /**
+     * @param paramIndex
+     * @param paramType
+     * @param paramValue
+     * @param paramDirection
+     * @throws NumberFormatException
+     * @throws SQLException
+     */
+    private void registerRealParameter(int paramIndex, String paramType, String paramValue, String paramDirection)
+	    throws NumberFormatException, SQLException {
+	if (isInParameter(paramDirection)) {
+	    Float theFloat = Float.parseFloat(paramValue);
+
+	    preparedStatement.setFloat(paramIndex, theFloat.floatValue());
+	    parameterValues.put(paramIndex, theFloat.floatValue());
+	}
+	registerOutParameter(paramIndex, paramType, paramDirection);
+    }
+
+    /**
+     * @param paramIndex
+     * @param paramType
+     * @param paramValue
+     * @param paramDirection
+     * @throws NumberFormatException
+     * @throws SQLException
+     */
+    private void registerBigIntParameter(int paramIndex, String paramType, String paramValue, String paramDirection)
+	    throws NumberFormatException, SQLException {
+	// BIGINT Long
+	// REAL Float
+	// FLOAT Double
+	// DOUBLE PRECISION Double
+
+	if (isInParameter(paramDirection)) {
+	    Long theLong = Long.parseLong(paramValue);
+
+	    preparedStatement.setLong(paramIndex, theLong.longValue());
+	    parameterValues.put(paramIndex, theLong.longValue());
+	}
+	registerOutParameter(paramIndex, paramType, paramDirection);
+    }
+
+    /**
+     * @param paramIndex
+     * @param paramType
+     * @param paramValue
+     * @param paramDirection
+     * @throws NumberFormatException
+     * @throws SQLException
+     */
+    private void registerSmallIntParameter(int paramIndex, String paramType, String paramValue, String paramDirection)
+	    throws NumberFormatException, SQLException {
+	if (isInParameter(paramDirection)) {
+	    // Integer theInteger = new Integer(paramValue);
+	    Integer theInteger = Integer.parseInt(paramValue);
+
+	    preparedStatement.setInt(paramIndex, theInteger.intValue());
+	    parameterValues.put(paramIndex, Integer.parseInt(paramValue));
+	}
+	registerOutParameter(paramIndex, paramType, paramDirection);
+    }
+
+    /**
+     * @param paramIndex
+     * @param paramType
+     * @param paramValue
+     * @param paramDirection
+     * @throws SQLException
+     */
+    private void registerBitParameter(int paramIndex, String paramType, String paramValue, String paramDirection)
+	    throws SQLException {
+	if (isInParameter(paramDirection)) {
+	    // Boolean theBool = new Boolean(paramValue);
+	    Boolean theBool = Boolean.valueOf(paramValue);
+
+	    preparedStatement.setBoolean(paramIndex, theBool.booleanValue());
+	    parameterValues.put(paramIndex, Boolean.parseBoolean(paramValue));
+	}
+	registerOutParameter(paramIndex, paramType, paramDirection);
+    }
+
+    /**
+     * @param paramIndex
+     * @param paramType
+     * @param paramValue
+     * @param paramDirection
+     * @throws SQLException
+     */
+    private void registerDecimalOrNumericParameter(int paramIndex, String paramType, String paramValue,
+	    String paramDirection) throws SQLException {
+	if (isInParameter(paramDirection)) {
+	    BigDecimal bigDecimal = new BigDecimal(paramValue);
+	    preparedStatement.setBigDecimal(paramIndex, bigDecimal);
+	    parameterValues.put(paramIndex, new BigDecimal(paramValue));
+	}
+	registerOutParameter(paramIndex, paramType, paramDirection);
+    }
+
+    /**
+     * @param paramIndex
+     * @param paramType
+     * @param paramValue
+     * @param paramDirection
+     * @throws SQLException
+     */
+    private void registerCharParameter(int paramIndex, String paramType, String paramValue, String paramDirection)
+	    throws SQLException {
+	if (isInParameter(paramDirection)) {
+	    preparedStatement.setString(paramIndex, paramValue);
+	    parameterValues.put(paramIndex, paramValue);
+	}
+	registerOutParameter(paramIndex, paramType, paramDirection);
+    }
+
+    /**
+     * @param paramIndex
+     * @param paramType
+     * @param paramDirection
+     * @throws SQLException
+     */
+    private void registerNullParameter(int paramIndex, String paramType, String paramDirection) throws SQLException {
+	debug("BEFORE setNull " + paramIndex + " " + paramType);
+
+	if (isInParameter(paramDirection)) {
+	    preparedStatement.setNull(paramIndex, JavaSqlConversion.fromSqlToJava(paramType));
+	    parameterValues.put(paramIndex, null);
+	}
+
+	registerOutParameter(paramIndex, paramType, paramDirection);
+
+	debug("AFTER setNull");
+    }
+
+    /**
+     * @throws IllegalArgumentException
+     * @throws SQLException
+     */
+    private void buildInOutStatementParametersMap() throws IllegalArgumentException, SQLException {
 	int i = 1;
 
 	while (true) {
@@ -155,10 +508,8 @@ public class ServerPreparedStatementParameters {
 		debug("index: " + i + " / type " + requestParamType + " / direction: " + parameterDirection
 			+ " / value: " + requestParamValue);
 
-		if (isInParameter(parameterDirection)) {
-		    if (requestParamValue == null || requestParamValue.isEmpty()) {
-			throw new SQLException("No parameter value for IN parameter index " + i);
-		    }
+		if (isInParameter(parameterDirection) && (requestParamValue == null || requestParamValue.isEmpty())) {
+		    throw new SQLException("No parameter value for IN parameter index " + i);
 		}
 
 	    } else {
@@ -167,208 +518,6 @@ public class ServerPreparedStatementParameters {
 
 	    i++;
 	}
-
-	if (inOutStatementParameters.isEmpty()) {
-	    return;
-	}
-
-	for (Map.Entry<Integer, AceQLParameter> entry : inOutStatementParameters.entrySet()) {
-
-	    int paramIndex = entry.getKey();
-	    AceQLParameter aceQLParameter = entry.getValue();
-
-	    String paramType = aceQLParameter.getParameterType();
-	    String paramValue = aceQLParameter.getParameterValue();
-	    String paramDirection = aceQLParameter.getParameterDirection();
-
-	    if (isInParameter(paramDirection) && paramValue.equals("NULL")) {
-		paramValue = null;
-	    }
-
-	    debug(paramIndex + " / " + paramType + " / " + paramValue);
-	    /*
-	     * CHARACTER String VARCHAR String NUMERIC java.math.BigDecimal DECIMAL
-	     * java.math.BigDecimal BIT Boolean TINYINT Integer SMALLINT Integer INTEGER
-	     * Integer BIGINT Long REAL Float FLOAT Double DOUBLE PRECISION Double
-	     *
-	     * DATE java.sql.Date TIME java.sql.Time TIMESTAMP java.sql.Timestamp
-	     */
-
-	    parameterTypes.put(paramIndex, paramType);
-	    parameterStringValues.put(paramIndex, paramValue);
-
-	    if (paramValue == null) {
-		debug("BEFORE setNull " + paramIndex + " " + paramType);
-
-		if (isInParameter(paramDirection)) {
-		    preparedStatement.setNull(paramIndex, JavaSqlConversion.fromSqlToJava(paramType));
-		    parameterValues.put(paramIndex, null);
-		}
-
-		registerOutParameter(paramIndex, paramType, paramDirection);
-
-		debug("AFTER setNull");
-	    } else if (paramType.equalsIgnoreCase(AceQLTypes.CHAR) || paramType.equalsIgnoreCase(AceQLTypes.CHARACTER)
-		    || paramType.equalsIgnoreCase(AceQLTypes.VARCHAR)) {
-
-		if (isInParameter(paramDirection)) {
-		    preparedStatement.setString(paramIndex, paramValue);
-		    parameterValues.put(paramIndex, paramValue);
-		}
-		registerOutParameter(paramIndex, paramType, paramDirection);
-
-	    } else if (paramType.equalsIgnoreCase(AceQLTypes.DECIMAL)
-		    || paramType.equalsIgnoreCase(AceQLTypes.NUMERIC)) {
-		if (isInParameter(paramDirection)) {
-		    BigDecimal bigDecimal = new BigDecimal(paramValue);
-		    preparedStatement.setBigDecimal(paramIndex, bigDecimal);
-		    parameterValues.put(paramIndex, new BigDecimal(paramValue));
-		}
-		registerOutParameter(paramIndex, paramType, paramDirection);
-
-	    } else if (paramType.equalsIgnoreCase(AceQLTypes.BIT)) {
-
-		if (isInParameter(paramDirection)) {
-		    // Boolean theBool = new Boolean(paramValue);
-		    Boolean theBool = Boolean.valueOf(paramValue);
-
-		    preparedStatement.setBoolean(paramIndex, theBool.booleanValue());
-		    parameterValues.put(paramIndex, Boolean.parseBoolean(paramValue));
-		}
-		registerOutParameter(paramIndex, paramType, paramDirection);
-
-	    } else if (paramType.equalsIgnoreCase(AceQLTypes.TINYINT) || paramType.equalsIgnoreCase(AceQLTypes.SMALLINT)
-		    || paramType.equalsIgnoreCase(AceQLTypes.INTEGER)) {
-
-		if (isInParameter(paramDirection)) {
-		    // Integer theInteger = new Integer(paramValue);
-		    Integer theInteger = Integer.parseInt(paramValue);
-
-		    preparedStatement.setInt(paramIndex, theInteger.intValue());
-		    parameterValues.put(paramIndex, Integer.parseInt(paramValue));
-		}
-		registerOutParameter(paramIndex, paramType, paramDirection);
-
-	    }
-	    // BIGINT Long
-	    // REAL Float
-	    // FLOAT Double
-	    // DOUBLE PRECISION Double
-	    else if (paramType.equalsIgnoreCase(AceQLTypes.BIGINT)) {
-
-		if (isInParameter(paramDirection)) {
-		    Long theLong = Long.parseLong(paramValue);
-
-		    preparedStatement.setLong(paramIndex, theLong.longValue());
-		    parameterValues.put(paramIndex, theLong.longValue());
-		}
-		registerOutParameter(paramIndex, paramType, paramDirection);
-
-	    } else if (paramType.equalsIgnoreCase(AceQLTypes.REAL)) {
-
-		if (isInParameter(paramDirection)) {
-		    Float theFloat = Float.parseFloat(paramValue);
-
-		    preparedStatement.setFloat(paramIndex, theFloat.floatValue());
-		    parameterValues.put(paramIndex, theFloat.floatValue());
-		}
-		registerOutParameter(paramIndex, paramType, paramDirection);
-
-	    } else if (paramType.equalsIgnoreCase(AceQLTypes.FLOAT)
-		    || paramType.equalsIgnoreCase(AceQLTypes.DOUBLE_PRECISION)) {
-
-		if (isInParameter(paramDirection)) {
-		    Double theDouble = Double.valueOf(paramValue);
-
-		    preparedStatement.setDouble(paramIndex, theDouble);
-		    parameterValues.put(paramIndex, theDouble.doubleValue());
-		}
-		registerOutParameter(paramIndex, paramType, paramDirection);
-
-	    }
-	    // DATE java.sql.Date
-	    // TIME java.sql.Time
-	    // TIMESTAMP java.sql.Timestamp
-	    else if (paramType.equalsIgnoreCase(AceQLTypes.DATE)) {
-		if (isInParameter(paramDirection)) {
-		    long timemilliseconds = Long.parseLong(paramValue);
-
-		    java.sql.Date theDateTime = new java.sql.Date(timemilliseconds);
-		    preparedStatement.setDate(paramIndex, theDateTime);
-		    parameterValues.put(paramIndex, theDateTime);
-		}
-		registerOutParameter(paramIndex, paramType, paramDirection);
-
-	    } else if (paramType.equalsIgnoreCase(AceQLTypes.TIME)) {
-		if (isInParameter(paramDirection)) {
-		    long timemilliseconds = Long.parseLong(paramValue);
-
-		    java.sql.Time theDateTime = new java.sql.Time(timemilliseconds);
-		    preparedStatement.setTime(paramIndex, theDateTime);
-		    parameterValues.put(paramIndex, theDateTime);
-		}
-		registerOutParameter(paramIndex, paramType, paramDirection);
-
-	    } else if (paramType.equalsIgnoreCase(AceQLTypes.TIMESTAMP)) {
-
-		if (isInParameter(paramDirection)) {
-		    long timemilliseconds = Long.parseLong(paramValue);
-
-		    java.sql.Timestamp theDateTime = new java.sql.Timestamp(timemilliseconds);
-		    preparedStatement.setTimestamp(paramIndex, theDateTime);
-		    parameterValues.put(paramIndex, theDateTime);
-		}
-		registerOutParameter(paramIndex, paramType, paramDirection);
-
-	    }
-	    // LONGVARCHAR String
-	    else if (paramType.equalsIgnoreCase(AceQLTypes.LONGVARCHAR)
-		    || paramType.equalsIgnoreCase(AceQLTypes.CLOB)) {
-
-		if (isOutParameter(paramDirection)) {
-		    throw new IllegalArgumentException(
-			    "Invalid OUT direction. Characters stream and Clob parameters can not be OUT. (index "
-				    + paramIndex + ").");
-		}
-
-		setCharacterStream(preparedStatement, paramIndex, paramValue);
-		parameterValues.put(paramIndex, paramValue);
-	    } else if (paramType.equalsIgnoreCase(AceQLTypes.URL)) {
-
-		if (isInParameter(paramDirection)) {
-		    try {
-			URL url = new URL(paramValue);
-			preparedStatement.setURL(paramIndex, url);
-			parameterValues.put(paramIndex, paramValue);
-		    } catch (MalformedURLException e) {
-			throw new IllegalArgumentException("The following URL is invalid/malformed: " + paramValue);
-		    }
-		}
-		registerOutParameter(paramIndex, paramType, paramDirection);
-
-	    }
-	    // BINARY byte[]
-	    // VARBINARY byte[]
-	    // LONGVARBINARY byte[]
-	    else if (paramType.equalsIgnoreCase(AceQLTypes.BINARY) || paramType.equalsIgnoreCase(AceQLTypes.VARBINARY)
-		    || paramType.equalsIgnoreCase(AceQLTypes.LONGVARBINARY)
-		    || paramType.equalsIgnoreCase(AceQLTypes.BLOB)) {
-
-		if (isOutParameter(paramDirection)) {
-		    throw new IllegalArgumentException(
-			    "Invalid OUT direction. Binary stream and Blob parameters can not be OUT (parameter index "
-				    + paramIndex + ").");
-		}
-
-		setBinaryStream(preparedStatement, paramIndex, paramValue);
-		parameterValues.put(paramIndex, paramValue);
-
-	    } else {
-		throw new IllegalArgumentException(
-			"Invalid parameter type: " + paramType + " for parameter index " + paramIndex + ".");
-	    }
-	}
-
     }
 
     private void registerOutParameter(int paramIndex, String paramType, String paramDirection) throws SQLException {
@@ -385,27 +534,13 @@ public class ServerPreparedStatementParameters {
     }
 
     public static boolean isInParameter(String parameterDirection) {
-	if (parameterDirection == null) {
-	    throw new NullPointerException("parameterDirection is null");
-	}
-
-	if (parameterDirection.equals(ParameterDirection.IN) || parameterDirection.equals(ParameterDirection.INOUT)) {
-	    return true;
-	} else {
-	    return false;
-	}
+	Objects.requireNonNull(parameterDirection, "parameterDirection cannot be null!");
+	return parameterDirection.equals(ParameterDirection.IN) || parameterDirection.equals(ParameterDirection.INOUT);
     }
 
     public static boolean isOutParameter(String parameterDirection) {
-	if (parameterDirection == null) {
-	    throw new NullPointerException("parameterDirection is null");
-	}
-
-	if (parameterDirection.equals(ParameterDirection.OUT) || parameterDirection.equals(ParameterDirection.INOUT)) {
-	    return true;
-	} else {
-	    return false;
-	}
+	Objects.requireNonNull(parameterDirection, "parameterDirection cannot be null!");
+	return parameterDirection.equals(ParameterDirection.OUT) || parameterDirection.equals(ParameterDirection.INOUT);
     }
 
     /**
@@ -616,13 +751,6 @@ public class ServerPreparedStatementParameters {
 	if (DEBUG) {
 	    System.out.println(new Date() + " " + s);
 	}
-    }
-
-    /**
-     * @param args
-     */
-    public static void main(String[] args) throws Exception {
-
     }
 
 }

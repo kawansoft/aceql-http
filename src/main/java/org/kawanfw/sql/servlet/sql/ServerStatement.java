@@ -75,7 +75,7 @@ public class ServerStatement {
 
     private Boolean doPrettyPrinting;
 
-    private List<SqlFirewallManager> sqlFirewallManagers = new ArrayList<>();
+    private List<SqlFirewallManager> sqlFirewallManagers;
 
     /**
      * Default Constructor
@@ -171,7 +171,6 @@ public class ServerStatement {
 	} else {
 	    OutputStream outFinal = out;
 	    return outFinal;
-
 	}
     }
 
@@ -194,12 +193,9 @@ public class ServerStatement {
      * @throws SQLException
      */
     private void executePrepStatement(OutputStream out) throws SQLException, IOException {
-
 	String username = request.getParameter(HttpParameter.USERNAME);
 	String database = request.getParameter(HttpParameter.DATABASE);
 	String sqlOrder = request.getParameter(HttpParameter.SQL);
-
-	debug("sqlOrder        : " + sqlOrder);
 
 	PreparedStatement preparedStatement = null;
 
@@ -207,14 +203,12 @@ public class ServerStatement {
 	ServerPreparedStatementParameters serverPreparedStatementParameters = null;
 
 	try {
-
 	    if (sqlOrder == null || sqlOrder.isEmpty()) {
 		throw new SQLException("A 'sql' statement is required.");
 	    }
 	    preparedStatement = connection.prepareStatement(sqlOrder);
 
 	    debug("before ServerPreparedStatementParameters");
-
 	    serverPreparedStatementParameters = new ServerPreparedStatementParameters(preparedStatement, request);
 
 	    try {
@@ -228,114 +222,17 @@ public class ServerStatement {
 
 	    // Throws a SQL exception if the order is not authorized:
 	    debug("before new SqlSecurityChecker()");
-
-	    String ipAddress = request.getRemoteAddr();
-
-	    boolean isAllowedAfterAnalysis = false;
-	    for (SqlFirewallManager sqlFirewallManager : sqlFirewallManagers) {
-		isAllowedAfterAnalysis = sqlFirewallManager.allowSqlRunAfterAnalysis(username, database, connection, ipAddress,
-			sqlOrder, isPreparedStatement(), serverPreparedStatementParameters.getParameterValues());
-		if (!isAllowedAfterAnalysis) {
-		    List<Object> parameterValues = new ArrayList<>();
-		    sqlFirewallManager.runIfStatementRefused(username, database, connection, ipAddress, false, sqlOrder, parameterValues);
-		    break;
-		}
-	    }
-
-	    if (!isAllowedAfterAnalysis) {
-		String message = JsonSecurityMessage.prepStatementNotAllowedBuild(sqlOrder,
-			"Prepared Statement not allowed", serverPreparedStatementParameters.getParameterTypes(),
-			serverPreparedStatementParameters.getParameterValues(), doPrettyPrinting);
-		throw new SecurityException(message);
-	    }
+	    String ipAddress = checkFirewallGeneral(username, database, sqlOrder, serverPreparedStatementParameters);
 
 	    debug("before executeQuery() / executeUpdate()");
-
 	    if (isExecuteUpdate()) {
-
-		//boolean allowExecuteUpdate = DatabaseConfiguratorCall.allowExecuteUpdate(databaseConfigurator, username, connection);
-
-		for (SqlFirewallManager sqlFirewallManager : sqlFirewallManagers) {
-		    isAllowedAfterAnalysis = sqlFirewallManager.allowExecuteUpdate(username, database, connection);
-		    if (!isAllowedAfterAnalysis) {
-			List<Object> parameterValues = new ArrayList<>();
-			sqlFirewallManager.runIfStatementRefused(username, database, connection, ipAddress, false,
-				sqlOrder, parameterValues);
-
-			String message = JsonSecurityMessage.prepStatementNotAllowedBuild(sqlOrder,
-				"Prepared Statement not allowed for executeUpdate",
-				serverPreparedStatementParameters.getParameterTypes(),
-				serverPreparedStatementParameters.getParameterValues(), doPrettyPrinting);
-
-			throw new SecurityException(message);
-		    }
-		}
-
-		int rc = preparedStatement.executeUpdate();
-
-		StringWriter sw = new StringWriter();
-		JsonGeneratorFactory jf = JsonUtil.getJsonGeneratorFactory(JsonUtil.DEFAULT_PRETTY_PRINTING);
-		JsonGenerator gen = jf.createGenerator(sw);
-
-		gen.writeStartObject().write("status", "OK").write("row_count", rc).writeEnd();
-		gen.close();
-
-		ServerSqlManager.write(out, sw.toString());
+		doExecuteUpdate(out, username, database, sqlOrder, preparedStatement, serverPreparedStatementParameters,
+			ipAddress);
 
 	    } else {
-
-		ResultSet rs = null;
-
-		try {
-
-		    rs = preparedStatement.executeQuery();
-
-		    JsonGeneratorFactory jf = JsonUtil.getJsonGeneratorFactory(doPrettyPrinting);
-
-		    JsonGenerator gen = jf.createGenerator(out);
-		    gen.writeStartObject().write("status", "OK");
-
-		    ResultSetWriter resultSetWriter = new ResultSetWriter(request, username, sqlOrder, gen);
-		    resultSetWriter.write(rs);
-
-		    ServerSqlManager.writeLine(out);
-
-		    gen.writeEnd(); // .write("status", "OK")
-		    gen.flush();
-		    gen.close();
-
-		    /*
-		    String file = FrameworkFileUtil.getKawansoftTempDir() + File.separator + "result_set_out_new.txt";
-		    try (OutputStream outFile = new BufferedOutputStream(new FileOutputStream(file))) {
-			JsonGenerator gen = jf.createGenerator(outFile);
-			gen.writeStartObject().write("status", "OK");
-
-			ResultSetWriter resultSetWriter = new ResultSetWriter(request, outFile, username, sqlOrder,
-				gen);
-			resultSetWriter.write(rs);
-
-			ServerSqlManager.writeLine(outFile);
-
-			gen.writeEnd(); // .write("status", "OK")
-			gen.flush();
-			gen.close();
-		    }
-
-		    try (InputStream in = new BufferedInputStream(new FileInputStream(file))) {
-			IOUtils.copy(in, out);
-		    }
-		    */
-
-
-		} finally {
-
-		    if (rs != null) {
-			rs.close();
-		    }
-		}
+		doSelect(out, username, sqlOrder, preparedStatement);
 	    }
 	} catch (SQLException e) {
-
 	    String message = StatementFailure.prepStatementFailureBuild(sqlOrder, e.toString(),
 		    serverPreparedStatementParameters.getParameterTypes(),
 		    serverPreparedStatementParameters.getParameterValues(), doPrettyPrinting);
@@ -359,11 +256,147 @@ public class ServerStatement {
     }
 
     /**
+     * @param out
+     * @param username
+     * @param sqlOrder
+     * @param preparedStatement
+     * @throws SQLException
+     * @throws IOException
+     */
+    private void doSelect(OutputStream out, String username, String sqlOrder, PreparedStatement preparedStatement)
+	    throws SQLException, IOException {
+	ResultSet rs = null;
+
+	try {
+	    rs = preparedStatement.executeQuery();
+
+	    JsonGeneratorFactory jf = JsonUtil.getJsonGeneratorFactory(doPrettyPrinting);
+
+	    JsonGenerator gen = jf.createGenerator(out);
+	    gen.writeStartObject().write("status", "OK");
+
+	    ResultSetWriter resultSetWriter = new ResultSetWriter(request, username, sqlOrder, gen);
+	    resultSetWriter.write(rs);
+
+	    ServerSqlManager.writeLine(out);
+
+	    gen.writeEnd(); // .write("status", "OK")
+	    gen.flush();
+	    gen.close();
+
+	} finally {
+
+	    if (rs != null) {
+		rs.close();
+	    }
+	}
+    }
+
+    /**
+     * Calls the PreparedStatement.executeUpdate() methid.
+     *
+     * @param out
+     * @param username
+     * @param database
+     * @param sqlOrder
+     * @param preparedStatement
+     * @param serverPreparedStatementParameters
+     * @param ipAddress
+     * @throws IOException
+     * @throws SQLException
+     * @throws SecurityException
+     */
+    private void doExecuteUpdate(OutputStream out, String username, String database, String sqlOrder,
+	    PreparedStatement preparedStatement, ServerPreparedStatementParameters serverPreparedStatementParameters,
+	    String ipAddress) throws IOException, SQLException, SecurityException {
+
+	checkFirewallForExecuteUpdate(username, database, sqlOrder, serverPreparedStatementParameters, ipAddress);
+
+	int rc = preparedStatement.executeUpdate();
+
+	StringWriter sw = new StringWriter();
+	JsonGeneratorFactory jf = JsonUtil.getJsonGeneratorFactory(JsonUtil.DEFAULT_PRETTY_PRINTING);
+	JsonGenerator gen = jf.createGenerator(sw);
+
+	gen.writeStartObject().write("status", "OK").write("row_count", rc).writeEnd();
+	gen.close();
+
+	ServerSqlManager.write(out, sw.toString());
+    }
+
+    /**
+     * @param username
+     * @param database
+     * @param sqlOrder
+     * @param serverPreparedStatementParameters
+     * @param ipAddress
+     * @throws IOException
+     * @throws SQLException
+     * @throws SecurityException
+     */
+    private void checkFirewallForExecuteUpdate(String username, String database, String sqlOrder,
+	    ServerPreparedStatementParameters serverPreparedStatementParameters, String ipAddress)
+	    throws IOException, SQLException, SecurityException {
+	boolean isAllowedAfterAnalysis;
+	for (SqlFirewallManager sqlFirewallManager : sqlFirewallManagers) {
+	    isAllowedAfterAnalysis = sqlFirewallManager.allowExecuteUpdate(username, database, connection);
+	    if (!isAllowedAfterAnalysis) {
+		List<Object> parameterValues = new ArrayList<>();
+		sqlFirewallManager.runIfStatementRefused(username, database, connection, ipAddress, false, sqlOrder,
+			parameterValues);
+
+		String message = JsonSecurityMessage.prepStatementNotAllowedBuild(sqlOrder,
+			"Prepared Statement not allowed for executeUpdate",
+			serverPreparedStatementParameters.getParameterTypes(),
+			serverPreparedStatementParameters.getParameterValues(), doPrettyPrinting);
+
+		throw new SecurityException(message);
+	    }
+	}
+    }
+
+    /**
+     * @param username
+     * @param database
+     * @param sqlOrder
+     * @param serverPreparedStatementParameters
+     * @return
+     * @throws IOException
+     * @throws SQLException
+     * @throws SecurityException
+     */
+    private String checkFirewallGeneral(String username, String database, String sqlOrder,
+	    ServerPreparedStatementParameters serverPreparedStatementParameters)
+	    throws IOException, SQLException, SecurityException {
+	String ipAddress = request.getRemoteAddr();
+
+	boolean isAllowedAfterAnalysis = false;
+	for (SqlFirewallManager sqlFirewallManager : sqlFirewallManagers) {
+	    isAllowedAfterAnalysis = sqlFirewallManager.allowSqlRunAfterAnalysis(username, database, connection,
+		    ipAddress, sqlOrder, isPreparedStatement(), serverPreparedStatementParameters.getParameterValues());
+	    if (!isAllowedAfterAnalysis) {
+		List<Object> parameterValues = new ArrayList<>();
+		sqlFirewallManager.runIfStatementRefused(username, database, connection, ipAddress, false, sqlOrder,
+			parameterValues);
+		break;
+	    }
+	}
+
+	if (!isAllowedAfterAnalysis) {
+	    String message = JsonSecurityMessage.prepStatementNotAllowedBuild(sqlOrder,
+		    "Prepared Statement not allowed", serverPreparedStatementParameters.getParameterTypes(),
+		    serverPreparedStatementParameters.getParameterValues(), doPrettyPrinting);
+	    throw new SecurityException(message);
+	}
+	return ipAddress;
+    }
+
+    /**
      * Execute the passed SQL Statement and return: <br>
      * - The result set as a List of Maps for SELECT statements. <br>
      * - The return code for other statements
      *
-     * @param out      the writer where to write to result set output
+     * @param out the writer where to write to result set output
      *
      *
      * @throws SQLException
@@ -390,96 +423,16 @@ public class ServerStatement {
 	    debug("before new SqlSecurityChecker()");
 
 	    String ipAddress = request.getRemoteAddr();
-	    boolean isAllowed = false;
 
-	    SqlFirewallManager sqlFirewallOnDeny = null;
-	    for (SqlFirewallManager sqlFirewallManager : sqlFirewallManagers) {
-		sqlFirewallOnDeny = sqlFirewallManager;
-		isAllowed = sqlFirewallManager.allowStatementClass(username, database, connection);
-		if (!isAllowed) {
-		    break;
-		}
-
-		isAllowed = sqlFirewallManager.allowSqlRunAfterAnalysis(username, database,
-			    connection, ipAddress, sqlOrder, isPreparedStatement(), new Vector<Object>());
-		if (!isAllowed) {
-		    break;
-		}
-	    }
-
-	    if (!isAllowed) {
-		List<Object> parameterValues = new ArrayList<>();
-		sqlFirewallOnDeny.runIfStatementRefused(username, database, connection, ipAddress,
-			false, sqlOrder, parameterValues);
-
-		String message = JsonSecurityMessage.statementNotAllowedBuild(sqlOrder, "Statement not allowed",
-			doPrettyPrinting);
-		throw new SecurityException(message);
-	    }
-
+	    checkFirewallGeneral(username, database, sqlOrder, ipAddress);
 	    statement = connection.createStatement();
 
 	    debug("before executeQuery() / executeUpdate(sqlOrder)");
 
 	    if (isExecuteUpdate()) {
-
-		for (SqlFirewallManager sqlFirewallManager : sqlFirewallManagers) {
-		    isAllowed = sqlFirewallManager.allowExecuteUpdate(username, database, connection);
-		    if (!isAllowed) {
-			List<Object> parameterValues = new ArrayList<>();
-			sqlFirewallManager.runIfStatementRefused(username, database, connection, ipAddress, false,
-				sqlOrder, parameterValues);
-
-			String message = JsonSecurityMessage.statementNotAllowedBuild(sqlOrder,
-				"Statement not allowed for for executeUpdate", doPrettyPrinting);
-			throw new SecurityException(message);
-
-		    }
-		}
-
-		int rc = -1;
-
-		rc = statement.executeUpdate(sqlOrder);
-
-		StringWriter sw = new StringWriter();
-
-		JsonGeneratorFactory jf = JsonUtil.getJsonGeneratorFactory(JsonUtil.DEFAULT_PRETTY_PRINTING);
-		JsonGenerator gen = jf.createGenerator(sw);
-
-		gen.writeStartObject().write("status", "OK").write("row_count", rc).writeEnd();
-		gen.close();
-
-		ServerSqlManager.write(out, sw.toString());
-
+		doExecuteUpdate(out, username, database, sqlOrder, statement, ipAddress);
 	    } else {
-		ResultSet rs = null;
-
-		try {
-
-		    ServerSqlUtil.setMaxRowsToReturn(username, database, statement, databaseConfigurator);
-		    debug("sqlorder: " + sqlOrder);
-
-		    rs = statement.executeQuery(sqlOrder);
-
-		    JsonGeneratorFactory jf = JsonUtil.getJsonGeneratorFactory(doPrettyPrinting);
-
-		    JsonGenerator gen = jf.createGenerator(out);
-		    gen.writeStartObject().write("status", "OK");
-
-		    ResultSetWriter resultSetWriter = new ResultSetWriter(request, username, sqlOrder, gen);
-		    resultSetWriter.write(rs);
-
-		    ServerSqlManager.writeLine(out);
-
-		    gen.writeEnd(); // .write("status", "OK")
-		    gen.flush();
-		    gen.close();
-
-		} finally {
-		    if (rs != null) {
-			rs.close();
-		    }
-		}
+		doSelect(out, username, database, sqlOrder, statement, databaseConfigurator);
 	    }
 	} catch (SQLException e) {
 
@@ -494,6 +447,143 @@ public class ServerStatement {
 	    if (statement != null) {
 		statement.close();
 	    }
+	}
+    }
+
+    /**
+     * @param out
+     * @param username
+     * @param database
+     * @param sqlOrder
+     * @param statement
+     * @param databaseConfigurator
+     * @throws SQLException
+     * @throws IOException
+     */
+    private void doSelect(OutputStream out, String username, String database, String sqlOrder, Statement statement,
+	    DatabaseConfigurator databaseConfigurator) throws SQLException, IOException {
+	ResultSet rs = null;
+
+	try {
+
+	    ServerSqlUtil.setMaxRowsToReturn(username, database, statement, databaseConfigurator);
+	    debug("sqlorder: " + sqlOrder);
+
+	    rs = statement.executeQuery(sqlOrder);
+
+	    JsonGeneratorFactory jf = JsonUtil.getJsonGeneratorFactory(doPrettyPrinting);
+
+	    JsonGenerator gen = jf.createGenerator(out);
+	    gen.writeStartObject().write("status", "OK");
+
+	    ResultSetWriter resultSetWriter = new ResultSetWriter(request, username, sqlOrder, gen);
+	    resultSetWriter.write(rs);
+
+	    ServerSqlManager.writeLine(out);
+
+	    gen.writeEnd(); // .write("status", "OK")
+	    gen.flush();
+	    gen.close();
+
+	} finally {
+	    if (rs != null) {
+		rs.close();
+	    }
+	}
+    }
+
+    /**
+     * @param out
+     * @param username
+     * @param database
+     * @param sqlOrder
+     * @param statement
+     * @param ipAddress
+     * @throws IOException
+     * @throws SQLException
+     * @throws SecurityException
+     */
+    private void doExecuteUpdate(OutputStream out, String username, String database, String sqlOrder,
+	    Statement statement, String ipAddress) throws IOException, SQLException, SecurityException {
+	checkFirewallExecuteUpdate(username, database, sqlOrder, ipAddress);
+
+	int rc = -1;
+
+	rc = statement.executeUpdate(sqlOrder);
+
+	StringWriter sw = new StringWriter();
+
+	JsonGeneratorFactory jf = JsonUtil.getJsonGeneratorFactory(JsonUtil.DEFAULT_PRETTY_PRINTING);
+	JsonGenerator gen = jf.createGenerator(sw);
+
+	gen.writeStartObject().write("status", "OK").write("row_count", rc).writeEnd();
+	gen.close();
+
+	ServerSqlManager.write(out, sw.toString());
+    }
+
+    /**
+     * @param username
+     * @param database
+     * @param sqlOrder
+     * @param ipAddress
+     * @throws IOException
+     * @throws SQLException
+     * @throws SecurityException
+     */
+    private void checkFirewallExecuteUpdate(String username, String database, String sqlOrder, String ipAddress)
+	    throws IOException, SQLException, SecurityException {
+	boolean isAllowed;
+	for (SqlFirewallManager sqlFirewallManager : sqlFirewallManagers) {
+	    isAllowed = sqlFirewallManager.allowExecuteUpdate(username, database, connection);
+	    if (!isAllowed) {
+		List<Object> parameterValues = new ArrayList<>();
+		sqlFirewallManager.runIfStatementRefused(username, database, connection, ipAddress, false,
+			sqlOrder, parameterValues);
+
+		String message = JsonSecurityMessage.statementNotAllowedBuild(sqlOrder,
+			"Statement not allowed for for executeUpdate", doPrettyPrinting);
+		throw new SecurityException(message);
+
+	    }
+	}
+    }
+
+
+    /**
+     * @param username
+     * @param database
+     * @param sqlOrder
+     * @param ipAddress
+     * @throws IOException
+     * @throws SQLException
+     * @throws SecurityException
+     */
+    private void checkFirewallGeneral(String username, String database, String sqlOrder, String ipAddress) throws IOException, SQLException, SecurityException {
+	SqlFirewallManager sqlFirewallOnDeny = null;
+	boolean isAllowed = true;
+	for (SqlFirewallManager sqlFirewallManager : sqlFirewallManagers) {
+	    sqlFirewallOnDeny = sqlFirewallManager;
+	    isAllowed = sqlFirewallManager.allowStatementClass(username, database, connection);
+	    if (!isAllowed) {
+		break;
+	    }
+
+	    isAllowed = sqlFirewallManager.allowSqlRunAfterAnalysis(username, database, connection, ipAddress, sqlOrder,
+		    isPreparedStatement(), new Vector<Object>());
+	    if (!isAllowed) {
+		break;
+	    }
+	}
+
+	if (!isAllowed) {
+	    List<Object> parameterValues = new ArrayList<>();
+	    sqlFirewallOnDeny.runIfStatementRefused(username, database, connection, ipAddress, false, sqlOrder,
+		    parameterValues);
+
+	    String message = JsonSecurityMessage.statementNotAllowedBuild(sqlOrder, "Statement not allowed",
+		    doPrettyPrinting);
+	    throw new SecurityException(message);
 	}
     }
 

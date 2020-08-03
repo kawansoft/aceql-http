@@ -54,14 +54,6 @@ public class DefaultSessionConfigurator implements SessionConfigurator {
     private SessionIdentifierGenerator sessionIdentifierGenerator = new SessionIdentifierGenerator();
     private Map<String, SessionInfo> sessionInfoStore = new ConcurrentHashMap<>();
 
-    /**
-     * Constructor. {@code SessionConfigurator} implementation must have no
-     * constructor or a unique no parms constructor.
-     */
-    public DefaultSessionConfigurator() {
-
-    }
-
     /*
      * (non-Javadoc)
      *
@@ -176,14 +168,15 @@ public class DefaultSessionConfigurator implements SessionConfigurator {
 	// Check if session is expired.
 	long now = new Date().getTime();
 
-	if (now - sessionInfo.getCreationTime() > getSessionTimelife() * 60
-		* 1000) {
-	    // System.err.println("now - sessionInfo.getCreationTime() >
-	    // getSessionTimelife");
-	    return false;
-	}
+//	if (now - sessionInfo.getCreationTime() > getSessionTimelife() * 60
+//		* 1000) {
+//	    // System.err.println("now - sessionInfo.getCreationTime() >
+//	    // getSessionTimelife");
+//	    return false;
+//	}
 
-	return true;
+	return now - sessionInfo.getCreationTime() <= getSessionTimelife() * 60;
+
     }
 
     /*

@@ -24,6 +24,8 @@
  */
 package org.kawanfw.sql.api.util.firewall;
 
+import java.util.Objects;
+
 /**
  * Stores the allowed statements of a table for an username.
  *
@@ -55,21 +57,10 @@ public class TableAllowStatements implements Comparable<TableAllowStatements> {
     public TableAllowStatements(String database, String username, String table, boolean delete,
 	    boolean insert, boolean select, boolean update) {
 
-	if (database == null) {
-	    throw new NullPointerException("database is null!");
-	}
+	this.database = Objects.requireNonNull(database, "database cannot be null!");
+	this.username = Objects.requireNonNull(username, "username cannot be null!");
+	this.table = Objects.requireNonNull(table, "table cannot be null!");
 
-	if (username == null) {
-	    throw new NullPointerException("username is null!");
-	}
-
-	if (table == null) {
-	    throw new NullPointerException("table is null!");
-	}
-
-	this.database = database;
-	this.username = username;
-	this.table = table;
 	this.delete = delete;
 	this.insert = insert;
 	this.select = select;

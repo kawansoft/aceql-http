@@ -47,14 +47,6 @@ import org.kawanfw.sql.api.server.DefaultDatabaseConfigurator;
 public class DefaultSqlFirewallManager implements SqlFirewallManager {
 
     /**
-     * Constructor. {@code SqlFirewallManager} implementation must have no
-     * constructor or a unique no parameters constructor.
-     */
-    public DefaultSqlFirewallManager() {
-
-    }
-
-    /**
      * @return <code><b>true</b></code>. (Client programs will be allowed to create
      *         raw <code>Statement</code>, i.e. call statements without parameters.)
      */

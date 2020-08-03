@@ -137,25 +137,20 @@ public class DefaultPoolsInfo extends HttpServlet {
 	OutputStream out = null;
 
 	try {
-
+	    out = response.getOutputStream();
 	    executeRequestInTryCatch(request, response, out);
-
 	} catch (Exception e) {
-
-	    if (out == null) {
-		out = response.getOutputStream();
-	    }
-
 	    ExceptionReturner.logAndReturnException(request, response, out, e);
 	}
     }
+
 
     /**
      * Execute the client request
      *
      * @param request  the http request
      * @param response the http response
-     * @param out      the output stream to write result to client
+     * @param out TODO
      * @throws IOException         if any IOException occurs
      * @throws SQLException
      * @throws FileUploadException
@@ -171,7 +166,6 @@ public class DefaultPoolsInfo extends HttpServlet {
 	String password = request.getParameter("password");
 
 	if (password == null || password.isEmpty()) {
-	    out = response.getOutputStream();
 	    JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_FORBIDDEN,
 		    JsonErrorReturn.ERROR_ACEQL_UNAUTHORIZED, JsonErrorReturn.INVALID_USERNAME_OR_PASSWORD);
 	    ServerSqlManager.writeLine(out, errorReturn.build());
@@ -189,7 +183,6 @@ public class DefaultPoolsInfo extends HttpServlet {
 		throw new IllegalArgumentException(JsonErrorReturn.INVALID_USERNAME_OR_PASSWORD);
 	    }
 	} catch (Exception e) {
-	    out = response.getOutputStream();
 	    JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_FORBIDDEN,
 		    JsonErrorReturn.ERROR_ACEQL_UNAUTHORIZED, JsonErrorReturn.INVALID_USERNAME_OR_PASSWORD);
 	    ServerSqlManager.writeLine(out, errorReturn.build());
@@ -201,9 +194,6 @@ public class DefaultPoolsInfo extends HttpServlet {
 	Map<String, DataSource> dataSources = DataSourceStore.getDataSources();
 
 	if (dataSources == null || dataSources.isEmpty()) {
-
-	    out = response.getOutputStream();
-
 	    JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_BAD_REQUEST,
 		    JsonErrorReturn.ERROR_ACEQL_ERROR, JsonErrorReturn.NO_DATASOURCES_DEFINED);
 	    ServerSqlManager.writeLine(out, errorReturn.build());
@@ -211,6 +201,18 @@ public class DefaultPoolsInfo extends HttpServlet {
 	    return;
 	}
 
+	writeOutpuMain(request, out, setDatabase, dataSources);
+
+    }
+
+    /**
+     * @param request
+     * @param setDatabase
+     * @param dataSources
+     * @throws NumberFormatException
+     * @throws IOException
+     */
+    private void writeOutpuMain(HttpServletRequest request, OutputStream out, String setDatabase , Map<String, DataSource> dataSources) throws NumberFormatException, IOException {
 	StringWriter writer = new StringWriter();
 
 	JsonGeneratorFactory jf = JsonUtil.getJsonGeneratorFactory(true);
@@ -226,59 +228,62 @@ public class DefaultPoolsInfo extends HttpServlet {
 	gen.writeStartArray("databases");
 
 	for (String database : databases) {
-
-	    DataSource datasource = dataSources.get(database);
-	    DataSourceProxy dataSourceProxy = (org.apache.tomcat.jdbc.pool.DataSource) datasource;
-
-	    if (setDatabase == null || setDatabase.equals(database)) {
-		String doSet = request.getParameter("setMinIdle");
-		if (doSet != null && !doSet.isEmpty() && StringUtils.isNumeric(doSet)) {
-		    if (StringUtils.isNumeric(doSet)) {
-			dataSourceProxy.setMinIdle(Integer.parseInt(doSet));
-		    }
-		}
-		doSet = request.getParameter("setMaxIdle");
-		if (doSet != null && !doSet.isEmpty() && StringUtils.isNumeric(doSet)) {
-		    if (StringUtils.isNumeric(doSet)) {
-			dataSourceProxy.setMaxIdle(Integer.parseInt(doSet));
-		    }
-		}
-
-		doSet = request.getParameter("setMaxActive");
-		if (doSet != null && !doSet.isEmpty() && StringUtils.isNumeric(doSet)) {
-		    if (StringUtils.isNumeric(doSet)) {
-			dataSourceProxy.setMaxActive(Integer.parseInt(doSet));
-		    }
-		}
-	    }
-
-	    gen.writeStartObject().write("database", database).writeEnd();
-
-	    gen.writeStartObject().write("getBorrowedCount()", dataSourceProxy.getBorrowedCount()).writeEnd();
-	    gen.writeStartObject().write("getMaxActive()", dataSourceProxy.getMaxActive()).writeEnd();
-	    gen.writeStartObject().write("getMaxIdle()", dataSourceProxy.getMaxIdle()).writeEnd();
-	    gen.writeStartObject().write("getMinIdle()", dataSourceProxy.getMinIdle()).writeEnd();
-	    gen.writeStartObject().write("getNumActive()", dataSourceProxy.getNumActive()).writeEnd();
-	    gen.writeStartObject().write("getNumIdle()", dataSourceProxy.getNumIdle()).writeEnd();
-	    gen.writeStartObject().write("getReconnectedCount()", dataSourceProxy.getReconnectedCount()).writeEnd();
-	    gen.writeStartObject().write("getReleasedCount()", dataSourceProxy.getReleasedCount()).writeEnd();
-	    gen.writeStartObject().write("getReleasedIdleCount()", dataSourceProxy.getReleasedIdleCount()).writeEnd();
-	    gen.writeStartObject().write("getRemoveAbandonedCount()", dataSourceProxy.getRemoveAbandonedCount())
-		    .writeEnd();
-	    gen.writeStartObject().write("getReturnedCount()", dataSourceProxy.getReturnedCount()).writeEnd();
-	    gen.writeStartObject().write("getSize()", dataSourceProxy.getSize()).writeEnd();
-	    gen.writeStartObject().write("getWaitCount()", dataSourceProxy.getWaitCount()).writeEnd();
-
+	    writeOutputElementInLoop(request, setDatabase, dataSources, gen, database);
 	}
 
 	gen.writeEnd();
 	gen.writeEnd();
 	gen.close();
 
-	out = response.getOutputStream();
 	String outString = writer.toString();
 	ServerSqlManager.writeLine(out, outString);
+    }
 
+    /**
+     * @param request
+     * @param setDatabase
+     * @param dataSources
+     * @param gen
+     * @param database
+     * @throws NumberFormatException
+     */
+    private void writeOutputElementInLoop(HttpServletRequest request, String setDatabase,
+	    Map<String, DataSource> dataSources, JsonGenerator gen, String database) throws NumberFormatException {
+	DataSource datasource = dataSources.get(database);
+	DataSourceProxy dataSourceProxy = (org.apache.tomcat.jdbc.pool.DataSource) datasource;
+
+	if (setDatabase == null || setDatabase.equals(database)) {
+	String doSet = request.getParameter("setMinIdle");
+	if (doSet != null && !doSet.isEmpty() && StringUtils.isNumeric(doSet) && StringUtils.isNumeric(doSet)) {
+	    dataSourceProxy.setMinIdle(Integer.parseInt(doSet));
+	}
+	doSet = request.getParameter("setMaxIdle");
+	if (doSet != null && !doSet.isEmpty() && StringUtils.isNumeric(doSet) && StringUtils.isNumeric(doSet)) {
+	    dataSourceProxy.setMaxIdle(Integer.parseInt(doSet));
+	}
+
+	doSet = request.getParameter("setMaxActive");
+	if (doSet != null && !doSet.isEmpty() && StringUtils.isNumeric(doSet) && StringUtils.isNumeric(doSet)) {
+	    dataSourceProxy.setMaxActive(Integer.parseInt(doSet));
+	}
+	}
+
+	gen.writeStartObject().write("database", database).writeEnd();
+
+	gen.writeStartObject().write("getBorrowedCount()", dataSourceProxy.getBorrowedCount()).writeEnd();
+	gen.writeStartObject().write("getMaxActive()", dataSourceProxy.getMaxActive()).writeEnd();
+	gen.writeStartObject().write("getMaxIdle()", dataSourceProxy.getMaxIdle()).writeEnd();
+	gen.writeStartObject().write("getMinIdle()", dataSourceProxy.getMinIdle()).writeEnd();
+	gen.writeStartObject().write("getNumActive()", dataSourceProxy.getNumActive()).writeEnd();
+	gen.writeStartObject().write("getNumIdle()", dataSourceProxy.getNumIdle()).writeEnd();
+	gen.writeStartObject().write("getReconnectedCount()", dataSourceProxy.getReconnectedCount()).writeEnd();
+	gen.writeStartObject().write("getReleasedCount()", dataSourceProxy.getReleasedCount()).writeEnd();
+	gen.writeStartObject().write("getReleasedIdleCount()", dataSourceProxy.getReleasedIdleCount()).writeEnd();
+	gen.writeStartObject().write("getRemoveAbandonedCount()", dataSourceProxy.getRemoveAbandonedCount())
+	    .writeEnd();
+	gen.writeStartObject().write("getReturnedCount()", dataSourceProxy.getReturnedCount()).writeEnd();
+	gen.writeStartObject().write("getSize()", dataSourceProxy.getSize()).writeEnd();
+	gen.writeStartObject().write("getWaitCount()", dataSourceProxy.getWaitCount()).writeEnd();
     }
 
     /**

@@ -1,24 +1,24 @@
 /*
  * This file is part of AceQL HTTP.
- * AceQL HTTP: SQL Over HTTP                                     
+ * AceQL HTTP: SQL Over HTTP
  * Copyright (C) 2020,  KawanSoft SAS
- * (http://www.kawansoft.com). All rights reserved.                                
- *                                                                               
- * AceQL HTTP is free software; you can redistribute it and/or                 
- * modify it under the terms of the GNU Lesser General Public                    
- * License as published by the Free Software Foundation; either                  
- * version 2.1 of the License, or (at your option) any later version.            
- *                                                                               
- * AceQL HTTP is distributed in the hope that it will be useful,               
- * but WITHOUT ANY WARRANTY; without even the implied warranty of                
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU             
- * Lesser General Public License for more details.                               
- *                                                                               
- * You should have received a copy of the GNU Lesser General Public              
- * License along with this library; if not, write to the Free Software           
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  
+ * (http://www.kawansoft.com). All rights reserved.
+ *
+ * AceQL HTTP is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * AceQL HTTP is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
  * 02110-1301  USA
- * 
+ *
  * Any modifications to this file must keep this entire header
  * intact.
  */
@@ -39,9 +39,9 @@ import org.kawanfw.sql.util.SqlTag;
 /**
  * Updates the Tomcat Connectors properties/values from the values defined in
  * the Server properties file.
- * 
+ *
  * @author Nicolas de Pomereu
- * 
+ *
  */
 public class TomcatConnectorsUpdater {
 
@@ -53,7 +53,7 @@ public class TomcatConnectorsUpdater {
 
     /**
      * Constructor
-     * 
+     *
      * @param tomcat
      *            The Tomcat instance to update
      * @param properties
@@ -139,6 +139,25 @@ public class TomcatConnectorsUpdater {
 			    + SqlTag.PLEASE_CORRECT);
 	}
 
+	checkMandatoryValues();
+
+	Connector defaultConnector = tomcat.getConnector();
+	defaultConnector.setScheme(scheme);
+	defaultConnector.setSecure(true);
+
+	// Update  SSL connector values
+	setValuesFromEnumaration(defaultConnector);
+
+	// Service service = tomcat.getService();
+	// service.addConnector(sslConnector); // Add the connector
+
+    }
+
+    /**
+     * Checks that mandatory values are in properties file
+     * @throws DatabaseConfigurationException
+     */
+    private void checkMandatoryValues() throws DatabaseConfigurationException {
 	// Testing the keystore file
 	String keyStoreFileStr = getMandatoryPropertyValue(
 		"sslConnector.keystoreFile");
@@ -160,11 +179,13 @@ public class TomcatConnectorsUpdater {
 	// Testing that key alias is set
 	@SuppressWarnings("unused")
 	String keyAlias = getMandatoryPropertyValue("sslConnector.keyAlias");
+    }
 
-	Connector defaultConnector = tomcat.getConnector();
-	defaultConnector.setScheme(scheme);
-	defaultConnector.setSecure(true);
-
+    /**
+     *Set tke ssl connector values.
+     * @param defaultConnector
+     */
+    private void setValuesFromEnumaration(Connector defaultConnector) {
 	// Set the SSL connector
 	Enumeration<?> enumeration = properties.propertyNames();
 
@@ -199,16 +220,12 @@ public class TomcatConnectorsUpdater {
 		}
 	    }
 	}
-
-	// Service service = tomcat.getService();
-	// service.addConnector(sslConnector); // Add the connector
-
     }
 
     /**
      * Returns the property value from a property name. Throws a
      * DatabaseConfigurationException if the property is not set
-     * 
+     *
      * @param propertyName
      *            the property name to test
      * @return the property value

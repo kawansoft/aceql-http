@@ -45,14 +45,6 @@ public class TestDatabaseConfigurator extends DefaultDatabaseConfigurator
 	    .isSet(TestDatabaseConfigurator.class);
 
     /**
-     * Default constructor
-     */
-    public TestDatabaseConfigurator() {
-
-    }
-
-
-    /**
      * @return <code><b>true</b></code> if all following requirements are met:
      *         <ul>
      *         <li>Statement does not contain SQL comments.</li>

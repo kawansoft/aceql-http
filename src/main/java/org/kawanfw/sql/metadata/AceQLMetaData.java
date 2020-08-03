@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import org.kawanfw.sql.api.util.SqlUtil;
@@ -45,8 +46,7 @@ import org.kawanfw.sql.util.FrameworkDebug;
  */
 public class AceQLMetaData {
 
-    private static boolean DEBUG = FrameworkDebug
-	    .isSet(AceQLMetaData.class);
+    private static boolean DEBUG = FrameworkDebug.isSet(AceQLMetaData.class);
 
     private Connection connection = null;
     private String catalog = null;
@@ -156,6 +156,7 @@ public class AceQLMetaData {
 
     /**
      * Returns the non-system table names for the Connection
+     *
      * @param filtertableType the table type to select VIEW, TABLE etc
      * @return the non-system table names for the Connection
      * @throws SQLException it any SQL Exception occurs
@@ -195,30 +196,18 @@ public class AceQLMetaData {
 	    String schema = rs.getString(2);
 	    SqlUtil sqlUtil = new SqlUtil(connection);
 
-	    if (sqlUtil.isPostgreSQL() && !schema.equalsIgnoreCase("public")) {
-		continue;
-	    }
+	    boolean doContinue = false;
 
-	    if (sqlUtil.isMySQL() && schema != null) {
-		continue;
-	    }
+	    doContinue = checkDoContinue(databaseMetaData, schema, sqlUtil, doContinue);
 
-	    if (sqlUtil.isSQLServer() && !schema.equalsIgnoreCase("dbo")) {
-		continue;
-	    }
-
-	    if (sqlUtil.isDB2() && (schema == null || !schema.equalsIgnoreCase(databaseMetaData.getUserName()))) {
-		continue;
-	    }
-
-	    if (sqlUtil.isOracle() && (schema == null || !schema.equalsIgnoreCase(databaseMetaData.getUserName()))) {
+	    if (doContinue) {
 		continue;
 	    }
 
 	    String tableName = rs.getString(3);
 	    String tableType = rs.getString(4);
 
-	    if (filterTableType != null && ! filterTableType.equalsIgnoreCase(tableType)) {
+	    if (filterTableType != null && !filterTableType.equalsIgnoreCase(tableType)) {
 		continue;
 	    }
 
@@ -231,6 +220,32 @@ public class AceQLMetaData {
 	return tableNames;
     }
 
+    /**
+     * Check if continue must be called on maain loop
+     * @param databaseMetaData
+     * @param schema
+     * @param sqlUtil
+     * @param doContinue
+     * @return
+     * @throws SQLException
+     */
+    private boolean checkDoContinue(DatabaseMetaData databaseMetaData, String schema, SqlUtil sqlUtil,
+	    final boolean doContinue) throws SQLException {
+
+	boolean doContinueNew = doContinue;
+
+	if ((sqlUtil.isPostgreSQL() && !schema.equalsIgnoreCase("public"))
+		|| (sqlUtil.isMySQL() && schema != null)
+		|| (sqlUtil.isSQLServer() && !schema.equalsIgnoreCase("dbo"))
+		|| (sqlUtil.isDB2() && (schema == null || !schema.equalsIgnoreCase(databaseMetaData.getUserName())))
+		|| (sqlUtil.isOracle()
+			&& (schema == null || !schema.equalsIgnoreCase(databaseMetaData.getUserName())))) {
+	    doContinueNew = true;
+	}
+
+	return doContinueNew;
+
+    }
 
     /**
      * Returns the non-system table names for the Connection
@@ -251,9 +266,8 @@ public class AceQLMetaData {
      * @throws SQLException it any SQL Exception occurs
      */
     public List<ExportedKey> getExportedKeys(String tableName) throws SQLException {
-	if (tableName == null) {
-	    throw new NullPointerException("tableName is null!");
-	}
+
+	Objects.requireNonNull(tableName, "tableName cannot be null!");
 
 	if (!tableNamesSet.contains(tableName.toLowerCase())) {
 	    throw new IllegalArgumentException("table does not exists: " + tableName);
@@ -322,9 +336,7 @@ public class AceQLMetaData {
      * @throws SQLException it any SQL Exception occurs
      */
     public List<ImportedKey> getImportedKeys(String tableName) throws SQLException {
-	if (tableName == null) {
-	    throw new NullPointerException("tableName is null!");
-	}
+	Objects.requireNonNull(tableName, "tableName cannot be null!");
 
 	if (!tableNamesSet.contains(tableName.toLowerCase())) {
 	    throw new IllegalArgumentException("table does not exists: " + tableName);
@@ -368,9 +380,7 @@ public class AceQLMetaData {
      * @throws SQLException it any SQL Exception occurs
      */
     public List<PrimaryKey> getPrimaryKeys(String tableName) throws SQLException {
-	if (tableName == null) {
-	    throw new NullPointerException("tableName is null!");
-	}
+	Objects.requireNonNull(tableName, "tableName cannot be null!");
 
 	if (!tableNamesSet.contains(tableName.toLowerCase())) {
 	    throw new IllegalArgumentException("table does not exists: " + tableName);
@@ -425,10 +435,7 @@ public class AceQLMetaData {
      * @throws SQLException it any SQL Exception occurs
      */
     public List<Index> getIndexes(String tableName) throws SQLException {
-	if (tableName == null) {
-	    throw new NullPointerException("tableName is null!");
-	}
-
+	Objects.requireNonNull(tableName, "tableName cannot be null!");
 	if (!tableNamesSet.contains(tableName.toLowerCase())) {
 	    throw new IllegalArgumentException("table does not exists: " + tableName);
 	}
@@ -505,9 +512,7 @@ public class AceQLMetaData {
      * @throws SQLException it any SQL Exception occurs
      */
     public List<Column> getColumns(String tableName) throws SQLException {
-	if (tableName == null) {
-	    throw new NullPointerException("tableName is null!");
-	}
+	Objects.requireNonNull(tableName, "tableName cannot be null!");
 
 	if (!tableNamesSet.contains(tableName.toLowerCase())) {
 	    throw new IllegalArgumentException("table does not exists: " + tableName);
@@ -601,10 +606,7 @@ public class AceQLMetaData {
      * @throws SQLException it any SQL Exception occurs
      */
     public Table getTable(String tableName) throws SQLException {
-	if (tableName == null) {
-	    throw new NullPointerException("tableName is null!");
-	}
-
+	Objects.requireNonNull(tableName, "tableName cannot be null!");
 	if (!tableNamesSet.contains(tableName.toLowerCase())) {
 	    throw new IllegalArgumentException("table does not exists: " + tableName);
 	}

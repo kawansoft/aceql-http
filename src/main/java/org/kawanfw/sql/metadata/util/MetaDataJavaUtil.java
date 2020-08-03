@@ -35,20 +35,9 @@ import org.kawanfw.sql.metadata.Index;
  */
 public class MetaDataJavaUtil {
 
-    public MetaDataJavaUtil() {
-
-    }
-
     private static final int int_columnNoNulls = 0;
     private static final int int_columnNullable = 1;
     private static final int int_columnNullableUnknown = 2;
-
-    public static String decodeNullable(int nullable) {
-	if (nullable == int_columnNoNulls) return Column.columnNoNulls;
-	else if (nullable == int_columnNullable) return Column.columnNullable;
-	else if (nullable == int_columnNullableUnknown) return Column.columnNullableUnknown;
-	else return "unknown";
-    }
 
     private static final int int_importedKeyCascade  = 0;
     private static final int int_importedKeyRestrict = 1;
@@ -58,6 +47,20 @@ public class MetaDataJavaUtil {
     private static final int int_importedKeyInitiallyDeferred  = 5;
     private static final int int_importedKeyInitiallyImmediate  = 6;
     private static final int int_importedKeyNotDeferrable  = 7;
+
+    private static short int_tableIndexStatistic = 0;
+    private static short int_tableIndexClustered = 1;
+    private static short int_tableIndexHashed = 2;
+    private static short int_tableIndexOther = 3;
+
+    public static String decodeNullable(int nullable) {
+	if (nullable == int_columnNoNulls) return Column.columnNoNulls;
+	else if (nullable == int_columnNullable) return Column.columnNullable;
+	else if (nullable == int_columnNullableUnknown) return Column.columnNullableUnknown;
+	else return "unknown";
+    }
+
+
 
     public static String decodeRule(int rule) {
 	if (rule == int_importedKeyCascade) return ForeignKey.importedKeyCascade;
@@ -71,10 +74,6 @@ public class MetaDataJavaUtil {
 	else return "unknown";
     }
 
-    private static short int_tableIndexStatistic = 0;
-    private static short int_tableIndexClustered = 1;
-    private static short int_tableIndexHashed = 2;
-    private static short int_tableIndexOther = 3;
 
     public static String decodeType(int type) {
 	if (type == int_tableIndexStatistic)

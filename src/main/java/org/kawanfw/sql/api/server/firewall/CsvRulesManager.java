@@ -32,6 +32,7 @@ import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Level;
@@ -105,14 +106,6 @@ public class CsvRulesManager extends DefaultSqlFirewallManager implements SqlFir
      * The map that contains for each database/username the table and their rights
      */
     private Map<DatabaseUserTableTriplet, TableAllowStatements> mapTableAllowStatementsSet = null;
-
-    /**
-     * Constructor. {@code SqlFirewallManager} implementation must have no
-     * constructor or a unique no parameters constructor.
-     */
-    public CsvRulesManager() {
-
-    }
 
     /**
      * Allows the execution of the statement if an allowing rules exists in
@@ -285,9 +278,9 @@ public class CsvRulesManager extends DefaultSqlFirewallManager implements SqlFir
      */
     private static File getCsvFile(String database) throws FileNotFoundException {
 	File file = ServerSqlManager.getAceqlServerProperties();
-	if (file == null) {
-	    throw new NullPointerException("file is null!");
-	}
+
+	Objects.requireNonNull(file, "file cannot be null!");
+
 	if (!file.exists()) {
 	    throw new FileNotFoundException("The properties file does not exist: " + file);
 	}

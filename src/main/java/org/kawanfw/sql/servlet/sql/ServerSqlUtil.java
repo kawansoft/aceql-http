@@ -72,11 +72,9 @@ public class ServerSqlUtil {
 
 	int maxRowsToReturn = databaseConfigurator.getMaxRows(username, database);
 
-	if (maxRowsToReturn > 0) {
-	    if (statement.getMaxRows() == 0 || (statement.getMaxRows() > maxRowsToReturn)) {
-		statement.setFetchSize(0); // To avoid any possible conflict
-		statement.setMaxRows(maxRowsToReturn);
-	    }
+	if (maxRowsToReturn > 0 && (statement.getMaxRows() == 0 || (statement.getMaxRows() > maxRowsToReturn))) {
+	    statement.setFetchSize(0); // To avoid any possible conflict
+	    statement.setMaxRows(maxRowsToReturn);
 	}
     }
 

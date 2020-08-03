@@ -61,7 +61,6 @@ public class MetadataQueryActionManager {
     private HttpServletRequest request = null;
     private HttpServletResponse response = null;
     private Connection connection = null;
-    private AceQLMetaData aceQLMetaData = null;
     List<SqlFirewallManager> sqlFirewallManagers = new ArrayList<>();
 
     private OutputStream out = null;
@@ -108,7 +107,7 @@ public class MetadataQueryActionManager {
      */
     private void executeInTryCatch(OutputStream out)
 	    throws SQLException, IOException, SecurityException, FileNotFoundException, IllegalArgumentException {
-	aceQLMetaData = new AceQLMetaData(connection);
+	AceQLMetaData aceQLMetaData = new AceQLMetaData(connection);
 	String action = request.getParameter(HttpParameter.ACTION);
 	String username = request.getParameter(HttpParameter.USERNAME);
 	String database = request.getParameter(HttpParameter.DATABASE);
@@ -137,7 +136,7 @@ public class MetadataQueryActionManager {
 
 	if (action.equals(HttpParameter.METADATA_QUERY_DB_SCHEMA_DOWNLOAD)) {
 	    MetadataQuerySchemaDownloader metadataQuerySchemaDownloader = new MetadataQuerySchemaDownloader(request,
-		    response, connection, aceQLMetaData, database);
+		    response, out, connection, aceQLMetaData);
 	    metadataQuerySchemaDownloader.schemaDowload();
 	} else if (action.equals(HttpParameter.METADATA_QUERY_GET_DB_METADATA)) {
 	    JdbcDatabaseMetaData jdbcDatabaseMetaData = aceQLMetaData.getJdbcDatabaseMetaData();

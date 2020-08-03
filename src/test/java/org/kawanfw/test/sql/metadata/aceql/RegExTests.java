@@ -30,10 +30,6 @@ import java.util.regex.Pattern;
 
 public class RegExTests {
 
-    public RegExTests() {
-	// TODO Auto-generated constructor stub
-    }
-
     public static void main(String[] args) throws Exception {
 
 	String text = "http://jenkov.com";

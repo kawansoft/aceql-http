@@ -34,12 +34,6 @@ package org.kawanfw.sql.servlet;
 
 public class HttpParameter {
 
-    /**
-     * Protected
-     */
-    protected HttpParameter() {
-
-    }
 
     // Login info
     public static final String USERNAME = "username";
@@ -149,8 +143,12 @@ public class HttpParameter {
     public static final String TABLE_NAME = "table_name";
     public static final String TABLE_TYPE = "table_type";
 
+    /**
+     * Protected
+     */
+    protected HttpParameter() {
 
-
+    }
 
 
 }

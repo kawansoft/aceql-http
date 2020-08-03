@@ -151,6 +151,118 @@ public class TomcatStarter {
 	tomcat.setHostname(host);
 	tomcat.setPort(port);
 
+	tomcatBeforeStartSetConnectors(tomcat, properties);
+
+	Context rootCtx = tomcatBeforeStartSetContext(tomcat, properties);
+
+	// Create the dataSources if necessary
+	TomcatStarterUtil.createAndStoreDataSources(properties);
+	TomcatStarterUtil.addServlets(properties, rootCtx);
+
+	// ..and we are good to go
+	tomcat.start();
+
+	tomcatAfterStart(tomcat, properties);
+    }
+
+    /**
+     * @param tomcat
+     * @param properties
+     * @throws MalformedURLException
+     * @throws IOException
+     */
+    private void tomcatAfterStart(Tomcat tomcat, Properties properties) throws MalformedURLException, IOException {
+	// System.out.println(SqlTag.SQL_PRODUCT_START);
+	Connector defaultConnector = tomcat.getConnector();
+	@SuppressWarnings("unused")
+	String result = testServlet(properties, defaultConnector.getScheme());
+
+	String runningMessage = SqlTag.SQL_PRODUCT_START + " "
+		+ Version.PRODUCT.NAME + " Web Server OK. Running on port "
+		+ port;
+
+	System.out.println(runningMessage);
+	System.out.println();
+
+	// System.out
+	// .println(SqlTag.SQL_PRODUCT_START
+	// + " To close normally: java org.kawanfw.sql.WebServer -stop -port "
+	// + port);
+
+	// System.out.println(SqlTag.SQL_PRODUCT_START
+	// + " From command line, use [Ctrl]+[C] to abort abruptly");
+
+	// tomcat.getServer().await();
+
+	PortSemaphoreFile portSemaphoreFile = new PortSemaphoreFile(port);
+
+	try {
+	    if (!portSemaphoreFile.exists()) {
+		portSemaphoreFile.create();
+	    }
+	} catch (IOException e) {
+	    throw new IOException("Web server can not start. Impossible to create the semaphore file: "
+		    + portSemaphoreFile.getSemaphoreFile() + CR_LF
+		    + "Create manually the semapahore file to start the Web server on port " + port + ".", e);
+	}
+
+	// Loop to serve requests
+	while (true) {
+
+	    try {
+		Thread.sleep(2000);
+	    } catch (InterruptedException e) {
+
+	    }
+
+	    // Thread run until terminated by a stop request that creates
+	    // PortSemaphoreFile
+	    //portSemaphoreFile = new PortSemaphoreFile(port);
+	    if (!portSemaphoreFile.exists()) {
+		return;
+	    }
+	}
+    }
+
+    /**
+     * @param tomcat
+     * @param properties
+     * @return
+     */
+    private Context tomcatBeforeStartSetContext(Tomcat tomcat, Properties properties) {
+	// Set up context,
+	// "" indicates the path of the ROOT context
+	Context rootCtx = tomcat.addContext("", getBaseDir().getAbsolutePath());
+
+	// Set the Context
+	// TomcatContextUpdater tomcatContextUpdater = new TomcatContextUpdater(
+	// rootCtx, properties);
+	// tomcatContextUpdater.setContextvalues();
+
+	// Code to force https
+	// SecurityConstraint securityConstraint = new SecurityConstraint();
+	// securityConstraint.setUserConstraint("CONFIDENTIAL");
+	// SecurityCollection collection = new SecurityCollection();
+	// collection.addPattern("/*");
+	// securityConstraint.addCollection(collection);
+	// rootCtx.addConstraint(securityConstraint);
+
+	// Add a predefined Filter
+	TomcatFilterUtil.addFilterToContext(rootCtx);
+
+	// Add first servlet with no index
+	addAceqlServlet(properties, rootCtx);
+	return rootCtx;
+    }
+
+    /**
+     * @param tomcat
+     * @param properties
+     * @throws DatabaseConfigurationException
+     * @throws ConnectException
+     */
+    private void tomcatBeforeStartSetConnectors(Tomcat tomcat, Properties properties)
+	    throws DatabaseConfigurationException, ConnectException {
 	//NO: do in the Creators in org.kawanfw.sql.servlet.creator package
 	//TomcatStarterUtil.testConfigurators(properties);
 
@@ -184,76 +296,6 @@ public class TomcatStarter {
 
 	// Code to redirect http to https
 	// tomcat.getConnector().setRedirectPort(sslPort);
-
-	// Set up context,
-	// "" indicates the path of the ROOT context
-	Context rootCtx = tomcat.addContext("", getBaseDir().getAbsolutePath());
-
-	// Set the Context
-	// TomcatContextUpdater tomcatContextUpdater = new TomcatContextUpdater(
-	// rootCtx, properties);
-	// tomcatContextUpdater.setContextvalues();
-
-	// Code to force https
-	// SecurityConstraint securityConstraint = new SecurityConstraint();
-	// securityConstraint.setUserConstraint("CONFIDENTIAL");
-	// SecurityCollection collection = new SecurityCollection();
-	// collection.addPattern("/*");
-	// securityConstraint.addCollection(collection);
-	// rootCtx.addConstraint(securityConstraint);
-
-	// Add a predefined Filter
-	TomcatFilterUtil.addFilterToContext(rootCtx);
-
-	// Add first servlet with no index
-	addAceqlServlet(properties, rootCtx);
-
-	// Create the dataSources if necessary
-	TomcatStarterUtil.createAndStoreDataSources(properties);
-
-	TomcatStarterUtil.addServlets(properties, rootCtx);
-
-	// ..and we are good to go
-	tomcat.start();
-
-	// System.out.println(SqlTag.SQL_PRODUCT_START);
-	Connector defaultConnector = tomcat.getConnector();
-	@SuppressWarnings("unused")
-	String result = testServlet(properties, defaultConnector.getScheme());
-
-	String runningMessage = SqlTag.SQL_PRODUCT_START + " "
-		+ Version.PRODUCT.NAME + " Web Server OK. Running on port "
-		+ port;
-
-	System.out.println(runningMessage);
-	System.out.println();
-
-	// System.out
-	// .println(SqlTag.SQL_PRODUCT_START
-	// + " To close normally: java org.kawanfw.sql.WebServer -stop -port "
-	// + port);
-
-	// System.out.println(SqlTag.SQL_PRODUCT_START
-	// + " From command line, use [Ctrl]+[C] to abort abruptly");
-
-	// tomcat.getServer().await();
-
-	// Loop to serve requests
-	while (true) {
-
-	    try {
-		Thread.sleep(2000);
-	    } catch (InterruptedException e) {
-
-	    }
-
-	    // Thread run until terminated by a stop request that creates
-	    // PortSemaphoreFile
-	    PortSemaphoreFile portSemaphoreFile = new PortSemaphoreFile(port);
-	    if (!portSemaphoreFile.exists()) {
-		return;
-	    }
-	}
     }
 
     /**

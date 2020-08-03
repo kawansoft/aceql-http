@@ -25,6 +25,7 @@
 package org.kawanfw.sql.servlet;
 
 import java.sql.SQLException;
+import java.util.Objects;
 
 public class ServletMetadataQuery {
 
@@ -33,11 +34,7 @@ public class ServletMetadataQuery {
     private String requestUri = null;
 
     public ServletMetadataQuery(String requestUri) {
-	if (requestUri == null) {
-	    throw new NullPointerException("urlContent is null");
-	}
-
-	this.requestUri = requestUri;
+	this.requestUri =Objects.requireNonNull(requestUri, "requestUri cannot be null!");
     }
 
     public String getAction() {
@@ -60,9 +57,8 @@ public class ServletMetadataQuery {
     }
 
     public static boolean isMetadataQueryAction(String action) throws SQLException {
-	if (action == null) {
-	    throw new NullPointerException("action is null");
-	}
+	Objects.requireNonNull(action, "action cannot be null!");
+
 	return (action.equals(HttpParameter.METADATA_QUERY_DB_SCHEMA_DOWNLOAD)
 		|| action.equals(HttpParameter.METADATA_QUERY_GET_TABLE_DETAILS)
 		|| action.equals(HttpParameter.METADATA_QUERY_GET_DB_METADATA)

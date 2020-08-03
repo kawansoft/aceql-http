@@ -6,7 +6,6 @@ package org.kawanfw.sql.servlet;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.sql.SQLException;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,16 +23,18 @@ import org.kawanfw.sql.servlet.sql.json_return.JsonErrorReturn;
  */
 public class BlobDownloader {
 
-    private HttpServletRequest request = null;
-    private HttpServletResponse response = null;
-    private String username = null;
-    private DatabaseConfigurator databaseConfigurator = null;
+    private HttpServletRequest request;
+    private HttpServletResponse response ;
+    private String username;
+    private DatabaseConfigurator databaseConfigurator ;
+    private OutputStream out;
 
-    public BlobDownloader(HttpServletRequest request, HttpServletResponse response, String username,
-	    DatabaseConfigurator databaseConfigurator) {
-	super();
+
+    public BlobDownloader(HttpServletRequest request, HttpServletResponse response, OutputStream out,
+	    String username, DatabaseConfigurator databaseConfigurator) {
 	this.request = request;
 	this.response = response;
+	this.out = out;
 	this.username = username;
 	this.databaseConfigurator = databaseConfigurator;
     }
@@ -48,11 +49,10 @@ public class BlobDownloader {
 	}
 
 	if (blobDirectory == null || !blobDirectory.exists()) {
-	    PrintWriter prinWriter = response.getWriter();
 	    JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_NOT_FOUND,
 		    JsonErrorReturn.ERROR_ACEQL_ERROR,
 		    JsonErrorReturn.BLOB_DIRECTORY_DOES_NOT_EXIST + blobDirectory.getName());
-	    prinWriter.println(errorReturn.build());
+	    ServerSqlManager.writeLine(out, errorReturn.build());
 	    return;
 	}
 
@@ -61,14 +61,12 @@ public class BlobDownloader {
 	File file = new File(fileName);
 
 	if (!file.exists()) {
-	    PrintWriter prinWriter = response.getWriter();
 	    JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_NOT_FOUND,
 		    JsonErrorReturn.ERROR_ACEQL_ERROR, JsonErrorReturn.INVALID_BLOB_ID_DOWNLOAD + blobId);
-	    prinWriter.println(errorReturn.build());
+	    ServerSqlManager.writeLine(out, errorReturn.build());
 	    return;
 	}
 
-	OutputStream out = response.getOutputStream();
 	try {
 	    BlobDownloadConfigurator BlobDownloader = ServerSqlManager.getBlobDownloadConfigurator();
 	    BlobDownloader.download(request, file, out);

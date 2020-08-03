@@ -35,6 +35,7 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author Nicolas de Pomereu
@@ -52,18 +53,10 @@ public class FileWordReplacer {
 
     public FileWordReplacer(final File inFile, final File outFile, final List<String> oldWords, final List<String> newWords) throws FileNotFoundException {
 
-	if (inFile == null) {
-	    throw new NullPointerException("inFile is null!");
-	}
-	if (outFile == null) {
-	    throw new NullPointerException("outFile is null!");
-	}
-	if (oldWords == null) {
-	    throw new NullPointerException("oldWords is null!");
-	}
-	if (newWords == null) {
-	    throw new NullPointerException("newWords is null!");
-	}
+	this.inFile = Objects.requireNonNull(inFile, "inFile cannot be null!");
+	this.outFile = Objects.requireNonNull(outFile, "outFile cannot be null!");
+	this.oldWords = Objects.requireNonNull(oldWords, "oldWords cannot be null!");
+	this.newWords = Objects.requireNonNull(newWords, "newWords cannot be null!");
 
 	if (! inFile.exists()) {
 	    throw new FileNotFoundException("inFile does not exist: " + inFile);
@@ -73,10 +66,7 @@ public class FileWordReplacer {
 	    throw new IllegalArgumentException("oldWords & newWords sizes are different!");
 	}
 
-	this.inFile = inFile;
-	this.outFile = outFile;
-	this.oldWords = oldWords;
-	this.newWords = newWords;
+
     }
 
     public void replaceAll() throws IOException {

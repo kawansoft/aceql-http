@@ -51,11 +51,7 @@ public class DenyDclManager extends DefaultSqlFirewallManager implements SqlFire
 	    String sql, boolean isPreparedStatement, List<Object> parameterValues) throws IOException, SQLException {
 	StatementAnalyzer statementAnalyzer = new StatementAnalyzer(sql, parameterValues);
 
-	if (statementAnalyzer.isDcl()) {
-	    return false;
-	} else {
-	    return true;
-	}
+	return ! statementAnalyzer.isDcl();
     }
 
     /**

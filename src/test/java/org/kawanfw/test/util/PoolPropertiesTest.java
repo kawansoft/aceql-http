@@ -12,13 +12,6 @@ import org.apache.tomcat.jdbc.pool.PoolProperties;
 public class PoolPropertiesTest {
 
     /**
-     *
-     */
-    public PoolPropertiesTest() {
-	// TODO Auto-generated constructor stub
-    }
-
-    /**
      * @param args
      */
     public static void main(String[] args) throws Exception {

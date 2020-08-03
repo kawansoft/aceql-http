@@ -31,6 +31,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author Nicolas de Pomereu
@@ -53,9 +54,8 @@ public class MetaDataJavaPrinter {
 
     private void printGetIndexInfo(String tableName) throws SQLException {
 
-	if (tableName == null) {
-	    throw new NullPointerException("tableName is null!");
-	}
+	Objects.requireNonNull(tableName, "tableName cannot be null!");
+
 	/**
 	 *<pre><code>
 
@@ -115,9 +115,8 @@ public class MetaDataJavaPrinter {
 
     private void printGetPrimaryKeys(String tableName) throws SQLException {
 
-	if (tableName == null) {
-	    throw new NullPointerException("tableName is null!");
-	}
+	Objects.requireNonNull(tableName, "tableName cannot be null!");
+
 	/**
 	<pre><code>
             1.TABLE_CAT String => table catalog (may be null)
@@ -143,9 +142,7 @@ public class MetaDataJavaPrinter {
 
     private void printGetImportedKeys(String tableName) throws SQLException {
 
-	if (tableName == null) {
-	    throw new NullPointerException("tableName is null!");
-	}
+	Objects.requireNonNull(tableName, "tableName cannot be null!");
 	/**
 
         1.PKTABLE_CAT String => primary key table catalogbeing imported (may be null)
@@ -191,9 +188,8 @@ public class MetaDataJavaPrinter {
 
     private void printGetExportedKeys(String tableName) throws SQLException {
 
-	if (tableName == null) {
-	    throw new NullPointerException("tableName is null!");
-	}
+	Objects.requireNonNull(tableName, "tableName cannot be null!");
+
 	/**
 	<pre><code>
         1.PKTABLE_CAT String => primary key table catalog (may be null)

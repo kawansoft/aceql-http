@@ -1,24 +1,24 @@
 /*
  * This file is part of AceQL HTTP.
- * AceQL HTTP: SQL Over HTTP                                     
+ * AceQL HTTP: SQL Over HTTP
  * Copyright (C) 2020,  KawanSoft SAS
- * (http://www.kawansoft.com). All rights reserved.                                
- *                                                                               
- * AceQL HTTP is free software; you can redistribute it and/or                 
- * modify it under the terms of the GNU Lesser General Public                    
- * License as published by the Free Software Foundation; either                  
- * version 2.1 of the License, or (at your option) any later version.            
- *                                                                               
- * AceQL HTTP is distributed in the hope that it will be useful,               
- * but WITHOUT ANY WARRANTY; without even the implied warranty of                
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU             
- * Lesser General Public License for more details.                               
- *                                                                               
- * You should have received a copy of the GNU Lesser General Public              
- * License along with this library; if not, write to the Free Software           
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  
+ * (http://www.kawansoft.com). All rights reserved.
+ *
+ * AceQL HTTP is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * AceQL HTTP is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
  * 02110-1301  USA
- * 
+ *
  * Any modifications to this file must keep this entire header
  * intact.
  */
@@ -42,9 +42,9 @@ import org.kawanfw.test.util.MessageDisplayer;
 /**
  * Defines the AceQL Connection parameters to test AceQL and get a Connection to
  * a remote platform.
- * 
+ *
  * @author Nicolas de Pomereu
- * 
+ *
  */
 public class SqlTestParms {
 
@@ -208,7 +208,7 @@ public class SqlTestParms {
     }
 
     /**
-     * 
+     *
      * @return true if we use a remote connection
      */
     public static boolean isRemote() {
@@ -256,14 +256,6 @@ public class SqlTestParms {
 			ENCRYPTION_PASSWORD);
 	    }
 
-	    // properties.setProperty("maxLengthForString", ""
-	    // + (DefaultParms.DEFAULT_MAX_LENGTH_FOR_STRING + 5));
-	    // properties.setProperty("readBufferSize", ""
-	    // + (DefaultParms.DEFAULT_READ_BUFFER_SIZE + 6));
-	    // properties.setProperty("writeBufferSize", ""
-	    // + (DefaultParms.DEFAULT_WRITE_BUFFER_SIZE + 7));
-	    // properties.setProperty("acceptAllSslCertificates", "" + true);
-
 	    properties.setProperty("http-client-http.socket.timeout",
 		    "[java.lang.Integer, 1000000]");
 	    properties.setProperty("http-client-http.useragent",
@@ -271,57 +263,10 @@ public class SqlTestParms {
 
 	    connection = driver.connect(url, properties);
 
-	} else if (DRIVER_LOADING_METHOD == DRIVER_LOADING_REGISTER) {
-
-	    /*
-	     * ProxyLoader proxyLoader = new ProxyLoader(); Proxy proxy =
-	     * proxyLoader.getProxy(); PasswordAuthentication
-	     * passwordAuthentication = proxyLoader.getPasswordAuthentication();
-	     * 
-	     * System.out.println("proxy: " + proxy);
-	     * System.out.println("passwordAuthentication: " +
-	     * passwordAuthentication);
-	     * 
-	     * SessionParameters sessionParameters = new SessionParameters();
-	     * 
-	     * String proxyUsername = null; String proxyPassword = null;
-	     * 
-	     * if (passwordAuthentication != null) { proxyUsername =
-	     * passwordAuthentication.getUserName(); proxyPassword = new
-	     * String(passwordAuthentication.getPassword()); }
-	     * 
-	     * if (USE_ENCRYPTION_PASSWORD) { sessionParameters
-	     * .setEncryptionPassword(ENCRYPTION_PASSWORD .toCharArray()); }
-	     * 
-	     * sessionParameters .setAcceptAllSslCertificates(SqlTestParms.
-	     * ACCEPT_ALL_SSL_CERTIFICATES);
-	     * 
-	     * System.out
-	     * .println("Loading Driver with DriverManager.getConnection(url, properties)"
-	     * );
-	     * 
-	     * Properties properties = new Properties();
-	     * properties.setProperty("user", REMOTE_USER);
-	     * properties.setProperty("password", REMOTE_PASSWORD);
-	     * 
-	     * properties.setProperty("sessionParameters",
-	     * sessionParameters.toString());
-	     * 
-	     * if (proxy != null) { properties.setProperty("proxy",
-	     * proxy.toString()); }
-	     * 
-	     * if (passwordAuthentication != null) {
-	     * properties.setProperty("proxyUsername", proxyUsername);
-	     * properties.setProperty("proxyPassword", proxyPassword); }
-	     * 
-	     * // properties.setProperty("joinResultSetMetaData", "true");
-	     * 
-	     * // Required for Android, optional for others environments:
-	     * Class.forName("org.kawanfw.sql.api.client.RemoteDriver");
-	     * 
-	     * connection = DriverManager.getConnection(url, properties);
-	     */
-	} else {
+//	} else if (DRIVER_LOADING_METHOD == DRIVER_LOADING_REGISTER) {
+//	    // Nothing to do
+	}
+	else {
 	    throw new IllegalArgumentException(
 		    "Loading method not supported: " + DRIVER_LOADING_METHOD);
 	}

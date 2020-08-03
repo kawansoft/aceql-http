@@ -1,11 +1,12 @@
 /**
- * 
+ *
  */
 package org.kawanfw.test.util;
 
 import java.io.StringReader;
 import java.sql.CallableStatement;
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
@@ -16,8 +17,10 @@ import javax.json.JsonObject;
 import javax.json.JsonReader;
 import javax.json.JsonValue;
 
+import org.apache.commons.lang3.StringUtils;
 import org.kawanfw.sql.api.util.SqlUtil;
 import org.kawanfw.test.parms.ConnectionLoader;
+import org.kawanfw.test.parms.SqlTestParms;
 
 /**
  * @author Nicolas de Pomereu
@@ -26,22 +29,26 @@ import org.kawanfw.test.parms.ConnectionLoader;
 public class StoredProcedureTest {
 
     /**
-     * 
-     */
-    public StoredProcedureTest() {
-	
-    }
-
-    /**
      * @param args
      */
     public static void main(String[] args) throws Exception {
-	
+
 	// Change it to change test SQL engine
-	ConnectionLoader.sqlEngine = SqlUtil.POSTGRESQL;
-	
+	ConnectionLoader.sqlEngine = SqlTestParms.SQLSERVER_MS_DRIVER;
+
 	Connection connection = ConnectionLoader.getLocalConnection();
-	
+	DatabaseMetaData databaseMetaData = connection.getMetaData();
+	System.out.println("databaseMetaData.getURL(): " + databaseMetaData.getURL());
+
+	String databaseName = getSqlServerDatabaseName(databaseMetaData);
+
+	System.out.println("databaseName: " + databaseName + ":");
+
+	boolean doReturn = true;
+	if (doReturn) {
+	    return;
+	}
+
 	if (ConnectionLoader.sqlEngine.equals(SqlUtil.MYSQL)) {
 	    testMySqlStoredProcedure(connection);
 	}
@@ -53,27 +60,47 @@ public class StoredProcedureTest {
 	}
 
 	connection.close();
-	
+
     }
-    
+
+    /**
+     * @param databaseMetaData
+     * @return
+     * @throws SQLException
+     */
+    private static String getSqlServerDatabaseName(DatabaseMetaData databaseMetaData) throws SQLException {
+	String databaseName = null;
+
+	String [] urlElements = databaseMetaData.getURL().split(";");
+
+
+	for (String element : urlElements) {
+	    if (element.contains("databaseName=")) {
+		databaseName = StringUtils.substringAfter(element, "databaseName=");
+		break;
+	    }
+	}
+	return databaseName;
+    }
+
     public static void testSqlServerSoredProcedure(Connection connection) throws SQLException {
 	CallableStatement callableStatement = connection.prepareCall("{call ProcedureName(?, ?, ?) }");
 	callableStatement.registerOutParameter(3, Types.INTEGER);
 	callableStatement.setInt(1, 0);
 	callableStatement.setInt(2, 2);
 	ResultSet rs = callableStatement.executeQuery();
-	
+
 	while (rs.next()) {
 	    System.out.println(rs.getString(1));
 	}
-	
+
 	int out3 = callableStatement.getInt(3);
-	
+
 	callableStatement.close();
-	
+
 	System.out.println();
 	System.out.println("out3: " + out3);
-	
+
     }
 
     public static void testMySqlStoredProcedure(Connection connection) throws SQLException {
@@ -83,20 +110,20 @@ public class StoredProcedureTest {
 	callableStatement.setString(1, "test");
 	callableStatement.setInt(2, 12);
 	ResultSet rs = callableStatement.executeQuery();
-	
+
 	while (rs.next()) {
 	    System.out.println(rs.getString(1));
 	}
-	
+
 	int out2 = callableStatement.getInt(2);
 	int out3 = callableStatement.getInt(3);
-	
+
 	callableStatement.close();
-	
+
 	System.out.println();
 	System.out.println("out2: " + out2);
 	System.out.println("out3: " + out3);
-	
+
     }
 
     public static void testPostrgreSqlStoredProcedures(Connection conn) throws SQLException {
@@ -106,15 +133,15 @@ public class StoredProcedureTest {
 	upperProc.executeUpdate();
 	String upperCased = upperProc.getString(1);
 	upperProc.close();
-	
+
 	System.out.println("upperCased: " + upperCased);
     }
-    
-    
+
+
     public static void parseJson() throws Exception {
-	
+
 	/*
- 
+
  	"parameters_out_per_name":[
             {
                 "out_param_two":"13"
@@ -124,19 +151,19 @@ public class StoredProcedureTest {
             }
     	],
 	 */
-	
-	String jsonContent = 
+
+	String jsonContent =
 	"[{\"out_param_two\":\"13\"}, {\"out_param_three\":\"12\"}]";
-	
+
         JsonReader reader = Json.createReader(new StringReader(jsonContent));
         JsonArray jsonArray = reader.readArray();
-	
+
 	for (JsonValue jsonValue : jsonArray) {
 	    System.out.println(jsonValue.toString());
 	    JsonObject jsonObject = (JsonObject)jsonValue;
-	    System.out.println(jsonObject.keySet());;
+	    System.out.println(jsonObject.keySet());
 	}
-	    
+
     }
 
 

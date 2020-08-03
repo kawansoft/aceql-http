@@ -3,6 +3,8 @@
  */
 package org.kawanfw.sql.api.server.util;
 
+import java.util.Objects;
+
 import org.kawanfw.sql.api.server.DefaultDatabaseConfigurator;
 
 /**
@@ -55,11 +57,11 @@ public class UsernameConverter {
      * Replace back space and specials characters forbidden in Windows file name
      * from ASCII string.
      *
-     * @param string the string with replaced characters
+     * @param stringParm the string with replaced characters
      * @return the string with original spaces and Windows characters
      */
-    public static String toSpecialChars(String string) {
-	string = string.replace(AC_SP, " ");
+    public static String toSpecialChars(final String stringParm) {
+	String string = stringParm.replace(AC_SP, " ");
 	string = string.replace(AC_LT, "<");
 	string = string.replace(AC_GT, ">");
 	string = string.replace(AC_COLON, ":");
@@ -75,15 +77,15 @@ public class UsernameConverter {
     /**
      * Replace Windows special character and spaces by clear ASCII text
      *
-     * @param string the string to replace from the Windows special characters
+     * @param stringParm the string to replace from the Windows special characters
      * @return the string without special Windows characters
      */
-    public static String fromSpecialChars(String string) {
-	if (string == null) {
-	    throw new NullPointerException("string is null!");
+    public static String fromSpecialChars(final String stringParm) {
+	if (stringParm == null) {
+	    Objects.requireNonNull(stringParm, "stringParm cannot be null!");
 	}
 
-	string = string.replace(" ", AC_SP);
+	String string = stringParm.replace(" ", AC_SP);
 	string = string.replace("<", AC_LT);
 	string = string.replace(">", AC_GT);
 	string = string.replace(":", AC_COLON);

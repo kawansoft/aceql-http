@@ -25,6 +25,7 @@
 package org.kawanfw.sql.servlet;
 
 import java.util.Date;
+import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
 import org.kawanfw.sql.util.FrameworkDebug;
@@ -37,12 +38,6 @@ public class ServletPathAnalyzer {
 
     private static boolean DEBUG = FrameworkDebug.isSet(ServletPathAnalyzer.class);
 
-    /**
-     *
-     */
-    public ServletPathAnalyzer() {
-    }
-
     private String connectionModifierOrReader = null;
     private String sqlStatement = null;
     private String blobAction = null;
@@ -51,18 +46,125 @@ public class ServletPathAnalyzer {
     private String session = null;
     private String connection;
 
+    private String database;
+    private String username;
+
+    private String requestUri;
+    private String servletName;
+    private String action;
+
+    public ServletPathAnalyzer(String requestUri, String servletName) {
+	this.requestUri = requestUri;
+	this.servletName = servletName;
+	treat();
+    }
+
+    private void treat() {
+	if (isLoginAction(requestUri, servletName)) {
+	    action = "login";
+	} else if (isVersionAction(requestUri)) {
+	    action = "get_version";
+	    buildElements(servletName, requestUri);
+	} else if (isConnectionModifierOrReader(requestUri)) {
+	    action = getConnectionModifierOrReader();
+	    buildElements(servletName, requestUri);
+	} else if (isBlobAction(requestUri)) {
+	    action = getBlobAction();
+	    buildElements(servletName, requestUri);
+	} else if (isExecuteUpdateOrQueryStatement(requestUri)) {
+	    action = getSqlStatement();
+	    buildElements(servletName, requestUri);
+	} else if (isMetadataQuery(requestUri)) {
+	    ServletMetadataQuery servletMetadataQuery = new ServletMetadataQuery(requestUri);
+	    action = servletMetadataQuery.getAction();
+	    buildElements(servletName, requestUri);
+	} else {
+	    throw new IllegalArgumentException("Unknown action: " + StringUtils.substringAfterLast(requestUri, "/"));
+	}
+    }
+
     public boolean isConnectionModifierOrReader(String requestUri) {
 
-        if (requestUri == null) {
-            throw new NullPointerException("urlContent is null");
-        }
+	Objects.requireNonNull(requestUri, "requestUri cannot be null!");
 
         if (requestUri.endsWith("/get_connection")) {
             connectionModifierOrReader = "get_connection";
             return true;
         }
 
-        if (requestUri.endsWith("/close")) {
+        if (requestUri.endsWith("/get_catalog")) {
+            connectionModifierOrReader = "get_catalog";
+            return true;
+        }
+
+        if (checkCloseCommands(requestUri)) {
+            return true;
+        }
+
+        if (checkCommitCommands(requestUri)) {
+            return true;
+        }
+
+        if (checkHoldabilityAndIsolationCommands(requestUri)) {
+            return true;
+        }
+
+        return checkReadOnlyCommands(requestUri);
+
+    }
+
+    /**
+     * @param requestUri
+     */
+    private boolean checkReadOnlyCommands(String requestUri) {
+	if (requestUri.endsWith("/set_read_only/true") || requestUri.endsWith("/set_read_only/false")) {
+            connectionModifierOrReader = "set_read_only";
+            actionValue = StringUtils.substringAfterLast(requestUri, "/");
+            return true;
+        }
+
+        if (requestUri.endsWith("/is_read_only")) {
+            connectionModifierOrReader = "is_read_only";
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @param requestUri
+     */
+    private boolean checkHoldabilityAndIsolationCommands(String requestUri) {
+	if (requestUri.contains("/set_holdability/")) {
+            connectionModifierOrReader = "set_holdability";
+            actionValue = StringUtils.substringAfterLast(requestUri, "/");
+            return true;
+        }
+
+        if (requestUri.endsWith("/get_holdability")) {
+            connectionModifierOrReader = "get_holdability";
+            return true;
+        }
+
+        if (requestUri.endsWith("/get_transaction_isolation_level")) {
+            connectionModifierOrReader = "get_transaction_isolation_level";
+            return true;
+        }
+
+        if (requestUri.contains("/set_transaction_isolation_level/")) {
+            connectionModifierOrReader = "set_transaction_isolation_level";
+            actionValue = StringUtils.substringAfterLast(requestUri, "/");
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @param requestUri
+     */
+    private boolean checkCloseCommands(String requestUri) {
+	if (requestUri.endsWith("/close")) {
             connectionModifierOrReader = "close";
             return true;
         }
@@ -72,13 +174,15 @@ public class ServletPathAnalyzer {
             return true;
         }
 
-        if (requestUri.endsWith("/commit")) {
-            connectionModifierOrReader = "commit";
-            return true;
-        }
+        return false;
+    }
 
-        if (requestUri.endsWith("/get_catalog")) {
-            connectionModifierOrReader = "get_catalog";
+    /**
+     * @param requestUri
+     */
+    private boolean checkCommitCommands(String requestUri) {
+	if (requestUri.endsWith("/commit")) {
+            connectionModifierOrReader = "commit";
             return true;
         }
 
@@ -93,64 +197,57 @@ public class ServletPathAnalyzer {
             return true;
         }
 
-        if (requestUri.endsWith("/set_read_only/true") || requestUri.endsWith("/set_read_only/false")) {
-            connectionModifierOrReader = "set_read_only";
-            actionValue = StringUtils.substringAfterLast(requestUri, "/");
-            return true;
-        }
-
-        if (requestUri.contains("/set_transaction_isolation_level/")) {
-            connectionModifierOrReader = "set_transaction_isolation_level";
-            actionValue = StringUtils.substringAfterLast(requestUri, "/");
-            return true;
-        }
-
-        if (requestUri.contains("/set_holdability/")) {
-            connectionModifierOrReader = "set_holdability";
-            actionValue = StringUtils.substringAfterLast(requestUri, "/");
-            return true;
-        }
 
         if (requestUri.endsWith("/get_auto_commit")) {
             connectionModifierOrReader = "get_auto_commit";
             return true;
         }
 
-        if (requestUri.endsWith("/is_read_only")) {
-            connectionModifierOrReader = "is_read_only";
-            return true;
-        }
-
-        if (requestUri.endsWith("/get_holdability")) {
-            connectionModifierOrReader = "get_holdability";
-            return true;
-        }
-
-        if (requestUri.endsWith("/get_transaction_isolation_level")) {
-            connectionModifierOrReader = "get_transaction_isolation_level";
-            return true;
-        }
-
         return false;
+    }
 
+    public boolean isLoginAction(final String requestUri, String servletName) {
+
+	String requestUriNew = requestUri;
+
+	if (isLoginAction(requestUriNew)) {
+
+	    if (!requestUriNew.contains("/" + servletName + "/database/")) {
+		throw new IllegalArgumentException("Request does not contain /database/ subpath in path");
+	    }
+
+	    if (!requestUriNew.contains("/username/")) {
+		throw new IllegalArgumentException("Request does not contain /username/ subpath in path");
+	    }
+
+	    database = StringUtils.substringBetween(requestUriNew, "/database/", "/username");
+
+	    // Accept /connect pattern
+	    if (requestUriNew.endsWith("/connect")) {
+		requestUriNew = StringUtils.substringBeforeLast(requestUriNew, "/connect") + "/login";
+	    } else if (requestUriNew.contains("/connect?")) {
+		requestUriNew = StringUtils.substringBeforeLast(requestUriNew, "/connect?") + "/login?";
+	    }
+
+	    username = StringUtils.substringBetween(requestUriNew, "/username/", "/login");
+	    return true;
+	} else {
+	    return false;
+	}
+
+    }
+
+    private boolean isLoginAction(String requestUri) {
+	return requestUri.endsWith("/login") || requestUri.endsWith("/connect");
     }
 
     public boolean isVersionAction(String urlContent) {
-        if (urlContent == null) {
-            throw new NullPointerException("urlContent is null");
-        }
-
-        if (urlContent.endsWith("/get_version")) {
-            return true;
-        } else {
-            return false;
-        }
+	Objects.requireNonNull(urlContent, "urlContent cannot be null!");
+	return urlContent.endsWith("/get_version");
     }
 
     public boolean isBlobAction(String urlContent) {
-        if (urlContent == null) {
-            throw new NullPointerException("urlContent is null");
-        }
+	Objects.requireNonNull(urlContent, "urlContent cannot be null!");
 
         if (urlContent.endsWith("/blob_upload")) {
             blobAction = "blob_upload";
@@ -172,24 +269,17 @@ public class ServletPathAnalyzer {
     }
 
     public String getBlobAction() {
-        if (blobAction == null) {
-            throw new NullPointerException("blobAction is null. Call isBlobAction() before");
-        }
+        Objects.requireNonNull(blobAction, "blobAction cannot be null. Call isBlobAction() before");
         return blobAction;
     }
 
     public String getConnectionModifierOrReader() {
-
-        if (connectionModifierOrReader == null) {
-            throw new NullPointerException("connectionModifierOrReader is null. Call isConnectionModifier() before");
-        }
+        Objects.requireNonNull(connectionModifierOrReader, "connectionModifierOrReader cannot be null. Call isConnectionModifier() before");
         return connectionModifierOrReader;
     }
 
     public boolean isExecuteUpdateOrQueryStatement(String urlContent) {
-        if (urlContent == null) {
-            throw new NullPointerException("urlContent is null");
-        }
+	Objects.requireNonNull(urlContent, "urlContent cannot be null!");
 
         if (urlContent.endsWith("/execute_update")) {
             sqlStatement = "execute_update";
@@ -211,9 +301,7 @@ public class ServletPathAnalyzer {
     }
 
     public boolean isMetadataQuery(final String urlContent) {
-        if (urlContent == null) {
-            throw new NullPointerException("urlContent is null");
-        }
+	Objects.requireNonNull(urlContent, "urlContent cannot be null!");
 
         if (!urlContent.contains("/metadata_query/")) {
             return false;
@@ -234,9 +322,7 @@ public class ServletPathAnalyzer {
 
     public void buildElements(String servletName, String urlContent) {
 
-        if (urlContent == null) {
-            throw new NullPointerException("urlContent is null");
-        }
+	Objects.requireNonNull(urlContent, "urlContent cannot be null!");
 
         if (!urlContent.contains("/session/")) {
             throw new IllegalArgumentException("Request does not contain /session/ subpath in path");
@@ -251,6 +337,16 @@ public class ServletPathAnalyzer {
         // can be null
         connection = StringUtils.substringBetween(urlContent, "/connection/", "/");
 
+    }
+
+
+
+    public String getDatabase() {
+        return database;
+    }
+
+    public String getUsername() {
+        return username;
     }
 
     public String getSession() {
@@ -269,6 +365,10 @@ public class ServletPathAnalyzer {
         return actionValue;
     }
 
+    public String getAction() {
+        return action;
+    }
+
     /**
      * Debug
      */
@@ -277,5 +377,7 @@ public class ServletPathAnalyzer {
             System.out.println(new Date() + " " + s);
         }
     }
+
+
 
 }

@@ -12,10 +12,6 @@ import org.kawanfw.sql.api.server.util.SimpleSha1;
 
 public class TestUserAuthenticator implements UserAuthenticator {
 
-    public TestUserAuthenticator() {
-	// TODO Auto-generated constructor stub
-    }
-
     /**
      * Our own Acme Company authentication of remote client users. This methods
      * overrides the {@link DefaultDatabaseConfigurator#login} method. <br>

@@ -5,7 +5,7 @@ package org.kawanfw.sql.servlet;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.OutputStream;
 import java.sql.SQLException;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,12 +25,14 @@ import org.kawanfw.sql.servlet.sql.json_return.JsonOkReturn;
  */
 public class BlobUploader {
 
-    private HttpServletRequest request = null;
-    private HttpServletResponse response = null;
+    private HttpServletRequest request;
+    private HttpServletResponse response;
+    private OutputStream out;
 
-    public BlobUploader(HttpServletRequest request, HttpServletResponse response) {
+    public BlobUploader(HttpServletRequest request, HttpServletResponse response, OutputStream out) {
 	this.request = request;
 	this.response = response;
+	this.out = out;
     }
 
     public void blobUpload()
@@ -52,27 +54,26 @@ public class BlobUploader {
 	}
 
 	if (blobDirectory == null || !blobDirectory.exists()) {
-	    PrintWriter out = response.getWriter();
+
 	    JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_NOT_FOUND,
 		    JsonErrorReturn.ERROR_ACEQL_ERROR,
 		    JsonErrorReturn.BLOB_DIRECTORY_DOES_NOT_EXIST + blobDirectory.getName());
-	    out.println(errorReturn.build());
+	    ServerSqlManager.writeLine(out, errorReturn.build());
 	    return;
 	}
 
-	PrintWriter out = response.getWriter();
 	try {
 	    BlobUploadConfigurator blobUploadConfigurator = ServerSqlManager.getBlobUploadConfigurator();
 	    blobUploadConfigurator.upload(request, response, blobDirectory);
 
 	    // Say it's OK to the client
-	    out.println(JsonOkReturn.build());
+	    ServerSqlManager.writeLine(out, JsonOkReturn.build());
 	} catch (Exception e) {
 
 	    JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
 		    JsonErrorReturn.ERROR_ACEQL_ERROR, JsonErrorReturn.ERROR_UPLOADING_BLOB + e.getMessage(),
 		    ExceptionUtils.getStackTrace(e));
-	    out.println(errorReturn.build());
+	    ServerSqlManager.writeLine(out, errorReturn.build());
 
 	    LoggerUtil.log(request, e);
 	}
