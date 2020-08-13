@@ -67,7 +67,8 @@ public class HttpParameter {
     public static final Object GET_VERSION = "get_version";
 
     // Meta action
-    public static final Object GET_CATALOG = "get_catalog";
+    public static final String GET_CATALOG = "get_catalog";
+    public static final String GET_SCHEMA = "get_sechema";
 
     // Connections modifiers & Getters Action & values
     public static final String COMMIT = "commit";
@@ -91,6 +92,9 @@ public class HttpParameter {
 
     public static final String HOLD_CURSORS_OVER_COMMIT = "hold_cursors_over_commit";
     public static final String CLOSE_CURSORS_AT_COMMIT = "close_cursors_at_commit";
+
+    // JDBC DatabaseMetaData action
+    public static final String JDBC_DATABASE_META_DATA = "jdbc_database_meta_data";
 
     //METADATA Actions
     public static final String METADATA_QUERY_DB_SCHEMA_DOWNLOAD = "metadata_query_db_schema_download";
@@ -142,6 +146,7 @@ public class HttpParameter {
     public static final String FORMAT = "format";
     public static final String TABLE_NAME = "table_name";
     public static final String TABLE_TYPE = "table_type";
+
 
     /**
      * Protected

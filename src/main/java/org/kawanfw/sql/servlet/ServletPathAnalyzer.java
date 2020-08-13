@@ -74,14 +74,23 @@ public class ServletPathAnalyzer {
 	} else if (isExecuteUpdateOrQueryStatement(requestUri)) {
 	    action = getSqlStatement();
 	    buildElements(servletName, requestUri);
-	} else if (isMetadataQuery(requestUri)) {
+	}
+	else if (isJdbcDatabaseMetaData(requestUri)) {
+	    action = HttpParameter.JDBC_DATABASE_META_DATA;
+	    buildElements(servletName, requestUri);
+	}
+	else if (isMetadataQuery(requestUri)) {
 	    ServletMetadataQuery servletMetadataQuery = new ServletMetadataQuery(requestUri);
 	    action = servletMetadataQuery.getAction();
 	    buildElements(servletName, requestUri);
-	} else {
+	}
+
+	else {
 	    throw new IllegalArgumentException("Unknown action: " + StringUtils.substringAfterLast(requestUri, "/"));
 	}
     }
+
+
 
     public boolean isConnectionModifierOrReader(String requestUri) {
 
@@ -96,6 +105,12 @@ public class ServletPathAnalyzer {
             connectionModifierOrReader = "get_catalog";
             return true;
         }
+
+        if (requestUri.endsWith("/get_schema")) {
+            connectionModifierOrReader = "get_catalog";
+            return true;
+        }
+
 
         if (checkCloseCommands(requestUri)) {
             return true;
@@ -298,6 +313,14 @@ public class ServletPathAnalyzer {
 
         return false;
 
+    }
+
+    private boolean isJdbcDatabaseMetaData(String urlContent) {
+	Objects.requireNonNull(urlContent, "urlContent cannot be null!");
+        if (!urlContent.contains("/jdbc/database_meta_data")) {
+            return false;
+        }
+	return true;
     }
 
     public boolean isMetadataQuery(final String urlContent) {

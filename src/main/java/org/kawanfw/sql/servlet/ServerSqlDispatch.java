@@ -117,12 +117,18 @@ public class ServerSqlDispatch {
 
 	List<SqlFirewallManager> sqlFirewallManagers = ServerSqlManager.getSqlFirewallMap().get(database);
 
-	if (isMetadataQuery(request, response, out, action, connection, sqlFirewallManagers)) {
+	if (doTreatJdbcDatabaseMetaData(request, response, out, action, connection, sqlFirewallManagers)) {
+	    return;
+	}
+
+	if (doTreatMetadataQuery(request, response, out, action, connection, sqlFirewallManagers)) {
 	    return;
 	}
 
 	dispatch(request, response, out, action, connection, sqlFirewallManagers);
     }
+
+
 
     /**
      * Treat if action is get_version
@@ -177,6 +183,30 @@ public class ServerSqlDispatch {
     }
 
     /**
+     * Treat
+     * @param request
+     * @param response
+     * @param out
+     * @param action
+     * @param connection
+     * @param sqlFirewallManagers
+     * @return
+     */
+    private boolean doTreatJdbcDatabaseMetaData(HttpServletRequest request, HttpServletResponse response,
+	    OutputStream out, String action, Connection connection, List<SqlFirewallManager> sqlFirewallManagers)
+		    throws SQLException, IOException {
+	// Redirect if it's a metadaquery
+	if (ActionUtil.isJdbcDatabaseMetaDataQuery(action)) {
+	    MetadataQueryActionManager metadataQueryActionManager = new MetadataQueryActionManager(request, response,
+		    out, sqlFirewallManagers, connection);
+	    metadataQueryActionManager.execute();
+	    return true;
+	} else {
+	    return false;
+	}
+    }
+
+    /**
      * Tread metadata query.
      *
      * @param request
@@ -188,11 +218,11 @@ public class ServerSqlDispatch {
      * @throws SQLException
      * @throws IOException
      */
-    private boolean isMetadataQuery(HttpServletRequest request, HttpServletResponse response, OutputStream out,
+    private boolean doTreatMetadataQuery(HttpServletRequest request, HttpServletResponse response, OutputStream out,
 	    String action, Connection connection, List<SqlFirewallManager> sqlFirewallManagers)
 	    throws SQLException, IOException {
 	// Redirect if it's a metadaquery
-	if (ServletMetadataQuery.isMetadataQueryAction(action)) {
+	if (ActionUtil.isMetadataQueryAction(action)) {
 	    MetadataQueryActionManager metadataQueryActionManager = new MetadataQueryActionManager(request, response,
 		    out, sqlFirewallManagers, connection);
 	    metadataQueryActionManager.execute();

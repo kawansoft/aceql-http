@@ -1,6 +1,6 @@
 
                      AceQL HTTP
-                     Version 5.1
+                     Version 6.0
                     Release Notes
 
 
@@ -25,6 +25,16 @@ AceQL HTTP is licensed through the GNU Lesser General Public License
 (LGPL v2.1).
 
 
+AceQL HTTP Version 6.0 - 13-Aug-2020
+------------------------------------
+
+What's New:
+
+- Add /get_vatalog and /get_schema API.
+- Implement server side calls for client JDBC metadata calls. This
+  allows the Client Java SDK to be plugged as a real JDBC Driver.
+  
+  
 AceQL HTTP Version 5.1 - 03-Aug-2020
 ------------------------------------
 

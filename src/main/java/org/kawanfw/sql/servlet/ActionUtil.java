@@ -24,35 +24,28 @@
  */
 package org.kawanfw.sql.servlet;
 
+import java.sql.SQLException;
 import java.util.Objects;
 
-public class ServletMetadataQuery {
+/**
+ * Utility methods for actions.
+ * @author Nicolas de Pomereu
+ *
+ */
+public class ActionUtil {
 
-    public static final String METADATA_QUERY = "METADATA_QUERY";
+    public static boolean isMetadataQueryAction(String action) throws SQLException {
+        Objects.requireNonNull(action, "action cannot be null!");
 
-    private String requestUri = null;
-
-    public ServletMetadataQuery(String requestUri) {
-	this.requestUri =Objects.requireNonNull(requestUri, "requestUri cannot be null!");
+        return (action.equals(HttpParameter.METADATA_QUERY_DB_SCHEMA_DOWNLOAD)
+        	|| action.equals(HttpParameter.METADATA_QUERY_GET_TABLE_DETAILS)
+        	|| action.equals(HttpParameter.METADATA_QUERY_GET_DB_METADATA)
+        	|| action.equals(HttpParameter.METADATA_QUERY_GET_TABLE_NAMES));
     }
 
-    public String getAction() {
-
-	if (requestUri.contains("/metadata_query/db_schema_download")) {
-	    return HttpParameter.METADATA_QUERY_DB_SCHEMA_DOWNLOAD;
-	}
-	else if (requestUri.endsWith("/metadata_query/get_db_metadata")) {
-	    return HttpParameter.METADATA_QUERY_GET_DB_METADATA;
-	}
-	else if (requestUri.endsWith("/metadata_query/get_table_names")) {
-	    return HttpParameter.METADATA_QUERY_GET_TABLE_NAMES;
-	}
-	else if (requestUri.contains("/metadata_query/get_table")) {
-	    return HttpParameter.METADATA_QUERY_GET_TABLE_DETAILS;
-	}
-	else {
-	    throw new IllegalArgumentException("Unknown metadata_query action: " + requestUri);
-	}
+    public static boolean isJdbcDatabaseMetaDataQuery(String action) {
+        return action.equals(HttpParameter.JDBC_DATABASE_META_DATA);
     }
+
 
 }

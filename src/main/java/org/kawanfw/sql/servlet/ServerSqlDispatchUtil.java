@@ -41,7 +41,7 @@ public class ServerSqlDispatchUtil {
     }
 
     public static boolean isConnectionReader(String action) {
-        return action.equals(HttpParameter.GET_AUTO_COMMIT) || action.equals(HttpParameter.GET_CATALOG)
+        return action.equals(HttpParameter.GET_AUTO_COMMIT) || action.equals(HttpParameter.GET_CATALOG) || action.equals(HttpParameter.GET_SCHEMA)
         	|| action.equals(HttpParameter.GET_HOLDABILITY) || action.equals(HttpParameter.IS_READ_ONLY)
         	|| action.equals(HttpParameter.GET_TRANSACTION_ISOLATION_LEVEL);
     }

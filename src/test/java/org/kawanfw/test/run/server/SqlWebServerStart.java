@@ -51,9 +51,9 @@ public class SqlWebServerStart {
      */
     public static void main(String[] args) throws Exception {
 
-	int port = 9095;
+	int port = 9090;
 
-	map.put(port, "I:\\_dev_awake\\aceql-http-main\\aceql-http\\conf\\aceql-server-firewall.properties");
+	map.put(port, "I:\\_dev_awake\\aceql-http-main\\aceql-http\\conf\\aceql-server.properties");
 	start(port);
 
 	while(true) {
