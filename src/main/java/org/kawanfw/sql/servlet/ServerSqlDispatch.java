@@ -43,6 +43,7 @@ import org.kawanfw.sql.servlet.connection.ConnectionStore;
 import org.kawanfw.sql.servlet.connection.ConnectionStoreCleaner;
 import org.kawanfw.sql.servlet.connection.SavepointUtil;
 import org.kawanfw.sql.servlet.connection.TransactionUtil;
+import org.kawanfw.sql.servlet.jdbc.metadata.JdbcDatabaseMetadataActionManager;
 import org.kawanfw.sql.servlet.sql.ServerStatement;
 import org.kawanfw.sql.servlet.sql.callable.ServerCallableStatement;
 import org.kawanfw.sql.servlet.sql.json_return.JsonErrorReturn;
@@ -195,11 +196,11 @@ public class ServerSqlDispatch {
     private boolean doTreatJdbcDatabaseMetaData(HttpServletRequest request, HttpServletResponse response,
 	    OutputStream out, String action, Connection connection, List<SqlFirewallManager> sqlFirewallManagers)
 		    throws SQLException, IOException {
-	// Redirect if it's a metadaquery
+	// Redirect if it's a JDBC DatabaseMetaData call
 	if (ActionUtil.isJdbcDatabaseMetaDataQuery(action)) {
-	    MetadataQueryActionManager metadataQueryActionManager = new MetadataQueryActionManager(request, response,
+	    JdbcDatabaseMetadataActionManager jdbcDatabaseMetadataActionManager = new JdbcDatabaseMetadataActionManager(request, response,
 		    out, sqlFirewallManagers, connection);
-	    metadataQueryActionManager.execute();
+	    jdbcDatabaseMetadataActionManager.execute();
 	    return true;
 	} else {
 	    return false;

@@ -95,6 +95,7 @@ public class HttpParameter {
 
     // JDBC DatabaseMetaData action
     public static final String JDBC_DATABASE_META_DATA = "jdbc_database_meta_data";
+    public static final String JSON_DATABASE_META_DATA_METHOD_CALLL_DTO = "json_database_meta_data_method_call_dto";
 
     //METADATA Actions
     public static final String METADATA_QUERY_DB_SCHEMA_DOWNLOAD = "metadata_query_db_schema_download";
@@ -146,6 +147,8 @@ public class HttpParameter {
     public static final String FORMAT = "format";
     public static final String TABLE_NAME = "table_name";
     public static final String TABLE_TYPE = "table_type";
+
+
 
 
     /**
