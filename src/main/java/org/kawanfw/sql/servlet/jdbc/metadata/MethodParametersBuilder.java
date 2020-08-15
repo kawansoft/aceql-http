@@ -42,8 +42,7 @@ public class MethodParametersBuilder {
     private List<String> paramTypes;
     private List<String> paramsValues;
 
-    @SuppressWarnings("rawtypes")
-    private Class[] methodParamTypes;
+    private Class<?>[] methodParamTypes;
     private Object[] methodParamValues;
 
     /**
@@ -51,14 +50,23 @@ public class MethodParametersBuilder {
      *
      * @param paramTypes
      * @param paramsValues
+     * @throws InvocationTargetException
+     * @throws IllegalAccessException
+     * @throws InstantiationException
+     * @throws IllegalArgumentException
+     * @throws NoSuchMethodException
+     * @throws SecurityException
+     * @throws ClassNotFoundException
      */
-    public MethodParametersBuilder(List<String> paramTypes, List<String> paramsValues) {
+    public MethodParametersBuilder(List<String> paramTypes, List<String> paramsValues)
+	    throws ClassNotFoundException, SecurityException, NoSuchMethodException, IllegalArgumentException,
+	    InstantiationException, IllegalAccessException, InvocationTargetException {
 	this.paramTypes = paramTypes;
 	this.paramsValues = paramsValues;
-
+	this.build();
     }
 
-    public void build() throws ClassNotFoundException, SecurityException, NoSuchMethodException,
+    private void build() throws ClassNotFoundException, SecurityException, NoSuchMethodException,
 	    IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException {
 	methodParamTypes = new Class[paramTypes.size()];
 	methodParamValues = new Object[paramsValues.size()];
@@ -82,13 +90,12 @@ public class MethodParametersBuilder {
 	}
     }
 
-
     public Class<?>[] getMethodParamTypes() {
-        return methodParamTypes;
+	return methodParamTypes;
     }
 
     public Object[] getMethodParamValues() {
-        return methodParamValues;
+	return methodParamValues;
     }
 
     /**

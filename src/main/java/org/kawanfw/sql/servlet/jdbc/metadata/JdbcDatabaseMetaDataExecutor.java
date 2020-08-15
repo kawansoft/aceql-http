@@ -116,26 +116,9 @@ public class JdbcDatabaseMetaDataExecutor {
 	 * </pre>
 	 */
 
-	Class<?>[] methodParameterTypes = new Class[paramTypes.size()];
-	Object[] methodParameterValues = new Object[paramsValues.size()];
-
-	for (int i = 0; i < paramTypes.size(); i++) {
-	    String value = paramsValues.get(i);
-
-	    String javaType = paramTypes.get(i);
-	    JavaValueBuilder javaValueBuilder = new JavaValueBuilder(javaType, value);
-
-	    methodParameterTypes[i] = javaValueBuilder.getClassOfValue();
-	    methodParameterValues[i] = javaValueBuilder.getValue();
-
-	    // Trap NULL values
-	    if (methodParameterValues[i].equals("NULL")) {
-		methodParameterValues[i] = null;
-	    }
-
-	    debug("methodParameterTypes[i] : " + methodParameterTypes[i]);
-	    debug("methodParameterValues[i]: " + methodParameterValues[i]);
-	}
+	MethodParametersBuilder methodParametersBuilder = new MethodParametersBuilder(paramTypes, paramsValues);
+	Class<?>[] methodParameterTypes = methodParametersBuilder.getMethodParamTypes();
+	Object[] methodParameterValues = methodParametersBuilder.getMethodParamValues();
 
 	Object resultObj = callMethodWithReflection(methodName, databaseMetaData, methodParameterTypes, methodParameterValues);
 

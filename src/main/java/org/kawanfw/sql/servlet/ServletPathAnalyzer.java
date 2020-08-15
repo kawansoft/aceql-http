@@ -317,10 +317,7 @@ public class ServletPathAnalyzer {
 
     private boolean isJdbcDatabaseMetaData(String urlContent) {
 	Objects.requireNonNull(urlContent, "urlContent cannot be null!");
-        if (!urlContent.contains("/jdbc/database_meta_data")) {
-            return false;
-        }
-	return true;
+	return urlContent.contains("/jdbc/database_meta_data");
     }
 
     public boolean isMetadataQuery(final String urlContent) {
