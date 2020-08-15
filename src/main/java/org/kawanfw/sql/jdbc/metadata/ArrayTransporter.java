@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 
 /**
+ * Transport as sString array parameters for DatabaseMetaData methods execution.
  * @author Nicolas de Pomereu
  *
  */
@@ -36,7 +37,6 @@ public class ArrayTransporter {
      * Static class
      */
     protected ArrayTransporter() {
-
 
     }
 
@@ -78,13 +78,13 @@ public class ArrayTransporter {
 	}
 
 	String [] split = StringUtils.split(join, SEPARATOR);
-	int [] intArray2 = new int [split.length];
+	int [] intArray = new int [split.length];
 
 	for (int i = 0; i < split.length; i++) {
-	    intArray2[i]= Integer.parseInt(split[i]);
+	    intArray[i]= Integer.parseInt(split[i]);
 	}
 
-	return intArray2;
+	return intArray;
 
     }
 

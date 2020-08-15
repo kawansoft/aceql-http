@@ -101,20 +101,15 @@ public class JdbcDatabaseMetaDataExecutor {
 
 	// Trap DatabaseMetaData.getTables() & DatabaseMetaData.getUDTs()
 	// that have special array String[] or int[] parameters
-	/**
-	 * <pre>
-	 * <code>
+
 	if (methodName.equals("getTables") || methodName.equals("getUDTs")
 		|| methodName.equals("getPrimaryKeys")) {
-	    DatabaseMetaDataSpecial databaseMetaDataSpecial = new DatabaseMetaDataSpecial(
-		    databaseMetaData, methodName, listParamsValues);
+	    DatabaseMetaDataSpecialExecutor databaseMetaDataSpecial = new DatabaseMetaDataSpecialExecutor(
+		    databaseMetaData, methodName, paramsValues);
 	    ResultSet rs = databaseMetaDataSpecial.execute();
 	    dumpResultSetOnServletOutStream(rs);
 	    return;
 	}
-	</code>
-	 * </pre>
-	 */
 
 	MethodParametersBuilder methodParametersBuilder = new MethodParametersBuilder(paramTypes, paramsValues);
 	Class<?>[] methodParameterTypes = methodParametersBuilder.getMethodParamTypes();
