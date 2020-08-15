@@ -149,8 +149,9 @@ public class DatabaseMetaDataSpecialExecutor {
 	if (tableNamePattern.equals("NULL"))
 	    tableNamePattern = null;
 
-	if (types.length == 1 && types[0] == "NULL")
+	if (types != null && types.length == 1 && types[0].equals("NULL")) {
 	    types = null;
+	}
 
 	ResultSet rsMetaTables = databaseMetaData.getTables(catalog,
 		schemaPattern, tableNamePattern, types);
@@ -184,7 +185,7 @@ public class DatabaseMetaDataSpecialExecutor {
 	if (tableNamePattern.equals("NULL"))
 	    tableNamePattern = null;
 
-	if (types.length == 1 && types[0] == -999)
+	if (types != null && types.length == 1 && types[0] == -999)
 	    types = null;
 
 	ResultSet rs = databaseMetaData.getUDTs(catalog, schemaPattern,
