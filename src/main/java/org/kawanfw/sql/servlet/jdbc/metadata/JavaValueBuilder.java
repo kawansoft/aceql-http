@@ -121,7 +121,7 @@ public class JavaValueBuilder {
 	    value = new BigDecimal(stringValue);
 	} else if (javaType.endsWith("Boolean")) {
 	    classOfValue = boolean.class;
-	    value = new Boolean(stringValue);
+	    value = Boolean.valueOf(stringValue);
 	} else if (javaType.endsWith("File")) {
 	    classOfValue = File.class;
 	    value = new File(stringValue);

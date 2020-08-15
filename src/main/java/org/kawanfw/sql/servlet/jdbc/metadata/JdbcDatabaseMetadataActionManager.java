@@ -31,7 +31,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,7 +47,6 @@ import org.kawanfw.sql.servlet.HttpParameter;
 import org.kawanfw.sql.servlet.ServerSqlManager;
 import org.kawanfw.sql.servlet.sql.json_return.JsonErrorReturn;
 import org.kawanfw.sql.servlet.sql.json_return.JsonSecurityMessage;
-import org.kawanfw.sql.util.FrameworkDebug;
 
 /**
  * Execute the DatabaseMetaData method call asked by client side.
@@ -56,9 +54,6 @@ import org.kawanfw.sql.util.FrameworkDebug;
  * @author Nicolas de Pomereu
  */
 public class JdbcDatabaseMetadataActionManager {
-
-    /** Set to true to display/log debug info */
-    private static boolean DEBUG = FrameworkDebug.isSet(JavaValueBuilder.class);
 
     private HttpServletRequest request;
     private HttpServletResponse response;
@@ -154,20 +149,10 @@ public class JdbcDatabaseMetadataActionManager {
 	DatabaseMetaDataMethodCallDTO databaseMetaDataMethodCallDTO = GsonWsUtil.fromJson(jsonString,
 		DatabaseMetaDataMethodCallDTO.class);
 
-	JdbcDatabaseMetaDataExecutor jdbcDatabaseMetaDataExecutor = new JdbcDatabaseMetaDataExecutor(databaseMetaDataMethodCallDTO, out, connection);
+	JdbcDatabaseMetaDataExecutor jdbcDatabaseMetaDataExecutor = new JdbcDatabaseMetaDataExecutor(request, databaseMetaDataMethodCallDTO, out, connection);
 	jdbcDatabaseMetaDataExecutor.callDatabaseMetaDataMethod();
 
     }
 
-    /**
-     * Debug tool
-     *
-     * @param s
-     */
-    private void debug(String s) {
-	if (DEBUG) {
-	    System.out.println(new Date() + " " + s);
-	}
-    }
 
 }

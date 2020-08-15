@@ -1,8 +1,30 @@
-/**
+/*
+ * This file is part of AceQL HTTP.
+ * AceQL HTTP: SQL Over HTTP
+ * Copyright (C) 2020,  KawanSoft SAS
+ * (http://www.kawansoft.com). All rights reserved.
  *
+ * AceQL HTTP is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * AceQL HTTP is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+ * 02110-1301  USA
+ *
+ * Any modifications to this file must keep this entire header
+ * intact.
  */
 package org.kawanfw.sql.servlet.jdbc.metadata;
 
+import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -13,9 +35,18 @@ import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 
+import javax.json.stream.JsonGenerator;
+import javax.json.stream.JsonGeneratorFactory;
+import javax.servlet.http.HttpServletRequest;
+
+import org.kawanfw.sql.jdbc.metadata.BooleanResponseDTO;
 import org.kawanfw.sql.jdbc.metadata.DatabaseMetaDataMethodCallDTO;
+import org.kawanfw.sql.metadata.util.GsonWsUtil;
+import org.kawanfw.sql.servlet.HttpParameter;
+import org.kawanfw.sql.servlet.ServerSqlManager;
+import org.kawanfw.sql.servlet.sql.ResultSetWriter;
+import org.kawanfw.sql.servlet.sql.json_return.JsonUtil;
 import org.kawanfw.sql.util.FrameworkDebug;
-import org.kawanfw.sql.util.HtmlConverter;
 import org.kawanfw.sql.util.Tag;
 
 /**
@@ -25,20 +56,24 @@ import org.kawanfw.sql.util.Tag;
 public class JdbcDatabaseMetaDataExecutor {
 
     /** Set to true to display/log debug info */
-    private static boolean DEBUG = FrameworkDebug.isSet(JavaValueBuilder.class);
+    private static boolean DEBUG = FrameworkDebug.isSet(JdbcDatabaseMetaDataExecutor.class);
 
+    private HttpServletRequest request;
     private DatabaseMetaDataMethodCallDTO databaseMetaDataMethodCallDTO;
     private OutputStream out;
     private Connection connection;
 
+
     /**
      * Constructor.
+     * @param request TODO
      * @param databaseMetaDataMethodCallDTO
      * @param out
      * @param connection
      */
-    public JdbcDatabaseMetaDataExecutor(DatabaseMetaDataMethodCallDTO databaseMetaDataMethodCallDTO, OutputStream out,
-	    Connection connection) {
+    public JdbcDatabaseMetaDataExecutor(HttpServletRequest request, DatabaseMetaDataMethodCallDTO databaseMetaDataMethodCallDTO,
+	    OutputStream out, Connection connection) {
+	this.request = request;
 	this.databaseMetaDataMethodCallDTO = databaseMetaDataMethodCallDTO;
 	this.out = out;
 	this.connection = connection;
@@ -54,11 +89,13 @@ public class JdbcDatabaseMetaDataExecutor {
      * @throws InstantiationException
      * @throws IllegalAccessException
      * @throws InvocationTargetException
+     * @throws IOException
      */
-    public void callDatabaseMetaDataMethod() throws SQLException, ClassNotFoundException, SecurityException, NoSuchMethodException, IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException {
+    public void callDatabaseMetaDataMethod() throws SQLException, ClassNotFoundException, SecurityException, NoSuchMethodException, IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException, IOException {
+
 	String methodName = databaseMetaDataMethodCallDTO.getMethodName();
-	List<String> listParamsTypes = databaseMetaDataMethodCallDTO.getParamTypes();
-	List<String> listParamsValues = databaseMetaDataMethodCallDTO.getParamValues();
+	List<String> paramTypes = databaseMetaDataMethodCallDTO.getParamTypes();
+	List<String> paramsValues = databaseMetaDataMethodCallDTO.getParamValues();
 
 	DatabaseMetaData databaseMetaData = connection.getMetaData();
 
@@ -79,54 +116,75 @@ public class JdbcDatabaseMetaDataExecutor {
 	 * </pre>
 	 */
 
-	@SuppressWarnings("rawtypes")
-	Class[] argTypes = new Class[listParamsTypes.size()];
-	Object[] values = new Object[listParamsValues.size()];
+	Class<?>[] methodParameterTypes = new Class[paramTypes.size()];
+	Object[] methodParameterValues = new Object[paramsValues.size()];
 
-	for (int i = 0; i < listParamsTypes.size(); i++) {
-	    String value = listParamsValues.get(i);
+	for (int i = 0; i < paramTypes.size(); i++) {
+	    String value = paramsValues.get(i);
 
-	    String javaType = listParamsTypes.get(i);
+	    String javaType = paramTypes.get(i);
 	    JavaValueBuilder javaValueBuilder = new JavaValueBuilder(javaType, value);
 
-	    argTypes[i] = javaValueBuilder.getClassOfValue();
-	    values[i] = javaValueBuilder.getValue();
+	    methodParameterTypes[i] = javaValueBuilder.getClassOfValue();
+	    methodParameterValues[i] = javaValueBuilder.getValue();
 
 	    // Trap NULL values
-	    if (values[i].equals("NULL")) {
-		values[i] = null;
+	    if (methodParameterValues[i].equals("NULL")) {
+		methodParameterValues[i] = null;
 	    }
 
-	    debug("argTypes[i]: " + argTypes[i]);
-	    debug("values[i]  : " + values[i]);
+	    debug("methodParameterTypes[i] : " + methodParameterTypes[i]);
+	    debug("methodParameterValues[i]: " + methodParameterValues[i]);
 	}
 
-	Object resultObj = callMethodWithReflection(methodName, databaseMetaData, argTypes, values);
+	Object resultObj = callMethodWithReflection(methodName, databaseMetaData, methodParameterTypes, methodParameterValues);
 
 	if (resultObj instanceof ResultSet) {
 	    ResultSet rs = (ResultSet) resultObj;
-	    // dumpResultSetOnServletOutStream(rs);
+	    dumpResultSetOnServletOutStream(rs);
 
 	} else {
 	    // All other formats are handled in String
 	    String result = null;
-	    if (resultObj != null)
+	    if (resultObj != null) {
 		result = resultObj.toString();
-	    debug("actionInvokeRemoteMethod:result: " + result);
-	    result = HtmlConverter.toHtml(result);
+	    }
 
-	    // out.println(TransferStatus.SEND_OK);
-	    // out.println(result);
+	    debug("callMethodWithReflection: " + result);
+	    Boolean booleanResult = Boolean.parseBoolean(result);
+	    BooleanResponseDTO booleanResponseDTO = new BooleanResponseDTO(booleanResult);
+	    String jsonString = GsonWsUtil.getJSonString(booleanResponseDTO);
+	    ServerSqlManager.writeLine(out, jsonString);
 	}
 
     }
+
+    private void dumpResultSetOnServletOutStream(ResultSet rs) throws SQLException, IOException {
+	boolean doPrettyPrinting = true;
+	JsonGeneratorFactory jf = JsonUtil.getJsonGeneratorFactory(doPrettyPrinting);
+
+	String username = request.getParameter(HttpParameter.USERNAME);
+	JsonGenerator gen = jf.createGenerator(out);
+	gen.writeStartObject().write("status", "OK");
+
+	ResultSetWriter resultSetWriter = new ResultSetWriter(request, username, "ResultSetMetaData", gen);
+	resultSetWriter.write(rs);
+
+	ServerSqlManager.writeLine(out);
+
+	gen.writeEnd(); // .write("status", "OK")
+	gen.flush();
+	gen.close();
+
+    }
+
 
     /**
      * Calls the
      * @param methodName
      * @param databaseMetaData
-     * @param argTypes
-     * @param values
+     * @param methodParameterTypes
+     * @param methodParameterValues
      * @return
      * @throws ClassNotFoundException
      * @throws SQLException
@@ -136,8 +194,8 @@ public class JdbcDatabaseMetaDataExecutor {
      * @throws IllegalAccessException
      * @throws InvocationTargetException
      */
-    private Object callMethodWithReflection(String methodName, DatabaseMetaData databaseMetaData, Class[] argTypes,
-	    Object[] values) throws ClassNotFoundException, SQLException, SecurityException, NoSuchMethodException,
+    private Object callMethodWithReflection(String methodName, DatabaseMetaData databaseMetaData, Class<?>[] methodParameterTypes,
+	    Object[] methodParameterValues) throws ClassNotFoundException, SQLException, SecurityException, NoSuchMethodException,
 	    IllegalArgumentException, IllegalAccessException, InvocationTargetException {
 	Class<?> c = Class.forName("java.sql.DatabaseMetaData");
 	Object theObject = databaseMetaData;
@@ -146,7 +204,7 @@ public class JdbcDatabaseMetaDataExecutor {
 	Method main = null;
 	Object resultObj = null;
 
-	// Get the Drvier Info
+	// Get the Driver Info
 	String database = "";
 	String productVersion = "";
 	String DriverName = "";
@@ -159,10 +217,10 @@ public class JdbcDatabaseMetaDataExecutor {
 	DriverVersion = databaseMetaData.getDriverVersion();
 	driverInfo += database + " " + productVersion + " " + DriverName + " " + DriverVersion;
 
-	String methodParams = getMethodParams(values);
+	String methodParams = getMethodParams(methodParameterValues);
 
 	try {
-	    main = c.getDeclaredMethod(methodName, argTypes);
+	    main = c.getDeclaredMethod(methodName, methodParameterTypes);
 	} catch (SecurityException e) {
 	    throw new SecurityException(driverInfo + " - Security - Impossible to get declared DatabaseMetaData."
 		    + methodName + "(" + methodParams + ")");
@@ -172,7 +230,7 @@ public class JdbcDatabaseMetaDataExecutor {
 	}
 
 	try {
-	    resultObj = main.invoke(theObject, values);
+	    resultObj = main.invoke(theObject, methodParameterValues);
 	} catch (IllegalArgumentException e) {
 	    throw new IllegalArgumentException(
 		    driverInfo + " - Impossible to call DatabaseMetaData." + methodName + "(" + methodParams + ")");
@@ -192,7 +250,7 @@ public class JdbcDatabaseMetaDataExecutor {
      * @param values the value array
      * @return the method parameters as (value1, value2, ...)
      */
-    private String getMethodParams(Object[] values) {
+    private static String getMethodParams(Object[] values) {
 
 	if (values.length == 0) {
 	    return "";
