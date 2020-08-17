@@ -68,7 +68,7 @@ public class ResultSetWriter {
      * Says if ResultSet Meta Data must be downloaded from server along with
      * ResultSet
      */
-    private boolean JoinResultSetMetaData = false;
+    private boolean fillResultSetMetaData = false;
     private HttpServletRequest request;
     private Boolean doColumnTypes = false;
     private JsonGenerator gen = null;
@@ -90,13 +90,10 @@ public class ResultSetWriter {
 	String columnTypes = request.getParameter(HttpParameter.COLUMN_TYPES);
 	doColumnTypes = Boolean.parseBoolean(columnTypes);
 
-	String JoinResultSetMetaDataStr = request.getParameter(HttpParameter.JOIN_RESULT_SET_META_DATA);
-	JoinResultSetMetaData = Boolean.parseBoolean(JoinResultSetMetaDataStr);
+	String fillResultSetMetaDataStr = request.getParameter(HttpParameter.FILL_RESULT_SET_META_DATA);
+	fillResultSetMetaData = Boolean.parseBoolean(fillResultSetMetaDataStr);
 
-	//HACK
-	JoinResultSetMetaData = true;
-
-	debug("JoinResultSetMetaData: " + JoinResultSetMetaData);
+	debug("fillResultSetMetaData: " + fillResultSetMetaData);
 
     }
 
@@ -137,7 +134,6 @@ public class ResultSetWriter {
 	    List<String> columnTableList = columnInfoCreator.getColumnTableList();
 
 	    writeResultSetMetaData(resultSet);
-
 	    writeColumnTypes(columnTypeList);
 
 	    gen.writeStartArray("query_rows").writeStartObject();
@@ -214,11 +210,12 @@ public class ResultSetWriter {
     }
 
     /**
+     * Stores in Json the ResultSetMetaData
      * @throws SQLException
      *
      */
     private void writeResultSetMetaData(ResultSet resultSet) throws SQLException {
-	if (JoinResultSetMetaData) {
+	if (fillResultSetMetaData) {
 	    ResultSetMetaDataBuilder resultSetMetaDataBuilder = new ResultSetMetaDataBuilder(resultSet);
 	    ResultSetMetaDataHolder resultSetMetaDataHolder = resultSetMetaDataBuilder.getResultSetMetaDataHolder();
 
