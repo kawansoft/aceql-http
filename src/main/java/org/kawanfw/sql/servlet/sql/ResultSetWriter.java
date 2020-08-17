@@ -37,8 +37,11 @@ import javax.json.stream.JsonGenerator;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
+import org.kawanfw.sql.jdbc.metadata.ResultSetMetaDataHolder;
+import org.kawanfw.sql.metadata.util.GsonWsUtil;
 import org.kawanfw.sql.servlet.HttpParameter;
 import org.kawanfw.sql.servlet.connection.ConnectionStore;
+import org.kawanfw.sql.servlet.jdbc.metadata.ResultSetMetaDataBuilder;
 import org.kawanfw.sql.util.FrameworkDebug;
 import org.kawanfw.sql.util.SqlReturnCode;
 
@@ -85,8 +88,13 @@ public class ResultSetWriter {
 	this.gen = gen;
 
 	String columnTypes = request.getParameter(HttpParameter.COLUMN_TYPES);
-	// doColumnTypes= new Boolean(columnTypes);
 	doColumnTypes = Boolean.parseBoolean(columnTypes);
+
+	String JoinResultSetMetaDataStr = request.getParameter(HttpParameter.JOIN_RESULT_SET_META_DATA);
+	JoinResultSetMetaData = Boolean.parseBoolean(JoinResultSetMetaDataStr);
+
+	//HACK
+	JoinResultSetMetaData = true;
 
 	debug("JoinResultSetMetaData: " + JoinResultSetMetaData);
 
@@ -127,6 +135,8 @@ public class ResultSetWriter {
 	    List<String> columnTypeNameList = columnInfoCreator.getColumnTypeNameList();
 	    List<String> columnNameList = columnInfoCreator.getColumnNameList();
 	    List<String> columnTableList = columnInfoCreator.getColumnTableList();
+
+	    writeResultSetMetaData(resultSet);
 
 	    writeColumnTypes(columnTypeList);
 
@@ -200,6 +210,20 @@ public class ResultSetWriter {
 	} finally {
 	    resultSet.close();
 	    // NO! IOUtils.closeQuietly(out);
+	}
+    }
+
+    /**
+     * @throws SQLException
+     *
+     */
+    private void writeResultSetMetaData(ResultSet resultSet) throws SQLException {
+	if (JoinResultSetMetaData) {
+	    ResultSetMetaDataBuilder resultSetMetaDataBuilder = new ResultSetMetaDataBuilder(resultSet);
+	    ResultSetMetaDataHolder resultSetMetaDataHolder = resultSetMetaDataBuilder.getResultSetMetaDataHolder();
+
+	    String jsonString = GsonWsUtil.getJSonString(resultSetMetaDataHolder);
+	    gen.write("ResultSetMetaData", jsonString);
 	}
     }
 

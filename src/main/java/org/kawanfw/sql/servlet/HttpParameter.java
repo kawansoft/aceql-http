@@ -148,6 +148,8 @@ public class HttpParameter {
     public static final String TABLE_NAME = "table_name";
     public static final String TABLE_TYPE = "table_type";
 
+    public static final String JOIN_RESULT_SET_META_DATA = "join_result_set_meta_data";
+
 
 
 
