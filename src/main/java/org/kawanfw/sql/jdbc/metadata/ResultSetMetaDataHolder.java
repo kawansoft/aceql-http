@@ -187,7 +187,7 @@ public class ResultSetMetaDataHolder {
     /**
      * @return the columnName
      */
-    public List<String> getColumnName() {;
+    public List<String> getColumnName() {
 	List<String> columnNameReturn = new Vector<String>();
 	for (String name : this.columnName) {
 	    columnNameReturn.add(HtmlConverter.fromHtml(name));
