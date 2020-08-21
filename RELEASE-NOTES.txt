@@ -30,7 +30,7 @@ AceQL HTTP Version 6.0 - 17-Aug-2020
 
 What's New:
 
-- Add /get_vatalog and /get_schema API.
+- Add /get_catalog and /get_schema API.
 - Implement server side calls for client JDBC metadata calls. This
   allows the Client Java SDK to be plugged as a real JDBC Driver.
   
