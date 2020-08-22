@@ -111,7 +111,6 @@ public class ServletPathAnalyzer {
             return true;
         }
 
-
         if (checkCloseCommands(requestUri)) {
             return true;
         }
