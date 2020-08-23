@@ -107,6 +107,14 @@
 			<version>1.8.2</version>
 		</dependency>
 
+		<dependency>
+		<groupId> oracle </groupId>
+		 <artifactId>ojdbc6</artifactId>
+		 <version>11.2.0</version>
+		  <scope>system</scope>
+		  <systemPath>${project.basedir}/lib/ojdbc6.jar</systemPath>
+		</dependency>
+
 	</dependencies>
 	<organization>
 		<name>KawanSoft</name>
