@@ -45,6 +45,7 @@ import org.kawanfw.sql.servlet.connection.SavepointUtil;
 import org.kawanfw.sql.servlet.connection.TransactionUtil;
 import org.kawanfw.sql.servlet.jdbc.metadata.JdbcDatabaseMetadataActionManager;
 import org.kawanfw.sql.servlet.sql.ServerStatement;
+import org.kawanfw.sql.servlet.sql.ServerStatementRawExecute;
 import org.kawanfw.sql.servlet.sql.callable.ServerCallableStatement;
 import org.kawanfw.sql.servlet.sql.json_return.JsonErrorReturn;
 import org.kawanfw.sql.servlet.sql.json_return.JsonOkReturn;
@@ -166,8 +167,8 @@ public class ServerSqlDispatch {
 	    Connection connection, List<SqlFirewallManager> sqlFirewallManagers)
 	    throws SQLException, FileNotFoundException, IOException, IllegalArgumentException {
 	if (ServerSqlDispatchUtil.isExecute(action) && !ServerSqlDispatchUtil.isStoredProcedure(request)) {
-	    ServerStatement serverStatement = new ServerStatement(request, response, sqlFirewallManagers, connection);
-	    serverStatement.executeQueryOrUpdate(out);
+	    ServerStatementRawExecute serverStatement = new ServerStatementRawExecute(request, response, sqlFirewallManagers, connection);
+	    serverStatement.execute(out);
 	}
 	else if (ServerSqlDispatchUtil.isExecuteQueryOrExecuteUpdate(action) && !ServerSqlDispatchUtil.isStoredProcedure(request)) {
 	    ServerStatement serverStatement = new ServerStatement(request, response, sqlFirewallManagers, connection);
