@@ -56,8 +56,12 @@ public class ServerSqlDispatchUtil {
 	return action.equals(HttpParameter.BLOB_UPLOAD) || action.equals(HttpParameter.BLOB_DOWNLOAD);
     }
 
-    public static  boolean isStatement(String action) {
+    public static  boolean isExecuteQueryOrExecuteUpdate(String action) {
 	return action.equals(HttpParameter.EXECUTE_UPDATE) || action.equals(HttpParameter.EXECUTE_QUERY);
+    }
+
+    public static boolean isExecute(String action) {
+	return action.equals(HttpParameter.EXECUTE);
     }
 
 }

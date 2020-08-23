@@ -165,10 +165,15 @@ public class ServerSqlDispatch {
     private void dispatch(HttpServletRequest request, HttpServletResponse response, OutputStream out, String action,
 	    Connection connection, List<SqlFirewallManager> sqlFirewallManagers)
 	    throws SQLException, FileNotFoundException, IOException, IllegalArgumentException {
-	if (ServerSqlDispatchUtil.isStatement(action) && !ServerSqlDispatchUtil.isStoredProcedure(request)) {
+	if (ServerSqlDispatchUtil.isExecute(action) && !ServerSqlDispatchUtil.isStoredProcedure(request)) {
 	    ServerStatement serverStatement = new ServerStatement(request, response, sqlFirewallManagers, connection);
 	    serverStatement.executeQueryOrUpdate(out);
-	} else if (ServerSqlDispatchUtil.isStoredProcedure(request)) {
+	}
+	else if (ServerSqlDispatchUtil.isExecuteQueryOrExecuteUpdate(action) && !ServerSqlDispatchUtil.isStoredProcedure(request)) {
+	    ServerStatement serverStatement = new ServerStatement(request, response, sqlFirewallManagers, connection);
+	    serverStatement.executeQueryOrUpdate(out);
+	}
+	else if (ServerSqlDispatchUtil.isStoredProcedure(request)) {
 	    ServerCallableStatement serverCallableStatement = new ServerCallableStatement(request, response,
 		    sqlFirewallManagers, connection);
 	    serverCallableStatement.executeOrExecuteQuery(out);

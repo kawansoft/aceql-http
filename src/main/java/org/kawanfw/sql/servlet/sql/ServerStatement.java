@@ -112,10 +112,16 @@ public class ServerStatement {
 
 	try {
 
-	    outFinal = getFinalOutputStream(out);
+	    if (!isExecuteUpdate()) {
+		boolean doGzip = Boolean.parseBoolean(request.getParameter(HttpParameter.GZIP_RESULT));
+		outFinal = getFinalOutputStream(out, doGzip);
+	    }
+	    else {
+		outFinal = out;
+	    }
 
 	    // Execute it
-	    if (isPreparedStatement()) {
+	    if (ServerStatementUtil.isPreparedStatement(request)) {
 		executePrepStatement(outFinal);
 	    } else {
 		executeStatement(outFinal);
@@ -147,23 +153,16 @@ public class ServerStatement {
 	}
     }
 
+
     /**
      * Get the OutputStream to use. A regular one or a GZIP_RESULT one
-     *
-     * @param file
+     * @param out
+     * @param doGzip
      * @return
      * @throws FileNotFoundException
      * @throws IOException
      */
-    private OutputStream getFinalOutputStream(OutputStream out) throws FileNotFoundException, IOException {
-
-	String gzipResult = request.getParameter(HttpParameter.GZIP_RESULT);
-	boolean doGzip = Boolean.parseBoolean(gzipResult);
-
-	// No GZIP if execute update
-	if (isExecuteUpdate()) {
-	    doGzip = false;
-	}
+    private OutputStream getFinalOutputStream(OutputStream out, boolean doGzip) throws FileNotFoundException, IOException {
 
 	if (doGzip) {
 	    GZIPOutputStream gZipOut = new GZIPOutputStream(out);
@@ -174,10 +173,8 @@ public class ServerStatement {
 	}
     }
 
-    private boolean isPreparedStatement() {
-	String preparedStatement = request.getParameter(HttpParameter.PREPARED_STATEMENT);
-	return Boolean.parseBoolean(preparedStatement);
-
+    private boolean isExecuteUpdate() {
+	return request.getParameter(HttpParameter.ACTION).equals(HttpParameter.EXECUTE_UPDATE);
     }
 
     /**
@@ -373,7 +370,7 @@ public class ServerStatement {
 	boolean isAllowedAfterAnalysis = false;
 	for (SqlFirewallManager sqlFirewallManager : sqlFirewallManagers) {
 	    isAllowedAfterAnalysis = sqlFirewallManager.allowSqlRunAfterAnalysis(username, database, connection,
-		    ipAddress, sqlOrder, isPreparedStatement(), serverPreparedStatementParameters.getParameterValues());
+		    ipAddress, sqlOrder, ServerStatementUtil.isPreparedStatement(request), serverPreparedStatementParameters.getParameterValues());
 	    if (!isAllowedAfterAnalysis) {
 		List<Object> parameterValues = new ArrayList<>();
 		sqlFirewallManager.runIfStatementRefused(username, database, connection, ipAddress, false, sqlOrder,
@@ -570,7 +567,7 @@ public class ServerStatement {
 	    }
 
 	    isAllowed = sqlFirewallManager.allowSqlRunAfterAnalysis(username, database, connection, ipAddress, sqlOrder,
-		    isPreparedStatement(), new Vector<Object>());
+		    ServerStatementUtil.isPreparedStatement(request), new Vector<Object>());
 	    if (!isAllowed) {
 		break;
 	    }
@@ -587,10 +584,7 @@ public class ServerStatement {
 	}
     }
 
-    private boolean isExecuteUpdate() {
 
-	return request.getParameter(HttpParameter.ACTION).equals(HttpParameter.EXECUTE_UPDATE);
-    }
 
     /**
      * @param s
