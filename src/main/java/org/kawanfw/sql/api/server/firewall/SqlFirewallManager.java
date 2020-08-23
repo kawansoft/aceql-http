@@ -39,6 +39,8 @@ import org.kawanfw.sql.api.server.StatementAnalyzer;
  * A concrete implementation should be developed on the server side in order to:
  * <ul>
  * <li>Define if a client user has the right to call a
+ * <code>Statement.execute</code> (i.e. call a raw execute).</li>
+ * <li>Define if a client user has the right to call a
  * <code>Statement.executeUpdate</code> (i.e. call a statement that updates the
  * database).</li>
  * <li>Define if a client user has the right to call a raw
@@ -139,6 +141,22 @@ public interface SqlFirewallManager {
     public boolean allowSqlRunAfterAnalysis(String username, String database, Connection connection, String ipAddress,
 	    String sql, boolean isPreparedStatement, List<Object> parameterValues) throws IOException, SQLException;
 
+
+    /**
+     * Allows to define if the passed username is allowed to call a raw JDBC execute.
+     *
+     * @param username   the client username to check the rule for.
+     * @param database   the database name as defined in the JDBC URL field
+     * @param connection The current SQL/JDBC <code>Connection</code>
+     * @return <code>true</code> if the user has the right call a database update
+     *         statement.
+     *
+     * @throws IOException  if an IOException occurs
+     * @throws SQLException if a SQLException occurs
+     *
+     */
+    boolean allowExecute(String username, String database, Connection connection) throws IOException, SQLException;
+
     /**
      * Allows to define if the passed username is allowed to call a statement that
      * updates the database.
@@ -187,4 +205,6 @@ public interface SqlFirewallManager {
      */
     public void runIfStatementRefused(String username, String database, Connection connection, String ipAddress,
 	    boolean isMetadataQuery, String sql, List<Object> parameterValues) throws IOException, SQLException;
+
+
 }
