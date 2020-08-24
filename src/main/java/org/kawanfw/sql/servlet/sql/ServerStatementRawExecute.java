@@ -109,6 +109,8 @@ public class ServerStatementRawExecute {
 
 	try {
 
+	    //System.err.println("ServerStatementUtil.isPreparedStatement(request): " + ServerStatementUtil.isPreparedStatement(request));
+
 	    // Execute it
 	    if (ServerStatementUtil.isPreparedStatement(request)) {
 		executePrepStatement(out);
@@ -439,8 +441,6 @@ public class ServerStatementRawExecute {
 
 	    ServerSqlUtil.setMaxRowsToReturn(username, database, statement, databaseConfigurator);
 	    debug("sqlorder: " + sqlOrder);
-
-	    rs = statement.executeQuery(sqlOrder);
 
 	    JsonGeneratorFactory jf = JsonUtil.getJsonGeneratorFactory(doPrettyPrinting);
 
