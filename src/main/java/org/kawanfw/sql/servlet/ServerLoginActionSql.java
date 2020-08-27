@@ -171,7 +171,7 @@ public class ServerLoginActionSql extends HttpServlet {
     public static String getConnectionId(String sessionId, HttpServletRequest request, String username, String database,
 	    DatabaseConfigurator databaseConfigurator) throws SQLException {
 
-	// Exract connection from pool
+	// Extract connection from pool
 	Connection connection = databaseConfigurator.getConnection(database);
 
 	// Each Connection is identified by hashcode

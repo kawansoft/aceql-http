@@ -177,11 +177,15 @@ public class ServerStatementRawExecute {
 	    checkFirewallGeneral(username, database, sqlOrder, ipAddress);
 	    statement = connection.createStatement();
 
+
+
+
 	    debug("before executeQuery() / executeUpdate(sqlOrder)");
 	    doExecute(out, databaseConfigurator, username, database, sqlOrder, statement, ipAddress);
 
 	} catch (SQLException e) {
 
+	    e.printStackTrace();
 	    String message = StatementFailure.statementFailureBuild(sqlOrder, e.toString(), doPrettyPrinting);
 
 	    LoggerUtil.log(request, e, message);

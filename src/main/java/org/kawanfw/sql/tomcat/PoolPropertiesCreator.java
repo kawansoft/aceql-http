@@ -211,7 +211,11 @@ public class PoolPropertiesCreator {
 	    main.invoke(theObject, propertyValue);
 	} else if (pType[0] == boolean.class) {
 	    main.invoke(theObject, Boolean.parseBoolean(propertyValue));
-	} else if (pType[0] == int.class) {
+	}
+	else if (pType[0] == Boolean.class) {
+	    main.invoke(theObject, new Boolean(propertyValue));
+	}
+	else if (pType[0] == int.class) {
 	    main.invoke(theObject, Integer.parseInt(propertyValue));
 	} else {
 	    throw new DatabaseConfigurationException("Invalid Connection Pool property: " + propertyName);
