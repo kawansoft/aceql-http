@@ -213,7 +213,7 @@ public class PoolPropertiesCreator {
 	    main.invoke(theObject, Boolean.parseBoolean(propertyValue));
 	}
 	else if (pType[0] == Boolean.class) {
-	    main.invoke(theObject, new Boolean(propertyValue));
+	    main.invoke(theObject, Boolean.valueOf(propertyValue));
 	}
 	else if (pType[0] == int.class) {
 	    main.invoke(theObject, Integer.parseInt(propertyValue));
