@@ -430,7 +430,7 @@ public class ServerStatement {
 
 	try {
 
-	    ServerSqlUtil.setMaxRowsToReturn(username, database, statement, databaseConfigurator);
+	    ServerSqlUtil.setMaxRowsToReturn(request, username, database, statement, databaseConfigurator);
 	    debug("sqlorder: " + sqlOrder);
 
 	    rs = statement.executeQuery(sqlOrder);
@@ -473,7 +473,7 @@ public class ServerStatement {
 
 	try {
 
-	    ServerSqlUtil.setMaxRowsToReturn(username, database, preparedStatement, databaseConfigurator);
+	    ServerSqlUtil.setMaxRowsToReturn(request, username, database, preparedStatement, databaseConfigurator);
 	    debug("sqlorder: " + sqlOrder);
 
 	    rs = preparedStatement.executeQuery();

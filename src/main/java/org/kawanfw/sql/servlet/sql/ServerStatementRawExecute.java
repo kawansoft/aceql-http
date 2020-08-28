@@ -443,7 +443,7 @@ public class ServerStatementRawExecute {
 
 	try {
 
-	    ServerSqlUtil.setMaxRowsToReturn(username, database, statement, databaseConfigurator);
+	    ServerSqlUtil.setMaxRowsToReturn(request, username, database, statement, databaseConfigurator);
 	    debug("sqlorder: " + sqlOrder);
 
 	    JsonGeneratorFactory jf = JsonUtil.getJsonGeneratorFactory(doPrettyPrinting);

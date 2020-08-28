@@ -29,7 +29,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Date;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.kawanfw.sql.api.server.DatabaseConfigurator;
+import org.kawanfw.sql.servlet.HttpParameter;
 import org.kawanfw.sql.util.FrameworkDebug;
 
 /**
@@ -56,19 +59,22 @@ public class ServerSqlUtil {
 
     /**
      * Set the maximum rows to return to the client side
-     *
+     * @param request
      * @param username
      * @param database
      * @param statement            the statement to set
      * @param databaseConfigurator the DatabaseConfigurator which contains the
      *                             getMaxRowsToReturn() method
      *
-     *
      * @throws SQLException
      * @throws IOException
      */
-    public static void setMaxRowsToReturn(String username, String database, Statement statement,
-	    DatabaseConfigurator databaseConfigurator) throws SQLException, IOException {
+    public static void setMaxRowsToReturn(HttpServletRequest request, String username, String database,
+	    Statement statement, DatabaseConfigurator databaseConfigurator) throws SQLException, IOException {
+
+	String maxRowsStr = request.getParameter(HttpParameter.MAX_ROWS);
+	int maxRows = Integer.parseInt(maxRowsStr);
+	statement.setMaxRows(maxRows);
 
 	int maxRowsToReturn = databaseConfigurator.getMaxRows(username, database);
 
