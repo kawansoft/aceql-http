@@ -59,6 +59,7 @@ public class ServerSqlUtil {
 
     /**
      * Set the maximum rows to return to the client side
+     *
      * @param request
      * @param username
      * @param database
@@ -73,8 +74,11 @@ public class ServerSqlUtil {
 	    Statement statement, DatabaseConfigurator databaseConfigurator) throws SQLException, IOException {
 
 	String maxRowsStr = request.getParameter(HttpParameter.MAX_ROWS);
-	int maxRows = Integer.parseInt(maxRowsStr);
-	statement.setMaxRows(maxRows);
+
+	if (maxRowsStr != null && !maxRowsStr.isEmpty()) {
+	    int maxRows = Integer.parseInt(maxRowsStr);
+	    statement.setMaxRows(maxRows);
+	}
 
 	int maxRowsToReturn = databaseConfigurator.getMaxRows(username, database);
 

@@ -64,6 +64,8 @@ public class ServerLoginActionSql extends HttpServlet {
     // A space
     public static final String SPACE = " ";
 
+    private static final boolean FORCE_AUTO_COMMIT_AND_NOT_READ_ONLY = false;
+
     /**
      *
      * Execute the login request
@@ -177,17 +179,14 @@ public class ServerLoginActionSql extends HttpServlet {
 	// Each Connection is identified by hashcode
 	String connectionId = getConnectionId(connection);
 
-//	// Force connectionId if client version is not 2.0
-//	String clientVersion = request.getParameter(HttpParameter.CLIENT_VERSION);
-//	if (clientVersion == null || clientVersion.compareTo("v2.0") < 0) {
-//	    connectionId = "unique";
-//	}
-
 	ConnectionStore connectionStore = new ConnectionStore(username, sessionId, connectionId);
 
 	// Make sure we are in auto-commit mode when user starts
 	// session
-	ConnectionUtil.connectionInit(connection);
+	if (FORCE_AUTO_COMMIT_AND_NOT_READ_ONLY) {
+	    ConnectionUtil.connectionInit(connection);
+	}
+
 	connectionStore.put(connection);
 	return connectionId;
     }

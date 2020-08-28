@@ -177,9 +177,6 @@ public class ServerStatementRawExecute {
 	    checkFirewallGeneral(username, database, sqlOrder, ipAddress);
 	    statement = connection.createStatement();
 
-
-
-
 	    debug("before executeQuery() / executeUpdate(sqlOrder)");
 	    doExecute(out, databaseConfigurator, username, database, sqlOrder, statement, ipAddress);
 
@@ -290,6 +287,7 @@ public class ServerStatementRawExecute {
 	checkFirewallForExecute(username, database, sqlOrder, ipAddress);
 
 	checkFirewallForExecute(username, database, sqlOrder, ipAddress);
+	ServerSqlUtil.setMaxRowsToReturn(request, username, database, statement, databaseConfigurator);
 
 	@SuppressWarnings("unused")
 	boolean executeResult = statement.execute(sqlOrder);
@@ -333,6 +331,7 @@ public class ServerStatementRawExecute {
 	    ServerPreparedStatementParameters serverPreparedStatementParameters, String ipAddress) throws IOException, SQLException, SecurityException {
 
 	checkFirewallForExecute(username, database, sqlOrder, serverPreparedStatementParameters, ipAddress);
+	ServerSqlUtil.setMaxRowsToReturn(request, username, database, preparedStatement, databaseConfigurator);
 
 	@SuppressWarnings("unused")
 	boolean executeResult = preparedStatement.execute();
@@ -443,7 +442,6 @@ public class ServerStatementRawExecute {
 
 	try {
 
-	    ServerSqlUtil.setMaxRowsToReturn(request, username, database, statement, databaseConfigurator);
 	    debug("sqlorder: " + sqlOrder);
 
 	    JsonGeneratorFactory jf = JsonUtil.getJsonGeneratorFactory(doPrettyPrinting);

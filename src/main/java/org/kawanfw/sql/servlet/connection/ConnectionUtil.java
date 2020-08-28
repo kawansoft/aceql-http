@@ -61,12 +61,10 @@ public class ConnectionUtil {
 	// This is anyway mandatory for C# as all Connections are per default
 	// auto commit mode.
 
-	/* HACK NDP BEGIN
 	if (!connection.getAutoCommit()) {
 	    connection.rollback();
 	    connection.setAutoCommit(true);
 	}
- 	HACK NDP END */
 
 	//System.err.println("connectionInit: connection.getAutoCommit(): " + connection.getAutoCommit());
 
@@ -80,6 +78,7 @@ public class ConnectionUtil {
 		System.err.println(e.toString());
 	    }
 	}
+
     }
 
 }
