@@ -306,7 +306,7 @@ public class ServerStatementRawExecute {
 	else {
 	    // It is a query
 	    ResultSet rs = statement.getResultSet();
-	    dumpResultSet(rs, out, username, sqlOrder, statement);
+	    dumpResultSet(rs, out, username, sqlOrder);
 	}
 
     }
@@ -350,7 +350,7 @@ public class ServerStatementRawExecute {
 	else {
 	    // It is a query
 	    ResultSet rs = preparedStatement.getResultSet();
-	    dumpResultSet(rs, out, username, sqlOrder, preparedStatement);
+	    dumpResultSet(rs, out, username, sqlOrder);
 	}
 
 
@@ -429,27 +429,11 @@ public class ServerStatementRawExecute {
      * Dumps the Result Set on the servlet stream
      * @param out
      * @param username
-     * @param database
      * @param sqlOrder
-     * @param statement
-     * @throws SQLException
-     * @throws IOException
-     * @deprecated Use {@link #dumpResultSet(ResultSet,OutputStream,String,String,Statement)} instead
-     */
-    private void dumpResultSet(ResultSet rs, OutputStream out, String username, String database, String sqlOrder, Statement statement) throws SQLException, IOException {
-        dumpResultSet(rs, out, username, sqlOrder, statement);
-    }
-
-    /**
-     * Dumps the Result Set on the servlet stream
-     * @param out
-     * @param username
-     * @param sqlOrder
-     * @param statement
      * @throws SQLException
      * @throws IOException
      */
-    private void dumpResultSet(ResultSet rs, OutputStream out, String username, String sqlOrder, Statement statement) throws SQLException, IOException {
+    private void dumpResultSet(ResultSet rs, OutputStream out, String username, String sqlOrder) throws SQLException, IOException {
 
 	try {
 
