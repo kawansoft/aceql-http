@@ -32,7 +32,7 @@ What's New:
 
 - Add /get_catalog and /get_schema API.
 - JDBC Statement.execute() calls are now supported.
-- Implement server side calls for client JDBC metadata calls. This
+- Implement server side JDBC metadata calls. This
   allows the Client Java SDK to be plugged as a real JDBC Driver.
  
 Bugs fixed:
