@@ -508,7 +508,8 @@ public class ServerPreparedStatementParameters {
 		debug("index: " + i + " / type " + requestParamType + " / direction: " + parameterDirection
 			+ " / value: " + requestParamValue);
 
-		if (isInParameter(parameterDirection) && (requestParamValue == null || requestParamValue.isEmpty())) {
+		// NO: fix to accept "" (empty values) now:  if (isInParameter(parameterDirection) && (requestParamValue == null || requestParamValue.isEmpty())) {
+		if (isInParameter(parameterDirection) && requestParamValue == null) {
 		    throw new SQLException("No parameter value for IN parameter index " + i);
 		}
 
