@@ -27,7 +27,7 @@
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
-			<version>42.1.4.jre7</version>
+			<version>42.2.5</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-cli</groupId>
