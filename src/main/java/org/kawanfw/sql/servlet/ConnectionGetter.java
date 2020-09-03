@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.kawanfw.sql.servlet.connection.ConnectionStore;
+import org.kawanfw.sql.servlet.connection.RollbackUtil;
 import org.kawanfw.sql.servlet.sql.LoggerUtil;
 import org.kawanfw.sql.servlet.sql.json_return.JsonErrorReturn;
 
@@ -56,6 +57,9 @@ public class ConnectionGetter {
 	    }
 
 	} catch (SQLException e) {
+
+	    RollbackUtil.rollback(connection);
+
 	    JsonErrorReturn jsonErrorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_BAD_REQUEST,
 		    JsonErrorReturn.ERROR_ACEQL_ERROR, JsonErrorReturn.UNABLE_TO_GET_A_CONNECTION,
 		    ExceptionUtils.getStackTrace(e));

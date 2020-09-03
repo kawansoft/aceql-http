@@ -1,24 +1,24 @@
 /*
  * This file is part of AceQL HTTP.
- * AceQL HTTP: SQL Over HTTP                                     
+ * AceQL HTTP: SQL Over HTTP
  * Copyright (C) 2020,  KawanSoft SAS
- * (http://www.kawansoft.com). All rights reserved.                                
- *                                                                               
- * AceQL HTTP is free software; you can redistribute it and/or                 
- * modify it under the terms of the GNU Lesser General Public                    
- * License as published by the Free Software Foundation; either                  
- * version 2.1 of the License, or (at your option) any later version.            
- *                                                                               
- * AceQL HTTP is distributed in the hope that it will be useful,               
- * but WITHOUT ANY WARRANTY; without even the implied warranty of                
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU             
- * Lesser General Public License for more details.                               
- *                                                                               
- * You should have received a copy of the GNU Lesser General Public              
- * License along with this library; if not, write to the Free Software           
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  
+ * (http://www.kawansoft.com). All rights reserved.
+ *
+ * AceQL HTTP is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * AceQL HTTP is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
  * 02110-1301  USA
- * 
+ *
  * Any modifications to this file must keep this entire header
  * intact.
  */
@@ -45,7 +45,7 @@ import org.kawanfw.sql.util.HtmlConverter;
 
 /**
  * @author Nicolas de Pomereu
- * 
+ *
  *         Wrapper for savepoint commands to decrease code in ServerSqlDispatch
  */
 public class SavepointUtil {
@@ -55,7 +55,7 @@ public class SavepointUtil {
     /**
      * Calls a setSavepoint(), setSavepoint(name), rollback(Savepoint
      * savepoint), releaseSavepoint(Savepoint savepoint)
-     * 
+     *
      * @param request
      * @param response
      *            TODO
@@ -80,6 +80,9 @@ public class SavepointUtil {
 		    JsonErrorReturn.ERROR_ACEQL_ERROR, e.getMessage());
 	    ServerSqlManager.writeLine(out, errorReturn.build());
 	} catch (SQLException e) {
+
+	    RollbackUtil.rollback(connection);
+
 	    JsonErrorReturn errorReturn = new JsonErrorReturn(response,
 		    HttpServletResponse.SC_BAD_REQUEST,
 		    JsonErrorReturn.ERROR_JDBC_ERROR, e.getMessage());
@@ -94,7 +97,7 @@ public class SavepointUtil {
 	String username = request.getParameter(HttpParameter.USERNAME);
 	String sessionId = request.getParameter(HttpParameter.SESSION_ID);
 	String connectionId = request.getParameter(HttpParameter.CONNECTION_ID);
-	
+
 	ConnectionStore connectionStore = new ConnectionStore(username,
 		sessionId, connectionId);
 

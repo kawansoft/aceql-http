@@ -73,13 +73,15 @@ public class ResultSetWriter {
     private Boolean doColumnTypes = false;
     private JsonGenerator gen = null;
 
+
     /**
      * @param request  the http request
      * @param username the client username
      * @param sqlOrder the sql order
      * @param gen      The JSon Generator
+     * @param fillResultSetMetaData TODO
      */
-    public ResultSetWriter(HttpServletRequest request, String username, String sqlOrder, JsonGenerator gen) {
+    public ResultSetWriter(HttpServletRequest request, String username, String sqlOrder, JsonGenerator gen, boolean fillResultSetMetaData) {
 
 	this.username = username;
 	this.sqlOrder = sqlOrder;
@@ -90,9 +92,7 @@ public class ResultSetWriter {
 	String columnTypes = request.getParameter(HttpParameter.COLUMN_TYPES);
 	doColumnTypes = Boolean.parseBoolean(columnTypes);
 
-	String fillResultSetMetaDataStr = request.getParameter(HttpParameter.FILL_RESULT_SET_META_DATA);
-	fillResultSetMetaData = Boolean.parseBoolean(fillResultSetMetaDataStr);
-
+	this.fillResultSetMetaData = fillResultSetMetaData;
 	debug("fillResultSetMetaData: " + fillResultSetMetaData);
 
     }

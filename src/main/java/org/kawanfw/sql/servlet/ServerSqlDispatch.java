@@ -41,6 +41,7 @@ import org.kawanfw.sql.api.server.DatabaseConfigurator;
 import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
 import org.kawanfw.sql.servlet.connection.ConnectionStore;
 import org.kawanfw.sql.servlet.connection.ConnectionStoreCleaner;
+import org.kawanfw.sql.servlet.connection.RollbackUtil;
 import org.kawanfw.sql.servlet.connection.SavepointUtil;
 import org.kawanfw.sql.servlet.connection.TransactionUtil;
 import org.kawanfw.sql.servlet.jdbc.metadata.JdbcDatabaseMetadataActionManager;
@@ -49,7 +50,6 @@ import org.kawanfw.sql.servlet.sql.ServerStatementRawExecute;
 import org.kawanfw.sql.servlet.sql.callable.ServerCallableStatement;
 import org.kawanfw.sql.servlet.sql.json_return.JsonErrorReturn;
 import org.kawanfw.sql.servlet.sql.json_return.JsonOkReturn;
-import org.kawanfw.sql.util.FrameworkDebug;
 
 /**
  * @author Nicolas de Pomereu
@@ -62,7 +62,7 @@ import org.kawanfw.sql.util.FrameworkDebug;
  */
 public class ServerSqlDispatch {
 
-    private static boolean DEBUG = FrameworkDebug.isSet(ServerSqlDispatch.class);
+    private static boolean DEBUG = true; //FrameworkDebug.isSet(ServerSqlDispatch.class);
 
     /**
      * /** Execute the client sent sql request that is already wrapped in the
@@ -90,6 +90,13 @@ public class ServerSqlDispatch {
 	String database = request.getParameter(HttpParameter.DATABASE);
 	String sessionId = request.getParameter(HttpParameter.SESSION_ID);
 	String connectionId = request.getParameter(HttpParameter.CONNECTION_ID);
+
+	debug("");
+	debug("action      : " + action);
+	debug("username    : " + username);
+	debug("database    : " + database);
+	debug("sessionId   : " + sessionId);
+	debug("connectionId: " + connectionId);
 
 	BaseActionTreater baseActionTreater = new BaseActionTreater(request, response, out);
 	if (!baseActionTreater.treatAndContinue()) {
@@ -267,6 +274,9 @@ public class ServerSqlDispatch {
 	    connectionStore.remove();
 	    ServerSqlManager.writeLine(out, JsonOkReturn.build());
 	} catch (SQLException e) {
+
+	    RollbackUtil.rollback(connection);
+
 	    JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_BAD_REQUEST,
 		    JsonErrorReturn.ERROR_JDBC_ERROR, e.getMessage());
 	    ServerSqlManager.writeLine(out, errorReturn.build());

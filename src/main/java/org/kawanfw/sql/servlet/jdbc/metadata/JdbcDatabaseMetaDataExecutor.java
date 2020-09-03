@@ -145,7 +145,8 @@ public class JdbcDatabaseMetaDataExecutor {
 	JsonGenerator gen = jf.createGenerator(out);
 	gen.writeStartObject().write("status", "OK");
 
-	ResultSetWriter resultSetWriter = new ResultSetWriter(request, username, "ResultSetMetaData", gen);
+	boolean fillResultSetMetaData = true;
+	ResultSetWriter resultSetWriter = new ResultSetWriter(request, username, "ResultSetMetaData", gen, fillResultSetMetaData);
 	resultSetWriter.write(rs);
 
 	ServerSqlManager.writeLine(out);
@@ -193,7 +194,7 @@ public class JdbcDatabaseMetaDataExecutor {
 	productVersion = databaseMetaData.getDatabaseProductVersion();
 	DriverName = databaseMetaData.getDriverName();
 	DriverVersion = databaseMetaData.getDriverVersion();
-	driverInfo += database + " " + productVersion + " " + DriverName + " " + DriverVersion;
+	driverInfo +=  " " + database + " " + productVersion + " " + DriverName + " " + DriverVersion;
 
 	String methodParams = getMethodParams(methodParameterValues);
 

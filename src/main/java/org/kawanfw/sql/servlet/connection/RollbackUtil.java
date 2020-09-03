@@ -22,15 +22,24 @@
  * Any modifications to this file must keep this entire header
  * intact.
  */
-package org.kawanfw.sql.version;
+package org.kawanfw.sql.servlet.connection;
+
+import java.sql.Connection;
 
 /**
- * Contains the package Version info
+ * @author Nicolas de Pomereu
+ *
  */
+public class RollbackUtil {
 
-public class VersionValues {
-    public static final String VERSION = "v6.0";
-    public static final String DATE = "03-Sep-2020";
+    public static void rollback(Connection connection) {
+	try {
+	    if (! connection.getAutoCommit()) {
+	        connection.rollback();
+	    }
+	} catch (Exception e) {
+	    e.printStackTrace();
+	}
+    }
+
 }
-
-// End

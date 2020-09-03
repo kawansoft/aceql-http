@@ -49,6 +49,7 @@ import org.apache.tomcat.jdbc.pool.DataSource;
 import org.apache.tomcat.jdbc.pool.PoolProperties;
 import org.kawanfw.sql.api.server.DatabaseConfigurationException;
 import org.kawanfw.sql.servlet.ServerSqlManager;
+import org.kawanfw.sql.servlet.connection.RollbackUtil;
 import org.kawanfw.sql.tomcat.util.LinkedProperties;
 import org.kawanfw.sql.util.SqlTag;
 
@@ -253,6 +254,8 @@ public class TomcatStarterUtil {
 	    System.out.println(SqlTag.SQL_PRODUCT_START + "  -> Connection OK!");
 
 	} catch (SQLException e) {
+	    RollbackUtil.rollback(connection);
+
 	    throw new DatabaseConfigurationException(e.getMessage() + " " + e.getCause());
 	} finally {
 	    if (connection != null) {
