@@ -40,7 +40,6 @@ import java.util.concurrent.ThreadPoolExecutor;
 import javax.servlet.ServletConfig;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.SystemUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.kawanfw.sql.api.server.DatabaseConfigurationException;
 import org.kawanfw.sql.api.server.DatabaseConfigurator;
@@ -434,7 +433,7 @@ public class ServerSqlManagerInit {
 		    Tag.PRODUCT_USER_CONFIG_FAIL + " properties file not found: " + propertiesFile);
 	}
 
-	System.out.println(SqlTag.SQL_PRODUCT_START + " " + SystemUtils.JAVA_VENDOR + " " + SystemUtils.JAVA_VM_NAME + " " + SystemUtils.JAVA_VERSION);
+	System.out.println(TomcatStarterUtil.getJavaInfo());
 	System.out.println(SqlTag.SQL_PRODUCT_START + " " + "Using properties file: ");
 	System.out.println(SqlTag.SQL_PRODUCT_START + "  -> " + propertiesFile);
 
@@ -449,6 +448,7 @@ public class ServerSqlManagerInit {
 	TomcatStarterUtil.createAndStoreDataSources(properties);
 
     }
+
 
     public UserAuthenticator getUserAuthenticator() {
 	return userAuthenticator;

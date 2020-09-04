@@ -45,6 +45,7 @@ import javax.servlet.Servlet;
 import org.apache.catalina.Context;
 import org.apache.catalina.Wrapper;
 import org.apache.catalina.startup.Tomcat;
+import org.apache.commons.lang3.SystemUtils;
 import org.apache.tomcat.jdbc.pool.DataSource;
 import org.apache.tomcat.jdbc.pool.PoolProperties;
 import org.kawanfw.sql.api.server.DatabaseConfigurationException;
@@ -465,6 +466,14 @@ public class TomcatStarterUtil {
 	}
 
 	return false;
+    }
+
+    /**
+     * Returns the Java Info at startup
+     * @return the Java info
+     */
+    public static String getJavaInfo() {
+	return SqlTag.SQL_PRODUCT_START + " Java Info: " + SystemUtils.JAVA_VENDOR + " / " + SystemUtils.JAVA_RUNTIME_NAME + " / " + SystemUtils.JAVA_VERSION;
     }
 
     static String getAceQLManagerSevletName(Properties properties) {

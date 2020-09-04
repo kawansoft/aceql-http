@@ -38,7 +38,6 @@ import org.apache.catalina.Context;
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.connector.Connector;
 import org.apache.catalina.startup.Tomcat;
-import org.apache.commons.lang3.SystemUtils;
 import org.kawanfw.sql.api.server.DatabaseConfigurationException;
 import org.kawanfw.sql.servlet.ServerSqlManager;
 import org.kawanfw.sql.tomcat.util.PortSemaphoreFile;
@@ -127,8 +126,7 @@ public class TomcatStarter {
 	    throws IOException, ConnectException, LifecycleException, MalformedURLException {
 	System.out.println(SqlTag.SQL_PRODUCT_START + " Starting " + Version.PRODUCT.NAME + " Web Server...");
 	System.out.println(SqlTag.SQL_PRODUCT_START + " " + Version.getServerVersion());
-	System.out.println(SqlTag.SQL_PRODUCT_START + " " + SystemUtils.JAVA_VENDOR + " " + SystemUtils.JAVA_VM_NAME
-		+ " " + SystemUtils.JAVA_VERSION);
+	System.out.println(TomcatStarterUtil.getJavaInfo());
 	System.out.println(
 
 		SqlTag.SQL_PRODUCT_START + " " + "Using properties file: ");
