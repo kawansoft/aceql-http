@@ -50,6 +50,7 @@ import org.kawanfw.sql.servlet.sql.ServerStatementRawExecute;
 import org.kawanfw.sql.servlet.sql.callable.ServerCallableStatement;
 import org.kawanfw.sql.servlet.sql.json_return.JsonErrorReturn;
 import org.kawanfw.sql.servlet.sql.json_return.JsonOkReturn;
+import org.kawanfw.sql.util.FrameworkDebug;
 
 /**
  * @author Nicolas de Pomereu
@@ -62,7 +63,7 @@ import org.kawanfw.sql.servlet.sql.json_return.JsonOkReturn;
  */
 public class ServerSqlDispatch {
 
-    private static boolean DEBUG = true; //FrameworkDebug.isSet(ServerSqlDispatch.class);
+    private static boolean DEBUG = FrameworkDebug.isSet(ServerSqlDispatch.class);
 
     /**
      * /** Execute the client sent sql request that is already wrapped in the
