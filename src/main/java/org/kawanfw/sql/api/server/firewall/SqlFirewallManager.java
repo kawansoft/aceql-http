@@ -143,7 +143,7 @@ public interface SqlFirewallManager {
 
 
     /**
-     * Allows to define if the passed username is allowed to call a raw JDBC execute.
+     * Allows to define if the passed username is allowed to call a raw JDBC {@code Statement.execute}.
      *
      * @param username   the client username to check the rule for.
      * @param database   the database name as defined in the JDBC URL field
