@@ -82,28 +82,20 @@ public class ClobColumnFormater {
 
 	// Maybe null, we want to keep the info
 	Reader reader = resultSet.getCharacterStream(columnIndex);
-	BufferedReader br = new BufferedReader(reader);
-
-	String hostFileName = null;
-
-	// hostFileName = HttpConfigurationUtil.addRootPath(fileConfigurator,
-	// username, fileName);
 
 	DatabaseConfigurator databaseConfigurator = ServerSqlManager.getDatabaseConfigurator(database);
-	hostFileName = databaseConfigurator.getBlobsDirectory(username) + File.separator + fileName;
+	String hostFileName = databaseConfigurator.getBlobsDirectory(username) + File.separator + fileName;
 
 	//debug("formatClobColumn:writer: " + hostFileName);
 
 	if (reader == null) {
-
 	    try (Writer writer = new BufferedWriter(new FileWriter(hostFileName));) {
 		//debug("formatClobColumn.reader == null");
 		writer.write(NULL_STREAM + CR_LF);
 	    }
 	} else {
-
+	    BufferedReader br = new BufferedReader(reader);
 	    writeClobFile(br, hostFileName);
-
 	}
 
 	// The column value is a file name with a tag for identification

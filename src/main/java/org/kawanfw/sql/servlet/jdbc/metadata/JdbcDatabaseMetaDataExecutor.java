@@ -218,7 +218,7 @@ public class JdbcDatabaseMetaDataExecutor {
 		    + methodName + "(" + methodParams + ")");
 	} catch (InvocationTargetException e) {
 	    throw new InvocationTargetException(e, driverInfo + " - Impossible to invoke DatabaseMetaData method."
-		    + methodName + "(" + methodParams + ")");
+		    + methodName +  methodParams);
 	}
 	return resultObj;
     }

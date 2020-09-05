@@ -132,9 +132,11 @@ public class TransactionUtil {
 		ServerSqlManager.writeLine(out, JsonOkReturn.build("result", "" + readOnly));
 	    } else if (action.equals(HttpParameter.GET_CATALOG)) {
 		String result = connection.getCatalog();
+		result = getNonNullResult(result);
 		ServerSqlManager.writeLine(out, JsonOkReturn.build("result", result));
 	    } else if (action.equals(HttpParameter.GET_SCHEMA)) {
 		String result = connection.getSchema();
+		result = getNonNullResult(result);
 		ServerSqlManager.writeLine(out, JsonOkReturn.build("result", result));
 
 	    } else if (action.equals(HttpParameter.GET_HOLDABILITY)) {
@@ -157,6 +159,13 @@ public class TransactionUtil {
 		    JsonErrorReturn.ERROR_JDBC_ERROR, e.getMessage());
 	    ServerSqlManager.writeLine(out, errorReturn.build());
 	}
+    }
+
+    private static String getNonNullResult(String result) {
+	if (result == null) {
+	    return "null";
+	}
+	return result;
     }
 
     private static String getTransactionIsolationAsString(int transactionIsolationLevel) {
