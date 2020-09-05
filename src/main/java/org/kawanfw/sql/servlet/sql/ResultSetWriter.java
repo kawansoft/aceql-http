@@ -204,7 +204,11 @@ public class ResultSetWriter {
 	    // ServerSqlManager.writeLine(out);
 
 	} finally {
-	    resultSet.close();
+	    try {
+		resultSet.close();
+	    } catch (Exception e) {
+		e.printStackTrace();
+	    }
 	    // NO! IOUtils.closeQuietly(out);
 	}
     }
