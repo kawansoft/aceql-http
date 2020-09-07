@@ -301,7 +301,8 @@ public class ServerStatementRawExecute {
 	@SuppressWarnings("unused")
 	boolean executeResult = statement.execute(sqlOrder);
 
-	if (statement.getUpdateCount() != -1) {
+	if (! executeResult) {
+	//if (statement.getUpdateCount() != -1) {
 	    // It is an update statement or prepared statement
 	    StringWriter sw = new StringWriter();
 	    JsonGeneratorFactory jf = JsonUtil.getJsonGeneratorFactory(JsonUtil.DEFAULT_PRETTY_PRINTING);

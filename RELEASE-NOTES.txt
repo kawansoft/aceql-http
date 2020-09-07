@@ -25,7 +25,7 @@ AceQL HTTP is licensed through the GNU Lesser General Public License
 (LGPL v2.1).
 
 
-AceQL HTTP Version 6.0 - 04-Sep-2020
+AceQL HTTP Version 6.0 - 07-Sep-2020
 ------------------------------------
 
 What's New:
@@ -52,6 +52,7 @@ Bugs fixed:
   commands ignored until end of transaction block).
   This has been fixed: Connections in autocommit off are now always rollbacked 
   in case of SQLException.
+- Columns were in lowercase when sent to the client. This has been fixed.
 - Empty string SQL parameters ("") were refused by the AceQL Server. 
   This has been fixed.
   
