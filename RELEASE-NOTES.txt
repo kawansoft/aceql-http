@@ -25,7 +25,14 @@ AceQL HTTP is licensed through the GNU Lesser General Public License
 (LGPL v2.1).
 
 
-AceQL HTTP Version 5.1-PATCH-0.1 - 31-Aug-2020
+AceQL HTTP Version 5.1-PATCH-2.0 - 07-Sep-2020
+----------------------------------------------
+
+Bugs fixed:
+- Column names were sent in lowercase to client side. This has been fixed.
+  
+  
+AceQL HTTP Version 5.1-PATCH-1.0 - 31-Aug-2020
 ----------------------------------------------
 
 Bugs fixed:

@@ -57,7 +57,7 @@ public class ColumnInfoCreator {
 	// Loop on Columns
 	for (int i = 1; i <= cols; i++) {
 	    columnTypeList.add(meta.getColumnType(i));
-	    columnNameList.add(meta.getColumnName(i).toLowerCase());
+	    columnNameList.add(meta.getColumnName(i));
 	    columnTypeNameList.add(meta.getColumnTypeName(i));
 
 	    if (isPostgreSQL) {
