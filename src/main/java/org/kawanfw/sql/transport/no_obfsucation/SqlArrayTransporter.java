@@ -34,12 +34,13 @@ import java.sql.Array;
 import org.kawanfw.sql.util.Base64;
 
 /**
+ * FUTURE USAGE. Array Transport is now done useing simple ArrayTransporter
  * @author Nicolas de Pomereu
  *
  *         Allows to transform with serialization a java.sql.Array holder to
  *         Base64 String and vice versa.
  */
-public class ArrayTransporter {
+class SqlArrayTransporter {
 
     /**
      * Transforms a java.sql.Array to serialized Base 64 String.

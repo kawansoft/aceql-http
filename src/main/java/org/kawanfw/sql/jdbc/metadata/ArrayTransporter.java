@@ -31,7 +31,7 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class ArrayTransporter {
 
-    private static final String SEPARATOR = "|!|";
+    private static final String ACEQL_ARRAY_SEPARATOR = "_!ACEQL!_";
 
     /**
      * Static class
@@ -47,7 +47,7 @@ public class ArrayTransporter {
 	}
 
 	List<String> listArray = Arrays.asList(stringArray);
-	String join = StringUtils.join(listArray, SEPARATOR);
+	String join = StringUtils.join(listArray, ACEQL_ARRAY_SEPARATOR);
 	return join;
     }
 
@@ -57,7 +57,7 @@ public class ArrayTransporter {
 	    return null;
 	}
 
-	String [] split = StringUtils.split(join, SEPARATOR);
+	String [] split = StringUtils.split(join, ACEQL_ARRAY_SEPARATOR);
 	return split;
     }
 
@@ -67,7 +67,7 @@ public class ArrayTransporter {
 	}
 
 	List<Integer> listArray = Arrays.stream(intArray).boxed().collect(Collectors.toList());
-	String join = StringUtils.join(listArray, SEPARATOR);
+	String join = StringUtils.join(listArray, ACEQL_ARRAY_SEPARATOR);
 	return join;
     }
 
@@ -77,7 +77,7 @@ public class ArrayTransporter {
 	    return null;
 	}
 
-	String [] split = StringUtils.split(join, SEPARATOR);
+	String [] split = StringUtils.split(join, ACEQL_ARRAY_SEPARATOR);
 	int [] intArray = new int [split.length];
 
 	for (int i = 0; i < split.length; i++) {
@@ -100,10 +100,13 @@ public class ArrayTransporter {
 	    System.out.println(intArray2[i]);
 	}
 
-	String [] stringArray = {"one", "two", "threee"};
+	String [] stringArray = {"on?e", "t,wo", "thre,ee"};
 	join = arrayToString(stringArray);
 
 	String [] stringArray2 = stringToStringtArray(join);
-	System.out.println(Arrays.asList(stringArray2));
+	List<String> theList = Arrays.asList(stringArray2);
+	for (String element : theList) {
+	    System.out.println(element);
+	}
     }
 }

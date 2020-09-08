@@ -37,8 +37,8 @@ import java.sql.Time;
 import java.sql.Timestamp;
 import java.sql.Types;
 
-import org.apache.commons.lang3.StringUtils;
 import org.kawanfw.sql.api.util.SqlUtil;
+import org.kawanfw.sql.jdbc.metadata.ArrayTransporter;
 
 public class ResultSetWriterUtil {
 
@@ -133,7 +133,7 @@ public class ResultSetWriterUtil {
     }
 
     /**
-     * Format the column as an java.sqlArray
+     * Format the column as an java.sqlArray to transport
      *
      * @param resultSet
      * @param columnIndex
@@ -143,31 +143,10 @@ public class ResultSetWriterUtil {
      */
     public static String formatArrayColumn(ResultSet resultSet, int columnIndex) throws SQLException, IOException {
 	Array array = resultSet.getArray(columnIndex);
-
-	if (array == null) {
-	    return NULL;
-	}
-
-	Object[] objects = (Object[]) array.getArray();
-	String arrayStr = "{";
-	for (int i = 0; i < objects.length; i++) {
-	    arrayStr += objects[i] + ",";
-	}
-
-	if (arrayStr.contains(",")) {
-	    arrayStr = StringUtils.substringBeforeLast(arrayStr, ",");
-	}
-
-	arrayStr += "}";
-	return arrayStr;
-
-	/*
-	 * ArrayHttp arrayHttp = new ArrayHttp(array); ArrayTransporter arrayTransporter
-	 * = new ArrayTransporter(); String base64 =
-	 * arrayTransporter.toBase64(arrayHttp); return base64;
-	 */
+	String[] stringArray = (String[]) array.getArray();
+	String join = ArrayTransporter.arrayToString(stringArray);
+	return join;
     }
-
 
     /**
      * Format - if detected - an URL

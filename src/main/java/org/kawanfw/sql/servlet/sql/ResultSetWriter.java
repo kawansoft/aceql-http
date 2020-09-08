@@ -314,6 +314,7 @@ public class ResultSetWriter {
     }
 
 
+
     /**
      * Write the column types. Maybe required by client SDKs.
      *

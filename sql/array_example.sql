@@ -33,6 +33,18 @@ insert into REGIONS values(
     'Southwest',
     '{"94105", "90049", "92027"}');
     
+create table REGIONS_INTEGER
+   (REGION_NAME varchar(32) NOT NULL,
+   ZIPS integer ARRAY[10] NOT NULL,
+   PRIMARY KEY (REGION_NAME));    
+    
+insert into REGIONS_INTEGER values(
+    'Northwest',
+    '{93101, 97201, 99210}');
+    
+insert into REGIONS_INTEGER values(
+    'Southwest',
+    '{94105, 90049, 92027}');    
 --
 -- ORACLE 
 --
