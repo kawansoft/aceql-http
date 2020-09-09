@@ -38,7 +38,9 @@ import java.sql.Timestamp;
 import java.sql.Types;
 
 import org.kawanfw.sql.api.util.SqlUtil;
-import org.kawanfw.sql.jdbc.metadata.ArrayTransporter;
+import org.kawanfw.sql.metadata.AceQLArray;
+import org.kawanfw.sql.metadata.dto.AceQLArrayDto;
+import org.kawanfw.sql.metadata.util.GsonWsUtil;
 
 public class ResultSetWriterUtil {
 
@@ -133,19 +135,30 @@ public class ResultSetWriterUtil {
     }
 
     /**
-     * Format the column as an java.sqlArray to transport
+     * Format the column as an java.sqlArray to transport. First build an AceQLArray Array, because native java.sqlArray cannot be transported using Gson.
      *
      * @param resultSet
      * @param columnIndex
-     * @return
+     * @return the json representation of an AceQLArrayDto
      * @throws SQLException
      * @throws IOException
      */
     public static String formatArrayColumn(ResultSet resultSet, int columnIndex) throws SQLException, IOException {
+	/**
+	 * <pre><code>
+	 * // Old Legacy version
+        	Array array = resultSet.getArray(columnIndex);
+        	String[] stringArray = (String[]) array.getArray();
+        	String join = ArrayTransporter.arrayToString(stringArray);
+        	return join;
+	 * </code></pre>
+	 */
+
 	Array array = resultSet.getArray(columnIndex);
-	String[] stringArray = (String[]) array.getArray();
-	String join = ArrayTransporter.arrayToString(stringArray);
-	return join;
+	AceQLArray aceQLArray = new AceQLArray(array);
+	AceQLArrayDto aceQLArrayDto = new AceQLArrayDto(aceQLArray);
+	String jsonString = GsonWsUtil.getJSonString(aceQLArrayDto);
+	return jsonString;
     }
 
     /**

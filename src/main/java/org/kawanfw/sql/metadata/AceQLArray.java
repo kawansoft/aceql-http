@@ -22,58 +22,50 @@
  * Any modifications to this file must keep this entire header
  * intact.
  */
-package org.kawanfw.sql.transport.no_obfsucation;
+package org.kawanfw.sql.metadata;
 
-import java.io.Serializable;
 import java.sql.Array;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
 import java.util.Map;
 
+import org.kawanfw.sql.jdbc.metadata.ArrayTransporter;
 import org.kawanfw.sql.util.Tag;
 
 /**
+ * SQL Array implementation for transport between AceQL Ssrver and clients SDKs
  * @author Nicolas de Pomereu
  *
  */
-class ArrayHttp implements Array, Serializable {
+public class AceQLArray implements Array {
 
-    private static final String KAWANFW_NOT_SUPPORTED_METHOD = Tag.PRODUCT
-	    + "Method is not yet implemented.";
+    private static final String KAWANFW_NOT_SUPPORTED_METHOD = Tag.PRODUCT + "Method is not yet implemented.";
 
-    /**
-     * Generated serial version ID
-     */
-    private static final long serialVersionUID = 7248103889999011521L;
+    private String baseTypeName;
+    private int baseType;
+    private String arrayAsJoin;
 
-    // The ArrayId on host
-    private String arrayId = null;
-
-    private String baseTypeName = null;
-    private int baseType = -1;
-    private Object arrayElements;
-
-    public ArrayHttp(Array array) throws SQLException {
-	baseTypeName = array.getBaseTypeName();
-	baseType = array.getBaseType();
-	arrayElements = array.getArray();
-    }
-
-    public ArrayHttp(String arrayId, String baseTypeName, int baseType,
-	    Object arrayElements) {
-	super();
-	this.arrayId = arrayId;
-	this.baseTypeName = baseTypeName;
-	this.baseType = baseType;
-	this.arrayElements = arrayElements;
-    }
 
     /**
-     * @return the arrayId
+     * Necessary void constructor for JSON
      */
-    public String getArrayId() {
-	return arrayId;
+    public AceQLArray() {
+
+    }
+
+    public AceQLArray(Array array) throws SQLException {
+	if (array == null) {
+	    this.baseTypeName = "NULL";
+	    this.baseType = 0;
+	    this.arrayAsJoin = "NULL";
+	    return;
+	}
+
+	this.baseTypeName = array.getBaseTypeName();
+	this.baseType = array.getBaseType();
+	String[] stringArray = (String[]) array.getArray();
+	this.arrayAsJoin = ArrayTransporter.arrayToString(stringArray);
     }
 
     /*
@@ -103,7 +95,7 @@ class ArrayHttp implements Array, Serializable {
      */
     @Override
     public Object getArray() throws SQLException {
-	return arrayElements;
+	return ArrayTransporter.stringToStringArray(arrayAsJoin);
     }
 
     /*
@@ -132,8 +124,7 @@ class ArrayHttp implements Array, Serializable {
      * @see java.sql.Array#getArray(long, int, java.util.Map)
      */
     @Override
-    public Object getArray(long index, int count, Map<String, Class<?>> map)
-	    throws SQLException {
+    public Object getArray(long index, int count, Map<String, Class<?>> map) throws SQLException {
 	throw new SQLFeatureNotSupportedException(KAWANFW_NOT_SUPPORTED_METHOD);
     }
 
@@ -153,8 +144,7 @@ class ArrayHttp implements Array, Serializable {
      * @see java.sql.Array#getResultSet(java.util.Map)
      */
     @Override
-    public ResultSet getResultSet(Map<String, Class<?>> map)
-	    throws SQLException {
+    public ResultSet getResultSet(Map<String, Class<?>> map) throws SQLException {
 	throw new SQLFeatureNotSupportedException(KAWANFW_NOT_SUPPORTED_METHOD);
     }
 
@@ -174,8 +164,7 @@ class ArrayHttp implements Array, Serializable {
      * @see java.sql.Array#getResultSet(long, int, java.util.Map)
      */
     @Override
-    public ResultSet getResultSet(long index, int count,
-	    Map<String, Class<?>> map) throws SQLException {
+    public ResultSet getResultSet(long index, int count, Map<String, Class<?>> map) throws SQLException {
 	throw new SQLFeatureNotSupportedException(KAWANFW_NOT_SUPPORTED_METHOD);
     }
 
@@ -186,19 +175,17 @@ class ArrayHttp implements Array, Serializable {
      */
     @Override
     public void free() throws SQLException {
-	// Does nothing
+
     }
 
-    /*
-     * (non-Javadoc)
-     *
+    /* (non-Javadoc)
      * @see java.lang.Object#toString()
      */
     @Override
     public String toString() {
-	return "ArrayHttp [arrayId=" + arrayId + ", baseTypeName="
-		+ baseTypeName + ", baseType=" + baseType + ", arrayElements="
-		+ arrayElements + "]";
+	return "AceQLArray [baseTypeName=" + baseTypeName + ", baseType=" + baseType + ", arrayAsJoin=" + arrayAsJoin
+		+ "]";
     }
+
 
 }

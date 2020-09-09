@@ -52,7 +52,7 @@ public class ArrayTransporter {
     }
 
 
-    public static String[] stringToStringtArray(String join) {
+    public static String[] stringToStringArray(String join) {
 	if (join == null || join.equals("NULL")) {
 	    return null;
 	}
@@ -103,7 +103,7 @@ public class ArrayTransporter {
 	String [] stringArray = {"on?e", "t,wo", "thre,ee"};
 	join = arrayToString(stringArray);
 
-	String [] stringArray2 = stringToStringtArray(join);
+	String [] stringArray2 = stringToStringArray(join);
 	List<String> theList = Arrays.asList(stringArray2);
 	for (String element : theList) {
 	    System.out.println(element);

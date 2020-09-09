@@ -22,15 +22,38 @@
  * Any modifications to this file must keep this entire header
  * intact.
  */
-package org.kawanfw.sql.version;
+package org.kawanfw.sql.metadata.dto;
 
-/**
- * Contains the package Version info
- */
+import org.kawanfw.sql.metadata.AceQLArray;
 
-public class VersionValues {
-    public static final String VERSION = "v6.0";
-    public static final String DATE = "09-Sep-2020";
+public class AceQLArrayDto {
+
+    private String status = "OK";
+    private AceQLArray aceQLArray = null;
+
+    public AceQLArrayDto(AceQLArray aceQLArray) {
+	this.aceQLArray = aceQLArray;
+    }
+
+    /**
+     * @return the status
+     */
+    public String getStatus() {
+        return status;
+    }
+
+    /**
+     * @return the aceQLArray
+     */
+    public AceQLArray getAceQLArray() {
+        return aceQLArray;
+    }
+
+
+    @Override
+    public String toString() {
+	return "AceQLArrayDto [status=" + status + ", aceQLArray=" + aceQLArray + "]";
+    }
+
+
 }
-
-// End

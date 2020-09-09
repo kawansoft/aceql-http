@@ -37,7 +37,7 @@ import org.kawanfw.sql.util.Base64;
  * @author Nicolas de Pomereu
  *
  */
-public class RowIdTransporter {
+class RowIdTransporter {
 
     /**
      * Transforms a RowId to serialized Base 64 String.

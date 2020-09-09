@@ -139,7 +139,7 @@ public class DatabaseMetaDataSpecialExecutor {
 	// CallMetaDataTransport.fromJsonStringArray(jsonString);
 	//String[] types = StringArrayTransport.fromJson(jsonString);
 
-	String[] types = ArrayTransporter.stringToStringtArray(join);
+	String[] types = ArrayTransporter.stringToStringArray(join);
 
 	// Detect null transported values
 	if (catalog.equals("NULL"))
