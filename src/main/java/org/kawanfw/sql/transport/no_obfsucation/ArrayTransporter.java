@@ -29,32 +29,34 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.sql.RowId;
+import java.sql.Array;
 
 import org.kawanfw.sql.util.Base64;
 
 /**
  * @author Nicolas de Pomereu
  *
+ *         Allows to transform with serialization a java.sql.Array holder to
+ *         Base64 String and vice versa.
  */
-public class RowIdTransporter {
+public class ArrayTransporter {
 
     /**
-     * Transforms a RowId to serialized Base 64 String.
+     * Transforms a java.sql.Array to serialized Base 64 String.
      *
-     * @param rowId
-     *            the RowId to transport
-     * @return a serialized RowId in base 64 format
+     * @param array
+     *            the Array holder to transport
+     * @return a serialized array holder in base 64 format
      * @throws IOException
      */
-    public String toBase64(RowId rowId) throws IOException {
+    public String toBase64(Array array) throws IOException {
 
 	ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
 	ObjectOutputStream oos = null;
 	try {
 	    oos = new ObjectOutputStream(bos);
-	    oos.writeObject(rowId);
+	    oos.writeObject(array);
 	    oos.flush();
 
 	    byte[] byteArray = bos.toByteArray();
@@ -76,7 +78,7 @@ public class RowIdTransporter {
      * @throws IOException
      * @throws ClassNotFoundException
      */
-    public RowId fromBase64(String s)
+    public Array fromBase64(String s)
 	    throws IOException, ClassNotFoundException {
 
 	byte[] byteArray = Base64.base64ToByteArray(s);
@@ -84,14 +86,15 @@ public class RowIdTransporter {
 
 	ObjectInputStream ois = new ObjectInputStream(bis);
 
-	RowId rowId = null;
+	Array array = null;
 	try {
-	    rowId = (RowId) ois.readObject();
-	    return rowId;
+	    array = (Array) ois.readObject();
+	    return array;
 	} finally {
 	    if (ois != null) {
 		ois.close();
 	    }
 	}
     }
+
 }
