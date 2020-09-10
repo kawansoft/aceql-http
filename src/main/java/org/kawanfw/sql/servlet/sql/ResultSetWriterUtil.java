@@ -38,8 +38,13 @@ import java.sql.Timestamp;
 import java.sql.Types;
 
 import org.kawanfw.sql.api.util.SqlUtil;
+<<<<<<< HEAD
 import org.kawanfw.sql.metadata.AceQLArray;
 import org.kawanfw.sql.metadata.dto.AceQLArrayDto;
+=======
+import org.kawanfw.sql.jdbc.metadata.AceQLArray;
+import org.kawanfw.sql.jdbc.metadata.AceQLArrayDto;
+>>>>>>> refs/heads/6.0.1
 import org.kawanfw.sql.metadata.util.GsonWsUtil;
 
 public class ResultSetWriterUtil {
@@ -144,6 +149,7 @@ public class ResultSetWriterUtil {
      * @throws IOException
      */
     public static String formatArrayColumn(ResultSet resultSet, int columnIndex) throws SQLException, IOException {
+<<<<<<< HEAD
 	/**
 	 * <pre><code>
 	 * // Old Legacy version
@@ -153,6 +159,34 @@ public class ResultSetWriterUtil {
         	return join;
 	 * </code></pre>
 	 */
+=======
+//	Array array = resultSet.getArray(columnIndex);
+//
+//	if (array == null) {
+//	    return NULL;
+//	}
+//
+//	Object[] objects = (Object[]) array.getArray();
+//	String arrayStr = "{";
+//	for (int i = 0; i < objects.length; i++) {
+//	    arrayStr += objects[i] + ",";
+//	}
+//
+//	if (arrayStr.contains(",")) {
+//	    arrayStr = StringUtils.substringBeforeLast(arrayStr, ",");
+//	}
+//
+//	arrayStr += "}";
+//	return arrayStr;
+
+	Array array = resultSet.getArray(columnIndex);
+	AceQLArray aceQLArray = new AceQLArray(array);
+	AceQLArrayDto aceQLArrayDto = new AceQLArrayDto(aceQLArray);
+	String jsonString = GsonWsUtil.getJSonString(aceQLArrayDto);
+	return jsonString;
+
+    }
+>>>>>>> refs/heads/6.0.1
 
 	Array array = resultSet.getArray(columnIndex);
 	AceQLArray aceQLArray = new AceQLArray(array);

@@ -104,9 +104,13 @@ public class ArrayTransporter {
 	join = arrayToString(stringArray);
 
 	String [] stringArray2 = stringToStringArray(join);
+<<<<<<< HEAD
 	List<String> theList = Arrays.asList(stringArray2);
 	for (String element : theList) {
 	    System.out.println(element);
 	}
+=======
+	System.out.println(Arrays.asList(stringArray2));
+>>>>>>> refs/heads/6.0.1
     }
 }
