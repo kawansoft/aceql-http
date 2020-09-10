@@ -37,8 +37,10 @@ import java.sql.Time;
 import java.sql.Timestamp;
 import java.sql.Types;
 
-import org.apache.commons.lang3.StringUtils;
 import org.kawanfw.sql.api.util.SqlUtil;
+import org.kawanfw.sql.jdbc.metadata.AceQLArray;
+import org.kawanfw.sql.jdbc.metadata.AceQLArrayDto;
+import org.kawanfw.sql.metadata.util.GsonWsUtil;
 
 public class ResultSetWriterUtil {
 
@@ -142,30 +144,31 @@ public class ResultSetWriterUtil {
      * @throws IOException
      */
     public static String formatArrayColumn(ResultSet resultSet, int columnIndex) throws SQLException, IOException {
+//	Array array = resultSet.getArray(columnIndex);
+//
+//	if (array == null) {
+//	    return NULL;
+//	}
+//
+//	Object[] objects = (Object[]) array.getArray();
+//	String arrayStr = "{";
+//	for (int i = 0; i < objects.length; i++) {
+//	    arrayStr += objects[i] + ",";
+//	}
+//
+//	if (arrayStr.contains(",")) {
+//	    arrayStr = StringUtils.substringBeforeLast(arrayStr, ",");
+//	}
+//
+//	arrayStr += "}";
+//	return arrayStr;
+
 	Array array = resultSet.getArray(columnIndex);
+	AceQLArray aceQLArray = new AceQLArray(array);
+	AceQLArrayDto aceQLArrayDto = new AceQLArrayDto(aceQLArray);
+	String jsonString = GsonWsUtil.getJSonString(aceQLArrayDto);
+	return jsonString;
 
-	if (array == null) {
-	    return NULL;
-	}
-
-	Object[] objects = (Object[]) array.getArray();
-	String arrayStr = "{";
-	for (int i = 0; i < objects.length; i++) {
-	    arrayStr += objects[i] + ",";
-	}
-
-	if (arrayStr.contains(",")) {
-	    arrayStr = StringUtils.substringBeforeLast(arrayStr, ",");
-	}
-
-	arrayStr += "}";
-	return arrayStr;
-
-	/*
-	 * ArrayHttp arrayHttp = new ArrayHttp(array); ArrayTransporter arrayTransporter
-	 * = new ArrayTransporter(); String base64 =
-	 * arrayTransporter.toBase64(arrayHttp); return base64;
-	 */
     }
 
 
