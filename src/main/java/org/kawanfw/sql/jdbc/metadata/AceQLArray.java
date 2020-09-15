@@ -31,13 +31,14 @@ import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
 import java.sql.Timestamp;
 import java.sql.Types;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Map;
 
 import org.kawanfw.sql.util.Tag;
 
 /**
- * SQL Array implementation for transport between AceQL Ssrver and clients SDKs
+ * SQL Array implementation for transport between AceQL Server and clients SDKs
  * @author Nicolas de Pomereu
  *
  */
@@ -47,7 +48,7 @@ public class AceQLArray implements Array {
 
     private String baseTypeName;
     private int baseType;
-    private String arrayAsJoin;
+    private String[] stringArray;
 
     /**
      * Necessary void constructor for JSON.
@@ -60,7 +61,8 @@ public class AceQLArray implements Array {
 	if (array == null) {
 	    this.baseTypeName = "NULL";
 	    this.baseType = 0;
-	    this.arrayAsJoin = "NULL";
+	    //stringArray = new String[1];
+	    ///stringArray[0] = "NULL";
 	    return;
 	}
 
@@ -70,35 +72,32 @@ public class AceQLArray implements Array {
 	// Date & time are converted to long value, to avoid string representation
 	if (baseType == Types.DATE) {
 	    Date[] objectArray = (Date[]) array.getArray();
-	    String[] stringArray = new String[objectArray.length];
+	   stringArray = new String[objectArray.length];
 	    for (int i = 0; i < objectArray.length; i++) {
 		stringArray[i] = "" + objectArray[i].getTime();
 	    }
 	}
 	else if (baseType == Types.TIMESTAMP) {
 	    Timestamp[] objectArray = (Timestamp[]) array.getArray();
-	    String[] stringArray = new String[objectArray.length];
+	    stringArray = new String[objectArray.length];
 	    for (int i = 0; i < objectArray.length; i++) {
 		stringArray[i] = "" + objectArray[i].getTime();
 	    }
 	}
 	else if (baseType == Types.TIME) {
 	    Timestamp[] objectArray = (Timestamp[]) array.getArray();
-	    String[] stringArray = new String[objectArray.length];
+	    stringArray = new String[objectArray.length];
 	    for (int i = 0; i < objectArray.length; i++) {
 		stringArray[i] = "" + objectArray[i].getTime();
 	    }
 	}
 	else {
 	    Object[] objectArray = (Object[]) array.getArray();
-	    String[] stringArray = new String[objectArray.length];
+	    stringArray = new String[objectArray.length];
 	    for (int i = 0; i < objectArray.length; i++) {
 		stringArray[i] = objectArray[i].toString();
 	    }
-
-	    this.arrayAsJoin = ArrayTransporter.arrayToString(stringArray);
 	}
-
     }
 
     /*
@@ -128,8 +127,7 @@ public class AceQLArray implements Array {
      */
     @Override
     public Object getArray() throws SQLException {
-	String[] stringArray =  ArrayTransporter.stringToStringArray(arrayAsJoin);
-	if (stringArray == null) {
+	if (this.baseTypeName.equals("NULL")) {
 	    return null;
 	}
 
@@ -379,9 +377,10 @@ public class AceQLArray implements Array {
      */
     @Override
     public String toString() {
-	return "AceQLArray [baseTypeName=" + baseTypeName + ", baseType=" + baseType + ", arrayAsJoin=" + arrayAsJoin
-		+ "]";
+	return "AceQLArray [baseTypeName=" + baseTypeName + ", baseType=" + baseType + ", stringArray="
+		+ Arrays.toString(stringArray) + "]";
     }
+
 
 
 }

@@ -457,7 +457,7 @@ public class ServerStatementRawExecute {
 	 // Always force to Get ResultSetMetaData, because client side is probably a DB Visualizer tool
 	    boolean fillResultSetMetaData = true;
 
-	    ResultSetWriter resultSetWriter = new ResultSetWriter(request, username, sqlOrder, gen, fillResultSetMetaData);
+	    ResultSetWriter resultSetWriter = new ResultSetWriter(request, sqlOrder, gen, fillResultSetMetaData);
 	    resultSetWriter.write(rs);
 
 	    ServerSqlManager.writeLine(out);

@@ -26,9 +26,7 @@ package org.kawanfw.sql.servlet.sql;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.sql.Connection;
 import java.sql.ResultSet;
-import java.sql.RowId;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.List;
@@ -40,10 +38,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.kawanfw.sql.jdbc.metadata.ResultSetMetaDataHolder;
 import org.kawanfw.sql.metadata.util.GsonWsUtil;
 import org.kawanfw.sql.servlet.HttpParameter;
-import org.kawanfw.sql.servlet.connection.ConnectionStore;
 import org.kawanfw.sql.servlet.jdbc.metadata.ResultSetMetaDataBuilder;
 import org.kawanfw.sql.util.FrameworkDebug;
-import org.kawanfw.sql.util.SqlReturnCode;
 
 /**
  * @author Nicolas de Pomereu
@@ -51,14 +47,11 @@ import org.kawanfw.sql.util.SqlReturnCode;
  */
 public class ResultSetWriter {
 
-    private static final String NULL = "NULL";
+    static final String NULL = "NULL";
 
     private static boolean DEBUG = FrameworkDebug.isSet(ResultSetWriter.class);
 
     public static String CR_LF = System.getProperty("line.separator");
-
-    /** The username in use */
-    private String username = null;
 
     /** the sql order */
     private String sqlOrder = null;
@@ -76,14 +69,12 @@ public class ResultSetWriter {
 
     /**
      * @param request  the http request
-     * @param username the client username
      * @param sqlOrder the sql order
      * @param gen      The JSon Generator
      * @param fillResultSetMetaData TODO
      */
-    public ResultSetWriter(HttpServletRequest request, String username, String sqlOrder, JsonGenerator gen, boolean fillResultSetMetaData) {
+    public ResultSetWriter(HttpServletRequest request, String sqlOrder, JsonGenerator gen, boolean fillResultSetMetaData) {
 
-	this.username = username;
 	this.sqlOrder = sqlOrder;
 
 	this.request = request;
@@ -173,7 +164,7 @@ public class ResultSetWriter {
 		    } else if (ResultSetWriterUtil.isDateTime(columnType)) {
 			columnValueStr = ResultSetWriterUtil.formatDateTimeColumn(resultSet, columnType, columnIndex);
 		    } else if (columnType == Types.ROWID) {
-			columnValueStr = formatRowIdColumn(resultSet, columnIndex);
+			columnValueStr = ResultSetWriterUtil.formatRowIdColumn(request, resultSet, columnIndex);
 		    } else {
 			try {
 			    columnValue = resultSet.getObject(columnIndex);
@@ -274,43 +265,6 @@ public class ResultSetWriter {
 	debug("columnTypeName : " + columnTypeName);
 	debug("columnName     : " + columnName);
 	debug("columnTable    : " + columnTable);
-    }
-
-    /**
-     * Format the column as a RowId
-     *
-     * @param resultSet
-     * @param columnIndex
-     * @return
-     * @throws SQLException
-     * @throws IOException
-     */
-    private String formatRowIdColumn(ResultSet resultSet, int columnIndex) throws SQLException, IOException {
-	RowId rowId = resultSet.getRowId(columnIndex);
-
-	if (rowId == null) {
-	    return NULL;
-	}
-
-	String sessionId = request.getParameter(HttpParameter.SESSION_ID);
-	String connectionId = request.getParameter(HttpParameter.CONNECTION_ID);
-
-	ConnectionStore connectionStore = new ConnectionStore(username, sessionId, connectionId);
-	Connection connection = connectionStore.get();
-
-	if (connection == null) {
-	    throw new SQLException(SqlReturnCode.SESSION_INVALIDATED);
-	}
-
-	connectionStore.put(rowId);
-
-	return rowId.toString();
-	// RowIdHttp rowIdHttp = new RowIdHttp(rowId.hashCode(),
-	// rowId.getBytes());
-	//
-	// RowIdTransporter rowIdTransporter = new RowIdTransporter();
-	// String base64 = rowIdTransporter.toBase64(rowIdHttp);
-	// return base64;
     }
 
 

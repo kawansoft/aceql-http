@@ -280,7 +280,7 @@ public class ServerCallableStatement {
 	    String fillResultSetMetaDataStr = request.getParameter(HttpParameter.FILL_RESULT_SET_META_DATA);
 	    boolean fillResultSetMetaData = Boolean.parseBoolean(fillResultSetMetaDataStr);
 
-	    ResultSetWriter resultSetWriter = new ResultSetWriter(request, username, sqlOrder, gen, fillResultSetMetaData);
+	    ResultSetWriter resultSetWriter = new ResultSetWriter(request, sqlOrder, gen, fillResultSetMetaData);
 	    resultSetWriter.write(rs);
 
 	    ServerSqlManager.writeLine(out);

@@ -42,7 +42,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.kawanfw.sql.jdbc.metadata.BooleanResponseDTO;
 import org.kawanfw.sql.jdbc.metadata.DatabaseMetaDataMethodCallDTO;
 import org.kawanfw.sql.metadata.util.GsonWsUtil;
-import org.kawanfw.sql.servlet.HttpParameter;
 import org.kawanfw.sql.servlet.ServerSqlManager;
 import org.kawanfw.sql.servlet.sql.ResultSetWriter;
 import org.kawanfw.sql.servlet.sql.json_return.JsonUtil;
@@ -141,12 +140,11 @@ public class JdbcDatabaseMetaDataExecutor {
 	boolean doPrettyPrinting = true;
 	JsonGeneratorFactory jf = JsonUtil.getJsonGeneratorFactory(doPrettyPrinting);
 
-	String username = request.getParameter(HttpParameter.USERNAME);
 	JsonGenerator gen = jf.createGenerator(out);
 	gen.writeStartObject().write("status", "OK");
 
 	boolean fillResultSetMetaData = true;
-	ResultSetWriter resultSetWriter = new ResultSetWriter(request, username, "ResultSetMetaData", gen, fillResultSetMetaData);
+	ResultSetWriter resultSetWriter = new ResultSetWriter(request, "ResultSetMetaData", gen, fillResultSetMetaData);
 	resultSetWriter.write(rs);
 
 	ServerSqlManager.writeLine(out);
