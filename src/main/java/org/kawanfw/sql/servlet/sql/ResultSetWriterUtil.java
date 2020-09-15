@@ -144,26 +144,27 @@ public class ResultSetWriterUtil {
      * @throws IOException
      */
     public static String formatArrayColumn(ResultSet resultSet, int columnIndex) throws SQLException, IOException {
-//	Array array = resultSet.getArray(columnIndex);
-//
-//	if (array == null) {
-//	    return NULL;
-//	}
-//
-//	Object[] objects = (Object[]) array.getArray();
-//	String arrayStr = "{";
-//	for (int i = 0; i < objects.length; i++) {
-//	    arrayStr += objects[i] + ",";
-//	}
-//
-//	if (arrayStr.contains(",")) {
-//	    arrayStr = StringUtils.substringBeforeLast(arrayStr, ",");
-//	}
-//
-//	arrayStr += "}";
-//	return arrayStr;
-
 	Array array = resultSet.getArray(columnIndex);
+
+	/*
+	if (array == null) {
+	    return NULL;
+	}
+
+	Object[] objects = (Object[]) array.getArray();
+	String arrayStr = "{";
+	for (int i = 0; i < objects.length; i++) {
+	    arrayStr += objects[i] + ",";
+	}
+
+	if (arrayStr.contains(",")) {
+	    arrayStr = StringUtils.substringBeforeLast(arrayStr, ",");
+	}
+
+	arrayStr += "}";
+//	return arrayStr;
+	*/
+
 	AceQLArray aceQLArray = new AceQLArray(array);
 	AceQLArrayDto aceQLArrayDto = new AceQLArrayDto(aceQLArray);
 	String jsonString = GsonWsUtil.getJSonString(aceQLArrayDto);
