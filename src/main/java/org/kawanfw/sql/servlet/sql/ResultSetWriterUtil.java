@@ -211,26 +211,6 @@ public class ResultSetWriterUtil {
      */
     public static String formatArrayColumn(ResultSet resultSet, int columnIndex) throws SQLException, IOException {
 	Array array = resultSet.getArray(columnIndex);
-
-	/*
-	if (array == null) {
-	    return NULL;
-	}
-
-	Object[] objects = (Object[]) array.getArray();
-	String arrayStr = "{";
-	for (int i = 0; i < objects.length; i++) {
-	    arrayStr += objects[i] + ",";
-	}
-
-	if (arrayStr.contains(",")) {
-	    arrayStr = StringUtils.substringBeforeLast(arrayStr, ",");
-	}
-
-	arrayStr += "}";
-//	return arrayStr;
-	*/
-
 	AceQLArray aceQLArray = new AceQLArray(array);
 	String jsonString = GsonWsUtil.getJSonString(aceQLArray);
 	return jsonString;
@@ -267,6 +247,7 @@ public class ResultSetWriterUtil {
         connectionStore.put(rowId);
 
         return rowId.toString();
+        // Old code:
         // RowIdHttp rowIdHttp = new RowIdHttp(rowId.hashCode(),
         // rowId.getBytes());
         //

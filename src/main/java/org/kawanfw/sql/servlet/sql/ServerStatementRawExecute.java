@@ -316,7 +316,7 @@ public class ServerStatementRawExecute {
 	else {
 	    // It is a query
 	    ResultSet rs = statement.getResultSet();
-	    dumpResultSet(rs, out, username, sqlOrder);
+	    dumpResultSet(rs, out, sqlOrder);
 	}
 
     }
@@ -360,7 +360,7 @@ public class ServerStatementRawExecute {
 	else {
 	    // It is a query
 	    ResultSet rs = preparedStatement.getResultSet();
-	    dumpResultSet(rs, out, username, sqlOrder);
+	    dumpResultSet(rs, out, sqlOrder);
 	}
 
 
@@ -438,12 +438,11 @@ public class ServerStatementRawExecute {
     /**
      * Dumps the Result Set on the servlet stream
      * @param out
-     * @param username
      * @param sqlOrder
      * @throws SQLException
      * @throws IOException
      */
-    private void dumpResultSet(ResultSet rs, OutputStream out, String username, String sqlOrder) throws SQLException, IOException {
+    private void dumpResultSet(ResultSet rs, OutputStream out, String sqlOrder) throws SQLException, IOException {
 
 	try {
 

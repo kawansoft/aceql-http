@@ -48,7 +48,7 @@ public class AceQLArray implements Array {
 
     private String baseTypeName;
     private int baseType;
-    private String[] stringArray;
+    private String[] arrayValues;
 
     /**
      * Necessary void constructor for JSON.
@@ -61,8 +61,8 @@ public class AceQLArray implements Array {
 	if (array == null) {
 	    this.baseTypeName = "NULL";
 	    this.baseType = 0;
-	    //stringArray = new String[1];
-	    ///stringArray[0] = "NULL";
+	    //arrayValues = new String[1];
+	    ///arrayValues[0] = "NULL";
 	    return;
 	}
 
@@ -72,30 +72,30 @@ public class AceQLArray implements Array {
 	// Date & time are converted to long value, to avoid string representation
 	if (baseType == Types.DATE) {
 	    Date[] objectArray = (Date[]) array.getArray();
-	   stringArray = new String[objectArray.length];
+	   arrayValues = new String[objectArray.length];
 	    for (int i = 0; i < objectArray.length; i++) {
-		stringArray[i] = "" + objectArray[i].getTime();
+		arrayValues[i] = "" + objectArray[i].getTime();
 	    }
 	}
 	else if (baseType == Types.TIMESTAMP) {
 	    Timestamp[] objectArray = (Timestamp[]) array.getArray();
-	    stringArray = new String[objectArray.length];
+	    arrayValues = new String[objectArray.length];
 	    for (int i = 0; i < objectArray.length; i++) {
-		stringArray[i] = "" + objectArray[i].getTime();
+		arrayValues[i] = "" + objectArray[i].getTime();
 	    }
 	}
 	else if (baseType == Types.TIME) {
 	    Timestamp[] objectArray = (Timestamp[]) array.getArray();
-	    stringArray = new String[objectArray.length];
+	    arrayValues = new String[objectArray.length];
 	    for (int i = 0; i < objectArray.length; i++) {
-		stringArray[i] = "" + objectArray[i].getTime();
+		arrayValues[i] = "" + objectArray[i].getTime();
 	    }
 	}
 	else {
 	    Object[] objectArray = (Object[]) array.getArray();
-	    stringArray = new String[objectArray.length];
+	    arrayValues = new String[objectArray.length];
 	    for (int i = 0; i < objectArray.length; i++) {
-		stringArray[i] = objectArray[i].toString();
+		arrayValues[i] = objectArray[i].toString();
 	    }
 	}
     }
@@ -120,28 +120,17 @@ public class AceQLArray implements Array {
 	return baseType;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see java.sql.Array#getArray()
-     */
-    @Override
-    public Object getArray() throws SQLException {
-	if (this.baseTypeName.equals("NULL")) {
-	    return null;
-	}
-
 	/**
 	 * <pre><code>
 	This is a PostgreSQL example:
-        Java Type	Supported binary 	PostgreSQL™ Types	Default PostgreSQL™ Type
-        short[], 	Short[]				int2[]				int2[]
-        int[],		Integer[]			int4[]				int4[]
-        long[], 	Long[]				int8[]				int8[]
-        float[], 	Float[]				float4[]			float4[]
-        double[], 	Double[]			float8[]			float8[]
-        boolean[], 	Boolean[]			bool[]				bool[]
-        String[]	varchar[], 			text[]				varchar[]
+    	Java Type	Supported binary 	PostgreSQL™ Types	Default PostgreSQL™ Type
+    	short[], 	Short[]				int2[]				int2[]
+    	int[],		Integer[]			int4[]				int4[]
+    	long[], 	Long[]				int8[]				int8[]
+    	float[], 	Float[]				float4[]			float4[]
+    	double[], 	Double[]			float8[]			float8[]
+    	boolean[], 	Boolean[]			bool[]				bool[]
+    	String[]	varchar[], 			text[]				varchar[]
 
 	https://www.cis.upenn.edu/~bcpierce/courses/629/jdkdocs/guide/jdbc/getstart/mapping.doc.html
 	CHAR			String
@@ -169,63 +158,74 @@ public class AceQLArray implements Array {
 	DATE			java.sql.Date
 	TIME			java.sql.Time
 	TIMESTAMP		java.sql.Timestamp
-        </code></pre>
+    </code></pre>
 	 */
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see java.sql.Array#getArray()
+     */
+    @Override
+    public Object getArray() throws SQLException {
+	if (this.baseTypeName.equals("NULL")) {
+	    return null;
+	}
+
 	if (isString(baseType)) {
-	    return stringArray;
+	    return arrayValues;
 	}
 	else if (isBigDecimal(baseType)) {
-	    BigDecimal[] theArray = new BigDecimal[stringArray.length];
-	    for (int i = 0; i < stringArray.length; i++) {
-		theArray[i] = new BigDecimal(stringArray[i]);
+	    BigDecimal[] theArray = new BigDecimal[arrayValues.length];
+	    for (int i = 0; i < arrayValues.length; i++) {
+		theArray[i] = new BigDecimal(arrayValues[i]);
 	    }
 	    return theArray;
 	}
 	else if (isBoolean(baseType)) {
-	    Boolean[] theArray = new Boolean[stringArray.length];
-	    for (int i = 0; i < stringArray.length; i++) {
-		theArray[i] = Boolean.parseBoolean(stringArray[i]);
+	    Boolean[] theArray = new Boolean[arrayValues.length];
+	    for (int i = 0; i < arrayValues.length; i++) {
+		theArray[i] = Boolean.parseBoolean(arrayValues[i]);
 	    }
 	    return theArray;
 	}
 	else if (isShort(baseType)) {
-	    Short[] theArray = new Short[stringArray.length];
-	    for (int i = 0; i < stringArray.length; i++) {
-		theArray[i] = Short.parseShort(stringArray[i]);
+	    Short[] theArray = new Short[arrayValues.length];
+	    for (int i = 0; i < arrayValues.length; i++) {
+		theArray[i] = Short.parseShort(arrayValues[i]);
 	    }
 	    return theArray;
 	}
 	else if (isInt(baseType)) {
-	    Integer[] theArray = new Integer[stringArray.length];
-	    for (int i = 0; i < stringArray.length; i++) {
-		theArray[i] = Integer.parseInt(stringArray[i]);
+	    Integer[] theArray = new Integer[arrayValues.length];
+	    for (int i = 0; i < arrayValues.length; i++) {
+		theArray[i] = Integer.parseInt(arrayValues[i]);
 	    }
 	    return theArray;
 	}
 	else if (isLong(baseType)) { // Includes date
-	    Long[] theArray = new Long[stringArray.length];
-	    for (int i = 0; i < stringArray.length; i++) {
-		theArray[i] = Long.parseLong(stringArray[i]);
+	    Long[] theArray = new Long[arrayValues.length];
+	    for (int i = 0; i < arrayValues.length; i++) {
+		theArray[i] = Long.parseLong(arrayValues[i]);
 	    }
 	    return theArray;
 	}
 	else if (isFloat(baseType)) {
-	    Float[] theArray = new Float[stringArray.length];
-	    for (int i = 0; i < stringArray.length; i++) {
-		theArray[i] = Float.parseFloat(stringArray[i]);
+	    Float[] theArray = new Float[arrayValues.length];
+	    for (int i = 0; i < arrayValues.length; i++) {
+		theArray[i] = Float.parseFloat(arrayValues[i]);
 	    }
 	    return theArray;
 	}
 	else if (isDouble(baseType)) {
-	    Double[] theArray = new Double[stringArray.length];
-	    for (int i = 0; i < stringArray.length; i++) {
-		theArray[i] = Double.parseDouble(stringArray[i]);
+	    Double[] theArray = new Double[arrayValues.length];
+	    for (int i = 0; i < arrayValues.length; i++) {
+		theArray[i] = Double.parseDouble(arrayValues[i]);
 	    }
 	    return theArray;
 	}
 	else {
-	    return stringArray;
+	    return arrayValues;
 	}
 
     }
@@ -369,7 +369,7 @@ public class AceQLArray implements Array {
      */
     @Override
     public void free() throws SQLException {
-
+	// Nothing for now.
     }
 
     /* (non-Javadoc)
@@ -377,8 +377,8 @@ public class AceQLArray implements Array {
      */
     @Override
     public String toString() {
-	return "AceQLArray [baseTypeName=" + baseTypeName + ", baseType=" + baseType + ", stringArray="
-		+ Arrays.toString(stringArray) + "]";
+	return "AceQLArray [baseTypeName=" + baseTypeName + ", baseType=" + baseType + ", arrayValues="
+		+ Arrays.toString(arrayValues) + "]";
     }
 
 
