@@ -1,6 +1,5 @@
 
                      AceQL HTTP
-                     Version 6.0
                     Release Notes
 
 
@@ -25,7 +24,7 @@ AceQL HTTP is licensed through the GNU Lesser General Public License
 (LGPL v2.1).
 
 
-AceQL HTTP Version 6.0 - 10-Sep-2020
+AceQL HTTP Version 6.0 - 18-Sep-2020
 ------------------------------------
 
 What's New:
@@ -43,7 +42,7 @@ What's New:
   (The AceQL JDBC Driver is work in progress).
  - Add /get_catalog and /get_schema API.
  - Included PostgreSQL Driver has been updated to 42.2.5.
- - Some base libraries have been upgraded.
+ - Tomcat base libraries have been upgraded to 8.5.58.
  
 Bugs fixed:
 - An SQLException could be swallowed during a transaction (autocommit off). This

@@ -30,6 +30,7 @@ import java.io.OutputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -63,6 +64,7 @@ import org.kawanfw.sql.util.FrameworkDebug;
  */
 public class ServerSqlDispatch {
 
+    private static final boolean DUMP_HEADERS = false;
     private static boolean DEBUG = FrameworkDebug.isSet(ServerSqlDispatch.class);
 
     /**
@@ -138,10 +140,24 @@ public class ServerSqlDispatch {
 	    return;
 	}
 
+	dumpHeaders(request);
+
 	dispatch(request, response, out, action, connection, sqlFirewallManagers);
     }
 
 
+    private void dumpHeaders(HttpServletRequest request) {
+
+	if (! DUMP_HEADERS) {
+	    return;
+	}
+
+        Enumeration<String> reqHeaderEnum = request.getHeaderNames();
+        while( reqHeaderEnum.hasMoreElements() ) {
+            String name = reqHeaderEnum.nextElement();
+            System.out.println("Header: " + name + " / " + request.getHeader(name));
+       }
+    }
 
     /**
      * Treat if action is get_version
