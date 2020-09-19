@@ -2,11 +2,7 @@
 
 ![GitHub top language](https://img.shields.io/github/languages/top/kawansoft/aceql-http)![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/kawansoft/aceql-http) ![GitHub issues](https://img.shields.io/github/issues/kawansoft/aceql-http)
 ![GitHub](https://img.shields.io/github/license/kawansoft/aceql-http) ![Maven Central](https://img.shields.io/maven-central/v/com.aceql/aceql-http) 
-<<<<<<< HEAD
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/y/kawansoft/aceql-http) ![GitHub last commit (branch)](https://img.shields.io/github/last-commit/kawansoft/aceql-http/master)
-=======
-![GitHub commit activity](https://img.shields.io/github/commit-activity/y/kawansoft/aceql-http) ![GitHub last commit (branch)](https://img.shields.io/github/last-commit/kawansoft/aceql-http/master) 
->>>>>>> refs/heads/6.0
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/d14142d5d6f04ba891d505e2e47b417d)](https://www.codacy.com/gh/kawansoft/aceql-http?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=kawansoft/aceql-http&amp;utm_campaign=Badge_Grade)
 ![GitHub contributors](https://img.shields.io/github/contributors/kawansoft/aceql-http)
 
@@ -230,7 +226,7 @@ Example: if you run `aceql-http-6.0.run` from `/home/mike`, then software is ins
 
 Open a shell session and make sure `java` binary is in the PATH by typing 
 
-`Java –version` on the command line. 
+`Java â€“version` on the command line. 
 
 Add `java` to your PATH if the command does not display Java version. 
 
@@ -245,7 +241,7 @@ export PATH
 
 Open a shell session and make sure java binary is in the PATH by typing
 
-`Java –version` on the command line. 
+`Java â€“version` on the command line. 
 
 Add java to your PATH if the command does not display Java version.
 
@@ -618,7 +614,7 @@ The running options are fully described in the user interface help.
 
 Setting up a development environment will allow you to develop your own Java classes that will be injected at runtime.
 
-Create a “Server” project and add the jars of the:
+Create a â€œServerâ€� project and add the jars of the:
 
 - `<installation-directory>\AceQL\lib-server subdirectory & <installation-directory>\AceQL\lib-jdbc` to your development CLASSPATH .
 
@@ -712,7 +708,7 @@ Session security is managed by implementing the [SessionConfigurator](https://ww
 Interface implementation allows you to:  
 
 - Define how to generate a session id after client /login call
-- Define the session’s lifetime
+- Define the sessionâ€™s lifetime
 - Define how to verify that the stored session is valid and not expired
 
 ### Session management default implementation
@@ -728,7 +724,7 @@ The default mechanism that builds an authentication session id is coded in the c
 Benefits of this implementation are: 
 
 - Session ids are short and generate less HTTP traffic.
-- Because session ids are short, they are  easy to use “manually” (with cURL, etc.)
+- Because session ids are short, they are  easy to use â€œmanuallyâ€� (with cURL, etc.)
 
 The disadvantage is that session information is stored on the server side.
 
@@ -801,7 +797,7 @@ The API  [DataSourceStore](https://www.aceql.com/rest/soft/6.0/javadoc/org/kawan
 
 ### Running the AceQL Web Server without Windows Desktop
 
-If you don’t have access to the Windows Desktop interface (running in a cloud instance, etc.)  you can still run the AceQL HTTP Web Server from the command line.
+If you donâ€™t have access to the Windows Desktop interface (running in a cloud instance, etc.)  you can still run the AceQL HTTP Web Server from the command line.
 
 - see `<installation-directory>\AceQL\bin\aceql-server.bat` script.
 
@@ -853,7 +849,7 @@ then your `web.xml` should contain the following code:
     </init-param>
 </servlet>
 
-<!—- Allows you to see immediately in servet container if servlet is OK or KO --> 
+<!â€”- Allows you to see immediately in servet container if servlet is OK or KO --> 
 <load-on-startup>1</load-on-startup >
 
 <servlet-mapping>
@@ -918,7 +914,7 @@ All requests are streamed:
 - Output requests (from the client side) are streamed directly from the socket to the server to avoid     buffering any content body
 - Input responses (for the client side) are streamed directly from the socket to the server to efficiently read the response body
 
-Large content (`ResultSet`, Blobs/Clobs…) is transferred using files. It is never loaded in memory. Streaming techniques are always used to read and write this content. 
+Large content (`ResultSet`, Blobs/Clobsâ€¦) is transferred using files. It is never loaded in memory. Streaming techniques are always used to read and write this content. 
 
 ## Managing temporary files 
 
