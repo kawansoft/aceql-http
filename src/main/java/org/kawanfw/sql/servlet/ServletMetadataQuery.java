@@ -24,7 +24,6 @@
  */
 package org.kawanfw.sql.servlet;
 
-import java.sql.SQLException;
 import java.util.Objects;
 
 public class ServletMetadataQuery {
@@ -54,15 +53,6 @@ public class ServletMetadataQuery {
 	else {
 	    throw new IllegalArgumentException("Unknown metadata_query action: " + requestUri);
 	}
-    }
-
-    public static boolean isMetadataQueryAction(String action) throws SQLException {
-	Objects.requireNonNull(action, "action cannot be null!");
-
-	return (action.equals(HttpParameter.METADATA_QUERY_DB_SCHEMA_DOWNLOAD)
-		|| action.equals(HttpParameter.METADATA_QUERY_GET_TABLE_DETAILS)
-		|| action.equals(HttpParameter.METADATA_QUERY_GET_DB_METADATA)
-		|| action.equals(HttpParameter.METADATA_QUERY_GET_TABLE_NAMES));
     }
 
 }

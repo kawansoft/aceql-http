@@ -433,6 +433,7 @@ public class ServerSqlManagerInit {
 		    Tag.PRODUCT_USER_CONFIG_FAIL + " properties file not found: " + propertiesFile);
 	}
 
+	System.out.println(TomcatStarterUtil.getJavaInfo());
 	System.out.println(SqlTag.SQL_PRODUCT_START + " " + "Using properties file: ");
 	System.out.println(SqlTag.SQL_PRODUCT_START + "  -> " + propertiesFile);
 
@@ -447,6 +448,7 @@ public class ServerSqlManagerInit {
 	TomcatStarterUtil.createAndStoreDataSources(properties);
 
     }
+
 
     public UserAuthenticator getUserAuthenticator() {
 	return userAuthenticator;

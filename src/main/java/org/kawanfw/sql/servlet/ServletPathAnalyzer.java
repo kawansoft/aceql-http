@@ -71,17 +71,26 @@ public class ServletPathAnalyzer {
 	} else if (isBlobAction(requestUri)) {
 	    action = getBlobAction();
 	    buildElements(servletName, requestUri);
-	} else if (isExecuteUpdateOrQueryStatement(requestUri)) {
+	} else if (isExecuteRawOrUpdateOrQueryStatement(requestUri)) {
 	    action = getSqlStatement();
 	    buildElements(servletName, requestUri);
-	} else if (isMetadataQuery(requestUri)) {
+	}
+	else if (isJdbcDatabaseMetaData(requestUri)) {
+	    action = HttpParameter.JDBC_DATABASE_META_DATA;
+	    buildElements(servletName, requestUri);
+	}
+	else if (isMetadataQuery(requestUri)) {
 	    ServletMetadataQuery servletMetadataQuery = new ServletMetadataQuery(requestUri);
 	    action = servletMetadataQuery.getAction();
 	    buildElements(servletName, requestUri);
-	} else {
+	}
+
+	else {
 	    throw new IllegalArgumentException("Unknown action: " + StringUtils.substringAfterLast(requestUri, "/"));
 	}
     }
+
+
 
     public boolean isConnectionModifierOrReader(String requestUri) {
 
@@ -93,6 +102,11 @@ public class ServletPathAnalyzer {
         }
 
         if (requestUri.endsWith("/get_catalog")) {
+            connectionModifierOrReader = "get_catalog";
+            return true;
+        }
+
+        if (requestUri.endsWith("/get_schema")) {
             connectionModifierOrReader = "get_catalog";
             return true;
         }
@@ -278,7 +292,7 @@ public class ServletPathAnalyzer {
         return connectionModifierOrReader;
     }
 
-    public boolean isExecuteUpdateOrQueryStatement(String urlContent) {
+    public boolean isExecuteRawOrUpdateOrQueryStatement(String urlContent) {
 	Objects.requireNonNull(urlContent, "urlContent cannot be null!");
 
         if (urlContent.endsWith("/execute_update")) {
@@ -298,6 +312,11 @@ public class ServletPathAnalyzer {
 
         return false;
 
+    }
+
+    private boolean isJdbcDatabaseMetaData(String urlContent) {
+	Objects.requireNonNull(urlContent, "urlContent cannot be null!");
+	return urlContent.contains("/jdbc/database_meta_data");
     }
 
     public boolean isMetadataQuery(final String urlContent) {

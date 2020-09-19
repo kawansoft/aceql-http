@@ -67,6 +67,15 @@ public class DefaultSqlFirewallManager implements SqlFirewallManager {
     }
 
     /**
+     * @return <code><b>true</b></code>. (Client programs will be allowed to call a JDBC raw {@code Statement.execute}.)
+     */
+    @Override
+    public boolean allowExecute(String username, String database, Connection connection)
+	    throws IOException, SQLException {
+	return true;
+    }
+
+    /**
      * @return <code><b>true</b></code>. (Client programs will be allowed to call a
      *         database update statement.)
      */

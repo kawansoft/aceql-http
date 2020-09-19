@@ -30,6 +30,7 @@ import java.io.OutputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -41,9 +42,12 @@ import org.kawanfw.sql.api.server.DatabaseConfigurator;
 import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
 import org.kawanfw.sql.servlet.connection.ConnectionStore;
 import org.kawanfw.sql.servlet.connection.ConnectionStoreCleaner;
+import org.kawanfw.sql.servlet.connection.RollbackUtil;
 import org.kawanfw.sql.servlet.connection.SavepointUtil;
 import org.kawanfw.sql.servlet.connection.TransactionUtil;
+import org.kawanfw.sql.servlet.jdbc.metadata.JdbcDatabaseMetadataActionManager;
 import org.kawanfw.sql.servlet.sql.ServerStatement;
+import org.kawanfw.sql.servlet.sql.ServerStatementRawExecute;
 import org.kawanfw.sql.servlet.sql.callable.ServerCallableStatement;
 import org.kawanfw.sql.servlet.sql.json_return.JsonErrorReturn;
 import org.kawanfw.sql.servlet.sql.json_return.JsonOkReturn;
@@ -60,6 +64,7 @@ import org.kawanfw.sql.util.FrameworkDebug;
  */
 public class ServerSqlDispatch {
 
+    private static final boolean DUMP_HEADERS = false;
     private static boolean DEBUG = FrameworkDebug.isSet(ServerSqlDispatch.class);
 
     /**
@@ -68,7 +73,7 @@ public class ServerSqlDispatch {
      *
      * @param request  the http request
      * @param response the http response
-     * @param out TODO
+     * @param out
      * @throws IOException         if any IOException occurs
      * @throws SQLException
      * @throws FileUploadException
@@ -88,6 +93,13 @@ public class ServerSqlDispatch {
 	String database = request.getParameter(HttpParameter.DATABASE);
 	String sessionId = request.getParameter(HttpParameter.SESSION_ID);
 	String connectionId = request.getParameter(HttpParameter.CONNECTION_ID);
+
+	debug("");
+	debug("action      : " + action);
+	debug("username    : " + username);
+	debug("database    : " + database);
+	debug("sessionId   : " + sessionId);
+	debug("connectionId: " + connectionId);
 
 	BaseActionTreater baseActionTreater = new BaseActionTreater(request, response, out);
 	if (!baseActionTreater.treatAndContinue()) {
@@ -109,6 +121,9 @@ public class ServerSqlDispatch {
 	}
 	Connection connection = connectionGetter.getConnection();
 
+	//HACK NDP
+	//System.out.println("connectionGetter.getConnection(): connection.getAutoCommit(): " + connection.getAutoCommit());
+
 	// Release connection in pool & remove all references
 	if (action.equals(HttpParameter.CLOSE)) {
 	    treatCloseAction(response, out, username, sessionId, connectionId, databaseConfigurator, connection);
@@ -117,11 +132,31 @@ public class ServerSqlDispatch {
 
 	List<SqlFirewallManager> sqlFirewallManagers = ServerSqlManager.getSqlFirewallMap().get(database);
 
-	if (isMetadataQuery(request, response, out, action, connection, sqlFirewallManagers)) {
+	if (doTreatJdbcDatabaseMetaData(request, response, out, action, connection, sqlFirewallManagers)) {
 	    return;
 	}
 
+	if (doTreatMetadataQuery(request, response, out, action, connection, sqlFirewallManagers)) {
+	    return;
+	}
+
+	dumpHeaders(request);
+
 	dispatch(request, response, out, action, connection, sqlFirewallManagers);
+    }
+
+
+    private void dumpHeaders(HttpServletRequest request) {
+
+	if (! DUMP_HEADERS) {
+	    return;
+	}
+
+        Enumeration<String> reqHeaderEnum = request.getHeaderNames();
+        while( reqHeaderEnum.hasMoreElements() ) {
+            String name = reqHeaderEnum.nextElement();
+            System.out.println("Header: " + name + " / " + request.getHeader(name));
+       }
     }
 
     /**
@@ -158,10 +193,15 @@ public class ServerSqlDispatch {
     private void dispatch(HttpServletRequest request, HttpServletResponse response, OutputStream out, String action,
 	    Connection connection, List<SqlFirewallManager> sqlFirewallManagers)
 	    throws SQLException, FileNotFoundException, IOException, IllegalArgumentException {
-	if (ServerSqlDispatchUtil.isStatement(action) && !ServerSqlDispatchUtil.isStoredProcedure(request)) {
+	if (ServerSqlDispatchUtil.isExecute(action) && !ServerSqlDispatchUtil.isStoredProcedure(request)) {
+	    ServerStatementRawExecute serverStatement = new ServerStatementRawExecute(request, response, sqlFirewallManagers, connection);
+	    serverStatement.execute(out);
+	}
+	else if (ServerSqlDispatchUtil.isExecuteQueryOrExecuteUpdate(action) && !ServerSqlDispatchUtil.isStoredProcedure(request)) {
 	    ServerStatement serverStatement = new ServerStatement(request, response, sqlFirewallManagers, connection);
 	    serverStatement.executeQueryOrUpdate(out);
-	} else if (ServerSqlDispatchUtil.isStoredProcedure(request)) {
+	}
+	else if (ServerSqlDispatchUtil.isStoredProcedure(request)) {
 	    ServerCallableStatement serverCallableStatement = new ServerCallableStatement(request, response,
 		    sqlFirewallManagers, connection);
 	    serverCallableStatement.executeOrExecuteQuery(out);
@@ -177,6 +217,30 @@ public class ServerSqlDispatch {
     }
 
     /**
+     * Treat
+     * @param request
+     * @param response
+     * @param out
+     * @param action
+     * @param connection
+     * @param sqlFirewallManagers
+     * @return
+     */
+    private boolean doTreatJdbcDatabaseMetaData(HttpServletRequest request, HttpServletResponse response,
+	    OutputStream out, String action, Connection connection, List<SqlFirewallManager> sqlFirewallManagers)
+		    throws SQLException, IOException {
+	// Redirect if it's a JDBC DatabaseMetaData call
+	if (ActionUtil.isJdbcDatabaseMetaDataQuery(action)) {
+	    JdbcDatabaseMetadataActionManager jdbcDatabaseMetadataActionManager = new JdbcDatabaseMetadataActionManager(request, response,
+		    out, sqlFirewallManagers, connection);
+	    jdbcDatabaseMetadataActionManager.execute();
+	    return true;
+	} else {
+	    return false;
+	}
+    }
+
+    /**
      * Tread metadata query.
      *
      * @param request
@@ -188,11 +252,11 @@ public class ServerSqlDispatch {
      * @throws SQLException
      * @throws IOException
      */
-    private boolean isMetadataQuery(HttpServletRequest request, HttpServletResponse response, OutputStream out,
+    private boolean doTreatMetadataQuery(HttpServletRequest request, HttpServletResponse response, OutputStream out,
 	    String action, Connection connection, List<SqlFirewallManager> sqlFirewallManagers)
 	    throws SQLException, IOException {
 	// Redirect if it's a metadaquery
-	if (ServletMetadataQuery.isMetadataQueryAction(action)) {
+	if (ActionUtil.isMetadataQueryAction(action)) {
 	    MetadataQueryActionManager metadataQueryActionManager = new MetadataQueryActionManager(request, response,
 		    out, sqlFirewallManagers, connection);
 	    metadataQueryActionManager.execute();
@@ -227,6 +291,9 @@ public class ServerSqlDispatch {
 	    connectionStore.remove();
 	    ServerSqlManager.writeLine(out, JsonOkReturn.build());
 	} catch (SQLException e) {
+
+	    RollbackUtil.rollback(connection);
+
 	    JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_BAD_REQUEST,
 		    JsonErrorReturn.ERROR_JDBC_ERROR, e.getMessage());
 	    ServerSqlManager.writeLine(out, errorReturn.build());

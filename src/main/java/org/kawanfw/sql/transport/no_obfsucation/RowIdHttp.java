@@ -34,7 +34,7 @@ import java.util.Arrays;
  * @author Nicolas de Pomereu
  *
  */
-public class RowIdHttp implements RowId, Serializable {
+class RowIdHttp implements RowId, Serializable {
 
     /**
      * Generated serial version Id

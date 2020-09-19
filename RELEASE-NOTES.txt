@@ -1,6 +1,5 @@
 
                      AceQL HTTP
-                     Version 5.1
                     Release Notes
 
 
@@ -25,6 +24,39 @@ AceQL HTTP is licensed through the GNU Lesser General Public License
 (LGPL v2.1).
 
 
+AceQL HTTP Version 6.0 - 19-Sep-2020
+------------------------------------
+
+What's New:
+
+- Java vendor and version are displayed at server startup.
+- JDBC Statement.execute() calls are now supported.
+- Statement.setMaxRows(int) is now supported when called
+  by a Java client.
+- The aceql-server.properties model file contains now documentation
+  on testOnBorrow & validationQuery attributes and how to  ensure that 
+  the JDBC Connection Pool will still accessible after the restart 
+  of the SQL engine in use.
+- Implement server side JDBC metadata calls. This will
+  allow the Client Java SDK to be plugged as a real JDBC Driver.
+  (The AceQL JDBC Driver is work in progress).
+ - Add /get_catalog and /get_schema API.
+ - Included PostgreSQL Driver has been updated to 42.2.5.
+ - Tomcat base libraries have been upgraded to 8.5.58.
+ 
+Bugs fixed:
+- An SQLException could be swallowed during a transaction (autocommit off). This
+  could lead to subsequent errors when trying to re-use the Connection in some
+  db engines such as PostgreSQL.
+  (org.postgresql.util.PSQLException: ERROR: current transaction is aborted, 
+  commands ignored until end of transaction block).
+  This has been fixed: Connections in autocommit off are now always rollbacked 
+  in case of SQLException.
+- Columns were in lowercase when sent to the client. This has been fixed.
+- Empty string SQL parameters ("") were refused by the AceQL Server. 
+  This has been fixed.
+  
+  
 AceQL HTTP Version 5.1 - 03-Aug-2020
 ------------------------------------
 

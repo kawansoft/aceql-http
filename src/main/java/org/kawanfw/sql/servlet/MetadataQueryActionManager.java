@@ -48,6 +48,7 @@ import org.kawanfw.sql.metadata.dto.JdbcDatabaseMetaDataDto;
 import org.kawanfw.sql.metadata.dto.TableDto;
 import org.kawanfw.sql.metadata.dto.TableNamesDto;
 import org.kawanfw.sql.metadata.util.GsonWsUtil;
+import org.kawanfw.sql.servlet.connection.RollbackUtil;
 import org.kawanfw.sql.servlet.sql.json_return.JsonErrorReturn;
 import org.kawanfw.sql.servlet.sql.json_return.JsonSecurityMessage;
 
@@ -86,6 +87,9 @@ public class MetadataQueryActionManager {
 		    JsonErrorReturn.ERROR_ACEQL_UNAUTHORIZED, e.getMessage());
 	    ServerSqlManager.writeLine(out, errorReturn.build());
 	} catch (SQLException e) {
+
+	    RollbackUtil.rollback(connection);
+
 	    JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_BAD_REQUEST,
 		    JsonErrorReturn.ERROR_JDBC_ERROR, e.getMessage());
 	    ServerSqlManager.writeLine(out, errorReturn.build());

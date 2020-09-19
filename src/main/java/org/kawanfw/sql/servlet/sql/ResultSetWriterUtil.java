@@ -31,14 +31,21 @@ import java.sql.Array;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.ResultSet;
+import java.sql.RowId;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.sql.Types;
 
-import org.apache.commons.lang3.StringUtils;
+import javax.servlet.http.HttpServletRequest;
+
 import org.kawanfw.sql.api.util.SqlUtil;
+import org.kawanfw.sql.jdbc.metadata.AceQLArray;
+import org.kawanfw.sql.metadata.util.GsonWsUtil;
+import org.kawanfw.sql.servlet.HttpParameter;
+import org.kawanfw.sql.servlet.connection.ConnectionStore;
+import org.kawanfw.sql.util.SqlReturnCode;
 
 public class ResultSetWriterUtil {
 
@@ -132,42 +139,6 @@ public class ResultSetWriterUtil {
 	return columnType == Types.NCHAR || columnType == Types.NVARCHAR || columnType == Types.LONGNVARCHAR;
     }
 
-    /**
-     * Format the column as an java.sqlArray
-     *
-     * @param resultSet
-     * @param columnIndex
-     * @return
-     * @throws SQLException
-     * @throws IOException
-     */
-    public static String formatArrayColumn(ResultSet resultSet, int columnIndex) throws SQLException, IOException {
-	Array array = resultSet.getArray(columnIndex);
-
-	if (array == null) {
-	    return NULL;
-	}
-
-	Object[] objects = (Object[]) array.getArray();
-	String arrayStr = "{";
-	for (int i = 0; i < objects.length; i++) {
-	    arrayStr += objects[i] + ",";
-	}
-
-	if (arrayStr.contains(",")) {
-	    arrayStr = StringUtils.substringBeforeLast(arrayStr, ",");
-	}
-
-	arrayStr += "}";
-	return arrayStr;
-
-	/*
-	 * ArrayHttp arrayHttp = new ArrayHttp(array); ArrayTransporter arrayTransporter
-	 * = new ArrayTransporter(); String base64 =
-	 * arrayTransporter.toBase64(arrayHttp); return base64;
-	 */
-    }
-
 
     /**
      * Format - if detected - an URL
@@ -227,6 +198,62 @@ public class ResultSetWriterUtil {
 	return columnType == Types.CHAR || columnType == Types.NCHAR || columnType == Types.VARCHAR
 		|| columnType == Types.NVARCHAR || columnType == Types.LONGVARCHAR
 		|| columnType == Types.LONGNVARCHAR;
+    }
+
+    /**
+     * Format the column as an java.sqlArray
+     *
+     * @param resultSet
+     * @param columnIndex
+     * @return
+     * @throws SQLException
+     * @throws IOException
+     */
+    public static String formatArrayColumn(ResultSet resultSet, int columnIndex) throws SQLException, IOException {
+	Array array = resultSet.getArray(columnIndex);
+	AceQLArray aceQLArray = new AceQLArray(array);
+	String jsonString = GsonWsUtil.getJSonString(aceQLArray);
+	return jsonString;
+    }
+
+    /**
+     * Format the column as a RowId
+     * @param request TODO
+     * @param resultSet
+     * @param columnIndex
+     *
+     * @return
+     * @throws SQLException
+     * @throws IOException
+     */
+    public static String formatRowIdColumn(HttpServletRequest request, ResultSet resultSet, int columnIndex) throws SQLException, IOException {
+        RowId rowId = resultSet.getRowId(columnIndex);
+
+        if (rowId == null) {
+            return ResultSetWriter.NULL;
+        }
+
+        String username = request.getParameter(HttpParameter.USERNAME);
+        String sessionId = request.getParameter(HttpParameter.SESSION_ID);
+        String connectionId = request.getParameter(HttpParameter.CONNECTION_ID);
+
+        ConnectionStore connectionStore = new ConnectionStore(username, sessionId, connectionId);
+        Connection connection = connectionStore.get();
+
+        if (connection == null) {
+            throw new SQLException(SqlReturnCode.SESSION_INVALIDATED);
+        }
+
+        connectionStore.put(rowId);
+
+        return rowId.toString();
+        // Old code:
+        // RowIdHttp rowIdHttp = new RowIdHttp(rowId.hashCode(),
+        // rowId.getBytes());
+        //
+        // RowIdTransporter rowIdTransporter = new RowIdTransporter();
+        // String base64 = rowIdTransporter.toBase64(rowIdHttp);
+        // return base64;
     }
 
 

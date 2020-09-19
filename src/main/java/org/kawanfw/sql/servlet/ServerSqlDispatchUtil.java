@@ -41,7 +41,7 @@ public class ServerSqlDispatchUtil {
     }
 
     public static boolean isConnectionReader(String action) {
-        return action.equals(HttpParameter.GET_AUTO_COMMIT) || action.equals(HttpParameter.GET_CATALOG)
+        return action.equals(HttpParameter.GET_AUTO_COMMIT) || action.equals(HttpParameter.GET_CATALOG) || action.equals(HttpParameter.GET_SCHEMA)
         	|| action.equals(HttpParameter.GET_HOLDABILITY) || action.equals(HttpParameter.IS_READ_ONLY)
         	|| action.equals(HttpParameter.GET_TRANSACTION_ISOLATION_LEVEL);
     }
@@ -56,8 +56,12 @@ public class ServerSqlDispatchUtil {
 	return action.equals(HttpParameter.BLOB_UPLOAD) || action.equals(HttpParameter.BLOB_DOWNLOAD);
     }
 
-    public static  boolean isStatement(String action) {
+    public static  boolean isExecuteQueryOrExecuteUpdate(String action) {
 	return action.equals(HttpParameter.EXECUTE_UPDATE) || action.equals(HttpParameter.EXECUTE_QUERY);
+    }
+
+    public static boolean isExecute(String action) {
+	return action.equals(HttpParameter.EXECUTE);
     }
 
 }

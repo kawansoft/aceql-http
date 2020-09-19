@@ -39,7 +39,7 @@ import org.kawanfw.sql.util.Base64;
  *         Allows to transform with serialization a java.sql.Array holder to
  *         Base64 String and vice versa.
  */
-public class ArrayTransporter {
+class ArrayTransporter {
 
     /**
      * Transforms a java.sql.Array to serialized Base 64 String.

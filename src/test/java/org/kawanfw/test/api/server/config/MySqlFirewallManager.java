@@ -198,6 +198,8 @@ public class MySqlFirewallManager extends DefaultSqlFirewallManager {
 	super.runIfStatementRefused(username, database, connection, ipAddress,
 		isMetadataQuery, sql, parameterValues);
 
+	connection.setAutoCommit(true);
+
 	System.err.println("Statement refused by MySqlFirewallManager: " + sql);
 
 	// Insert the username & its IP into the banned usernames table

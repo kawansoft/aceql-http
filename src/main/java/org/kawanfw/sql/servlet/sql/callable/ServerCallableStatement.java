@@ -46,6 +46,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
 import org.kawanfw.sql.servlet.HttpParameter;
 import org.kawanfw.sql.servlet.ServerSqlManager;
+import org.kawanfw.sql.servlet.connection.RollbackUtil;
 import org.kawanfw.sql.servlet.sql.AceQLParameter;
 import org.kawanfw.sql.servlet.sql.LoggerUtil;
 import org.kawanfw.sql.servlet.sql.ResultSetWriter;
@@ -120,6 +121,9 @@ public class ServerCallableStatement {
 		    JsonErrorReturn.ERROR_ACEQL_UNAUTHORIZED, e.getMessage());
 	    ServerSqlManager.writeLine(outFinal, errorReturn.build());
 	} catch (SQLException e) {
+
+	    RollbackUtil.rollback(connection);
+
 	    JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_BAD_REQUEST,
 		    JsonErrorReturn.ERROR_JDBC_ERROR, e.getMessage());
 	    ServerSqlManager.writeLine(outFinal, errorReturn.build());
@@ -228,6 +232,8 @@ public class ServerCallableStatement {
 	    }
 	} catch (SQLException e) {
 
+	    RollbackUtil.rollback(connection);
+
 	    String message = StatementFailure.prepStatementFailureBuild(sqlOrder, e.toString(),
 		    serverPreparedStatementParameters.getParameterTypes(),
 		    serverPreparedStatementParameters.getParameterValues(), doPrettyPrinting);
@@ -271,7 +277,10 @@ public class ServerCallableStatement {
 	    JsonGenerator gen = jf.createGenerator(out);
 	    gen.writeStartObject().write("status", "OK");
 
-	    ResultSetWriter resultSetWriter = new ResultSetWriter(request, username, sqlOrder, gen);
+	    String fillResultSetMetaDataStr = request.getParameter(HttpParameter.FILL_RESULT_SET_META_DATA);
+	    boolean fillResultSetMetaData = Boolean.parseBoolean(fillResultSetMetaDataStr);
+
+	    ResultSetWriter resultSetWriter = new ResultSetWriter(request, sqlOrder, gen, fillResultSetMetaData);
 	    resultSetWriter.write(rs);
 
 	    ServerSqlManager.writeLine(out);
