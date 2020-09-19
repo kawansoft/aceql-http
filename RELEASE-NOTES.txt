@@ -46,7 +46,8 @@ What's New:
  
 Bugs fixed:
 - An SQLException could be swallowed during a transaction (autocommit off). This
-  could lead to subsequent errors when trying to re-use the Connection.
+  could lead to subsequent errors when trying to re-use the Connection in some
+  db engines such as PostgreSQL.
   (org.postgresql.util.PSQLException: ERROR: current transaction is aborted, 
   commands ignored until end of transaction block).
   This has been fixed: Connections in autocommit off are now always rollbacked 
