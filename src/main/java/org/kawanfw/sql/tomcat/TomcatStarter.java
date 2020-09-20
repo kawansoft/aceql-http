@@ -189,17 +189,17 @@ public class TomcatStarter {
 
 	// tomcat.getServer().await();
 
-	PortSemaphoreFile portSemaphoreFile = new PortSemaphoreFile(port);
-
-	try {
-	    if (!portSemaphoreFile.exists()) {
-		portSemaphoreFile.create();
-	    }
-	} catch (IOException e) {
-	    throw new IOException("Web server can not start. Impossible to create the semaphore file: "
-		    + portSemaphoreFile.getSemaphoreFile() + CR_LF
-		    + "Create manually the semapahore file to start the Web server on port " + port + ".", e);
-	}
+//	PortSemaphoreFile portSemaphoreFile = new PortSemaphoreFile(port);
+//
+//	try {
+//	    if (!portSemaphoreFile.exists()) {
+//		portSemaphoreFile.create();
+//	    }
+//	} catch (IOException e) {
+//	    throw new IOException("Web server can not start. Impossible to create the semaphore file: "
+//		    + portSemaphoreFile.getSemaphoreFile() + CR_LF
+//		    + "Create manually the semapahore file to start the Web server on port " + port + ".", e);
+//	}
 
 	// Loop to serve requests
 	while (true) {
@@ -211,8 +211,7 @@ public class TomcatStarter {
 	    }
 
 	    // Thread run until terminated by a stop request that creates
-	    // PortSemaphoreFile
-	    // portSemaphoreFile = new PortSemaphoreFile(port);
+	    PortSemaphoreFile portSemaphoreFile = new PortSemaphoreFile(port);
 	    if (!portSemaphoreFile.exists()) {
 		return;
 	    }

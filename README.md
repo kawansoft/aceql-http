@@ -226,7 +226,7 @@ Example: if you run `aceql-http-6.0.run` from `/home/mike`, then software is ins
 
 Open a shell session and make sure `java` binary is in the PATH by typing 
 
-`Java â€“version` on the command line. 
+`java -version` on the command line. 
 
 Add `java` to your PATH if the command does not display Java version. 
 
@@ -241,7 +241,7 @@ export PATH
 
 Open a shell session and make sure java binary is in the PATH by typing
 
-`Java â€“version` on the command line. 
+`java -version` on the command line. 
 
 Add java to your PATH if the command does not display Java version.
 
@@ -254,7 +254,7 @@ Call the `aceql-server` script to display the AceQL version:
 It will display a line with all version info, like:
 
 ```
-AceQL HTTP Community v6.0 - 04-Sep-2020
+AceQL HTTP Community v6.0 - 19-Sep-2020
 ```
 
 
