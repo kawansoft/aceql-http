@@ -771,7 +771,7 @@ From now on, you can read the [Java Client SDK User Guide](https://www.aceql.com
 
 ## Python Client SDK
 
-The aceql module supports Python 2.6–2.7 & 3.4–3.8. 
+The aceql module supports Python 3.4–3.8. 
 
 1. Create a new project with your favorite IDE. 
 2. Install aceql module:
