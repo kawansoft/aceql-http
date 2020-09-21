@@ -878,7 +878,7 @@ It will display a JSON string and should display a status of `"OK"` and the curr
 ```json
 {
     "status": "OK",
-    "version": "AceQL HTTP v6.0 - 04-Sep-2020"
+    "version": "AceQL HTTP v6.0 - 19-Sep-2020"
 }         
 ```
 
