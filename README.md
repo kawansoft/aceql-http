@@ -771,7 +771,7 @@ Restart the AceQL Web Server for activation.
 
 AceQL provides several built-in and ready to use SQL Firewall Managers, as described earlier in the  [SQL Firewall Managers Section](#sql-firewall-managers-section) chapter. You also may plug-in your own implementation or third party SQL firewalling tools. 
 
-The [SqlFirewallManager](http://www.aceql.com/rest/soft/4.1/javadoc/org/kawanfw/sql/api/server/firewall/SqlFirewallManager.html) interface allows you to code your own firewall rulesets or plug a third party software.
+The [SqlFirewallManager](http://www.aceql.com/rest/soft/6.0/javadoc/org/kawanfw/sql/api/server/firewall/SqlFirewallManager.html) interface allows you to code your own firewall rulesets or plug a third party software.
 
 After coding you own `SqlFirewallManager` implementation, just declare the full class name in the `sqlFirewallManagerClassNames` property. Remember that SQL Firewall Managers may be chained: you may declare several classes.
 
