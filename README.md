@@ -614,7 +614,7 @@ The running options are fully described in the user interface help.
 
 Setting up a development environment will allow you to develop your own Java classes that will be injected at runtime.
 
-Create a â€œServerâ€� project and add the jars of the:
+Create a Server project and add the jars of the:
 
 - `<installation-directory>\AceQL\lib-server subdirectory & <installation-directory>\AceQL\lib-jdbc` to your development CLASSPATH .
 
