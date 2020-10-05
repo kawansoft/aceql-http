@@ -49,7 +49,6 @@ import org.kawanfw.sql.servlet.ServerSqlManager;
 import org.kawanfw.sql.servlet.sql.json_return.ExceptionReturner;
 import org.kawanfw.sql.servlet.sql.json_return.JsonErrorReturn;
 import org.kawanfw.sql.servlet.sql.json_return.JsonUtil;
-import org.kawanfw.sql.util.FrameworkDebug;
 
 /**
  *
@@ -110,7 +109,7 @@ import org.kawanfw.sql.util.FrameworkDebug;
 public class DefaultPoolsInfo extends HttpServlet {
 
     private static final long serialVersionUID = 6129302507495768396L;
-    private static boolean DEBUG = FrameworkDebug.isSet(DefaultPoolsInfo.class);
+    private static boolean DEBUG = true; //FrameworkDebug.isSet(DefaultPoolsInfo.class);
 
     /*
      * (non-Javadoc)
@@ -164,6 +163,7 @@ public class DefaultPoolsInfo extends HttpServlet {
 	response.setContentType("text/plain; charset=UTF-8");
 
 	String password = request.getParameter("password");
+	debug("request_password: " + password + ":");
 
 	if (password == null || password.isEmpty()) {
 	    JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_FORBIDDEN,
@@ -178,6 +178,8 @@ public class DefaultPoolsInfo extends HttpServlet {
 	try {
 	    storedPassword = FileUtils.readFileToString(new File(SystemUtils.USER_HOME + File.separator + ".kawansoft"
 		    + File.separator + "default_pools_info_password.txt"), "UTF-8");
+
+	    debug("stored_password: " + storedPassword + ":");
 
 	    if (storedPassword == null || !storedPassword.trim().equals(password)) {
 		throw new IllegalArgumentException(JsonErrorReturn.INVALID_USERNAME_OR_PASSWORD);
