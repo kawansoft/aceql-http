@@ -30,12 +30,12 @@ import org.kawanfw.sql.api.server.web.WebServerApi;
  * @author Nicolas de Pomereu
  *
  */
-public class SqlWebServerStop {
+public class SqlWebServerStopNew {
 
     /**
      * no constructor
      */
-    private SqlWebServerStop() {
+    private SqlWebServerStopNew() {
 
     }
 
