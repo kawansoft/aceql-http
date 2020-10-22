@@ -107,6 +107,7 @@
 			<version>1.8.2</version>
 		</dependency>
 
+<!--  
 		<dependency>
 		<groupId> oracle </groupId>
 		 <artifactId>ojdbc6</artifactId>
@@ -114,6 +115,7 @@
 		  <scope>system</scope>
 		  <systemPath>${project.basedir}/lib/ojdbc6.jar</systemPath>
 		</dependency>
+-->
 
 	</dependencies>
 	<organization>

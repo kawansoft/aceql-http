@@ -34,14 +34,14 @@ import org.kawanfw.sql.api.server.web.WebServerApi;
  * @author Nicolas de Pomereu
  *
  */
-public class SqlWebServerStart {
+public class SqlWebServerStartNew {
 
     private static Map<Integer, String> map = new HashMap<>();
 
     /**
      * no constructor
      */
-    private SqlWebServerStart() {
+    private SqlWebServerStartNew() {
 
     }
 
