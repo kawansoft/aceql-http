@@ -1,4 +1,4 @@
-# AceQL HTTP v6.0 - September 19, 2020
+# AceQL HTTP v6.1 - October 24, 2020
 
 # Demo Guide
 
@@ -106,13 +106,13 @@ The execution of each AceQL HTTP API statement is conditioned by optional rules,
 
 Download the database `sampledb` schema corresponding to your database engine: 
 
-- [sampledb_mysq.txt](https://www.aceql.com/rest/soft/6.0/src/sampledb_mysql.txt )
-- [sampledb_postgresql.txt](https://www.aceql.com/rest/soft/6.0/src/sampledb_postgresql.txt)
-- [sampledb_ms_sql_serverl.txt](https://www.aceql.com/rest/soft/6.0/src/sampledb_ms_sql_server.txt)
-- [sampledb_oracle_database.txt](https://www.aceql.com/rest/soft/6.0/src/sampledb_oracle_database.txt)
+- [sampledb_mysq.txt](https://www.aceql.com/rest/soft/6.1/src/sampledb_mysql.txt )
+- [sampledb_postgresql.txt](https://www.aceql.com/rest/soft/6.1/src/sampledb_postgresql.txt)
+- [sampledb_ms_sql_serverl.txt](https://www.aceql.com/rest/soft/6.1/src/sampledb_ms_sql_server.txt)
+- [sampledb_oracle_database.txt](https://www.aceql.com/rest/soft/6.1/src/sampledb_oracle_database.txt)
 
 
-For other databases engines, just tailor the file as indicated: [sampledb_other_databases.txt](https://www.aceql.com/rest/soft/6.0/src/sampledb_other_databases.txt)
+For other databases engines, just tailor the file as indicated: [sampledb_other_databases.txt](https://www.aceql.com/rest/soft/6.1/src/sampledb_other_databases.txt)
 
 Then launch the script that will create the tables in a database
 
@@ -125,7 +125,7 @@ AceQL requires the installation of Java version 8+.
 Open a terminal and download with `Wget` 
 
 ```bash
-$ wget https://www.aceql.com/soft/download/6.0/aceql-http-6.0.run
+$ wget https://www.aceql.com/soft/download/6.1/aceql-http-6.1.run
 ```
 
 If you get a certificate error message, do one of the following:
@@ -136,17 +136,17 @@ If you get a certificate error message, do one of the following:
 In following lines we will assume that the Open Source edition is chosen. (Operating mode is the same for Pro edition).
 
 ```bash
-chmod +x aceql-http-6.0.run
-./aceql-http-6.0.run 
+chmod +x aceql-http-6.1.run
+./aceql-http-6.1.run 
 ```
 
-This will create the `aceql-http-6.0` folder.
+This will create the `aceql-http-6.1` folder.
 
-The full path to the `aceql-http-6.0` installation folder will be surnamed `ACEQL_HOME` in following text.
+The full path to the `aceql-http-6.1` installation folder will be surnamed `ACEQL_HOME` in following text.
 
-Example: if you run `aceql-http-6.0.run` from `/home/mike`, then software is installed in
+Example: if you run `aceql-http-6.1.run` from `/home/mike`, then software is installed in
 
- `/home/mike/aceql-http-6.0` which is the value of `ACEQL_HOME`.
+ `/home/mike/aceql-http-6.1` which is the value of `ACEQL_HOME`.
 
 ### Update the PATH (Optional)
 
@@ -154,10 +154,10 @@ Open a shell session and make sure java binary is in the PATH by typing  `Java �
 
 Add java to your PATH if the command does not display Java version.
 
-Add to your PATH the path to the bin directory of `aceql-http-6.0` installation:
+Add to your PATH the path to the bin directory of `aceql-http-6.1` installation:
 
 ```bash
-$ PATH=$PATH:/path/to/aceql-http-6.0/bin/;export PATH
+$ PATH=$PATH:/path/to/aceql-http-6.1/bin/;export PATH
 ```
 
 ### Testing AceQL HTTP Web server installation
@@ -171,7 +171,7 @@ $ aceql-server -version
 It will display a line with all version info, like:
 
 ```
-AceQL HTTP Community v6.0 - 19-Sep-2020
+AceQL HTTP Community v6.1 - 24-Oct-2020
 ```
 
 ### Configure JDBC parameters in aceql-server.properties file
@@ -219,7 +219,7 @@ The console will display the properties used, test that the Connection is establ
 
 ```bash
 [ACEQL HTTP START] Starting AceQL HTTP Web Server...
-[ACEQL HTTP START] AceQL HTTP Community v6.0 - 19-Sep-2020
+[ACEQL HTTP START] AceQL HTTP Community v6.1 - 24-Oct-2020
 [ACEQL HTTP START] Using properties file: 
 [ACEQL HTTP START]  -> /home/mike/aceql-http/conf/aceql-server.properties
 [ACEQL HTTP START] Setting System Properties:
@@ -281,7 +281,7 @@ Run the installer.
 
 It will run AceQL at end of installation and display the Window:
 
-<img src="https://www.aceql.com/rest/soft/6.0/img/aceql_windows_gui_home.png" alt="AceQ HTTP GUI Main Windows"/>
+<img src="https://www.aceql.com/rest/soft/6.1/img/aceql_windows_gui_home.png" alt="AceQ HTTP GUI Main Windows"/>
 
 **N.B:** Because of a bug in all Java versions > 8 on Windows, the interface will appear "ugly"  or "blurred" on Java version > 8 if you have increased Windows Screen Resolution Options to 125% or 150%.  See [Java Bug Database](https://bugs.java.com/bugdatabase/view_bug.do?bug_id=JDK-8194165) for more info. Set back Windows Screen Resolution to 100% for clean display.
 
@@ -336,7 +336,7 @@ The console will display the properties used, test that the `Connection` is esta
 
 ```bash
 [ACEQL HTTP START] Starting AceQL HTTP Web Server...
-[ACEQL HTTP START] AceQL HTTP Community v6.0 - 19-Sep-2020
+[ACEQL HTTP START] AceQL HTTP Community v6.1 - 24-Oct-2020
 [ACEQL HTTP START] Using properties file: 
 [ACEQL HTTP START]  -> I:\_dev_awake\aceql-http-main\aceql-http\conf\aceql-server.properties
 [ACEQL HTTP START] Setting System Properties:
@@ -524,7 +524,7 @@ $ curl \
 
 On the server side, the authentication info is purged and the JDBC connection is released in the pool. (A server thread regularly releases phantom connections that were not closed from the client side.)
 
-From now, you can read the [API User Guide](https://www.aceql.com/DocDownload?doc=https://github.com/kawansoft/aceql-http/blob/master/aceql-http-6.0-user-guide-api.md) to learn how to:
+From now, you can read the [API User Guide](https://www.aceql.com/DocDownload?doc=https://github.com/kawansoft/aceql-http/blob/master/aceql-http-6.1-user-guide-api.md) to learn how to:
 
 - Query or modify the `Connection` properties.
 - Create SQL transactions.
@@ -537,7 +537,7 @@ From now, you can read the [API User Guide](https://www.aceql.com/DocDownload?do
 
 2. Install the [AceQL.Client](https://www.nuget.org/packages/AceQL.Client) package with NuGet.
 
-3. Download this C# source file: [MyRemoteConnection.cs](https://www.aceql.com/rest/soft/6.0/src/MyRemoteConnection.cs). Then insert it in your project. 
+3. Download this C# source file: [MyRemoteConnection.cs](https://www.aceql.com/rest/soft/6.1/src/MyRemoteConnection.cs). Then insert it in your project. 
 
 4. The  connection to the remote database is created  using `AceQLConnection` class and passing the URL of the AceQL Servlet Manager of your configuration: 
 
@@ -640,7 +640,7 @@ From now, you can read the [API User Guide](https://www.aceql.com/DocDownload?do
 
 
 
-The `SelectCustomerAndOrderLogAsync()` method of [MyRemoteConnection.cs](https://www.aceql.com/rest/soft/6.0/src/MyRemoteConnection.cs) displays back the inserted values.
+The `SelectCustomerAndOrderLogAsync()` method of [MyRemoteConnection.cs](https://www.aceql.com/rest/soft/6.1/src/MyRemoteConnection.cs) displays back the inserted values.
 
 From now on, you can read the [C# Client SDK User Guide](https://www.aceql.com/DocDownload?doc=https://github.com/kawansoft/AceQL.Client/blob/master/README.md).
 
@@ -657,7 +657,7 @@ From now on, you can read the [C# Client SDK User Guide](https://www.aceql.com/D
 2. If you don’t use Maven: the [aceql-http-client-all-5.0.1.jar](https://www.aceql.com/rest/soft_java_client/5.0.1/download/aceql-http-client-sdk-all-5.0.1.jar) file contains the SDK with all dependencies.
 3. Create an `org.kawanfw.sql.api.client.quickstart` package in your IDE.
 
-4. Download this Java source file: [MyRemoteConnection.java](https://www.aceql.com/rest/soft/6.0/src/MyRemoteConnection.java). Then insert it in the package. 
+4. Download this Java source file: [MyRemoteConnection.java](https://www.aceql.com/rest/soft/6.1/src/MyRemoteConnection.java). Then insert it in the package. 
 
 5. The  connection to the remote database is  created  using `AceQLConnection` class  and passing the URL of the AceQL Servlet Manager of your configuration:
 
@@ -765,9 +765,9 @@ From now on, you can read the [C# Client SDK User Guide](https://www.aceql.com/D
    }
    ```
 
-The `selectCustomerAndOrderLog` method of [MyRemoteConnection.java](https://www.aceql.com/rest/soft/6.0/src/MyRemoteConnection.java) displays back the inserted values.
+The `selectCustomerAndOrderLog` method of [MyRemoteConnection.java](https://www.aceql.com/rest/soft/6.1/src/MyRemoteConnection.java) displays back the inserted values.
 
-From now on, you can read the [Java Client SDK User Guide](https://www.aceql.com/DocDownload?doc=https://github.com/kawansoft/aceql-http-client-sdk/blob/master/README.md) or run through the [SDK Javadoc](https://www.aceql.com/rest/soft/6.0/javadoc_sdk).
+From now on, you can read the [Java Client SDK User Guide](https://www.aceql.com/DocDownload?doc=https://github.com/kawansoft/aceql-http-client-sdk/blob/master/README.md) or run through the [SDK Javadoc](https://www.aceql.com/rest/soft/6.1/javadoc_sdk).
 
 ## Python Client SDK
 
@@ -780,7 +780,7 @@ The aceql module supports Python 3.4–3.8.
 $ pip install aceql
 ```
 
-3.    Download this Python class: [my_remote_connection.py](https://www.aceql.com/rest/soft/6.0/src/my_remote_connection.py)
+3.    Download this Python class: [my_remote_connection.py](https://www.aceql.com/rest/soft/6.1/src/my_remote_connection.py)
 
 4.    The  connection to the remote database is  created  using a [DB API 2.0](https://www.python.org/dev/peps/pep-0249/)  `Connection` class and passing the URL of the AceQL Servlet Manager of your configuration:
 
@@ -855,7 +855,7 @@ $ pip install aceql
 
 
 
-The `select_customer_and_orderlog` method of [my_remote_connection.py](https://www.aceql.com/rest/soft/6.0/src/my_remote_connection.py) displays back the inserted values.
+The `select_customer_and_orderlog` method of [my_remote_connection.py](https://www.aceql.com/rest/soft/6.1/src/my_remote_connection.py) displays back the inserted values.
 
 From now on, you can read the [Python Client SDK User Guide](https://www.aceql.com/DocDownload?doc=https://github.com/kawansoft/aceql-http-client-python/blob/master/README.md).
 

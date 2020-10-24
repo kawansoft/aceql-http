@@ -93,7 +93,6 @@ public class JwtSessionConfigurator implements SessionConfigurator {
 	   */
 
 	    Builder builder = JWT.create();
-	    builder.withIssuedAt(new Date());
 	    builder.withClaim("usr", username);
 	    builder.withClaim("dbn", database);
 	    builder.withIssuedAt(new Date());

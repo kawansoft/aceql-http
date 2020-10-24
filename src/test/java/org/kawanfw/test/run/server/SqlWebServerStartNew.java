@@ -24,18 +24,24 @@
  */
 package org.kawanfw.test.run.server;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.kawanfw.sql.WebServer;
 import org.kawanfw.sql.api.server.web.WebServerApi;
 
 /**
  * @author Nicolas de Pomereu
  *
  */
-public class SqlWebServerStop {
+public class SqlWebServerStartNew {
+
+    private static Map<Integer, String> map = new HashMap<>();
 
     /**
      * no constructor
      */
-    private SqlWebServerStop() {
+    private SqlWebServerStartNew() {
 
     }
 
@@ -44,25 +50,39 @@ public class SqlWebServerStop {
      * @throws Exception
      */
     public static void main(String[] args) throws Exception {
-	stopOnPort(9090);
-	stopOnPort(9091);
-	stopOnPort(9092);
-	stopOnPort(9093);
-	stopOnPort(9094);
-	stopOnPort(9095);
-	stopOnPort(9096);
-    }
 
-    /**
-     * @param port
-     */
-    private static void stopOnPort(int port) {
-	WebServerApi webServerApi = new WebServerApi();
-	try {
-	    System.out.println("Stoping AceQL on port: " + port);
-	    webServerApi.stopServer(port);
-	} catch (Exception e) {
-	    System.err.println(e.getMessage());
+	int port = 9090;
+
+	map.put(port, "I:\\_dev_awake\\aceql-http-main\\aceql-http\\conf\\aceql-server.properties");
+	start(port);
+
+	while(true) {
+	    WebServerApi webServerApi = new WebServerApi();
+	    if (webServerApi.isServerRunning(port)) {
+		System.out.println("Server running on port " + port + "...");
+		break;
+	    }
 	}
     }
+
+
+    /**
+     *
+     */
+    public static void start(int port) {
+	Thread t = new Thread() {
+	    @Override
+	    public void run() {
+		try {
+		    String fileStr = map.get(port);
+		    String portStr = port + "";
+		    WebServer.main(new String[] { "-start", "-host", "localhost", "-port", portStr, "-properties", fileStr });
+		} catch (Exception e) {
+		    e.printStackTrace();
+		}
+	    }
+	};
+	t.start();
+    }
+
 }

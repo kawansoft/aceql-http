@@ -31,7 +31,6 @@ import java.net.ConnectException;
 import org.apache.catalina.LifecycleException;
 import org.apache.commons.lang3.SystemUtils;
 import org.kawanfw.sql.api.server.DatabaseConfigurationException;
-import org.kawanfw.sql.servlet.ServerSqlManager;
 import org.kawanfw.sql.tomcat.TomcatStarter;
 import org.kawanfw.sql.tomcat.TomcatStarterUtil;
 import org.kawanfw.sql.tomcat.util.PortSemaphoreFile;
@@ -99,9 +98,9 @@ public class WebServerApi {
 		    "The properties file " + propertiesFile + " does not exists. " + SqlTag.PLEASE_CORRECT);
 	}
 
-	if (ServerSqlManager.getAceqlServerProperties() != null) {
-	    throw new IllegalArgumentException("AceQL is already started in this JVM. Cant not start a second AceQL instance in the same JVM.");
-	}
+//	if (ServerSqlManager.getAceqlServerProperties() != null) {
+//	    throw new IllegalArgumentException("AceQL is already started in this JVM. Cant not start a second AceQL instance in the same JVM.");
+//	}
 
 
 	if (!TomcatStarterUtil.available(port)) {
@@ -109,17 +108,17 @@ public class WebServerApi {
 		    "The port " + port + " is not available for starting Web server. " + SqlTag.PLEASE_CORRECT);
 	}
 
-//	PortSemaphoreFile portSemaphoreFile = new PortSemaphoreFile(port);
-//
-//	try {
-//	    if (!portSemaphoreFile.exists()) {
-//		portSemaphoreFile.create();
-//	    }
-//	} catch (IOException e) {
-//	    throw new IOException("Web server can not start. Impossible to create the semaphore file: "
-//		    + portSemaphoreFile.getSemaphoreFile() + CR_LF
-//		    + "Create manually the semapahore file to start the Web server on port " + port + ".", e);
-//	}
+	PortSemaphoreFile portSemaphoreFile = new PortSemaphoreFile(port);
+
+	try {
+	    if (!portSemaphoreFile.exists()) {
+		portSemaphoreFile.create();
+	    }
+	} catch (IOException e) {
+	    throw new IOException("Web server can not start. Impossible to create the semaphore file: "
+		    + portSemaphoreFile.getSemaphoreFile() + CR_LF
+		    + "Create manually the semapahore file to start the Web server on port " + port + ".", e);
+	}
 
 	// Do not use SecureRandom class
 	if (SystemUtils.IS_OS_UNIX) {
