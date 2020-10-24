@@ -24,6 +24,16 @@ AceQL HTTP is licensed through the GNU Lesser General Public License
 (LGPL v2.1).
 
 
+AceQL HTTP Version 6.1 - 24-Oct-2020
+------------------------------------
+
+What's New:
+
+- Default Java memory -Xms and -Xmx configuration have been upgraded on both
+  Windows and Linux in order to support a heavy load.
+- Most base libraries have been upgraded to the latest version.
+  
+
 AceQL HTTP Version 6.0 - 19-Sep-2020
 ------------------------------------
 
