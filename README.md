@@ -707,9 +707,9 @@ Session security is managed by implementing the [SessionConfigurator](https://ww
 
 Interface implementation allows you to:  
 
-- Define how to generate a session id after client /login call
-- Define the sessionâ€™s lifetime
-- Define how to verify that the stored session is valid and not expired
+- Define how to generate a session id after client /login call.
+- Define the session's lifetime.
+- Define how to verify that the stored session is valid and not expired.
 
 ### Session management default implementation
 
@@ -724,7 +724,7 @@ The default mechanism that builds an authentication session id is coded in the c
 Benefits of this implementation are: 
 
 - Session ids are short and generate less HTTP traffic.
-- Because session ids are short, they are  easy to use â€œmanuallyâ€� (with cURL, etc.)
+- Because session ids are short, they are  easy to use manually (with cURL, etc.)
 
 The disadvantage is that session information is stored on the server side.
 
@@ -771,11 +771,7 @@ Restart the AceQL Web Server for activation.
 
 AceQL provides several built-in and ready to use SQL Firewall Managers, as described earlier in the  [SQL Firewall Managers Section](#sql-firewall-managers-section) chapter. You also may plug-in your own implementation or third party SQL firewalling tools. 
 
-<<<<<<< HEAD
-The [SqlFirewallManager](http://www.aceql.com/rest/soft/6.0/javadoc/org/kawanfw/sql/api/server/firewall/SqlFirewallManager.html) interface allows you to code your own firewall rulesets or plug a third party software.
-=======
 The [SqlFirewallManager](http://www.aceql.com/rest/soft/6.1/javadoc/org/kawanfw/sql/api/server/firewall/SqlFirewallManager.html) interface allows you to code your own firewall rulesets or plug a third party software.
->>>>>>> refs/heads/6.1
 
 After coding you own `SqlFirewallManager` implementation, just declare the full class name in the `sqlFirewallManagerClassNames` property. Remember that SQL Firewall Managers may be chained: you may declare several classes.
 
@@ -882,11 +878,7 @@ It will display a JSON string and should display a status of `"OK"` and the curr
 ```json
 {
     "status": "OK",
-<<<<<<< HEAD
-    "version": "AceQL HTTP v6.0 - 19-Sep-2020"
-=======
     "version": "AceQL HTTP v6.1 - 24-Oct-2020"
->>>>>>> refs/heads/6.1
 }         
 ```
 
