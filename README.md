@@ -707,9 +707,9 @@ Session security is managed by implementing the [SessionConfigurator](https://ww
 
 Interface implementation allows you to:  
 
-- Define how to generate a session id after client /login call
-- Define the sessionâ€™s lifetime
-- Define how to verify that the stored session is valid and not expired
+- Define how to generate a session id after client /login call.
+- Define the session's lifetime.
+- Define how to verify that the stored session is valid and not expired.
 
 ### Session management default implementation
 
@@ -724,7 +724,7 @@ The default mechanism that builds an authentication session id is coded in the c
 Benefits of this implementation are: 
 
 - Session ids are short and generate less HTTP traffic.
-- Because session ids are short, they are  easy to use â€œmanuallyâ€� (with cURL, etc.)
+- Because session ids are short, they are  easy to use manually (with cURL, etc.)
 
 The disadvantage is that session information is stored on the server side.
 
@@ -797,7 +797,7 @@ The API  [DataSourceStore](https://www.aceql.com/rest/soft/6.1/javadoc/org/kawan
 
 ### Running the AceQL Web Server without Windows Desktop
 
-If you donâ€™t have access to the Windows Desktop interface (running in a cloud instance, etc.)  you can still run the AceQL HTTP Web Server from the command line.
+If you don't have access to the Windows Desktop interface (running in a cloud instance, etc.)  you can still run the AceQL HTTP Web Server from the command line.
 
 - see `<installation-directory>\AceQL\bin\aceql-server.bat` script.
 
@@ -849,7 +849,7 @@ then your `web.xml` should contain the following code:
     </init-param>
 </servlet>
 
-<!â€”- Allows you to see immediately in servet container if servlet is OK or KO --> 
+<!-- Allows you to see immediately in servet container if servlet is OK or KO --> 
 <load-on-startup>1</load-on-startup >
 
 <servlet-mapping>
@@ -914,7 +914,7 @@ All requests are streamed:
 - Output requests (from the client side) are streamed directly from the socket to the server to avoid     buffering any content body
 - Input responses (for the client side) are streamed directly from the socket to the server to efficiently read the response body
 
-Large content (`ResultSet`, Blobs/Clobsâ€¦) is transferred using files. It is never loaded in memory. Streaming techniques are always used to read and write this content. 
+Large content (`ResultSet`, Blobs/Clobs) is transferred using files. It is never loaded in memory. Streaming techniques are always used to read and write this content. 
 
 ## Managing temporary files 
 
