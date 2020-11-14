@@ -535,7 +535,7 @@ From now, you can read the [API User Guide](https://www.aceql.com/DocDownload?do
 
 1. Create the “AceQL.MyRemoteConnection” Windows Classic Desktop Console App in Visual Studio. 
 
-2. Install the [AceQL.Client](https://www.nuget.org/packages/AceQL.Client2) package with NuGet.
+2. Install the [AceQL.Client](https://www.nuget.org/packages/AceQL.Client) package with NuGet.
 
 3. Download this C# source file: [MyRemoteConnection.cs](https://www.aceql.com/rest/soft_csharp/6.0/src/MyRemoteConnection.cs). Then insert it in your project. 
 
