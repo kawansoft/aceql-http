@@ -307,7 +307,6 @@ public class TomcatStarter {
 	String aceQLManagerServletCallName = TomcatStarterUtil.getAceQLManagerSevletName(properties);
 
 	// Add the ServerSqlManager servlet to the context
-	@SuppressWarnings("unused")
 	org.apache.catalina.Wrapper wrapper = Tomcat.addServlet(rootCtx, aceQLManagerServletCallName,
 		new ServerSqlManager());
 	wrapper.setAsyncSupported(true);

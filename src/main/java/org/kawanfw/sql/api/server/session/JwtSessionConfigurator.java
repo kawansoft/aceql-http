@@ -24,10 +24,15 @@
  */
 package org.kawanfw.sql.api.server.session;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Date;
 import java.util.Map;
+import java.util.Properties;
 
+import org.kawanfw.sql.servlet.ServerSqlManager;
 import org.kawanfw.sql.tomcat.ServletParametersStore;
+import org.kawanfw.sql.tomcat.TomcatStarterUtil;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTCreator.Builder;
@@ -56,12 +61,15 @@ import com.auth0.jwt.interfaces.DecodedJWT;
  * {@code jwtSessionConfiguratorSecret} property in
  * {@code aceql-server.properties}.</li>
  * <li>The JWT lifetime value used is
- * {@link DefaultSessionConfigurator#getSessionTimelife()} value.
+ * {@link DefaultSessionConfigurator#getSessionTimelifeMinutes()} value.
  * </ul>
  *
  * @author Nicolas de Pomereu
  */
 public class JwtSessionConfigurator implements SessionConfigurator {
+
+    /** The aceql-server.properties file. Used to get the session time life */
+    private Properties properties = null;
 
     /*
      * (non-Javadoc)
@@ -72,40 +80,35 @@ public class JwtSessionConfigurator implements SessionConfigurator {
      */
     /**
      * Generates a self contained JWT that stores the username and the database.
+     *
+     * @throws IOException
      */
     @Override
-    public String generateSessionId(String username, String database) {
+    public String generateSessionId(String username, String database) throws IOException {
 
 	try {
-	    String secret = ServletParametersStore
-		    .getJwtSessionConfiguratorSecretValue();
+	    String secret = ServletParametersStore.getJwtSessionConfiguratorSecretValue();
 
 	    if (secret == null || secret.isEmpty()) {
-		throw new IllegalArgumentException("The jwtSessionConfiguratorSecret property value defined in the AceQL properties file cannot be null.");
+		throw new IllegalArgumentException(
+			"The jwtSessionConfiguratorSecret property value defined in the AceQL properties file cannot be null.");
 	    }
 
 	    Algorithm algorithm = Algorithm.HMAC256(secret);
-
-	    /*
-	    String token = JWT.create().withIssuedAt(new Date())
-		    .withClaim("usr", username).withClaim("dbn", database)
-		    .sign(algorithm);
-	   */
 
 	    Builder builder = JWT.create();
 	    builder.withClaim("usr", username);
 	    builder.withClaim("dbn", database);
 	    builder.withIssuedAt(new Date());
 
-	    if (getSessionTimelife() != 0) {
-		Date expiresAt = new Date(System.currentTimeMillis() + (getSessionTimelife() * 60 * 1000));
+	    if (getSessionTimelifeMinutes() != 0) {
+		Date expiresAt = new Date(System.currentTimeMillis() + (getSessionTimelifeMinutes() * 60 * 1000));
 		builder.withExpiresAt(expiresAt);
 	    }
 
 	    String token = builder.sign(algorithm);
 	    return token;
-	}
-	catch (JWTCreationException exception) {
+	} catch (JWTCreationException exception) {
 	    // Invalid Signing configuration / Couldn't convert Claims.
 	    throw new IllegalArgumentException(exception);
 	}
@@ -115,8 +118,7 @@ public class JwtSessionConfigurator implements SessionConfigurator {
     /*
      * (non-Javadoc)
      *
-     * @see
-     * org.kawanfw.sql.api.server.session.SessionConfigurator#getUsername(java.
+     * @see org.kawanfw.sql.api.server.session.SessionConfigurator#getUsername(java.
      * lang.String)
      */
     /**
@@ -140,8 +142,7 @@ public class JwtSessionConfigurator implements SessionConfigurator {
     /*
      * (non-Javadoc)
      *
-     * @see
-     * org.kawanfw.sql.api.server.session.SessionConfigurator#getDatabase(java.
+     * @see org.kawanfw.sql.api.server.session.SessionConfigurator#getDatabase(java.
      * lang.String)
      */
     /**
@@ -165,28 +166,7 @@ public class JwtSessionConfigurator implements SessionConfigurator {
     /*
      * (non-Javadoc)
      *
-     * @see
-     * org.kawanfw.sql.api.server.session.SessionConfigurator#getCreationTime(
-     * java.lang.String)
-     */
-    @Override
-    public long getCreationTime(String sessionId) {
-	try {
-	    DecodedJWT jwt = JWT.decode(sessionId);
-	    Date issuedAt = jwt.getIssuedAt();
-	    return issuedAt.getTime();
-
-	} catch (JWTDecodeException exception) {
-	    System.err.println(exception);
-	    return 0;
-	}
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * org.kawanfw.sql.api.server.session.SessionConfigurator#remove(java.lang.
+     * @see org.kawanfw.sql.api.server.session.SessionConfigurator#remove(java.lang.
      * String)
      */
     @Override
@@ -197,8 +177,7 @@ public class JwtSessionConfigurator implements SessionConfigurator {
     /*
      * (non-Javadoc)
      *
-     * @see
-     * org.kawanfw.sql.api.server.session.SessionConfigurator#verifySessionId(
+     * @see org.kawanfw.sql.api.server.session.SessionConfigurator#verifySessionId(
      * java.lang.String)
      */
     /**
@@ -206,30 +185,33 @@ public class JwtSessionConfigurator implements SessionConfigurator {
      * configured options. <br>
      * Also verifies that the token is not expired, i.e. its lifetime is shorter
      * than {@code getSessionTimelife()}
+     *
+     * @throws IOException
      */
     @Override
-    public boolean verifySessionId(String sessionId) {
+    public boolean verifySessionId(String sessionId) throws IOException {
 
 	try {
-	    String secret = ServletParametersStore
-		    .getJwtSessionConfiguratorSecretValue();
+	    String secret = ServletParametersStore.getJwtSessionConfiguratorSecretValue();
 	    Algorithm algorithm = Algorithm.HMAC256(secret);
 	    JWTVerifier verifier = JWT.require(algorithm).build(); // Reusable
 								   // verifier
 								   // instance
-	    @SuppressWarnings("unused")
 	    DecodedJWT jwt = verifier.verify(sessionId);
 
-//	    Date issuedAt = jwt.getIssuedAt();
-//	    Date now = new Date();
-//
-//	    if (now.getTime()
-//		    - issuedAt.getTime() > (getSessionTimelife() * 60 * 1000)) {
-//		return false;
-//	    }
+	    if (getSessionTimelifeMinutes() == 0) {
+		return true;
+	    }
 
-	}
-	catch (JWTVerificationException exception) {
+	    Date issuedAt = jwt.getIssuedAt();
+
+	    if (issuedAt != null) {
+		// Check if session is expired.
+		if (new Date().getTime() - issuedAt.getTime() > (getSessionTimelifeMinutes() * 60 * 1000)) {
+		    return false;
+		}
+	    }
+	} catch (JWTVerificationException exception) {
 	    System.err.println(exception);
 	    return false;
 	}
@@ -241,15 +223,22 @@ public class JwtSessionConfigurator implements SessionConfigurator {
      * (non-Javadoc)
      *
      * @see
-     * org.kawanfw.sql.api.server.session.SessionConfigurator#getSessionTimelife
-     * ()
+     * org.kawanfw.sql.api.server.session.SessionConfigurator#getSessionTimelife ()
      */
     /**
-     * Returns {@link DefaultSessionConfigurator#getSessionTimelife() value}
+     * Returns same as
+     * {@link DefaultSessionConfigurator#getSessionTimelifeMinutes()} value.
+     *
+     * @throws IOException
      */
     @Override
-    public int getSessionTimelife() {
-	return new DefaultSessionConfigurator().getSessionTimelife();
+    public int getSessionTimelifeMinutes() throws IOException {
+	if (properties == null) {
+	    File file = ServerSqlManager.getAceqlServerProperties();
+	    properties = TomcatStarterUtil.getProperties(file);
+	}
+
+	return DefaultSessionConfigurator.getSessionTimelifeMinutesPropertyValue(properties);
     }
 
 }

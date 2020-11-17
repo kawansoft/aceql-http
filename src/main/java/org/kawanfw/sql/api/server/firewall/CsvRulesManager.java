@@ -295,7 +295,6 @@ public class CsvRulesManager extends DefaultSqlFirewallManager implements SqlFir
 
     }
 
-    @SuppressWarnings("unused")
     private void debug(String string) {
 	if (DEBUG) {
 	    System.out.println(new Date() + " " + string);

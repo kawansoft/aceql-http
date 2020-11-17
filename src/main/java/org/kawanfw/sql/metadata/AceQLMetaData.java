@@ -665,7 +665,6 @@ public class AceQLMetaData {
 
     }
 
-    @SuppressWarnings("unused")
     private void debug(String string) {
 	if (DEBUG) {
 	    System.out.println(new Date() + " " + string);

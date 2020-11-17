@@ -24,6 +24,8 @@
  */
 package org.kawanfw.sql.api.server.session;
 
+import java.io.IOException;
+
 /**
  * Interface that defines how to generate and verify session id for (username,
  * database) sessions. <br>
@@ -61,8 +63,9 @@ public interface SessionConfigurator {
      * @param database the database to store for the passed session id
      *
      * @return a unique session id for the (username, database) couple.
+     * @throws IOException if any I/O error
      */
-    public String generateSessionId(String username, String database);
+    public String generateSessionId(String username, String database) throws IOException;
 
     /**
      * Loads the username stored for the passed session id
@@ -81,14 +84,6 @@ public interface SessionConfigurator {
     public String getDatabase(String sessionId);
 
     /**
-     * Loads the creation time of the instance
-     *
-     * @param sessionId the session id
-     * @return the creation time of the instance
-     */
-    public long getCreationTime(String sessionId);
-
-    /**
      * Removes storage for the passed session Id. Method is called by AceQL when
      * client side calls {@code logout}
      *
@@ -102,13 +97,15 @@ public interface SessionConfigurator {
      *
      * @param sessionId the session id to verify
      * @return true if the sessionId is valid
+     * @throws IOException if any I/O error
      */
-    public boolean verifySessionId(String sessionId);
+    public boolean verifySessionId(String sessionId) throws IOException;
 
     /**
      * Allows to define the sessions lifetime in minutes
      *
      * @return the sessions lifetime in minutes
+     * @throws IOException if any I/O error
      */
-    public int getSessionTimelife();
+    public int getSessionTimelifeMinutes() throws IOException;
 }

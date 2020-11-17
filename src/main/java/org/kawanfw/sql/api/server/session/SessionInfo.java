@@ -89,11 +89,10 @@ public class SessionInfo {
     }
 
     /**
-     * Returns the date/time when this {@code SessionInfo} instance was created
-     *
-     * @return the date/time when this {@code SessionInfo} instance was created
+     * Returns the date/time in milliseconds when this {@code SessionInfo} instance was created
+     * @return the date/time in milliseconds when this {@code SessionInfo} instance was created
      */
-    public long getCreationTime() {
+    public long getCreationTimeMillis() {
 	return creationTime;
     }
 

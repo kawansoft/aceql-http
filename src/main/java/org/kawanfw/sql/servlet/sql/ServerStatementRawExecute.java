@@ -298,7 +298,6 @@ public class ServerStatementRawExecute {
 	checkFirewallForExecute(username, database, sqlOrder, ipAddress);
 	ServerSqlUtil.setMaxRowsToReturn(request, username, database, statement, databaseConfigurator);
 
-	@SuppressWarnings("unused")
 	boolean executeResult = statement.execute(sqlOrder);
 
 	if (! executeResult) {

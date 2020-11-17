@@ -24,9 +24,18 @@
  */
 package org.kawanfw.sql.api.server.session;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Date;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
+
+import org.apache.commons.lang3.StringUtils;
+import org.kawanfw.sql.servlet.ServerSqlManager;
+import org.kawanfw.sql.tomcat.TomcatStarterUtil;
+import org.kawanfw.sql.util.Tag;
 
 /**
  * Default implementation of session management:
@@ -44,12 +53,17 @@ import java.util.concurrent.ConcurrentHashMap;
  * {@code SessionConfigurator} implementation. <br>
  * Do it if you want to implement you own session mechanism and/or want to
  * manage how session info are stored.<br>
- * <br>Note that {@code getSessionTimelife()} returns 0 and that sessions never expires.
- * <br>Extend this class and override {@code getSessionTimelife()} if you want to define expirable sessions.
+ * <br>
+ * Note that {@code getSessionTimelife()} returns 0 and that sessions never
+ * expires. <br>
+ * Extend this class and override {@code getSessionTimelife()} if you want to
+ * define expirable sessions.
  *
  * @author Nicolas de Pomereu
  */
 public class DefaultSessionConfigurator implements SessionConfigurator {
+
+    private Properties properties = null;
 
     private SessionIdentifierGenerator sessionIdentifierGenerator = new SessionIdentifierGenerator();
     private Map<String, SessionInfo> sessionInfoStore = new ConcurrentHashMap<>();
@@ -67,8 +81,7 @@ public class DefaultSessionConfigurator implements SessionConfigurator {
     @Override
     public String generateSessionId(String username, String database) {
 	String sessionId = sessionIdentifierGenerator.nextSessionId();
-	SessionInfo sessionInfo = new SessionInfo(sessionId, username,
-		database);
+	SessionInfo sessionInfo = new SessionInfo(sessionId, username, database);
 	sessionInfoStore.put(sessionId, sessionInfo);
 
 	return sessionId;
@@ -111,24 +124,6 @@ public class DefaultSessionConfigurator implements SessionConfigurator {
     /*
      * (non-Javadoc)
      *
-     * @see
-     * org.kawanfw.sql.api.server.session.SessionConfigurator#getCreationTime
-     * (java.lang.String)
-     */
-    @Override
-    public long getCreationTime(String sessionId) {
-	SessionInfo sessionInfo = sessionInfoStore.get(sessionId);
-
-	if (sessionInfo == null) {
-	    return 0;
-	}
-
-	return sessionInfo.getCreationTime();
-    }
-
-    /*
-     * (non-Javadoc)
-     *
      * @see org.kawanfw.sql.api.server.session.SessionConfigurator#remove(
      * java.lang.String)
      */
@@ -140,8 +135,7 @@ public class DefaultSessionConfigurator implements SessionConfigurator {
     /*
      * (non-Javadoc)
      *
-     * @see
-     * org.kawanfw.sql.api.server.session.SessionConfigurator#verifySessionId
+     * @see org.kawanfw.sql.api.server.session.SessionConfigurator#verifySessionId
      * (java.lang.String)
      */
     /**
@@ -151,9 +145,11 @@ public class DefaultSessionConfigurator implements SessionConfigurator {
      * <li>Verify that the sessionId is not expired (must be less that 12
      * hours).</li>
      * </ul>
+     *
+     * @throws IOException
      */
     @Override
-    public boolean verifySessionId(String sessionId) {
+    public boolean verifySessionId(String sessionId) throws IOException {
 	SessionInfo sessionInfo = sessionInfoStore.get(sessionId);
 
 	if (sessionInfo == null) {
@@ -161,21 +157,12 @@ public class DefaultSessionConfigurator implements SessionConfigurator {
 	    return false;
 	}
 
-	if (getSessionTimelife() == 0) {
+	if (getSessionTimelifeMinutes() == 0) {
 	    return true;
 	}
 
 	// Check if session is expired.
-	long now = new Date().getTime();
-
-//	if (now - sessionInfo.getCreationTime() > getSessionTimelife() * 60
-//		* 1000) {
-//	    // System.err.println("now - sessionInfo.getCreationTime() >
-//	    // getSessionTimelife");
-//	    return false;
-//	}
-
-	return now - sessionInfo.getCreationTime() <= getSessionTimelife() * 60;
+	return new Date().getTime() - sessionInfo.getCreationTimeMillis() <= getSessionTimelifeMinutes() * 60 * 1000;
 
     }
 
@@ -187,11 +174,46 @@ public class DefaultSessionConfigurator implements SessionConfigurator {
      * (java.lang.String)
      */
     /**
-     * Returns 0. (Session never expires).
+     * Returns the value of {@code session.timelifeMinutes} property of {@code aceql-server.properties}.
+     * Defaults to 0. If 0, session is infinite.
+     * @throws IOException
      */
     @Override
-    public int getSessionTimelife() {
-	return 0;
+    public int getSessionTimelifeMinutes() throws IOException {
+
+	if (properties == null) {
+	    File file = ServerSqlManager.getAceqlServerProperties();
+	    properties = TomcatStarterUtil.getProperties(file);
+	}
+
+	return getSessionTimelifeMinutesPropertyValue(properties);
+    }
+
+    /**
+     * Returns the session.TimelifeMinutes property value defined in the
+     * {@code aceql-server.properties} configuration file.
+     *
+     * @return the session.TimelifeMinutes property value defined in the
+     * {@code aceql-server.properties} configuration file.
+     * @throws IOException
+     * @throws IOException
+     */
+    static int getSessionTimelifeMinutesPropertyValue(Properties properties)
+	    throws IOException {
+	Objects.requireNonNull(properties, Tag.PRODUCT +  " properties cannot be null!");
+
+	String sessionTimelifeInMinutesStr = properties.getProperty("session.timelifeMinutes");
+	if (sessionTimelifeInMinutesStr == null) {
+	    return 0;
+	}
+
+	if (!StringUtils.isNumeric(sessionTimelifeInMinutesStr)) {
+	    throw new IllegalArgumentException(Tag.PRODUCT + " The session.timelifeMinutes property is not numeric: "
+		    + sessionTimelifeInMinutesStr);
+	}
+
+	int sessionTimelifeMinutes = Integer.parseInt(sessionTimelifeInMinutesStr);
+	return sessionTimelifeMinutes;
     }
 
 }

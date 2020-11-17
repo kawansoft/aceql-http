@@ -24,6 +24,20 @@ AceQL HTTP is licensed through the GNU Lesser General Public License
 (LGPL v2.1).
 
 
+AceQL HTTP Version 6.2 - 15-Nov-2020
+------------------------------------
+
+What's New:
+
+- SessionConfigurator: getSessionTimelife() renamed to getSessionTimelifeMinutes()
+- SessionConfigurator & SessionInfo: getCreationTime() renamed getCreationTimeMillis().
+- DefaultSessionConfigurator & JwtSessionConfigurator: getSessionTimelife() 
+  ==> Access value through properties.
+
+Bugs fixed:
+
+- DefaultSessionConfigurator: fix milliseconds bug in verifySessionId().
+
 AceQL HTTP Version 6.1 - 24-Oct-2020
 ------------------------------------
 
