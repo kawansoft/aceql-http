@@ -226,7 +226,7 @@ public class ServerCallableStatement {
 	    checkFirewallForExecuteUpdate(username, database, sqlOrder, serverPreparedStatementParameters, ipAddress);
 
 	    if (!isExecuteQuery()) {
-		doExecute(out, database, sqlOrder, callableStatement, serverPreparedStatementParameters, ipAddress);
+		doExecute(out, sqlOrder, callableStatement, serverPreparedStatementParameters, ipAddress);
 	    } else {
 		doSelect(out, sqlOrder, callableStatement, serverPreparedStatementParameters);
 	    }
@@ -310,7 +310,6 @@ public class ServerCallableStatement {
 
     /**
      * @param out
-     * @param database
      * @param sqlOrder
      * @param callableStatement
      * @param serverPreparedStatementParameters
@@ -319,8 +318,8 @@ public class ServerCallableStatement {
      * @throws SQLException
      * @throws SecurityException
      */
-    private void doExecute(OutputStream out, String database, String sqlOrder, CallableStatement callableStatement,
-	    ServerPreparedStatementParameters serverPreparedStatementParameters, String ipAddress) throws IOException, SQLException, SecurityException {
+    private void doExecute(OutputStream out, String sqlOrder, CallableStatement callableStatement, ServerPreparedStatementParameters serverPreparedStatementParameters,
+	    String ipAddress) throws IOException, SQLException, SecurityException {
 
 	callableStatement.execute();
 
