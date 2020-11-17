@@ -223,12 +223,12 @@ public class ServerCallableStatement {
 
 	    debug("before executeQuery() / execute()");
 
-	    if (!isExecuteQuery()) {
-		doExecute(out, username, database, sqlOrder, callableStatement, serverPreparedStatementParameters,
-			ipAddress);
-	    } else {
+	    checkFirewallForExecuteUpdate(username, database, sqlOrder, serverPreparedStatementParameters, ipAddress);
 
-		doSelect(out, username, sqlOrder, callableStatement, serverPreparedStatementParameters);
+	    if (!isExecuteQuery()) {
+		doExecute(out, database, sqlOrder, callableStatement, serverPreparedStatementParameters, ipAddress);
+	    } else {
+		doSelect(out, sqlOrder, callableStatement, serverPreparedStatementParameters);
 	    }
 	} catch (SQLException e) {
 
@@ -257,15 +257,13 @@ public class ServerCallableStatement {
 
     /**
      * @param out
-     * @param username
      * @param sqlOrder
      * @param callableStatement
      * @param serverPreparedStatementParameters
      * @throws SQLException
      * @throws IOException
      */
-    private void doSelect(OutputStream out, String username, String sqlOrder, CallableStatement callableStatement,
-	    ServerPreparedStatementParameters serverPreparedStatementParameters) throws SQLException, IOException {
+    private void doSelect(OutputStream out, String sqlOrder, CallableStatement callableStatement, ServerPreparedStatementParameters serverPreparedStatementParameters) throws SQLException, IOException {
 	ResultSet rs = null;
 
 	try {
@@ -312,7 +310,6 @@ public class ServerCallableStatement {
 
     /**
      * @param out
-     * @param username
      * @param database
      * @param sqlOrder
      * @param callableStatement
@@ -322,11 +319,8 @@ public class ServerCallableStatement {
      * @throws SQLException
      * @throws SecurityException
      */
-    private void doExecute(OutputStream out, String username, String database, String sqlOrder,
-	    CallableStatement callableStatement, ServerPreparedStatementParameters serverPreparedStatementParameters,
-	    String ipAddress) throws IOException, SQLException, SecurityException {
-	checkFirewallForExecuteUpdate(username, database, sqlOrder, serverPreparedStatementParameters,
-		ipAddress);
+    private void doExecute(OutputStream out, String database, String sqlOrder, CallableStatement callableStatement,
+	    ServerPreparedStatementParameters serverPreparedStatementParameters, String ipAddress) throws IOException, SQLException, SecurityException {
 
 	callableStatement.execute();
 

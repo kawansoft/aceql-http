@@ -207,7 +207,8 @@ public class JwtSessionConfigurator implements SessionConfigurator {
 
 	    if (issuedAt != null) {
 		// Check if session is expired.
-		if (new Date().getTime() - issuedAt.getTime() > (getSessionTimelifeMinutes() * 60 * 1000)) {
+		Date now = new Date();
+		if (now.getTime()- issuedAt.getTime() > (getSessionTimelifeMinutes() * 60 * 1000)) {
 		    return false;
 		}
 	    }
