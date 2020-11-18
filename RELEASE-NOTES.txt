@@ -24,19 +24,22 @@ AceQL HTTP is licensed through the GNU Lesser General Public License
 (LGPL v2.1).
 
 
-AceQL HTTP Version 6.2 - 15-Nov-2020
+AceQL HTTP Version 6.2 - 17-Nov-2020
 ------------------------------------
 
 What's New:
 
-- SessionConfigurator: getSessionTimelife() renamed to getSessionTimelifeMinutes()
-- SessionConfigurator & SessionInfo: getCreationTime() renamed getCreationTimeMillis().
-- DefaultSessionConfigurator & JwtSessionConfigurator: getSessionTimelife() 
-  ==> Access value through properties.
-
+- The new session.timelifeMinutes property in aceql-server.properties  file
+  allows defining the session lifetime of client users without any programming.
+- In SessionConfigurator interface and dependencies: the getSessionTimelife() method
+  has been renamed to getSessionTimelifeMinutes() for the sake of clarity.
+  
 Bugs fixed:
 
-- DefaultSessionConfigurator: fix milliseconds bug in verifySessionId().
+-  JwtSessionConfigurator.verifySessionId(String sessionId) and 
+   DefaultSessionConfigurator.verifySessionId(String sessionId) would not 
+   verify correctly session expirations. This has been fixed.
+
 
 AceQL HTTP Version 6.1 - 24-Oct-2020
 ------------------------------------
