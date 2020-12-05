@@ -30,6 +30,8 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -48,6 +50,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.kawanfw.sql.api.server.DatabaseConfigurator;
 import org.kawanfw.sql.api.server.auth.UserAuthenticator;
+import org.kawanfw.sql.api.server.auth.headers.RequestHeadersAuthenticator;
 import org.kawanfw.sql.api.server.blob.BlobDownloadConfigurator;
 import org.kawanfw.sql.api.server.blob.BlobUploadConfigurator;
 import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
@@ -76,6 +79,7 @@ public class ServerSqlManager extends HttpServlet {
 
     public static final String DATABASE_CONFIGURATOR_CLASS_NAME = "databaseConfiguratorClassName";
     public static final String USER_AUTHENTICATOR_CLASS_NAME = "userAuthenticatorClassName";
+    public static final String REQUEST_HEADERS_AUTHENTICATOR_CLASS_NAME = "requestHeadersAuthenticatorClassName";
     public static final String SQL_FIREWALL_MANAGER_CLASS_NAMES = "sqlFirewallManagerClassNames";
     public static final String BLOB_DOWNLOAD_CONFIGURATOR_CLASS_NAME = "blobDownloadConfiguratorClassName";
     public static final String BLOB_UPLOAD_CONFIGURATOR_CLASS_NAME = "blobUploadConfiguratorClassName";
@@ -90,6 +94,9 @@ public class ServerSqlManager extends HttpServlet {
 
     /** The UserAuthenticator instance */
     private static UserAuthenticator userAuthenticator = null;
+
+    /** The RequestHeadersAuthenticator instance */
+    private static RequestHeadersAuthenticator requestHeadersAuthenticator = null;
 
     /** The BlobUploadConfigurator instance */
     private static BlobUploadConfigurator blobUploadConfigurator = null;
@@ -109,8 +116,18 @@ public class ServerSqlManager extends HttpServlet {
     /** The executor to use */
     private ThreadPoolExecutor threadPoolExecutor = null;
 
+    /**
+     * @return userAuthenticator
+     */
     public static UserAuthenticator getUserAuthenticator() {
-        return userAuthenticator;
+	return userAuthenticator;
+    }
+
+    /**
+     * @return the requestHeadersAuthenticator
+     */
+    public static RequestHeadersAuthenticator getRequestHeadersAuthenticator() {
+	return requestHeadersAuthenticator;
     }
 
     /**
@@ -173,6 +190,7 @@ public class ServerSqlManager extends HttpServlet {
 	super.init(config);
 	ServerSqlManagerInit serverSqlManagerInit = new ServerSqlManagerInit(config);
 	userAuthenticator = serverSqlManagerInit.getUserAuthenticator();
+	requestHeadersAuthenticator = serverSqlManagerInit.getRequestHeadersAuthenticator();
 	databaseConfigurators = serverSqlManagerInit.getDatabaseConfigurators();
 	sqlFirewallMap = serverSqlManagerInit.getSqlFirewallMap();
 	blobUploadConfigurator = serverSqlManagerInit.getBlobUploadConfigurator();
@@ -301,11 +319,11 @@ public class ServerSqlManager extends HttpServlet {
 	String requestUri = request.getRequestURI();
 
 	String servletName = ServletParametersStore.getServletName();
-	if (! checkRequestStartsWithAceqlServlet(response, out, servletPath, requestUri, servletName)) {
+	if (!checkRequestStartsWithAceqlServlet(response, out, servletPath, requestUri, servletName)) {
 	    return;
 	}
 
-	if( getVersion(out, requestUri, servletName)) {
+	if (getVersion(out, requestUri, servletName)) {
 	    return;
 	}
 
@@ -328,17 +346,22 @@ public class ServerSqlManager extends HttpServlet {
 	    return;
 	}
 
+	// Check that the request headers are accepted
+	if (!validateHeaders(request, response, out)) {
+	    return;
+	}
+
 	// In other cases than connect, username & database are null
 	if (username == null && database == null) {
 
-	    if (! checkSessionIsVerified(response, out, sessionId)) {
+	    if (!checkSessionIsVerified(response, out, sessionId)) {
 		return;
 	    }
 
 	    username = sessionConfigurator.getUsername(sessionId);
 	    database = sessionConfigurator.getDatabase(sessionId);
 
-	    if (! checkUsernameAndDatabase(response, out, database, username)) {
+	    if (!checkUsernameAndDatabase(response, out, database, username)) {
 		return;
 	    }
 	}
@@ -355,6 +378,39 @@ public class ServerSqlManager extends HttpServlet {
 	// Tests exceptions
 	ServerSqlManager.testThrowException();
 	dispatch.executeRequestInTryCatch(requestHolder, response, out);
+    }
+
+    /**
+     * Checks that headers are authenticated/validated.
+     * @param request
+     * @param response
+     * @param out
+     * @return
+     * @throws IOException
+     */
+    private boolean validateHeaders(HttpServletRequest request, HttpServletResponse response, OutputStream out)
+	    throws IOException {
+
+	// Request Headers;
+	Map<String, String> headers = new HashMap<>();
+	Enumeration<?> e = request.getHeaderNames();
+	while (e.hasMoreElements()) {
+	    String key = (String) e.nextElement();
+	    String value = request.getHeader(key);
+	    headers.put(key, value);
+	}
+
+	boolean checked = requestHeadersAuthenticator.validate(headers);
+
+	if (!checked) {
+	    JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_UNAUTHORIZED,
+		    JsonErrorReturn.ERROR_ACEQL_ERROR, JsonErrorReturn.INVALID_SESSION_ID);
+	    // out.println(errorReturn.build());
+	    writeLine(out, errorReturn.build());
+	    return false;
+	}
+
+	return checked;
     }
 
     /**
@@ -456,8 +512,8 @@ public class ServerSqlManager extends HttpServlet {
      * @param servletName
      * @throws IOException
      */
-    private boolean checkRequestStartsWithAceqlServlet(HttpServletResponse response, OutputStream out, String servletPath,
-	    String requestUri, String servletName) throws IOException {
+    private boolean checkRequestStartsWithAceqlServlet(HttpServletResponse response, OutputStream out,
+	    String servletPath, String requestUri, String servletName) throws IOException {
 	if (!requestUri.startsWith("/" + servletName) && !servletPath.startsWith("/" + servletName)) {
 
 	    // System.out.println("servletPath:" + servletPath);
@@ -478,8 +534,7 @@ public class ServerSqlManager extends HttpServlet {
 		writeLine(out, errorReturn.build());
 		return false;
 	    }
-	}
-	else {
+	} else {
 	    return true;
 	}
     }

@@ -44,6 +44,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.kawanfw.sql.api.server.DatabaseConfigurationException;
 import org.kawanfw.sql.api.server.DatabaseConfigurator;
 import org.kawanfw.sql.api.server.auth.UserAuthenticator;
+import org.kawanfw.sql.api.server.auth.headers.RequestHeadersAuthenticator;
 import org.kawanfw.sql.api.server.blob.BlobDownloadConfigurator;
 import org.kawanfw.sql.api.server.blob.BlobUploadConfigurator;
 import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
@@ -51,6 +52,7 @@ import org.kawanfw.sql.api.server.session.SessionConfigurator;
 import org.kawanfw.sql.servlet.creator.BlobDownloadConfiguratorCreator;
 import org.kawanfw.sql.servlet.creator.BlobUploadConfiguratorCreator;
 import org.kawanfw.sql.servlet.creator.DatabaseConfiguratorCreator;
+import org.kawanfw.sql.servlet.creator.RequestHeadersAuthenticatorCreator;
 import org.kawanfw.sql.servlet.creator.SessionConfiguratorCreator;
 import org.kawanfw.sql.servlet.creator.SqlFirewallsCreator;
 import org.kawanfw.sql.servlet.creator.UserAuthenticatorCreator;
@@ -70,6 +72,9 @@ public class ServerSqlManagerInit {
 
     /** The UserAuthenticator instance */
     private static UserAuthenticator userAuthenticator = null;
+
+    /** RequestHeadersAuthenticator instance */
+    private RequestHeadersAuthenticator requestHeadersAuthenticator;
 
     /** The map of (database, DatabaseConfigurator) */
     private static Map<String, DatabaseConfigurator> databaseConfigurators = new ConcurrentHashMap<>();
@@ -95,6 +100,8 @@ public class ServerSqlManagerInit {
     /** The executor to use */
     private ThreadPoolExecutor threadPoolExecutor = null;
     private String classNameToLoad;
+
+
 
     /**
      * Constructor.
@@ -147,6 +154,7 @@ public class ServerSqlManagerInit {
 	    }
 
 	    loadUserAuthenticator();
+	    loadRequestHeadersAuthenticator();
 
 	    Set<String> databases = ServletParametersStore.getDatabaseNames();
 
@@ -319,6 +327,31 @@ public class ServerSqlManagerInit {
     }
 
     /**
+     * loads requestHeadersAuthenticator.
+     *
+     * @throws ClassNotFoundException
+     * @throws NoSuchMethodException
+     * @throws SecurityException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     * @throws IllegalArgumentException
+     * @throws InvocationTargetException
+     */
+    private void loadRequestHeadersAuthenticator() throws ClassNotFoundException, NoSuchMethodException, SecurityException,
+	    InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+
+	String requestHeadersAuthenticatorClassName = ServletParametersStore.getRequestHeadersAuthenticatorClassName();
+
+	classNameToLoad = requestHeadersAuthenticatorClassName;
+	RequestHeadersAuthenticatorCreator userAuthenticatorCreator = new RequestHeadersAuthenticatorCreator(requestHeadersAuthenticatorClassName);
+	requestHeadersAuthenticator = userAuthenticatorCreator.getRequestHeadersAuthenticator();
+	requestHeadersAuthenticatorClassName = userAuthenticatorCreator.getRequestHeadersAuthenticatorClassName();
+
+	System.out.println(SqlTag.SQL_PRODUCT_START + " Loading RequestHeadersAuthenticator class:");
+	System.out.println(SqlTag.SQL_PRODUCT_START + "  -> " + requestHeadersAuthenticatorClassName);
+    }
+
+    /**
      * loads Firewall Managers.
      *
      * @param databases
@@ -449,9 +482,15 @@ public class ServerSqlManagerInit {
 
     }
 
-
     public UserAuthenticator getUserAuthenticator() {
 	return userAuthenticator;
+    }
+
+    /**
+     * @return the requestHeadersAuthenticator
+     */
+    public RequestHeadersAuthenticator getRequestHeadersAuthenticator() {
+        return requestHeadersAuthenticator;
     }
 
     public Map<String, DatabaseConfigurator> getDatabaseConfigurators() {

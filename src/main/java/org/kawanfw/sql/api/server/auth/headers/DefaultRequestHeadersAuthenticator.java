@@ -22,15 +22,28 @@
  * Any modifications to this file must keep this entire header
  * intact.
  */
-package org.kawanfw.sql.version;
+package org.kawanfw.sql.api.server.auth.headers;
+
+import java.io.IOException;
+import java.util.Map;
 
 /**
- * Contains the package Version info
+ * A concrete and unsafe {@link RequestHeadersAuthenticator} that always grant access to
+ * remote client users. <br>
+ * This class will be automatically loaded if no {@code RequestHeadersAuthenticator} has
+ * been declared in the {@code aceql-server.properties} file.
+ *
+ * @author Nicolas de Pomereu
+ * @since 6.3
+ *
  */
+public class DefaultRequestHeadersAuthenticator implements RequestHeadersAuthenticator {
 
-public class VersionValues {
-    public static final String VERSION = "v6.3";
-    public static final String DATE = "05-Dec-2020";
+    /**
+     * @return <code>true</code>. (Client is always granted access).
+     */
+    @Override
+    public boolean validate(Map<String, String> headers) throws IOException {
+        return true;
+    }
 }
-
-// End

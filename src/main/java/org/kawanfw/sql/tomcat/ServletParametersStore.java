@@ -53,6 +53,7 @@ public class ServletParametersStore {
     private static String blobUploadConfiguratorClassName = null;
 
     private static String userAuthenticatorClassName = null;
+    private static String requestHeadersAuthenticatorClassName = null;
 
     private static String sessionConfiguratorClassName = null;
     private static String jwtSessionConfiguratorSecretValue = null;
@@ -257,6 +258,22 @@ public class ServletParametersStore {
     public static void setUserAuthenticatorClassName(String userAuthenticatorClassName) {
 	ServletParametersStore.userAuthenticatorClassName = userAuthenticatorClassName;
     }
+
+    /**
+     * @return the requestHeadersAuthenticatorClassName
+     */
+    public static String getRequestHeadersAuthenticatorClassName() {
+        return requestHeadersAuthenticatorClassName;
+    }
+
+    /**
+     * @param requestHeadersAuthenticatorClassName the requestHeadersAuthenticatorClassName to set
+     */
+    public static void setRequestHeadersAuthenticatorClassName(String requestHeadersAuthenticatorClassName) {
+        ServletParametersStore.requestHeadersAuthenticatorClassName = requestHeadersAuthenticatorClassName;
+    }
+
+
 
 
 }

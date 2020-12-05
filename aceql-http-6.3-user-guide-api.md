@@ -1,4 +1,4 @@
-# AceQL HTTP v6.2 - November 17, 2020
+# AceQL HTTP v6.3 - December 5, 2020
 
 # API User Guide
 
@@ -199,7 +199,7 @@ Note that we will use two shortcuts through this User Guide in order to simplify
 
 | Notes  about credentials (username, password)                |
 | ------------------------------------------------------------ |
-| These are  *not* the username/password of the remote JDBC Driver,  but are  the authentication information checked by remote AceQL server with  `DatabaseConfigurator.login(username, password`) method. <br />See [Server Installation and  Configuration Guide](https://github.com/kawansoft/aceql-http/blob/master/aceql-http-4.1-user-guide-server.md). |
+| These are  *not* the username/password of the remote JDBC Driver,  but are  the authentication information checked by remote AceQL server with  `DatabaseConfigurator.login(username, password`) method. <br />See [Server Installation and  Configuration Guide](https://github.com/kawansoft/aceql-http/blob/master/README.md). |
 
 ### Server response to login call
 
@@ -228,7 +228,7 @@ In case of error:
 
 All the following examples use a MySQL database named `sampledb`.
 
-Connection to the [sampledb](http://www.aceql.com/rest/soft/6.2/src/sampledb.txt) database with (MyUsername, MySecret) credentials:
+Connection to the [sampledb](http://www.aceql.com/rest/soft/6.3/src/sampledb.txt) database with (MyUsername, MySecret) credentials:
 
 ```bash
 $ curl \

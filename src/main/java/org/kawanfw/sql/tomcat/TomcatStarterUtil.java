@@ -380,6 +380,13 @@ public class TomcatStarterUtil {
 	    ServletParametersStore.setUserAuthenticatorClassName(userAuthenticatorClassName);
 	}
 
+	String requestHeadersAuthenticatorClassName = TomcatStarterUtil
+		.trimSafe(properties.getProperty(ServerSqlManager.REQUEST_HEADERS_AUTHENTICATOR_CLASS_NAME));
+	if (requestHeadersAuthenticatorClassName != null && !requestHeadersAuthenticatorClassName.isEmpty()) {
+	    ServletParametersStore.setRequestHeadersAuthenticatorClassName(requestHeadersAuthenticatorClassName);
+	}
+
+
 	for (String database : databases) {
 	    // Set the configurator to use for this database
 	    String databaseConfiguratorClassName = TomcatStarterUtil.trimSafe(
