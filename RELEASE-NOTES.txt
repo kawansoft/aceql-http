@@ -31,8 +31,8 @@ What's New:
 
 - In addition to UserAuthenticator, the new RequestHeadersAuthenticator interface 
   provides an alternate or supplementary authentication mechanism.
-  RequestHeadersAuthenticator allows to check the HTTP request headers sent by 
-  the client side, and thus to grant or forbid access to the AceQL Server.
+  RequestHeadersAuthenticator implementation allows to check the HTTP request 
+  headers sent by the client side, and thus to grant or forbid access to the AceQL Server.
 - Tomcat base libraries have been upgraded to 8.5.60.
 
 
