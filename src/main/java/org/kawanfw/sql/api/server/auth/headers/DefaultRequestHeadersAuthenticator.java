@@ -28,10 +28,11 @@ import java.io.IOException;
 import java.util.Map;
 
 /**
- * A concrete and unsafe {@link RequestHeadersAuthenticator} that always grant access to
- * remote client users. <br>
- * This class will be automatically loaded if no {@code RequestHeadersAuthenticator} has
- * been declared in the {@code aceql-server.properties} file.
+ * A concrete and unsafe {@link RequestHeadersAuthenticator} that always grant
+ * access to remote client users. <br>
+ * This class will be automatically loaded if no
+ * {@code RequestHeadersAuthenticator} has been declared in the
+ * {@code aceql-server.properties} file.
  *
  * @author Nicolas de Pomereu
  * @since 6.3
@@ -44,6 +45,6 @@ public class DefaultRequestHeadersAuthenticator implements RequestHeadersAuthent
      */
     @Override
     public boolean validate(Map<String, String> headers) throws IOException {
-        return true;
+	return true;
     }
 }

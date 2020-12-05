@@ -33,11 +33,11 @@ import org.kawanfw.sql.api.server.auth.UserAuthenticator;
  * Allows authenticating a client user using the request headers set & sent from
  * the client side. <br>
  * <br>
- * This allows an alternate or supplementary authentication
- * to {@link UserAuthenticator}. <br>
+ * This allows an alternate or supplementary authentication to
+ * {@link UserAuthenticator}. <br>
  * <br>
- * Typical usage would be to send - using HTTP - an
- * authentication token stored in one of the request headers to a remote cloud provider.
+ * Typical usage would be to send - using HTTP - an authentication token stored
+ * in one of the request headers to a remote cloud provider.
  *
  * @author Nicolas de Pomereu
  * @since 6.3
@@ -45,8 +45,9 @@ import org.kawanfw.sql.api.server.auth.UserAuthenticator;
 public interface RequestHeadersAuthenticator {
 
     /**
-     * Allows to check/validate the request headers as a mean of client authentication. If
-     * method returns {@code false}, user will not be granted access.
+     * Allows to check/validate the request headers as a mean of client
+     * authentication. If method returns {@code false}, user will not be granted
+     * access.
      *
      * @param headers the request headers sent by the client side.
      * @return {@code true} if request headers are OK and validated. If
