@@ -65,6 +65,6 @@ fi
 #           ;;
 #esac
 
-java -Xms128m -Xmx256m -classpath "$ACEQL_HOME/lib-server/*":"$ACEQL_HOME/lib-jdbc/*":$CLASSPATH  \
+java -Xms256M -Xmx4096M -classpath "$ACEQL_HOME/lib-server/*":"$ACEQL_HOME/lib-jdbc/*":$CLASSPATH  \
      -Dfrom.aceql-server.script=true org.kawanfw.sql.WebServer $1 $2 $3 $4 $5 $6 $7
 

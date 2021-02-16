@@ -5,7 +5,7 @@
 JAVA_HOME=/usr/local/java
 
 # Define AceQL Home and the AceQL host & port
-ACEQL_HOME=/home/admin/aceql-http-5.1
+ACEQL_HOME=/home/admin/aceql-http-6.4
 ACEQL_HOST=www.aceql.com
 ACEQL_PORT=9090
 
@@ -56,7 +56,7 @@ case $1 in
             rm $PID_PATH_NAME
             echo "$SERVICE_NAME starting ..."
             sleep 3s
-            nohup $JAVA_HOME/bin/java -Xms128m -Xmx256m -classpath \
+            nohup $JAVA_HOME/bin/java -Xms256M -Xmx4096M -classpath \
                   "$ACEQL_HOME/lib-server/*":"$ACEQL_HOME/lib-jdbc/*":$CLASSPATH \
                   org.kawanfw.sql.WebServer -start -host \
                   $ACEQL_HOST -port $ACEQL_PORT \

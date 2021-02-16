@@ -76,7 +76,7 @@ public class Version {
     public static final class VENDOR {
 	public static final String NAME = "KawanSoft SAS";
 	public static final String WEB = "http://www.kawansoft.com";
-	public static final String COPYRIGHT = "Copyright &copy; 2020";
+	public static final String COPYRIGHT = "Copyright &copy; 2021";
 	public static final String EMAIL = "contact@kawansoft.com";
 
 	@Override

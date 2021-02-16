@@ -5,7 +5,7 @@
 
 	<groupId>com.aceql</groupId>
 	<artifactId>aceql-http</artifactId>
-	<version>6.3</version>
+	<version>6.4</version>
 	<packaging>jar</packaging>
 
 	<name>AceQL HTTP</name>
@@ -64,12 +64,12 @@
 		<dependency>
 			<groupId>org.apache.tomcat.embed</groupId>
 			<artifactId>tomcat-embed-core</artifactId>
-			<version>8.5.60</version>
+			<version>8.5.63</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.tomcat</groupId>
 			<artifactId>tomcat-jdbc</artifactId>
-			<version>8.5.60</version>
+			<version>8.5.63</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-codec</groupId>
