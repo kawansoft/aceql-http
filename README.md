@@ -254,7 +254,7 @@ Call the `aceql-server` script to display the AceQL version:
 It will display a line with all version info, like:
 
 ```
-AceQL HTTP Community v6.4 - 05-Dec-2020
+AceQL HTTP Community v6.4 - 16-Feb-2021
 ```
 
 
