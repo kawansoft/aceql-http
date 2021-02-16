@@ -25,7 +25,7 @@ case $1 in
     start)
         echo "Starting $SERVICE_NAME ..."
         if [ ! -f $PID_PATH_NAME ]; then
-	    nohup $JAVA_HOME/bin/java -Xms128m -Xmx256m -classpath \
+	    nohup $JAVA_HOME/bin/java -Xms256M -Xmx4096M -classpath \
     	          "$ACEQL_HOME/lib-server/*":"$ACEQL_HOME/lib-jdbc/*":$CLASSPATH \
 	          org.kawanfw.sql.WebServer -start -host \
 	          $ACEQL_HOST -port $ACEQL_PORT \
