@@ -6,7 +6,7 @@
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/d14142d5d6f04ba891d505e2e47b417d)](https://www.codacy.com/gh/kawansoft/aceql-http?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=kawansoft/aceql-http&amp;utm_campaign=Badge_Grade)
 ![GitHub contributors](https://img.shields.io/github/contributors/kawansoft/aceql-http)
 
-# AceQL HTTP v6.4   - February 16,  2021
+# AceQL HTTP v6.4   - February 16,  2020
 
 # Server Installation and Configuration Guide  
 
@@ -167,32 +167,31 @@ This User Guide covers:
 
 ## Technical operating environment
 
-The AceQL HTTP server side is entirely written in Java, and functions identically under Microsoft Windows, Linux, and all versions of UNIX that support Java 8+ ,Servlet 3.1+ and JDBC 4.0+.
+The AceQL HTTP server side is entirely written in Java, and functions identically under Microsoft Windows, Linux, and all versions of UNIX that support Java 8+, Servlet 3.1+ and JDBC 4.0+.
 
 The only required third party installation is a Java 8+.
 
-The following environments are supported in this version:
+The following environments are supported by KawanSoft in this version:
 
-| **Databases**                   |
-| ------------------------------- |
-| Actian Ingres 10+               |
-| IBM DB2  9.7+                   |
-| IBM  Informix 11.70+.           |
-| MariaDB  10.0+                  |
-| Microsoft  SQL Server 2008 R2+  |
-| MS Access  2010+                |
-| Oracle Database  11g Release 2+ |
-| Oracle  MySQL 5.5+              |
-| PostgreSQL  8.4.1+              |
-| Sybase  ASE 15.7+               |
-| Sybase  SQL Anywhere 12+        |
-| Teradata  Database 13+          |
+| **Databases** - KawanSoft Free Support |
+| -------------------------------------- |
+| MariaDB  10.0+                         |
+| MySQL 5.5+                             |
+| PostgreSQL  9.0+                       |
+| Microsoft  SQL Server 2008 R2+         |
+| Oracle Database  11g Release 2+        |
 
-Notes:
+These databases are supported by KawanSoft only through [commercial support](https://www.aceql.com/jdbc-and-csharp-remote-sql-database-support.html):
 
-- All these databases have been intensively tested with AceQL.
-- The table designates the tested version. Prior versions *should* work correctly with their corresponding JDBC 4.0 driver.
-- AceQL will support all subsequent versions of each database.
+| **Databases** - KawanSoft Commercial Support |
+| -------------------------------------------- |
+| Actian Ingres 10+                            |
+| IBM DB2  9.7+                                |
+| IBM  Informix 11.70+.                        |
+| MS Access  2010+                             |
+| Sybase  ASE 15.7+                            |
+| Sybase  SQL Anywhere 12+                     |
+| Teradata  Database 13+                       |
 
 # Download and Installation
 
