@@ -1,4 +1,4 @@
-# AceQL HTTP v6.4 - February 16, 2020
+# AceQL HTTP v6.4 - February 16, 2021
 
 # Demo Guide
 
@@ -658,10 +658,10 @@ From now on, you can read the [C# Client SDK User Guide](https://www.aceql.com/D
    <version>5.1</version>
    ```
 
-2. If you don’t use Maven: the [aceql-http-client-all-5.1.jar](https://www.aceql.com/rest/soft_java_client/5.0.1/download/aceql-http-client-sdk-all-5.1.jar) file contains the SDK with all dependencies.
+2. If you don’t use Maven: the [aceql-http-client-all-5.1.jar](https://www.aceql.com/rest/soft_java_client/5.1/download/aceql-http-client-sdk-all-5.1.jar) file contains the SDK with all dependencies.
 3. Create an `org.kawanfw.sql.api.client.quickstart` package in your IDE.
 
-4. Download this Java source file: [MyRemoteConnection.java](https://www.aceql.com/rest/soft_java_client/5.1/src/MyRemoteConnection.cs). Then insert it in the package. 
+4. Download this Java source file: [MyRemoteConnection.java](https://www.aceql.com/rest/soft_java_client/5.1/src/MyRemoteConnection.java). Then insert it in the package. 
 
 5. The  connection to the remote database is  created  using `AceQLConnection` class  and passing the URL of the AceQL Servlet Manager of your configuration:
 
@@ -769,7 +769,7 @@ From now on, you can read the [C# Client SDK User Guide](https://www.aceql.com/D
    }
    ```
 
-The `selectCustomerAndOrderLog` method of [MyRemoteConnection.java](https://www.aceql.com/rest/soft_java_client/5.1/src/MyRemoteConnection.cs) displays back the inserted values.
+The `selectCustomerAndOrderLog` method of [MyRemoteConnection.java](https://www.aceql.com/rest/soft_java_client/5.1/src/MyRemoteConnection.java) displays back the inserted values.
 
 From now on, you can read the [Java Client SDK User Guide](https://www.aceql.com/DocDownload?doc=https://github.com/kawansoft/aceql-http-client-sdk/blob/master/README.md) or run through the [SDK Javadoc](https://www.aceql.com/rest/soft_java_client/5.1/javadoc).
 
