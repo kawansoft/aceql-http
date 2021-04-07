@@ -659,7 +659,7 @@ From now on, you can read the [C# Client SDK User Guide](https://www.aceql.com/D
    ```
 
 2. If you don’t use Maven: the [aceql-http-client-jdbc-driver-all-6.0.jar](https://www.aceql.com/rest/soft_java_client/6.0/download/aceql-http-client-jdbc-driver-all-6.0.jar) file contains the SDK with all dependencies.
-3. Create an `org.kawanfw.sql.api.client.quickstart` package in your IDE.
+3. Create an `com.aceql.jdbc.commons.examples` package in your IDE.
 
 4. Download this Java source file: [MyRemoteConnection.java](https://www.aceql.com/rest/soft_java_client/6.0/src/MyRemoteConnection.java). Then insert it in the package. 
 
