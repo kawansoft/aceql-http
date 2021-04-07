@@ -24,6 +24,7 @@ public class Test {
     public static void main(String[] args) throws Exception {
 	String hash = SimpleSha1.sha1(" ", true);
 	System.out.println("hash: " + hash);
+	
     }
 
 }
