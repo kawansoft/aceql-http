@@ -1,4 +1,4 @@
-# AceQL HTTP v6.4 - February 16, 2021
+# AceQL HTTP v6.4 - February 16, 2020
 
 # Demo Guide
 
@@ -648,52 +648,60 @@ The `SelectCustomerAndOrderLogAsync()` method of [MyRemoteConnection.cs](https:/
 
 From now on, you can read the [C# Client SDK User Guide](https://www.aceql.com/DocDownload?doc=https://github.com/kawansoft/AceQL.Client2/blob/master/README.md).
 
-## Java Client SDK
+## Java Client SDK / JDBC Driver
 
 1. Maven:
 
    ```xml
    <groupId>com.aceql</groupId>
-   <artifactId>aceql-http-client-sdk</artifactId>
-   <version>5.1</version>
+   <artifactId>aceql-http-client-jdbc-driver</artifactId>
+   <version>6.0</version>
    ```
 
-2. If you don’t use Maven: the [aceql-http-client-all-5.1.jar](https://www.aceql.com/rest/soft_java_client/5.1/download/aceql-http-client-sdk-all-5.1.jar) file contains the SDK with all dependencies.
+2. If you don’t use Maven: the [aceql-http-client-jdbc-driver-all-6.0.jar](https://www.aceql.com/rest/soft_java_client/6.0/download/aceql-http-client-jdbc-driver-all-6.0.jar) file contains the SDK with all dependencies.
 3. Create an `org.kawanfw.sql.api.client.quickstart` package in your IDE.
 
-4. Download this Java source file: [MyRemoteConnection.java](https://www.aceql.com/rest/soft_java_client/5.1/src/MyRemoteConnection.java). Then insert it in the package. 
+4. Download this Java source file: [MyRemoteConnection.java](https://www.aceql.com/rest/soft_java_client/6.0/src/MyRemoteConnection.java). Then insert it in the package. 
 
-5. The  connection to the remote database is  created  using `AceQLConnection` class  and passing the URL of the AceQL Servlet Manager of your configuration:
+5. The  connection to the remote database is  created  using loading the `AceQLDriver` class  and passing the URL of the AceQL Servlet Manager of your configuration:
 
    ```java
-   /**
-    * Remote Connection Quick Start client example. Creates a Connection to a
-    * remote database.
-    * 
-    * @return the Connection to the remote database
-    * @throws SQLException
-    *             if a database access error occurs
-    */
-   public static Connection remoteConnectionBuilder() throws SQLException {
-
-     // The URL of the AceQL Server servlet
-     // Port number is the port number used to start the Web Server:
-     String url = "http://localhost:9090/aceql";
-
-     // The remote database to use:
-     String database = "sampledb";
-
-     // (username, password) for authentication on server side.
-     // No authentication will be done for our Quick Start:
-     String username = "MyUsername";
-     char[] password = { 'M', 'y', 'S', 'e', 'c', 'r', 'e', 't' };
-
-     // Attempt to establish a connection to the remote database:
-     Connection connection = new AceQLConnection(url, database, username,
-         password);
-
-     return connection;
-   }
+       /**
+        * Remote Connection Quick Start client example. Loads the AceQL Client JDBC Driver and 
+        * Creates a Connection to a remote database.
+        *
+        * @return the Connection to the remote database
+        * @throws SQLException
+        *             if a database access error occurs
+        * @throws ClassNotFoundException 
+        */
+   
+       public static Connection remoteConnectionBuilder() throws SQLException, ClassNotFoundException {
+   
+           // The URL of the AceQL Server servlet
+           // Port number is the port number used to start the Web Server:
+           String url = "http://localhost:9090/aceql";
+   
+           // The remote database to use:
+           String database = "sampledb";
+   
+           // (username, password) for authentication on server side.
+           // No authentication will be done for our Quick Start:
+           String username = "MyUsername";
+           String password = "MySecret";
+   
+           // Attempts to establish a connection to the remote database:
+           DriverManager.registerDriver(new AceQLDriver());
+           Class.forName(AceQLDriver.class.getName());
+   
+           Properties info = new Properties();
+           info.put("user", username);
+           info.put("password", password);
+           info.put("database", database);
+   
+           Connection connection = DriverManager.getConnection(url, info);
+           return connection;
+       }
    ```
 
 6. Compile and run from your IDE the `MyRemoteConnection` class. It will insert a new `customer` and a new `orderlog`:
@@ -769,9 +777,9 @@ From now on, you can read the [C# Client SDK User Guide](https://www.aceql.com/D
    }
    ```
 
-The `selectCustomerAndOrderLog` method of [MyRemoteConnection.java](https://www.aceql.com/rest/soft_java_client/5.1/src/MyRemoteConnection.java) displays back the inserted values.
+The `selectCustomerAndOrderLog` method of [MyRemoteConnection.java](https://www.aceql.com/rest/soft_java_client/6.0/src/MyRemoteConnection.java) displays back the inserted values.
 
-From now on, you can read the [Java Client SDK User Guide](https://www.aceql.com/DocDownload?doc=https://github.com/kawansoft/aceql-http-client-sdk/blob/master/README.md) or run through the [SDK Javadoc](https://www.aceql.com/rest/soft_java_client/5.1/javadoc).
+From now on, you can read the AceQL Client JDBC Driver [User Guide](https://www.aceql.com/DocDownload?doc=https://github.com/kawansoft/aceql-http-client-sdk/blob/master/README.md) or run through the [Javadoc](https://www.aceql.com/rest/soft_java_client/6.0/javadoc).
 
 ## Python Client SDK
 
