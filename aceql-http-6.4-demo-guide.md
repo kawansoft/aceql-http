@@ -21,9 +21,10 @@
    * [Client Side](#client-side)
       * [cURL](#curl)
       * [C# Client SDK](#c-client-sdk)
-      * [Java Client SDK](#java-client-sdk)
+      * [Java Client SDK / JDBC Driver](#java-client-sdk--jdbc-driver)
       * [Python Client SDK](#python-client-sdk)
    * [From now on…](#from-now-on)
+
 
 # Overview
 
@@ -396,7 +397,7 @@ AceQL can be accessed from client side:
 
 
 - **Using the C# Client SDK with C#** SQL regular syntax, same as with SQL Server Client  classes. The C# Client SDK wraps all http communications aspects. Jump to [C# Client SDK](#c-client-sdk).
-- **Using the Java Client SDK**  that allows regular JDBC calls and wraps all HTTP communications aspects. Jump to [Java  Client SDK](#java-client-sdk).
+- **Using the Java Client SDK**  that allows regular JDBC calls and wraps all HTTP communications aspects. Jump to [Java Client SDK / JDBC Driver](#java-client-sdk--jdbc-driver)
 - **Using the Python Client SDK** that allows regular [DB API 2.0](https://www.python.org/dev/peps/pep-0249/) SQL calls and wraps all HTTP communications aspects. Jump to [Python Client SDK](#python-client-sdk).
 - Using  any other language that supports HTTP GET & POST calls. 
 
