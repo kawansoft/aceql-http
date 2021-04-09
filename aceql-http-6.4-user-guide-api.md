@@ -4,8 +4,8 @@
 
 <img src="https://www.aceql.com/favicon.png" alt="AceQL HTTP Icon"/> 
 
-   * [Using the API](#using-the-api)
-      * [C#, Java and Python SDK](#c-java-and-python-sdk)
+  * [Using the API](#using-the-api)
+      * [C# SDK, Java JDBC Driver and Python SDK](#c-sdk-java-jdbc-driver-and-python-sdk)
       * [Authentication &amp; session creation](#authentication--session-creation)
       * [AceQL Server responses](#aceql-server-responses)
       * [JSON error format](#json-error-format)
@@ -51,6 +51,7 @@
       * [close](#close)
       * [logout](#logout)
          * [Server response to logout call](#server-response-to-logout-call)
+
 
 # Using the API
 
