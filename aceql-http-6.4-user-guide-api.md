@@ -1,11 +1,14 @@
-# AceQL HTTP v6.4 - February 16, 2020
+# AceQL HTTP v6.4 - February 17, 2020
 
 # API User Guide
 
 <img src="https://www.aceql.com/favicon.png" alt="AceQL HTTP Icon"/> 
 
+<img src="https://www.aceql.com/img/AceQL-Schema-min.jpg" alt="AceQL Draw"/>
+
+
    * [Using the API](#using-the-api)
-      * [C#, Java and Python SDK](#c-java-and-python-sdk)
+      * [C# SDK, Java JDBC Driver and Python SDK](#c-sdk-java-jdbc-driver-and-python-sdk)
       * [Authentication &amp; session creation](#authentication--session-creation)
       * [AceQL Server responses](#aceql-server-responses)
       * [JSON error format](#json-error-format)
@@ -51,6 +54,11 @@
       * [close](#close)
       * [logout](#logout)
          * [Server response to logout call](#server-response-to-logout-call)
+
+
+
+
+
 
 # Using the API
 
