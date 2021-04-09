@@ -6,9 +6,8 @@
 
 <img src="https://www.aceql.com/img/AceQL-Schema-min.jpg" alt="AceQL Draw"/>
 
-
    * [Using the API](#using-the-api)
-      * [C# SDK, Java JDBC Driver and Python SDK](#c-sdk-java-jdbc-driver-and-python-sdk)
+      * [C# SDK, Java JDBC Driver, and Python SDK](#c-sdk-java-jdbc-driver-and-python-sdk)
       * [Authentication &amp; session creation](#authentication--session-creation)
       * [AceQL Server responses](#aceql-server-responses)
       * [JSON error format](#json-error-format)
@@ -59,7 +58,6 @@
 
 
 
-
 # Using the API
 
 The AceQL HTTP API allows you to execute SQL queries and updates on remote databases using pure HTTP calls, with a fluent and simple to use REST like API.
@@ -68,15 +66,15 @@ The Server operation is described in [Server Installation and Configuration Guid
 
 This document describes all AceQL URLs to use in your HTTP calls. It also contains easy to copy and paste examples in cURL.
 
-## C#, Java and Python SDK
+## C# SDK, Java JDBC Driver, and Python SDK
 
-AceQL HTTP includes a C#, a Java and a Python SDK that wrap the API and eliminate the tedious works of handling communications errors and parsing JSON results:
+AceQL HTTP includes a C#, a Java JDBC Driver and a Python SDK that wrap the API and eliminate the tedious works of handling communications errors and parsing JSON results:
 
 - [C# SDK User Guide](https://github.com/kawansoft/AceQL.Client2/blob/master/README.md)
-- [Java SDK User Guide](https://github.com/kawansoft/aceql-http-client-sdk/blob/master/README.md)
+- [Java JDBC Driver User Guide](https://github.com/kawansoft/aceql-http-client-jdbc-driver/blob/master/README.md)
 - [Python SDK User Guide](https://github.com/kawansoft/aceql-http-client-python/blob/master/README.md) 
 
-***Reading this User Guide is NOT required if you intend to use a SDK.***
+***Reading this User Guide is NOT required if you intend to use a C#, Java or Python on client side.***
 
 ## Authentication & session creation 
 
