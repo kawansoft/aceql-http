@@ -4,6 +4,8 @@
 
 <img src="https://www.aceql.com/favicon.png" alt="AceQL HTTP Icon"/> 
 
+<img src="https://www.aceql.com/img/AceQL-Schema-min.jpg" alt="AceQL Draw"/>
+
 
    * [Using the API](#using-the-api)
       * [C# SDK, Java JDBC Driver and Python SDK](#c-sdk-java-jdbc-driver-and-python-sdk)
