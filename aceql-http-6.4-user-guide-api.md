@@ -6,16 +6,8 @@
 
 <img src="https://www.aceql.com/img/AceQL-Schema-min.jpg" alt="AceQL Draw"/>
 
-<<<<<<< HEAD
-
-=======
->>>>>>> refs/heads/master
    * [Using the API](#using-the-api)
-<<<<<<< HEAD
-      * [C# SDK, Java JDBC Driver and Python SDK](#c-sdk-java-jdbc-driver-and-python-sdk)
-=======
       * [C# SDK, Java JDBC Driver, and Python SDK](#c-sdk-java-jdbc-driver-and-python-sdk)
->>>>>>> refs/heads/master
       * [Authentication &amp; session creation](#authentication--session-creation)
       * [AceQL Server responses](#aceql-server-responses)
       * [JSON error format](#json-error-format)
@@ -66,10 +58,6 @@
 
 
 
-<<<<<<< HEAD
-
-=======
->>>>>>> refs/heads/master
 # Using the API
 
 The AceQL HTTP API allows you to execute SQL queries and updates on remote databases using pure HTTP calls, with a fluent and simple to use REST like API.
