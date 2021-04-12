@@ -74,7 +74,7 @@ AceQL HTTP includes a C#, a Java JDBC Driver and a Python SDK that wrap the API 
 - [Java JDBC Driver User Guide](https://github.com/kawansoft/aceql-http-client-jdbc-driver/blob/master/README.md)
 - [Python SDK User Guide](https://github.com/kawansoft/aceql-http-client-python/blob/master/README.md) 
 
-***Reading this User Guide is NOT required if you intend to use a C#, Java or Python on client side.***
+***Reading this User Guide is NOT required if you intend to use C#, Java or Python on client side.***
 
 ## Authentication & session creation 
 
