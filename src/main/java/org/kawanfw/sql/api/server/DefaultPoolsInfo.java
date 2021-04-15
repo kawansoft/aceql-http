@@ -49,6 +49,7 @@ import org.kawanfw.sql.servlet.ServerSqlManager;
 import org.kawanfw.sql.servlet.sql.json_return.ExceptionReturner;
 import org.kawanfw.sql.servlet.sql.json_return.JsonErrorReturn;
 import org.kawanfw.sql.servlet.sql.json_return.JsonUtil;
+import org.kawanfw.sql.util.FrameworkDebug;
 
 /**
  *
@@ -109,7 +110,7 @@ import org.kawanfw.sql.servlet.sql.json_return.JsonUtil;
 public class DefaultPoolsInfo extends HttpServlet {
 
     private static final long serialVersionUID = 6129302507495768396L;
-    private static boolean DEBUG = true; //FrameworkDebug.isSet(DefaultPoolsInfo.class);
+    private static boolean DEBUG = FrameworkDebug.isSet(DefaultPoolsInfo.class);
 
     /*
      * (non-Javadoc)
@@ -158,12 +159,12 @@ public class DefaultPoolsInfo extends HttpServlet {
 	    throws IOException, SQLException, FileUploadException {
 
 	debug("Starting...");
-
+	request.setCharacterEncoding("UTF-8");
+	
 	// Prepare the response
 	response.setContentType("text/plain; charset=UTF-8");
 
 	String password = request.getParameter("password");
-	debug("request_password: " + password + ":");
 
 	if (password == null || password.isEmpty()) {
 	    JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_FORBIDDEN,
