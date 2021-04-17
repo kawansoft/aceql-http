@@ -17,7 +17,7 @@ public interface JdbcPasswordsManager {
 
     /**
      * Returns for the passed {@code database} parameter the JBDC password to use
-     * for {@code Connection} creations. <br/>
+     * for {@code Connection} creations.<br/>
      * <br/>
      * Note that method will be called only if the {@code database.password}
      * property of {@code aceql-server.properties} is undefined or is set to void
