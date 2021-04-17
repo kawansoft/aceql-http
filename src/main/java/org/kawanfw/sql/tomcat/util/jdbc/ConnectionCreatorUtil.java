@@ -22,7 +22,7 @@
  * Any modifications to this file must keep this entire header
  * intact.
  */
-package org.kawanfw.sql.tomcat.jdbc.passwords;
+package org.kawanfw.sql.tomcat.util.jdbc;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,12 +46,12 @@ public class ConnectionCreatorUtil {
      * @param properties
      * @return the list of triplets (driverClassName, url, username)
      */
-    public static List<DriverInstanceInfo> createInstances(Properties properties) {
+    public static List<JdbcInstanceInfo> createInstances(Properties properties) {
 	if (properties == null) {
 	    throw new IllegalArgumentException("properties is null");
 	}
 
-	List<DriverInstanceInfo> instances = new ArrayList<>();
+	List<JdbcInstanceInfo> instances = new ArrayList<>();
 
 	Set<String> databases = TomcatStarterUtil.getDatabaseNames(properties);
 	for (String database : databases) {
@@ -60,8 +60,8 @@ public class ConnectionCreatorUtil {
 	    String username = properties.getProperty(database + "." + "username");
 
 	    ConnectionCreatorUtil.checkParameters(database, driverClassName, url, username);
-	    DriverInstanceInfo driverInstanceInfo = new DriverInstanceInfo(driverClassName, url, username);
-	    instances.add(driverInstanceInfo);
+	    JdbcInstanceInfo jdbcInstanceInfo = new JdbcInstanceInfo(driverClassName, url, username);
+	    instances.add(jdbcInstanceInfo);
 	}
 
 	return instances;

@@ -1,6 +1,3 @@
-package org.kawanfw.sql.tomcat.jdbc.passwords;
-
-import java.util.Objects;
 /*
  * This file is part of AceQL HTTP.
  * AceQL HTTP: SQL Over HTTP                                     
@@ -25,13 +22,18 @@ import java.util.Objects;
  * Any modifications to this file must keep this entire header
  * intact.
  */
-public class DriverInstanceInfo {
+
+package org.kawanfw.sql.tomcat.util.jdbc;
+
+import java.util.Objects;
+
+public class JdbcInstanceInfo {
 
     private String driverClassName;
     private String url;
     private String username;
     
-    public DriverInstanceInfo(String driverClassName, String url, String username) {
+    public JdbcInstanceInfo(String driverClassName, String url, String username) {
 	this.driverClassName = Objects.requireNonNull(driverClassName, "driverClassName cannot be null!");
 	this.url = Objects.requireNonNull(url, "url cannot be null!");
 	this.username = Objects.requireNonNull(username, "username cannot be null!");
@@ -51,7 +53,7 @@ public class DriverInstanceInfo {
 
     @Override
     public String toString() {
-	return "DriverInstanceInfo [driverClassName=" + driverClassName + ", url=" + url + ", username=" + username + "]";
+	return "JdbcInstanceInfo [driverClassName=" + driverClassName + ", url=" + url + ", username=" + username + "]";
     }
    
 }

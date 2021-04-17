@@ -22,7 +22,7 @@
  * Any modifications to this file must keep this entire header
  * intact.
  */
-package org.kawanfw.sql.tomcat.jdbc.passwords;
+package org.kawanfw.sql.tomcat.util.jdbc;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
