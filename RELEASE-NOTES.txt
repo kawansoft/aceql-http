@@ -32,6 +32,7 @@ What's New:
   securely and outside of the aceql-server.properties clear text file.
 - The Windows user interface design uses now a more modern Look and Feel.
 - The Windows user interface supports now the dark mode.
+- Tomcat base libraries have been upgraded to 8.5.65.
 
 Bugs fixed: 
 - DefaultPoolsInfo debug mode was true per default. This has been fixed.
