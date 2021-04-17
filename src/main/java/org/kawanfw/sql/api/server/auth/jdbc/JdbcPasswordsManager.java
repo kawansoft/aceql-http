@@ -1,6 +1,8 @@
 
 package org.kawanfw.sql.api.server.auth.jdbc;
 
+import org.kawanfw.sql.api.server.DatabaseConfigurator;
+
 /**
  * Allows to provide JDBC passwords for a database, instead of
  * {@code database.password} property values in the
@@ -9,7 +11,10 @@ package org.kawanfw.sql.api.server.auth.jdbc;
  * There is no default class provided by AceQL that implements this interface:
  * any default implementation would just obfuscate the JDBC passwords and this
  * would create a security vulnerability.
- * 
+ * <br/>
+ * <br/>Note that this {@code JdbcPasswordsManager} mechanism does not apply for
+ * Connections created though {@link DatabaseConfigurator#getConnection(String)} 
+ * calls.
  * @author Nicolas de Pomereu
  * @since 7.0
  */
