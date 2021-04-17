@@ -451,7 +451,7 @@ public class ServerSqlManagerInit {
      * @param config
      * @throws IOException
      */
-    private void createDataSources(ServletConfig config) throws IOException {
+    private void createDataSources(ServletConfig config) throws IOException, Exception {
 	String propertiesFileStr = config.getInitParameter("properties");
 
 	if (propertiesFileStr == null || propertiesFileStr.isEmpty()) {

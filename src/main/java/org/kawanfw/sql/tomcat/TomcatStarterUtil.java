@@ -52,6 +52,7 @@ import org.kawanfw.sql.api.server.DatabaseConfigurationException;
 import org.kawanfw.sql.servlet.ServerSqlManager;
 import org.kawanfw.sql.servlet.connection.RollbackUtil;
 import org.kawanfw.sql.tomcat.util.LinkedProperties;
+import org.kawanfw.sql.tomcat.util.jdbc.JdbcPasswordsManagerLoader;
 import org.kawanfw.sql.util.SqlTag;
 
 /**
@@ -81,8 +82,10 @@ public class TomcatStarterUtil {
      *
      * @param properties properties extracted from the properties file
      * @throws DatabaseConfigurationException
+     * @throws SQLException 
+     * @throws IOException 
      */
-    public static void createAndStoreDataSources(Properties properties) throws DatabaseConfigurationException {
+    public static void createAndStoreDataSources(Properties properties) throws DatabaseConfigurationException, IOException, SQLException {
 
 	if (properties == null) {
 	    throw new IllegalArgumentException("properties is null");
@@ -216,9 +219,11 @@ public class TomcatStarterUtil {
      * @param properties properties extracted from the properties file
      * @param database   the database name for which to set the properties
      * @throws DatabaseConfigurationException
+     * @throws SQLException 
+     * @throws IOException 
      */
     public static void createAndStoreDataSource(Properties properties, String database)
-	    throws DatabaseConfigurationException {
+	    throws DatabaseConfigurationException, IOException, SQLException {
 	Objects.requireNonNull(properties, "properties cannot be null!");
 	Objects.requireNonNull(database, "database cannot be null!");
 
@@ -300,7 +305,7 @@ public class TomcatStarterUtil {
      * @throws DatabaseConfigurationException
      */
     private static void checkParameters(Properties properties, String database, String driverClassName, String url,
-	    String username) throws DatabaseConfigurationException {
+	    String username) throws DatabaseConfigurationException, IOException, SQLException {
 	if ((url == null) || url.isEmpty()) {
 	    throw new DatabaseConfigurationException(
 		    "the url property is not set in properties file for driverClassName " + driverClassName + ". "
@@ -314,6 +319,15 @@ public class TomcatStarterUtil {
 	}
 
 	String password = properties.getProperty(database + "." + "password");
+	
+	// Maybe password is set using an JdbcPasswordManagers implementation
+	if ((password == null) || password.isEmpty()) {
+	    char [] passwordChars = JdbcPasswordsManagerLoader.getPasswordUsingJdbcPasswordManagers(database, properties);
+	    if (passwordChars != null) {
+		password = new String(passwordChars);
+	    }
+	}
+	
 	if ((password == null) || password.isEmpty()) {
 	    throw new DatabaseConfigurationException(
 		    "the password property is not set in properties file for driverClassName " + driverClassName + ". "
@@ -385,8 +399,7 @@ public class TomcatStarterUtil {
 	if (requestHeadersAuthenticatorClassName != null && !requestHeadersAuthenticatorClassName.isEmpty()) {
 	    ServletParametersStore.setRequestHeadersAuthenticatorClassName(requestHeadersAuthenticatorClassName);
 	}
-
-
+	
 	for (String database : databases) {
 	    // Set the configurator to use for this database
 	    String databaseConfiguratorClassName = TomcatStarterUtil.trimSafe(

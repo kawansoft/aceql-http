@@ -60,6 +60,7 @@ public class ServletParametersStore {
     private static Set<String> userServlets = new HashSet<>();
 
     private static Map<String, List<String>> sqlFirewallClassNamesMap = new ConcurrentHashMap<>();
+    
 
     /**
      * no instantiation
@@ -272,8 +273,5 @@ public class ServletParametersStore {
     public static void setRequestHeadersAuthenticatorClassName(String requestHeadersAuthenticatorClassName) {
         ServletParametersStore.requestHeadersAuthenticatorClassName = requestHeadersAuthenticatorClassName;
     }
-
-
-
 
 }

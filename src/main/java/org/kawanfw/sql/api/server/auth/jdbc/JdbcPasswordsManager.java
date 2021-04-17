@@ -1,6 +1,9 @@
 
 package org.kawanfw.sql.api.server.auth.jdbc;
 
+import java.io.IOException;
+import java.sql.SQLException;
+
 import org.kawanfw.sql.api.server.DatabaseConfigurator;
 
 /**
@@ -30,8 +33,9 @@ public interface JdbcPasswordsManager {
      * 
      * @param database the database for which to get the JDBC password
      * @return the JDBC password of the passed {@code database} parameter
-     * @throws Exception if any Exception occurs
+     * @throws IOException  if an IOException occurs
+     * @throws SQLException if a SQLException occurs
      */
-    public char[] getPassword(String database) throws Exception;
+    public char[] getPassword(String database) throws IOException, SQLException;
 
 }

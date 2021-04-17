@@ -32,6 +32,7 @@ import java.net.ConnectException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.sql.SQLException;
 import java.util.Properties;
 
 import org.apache.catalina.Context;
@@ -104,8 +105,9 @@ public class TomcatStarter {
      * @throws LifecycleException
      * @throws ConnectException
      * @throws DatabaseConfigurationException
+     * @throws SQLException 
      */
-    public void startTomcat() throws IOException, ConnectException, DatabaseConfigurationException, LifecycleException {
+    public void startTomcat() throws IOException, ConnectException, DatabaseConfigurationException, LifecycleException, SQLException {
 
 	Tomcat tomcat = new Tomcat();
 	try {
@@ -123,7 +125,7 @@ public class TomcatStarter {
     }
 
     private void startTomcat(Tomcat tomcat)
-	    throws IOException, ConnectException, LifecycleException, MalformedURLException {
+	    throws IOException, ConnectException, LifecycleException, MalformedURLException, DatabaseConfigurationException, SQLException {
 	System.out.println(SqlTag.SQL_PRODUCT_START + " Starting " + Version.PRODUCT.NAME + " Web Server...");
 	System.out.println(SqlTag.SQL_PRODUCT_START + " " + Version.getServerVersion());
 	System.out.println(TomcatStarterUtil.getJavaInfo());

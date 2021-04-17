@@ -24,12 +24,13 @@ AceQL HTTP is licensed through the GNU Lesser General Public License
 (LGPL v2.1).
 
 
-AceQL HTTP Version 7.0 - 15-Apr-2020
+AceQL HTTP Version 7.0 - 17-Apr-2020
 ------------------------------------
 
 What's New:
-- It is now possible to ask for JDBC passwords at server startup.
-- The Windows user interface has been renewed.
+- The new JdbcPasswordsManager interface allows to define JDBC passwords
+  securely and outside of the aceql-server.properties clear text file.
+- The Windows user interface design uses now a more modern Look and Feel.
 - The Windows user interface supports now the dark mode.
 
 Bugs fixed: 
