@@ -29,6 +29,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.DatagramSocket;
+import java.net.PasswordAuthentication;
 import java.net.ServerSocket;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -49,7 +50,7 @@ import org.kawanfw.sql.api.server.DatabaseConfigurationException;
 import org.kawanfw.sql.servlet.ServerSqlManager;
 import org.kawanfw.sql.servlet.connection.RollbackUtil;
 import org.kawanfw.sql.tomcat.util.LinkedProperties;
-import org.kawanfw.sql.tomcat.util.jdbc.JdbcPasswordsManagerLoader;
+import org.kawanfw.sql.tomcat.util.jdbc.JdbcCredentialsManagerLoader;
 import org.kawanfw.sql.util.SqlTag;
 
 /**
@@ -224,9 +225,11 @@ public class TomcatStarterUtil {
 	
 	PoolProperties poolProperties = createPoolProperties(properties, database);
 	
-	char[] passwordChars = JdbcPasswordsManagerLoader.getPasswordUsingJdbcPasswordManagers(database, properties);
-	if (passwordChars != null && (poolProperties.getPassword() == null || poolProperties.getPassword().isEmpty())) {
-	    poolProperties.setPassword(new String(passwordChars));
+	PasswordAuthentication passwordAuthentication = JdbcCredentialsManagerLoader.getPasswordAuthentication(database, properties);
+	
+	if (passwordAuthentication != null && poolProperties.getUsername() == null && poolProperties.getPassword() == null ) {
+	    poolProperties.setUsername(passwordAuthentication.getUserName());
+	    poolProperties.setPassword(new String(passwordAuthentication.getPassword()));
 	}
 	
 	DataSource dataSource = new DataSource();
@@ -299,7 +302,9 @@ public class TomcatStarterUtil {
 			    + SqlTag.PLEASE_CORRECT);
 	}
 
-	if ((username == null) || username.isEmpty()) {
+	PasswordAuthentication passwordAuthentication = JdbcCredentialsManagerLoader.getPasswordAuthentication(database, properties);
+		
+	if ((username == null || username.isEmpty()) && passwordAuthentication == null) {
 	    throw new DatabaseConfigurationException(
 		    "the username property is not set in properties file for driverClassName " + driverClassName + ". "
 			    + SqlTag.PLEASE_CORRECT);
@@ -308,14 +313,10 @@ public class TomcatStarterUtil {
 	String password = properties.getProperty(database + "." + "password");
 	
 	// Maybe password is set using an JdbcPasswordManagers implementation
-	if ((password == null) || password.isEmpty()) {
-	    char[] passwordChars = JdbcPasswordsManagerLoader.getPasswordUsingJdbcPasswordManagers(database,
-		    properties);
-	    if (passwordChars == null) {
+	if ((password == null || password.isEmpty()) && passwordAuthentication == null) {
 		throw new DatabaseConfigurationException(
 			"the password property is not set in properties file for driverClassName " + driverClassName
 				+ ". " + SqlTag.PLEASE_CORRECT);
-	    }
 	}
 
 	System.out.println(
