@@ -24,13 +24,13 @@ AceQL HTTP is licensed through the GNU Lesser General Public License
 (LGPL v2.1).
 
 
-AceQL HTTP Version 7.0 - 17-Apr-2021
+AceQL HTTP Version 7.0 - 18-Apr-2021
 ------------------------------------
 
 What's New:
 - The new JdbcPasswordsManager interface allows defining JDBC passwords
   securely and outside of the aceql-server.properties clear text file.
-- Tomcat embedded version has been updated from 8.5 to 9.0 (9.0.5).   
+- Tomcat embedded version has been updated from 8.5 to 9.0 (9.0.45).   
 - The Windows user interface design uses now a more modern Look and Feel.
 - The Windows user interface supports now the dark mode.
 
