@@ -24,7 +24,7 @@ AceQL HTTP is licensed through the GNU Lesser General Public License
 (LGPL v2.1).
 
 
-AceQL HTTP Version 7.0 - 17-Apr-2020
+AceQL HTTP Version 7.0 - 17-Apr-2021
 ------------------------------------
 
 What's New:
@@ -38,7 +38,7 @@ Bugs fixed:
 - DefaultPoolsInfo debug mode was true per default. This has been fixed.
 
 
-AceQL HTTP Version 6.4 - 16-Feb-2020
+AceQL HTTP Version 6.4 - 16-Feb-2021
 ------------------------------------
 
 What's New:
