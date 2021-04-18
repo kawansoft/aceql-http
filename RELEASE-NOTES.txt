@@ -12,8 +12,8 @@ access to remote SQL databases over HTTP from any device that supports HTTP.
 AceQL HTTP is provided with three client SDKs:
 - The AceQL C# Client SDK allows to wrap the HTTP APIs using Microsoft SQL 
   Server like calls in their code, just like they would for a local database.
-- The AceQL Java Client SDK allows to wrap the HTTP APIs using JDBC calls 
-  in their code, just like they would for a local database.
+- The AceQL Client JDBC Driver allows to wrap the HTTP APIs using Java and  
+  JDBC calls in their code, just like they would for a local database.
 - The AceQL Python Client SDK allows SQL calls to be encoded with standard 
   unmodified DB-API 2.0 syntax.
 
@@ -30,9 +30,9 @@ AceQL HTTP Version 7.0 - 17-Apr-2020
 What's New:
 - The new JdbcPasswordsManager interface allows defining JDBC passwords
   securely and outside of the aceql-server.properties clear text file.
+- Tomcat embedded version has been updated from 8.5 to 9.0 (9.0.5).   
 - The Windows user interface design uses now a more modern Look and Feel.
 - The Windows user interface supports now the dark mode.
-- Tomcat embedded version has been updated from 8.5 to 9.0 (9.0.5). 
 
 Bugs fixed: 
 - DefaultPoolsInfo debug mode was true per default. This has been fixed.
