@@ -351,7 +351,8 @@ public class TomcatStarter {
 
 	String url = scheme + "://" + host + ":" + port + serverSqlManagerUrlPattern;
 
-	String loadAceQLManagerServletOnStartup =  properties.getProperty("loadAceQLManagerServletOnStartup");
+	String loadAceQLManagerServletOnStartup =  properties.getProperty("loadAceQLManagerServletOnStartup", "true");
+		
 	if (loadAceQLManagerServletOnStartup == null || loadAceQLManagerServletOnStartup.isEmpty() 
 		|| ! Boolean.parseBoolean(loadAceQLManagerServletOnStartup) ) {
 	    System.out.println(SqlTag.SQL_PRODUCT_START + " URL for client side: " + url);
