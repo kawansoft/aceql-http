@@ -27,9 +27,8 @@ public interface JdbcPasswordsManager {
      * Returns for the passed {@code database} parameter the JBDC password to use
      * for {@code Connection} creations.<br/>
      * <br/>
-     * Note that method will be called only if the {@code database.password}
-     * property of {@code aceql-server.properties} is undefined or is set to void
-     * (nothing after the =).
+     * Note that the method will be called only if the {@code database.password}
+     * property of {@code aceql-server.properties} is undefined.
      * 
      * @param database the database for which to get the JDBC password
      * @return the JDBC password of the passed {@code database} parameter
