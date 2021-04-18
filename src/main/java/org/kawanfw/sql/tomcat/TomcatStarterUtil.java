@@ -28,7 +28,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Constructor;
 import java.net.DatagramSocket;
 import java.net.ServerSocket;
 import java.sql.Connection;
@@ -39,8 +38,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
-
-import javax.servlet.Servlet;
 
 import org.apache.catalina.Context;
 import org.apache.catalina.Wrapper;
@@ -132,29 +129,13 @@ public class TomcatStarterUtil {
 	    }
 
 	    servletUrl = servletUrl.trim();
-
-	    Class<?> c = null;
-	    Servlet servletInstance = null;
-
-	    try {
-		c = Class.forName(servletClassName);
-
-		// servletInstance = (Servlet) c.newInstance();
-		Constructor<?> constructor = c.getConstructor();
-		servletInstance = (Servlet) constructor.newInstance();
-
-	    } catch (Exception e) {
-		throw new IllegalArgumentException("Exception when loading " + servletClassName + " (servlet " + servlet
-			+ "): " + e.toString() + ". " + SqlTag.PLEASE_CORRECT, e);
-	    }
-
+	    
+	    @SuppressWarnings("unused")
+	    Wrapper wrapper = Tomcat.addServlet(rootCtx, servlet, servletClassName);
+	    rootCtx.addServletMappingDecoded(servletUrl, servlet);
+	    
 	    System.out.println(SqlTag.SQL_PRODUCT_START + "  -> Servlet " + servlet + " [url-pattern: " + servletUrl
 		    + "] successfully loaded.");
-
-	    @SuppressWarnings("unused")
-	    Wrapper wrapper = Tomcat.addServlet(rootCtx, servlet, servletInstance);
-
-	    rootCtx.addServletMappingDecoded(servletUrl, servlet);
 
 	}
 
