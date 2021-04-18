@@ -28,11 +28,11 @@ AceQL HTTP Version 7.0 - 17-Apr-2020
 ------------------------------------
 
 What's New:
-- The new JdbcPasswordsManager interface allows to define JDBC passwords
+- The new JdbcPasswordsManager interface allows defining JDBC passwords
   securely and outside of the aceql-server.properties clear text file.
 - The Windows user interface design uses now a more modern Look and Feel.
 - The Windows user interface supports now the dark mode.
-- Tomcat base libraries have been upgraded to 8.5.65.
+- Tomcat embedded version has been updated from 8.5 to 9.0 (9.0.5). 
 
 Bugs fixed: 
 - DefaultPoolsInfo debug mode was true per default. This has been fixed.
