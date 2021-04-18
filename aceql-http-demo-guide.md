@@ -220,7 +220,7 @@ The console will display the properties used, test that the Connection is establ
 
 ```bash
 [ACEQL HTTP START] Starting AceQL HTTP Web Server...
-[ACEQL HTTP START] AceQL HTTP Community v7.0 - 16-Feb-2021
+[ACEQL HTTP START] AceQL HTTP Community v7.0 - 18-Apr-2021
 [ACEQL HTTP START] Using properties file: 
 [ACEQL HTTP START]  -> /home/mike/aceql-http/conf/aceql-server.properties
 [ACEQL HTTP START] Setting System Properties:
@@ -529,7 +529,7 @@ $ curl \
 
 On the server side, the authentication info is purged and the JDBC connection is released in the pool. (A server thread regularly releases phantom connections that were not closed from the client side.)
 
-From now, you can read the [API User Guide](https://www.aceql.com/DocDownload?doc=https://github.com/kawansoft/aceql-http/blob/master/aceql-http-7.0-user-guide-api.md) to learn how to:
+From now, you can read the [API User Guide](https://www.aceql.com/DocDownload?doc=https://github.com/kawansoft/aceql-http/blob/master/aceql-http-user-guide-api.md) to learn how to:
 
 - Query or modify the `Connection` properties.
 - Create SQL transactions.

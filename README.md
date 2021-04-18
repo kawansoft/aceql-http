@@ -146,14 +146,14 @@ AceQL HTTP is authorized through an Open Source license: [AceQL Open Source Lice
 
 The execution of each AceQL HTTP API statement is conditioned by optional rules, defined in properties files and built-in or programmed configuration classes.
 
-The AceQL Web Server embeds its own [Tomcat 8.5](http://tomcat.apache.org/tomcat-8.5-doc/) servlet container in order to run AceQL without any Java EE servlet container.
+The AceQL Web Server embeds its own [Tomcat 9.0](http://tomcat.apache.org/tomcat-9.0-doc/) servlet container in order to run AceQL without any Java EE servlet container.
 
 Note that AceQL can run inside any Java EE servlet container (see [Running AceQL HTTP in a Java EE servlet container)](#running-aceql-http-in-a-java-ee-servlet-container). 
 
-**No Tomcat 8.5 expertise is required in order to configure and use the AceQL Web Server:**
+**No Tomcat 9.0 expertise is required in order to configure and use the AceQL Web Server:**
 
-- All Tomcat configuration values are optional: AceQL uses Tomcat 8.5 default values if no user configuration is done.
-- You may only be required to read short portions of the Tomcat 8.5 user documentation for using SSL & Certificates.
+- All Tomcat configuration values are optional: AceQL uses Tomcat 9.0 default values if no user configuration is done.
+- You may only be required to read short portions of the Tomcat 9.0 user documentation for using SSL & Certificates.
 
 The AceQL Web Server consists of one Java jar. It is started by calling a Java class on the command line. All configuration elements are defined in a Java `.properties` file, named **aceql-server.properties** file in this document.
 
@@ -253,7 +253,7 @@ Call the `aceql-server` script to display the AceQL version:
 It will display a line with all version info, like:
 
 ```
-AceQL HTTP Community v7.0 - 16-Feb-2021
+AceQL HTTP Community v7.0 - 18-Apr-2021
 ```
 
 
@@ -300,7 +300,7 @@ The file is organized in Sections.  Only the first Section must be configured in
 This section allows you to define: 
 
 1. The names of the databases to use.
-2. The JDBC parameters used to build the embedded [The Tomcat 8.5 JDBC Connection Pool](http://tomcat.apache.org/tomcat-8.5-doc/jdbc-pool.html) for each database. 
+2. The JDBC parameters used to build the embedded [The Tomcat 9.0 JDBC Connection Pool](http://tomcat.apache.org/tomcat-9.0-doc/jdbc-pool.html) for each database. 
 
 
 The databases are defined with the databases property. If there are more than one database, separate each name with a comma:
@@ -339,7 +339,7 @@ my_database2.username= user2
 my_database2.password= password2
 ```
 
-You may add other properties supported by Tomcat JDBC Connection Pool, as defined in [Common Attributes](http://tomcat.apache.org/tomcat-8.5-doc/jdbc-pool.html#Common_Attributes)  and in [Enhanced Attributes](http://tomcat.apache.org/tomcat-8.5-doc/jdbc-pool.html#Tomcat_JDBC_Enhanced_Attributes).
+You may add other properties supported by Tomcat JDBC Connection Pool, as defined in [Common Attributes](http://tomcat.apache.org/tomcat-9.0-doc/jdbc-pool.html#Common_Attributes)  and in [Enhanced Attributes](http://tomcat.apache.org/tomcat-9.0-doc/jdbc-pool.html#Tomcat_JDBC_Enhanced_Attributes).
 
 Note: It is not mandatory to use Tomcat JDBC Connection Pool. If you want to use another preferred Connection Pool system, just comment the `driverClassName` property. Implementing another Connection Pool system is described in [Advanced Connection Pool Management](#advanced-connection-pool-management).
 
@@ -458,7 +458,7 @@ Here is an example of a documented CSV File: [sampledb_rules_manager.csv](http:/
 
 ### SSL Configuration Section
 
-This section is optional. It allows you to configure the [Tomcat  HTTP Connector](http://tomcat.apache.org/tomcat-8.5-doc/config/http.html) in order to use SSL when calling AceQL Manager Servlet from the client side. 
+This section is optional. It allows you to configure the [Tomcat  HTTP Connector](http://tomcat.apache.org/tomcat-9.0-doc/config/http.html) in order to use SSL when calling AceQL Manager Servlet from the client side. 
 
 It also allows you to define the SSL Certificate to be used.
 
@@ -468,7 +468,7 @@ Each property must be prefixed by `sslConnector`.
 
 *Note: If `SSLEnabled` is set to `true`, AceQL HTTP Web server will accept only SSL connections, i.e. a non SSL call from client side with `http` scheme will fail.*
 
-To define SSL HTTP Connector attribute values, refer to the Tomcat 8.5 [SSL Support](http://tomcat.apache.org/tomcat-8.5-doc/config/http.html#SSL_Support) documentation. 
+To define SSL HTTP Connector attribute values, refer to the Tomcat 9.0 [SSL Support](http://tomcat.apache.org/tomcat-9.0-doc/config/http.html#SSL_Support) documentation. 
 
 The following properties are mandatory and must be defined:
 
@@ -481,7 +481,7 @@ The following properties are mandatory and must be defined:
 
 To create an SSL Certificate, refer to:
 
-- Tomcat 8.5 [Prepare the Certificate Keystore.](http://tomcat.apache.org/tomcat-8.5-doc/ssl-howto.html#Prepare_the_Certificate_Keystore)
+- Tomcat 9.0 [Prepare the Certificate Keystore.](http://tomcat.apache.org/tomcat-9.0-doc/ssl-howto.html#Prepare_the_Certificate_Keystore)
 - Oracle [JDK Security Tools](http://docs.oracle.com/javase/7/docs/technotes/tools/#security).
 
 ### Sample aceql-server.properties file
@@ -658,13 +658,13 @@ Your concrete implementations is passed to the AceQL as properties of the **User
 
 ## Tomcat HTTP Connector Configuration 
 
-[Tomcat  HTTP Connectors](http://tomcat.apache.org/tomcat-8.5-doc/config/http.html) allow fine tuning of Tomcat 8.5.
+[Tomcat  HTTP Connectors](http://tomcat.apache.org/tomcat-9.0-doc/config/http.html) allow fine tuning of Tomcat 9.0.
 
 It is possible to define properties for a unique HTTP Connector that will either accept HTTP or secured HTTPS calls. The properties must be defined in the **HTTP Connector Attributes Section.**
 
 This section is optional. If no value is defined, default Tomcat values will be used for the default HTTP Connector. 
 
-You may define all [attributes](http://tomcat.apache.org/tomcat-8.5-doc/config/http.html#Attributes) defined in the [Tomcat  HTTP Connector](http://tomcat.apache.org/tomcat-8.5-doc/config/http.html) documentation, except SSL attributes that must be defined in the **SSL Configuration Section**.
+You may define all [attributes](http://tomcat.apache.org/tomcat-9.0-doc/config/http.html#Attributes) defined in the [Tomcat  HTTP Connector](http://tomcat.apache.org/tomcat-9.0-doc/config/http.html) documentation, except SSL attributes that must be defined in the **SSL Configuration Section**.
 
 Each property must be prefixed by `connector`.
 
@@ -790,7 +790,7 @@ The Servlets Section in `aceql-server.properties` allow to define you own servle
 - modify a pool size,
 - etc.
 
-The API  [DataSourceStore](https://www.aceql.com/rest/soft/7.0/javadoc/org/kawanfw/sql/api/server/DataSourceStore.html) class allows to retrieve for each database the Tomcat [org.apache.tomcat.jdbc.pool.DataSource](https://tomcat.apache.org/tomcat-8.5-doc/api/org/apache/tomcat/jdbc/pool/DataSource.html) corresponding to the Tomcat JDBC Pool created at AceQL Web server startup. 
+The API  [DataSourceStore](https://www.aceql.com/rest/soft/7.0/javadoc/org/kawanfw/sql/api/server/DataSourceStore.html) class allows to retrieve for each database the Tomcat [org.apache.tomcat.jdbc.pool.DataSource](https://tomcat.apache.org/tomcat-9.0-doc/api/org/apache/tomcat/jdbc/pool/DataSource.html) corresponding to the Tomcat JDBC Pool created at AceQL Web server startup. 
 
 ## Running the AceQL Web Server
 
@@ -816,7 +816,7 @@ This option may be preferred by users who already have a Java EE servlet contain
 
 Install the files of installation directory `webapp/WEB-INF/lib` in the lib directory of your webapp.
 
-If your JavaEE servlet container is *not* Tomcat >=7, it may not contain the Tomcat JDBC Pool: add `webapp/WEB-INF/lib-tomcat/tomcat-jdbc-8.5.xx.jar` jar in the /lib directory of your webapp.
+If your JavaEE servlet container is *not* Tomcat >=7, it may not contain the Tomcat JDBC Pool: add `webapp/WEB-INF/lib-tomcat/tomcat-jdbc-9.0.xx.jar` jar in the /lib directory of your webapp.
 
 If you have coded your own Configurators, deploy the classes in the `/classes` directory of your webapp.
 
@@ -877,7 +877,7 @@ It will display a JSON string and should display a status of `"OK"` and the curr
 ```json
 {
     "status": "OK",
-    "version": "AceQL HTTP v7.0 - 05-Dec-2020"
+    "version": "AceQL HTTP v7.0 - 18-Apr-2020"
 }         
 ```
 
@@ -887,7 +887,7 @@ If not, the configuration errors are detailed for correction.
 
 ## State management / Stateful Mode
 
- AceQL runs in "Stateful Mode":  when creating a session on the client side with `/login` API, the AceQL servlet that is contacted extracts a JDBC `Connection` from the connection pool (with `DatabaseConfigurator.getConnection(`)) and stores it in memory in a static Java `Map`. 
+AceQL runs in "Stateful Mode":  when creating a session on the client side with `/login` API, the AceQL servlet that is contacted extracts a JDBC `Connection` from the connection pool (with `DatabaseConfigurator.getConnection(`)) and stores it in memory in a static Java `Map`. 
 
 The server's JDBC Connection is persistent, attributed to the client user, and will not be used by other users: the same `Connection` will be used for each JDBC call until the end of the session. This allows you SQL transactions to be created.
 
