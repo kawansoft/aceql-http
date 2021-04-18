@@ -80,8 +80,7 @@ public class JwtSessionConfigurator implements SessionConfigurator {
      */
     /**
      * Generates a self contained JWT that stores the username and the database.
-     *
-     * @throws IOException
+     * @throws IOException if any I/O error occurs
      */
     @Override
     public String generateSessionId(String username, String database) throws IOException {
@@ -186,7 +185,7 @@ public class JwtSessionConfigurator implements SessionConfigurator {
      * Also verifies that the token is not expired, i.e. its lifetime is shorter
      * than {@code getSessionTimelife()}
      *
-     * @throws IOException
+     * @throws IOException if an IOException occurs
      */
     @Override
     public boolean verifySessionId(String sessionId) throws IOException {
@@ -230,7 +229,7 @@ public class JwtSessionConfigurator implements SessionConfigurator {
      * Returns same as
      * {@link DefaultSessionConfigurator#getSessionTimelifeMinutes()} value.
      *
-     * @throws IOException
+     * @throws IOException if an IOException occurs
      */
     @Override
     public int getSessionTimelifeMinutes() throws IOException {

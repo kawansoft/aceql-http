@@ -146,7 +146,7 @@ public class DefaultSessionConfigurator implements SessionConfigurator {
      * hours).</li>
      * </ul>
      *
-     * @throws IOException
+     * @throws IOException if any I/O error occurs
      */
     @Override
     public boolean verifySessionId(String sessionId) throws IOException {
@@ -176,7 +176,7 @@ public class DefaultSessionConfigurator implements SessionConfigurator {
     /**
      * Returns the value of {@code session.timelifeMinutes} property of {@code aceql-server.properties}.
      * Defaults to 0. If 0, session is infinite.
-     * @throws IOException
+     * @throws IOException if any I/O error occurs
      */
     @Override
     public int getSessionTimelifeMinutes() throws IOException {
