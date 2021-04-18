@@ -62,7 +62,7 @@ import org.kawanfw.sql.util.FrameworkDebug;
  * {@link DataSourceStore#getDataSources()} static method. <br>
  * <br>
  * See Tomcat JDBC Pool <a href=
- * "https://tomcat.apache.org/tomcat-8.5-doc/api/org/apache/tomcat/jdbc/pool/DataSourceProxy.html"
+ * "https://tomcat.apache.org/tomcat-9.0-doc/api/org/apache/tomcat/jdbc/pool/DataSourceProxy.html"
  * >DataSourceProxy</a> for the meaning of the displayed values. <br>
  * <br>
  *
@@ -105,7 +105,7 @@ import org.kawanfw.sql.util.FrameworkDebug;
  * @author Nicolas de Pomereu
  * @since 1.0
  * @see <a href=
- *      "https://tomcat.apache.org/tomcat-8.5-doc/api/org/apache/tomcat/jdbc/pool/DataSourceProxy.html">DataSourceProxy</a>
+ *      "https://tomcat.apache.org/tomcat-9.0-doc/api/org/apache/tomcat/jdbc/pool/DataSourceProxy.html">DataSourceProxy</a>
  */
 public class DefaultPoolsInfo extends HttpServlet {
 
@@ -226,7 +226,7 @@ public class DefaultPoolsInfo extends HttpServlet {
 	gen.writeStartObject();
 	gen.write("status", "OK");
 	gen.write("see",
-		"https://tomcat.apache.org/tomcat-8.5-doc/api/org/apache/tomcat/jdbc/pool/DataSourceProxy.html");
+		"https://tomcat.apache.org/tomcat-9.0-doc/api/org/apache/tomcat/jdbc/pool/DataSourceProxy.html");
 
 	gen.writeStartArray("databases");
 

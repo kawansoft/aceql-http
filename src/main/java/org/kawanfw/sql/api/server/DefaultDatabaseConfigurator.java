@@ -72,7 +72,7 @@ public class DefaultDatabaseConfigurator implements DatabaseConfigurator {
 
     /**
      * Returns a {@code Connection} from
-     * <a href="http://tomcat.apache.org/tomcat-8.5-doc/jdbc-pool.html" >Tomcat JDBC
+     * <a href="http://tomcat.apache.org/tomcat-9.0-doc/jdbc-pool.html" >Tomcat JDBC
      * Connection Pool</a>.<br>
      * <br>
      * the {@code Connection} is extracted from the {@code DataSource} created by

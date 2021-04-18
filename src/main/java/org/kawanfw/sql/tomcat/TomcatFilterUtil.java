@@ -52,7 +52,7 @@ public class TomcatFilterUtil {
      */
     public static void addFilterToContext(Context rootCtx) {
 
-	// See https://tomcat.apache.org/tomcat-8.5-doc/config/filter.html for
+	// See https://tomcat.apache.org/tomcat-9.0-doc/config/filter.html for
 	// filters
 
 	/*
