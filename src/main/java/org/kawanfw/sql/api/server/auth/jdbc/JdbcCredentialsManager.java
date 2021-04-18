@@ -34,7 +34,7 @@ public interface JdbcCredentialsManager {
      * undefined.
      * 
      * @param database the database for which to get the JDBC credentials
-     * @return the JDBC credentials of the passed {@code database} parameter
+     * @return the JDBC credentials for the passed {@code database} parameter
      * @throws IOException  if an IOException occurs
      * @throws SQLException if a SQLException occurs
      */
