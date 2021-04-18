@@ -240,8 +240,14 @@ public class TomcatStarterUtil {
 	}
 
 	checkParameters(properties, database, driverClassName, url, username);
-
+	
 	PoolProperties poolProperties = createPoolProperties(properties, database);
+	
+	char[] passwordChars = JdbcPasswordsManagerLoader.getPasswordUsingJdbcPasswordManagers(database, properties);
+	if (passwordChars != null && (poolProperties.getPassword() == null || poolProperties.getPassword().isEmpty())) {
+	    poolProperties.setPassword(new String(passwordChars));
+	}
+	
 	DataSource dataSource = new DataSource();
 	dataSource.setPoolProperties(poolProperties);
 
@@ -322,20 +328,18 @@ public class TomcatStarterUtil {
 	
 	// Maybe password is set using an JdbcPasswordManagers implementation
 	if ((password == null) || password.isEmpty()) {
-	    char [] passwordChars = JdbcPasswordsManagerLoader.getPasswordUsingJdbcPasswordManagers(database, properties);
-	    if (passwordChars != null) {
-		password = new String(passwordChars);
+	    char[] passwordChars = JdbcPasswordsManagerLoader.getPasswordUsingJdbcPasswordManagers(database,
+		    properties);
+	    if (passwordChars == null) {
+		throw new DatabaseConfigurationException(
+			"the password property is not set in properties file for driverClassName " + driverClassName
+				+ ". " + SqlTag.PLEASE_CORRECT);
 	    }
-	}
-	
-	if ((password == null) || password.isEmpty()) {
-	    throw new DatabaseConfigurationException(
-		    "the password property is not set in properties file for driverClassName " + driverClassName + ". "
-			    + SqlTag.PLEASE_CORRECT);
 	}
 
 	System.out.println(
 		SqlTag.SQL_PRODUCT_START + " Setting Tomcat JDBC Pool attributes for " + database + " database:");
+	
     }
 
     /**
