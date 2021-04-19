@@ -23,26 +23,29 @@
  * intact.
  */
 
-package org.kawanfw.sql.api.server.auth.encryption;
+package org.kawanfw.sql.api.server.auth.crypto;
 
 import java.io.IOException;
 import java.sql.SQLException;
 
 /**
  * Interface that defines how to get the password used to encrypt the
- * {@code Properties} of the {@code aceql-server.properties} file.
- * <br>The password must have been previously created with the {@link PropertiesEncryptor} command line {@code jar}.
- * <br><br>
- * Implement the {@code getPassword()} in your own {@code PropertiesPasswordManager} concrete method or
- * use the provided {@link DefaultPropertiesPasswordManager} implementation.
+ * {@code Properties} of the {@code aceql-server.properties} file. <br>
+ * The password must have been previously created with the
+ * {@link PropertiesEncryptor} command line {@code jar}. <br>
+ * <br>
+ * Implement the {@code getPassword()} in your own
+ * {@code PropertiesPasswordManager} concrete method or use the provided
+ * {@link DefaultPropertiesPasswordManager} implementation.
+ * 
  * @author Nicolas de Pomereu
  * @since 7.0
  */
 public interface PropertiesPasswordManager {
 
     /**
-     * Returns the password to use to decrypt the encrypted the {@code Properties} of
-     * the {@code aceql-server.properties} file.
+     * Returns the password to use to decrypt the encrypted the {@code Properties}
+     * of the {@code aceql-server.properties} file.
      * 
      * @return the password to use to decrypt the {@code Properties} of the
      *         {@code aceql-server.properties} file.

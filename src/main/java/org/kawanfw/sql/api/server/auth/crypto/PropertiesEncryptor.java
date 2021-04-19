@@ -22,7 +22,7 @@
  * Any modifications to this file must keep this entire header
  * intact.
  */
-package org.kawanfw.sql.api.server.auth.encryption;
+package org.kawanfw.sql.api.server.auth.crypto;
 
 import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
 import org.jasypt.iv.RandomIvGenerator;
@@ -31,14 +31,17 @@ import org.jasypt.iv.RandomIvGenerator;
  * Command line interface. Allows:
  * <ul>
  * <li>To define a password for encrypting property values.</li>
- * <li>Build the encrypted property values to put back in the {@code aceql-server.properties} file.</li>
+ * <li>Build the encrypted property values to put back in the
+ * {@code aceql-server.properties} file.</li>
  * </ul>
  * In order to run:
  * <ul>
- * <li>Open a command line on  Windows or Linux/Bash.</li>
+ * <li>Open a command line on Windows or Linux/Bash.</li>
  * <li>{@code java -jar <aceql installation dir>/lib-server/properties-encryptor-7.0.jar}.</li>
- * <li>Follow the instructions in order to create the password and to encrypt some property values.</li>
+ * <li>Follow the instructions in order to create the password and to encrypt
+ * some property values.</li>
  * </ul>
+ * 
  * @author Nicolas de Pomereu
  *
  */
@@ -46,6 +49,7 @@ public class PropertiesEncryptor {
 
     /**
      * Calls doIt method.
+     * 
      * @param args no values are passed
      * @throws Exception if any Exception occurs
      */
@@ -54,80 +58,81 @@ public class PropertiesEncryptor {
     }
 
     /**
-     * Create a password to encrypt property values and then encrypts each passed value.
+     * Create a password to encrypt property values and then encrypts each passed
+     * value.
      */
     public static void doIt() {
 	System.out.println();
 	System.out.println("Welcome to AceQL Properties Encryptor!");
 	System.out.println("First step it create a password that will be used to encrypt properties.");
 	System.out.println();
-	
+
 	String password = createPassword();
-	
+
 	if (password == null) {
 	    return;
 	}
-	
+
 	System.out.println();
 	System.out.println("Password created! ");
 	System.out.println("Second step is to encrypt desired property values.");
-        System.out.println("Enter \"quit\" to exit at anytime.");
+	System.out.println("Enter \"quit\" to exit at anytime.");
 	System.out.println();
-	     
+
 	StandardPBEStringEncryptor encryptor = createEncryptor(password);
-        java.io.Console console = System.console();
-       
-	while(true) {
-	     String valueToEncrypt = console.readLine("Value to encrypt: ");
-	     
-	     if (valueToEncrypt == null | valueToEncrypt.isEmpty()) {
-		 continue;
-	     }
-	     
-	     if (valueToEncrypt.equals("quit")) {
-		 break;
-	     }
-	     
-	     String encryptedValue = encryptor.encrypt(valueToEncrypt);
-	     System.out.println("Encrypted value : " + "ENC(" + encryptedValue + ")");
-	     System.out.println();
+	java.io.Console console = System.console();
+
+	while (true) {
+	    String valueToEncrypt = console.readLine("Value to encrypt: ");
+
+	    if (valueToEncrypt == null | valueToEncrypt.isEmpty()) {
+		continue;
+	    }
+
+	    if (valueToEncrypt.equals("quit")) {
+		break;
+	    }
+
+	    String encryptedValue = encryptor.encrypt(valueToEncrypt);
+	    System.out.println("Encrypted value : " + "ENC(" + encryptedValue + ")");
+	    System.out.println();
 	}
     }
 
     private static StandardPBEStringEncryptor createEncryptor(String password) {
-	 StandardPBEStringEncryptor encryptor = new StandardPBEStringEncryptor();
-	 encryptor.setPassword(password); 
-	 encryptor.setAlgorithm("PBEWithHMACSHA512AndAES_256");
-	 encryptor.setIvGenerator(new RandomIvGenerator());
-	 return encryptor;
+	StandardPBEStringEncryptor encryptor = new StandardPBEStringEncryptor();
+	encryptor.setPassword(password);
+	encryptor.setAlgorithm("PBEWithHMACSHA512AndAES_256");
+	encryptor.setIvGenerator(new RandomIvGenerator());
+	return encryptor;
     }
 
     private static String createPassword() {
 
 	java.io.Console console = System.console();
-	
+
 	String password1;
 	String password2;
-	
+
 	while (true) {
-	    password1 = new String(console.readPassword("Enter Password: "));  
-	    
+	    password1 = new String(console.readPassword("Enter Password: "));
+
 	    if (password1 == null || password1.isEmpty()) {
 		continue;
 	    }
-	    
+
 	    if (password1.equals("quit")) {
 		return null;
 	    }
-	    
-	    if (password1.length() <8 ) {
+
+	    if (password1.length() < 8) {
 		System.out.println("Password is too short. Must be 8 characters minimium. Please retry.");
 		System.out.println();
 		continue;
 	    }
-	    
-	    password2 = new String(console.readPassword("Verify Password: "));  
-	    if (password1 == null || password1.isEmpty() ||  password2 ==null || password2.isEmpty()) {
+
+	    password2 = new String(console.readPassword("Verify Password: "));
+	    if (password1 == null || password1.isEmpty() || password2 == null || password2.isEmpty()) {
 		System.out.println("Please enter a value! (or \"quit\" to exit)");
 		continue;
 	    }

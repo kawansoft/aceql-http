@@ -32,7 +32,7 @@ import java.util.Objects;
 import java.util.Properties;
 
 import org.kawanfw.sql.api.server.DatabaseConfigurationException;
-import org.kawanfw.sql.api.server.auth.encryption.PropertiesPasswordManager;
+import org.kawanfw.sql.api.server.auth.crypto.PropertiesPasswordManager;
 
 /**
  * Calls a concrete PropertiesPasswordManagerLoader.getPassword(database) if defined inaceql-server.properties.

@@ -26,7 +26,7 @@
 									
             <manifest>
                 <attribute name="Built-By" value="${user.name}"/>
-                <attribute name="Main-Class" value="org.kawanfw.sql.crypto.PropertiesEncryptor"/>
+                <attribute name="Main-Class" value="org.kawanfw.sql.api.server.auth.crypto.PropertiesEncryptor"/>
             </manifest>
 		</jar>
 
