@@ -135,7 +135,7 @@ public class TomcatStarter {
 	System.out.println(SqlTag.SQL_PRODUCT_START + "  -> " + propertiesFile);
 
 	ServerSqlManager.setAceqlServerProperties(propertiesFile);
-	Properties properties = TomcatStarterUtil.getProperties(propertiesFile);
+	Properties properties = TomcatStarterUtilProperties.getProperties(propertiesFile);
 
 	// System.out.println("TomcatEmbedUtil.available(" + port + "): " +
 	// TomcatEmbedUtil.available(port));

@@ -24,12 +24,8 @@
  */
 package org.kawanfw.sql.tomcat;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.DatagramSocket;
-import java.net.PasswordAuthentication;
 import java.net.ServerSocket;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -49,8 +45,6 @@ import org.apache.tomcat.jdbc.pool.PoolProperties;
 import org.kawanfw.sql.api.server.DatabaseConfigurationException;
 import org.kawanfw.sql.servlet.ServerSqlManager;
 import org.kawanfw.sql.servlet.connection.RollbackUtil;
-import org.kawanfw.sql.tomcat.util.LinkedProperties;
-import org.kawanfw.sql.tomcat.util.jdbc.JdbcCredentialsManagerLoader;
 import org.kawanfw.sql.util.SqlTag;
 
 /**
@@ -80,10 +74,11 @@ public class TomcatStarterUtil {
      *
      * @param properties properties extracted from the properties file
      * @throws DatabaseConfigurationException
-     * @throws SQLException 
-     * @throws IOException 
+     * @throws SQLException
+     * @throws IOException
      */
-    public static void createAndStoreDataSources(Properties properties) throws DatabaseConfigurationException, IOException, SQLException {
+    public static void createAndStoreDataSources(Properties properties)
+	    throws DatabaseConfigurationException, IOException, SQLException {
 
 	if (properties == null) {
 	    throw new IllegalArgumentException("properties is null");
@@ -94,7 +89,6 @@ public class TomcatStarterUtil {
 	for (String database : databases) {
 	    createAndStoreDataSource(properties, database.trim());
 	}
-
     }
 
     public static void addServlets(Properties properties, Context rootCtx) {
@@ -130,11 +124,11 @@ public class TomcatStarterUtil {
 	    }
 
 	    servletUrl = servletUrl.trim();
-	    
+
 	    @SuppressWarnings("unused")
 	    Wrapper wrapper = Tomcat.addServlet(rootCtx, servlet, servletClassName);
 	    rootCtx.addServletMappingDecoded(servletUrl, servlet);
-	    
+
 	    System.out.println(SqlTag.SQL_PRODUCT_START + "  -> Servlet " + servlet + " [url-pattern: " + servletUrl
 		    + "] successfully loaded.");
 
@@ -201,8 +195,8 @@ public class TomcatStarterUtil {
      * @param properties properties extracted from the properties file
      * @param database   the database name for which to set the properties
      * @throws DatabaseConfigurationException
-     * @throws SQLException 
-     * @throws IOException 
+     * @throws SQLException
+     * @throws IOException
      */
     public static void createAndStoreDataSource(Properties properties, String database)
 	    throws DatabaseConfigurationException, IOException, SQLException {
@@ -212,6 +206,7 @@ public class TomcatStarterUtil {
 	String driverClassName = properties.getProperty(database + "." + "driverClassName");
 	String url = properties.getProperty(database + "." + "url");
 	String username = properties.getProperty(database + "." + "username");
+	String password = properties.getProperty(database + "." + "password");
 
 	if (driverClassName == null || driverClassName.isEmpty()) {
 	    System.err.println(SqlTag.SQL_PRODUCT_START + " WARNING: driverClassName"
@@ -221,17 +216,9 @@ public class TomcatStarterUtil {
 	    return;
 	}
 
-	checkParameters(properties, database, driverClassName, url, username);
-	
+	checkParameters(properties, database, driverClassName, url, username, password);
+
 	PoolProperties poolProperties = createPoolProperties(properties, database);
-	
-	PasswordAuthentication passwordAuthentication = JdbcCredentialsManagerLoader.getPasswordAuthentication(database, properties);
-	
-	if (passwordAuthentication != null && poolProperties.getUsername() == null && poolProperties.getPassword() == null ) {
-	    poolProperties.setUsername(passwordAuthentication.getUserName());
-	    poolProperties.setPassword(new String(passwordAuthentication.getPassword()));
-	}
-	
 	DataSource dataSource = new DataSource();
 	dataSource.setPoolProperties(poolProperties);
 
@@ -292,69 +279,33 @@ public class TomcatStarterUtil {
      * @param driverClassName
      * @param url
      * @param username
+     * @param password
      * @throws DatabaseConfigurationException
      */
     private static void checkParameters(Properties properties, String database, String driverClassName, String url,
-	    String username) throws DatabaseConfigurationException, IOException, SQLException {
+	    String username, String password) throws DatabaseConfigurationException, IOException, SQLException {
 	if ((url == null) || url.isEmpty()) {
 	    throw new DatabaseConfigurationException(
 		    "the url property is not set in properties file for driverClassName " + driverClassName + ". "
 			    + SqlTag.PLEASE_CORRECT);
 	}
 
-	PasswordAuthentication passwordAuthentication = JdbcCredentialsManagerLoader.getPasswordAuthentication(database, properties);
-		
-	if ((username == null || username.isEmpty()) && passwordAuthentication == null) {
+	if (username == null || username.isEmpty()) {
 	    throw new DatabaseConfigurationException(
 		    "the username property is not set in properties file for driverClassName " + driverClassName + ". "
 			    + SqlTag.PLEASE_CORRECT);
 	}
 
-	String password = properties.getProperty(database + "." + "password");
-	
 	// Maybe password is set using an JdbcPasswordManagers implementation
-	if ((password == null || password.isEmpty()) && passwordAuthentication == null) {
-		throw new DatabaseConfigurationException(
-			"the password property is not set in properties file for driverClassName " + driverClassName
-				+ ". " + SqlTag.PLEASE_CORRECT);
+	if (password == null || password.isEmpty()) {
+	    throw new DatabaseConfigurationException(
+		    "the password property is not set in properties file for driverClassName " + driverClassName + ". "
+			    + SqlTag.PLEASE_CORRECT);
 	}
 
 	System.out.println(
 		SqlTag.SQL_PRODUCT_START + " Setting Tomcat JDBC Pool attributes for " + database + " database:");
-	
-    }
 
-    /**
-     * Returns the Properties extracted from a file.
-     *
-     * @param file the file containing the properties
-     * @return the Properties extracted from the file
-     *
-     * @throws IOException
-     * @throws DatabaseConfigurationException
-     */
-    public static Properties getProperties(File file) throws IOException, DatabaseConfigurationException {
-
-	if (file == null) {
-	    throw new IllegalArgumentException("file can not be null!");
-	}
-
-	if (!file.exists()) {
-	    throw new DatabaseConfigurationException("properties file not found: " + file);
-	}
-
-	// Get the properties with order of position in file:
-	Set<String> linkedProperties = LinkedProperties.getLinkedPropertiesName(file);
-
-	// Create the ordered properties
-	Properties properties;
-
-	try (InputStream in = new FileInputStream(file);) {
-	    properties = new LinkedProperties(linkedProperties);
-	    properties.load(in);
-	}
-
-	return properties;
     }
 
     /**
@@ -385,7 +336,7 @@ public class TomcatStarterUtil {
 	if (requestHeadersAuthenticatorClassName != null && !requestHeadersAuthenticatorClassName.isEmpty()) {
 	    ServletParametersStore.setRequestHeadersAuthenticatorClassName(requestHeadersAuthenticatorClassName);
 	}
-	
+
 	for (String database : databases) {
 	    // Set the configurator to use for this database
 	    String databaseConfiguratorClassName = TomcatStarterUtil.trimSafe(
@@ -476,10 +427,12 @@ public class TomcatStarterUtil {
 
     /**
      * Returns the Java Info at startup
+     * 
      * @return the Java info
      */
     public static String getJavaInfo() {
-	return SqlTag.SQL_PRODUCT_START + " Java Info: " + SystemUtils.JAVA_VENDOR + " / " + SystemUtils.JAVA_RUNTIME_NAME + " / " + SystemUtils.JAVA_VERSION;
+	return SqlTag.SQL_PRODUCT_START + " Java Info: " + SystemUtils.JAVA_VENDOR + " / "
+		+ SystemUtils.JAVA_RUNTIME_NAME + " / " + SystemUtils.JAVA_VERSION;
     }
 
     static String getAceQLManagerSevletName(Properties properties) {

@@ -44,7 +44,7 @@ import org.kawanfw.sql.api.server.util.NoFormatter;
 import org.kawanfw.sql.api.server.util.UsernameConverter;
 import org.kawanfw.sql.servlet.ServerSqlManager;
 import org.kawanfw.sql.tomcat.TomcatSqlModeStore;
-import org.kawanfw.sql.tomcat.TomcatStarterUtil;
+import org.kawanfw.sql.tomcat.TomcatStarterUtilProperties;
 import org.kawanfw.sql.util.Tag;
 
 /**
@@ -154,7 +154,7 @@ public class DefaultDatabaseConfigurator implements DatabaseConfigurator {
 	int maxRows = 0;
 	if (properties == null) {
 	    File file = ServerSqlManager.getAceqlServerProperties();
-	    properties = TomcatStarterUtil.getProperties(file);
+	    properties = TomcatStarterUtilProperties.getProperties(file);
 	}
 
 	String maxRowsStr = properties.getProperty("defaultDatabaseConfigurator.maxRows");

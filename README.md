@@ -253,7 +253,7 @@ Call the `aceql-server` script to display the AceQL version:
 It will display a line with all version info, like:
 
 ```
-AceQL HTTP Community v7.0 - 18-Apr-2021
+AceQL HTTP Community v7.0 - 19-Apr-2021
 ```
 
 
@@ -877,7 +877,7 @@ It will display a JSON string and should display a status of `"OK"` and the curr
 ```json
 {
     "status": "OK",
-    "version": "AceQL HTTP v7.0 - 18-Apr-2020"
+    "version": "AceQL HTTP v7.0 - 19-Apr-2020"
 }         
 ```
 

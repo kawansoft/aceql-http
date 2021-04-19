@@ -23,64 +23,56 @@
  * intact.
  */
 
-package org.kawanfw.sql.tomcat.util.jdbc;
+package org.kawanfw.sql.tomcat.util;
 
 import java.io.IOException;
 import java.lang.reflect.Constructor;
-import java.net.PasswordAuthentication;
 import java.sql.SQLException;
 import java.util.Objects;
 import java.util.Properties;
 
 import org.kawanfw.sql.api.server.DatabaseConfigurationException;
-import org.kawanfw.sql.api.server.auth.jdbc.JdbcCredentialsManager;
+import org.kawanfw.sql.api.server.auth.encryption.PropertiesPasswordManager;
 
 /**
- * Calls a concrete JdbcCredentialsManager.getPassword(database) if defined inaceql-server.properties.
+ * Calls a concrete PropertiesPasswordManagerLoader.getPassword(database) if defined inaceql-server.properties.
  * @author Nicolas de Pomereu
  *
  */
-public class JdbcCredentialsManagerLoader {
-
+public class PropertiesPasswordManagerLoader {
 
     /**
-     * Gets the password for the passed database from JdbcCredentialsManager, if concrete implementation is defined in properties
-     * @param database
+     * Gets the password from PropertiesPasswordManager, if a concrete implementation is defined in properties
      * @param properties
      * @return
      * @throws IOException
      * @throws SQLException
      */
-    public static PasswordAuthentication getPasswordAuthentication(String database, Properties properties) throws IOException, SQLException {
-	Objects.requireNonNull(database, "database cannot be null!");
+    public static char [] getPassword(Properties properties) throws IOException, SQLException {
 	Objects.requireNonNull(properties, "properties cannot be null!");
 	
-	String jdbcPasswordsManagerClassName = properties.getProperty("jdbcPasswordsManagerClassName");
+	String propertiesPasswordManagerClassName = properties.getProperty("propertiesPasswordManagerClassName");
 	
-	if ((jdbcPasswordsManagerClassName == null) || jdbcPasswordsManagerClassName.isEmpty()) {
+	if (propertiesPasswordManagerClassName == null || propertiesPasswordManagerClassName.isEmpty()) {
 	    // No JdbcPasswordManager implementation ==> return null 
 	    return null;
 	}
 	
-	JdbcCredentialsManager jdbcCredentialsManager = null;
+	PropertiesPasswordManager propertiesPasswordManager = null;
 	
 	// Load it, and get the password
 	try {
-	    Class<?> c = Class.forName(jdbcPasswordsManagerClassName);
+	    Class<?> c = Class.forName(propertiesPasswordManagerClassName);
 	    Constructor<?> constructor = c.getConstructor();
-	    jdbcCredentialsManager = (JdbcCredentialsManager) constructor.newInstance();
+	    propertiesPasswordManager = (PropertiesPasswordManager) constructor.newInstance();
 	} catch (Exception e) {
-	    String initErrrorMesage = "Impossible to load JdbcCredentialsManager concrete class: " + jdbcPasswordsManagerClassName;
+	    String initErrrorMesage = "Impossible to load PropertiesPasswordManager concrete class: " + propertiesPasswordManagerClassName;
 	    e.printStackTrace();
 	    throw new DatabaseConfigurationException(initErrrorMesage);
 	} 
 	
-	PasswordAuthentication passwordAuthentication =  jdbcCredentialsManager.getPasswordAuthentication(database);
-	return passwordAuthentication;    
+	return propertiesPasswordManager.getPassword();
     }
 
-    /*
-    initErrrorMesage = Tag.PRODUCT_USER_CONFIG_FAIL
-	    + " Impossible to load (ClassNotFoundException) Configurator class: " + classNameToLoad;
-     */
+
 }

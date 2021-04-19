@@ -60,6 +60,7 @@ import org.kawanfw.sql.tomcat.ServletParametersStore;
 import org.kawanfw.sql.tomcat.ThreadPoolExecutorStore;
 import org.kawanfw.sql.tomcat.TomcatSqlModeStore;
 import org.kawanfw.sql.tomcat.TomcatStarterUtil;
+import org.kawanfw.sql.tomcat.TomcatStarterUtilProperties;
 import org.kawanfw.sql.util.FrameworkDebug;
 import org.kawanfw.sql.util.SqlTag;
 import org.kawanfw.sql.util.Tag;
@@ -141,7 +142,7 @@ public class ServerSqlManagerInit {
 			    Tag.PRODUCT_USER_CONFIG_FAIL + " properties file not found: " + propertiesFile);
 		}
 
-		Properties properties = TomcatStarterUtil.getProperties(propertiesFile);
+		Properties properties = TomcatStarterUtilProperties.getProperties(propertiesFile);
 
 		ThreadPoolExecutorStore threadPoolExecutorStore = new ThreadPoolExecutorStore(properties);
 		threadPoolExecutorStore.create();
@@ -473,7 +474,7 @@ public class ServerSqlManagerInit {
 	// Set properties file. Will be used elsewhere
 	// (for CsvRulesManager load file, per example).
 	ServerSqlManager.setAceqlServerProperties(propertiesFile);
-	Properties properties = TomcatStarterUtil.getProperties(propertiesFile);
+	Properties properties = TomcatStarterUtilProperties.getProperties(propertiesFile);
 
 	TomcatStarterUtil.setInitParametersInStore(properties);
 

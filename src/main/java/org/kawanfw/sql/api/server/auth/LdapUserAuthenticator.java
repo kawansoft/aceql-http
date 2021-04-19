@@ -41,7 +41,7 @@ import javax.naming.directory.InitialDirContext;
 
 import org.kawanfw.sql.api.server.DefaultDatabaseConfigurator;
 import org.kawanfw.sql.servlet.ServerSqlManager;
-import org.kawanfw.sql.tomcat.TomcatStarterUtil;
+import org.kawanfw.sql.tomcat.TomcatStarterUtilProperties;
 import org.kawanfw.sql.util.Tag;
 
 /**
@@ -73,7 +73,7 @@ public class LdapUserAuthenticator implements UserAuthenticator {
 
 	if (properties == null) {
 	    File file = ServerSqlManager.getAceqlServerProperties();
-	    properties = TomcatStarterUtil.getProperties(file);
+	    properties = TomcatStarterUtilProperties.getProperties(file);
 	}
 
 	String url = properties.getProperty("ldapUserAuthenticator.url");
