@@ -45,14 +45,16 @@ import org.jasypt.iv.RandomIvGenerator;
 public class PropertiesEncryptor {
 
     /**
-     * @param args
+     * Calls doIt method.
+     * @param args no values are passed
+     * @throws Exception if any Exception occurs
      */
     public static void main(String[] args) throws Exception {
 	doIt();
     }
 
     /**
-     * Create a password to encrypt property values and then ecnrypts ach passed value.
+     * Create a password to encrypt property values and then encrypts each passed value.
      */
     public static void doIt() {
 	System.out.println();
