@@ -25,12 +25,15 @@
 package org.kawanfw.sql.api.server;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.StringWriter;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 
 import javax.json.stream.JsonGenerator;
@@ -79,8 +82,8 @@ import org.kawanfw.sql.util.FrameworkDebug;
  * {@code http(s)://host:port/default_pools_info?password=<password_value>} <br>
  * <br>
  * Where:<br>
- * password_value = value stored in
- * user.home/.kawansoft/default_pools_info_password.txt <br>
+ * password_value = value of "password" property stored in
+ * user.home/.kawansoft/default_pools_info.properties <br>
  * <br>
  *
  * To modify the pool for a database:<br>
@@ -144,13 +147,12 @@ public class DefaultPoolsInfo extends HttpServlet {
 	}
     }
 
-
     /**
      * Execute the client request
      *
      * @param request  the http request
      * @param response the http response
-     * @param out TODO
+     * @param out      TODO
      * @throws IOException         if any IOException occurs
      * @throws SQLException
      * @throws FileUploadException
@@ -160,7 +162,7 @@ public class DefaultPoolsInfo extends HttpServlet {
 
 	debug("Starting...");
 	request.setCharacterEncoding("UTF-8");
-	
+
 	// Prepare the response
 	response.setContentType("text/plain; charset=UTF-8");
 
@@ -177,8 +179,20 @@ public class DefaultPoolsInfo extends HttpServlet {
 	String storedPassword = null;
 
 	try {
-	    storedPassword = FileUtils.readFileToString(new File(SystemUtils.USER_HOME + File.separator + ".kawansoft"
-		    + File.separator + "default_pools_info_password.txt"), "UTF-8");
+	    File file = new File(SystemUtils.USER_HOME + File.separator + ".kawansoft" + File.separator
+		    + "default_pools_info.properties");
+	    Properties properties = new Properties();
+	    try (InputStream in = new FileInputStream(file);) {
+		properties.load(in);
+	    }
+
+	    storedPassword = properties.getProperty("password");
+
+	    // Support previous version
+	    if (storedPassword == null || storedPassword.isEmpty()) {
+		storedPassword = FileUtils.readFileToString(new File(SystemUtils.USER_HOME + File.separator
+			+ ".kawansoft" + File.separator + "default_pools_info_password.txt"), "UTF-8");
+	    }
 
 	    debug("stored_password: " + storedPassword + ":");
 
@@ -215,7 +229,8 @@ public class DefaultPoolsInfo extends HttpServlet {
      * @throws NumberFormatException
      * @throws IOException
      */
-    private void writeOutpuMain(HttpServletRequest request, OutputStream out, String setDatabase , Map<String, DataSource> dataSources) throws NumberFormatException, IOException {
+    private void writeOutpuMain(HttpServletRequest request, OutputStream out, String setDatabase,
+	    Map<String, DataSource> dataSources) throws NumberFormatException, IOException {
 	StringWriter writer = new StringWriter();
 
 	JsonGeneratorFactory jf = JsonUtil.getJsonGeneratorFactory(true);
@@ -256,19 +271,19 @@ public class DefaultPoolsInfo extends HttpServlet {
 	DataSourceProxy dataSourceProxy = (org.apache.tomcat.jdbc.pool.DataSource) datasource;
 
 	if (setDatabase == null || setDatabase.equals(database)) {
-	String doSet = request.getParameter("setMinIdle");
-	if (doSet != null && !doSet.isEmpty() && StringUtils.isNumeric(doSet) && StringUtils.isNumeric(doSet)) {
-	    dataSourceProxy.setMinIdle(Integer.parseInt(doSet));
-	}
-	doSet = request.getParameter("setMaxIdle");
-	if (doSet != null && !doSet.isEmpty() && StringUtils.isNumeric(doSet) && StringUtils.isNumeric(doSet)) {
-	    dataSourceProxy.setMaxIdle(Integer.parseInt(doSet));
-	}
+	    String doSet = request.getParameter("setMinIdle");
+	    if (doSet != null && !doSet.isEmpty() && StringUtils.isNumeric(doSet) && StringUtils.isNumeric(doSet)) {
+		dataSourceProxy.setMinIdle(Integer.parseInt(doSet));
+	    }
+	    doSet = request.getParameter("setMaxIdle");
+	    if (doSet != null && !doSet.isEmpty() && StringUtils.isNumeric(doSet) && StringUtils.isNumeric(doSet)) {
+		dataSourceProxy.setMaxIdle(Integer.parseInt(doSet));
+	    }
 
-	doSet = request.getParameter("setMaxActive");
-	if (doSet != null && !doSet.isEmpty() && StringUtils.isNumeric(doSet) && StringUtils.isNumeric(doSet)) {
-	    dataSourceProxy.setMaxActive(Integer.parseInt(doSet));
-	}
+	    doSet = request.getParameter("setMaxActive");
+	    if (doSet != null && !doSet.isEmpty() && StringUtils.isNumeric(doSet) && StringUtils.isNumeric(doSet)) {
+		dataSourceProxy.setMaxActive(Integer.parseInt(doSet));
+	    }
 	}
 
 	gen.writeStartObject().write("database", database).writeEnd();
@@ -282,8 +297,7 @@ public class DefaultPoolsInfo extends HttpServlet {
 	gen.writeStartObject().write("getReconnectedCount()", dataSourceProxy.getReconnectedCount()).writeEnd();
 	gen.writeStartObject().write("getReleasedCount()", dataSourceProxy.getReleasedCount()).writeEnd();
 	gen.writeStartObject().write("getReleasedIdleCount()", dataSourceProxy.getReleasedIdleCount()).writeEnd();
-	gen.writeStartObject().write("getRemoveAbandonedCount()", dataSourceProxy.getRemoveAbandonedCount())
-	    .writeEnd();
+	gen.writeStartObject().write("getRemoveAbandonedCount()", dataSourceProxy.getRemoveAbandonedCount()).writeEnd();
 	gen.writeStartObject().write("getReturnedCount()", dataSourceProxy.getReturnedCount()).writeEnd();
 	gen.writeStartObject().write("getSize()", dataSourceProxy.getSize()).writeEnd();
 	gen.writeStartObject().write("getWaitCount()", dataSourceProxy.getWaitCount()).writeEnd();
