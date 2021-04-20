@@ -123,6 +123,20 @@
 			<version>9.0.45</version>
 		</dependency>
 
+		<!-- API, java.xml.bind module. Required for modern versions of MS SQL Server Drivers -->
+		<dependency>
+		    <groupId>jakarta.xml.bind</groupId>
+		    <artifactId>jakarta.xml.bind-api</artifactId>
+		    <version>2.3.2</version>
+		</dependency>
+		
+		<!-- Runtime, com.sun.xml.bind module -->
+		<dependency>
+		    <groupId>org.glassfish.jaxb</groupId>
+		    <artifactId>jaxb-runtime</artifactId>
+		    <version>2.3.2</version>
+		</dependency>
+
 	</dependencies>
 	<organization>
 		<name>KawanSoft</name>
