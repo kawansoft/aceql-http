@@ -26,9 +26,10 @@ package org.kawanfw.sql.api.server.auth.crypto;
 
 import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
 import org.jasypt.iv.RandomIvGenerator;
+import org.kawanfw.sql.version.VersionValues;
 
 /**
- * Command line interface. Allows:
+ * Command line interface for property values encryption. It Allows:
  * <ul>
  * <li>To define a password for encrypting property values.</li>
  * <li>Build the encrypted property values to put back in the
@@ -63,8 +64,11 @@ public class PropertiesEncryptor {
      */
     public static void doIt() {
 	System.out.println();
-	System.out.println("Welcome to AceQL Properties Encryptor!");
-	System.out.println("First step it create a password that will be used to encrypt properties.");
+	System.out.println("Welcome to AceQL Properties Encryptor " + VersionValues.VERSION + "!");
+	System.out.println("Enter \"quit\" to exit at any time.");
+	System.out.println();
+	System.out.println("First step is to choose a password that will be used to encrypt properties.");
+	System.out.println("(This password will be returned by the PropertiesPasswordManager.getPassword() implementation.)");
 	System.out.println();
 
 	String password = createPassword();
@@ -75,8 +79,10 @@ public class PropertiesEncryptor {
 
 	System.out.println();
 	System.out.println("Password created! ");
-	System.out.println("Second step is to encrypt desired property values.");
-	System.out.println("Enter \"quit\" to exit at anytime.");
+	System.out.println();
+	System.out.println("Second step is to encrypt desired property values:");
+	System.out.println(" - Replace each clear value with the encrypted one in the aceql-properties file.");
+	System.out.println(" - Encrypted values include the \"ENC(\" prefix and \")\" trailer.");
 	System.out.println();
 
 	StandardPBEStringEncryptor encryptor = createEncryptor(password);
@@ -85,7 +91,7 @@ public class PropertiesEncryptor {
 	while (true) {
 	    String valueToEncrypt = console.readLine("Value to encrypt: ");
 
-	    if (valueToEncrypt == null | valueToEncrypt.isEmpty()) {
+	    if (valueToEncrypt == null || valueToEncrypt.isEmpty()) {
 		continue;
 	    }
 
@@ -115,11 +121,13 @@ public class PropertiesEncryptor {
 	String password2;
 
 	while (true) {
-	    password1 = new String(console.readPassword("Enter Password: "));
+	    char [] passwordChars = console.readPassword("Enter Password: ");
 
-	    if (password1 == null || password1.isEmpty()) {
+	    if (passwordChars == null || passwordChars.length == 0) {
 		continue;
 	    }
+	    
+	    password1 = new String(passwordChars);
 
 	    if (password1.equals("quit")) {
 		return null;

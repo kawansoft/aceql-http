@@ -17,9 +17,9 @@ import org.kawanfw.sql.util.FrameworkFileUtil;
  * property of the file
  * {@code user.home/.kawansoft/properties_password_manager.properties}. <br/>
  * <br/>
- * This default implementation is provided asis, password is not secured if an
+ * This default implementation is provided <i>as is</i>: password is not secured if an
  * attacker gets access to the server. <br/>
- * Note that the {@code #getPassword()} will return null if the file does not
+ * Note that the {@code #getPassword()} will return {@code null} if the file does not
  * exists. <br/>
  * <br/>
  * 
