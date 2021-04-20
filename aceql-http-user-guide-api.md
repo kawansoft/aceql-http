@@ -1,4 +1,4 @@
-# AceQL HTTP v7.0 - April 18, 2021
+# AceQL HTTP v7.0 - April 20, 2021
 
 # API User Guide
 
