@@ -32,7 +32,9 @@ import java.net.ConnectException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.sql.SQLException;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import org.apache.catalina.Context;
 import org.apache.catalina.LifecycleException;
@@ -104,8 +106,10 @@ public class TomcatStarter {
      * @throws LifecycleException
      * @throws ConnectException
      * @throws DatabaseConfigurationException
+     * @throws SQLException
      */
-    public void startTomcat() throws IOException, ConnectException, DatabaseConfigurationException, LifecycleException {
+    public void startTomcat()
+	    throws IOException, ConnectException, DatabaseConfigurationException, LifecycleException, SQLException {
 
 	Tomcat tomcat = new Tomcat();
 	try {
@@ -122,18 +126,24 @@ public class TomcatStarter {
 
     }
 
-    private void startTomcat(Tomcat tomcat)
-	    throws IOException, ConnectException, LifecycleException, MalformedURLException {
+    private void startTomcat(Tomcat tomcat) throws IOException, ConnectException, LifecycleException,
+	    MalformedURLException, DatabaseConfigurationException, SQLException {
 	System.out.println(SqlTag.SQL_PRODUCT_START + " Starting " + Version.PRODUCT.NAME + " Web Server...");
 	System.out.println(SqlTag.SQL_PRODUCT_START + " " + Version.getServerVersion());
 	System.out.println(TomcatStarterUtil.getJavaInfo());
-	System.out.println(
-
-		SqlTag.SQL_PRODUCT_START + " " + "Using properties file: ");
+	System.out.println(SqlTag.SQL_PRODUCT_START + " " + "Using properties file: ");
 	System.out.println(SqlTag.SQL_PRODUCT_START + "  -> " + propertiesFile);
 
 	ServerSqlManager.setAceqlServerProperties(propertiesFile);
-	Properties properties = TomcatStarterUtil.getProperties(propertiesFile);
+	Properties properties = TomcatStarterUtilProperties.getProperties(propertiesFile);
+
+	String tomcatLoggingLevel = properties.getProperty("tomcatLoggingLevel");
+	String level = "SEVERE";
+	if (tomcatLoggingLevel != null && !tomcatLoggingLevel.isEmpty()) {
+	    level = tomcatLoggingLevel;
+	}
+
+	java.util.logging.Logger.getLogger("org.apache").setLevel(Level.parse(level));
 
 	// System.out.println("TomcatEmbedUtil.available(" + port + "): " +
 	// TomcatEmbedUtil.available(port));
@@ -170,8 +180,11 @@ public class TomcatStarter {
     private void tomcatAfterStart(Tomcat tomcat, Properties properties) throws MalformedURLException, IOException {
 	// System.out.println(SqlTag.SQL_PRODUCT_START);
 	Connector defaultConnector = tomcat.getConnector();
-	@SuppressWarnings("unused")
-	String result = testServlet(properties, defaultConnector.getScheme());
+
+	boolean result = testServlet(properties, defaultConnector.getScheme());
+	if (!result) {
+	    throw new IOException(SqlTag.SQL_PRODUCT_START_FAILURE + " " + "Can not call the AceQL ManagerServlet");
+	}
 
 	String runningMessage = SqlTag.SQL_PRODUCT_START + " " + Version.PRODUCT.NAME
 		+ " Web Server OK. Running on port " + port;
@@ -189,17 +202,19 @@ public class TomcatStarter {
 
 	// tomcat.getServer().await();
 
-//	PortSemaphoreFile portSemaphoreFile = new PortSemaphoreFile(port);
-//
-//	try {
-//	    if (!portSemaphoreFile.exists()) {
-//		portSemaphoreFile.create();
-//	    }
-//	} catch (IOException e) {
-//	    throw new IOException("Web server can not start. Impossible to create the semaphore file: "
-//		    + portSemaphoreFile.getSemaphoreFile() + CR_LF
-//		    + "Create manually the semapahore file to start the Web server on port " + port + ".", e);
-//	}
+	// PortSemaphoreFile portSemaphoreFile = new PortSemaphoreFile(port);
+	//
+	// try {
+	// if (!portSemaphoreFile.exists()) {
+	// portSemaphoreFile.create();
+	// }
+	// } catch (IOException e) {
+	// throw new IOException("Web server can not start. Impossible to create the
+	// semaphore file: "
+	// + portSemaphoreFile.getSemaphoreFile() + CR_LF
+	// + "Create manually the semapahore file to start the Web server on port " +
+	// port + ".", e);
+	// }
 
 	// Loop to serve requests
 	while (true) {
@@ -333,7 +348,7 @@ public class TomcatStarter {
      * @throws MalformedURLException
      * @throws IOException
      */
-    public String testServlet(Properties properties, String scheme) throws MalformedURLException, IOException {
+    public boolean testServlet(Properties properties, String scheme) throws MalformedURLException, IOException {
 
 	String aceQLManagerServletCallName = TomcatStarterUtil.getAceQLManagerSevletName(properties);
 
@@ -346,14 +361,23 @@ public class TomcatStarter {
 
 	String url = scheme + "://" + host + ":" + port + serverSqlManagerUrlPattern;
 
-	// Call the ServerSqlManagerServlet to test everything is OK.
+	String loadAceQLManagerServletOnStartup = properties.getProperty("loadAceQLManagerServletOnStartup", "true");
+
+	if (loadAceQLManagerServletOnStartup == null || loadAceQLManagerServletOnStartup.isEmpty()
+		|| !Boolean.parseBoolean(loadAceQLManagerServletOnStartup)) {
+	    System.out.println(SqlTag.SQL_PRODUCT_START + " URL for client side: " + url);
+	    return true;
+	}
+
+	// If asked! Call the ServerSqlManagerServlet to test everything is OK.
 	String serverSqlManagerstatus = callServerSqlManagerServlet(url);
 
 	if (serverSqlManagerstatus.contains("\"OK\"")) {
-	    System.out.println(SqlTag.SQL_PRODUCT_START + " URL for client side: " + url);
+	    System.out.println(SqlTag.SQL_PRODUCT_START + " URL for client side (tested) : " + url);
+	    return true;
 	}
 
-	return serverSqlManagerstatus;
+	return false;
     }
 
     /**

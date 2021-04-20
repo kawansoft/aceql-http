@@ -25,12 +25,15 @@
 package org.kawanfw.sql.api.server;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.StringWriter;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 
 import javax.json.stream.JsonGenerator;
@@ -49,6 +52,7 @@ import org.kawanfw.sql.servlet.ServerSqlManager;
 import org.kawanfw.sql.servlet.sql.json_return.ExceptionReturner;
 import org.kawanfw.sql.servlet.sql.json_return.JsonErrorReturn;
 import org.kawanfw.sql.servlet.sql.json_return.JsonUtil;
+import org.kawanfw.sql.util.FrameworkDebug;
 
 /**
  *
@@ -61,7 +65,7 @@ import org.kawanfw.sql.servlet.sql.json_return.JsonUtil;
  * {@link DataSourceStore#getDataSources()} static method. <br>
  * <br>
  * See Tomcat JDBC Pool <a href=
- * "https://tomcat.apache.org/tomcat-8.5-doc/api/org/apache/tomcat/jdbc/pool/DataSourceProxy.html"
+ * "https://tomcat.apache.org/tomcat-9.0-doc/api/org/apache/tomcat/jdbc/pool/DataSourceProxy.html"
  * >DataSourceProxy</a> for the meaning of the displayed values. <br>
  * <br>
  *
@@ -78,8 +82,8 @@ import org.kawanfw.sql.servlet.sql.json_return.JsonUtil;
  * {@code http(s)://host:port/default_pools_info?password=<password_value>} <br>
  * <br>
  * Where:<br>
- * password_value = value stored in
- * user.home/.kawansoft/default_pools_info_password.txt <br>
+ * password_value = value of "password" property stored in
+ * user.home/.kawansoft/default_pools_info.properties <br>
  * <br>
  *
  * To modify the pool for a database:<br>
@@ -104,12 +108,12 @@ import org.kawanfw.sql.servlet.sql.json_return.JsonUtil;
  * @author Nicolas de Pomereu
  * @since 1.0
  * @see <a href=
- *      "https://tomcat.apache.org/tomcat-8.5-doc/api/org/apache/tomcat/jdbc/pool/DataSourceProxy.html">DataSourceProxy</a>
+ *      "https://tomcat.apache.org/tomcat-9.0-doc/api/org/apache/tomcat/jdbc/pool/DataSourceProxy.html">DataSourceProxy</a>
  */
 public class DefaultPoolsInfo extends HttpServlet {
 
     private static final long serialVersionUID = 6129302507495768396L;
-    private static boolean DEBUG = true; //FrameworkDebug.isSet(DefaultPoolsInfo.class);
+    private static boolean DEBUG = FrameworkDebug.isSet(DefaultPoolsInfo.class);
 
     /*
      * (non-Javadoc)
@@ -143,13 +147,12 @@ public class DefaultPoolsInfo extends HttpServlet {
 	}
     }
 
-
     /**
      * Execute the client request
      *
      * @param request  the http request
      * @param response the http response
-     * @param out TODO
+     * @param out      TODO
      * @throws IOException         if any IOException occurs
      * @throws SQLException
      * @throws FileUploadException
@@ -158,12 +161,12 @@ public class DefaultPoolsInfo extends HttpServlet {
 	    throws IOException, SQLException, FileUploadException {
 
 	debug("Starting...");
+	request.setCharacterEncoding("UTF-8");
 
 	// Prepare the response
 	response.setContentType("text/plain; charset=UTF-8");
 
 	String password = request.getParameter("password");
-	debug("request_password: " + password + ":");
 
 	if (password == null || password.isEmpty()) {
 	    JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_FORBIDDEN,
@@ -176,8 +179,20 @@ public class DefaultPoolsInfo extends HttpServlet {
 	String storedPassword = null;
 
 	try {
-	    storedPassword = FileUtils.readFileToString(new File(SystemUtils.USER_HOME + File.separator + ".kawansoft"
-		    + File.separator + "default_pools_info_password.txt"), "UTF-8");
+	    File file = new File(SystemUtils.USER_HOME + File.separator + ".kawansoft" + File.separator
+		    + "default_pools_info.properties");
+	    Properties properties = new Properties();
+	    try (InputStream in = new FileInputStream(file);) {
+		properties.load(in);
+	    }
+
+	    storedPassword = properties.getProperty("password");
+
+	    // Support previous version
+	    if (storedPassword == null || storedPassword.isEmpty()) {
+		storedPassword = FileUtils.readFileToString(new File(SystemUtils.USER_HOME + File.separator
+			+ ".kawansoft" + File.separator + "default_pools_info_password.txt"), "UTF-8");
+	    }
 
 	    debug("stored_password: " + storedPassword + ":");
 
@@ -214,7 +229,8 @@ public class DefaultPoolsInfo extends HttpServlet {
      * @throws NumberFormatException
      * @throws IOException
      */
-    private void writeOutpuMain(HttpServletRequest request, OutputStream out, String setDatabase , Map<String, DataSource> dataSources) throws NumberFormatException, IOException {
+    private void writeOutpuMain(HttpServletRequest request, OutputStream out, String setDatabase,
+	    Map<String, DataSource> dataSources) throws NumberFormatException, IOException {
 	StringWriter writer = new StringWriter();
 
 	JsonGeneratorFactory jf = JsonUtil.getJsonGeneratorFactory(true);
@@ -225,7 +241,7 @@ public class DefaultPoolsInfo extends HttpServlet {
 	gen.writeStartObject();
 	gen.write("status", "OK");
 	gen.write("see",
-		"https://tomcat.apache.org/tomcat-8.5-doc/api/org/apache/tomcat/jdbc/pool/DataSourceProxy.html");
+		"https://tomcat.apache.org/tomcat-9.0-doc/api/org/apache/tomcat/jdbc/pool/DataSourceProxy.html");
 
 	gen.writeStartArray("databases");
 
@@ -255,19 +271,19 @@ public class DefaultPoolsInfo extends HttpServlet {
 	DataSourceProxy dataSourceProxy = (org.apache.tomcat.jdbc.pool.DataSource) datasource;
 
 	if (setDatabase == null || setDatabase.equals(database)) {
-	String doSet = request.getParameter("setMinIdle");
-	if (doSet != null && !doSet.isEmpty() && StringUtils.isNumeric(doSet) && StringUtils.isNumeric(doSet)) {
-	    dataSourceProxy.setMinIdle(Integer.parseInt(doSet));
-	}
-	doSet = request.getParameter("setMaxIdle");
-	if (doSet != null && !doSet.isEmpty() && StringUtils.isNumeric(doSet) && StringUtils.isNumeric(doSet)) {
-	    dataSourceProxy.setMaxIdle(Integer.parseInt(doSet));
-	}
+	    String doSet = request.getParameter("setMinIdle");
+	    if (doSet != null && !doSet.isEmpty() && StringUtils.isNumeric(doSet) && StringUtils.isNumeric(doSet)) {
+		dataSourceProxy.setMinIdle(Integer.parseInt(doSet));
+	    }
+	    doSet = request.getParameter("setMaxIdle");
+	    if (doSet != null && !doSet.isEmpty() && StringUtils.isNumeric(doSet) && StringUtils.isNumeric(doSet)) {
+		dataSourceProxy.setMaxIdle(Integer.parseInt(doSet));
+	    }
 
-	doSet = request.getParameter("setMaxActive");
-	if (doSet != null && !doSet.isEmpty() && StringUtils.isNumeric(doSet) && StringUtils.isNumeric(doSet)) {
-	    dataSourceProxy.setMaxActive(Integer.parseInt(doSet));
-	}
+	    doSet = request.getParameter("setMaxActive");
+	    if (doSet != null && !doSet.isEmpty() && StringUtils.isNumeric(doSet) && StringUtils.isNumeric(doSet)) {
+		dataSourceProxy.setMaxActive(Integer.parseInt(doSet));
+	    }
 	}
 
 	gen.writeStartObject().write("database", database).writeEnd();
@@ -281,8 +297,7 @@ public class DefaultPoolsInfo extends HttpServlet {
 	gen.writeStartObject().write("getReconnectedCount()", dataSourceProxy.getReconnectedCount()).writeEnd();
 	gen.writeStartObject().write("getReleasedCount()", dataSourceProxy.getReleasedCount()).writeEnd();
 	gen.writeStartObject().write("getReleasedIdleCount()", dataSourceProxy.getReleasedIdleCount()).writeEnd();
-	gen.writeStartObject().write("getRemoveAbandonedCount()", dataSourceProxy.getRemoveAbandonedCount())
-	    .writeEnd();
+	gen.writeStartObject().write("getRemoveAbandonedCount()", dataSourceProxy.getRemoveAbandonedCount()).writeEnd();
 	gen.writeStartObject().write("getReturnedCount()", dataSourceProxy.getReturnedCount()).writeEnd();
 	gen.writeStartObject().write("getSize()", dataSourceProxy.getSize()).writeEnd();
 	gen.writeStartObject().write("getWaitCount()", dataSourceProxy.getWaitCount()).writeEnd();

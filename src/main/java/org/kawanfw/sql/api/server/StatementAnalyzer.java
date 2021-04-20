@@ -325,7 +325,7 @@ public class StatementAnalyzer {
      * @param index index of parameter as in a list: starts at 0.
      * @return the value as object of the parameter index.
      * @throws IndexOutOfBoundsException if the index is out of range (
-     *                                   <tt>index &lt; 0 || index &gt;= size()</tt>)
+     *                                   {@code index &lt; 0 || index &gt;= size()})
      */
     public Object getParameter(int index) {
 	int size = parameterValues.size();

@@ -27,6 +27,7 @@ package org.kawanfw.sql.api.server.web;
 import java.io.File;
 import java.io.IOException;
 import java.net.ConnectException;
+import java.sql.SQLException;
 
 import org.apache.catalina.LifecycleException;
 import org.apache.commons.lang3.SystemUtils;
@@ -52,7 +53,7 @@ import org.kawanfw.sql.version.Version;
  */
 public class WebServerApi {
 
-    public static String CR_LF = System.getProperty("line.separator");
+    private static String CR_LF = System.getProperty("line.separator");
 
     /** The default port to use if parameter is not passed */
     public static final int DEFAULT_PORT = 9090;
@@ -75,9 +76,10 @@ public class WebServerApi {
      *                                        file
      * @throws LifecycleException             thrown by the embedded Tomcat engine
      *                                        for any lifecycle related problem
+     * @throws SQLException if any SQL error occurs
      */
     public void startServer(String host, int port, File propertiesFile)
-	    throws ConnectException, IOException, DatabaseConfigurationException, LifecycleException {
+	    throws ConnectException, IOException, DatabaseConfigurationException, LifecycleException, SQLException {
 
 	debug("propertiesFiles: " + propertiesFile);
 
@@ -147,9 +149,10 @@ public class WebServerApi {
      *                                        file
      * @throws LifecycleException             thrown by embedded Tomcat for any
      *                                        lifecycle related problem
+     * @throws SQLException 		      thrown by embedded Tomcat for any SQL Error
      */
     public void startServer(String host, File propertiesFile)
-	    throws ConnectException, IOException, DatabaseConfigurationException, LifecycleException {
+	    throws ConnectException, IOException, DatabaseConfigurationException, LifecycleException, SQLException {
 	startServer(host, DEFAULT_PORT, propertiesFile);
     }
 

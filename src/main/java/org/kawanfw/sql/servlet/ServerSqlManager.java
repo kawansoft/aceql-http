@@ -85,7 +85,7 @@ public class ServerSqlManager extends HttpServlet {
     public static final String BLOB_UPLOAD_CONFIGURATOR_CLASS_NAME = "blobUploadConfiguratorClassName";
     public static final String SESSION_CONFIGURATOR_CLASS_NAME = "sessionConfiguratorClassName";
     public static final String JWT_SESSION_CONFIGURATOR_SECRET = "jwtSessionConfiguratorSecret";
-
+    
     /** The map of (database, DatabaseConfigurator) */
     private static Map<String, DatabaseConfigurator> databaseConfigurators = new ConcurrentHashMap<>();
 

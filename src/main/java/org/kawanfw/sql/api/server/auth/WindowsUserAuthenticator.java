@@ -34,7 +34,7 @@ import java.util.logging.Logger;
 
 import org.kawanfw.sql.api.server.DefaultDatabaseConfigurator;
 import org.kawanfw.sql.servlet.ServerSqlManager;
-import org.kawanfw.sql.tomcat.TomcatStarterUtil;
+import org.kawanfw.sql.tomcat.TomcatStarterUtilProperties;
 import org.kawanfw.sql.util.Tag;
 
 import waffle.windows.auth.impl.WindowsAuthProviderImpl;
@@ -68,7 +68,7 @@ public class WindowsUserAuthenticator implements UserAuthenticator {
 
 	if (properties == null) {
 	    File file = ServerSqlManager.getAceqlServerProperties();
-	    properties = TomcatStarterUtil.getProperties(file);
+	    properties = TomcatStarterUtilProperties.getProperties(file);
 	}
 
 	String domain = properties.getProperty("windowsUserAuthenticator.domain");

@@ -44,7 +44,7 @@ import org.kawanfw.sql.api.server.util.NoFormatter;
 import org.kawanfw.sql.api.server.util.UsernameConverter;
 import org.kawanfw.sql.servlet.ServerSqlManager;
 import org.kawanfw.sql.tomcat.TomcatSqlModeStore;
-import org.kawanfw.sql.tomcat.TomcatStarterUtil;
+import org.kawanfw.sql.tomcat.TomcatStarterUtilProperties;
 import org.kawanfw.sql.util.Tag;
 
 /**
@@ -72,7 +72,7 @@ public class DefaultDatabaseConfigurator implements DatabaseConfigurator {
 
     /**
      * Returns a {@code Connection} from
-     * <a href="http://tomcat.apache.org/tomcat-8.5-doc/jdbc-pool.html" >Tomcat JDBC
+     * <a href="http://tomcat.apache.org/tomcat-9.0-doc/jdbc-pool.html" >Tomcat JDBC
      * Connection Pool</a>.<br>
      * <br>
      * the {@code Connection} is extracted from the {@code DataSource} created by
@@ -154,7 +154,7 @@ public class DefaultDatabaseConfigurator implements DatabaseConfigurator {
 	int maxRows = 0;
 	if (properties == null) {
 	    File file = ServerSqlManager.getAceqlServerProperties();
-	    properties = TomcatStarterUtil.getProperties(file);
+	    properties = TomcatStarterUtilProperties.getProperties(file);
 	}
 
 	String maxRowsStr = properties.getProperty("defaultDatabaseConfigurator.maxRows");

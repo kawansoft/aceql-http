@@ -30,7 +30,7 @@ import java.util.Map;
 import org.kawanfw.sql.api.server.auth.UserAuthenticator;
 
 /**
- * Allows authenticating a client user using the request headers set & sent from
+ * Allows authenticating a client user using the request headers set and sent from
  * the client side. <br>
  * <br>
  * This allows an alternate or supplementary authentication to
