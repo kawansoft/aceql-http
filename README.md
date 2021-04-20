@@ -386,7 +386,7 @@ A `SqlFirewallManager`concrete implementation allows to:
 
 - Define if a client user has the right to call a `Statement.executeUpdate` (i.e. call a statement that updates the database).
 - Define if a client user has the right to call a raw JDBC `Statement` that is not a `PreparedStatement`.
-- Define if a client user has the right to call the [AceQL Metadata API](https://github.com/kawansoft/aceql-http/blob/master/aceql-http-7.0-user-guide-api.md#db_schema_download).
+- Define if a client user has the right to call the [AceQL Metadata API](https://github.com/kawansoft/aceql-http/blob/master/aceql-http-user-guide-api.md#db_schema_download).
 - Define a specific piece of Java code to analyze the source code of the SQL statement before allowing or not it's execution.
 
 Multiple `SqlFirewallManager` may be defined and chained. 
