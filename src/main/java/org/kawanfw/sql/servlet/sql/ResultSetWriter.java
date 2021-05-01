@@ -186,20 +186,18 @@ public class ResultSetWriter {
 
 		gen.writeEnd(); // line_i
 		
+		// Allow to flush on each row... If required by environment...
 		if (StaticParms.FLUSH_EACH_RESULT_SET_ROW) {
-		    gen.flush();
+		    gen.flush(); 
 		}
-
 	    }
 
 	    gen.writeEnd(); // .writeStartObject();
 	    gen.writeEnd(); // .writeStartArray("query_rows")
 
 	    gen.write("row_count", row_count);
-
-	    // ServerSqlManager.writeLine(out);
 	    
-	    gen.flush();
+	    gen.flush(); // Final flush only
 
 	} finally {
 	    try {
