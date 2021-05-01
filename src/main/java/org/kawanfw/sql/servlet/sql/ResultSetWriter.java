@@ -39,6 +39,7 @@ import org.kawanfw.sql.jdbc.metadata.ResultSetMetaDataHolder;
 import org.kawanfw.sql.metadata.util.GsonWsUtil;
 import org.kawanfw.sql.servlet.HttpParameter;
 import org.kawanfw.sql.servlet.jdbc.metadata.ResultSetMetaDataBuilder;
+import org.kawanfw.sql.tomcat.StaticParms;
 import org.kawanfw.sql.util.FrameworkDebug;
 
 /**
@@ -118,7 +119,7 @@ public class ResultSetWriter {
 
 	    String productName = ResultSetWriterUtil.getDatabaseProductName(resultSet);
 
-	    ColumnInfoCreator columnInfoCreator = new ColumnInfoCreator(resultSet);
+	    ColumnInfoCreator columnInfoCreator = new ColumnInfoCreator(resultSet, productName);
 	    List<Integer> columnTypeList = columnInfoCreator.getColumnTypeList();
 	    List<String> columnTypeNameList = columnInfoCreator.getColumnTypeNameList();
 	    List<String> columnNameList = columnInfoCreator.getColumnNameList();
@@ -184,7 +185,11 @@ public class ResultSetWriter {
 		}
 
 		gen.writeEnd(); // line_i
-		gen.flush();
+		
+		if (StaticParms.FLUSH_EACH_RESULT_SET_ROW) {
+		    gen.flush();
+		}
+
 	    }
 
 	    gen.writeEnd(); // .writeStartObject();
@@ -193,6 +198,8 @@ public class ResultSetWriter {
 	    gen.write("row_count", row_count);
 
 	    // ServerSqlManager.writeLine(out);
+	    
+	    gen.flush();
 
 	} finally {
 	    try {

@@ -23,6 +23,12 @@ and code strong security rules in order to protect the databases.
 AceQL HTTP is licensed through the GNU Lesser General Public License 
 (LGPL v2.1).
 
+AceQL HTTP Version 7.1 - 01-May-2021
+------------------------------------
+
+What's New:
+- Output speed of SELECT calls has been improved.
+- Commons IO Apache library has been upgraded to 2.7.
 
 
 AceQL HTTP Version 7.0 - 20-Apr-2021

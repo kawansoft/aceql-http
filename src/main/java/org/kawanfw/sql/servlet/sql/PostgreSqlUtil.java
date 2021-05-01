@@ -65,16 +65,15 @@ public class PostgreSqlUtil {
     /**
      * Returns for PostgreSQL the table for a column
      *
-     * @param rs
-     *            the ResultSet to analyze
+     * @param meta
+     *            the PGResultSetMetaData to analyse
      * @param columnIndex
      *            the column index
      * @return the table name for this column index
      * @throws SQLException
      */
-    public static String getTableName(ResultSet rs, int columnIndex)
+    public static String getTableName(PGResultSetMetaData meta , int columnIndex)
 	    throws SQLException {
-	PGResultSetMetaData meta = (PGResultSetMetaData) rs.getMetaData();
 	String tableName = meta.getBaseTableName(columnIndex);
 	return tableName;
     }

@@ -13,6 +13,7 @@ import java.util.Vector;
 
 import org.kawanfw.sql.api.util.SqlUtil;
 import org.kawanfw.sql.util.FrameworkDebug;
+import org.postgresql.PGResultSetMetaData;
 
 /**
  * @author Nicolas de Pomereu
@@ -23,7 +24,6 @@ public class ColumnInfoCreator {
     private static boolean DEBUG = FrameworkDebug.isSet(ColumnInfoCreator.class);
 
     private ResultSetMetaData meta;
-    private ResultSet resultSet = null;
     private boolean isPostgreSQL;
 
     private List<Integer> columnTypeList = new Vector<Integer>();
@@ -33,18 +33,22 @@ public class ColumnInfoCreator {
 
     private Map<String, Integer> mapColumnNames = new LinkedHashMap<String, Integer>();
 
+    private PGResultSetMetaData pgResultSetMetaData;
+
     /**
      * Constructor.
      * @param resultSet
+     * @param productName the database vendo product name
      * @throws SQLException
      */
-    public ColumnInfoCreator(ResultSet resultSet) throws SQLException {
-	this.resultSet = resultSet;
+    public ColumnInfoCreator(ResultSet resultSet, String productName) throws SQLException {
 	this.meta = resultSet.getMetaData();
 
-	String productName = ResultSetWriterUtil.getDatabaseProductName(resultSet);
 	this.isPostgreSQL = productName.equals(SqlUtil.POSTGRESQL) ? true : false;
-
+	if (isPostgreSQL) {
+	    pgResultSetMetaData = (PGResultSetMetaData) resultSet.getMetaData();	    
+	}
+	
 	create();
     }
 
@@ -62,7 +66,7 @@ public class ColumnInfoCreator {
 	    columnTypeNameList.add(meta.getColumnTypeName(i));
 
 	    if (isPostgreSQL) {
-		columnTableList.add(PostgreSqlUtil.getTableName(resultSet, i));
+		columnTableList.add(PostgreSqlUtil.getTableName(pgResultSetMetaData, i));
 	    } else {
 		columnTableList.add(meta.getTableName(i));
 	    }
