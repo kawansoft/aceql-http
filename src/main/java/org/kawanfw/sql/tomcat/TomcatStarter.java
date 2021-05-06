@@ -145,6 +145,15 @@ public class TomcatStarter {
 
 	java.util.logging.Logger.getLogger("org.apache").setLevel(Level.parse(level));
 
+	String flushEachResultSetRow = properties.getProperty("flushEachResultSetRow");
+	if (flushEachResultSetRow == null || flushEachResultSetRow.isEmpty()) {
+	    flushEachResultSetRow = "true";
+	}
+	
+	System.out.println(SqlTag.SQL_PRODUCT_START + " " + "Internal Properties: ");
+	System.out.println(SqlTag.SQL_PRODUCT_START + "  -> tomcatLoggingLevel = " + level);
+	System.out.println(SqlTag.SQL_PRODUCT_START + "  -> flushEachResultSetRow = " + Boolean.parseBoolean(flushEachResultSetRow));
+	
 	// System.out.println("TomcatEmbedUtil.available(" + port + "): " +
 	// TomcatEmbedUtil.available(port));
 
