@@ -163,7 +163,7 @@ This User Guide covers:
 
 -  **Quickstart**: this part describes how to run through complete setup using only configuration files and CSV files.  (No programming and compiling are necessary.)
 
--  **Advanced Usage**: this part describes advanced setup and fine tuning. It includes powerful configuration and customization using injection code of  your own or third party Java classes.
+-  **Advanced Usage**: this part describes advanced setup and fine tuning. It includes powerful configuration and customization using dynamic Java code Injection of  your own or third party Java classes.
 
 ## Technical operating environment
 
