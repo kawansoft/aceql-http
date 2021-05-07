@@ -2,7 +2,7 @@
 
 <project name="Buildfile properties-encryptor.jar" default="all" basedir=".">
 
-	<property name="version"                  	value="7.0"/>
+	<property name="version"                  	value="7.1"/>
 	
 	<property name="properties-encryptor"       value="properties-encryptor-${version}.jar"/>
 
