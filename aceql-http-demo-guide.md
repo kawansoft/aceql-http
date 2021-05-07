@@ -1,4 +1,4 @@
-# AceQL HTTP v7.0 - April 20, 2021
+# AceQL HTTP v7.1 - April 20, 2021
 
 # Demo Guide
 
@@ -107,13 +107,13 @@ The execution of each AceQL HTTP API statement is conditioned by optional rules,
 
 Download the database `sampledb` schema corresponding to your database engine: 
 
-- [sampledb_mysq.txt](https://www.aceql.com/rest/soft/7.0/src/sampledb_mysql.txt )
-- [sampledb_postgresql.txt](https://www.aceql.com/rest/soft/7.0/src/sampledb_postgresql.txt)
-- [sampledb_ms_sql_serverl.txt](https://www.aceql.com/rest/soft/7.0/src/sampledb_ms_sql_server.txt)
-- [sampledb_oracle_database.txt](https://www.aceql.com/rest/soft/7.0/src/sampledb_oracle_database.txt)
+- [sampledb_mysq.txt](https://www.aceql.com/rest/soft/7.1/src/sampledb_mysql.txt )
+- [sampledb_postgresql.txt](https://www.aceql.com/rest/soft/7.1/src/sampledb_postgresql.txt)
+- [sampledb_ms_sql_serverl.txt](https://www.aceql.com/rest/soft/7.1/src/sampledb_ms_sql_server.txt)
+- [sampledb_oracle_database.txt](https://www.aceql.com/rest/soft/7.1/src/sampledb_oracle_database.txt)
 
 
-For other databases engines, just tailor the file as indicated: [sampledb_other_databases.txt](https://www.aceql.com/rest/soft/7.0/src/sampledb_other_databases.txt)
+For other databases engines, just tailor the file as indicated: [sampledb_other_databases.txt](https://www.aceql.com/rest/soft/7.1/src/sampledb_other_databases.txt)
 
 Then launch the script that will create the tables in a database
 
@@ -126,7 +126,7 @@ AceQL requires the installation of Java version 8+.
 Open a terminal and download with `Wget` 
 
 ```bash
-$ wget https://www.aceql.com/soft/download/7.0/aceql-http-7.0.run
+$ wget https://www.aceql.com/soft/download/7.1/aceql-http-7.1.run
 ```
 
 If you get a certificate error message, do one of the following:
@@ -137,17 +137,17 @@ If you get a certificate error message, do one of the following:
 In following lines we will assume that the Open Source edition is chosen. (Operating mode is the same for Pro edition).
 
 ```bash
-chmod +x aceql-http-7.0.run
-./aceql-http-7.0.run 
+chmod +x aceql-http-7.1.run
+./aceql-http-7.1.run 
 ```
 
-This will create the `aceql-http-7.0` folder.
+This will create the `aceql-http-7.1` folder.
 
-The full path to the `aceql-http-7.0` installation folder will be surnamed `ACEQL_HOME` in following text.
+The full path to the `aceql-http-7.1` installation folder will be surnamed `ACEQL_HOME` in following text.
 
-Example: if you run `aceql-http-7.0.run` from `/home/mike`, then software is installed in
+Example: if you run `aceql-http-7.1.run` from `/home/mike`, then software is installed in
 
- `/home/mike/aceql-http-7.0` which is the value of `ACEQL_HOME`.
+ `/home/mike/aceql-http-7.1` which is the value of `ACEQL_HOME`.
 
 ### Update the PATH (Optional)
 
@@ -155,10 +155,10 @@ Open a shell session and make sure java binary is in the PATH by typing  `Java â
 
 Add java to your PATH if the command does not display Java version.
 
-Add to your PATH the path to the bin directory of `aceql-http-7.0` installation:
+Add to your PATH the path to the bin directory of `aceql-http-7.1` installation:
 
 ```bash
-$ PATH=$PATH:/path/to/aceql-http-7.0/bin/;export PATH
+$ PATH=$PATH:/path/to/aceql-http-7.1/bin/;export PATH
 ```
 
 ### Testing AceQL HTTP Web server installation
@@ -172,7 +172,7 @@ $ aceql-server -version
 It will display a line with all version info, like:
 
 ```
-AceQL HTTP Community v7.0 - 20-Apr-2021
+AceQL HTTP Community v7.1 - 20-Apr-2021
 ```
 
 ### Configure JDBC parameters in aceql-server.properties file
@@ -220,7 +220,7 @@ The console will display the properties used, test that the Connection is establ
 
 ```bash
 [ACEQL HTTP START] Starting AceQL HTTP Web Server...
-[ACEQL HTTP START] AceQL HTTP Community v7.0 - 20-Apr-2021
+[ACEQL HTTP START] AceQL HTTP Community v7.1 - 07-May-2021
 [ACEQL HTTP START] Using properties file: 
 [ACEQL HTTP START]  -> /home/mike/aceql-http/conf/aceql-server.properties
 [ACEQL HTTP START] Setting System Properties:
@@ -284,7 +284,7 @@ Run the installer.
 
 It will run AceQL at end of installation and display the Window:
 
-<img src="https://www.aceql.com/rest/soft/7.0/img/aceql_windows_gui_home_flatlaf.png" alt="AceQ HTTP GUI Main Windows"/>
+<img src="https://www.aceql.com/rest/soft/7.1/img/aceql_windows_gui_home_flatlaf.png" alt="AceQ HTTP GUI Main Windows"/>
 
 **N.B:** Because of a bug in all Java versions > 8 on Windows, the interface will appear "ugly"  or "blurred" on Java version > 8 if you have increased Windows Screen Resolution Options to 125% or 150%.  See [Java Bug Database](https://bugs.java.com/bugdatabase/view_bug.do?bug_id=JDK-8194165) for more info. Set back Windows Screen Resolution to 100% for clean display.
 
@@ -339,7 +339,7 @@ The console will display the properties used, test that the `Connection` is esta
 
 ```bash
 [ACEQL HTTP START] Starting AceQL HTTP Web Server...
-[ACEQL HTTP START] AceQL HTTP Community v7.0 - 20-Apr-2021
+[ACEQL HTTP START] AceQL HTTP Community v7.1 - 20-Apr-2021
 [ACEQL HTTP START] Using properties file: 
 [ACEQL HTTP START]  -> I:\_dev_awake\aceql-http-main\aceql-http\conf\aceql-server.properties
 [ACEQL HTTP START] Setting System Properties:
@@ -594,10 +594,10 @@ From now, you can read the [API User Guide](https://www.aceql.com/DocDownload?do
        {
            // Create a transaction
            AceQLTransaction transaction = await connection.BeginTransactionAsync();
-
+   
            string sql = "insert into customer values " + "" +
                "(@parm1, @parm2, @parm3, @parm4, @parm5, @parm6, @parm7, @parm8)";
-
+   
            AceQLCommand command = new AceQLCommand(sql, connection);
            try
            {
@@ -610,16 +610,16 @@ From now, you can read the [API User Guide](https://www.aceql.com/DocDownload?do
                command.Parameters.AddWithValue("@parm6", "New York");
                command.Parameters.AddWithValue("@parm7", "NY 10010");
                command.Parameters.Add(new AceQLParameter("@parm8", AceQLNullType.VARCHAR));
-
+   
                await command.ExecuteNonQueryAsync();
-
+   
                sql = "insert into orderlog values " +
                            "(@customer_id, @item_id, @description, " +
                                "@item_cost, @date_placed, @date_shipped, " +
                                "@jpeg_image, @is_delivered, @quantity)";
-
+   
                command = new AceQLCommand(sql, connection);
-
+   
                command.Parameters.AddWithValue("@customer_id", customerId);
                command.Parameters.AddWithValue("@item_id", itemId);
                command.Parameters.AddWithValue("@description", "Item Description");
@@ -631,7 +631,7 @@ From now, you can read the [API User Guide](https://www.aceql.com/DocDownload?do
                    AceQLNullType.BLOB));
                command.Parameters.AddWithValue("@is_delivered", 1);
                command.Parameters.AddWithValue("@quantity", 1);
-
+   
                await command.ExecuteNonQueryAsync();
                await transaction.CommitAsync();
            }
@@ -720,14 +720,14 @@ From now on, you can read the [C# Client SDK User Guide](https://www.aceql.com/D
     */
    public void insertCustomerAndOrderLog(int customerId, int itemId)
        throws SQLException {
-
+   
      connection.setAutoCommit(false);
-
+   
      try {
          // Create a Customer
          String sql = "INSERT INTO CUSTOMER VALUES ( ?, ?, ?, ?, ?, ?, ?, ? )";
          PreparedStatement prepStatement = connection.prepareStatement(sql);
-
+   
          int i = 1;
          prepStatement.setInt(i++, customerId);
          prepStatement.setString(i++, "Sir");
@@ -737,22 +737,22 @@ From now on, you can read the [C# Client SDK User Guide](https://www.aceql.com/D
          prepStatement.setString(i++, "New York");
          prepStatement.setString(i++, "NY 10010");
          prepStatement.setString(i++, null);
-
+   
          prepStatement.executeUpdate();
          prepStatement.close();
-
+   
          // Uncomment following line to test transaction behavior
          // if (true) throw new SQLException("Exception thrown.");
-
+   
          // Create an Order for this Customer
          sql = "INSERT INTO ORDERLOG VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )";
-
+   
          // Create a new Prepared Statement
          prepStatement = connection.prepareStatement(sql);
-
+   
          i = 1;
          long now = new java.util.Date().getTime();
-
+   
          prepStatement.setInt(i++, customerId);
          prepStatement.setInt(i++, itemId);
          prepStatement.setString(i++, "Item Description");
@@ -763,10 +763,10 @@ From now on, you can read the [C# Client SDK User Guide](https://www.aceql.com/D
          prepStatement.setBinaryStream(i++, null);
          prepStatement.setInt(i++, 1);
          prepStatement.setInt(i++, 2);
-
+   
          prepStatement.executeUpdate();
          prepStatement.close();
-
+   
          System.out.println("Insert done!");
      } catch (SQLException e) {
          e.printStackTrace();
@@ -793,7 +793,7 @@ The aceql module supports Python 3.4â€“3.8.
 $ pip install aceql
 ```
 
-3.    Download this Python class: [my_remote_connection.py](https://www.aceql.com/rest/soft/7.0/src/my_remote_connection.py)
+3.    Download this Python class: [my_remote_connection.py](https://www.aceql.com/rest/soft/7.1/src/my_remote_connection.py)
 
 4.    The  connection to the remote database is  created  using a [DB API 2.0](https://www.python.org/dev/peps/pep-0249/)  `Connection` class and passing the URL of the AceQL Servlet Manager of your configuration:
 
@@ -801,22 +801,22 @@ $ pip install aceql
           @staticmethod
           def remote_connection_builder():
               """Remote Connection Quick Start client example.
-
+      
               Creates a Connection to a remote database.
               """
-
+      
               # The URL of the AceQL Server servlet
               # Port number is the port number used to start the Web Server:
               url = "http://localhost:9090/aceql"
-
+      
               # The remote database to use:
               database = "sampledb"
-
+      
               # (username, password) for authentication on server side.
               # No authentication will be done for our Quick Start:
               username = "MyUsername"
               password = "myPassword"
-
+      
               # Attempt to establish a connection to the remote database.
               # On the server side, a JDBC connection is extracted from the
               # connection pool created by the server at startup.
@@ -833,29 +833,29 @@ $ pip install aceql
               """Example of 2 INSERT in the same transaction
                  using a customer id and an item id.
               """
-
+      
               self.connection.set_auto_commit(False)
               cursor = self.connection.cursor()
-
+      
               try:
                   # Create a Customer
                   sql = "insert into customer values (?, ?, ?, ?, ?, ?, ?, ?)"
                   params = (customer_id, 'Sir', 'John', 'Smith', '1 Madison Ave',
                             'New York', 'NY 10010', '+1 212-586-7000')
                   cursor.execute(sql, params)
-
+      
                   # Create an Order for this Customer
                   sql = "insert into orderlog values ( ?, ?, ?, ?, ?, ?, ?, ?, ? )"
-
+      
                   the_datetime = datetime.now()
                   the_date = the_datetime.date()
-
+      
                   # (None, SqlNullType.BLOB) means to set the jpeg_image BLOB
                   # column to NULL on server:
                   params = (customer_id, item_id, "Item Description", 9999,
                             the_date, the_datetime, (None, SqlNullType.BLOB), 1, 2)
                   cursor.execute(sql, params)
-
+      
                   self.connection.commit()
               except Error as e:
                   print(e)
@@ -868,7 +868,7 @@ $ pip install aceql
 
 
 
-The `select_customer_and_orderlog` method of [my_remote_connection.py](https://www.aceql.com/rest/soft/7.0/src/my_remote_connection.py) displays back the inserted values.
+The `select_customer_and_orderlog` method of [my_remote_connection.py](https://www.aceql.com/rest/soft/7.1/src/my_remote_connection.py) displays back the inserted values.
 
 From now on, you can read the [Python Client SDK User Guide](https://www.aceql.com/DocDownload?doc=https://github.com/kawansoft/aceql-http-client-python/blob/master/README.md).
 
@@ -883,7 +883,6 @@ You can read the [Server User Guide](https://www.aceql.com/DocDownload?doc=https
 
 
 ------
-
 
 
 
