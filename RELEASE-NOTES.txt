@@ -33,8 +33,8 @@ What's New:
 - Commons IO Apache library has been upgraded to 2.7.
 
 Bugs fixed:
-- Properties were not displayed in correct order on console at
-  server startup. This has been fixed. 
+- Properties were not displayed in the correct order on the console 
+  at server startup. This has been fixed. 
 
 
 AceQL HTTP Version 7.0 - 20-Apr-2021
