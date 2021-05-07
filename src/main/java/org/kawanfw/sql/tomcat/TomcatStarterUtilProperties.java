@@ -31,16 +31,19 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
 import java.util.Properties;
+import java.util.Set;
 
 import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
 import org.jasypt.iv.RandomIvGenerator;
 import org.jasypt.properties.EncryptableProperties;
 import org.kawanfw.sql.api.server.DatabaseConfigurationException;
+import org.kawanfw.sql.tomcat.util.LinkedProperties;
 import org.kawanfw.sql.tomcat.util.PropertiesPasswordManagerLoader;
 import org.kawanfw.sql.util.FrameworkDebug;
 
 /**
  * Methods for properties and jasypt encrypted properties loading.
+ * 
  * @author Nicolas de Pomereu
  *
  */
@@ -48,7 +51,7 @@ public class TomcatStarterUtilProperties {
 
     /** Debug info */
     private static boolean DEBUG = FrameworkDebug.isSet(TomcatStarterUtilProperties.class);
-    
+
     /**
      * Returns the Properties extracted from a file.
      *
@@ -59,47 +62,40 @@ public class TomcatStarterUtilProperties {
      * @throws DatabaseConfigurationException
      */
     public static Properties getProperties(File file) throws IOException, DatabaseConfigurationException {
-    
-        if (file == null) {
-            throw new IllegalArgumentException("file can not be null!");
-        }
-    
-        if (!file.exists()) {
-            throw new DatabaseConfigurationException("properties file not found: " + file);
-        }
-    
-        /**
-         * Keep for now
-         * // Get the properties with order of position in file: Set<String>
-         * linkedProperties = LinkedProperties.getLinkedPropertiesName(file);
-         * 
-         * // Create the ordered properties Properties properties;
-         * 
-         * try (InputStream in = new FileInputStream(file);) { properties = new
-         * LinkedProperties(linkedProperties); properties.load(in); }
-         */
-    
-        Properties properties = new Properties();
-        try (InputStream in = new FileInputStream(file);) {
-            properties.load(in);
-        }
-    
-        char[] password = null;
-        try {
-            password = PropertiesPasswordManagerLoader.getPassword(properties);
-        } catch (Exception e) {
-            throw new DatabaseConfigurationException(e.getMessage());
-        }
-    
-        if (password == null) {
-            debug("PropertiesPasswordManager password is null!");
-        }
-        else {
-            debug("password: " + new String(password));
-        }
-        
-        return password == null ?  properties: getEncryptedProperties(file, password);
-    
+
+	if (file == null) {
+	    throw new IllegalArgumentException("file can not be null!");
+	}
+
+	if (!file.exists()) {
+	    throw new DatabaseConfigurationException("properties file not found: " + file);
+	}
+
+	// Get the properties with order of position in file:
+	Set<String> linkedProperties = LinkedProperties.getLinkedPropertiesName(file);
+
+	// Create the ordered properties Properties properties;
+	Properties properties = new Properties();
+	try (InputStream in = new FileInputStream(file);) {
+	    properties = new LinkedProperties(linkedProperties);
+	    properties.load(in);
+	}
+
+	char[] password = null;
+	try {
+	    password = PropertiesPasswordManagerLoader.getPassword(properties);
+	} catch (Exception e) {
+	    throw new DatabaseConfigurationException(e.getMessage());
+	}
+
+	if (password == null) {
+	    debug("PropertiesPasswordManager password is null!");
+	} else {
+	    debug("password: " + new String(password));
+	}
+
+	return password == null ? properties : getEncryptedProperties(file, password);
+
     }
 
     /**
@@ -111,19 +107,19 @@ public class TomcatStarterUtilProperties {
      */
     public static Properties getEncryptedProperties(File file, char[] password)
 	    throws IOException, FileNotFoundException {
-	
+
 	// We load the encrypted properties
-        StandardPBEStringEncryptor encryptor = new StandardPBEStringEncryptor();
-        encryptor.setPassword(new String(password));
-        encryptor.setAlgorithm("PBEWithHMACSHA512AndAES_256");
-        encryptor.setIvGenerator(new RandomIvGenerator());
-    
-        Properties props = new EncryptableProperties(encryptor);
-        try (InputStream in = new FileInputStream(file);) {
-            props.load(in);
-        }
-    
-        return props;
+	StandardPBEStringEncryptor encryptor = new StandardPBEStringEncryptor();
+	encryptor.setPassword(new String(password));
+	encryptor.setAlgorithm("PBEWithHMACSHA512AndAES_256");
+	encryptor.setIvGenerator(new RandomIvGenerator());
+
+	Properties props = new EncryptableProperties(encryptor);
+	try (InputStream in = new FileInputStream(file);) {
+	    props.load(in);
+	}
+
+	return props;
     }
 
     /**

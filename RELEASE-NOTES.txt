@@ -28,14 +28,20 @@ AceQL HTTP Version 7.1 - 07-May-2021
 ------------------------------------
 
 What's New:
+
 - Output speed of SELECT calls has been improved.
 - Commons IO Apache library has been upgraded to 2.7.
+
+Bugs fixed:
+- Properties were not displayed in correct order on console at
+  server startup. This has been fixed. 
 
 
 AceQL HTTP Version 7.0 - 20-Apr-2021
 ------------------------------------
 
 What's New:
+
 - The new PropertiesPassworManager interface allows to define a password
   for encrypting property values in the aceql-server.properties file.
 - Tomcat embedded version has been updated from 8.5 to 9.0 (9.0.45).   
@@ -43,6 +49,7 @@ What's New:
 - The Windows user interface supports now the dark mode.
 
 Bugs fixed: 
+
 - Ugly embedded Tomcat messages/logging on startup have been disabled.
 - DefaultPoolsInfo debug mode was true per default. This has been fixed.
 
