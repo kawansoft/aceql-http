@@ -26,7 +26,6 @@ package org.kawanfw.sql.api.server.auth.crypto;
 
 import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
 import org.jasypt.iv.RandomIvGenerator;
-import org.kawanfw.sql.version.VersionValues;
 
 /**
  * Command line interface for property values encryption. It Allows:
@@ -48,6 +47,12 @@ import org.kawanfw.sql.version.VersionValues;
  */
 public class PropertiesEncryptor {
 
+   
+    /**
+     * Version of PropertiesEncryptor
+     */
+    public static final String VERSION = "1.0";
+
     /**
      * Calls doIt method.
      * 
@@ -64,7 +69,7 @@ public class PropertiesEncryptor {
      */
     public static void doIt() {
 	System.out.println();
-	System.out.println("Welcome to AceQL Properties Encryptor " + VersionValues.VERSION + "!");
+	System.out.println("Welcome to AceQL Properties Encryptor " + VERSION + "!");
 	System.out.println("Enter \"quit\" to exit at any time.");
 	System.out.println();
 	System.out.println("First step is to choose a password that will be used to encrypt properties.");
