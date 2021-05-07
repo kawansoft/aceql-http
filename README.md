@@ -6,7 +6,7 @@
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/d14142d5d6f04ba891d505e2e47b417d)](https://www.codacy.com/gh/kawansoft/aceql-http?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=kawansoft/aceql-http&amp;utm_campaign=Badge_Grade)
 ![GitHub contributors](https://img.shields.io/github/contributors/kawansoft/aceql-http)
 
-# AceQL HTTP v7.1   - April 20,  2021
+# AceQL HTTP v7.1   - May 07,  2021
 # Server Installation and Configuration Guide  
 
 <img src="https://www.aceql.com/favicon.png" alt="AceQL HTTP Icon"/> 
@@ -876,7 +876,7 @@ It will display a JSON string and should display a status of `"OK"` and the curr
 ```json
 {
     "status": "OK",
-    "version": "AceQL HTTP v7.1 - 20-Apr-2020"
+    "version": "AceQL HTTP v7.1 - 07-May-2021"
 }         
 ```
 
@@ -933,7 +933,7 @@ If you want to ensure that temporary files will be cleaned, you can access the t
 
 Where:
 
--   `user.home` =  the user.home of the user that started the AceQL Web Server.
+-   `user.home` =  the `user.home` of the user that started the AceQL Web Server.
 
 -   `username` = the username of the client user.
 
