@@ -150,7 +150,7 @@ public class TomcatStarter {
 	    flushEachResultSetRow = "true";
 	}
 	
-	System.out.println(SqlTag.SQL_PRODUCT_START + " " + "Internal Properties: ");
+	System.out.println(SqlTag.SQL_PRODUCT_START + " " + "Setting Internal Properties: ");
 	System.out.println(SqlTag.SQL_PRODUCT_START + "  -> tomcatLoggingLevel = " + level);
 	System.out.println(SqlTag.SQL_PRODUCT_START + "  -> flushEachResultSetRow = " + Boolean.parseBoolean(flushEachResultSetRow));
 	
