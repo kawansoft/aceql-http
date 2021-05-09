@@ -19,7 +19,7 @@ import org.kawanfw.sql.util.FrameworkFileUtil;
  * <br/>
  * This default implementation is provided <i>as is</i>: password is not secured if an
  * attacker gets access to the server. <br/>
- * Note that the {@code #getPassword()} will return {@code null} if the file does not
+ * Note that the {@link #getPassword()} will return {@code null} if the file does not
  * exists. <br/>
  * <br/>
  * 
