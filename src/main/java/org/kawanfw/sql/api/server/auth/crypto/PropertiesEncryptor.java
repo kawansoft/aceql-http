@@ -37,7 +37,7 @@ import org.jasypt.iv.RandomIvGenerator;
  * In order to run:
  * <ul>
  * <li>Open a command line on Windows or Linux/Bash.</li>
- * <li>{@code java -jar <aceql installation dir>/lib-server/properties-encryptor-7.0.jar}.</li>
+ * <li>{@code java -jar <aceql installation dir>/lib-server/properties-encryptor-1.0.jar}.</li>
  * <li>Follow the instructions in order to create the password and to encrypt
  * some property values.</li>
  * </ul>
