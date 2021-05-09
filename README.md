@@ -53,6 +53,8 @@
             * [Activating JwtSessionConfigurator](#activating-jwtsessionconfigurator)
          * [Creating your own session management](#creating-your-own-session-management)
       * [Advanced Firewall Configuration](#advanced-firewall-configuration)
+      * [Encrypting Properties in the aceql-server.properties file](#encrypting-properties-in-the-aceql-serverproperties-file)
+         * [Running the PropertiesEncryptor class](#running-the-propertiesencryptor-class)
       * [Interacting with the JDBC Pool at runtime](#interacting-with-the-jdbc-pool-at-runtime)
       * [Running the AceQL Web Server](#running-the-aceql-web-server)
          * [Running the AceQL Web Server without Windows Desktop](#running-the-aceql-web-server-without-windows-desktop)
@@ -67,6 +69,7 @@
          * [Transport format](#transport-format)
          * [Content streaming and memory management](#content-streaming-and-memory-management)
       * [Managing temporary files](#managing-temporary-files)
+
 
 # Fundamentals
 
@@ -780,6 +783,27 @@ sampledb.sqlFirewallManagerClassNames=\
     com.mycompany.firewall.MySqlFirewallManager1\
     com.mycompany.firewall.MySqlFirewallManager2
 ```
+
+## Encrypting Properties in the aceql-server.properties file
+
+In order to protect configuration passwords and other confidential values from eavesdropping, each property value may be replaced by an encrypted value in the `aceql-server.properties` file.
+
+The encrypted values are generated using the [PropertiesEncryptor](https://www.aceql.com/rest/soft/7.1/javadoc/org/kawanfw/sql/api/server/auth/crypto/PropertiesEncryptor.html) class which is wrapped in the provided  `properties-encryptor-1.0.jar`.  The `PropertiesEncryptor` class allows both:
+
+1. To choose a secret password that will be used for encrypting each selected property value.
+2. To encrypt each selected value.  
+
+In order for the AceQL Server to decrypt the properties at runtime, the secret password must be returned by the `getPassword()` of a concrete implementation of the [PropertiesPasswordManager](https://www.aceql.com/rest/soft/7.1/javadoc/org/kawanfw/sql/api/server/auth/crypto/PropertiesPasswordManager.html) interface. A default implementation is provided: [DefaultPropertiesPasswordManager](https://www.aceql.com/rest/soft/7.1/javadoc/org/kawanfw/sql/api/server/auth/crypto/DefaultPropertiesPasswordManager.html). 
+
+The `PropertiesPasswordManager`  concrete class name must then be defined with the `propertiesPasswordManagerClassName` property.  See the `Properties Password Manager Section` of the `aceql-server.properties` file.
+
+### Running the PropertiesEncryptor class 
+
+In order to run the `PropertiesEncryptor` class:
+
+- Open a command line on Windows or Linux/Bash.
+- `java -jar <aceql installation dir>/lib-server/properties-encryptor-1.0.jar`.
+- Follow the instructions in order to create the password and to encrypt some property values.
 
 ## Interacting with the JDBC Pool at runtime
 
