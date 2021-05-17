@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Vector;
 
 import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kawanfw.sql.api.server.StatementAnalyzer;
 
 public class StatementAnalyzerTest {
