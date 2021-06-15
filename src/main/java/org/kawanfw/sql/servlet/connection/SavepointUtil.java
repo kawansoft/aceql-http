@@ -141,6 +141,10 @@ public class SavepointUtil {
 	    String idStr = request.getParameter(HttpParameter.ID);
 	    String name = request.getParameter(HttpParameter.NAME);
 
+	    if (idStr == null || idStr.isEmpty()) {
+		idStr = "-1";
+	    }
+	    
 	    int id = Integer.parseInt(idStr);
 	    name = HtmlConverter.fromHtml(name);
 
@@ -162,6 +166,10 @@ public class SavepointUtil {
 	    String idStr = request.getParameter(HttpParameter.ID);
 	    String name = request.getParameter(HttpParameter.NAME);
 
+	    if (idStr == null || idStr.isEmpty()) {
+		idStr = "-1";
+	    }
+	    
 	    int id = Integer.parseInt(idStr);
 	    name = HtmlConverter.fromHtml(name);
 	    

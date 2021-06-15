@@ -234,7 +234,7 @@ In case of error:
 
 All the following examples use a MySQL database named `sampledb`.
 
-Connection to the [sampledb](http://www.aceql.com/rest/soft/7.1/src/sampledb.txt) database with (MyUsername, MySecret) credentials:
+Connection to the [sampledb](http://www.aceql.com/rest/soft/7.2/src/sampledb.txt) database with (MyUsername, MySecret) credentials:
 
 ```bash
 $ curl \
@@ -379,9 +379,9 @@ The call will return a JSON stream with the result:
 
 ## Savepoint calls 
 
-Allow to create, rollback and release a Savepoint.
+Allow to create, rollback or release a savepoint. 
 
-### Unamed Savepoint Creation
+### Unnamed savepoint creation
 
 | URL  Format                                                  |
 | ------------------------------------------------------------ |
@@ -392,15 +392,66 @@ Allow to create, rollback and release a Savepoint.
 | session_id     | The session_id  value returned by `login`.                   |
 | connection_id  | The ID that refers the `java.sql.Connection` to use on server.<br>Optional: if not passed, server will use the one created at login. |
 
-| Request  parameter | Requested | Description                                                  |
-| ------------------ | --------- | ------------------------------------------------------------ |
-| sql                | Yes       | The SQL  statement.                                          |
-| prepared_statement | No        | true or false. Defaults to false.  Says if  the statement is to be executed as a prepared statement on remote server. |
-| param_type_{i}     | No        | For  prepared statements only.  Allows to  define the parameter type of parameter of i index. See values below. |
-| param_value_{i}    | No        | For  prepared statements only.  Allows to  define the parameter value of parameter of i index. |
+### Named savepoint creation
 
-| Prepare |
-| ------- |
+| URL  Format                                                  |
+| ------------------------------------------------------------ |
+| `server/aceql/session/{session_id}/connection/{connection_id}/set_named_savepoint` |
+
+| URL  parameter | Description                                                  |
+| -------------- | ------------------------------------------------------------ |
+| session_id     | The session_id  value returned by `login`.                   |
+| connection_id  | The ID that refers the `java.sql.Connection` to use on server.<br>Optional: if not passed, server will use the one created at login. |
+
+| Request <br>parameter | Requested | Description                |
+| --------------------- | --------- | -------------------------- |
+| name                  | Yes       | The name of the savepoint. |
+
+### Savepoint rollback or release
+
+| URL  Format                                                  |
+| ------------------------------------------------------------ |
+| `server/aceql/session/{session_id}/connection/{connection_id}/rollback_savepoint`<br>`server/aceql/session/{session_id}/connection/{connection_id}/release_savepoint` |
+
+| URL  parameter | Description                                                  |
+| -------------- | ------------------------------------------------------------ |
+| session_id     | The session_id  value returned by `login`.                   |
+| connection_id  | The ID that refers the `java.sql.Connection` to use on server.<br>Optional: if not passed, server will use the one created at login. |
+
+| Request <br/>parameter | Requested | Description                                                  |
+| ---------------------- | --------- | ------------------------------------------------------------ |
+| id                     | No.       | The ID of the savepoint. Numeric value >= 0. <br>Requested if the savepoint is a unnamed savepoint. |
+| name                   | No.       | The name of the Savepoint.<br>Requested if the savepoint is a named savepoint. |
+
+### Server response to savepoint  calls
+
+For  `set_savepoint` or `set_named_savepoint`,  if everything is OK:
+
+```
+{
+    "status": "OK",
+    "result": "[id={numeric value}, name={string value}]"
+}                              
+```
+
+For  `rollback_savepoint` & `release_savepoint` If everything is OK:
+
+```
+{                                    
+    "status":"OK",   
+}                                    
+```
+
+In case of error:
+
+```
+{  
+  "status":"FAIL",
+  "error_type":{errortype numeric value},
+  "error_message":"{error message returned by the server}",
+  "http_status":{httpstatus code numeric value}
+}
+```
 
 ## execute_update
 
