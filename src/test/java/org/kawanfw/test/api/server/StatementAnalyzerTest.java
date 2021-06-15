@@ -110,7 +110,7 @@ public class StatementAnalyzerTest {
 	String sql = "UPDATE ORDERLOG SET " + "   date_placed  = ? "
 		+ " , date_shipped = ? " + " , item_cost   = ? "
 		+ " , is_delivered = ? " + " , quantity     = ? "
-		+ "     WHERE  customer_id = ? AND item_id = ?;";
+		+ "     WHERE  customer_id = ? AND item_id = ?";
 
 	StatementAnalyzer stAnalyzer = new StatementAnalyzer(sql,
 		new Vector<Object>());
@@ -248,7 +248,7 @@ public class StatementAnalyzerTest {
 
 	System.out.println("stAnalyzer.isWithSemicolons(): "
 		+ stAnalyzer.isWithSemicolons());
-	Assert.assertEquals(false, stAnalyzer.isWithSemicolons());
+	Assert.assertEquals(true, stAnalyzer.isWithSemicolons());
 
 	System.out.println(
 		"stAnalyzer.isWithComments(): " + stAnalyzer.isWithComments());
