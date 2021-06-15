@@ -66,6 +66,8 @@ import org.kawanfw.sql.api.server.StatementAnalyzer;
  * Language) call.</li>
  * <li>{@link DenyDdlManager}: manager that denies any DDL (Data Definition
  * Language) call.</li>
+ * <li>{@link DenyTclManager}: manager that denies any TCL (Transaction Control
+ * Language) call.</li>
  * <li>{@link DenyExecuteUpdateManager}: manager that denies any update of the
  * database.</li>
  * <li>{@link DenyMetadataQueryManager}: manager that denies the use of the
@@ -141,9 +143,9 @@ public interface SqlFirewallManager {
     public boolean allowSqlRunAfterAnalysis(String username, String database, Connection connection, String ipAddress,
 	    String sql, boolean isPreparedStatement, List<Object> parameterValues) throws IOException, SQLException;
 
-
     /**
-     * Allows to define if the passed username is allowed to call a raw JDBC {@code Statement.execute}.
+     * Allows to define if the passed username is allowed to call a raw JDBC
+     * {@code Statement.execute}.
      *
      * @param username   the client username to check the rule for.
      * @param database   the database name as defined in the JDBC URL field
@@ -205,6 +207,5 @@ public interface SqlFirewallManager {
      */
     public void runIfStatementRefused(String username, String database, Connection connection, String ipAddress,
 	    boolean isMetadataQuery, String sql, List<Object> parameterValues) throws IOException, SQLException;
-
 
 }

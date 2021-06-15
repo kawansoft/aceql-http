@@ -36,7 +36,7 @@ import org.kawanfw.sql.api.server.DefaultDatabaseConfigurator;
 import org.kawanfw.sql.api.server.StatementAnalyzer;
 
 /**
- * Firewall manager that denies any TCL (Transactional Control Language) call.
+ * Firewall manager that denies any TCL (Transaction Control Language) call.
  *
  * @author Nicolas de Pomereu
  * @since 4.0

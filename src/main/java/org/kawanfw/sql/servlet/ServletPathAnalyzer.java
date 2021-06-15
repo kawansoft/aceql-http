@@ -228,9 +228,8 @@ public class ServletPathAnalyzer {
      */
     private boolean checkSavepointCommands(String requestUri) {
 
-	// MUST BE FIRST IN TESTS
-	if (requestUri.contains("/set_savepoint_name")) {
-            connectionModifierOrReader = "set_savepoint_name";
+	if (requestUri.contains("/set_named_savepoint")) {
+            connectionModifierOrReader = "set_named_savepoint";
             return true;
         }	
 	

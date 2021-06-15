@@ -28,7 +28,7 @@ public class ServerSqlDispatchUtil {
     }
 
     public static  boolean isSavepointModifier(String action) {
-	return action.equals(HttpParameter.SET_SAVEPOINT) || action.equals(HttpParameter.SET_SAVEPOINT_NAME)
+	return action.equals(HttpParameter.SET_SAVEPOINT) || action.equals(HttpParameter.SET_NAMED_SAVEPOINT)
         	|| action.equals(HttpParameter.ROLLBACK_SAVEPOINT) || action.equals(HttpParameter.RELEASE_SAVEPOINT);
 
     }

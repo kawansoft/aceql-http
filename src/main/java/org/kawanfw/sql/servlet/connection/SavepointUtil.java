@@ -117,11 +117,11 @@ public class SavepointUtil {
 
 	    return;
 
-	} else if (action.equals(HttpParameter.SET_SAVEPOINT_NAME)) {
+	} else if (action.equals(HttpParameter.SET_NAMED_SAVEPOINT)) {
 	    String name = request.getParameter(HttpParameter.NAME);
 	    name = HtmlConverter.fromHtml(name);
 
-	    debug("set_savepoint_name name: " + name);
+	    debug("savepoint name: " + name);
 	    
 	    Savepoint savepoint = connection.setSavepoint(name);
 	    connectionStore.put(savepoint);

@@ -1,4 +1,4 @@
-# AceQL HTTP v7.1 - May 07, 2021
+# AceQL HTTP v7.2 - June 07, 2021
 
 # API User Guide
 
@@ -374,6 +374,33 @@ The call will return a JSON stream with the result:
     "status":"OK"
 }                                                               
 ```
+
+
+
+## Savepoint calls 
+
+Allow to create, rollback and release a Savepoint.
+
+### Unamed Savepoint Creation
+
+| URL  Format                                                  |
+| ------------------------------------------------------------ |
+| `server/aceql/session/{session_id}/connection/{connection_id}/set_savepoint` |
+
+| URL  parameter | Description                                                  |
+| -------------- | ------------------------------------------------------------ |
+| session_id     | The session_id  value returned by `login`.                   |
+| connection_id  | The ID that refers the `java.sql.Connection` to use on server.<br>Optional: if not passed, server will use the one created at login. |
+
+| Request  parameter | Requested | Description                                                  |
+| ------------------ | --------- | ------------------------------------------------------------ |
+| sql                | Yes       | The SQL  statement.                                          |
+| prepared_statement | No        | true or false. Defaults to false.  Says if  the statement is to be executed as a prepared statement on remote server. |
+| param_type_{i}     | No        | For  prepared statements only.  Allows to  define the parameter type of parameter of i index. See values below. |
+| param_value_{i}    | No        | For  prepared statements only.  Allows to  define the parameter value of parameter of i index. |
+
+| Prepare |
+| ------- |
 
 ## execute_update
 

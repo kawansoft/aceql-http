@@ -105,7 +105,7 @@ public class HttpParameter {
 
     // SAVEPOINTS
     public static final String SET_SAVEPOINT = "set_savepoint";
-    public static final String SET_SAVEPOINT_NAME = "set_savepoint_name";
+    public static final String SET_NAMED_SAVEPOINT = "set_named_savepoint";
     public static final String ROLLBACK_SAVEPOINT = "rollback_savepoint";
     public static final String RELEASE_SAVEPOINT = "release_savepoint";
 
