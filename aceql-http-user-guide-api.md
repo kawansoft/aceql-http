@@ -1,4 +1,4 @@
-# AceQL HTTP v7.2 - June 07, 2021
+# AceQL HTTP v7.2 - June 15, 2021
 
 # API User Guide
 
@@ -25,6 +25,11 @@
       * [Connection modifiers](#connection-modifiers)
          * [Server response to connection modifier calls](#server-response-to-connection-modifier-calls)
          * [Connection modifier calls – cURLexample](#connection-modifier-calls--curlexample)
+      * [Savepoint calls](#savepoint-calls)
+         * [Unnamed savepoint creation](#unnamed-savepoint-creation)
+         * [Named savepoint creation](#named-savepoint-creation)
+         * [Savepoint rollback or release](#savepoint-rollback-or-release)
+         * [Server response to savepoint  calls](#server-response-to-savepoint--calls)
       * [execute_update](#execute_update)
          * [Server response to execute_update call](#server-response-to-execute_update-call)
          * [execute_update call – cURL examples](#execute_update-call--curl-examples)
@@ -420,7 +425,7 @@ Allow to create, rollback or release a savepoint.
 
 | Request <br/>parameter | Requested | Description                                                  |
 | ---------------------- | --------- | ------------------------------------------------------------ |
-| id                     | No.       | The ID of the savepoint. Integer value >= 0. <br>Requested if the savepoint is a unnamed savepoint. |
+| id                     | No.       | The ID of the savepoint. Integer value >= `0`. <br>Requested if the savepoint is a unnamed savepoint. |
 | name                   | No.       | The name of the Savepoint.<br>Requested if the savepoint is a named savepoint. |
 
 ### Server response to savepoint  calls
@@ -431,11 +436,11 @@ For  `set_savepoint` or `set_named_savepoint`, if everything is OK:
 {
   "status": "OK",
   "id": {savepoint ID},
-  "name": "{savepoint name"
+  "name": "{savepoint name}"
 }                             
 ```
 
-`id` will contain a value >= 0 for unnamed savepoint and `-1` for a named savepoint.
+`id` will contain a value >= `0` for unnamed savepoint and `-1` for a named savepoint.
 
 `name` will contain an empty string if the savepoint is unnamed.
 

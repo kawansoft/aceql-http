@@ -28,8 +28,10 @@ AceQL HTTP Version 7.2 - 15-Jun-2021
 ------------------------------------
 
 What's New:
-- Savepoints are now fully supported.  See API documentation.
-- The new provided DenyTclManager SqlFirewallManager allows
+- Savepoints are now fully supported. See API documentation.
+  Corresponding JDBC calls will be implemented in the next version of the
+  AceQL Client JDBC Driver. 
+- The new provided DenyTclManager (SqlFirewallManager implementation) allows
   to deny TCL (Transaction Control Language) calls.
 
 
