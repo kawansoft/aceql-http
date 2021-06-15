@@ -420,21 +420,26 @@ Allow to create, rollback or release a savepoint.
 
 | Request <br/>parameter | Requested | Description                                                  |
 | ---------------------- | --------- | ------------------------------------------------------------ |
-| id                     | No.       | The ID of the savepoint. Numeric value >= 0. <br>Requested if the savepoint is a unnamed savepoint. |
+| id                     | No.       | The ID of the savepoint. Integer value >= 0. <br>Requested if the savepoint is a unnamed savepoint. |
 | name                   | No.       | The name of the Savepoint.<br>Requested if the savepoint is a named savepoint. |
 
 ### Server response to savepoint  calls
 
-For  `set_savepoint` or `set_named_savepoint`,  if everything is OK:
+For  `set_savepoint` or `set_named_savepoint`, if everything is OK:
 
 ```
 {
-    "status": "OK",
-    "result": "[id={numeric value}, name={string value}]"
-}                              
+  "status": "OK",
+  "id": {savepoint ID},
+  "name": "{savepoint name"
+}                             
 ```
 
-For  `rollback_savepoint` & `release_savepoint` If everything is OK:
+`id` will contain a value >= 0 for unnamed savepoint and `-1` for a named savepoint.
+
+`name` will contain an empty string if the savepoint is unnamed.
+
+For  `rollback_savepoint` & `release_savepoint`, if everything is OK:
 
 ```
 {                                    
@@ -1173,7 +1178,7 @@ In case of error:
 
 ```
 
-## 
+
 
 ## close
 

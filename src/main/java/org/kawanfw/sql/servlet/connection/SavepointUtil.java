@@ -34,11 +34,11 @@ import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.kawanfw.sql.metadata.util.GsonWsUtil;
 import org.kawanfw.sql.servlet.HttpParameter;
 import org.kawanfw.sql.servlet.ServerSqlManager;
 import org.kawanfw.sql.servlet.sql.json_return.JsonErrorReturn;
 import org.kawanfw.sql.servlet.sql.json_return.JsonOkReturn;
-import org.kawanfw.sql.transport.SavepointHttp;
 import org.kawanfw.sql.util.FrameworkDebug;
 import org.kawanfw.sql.util.HtmlConverter;
 
@@ -107,14 +107,9 @@ public class SavepointUtil {
 	    Savepoint savepoint = connection.setSavepoint();
 	    connectionStore.put(savepoint);
 
-	    SavepointHttp savepointHttp = new SavepointHttp(
-		    savepoint.getSavepointId(), "aceql_savepoint_noname");
-	    String savepointStr = savepointHttp.toString();
-	    savepointStr = HtmlConverter.toHtml(savepointStr);
-
-	    ServerSqlManager.writeLine(out,
-		    JsonOkReturn.build("result", savepointStr));
-
+	    SavepointDto savepointDto = new SavepointDto(savepoint.getSavepointId(), "");
+	    String jsonString = GsonWsUtil.getJSonString(savepointDto);
+	    ServerSqlManager.writeLine(out, jsonString);
 	    return;
 
 	} else if (action.equals(HttpParameter.SET_NAMED_SAVEPOINT)) {
@@ -126,14 +121,12 @@ public class SavepointUtil {
 	    Savepoint savepoint = connection.setSavepoint(name);
 	    connectionStore.put(savepoint);
 
-	    SavepointHttp savepointHttp = new SavepointHttp(-1, savepoint.getSavepointName());
-	    String savepointStr = savepointHttp.toString();
-	    savepointStr = HtmlConverter.toHtml(savepointStr);
-
-	    debug("savepointHttp: " + savepointHttp);
-	    
-	    ServerSqlManager.writeLine(out,
-		    JsonOkReturn.build("result", savepointStr));
+	    //SavepointHttp savepointHttp = new SavepointHttp(-1, savepoint.getSavepointName());
+	    //String savepointStr = savepointHttp.toString();
+	    //savepointStr = HtmlConverter.toHtml(savepointStr);
+	    SavepointDto savepointDto = new SavepointDto(-1, savepoint.getSavepointName());
+	    String jsonString = GsonWsUtil.getJSonString(savepointDto);
+	    ServerSqlManager.writeLine(out, jsonString);
 
 	    return;
 
