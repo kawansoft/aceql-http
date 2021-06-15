@@ -216,7 +216,7 @@ public class TomcatStarterUtil {
 	    return;
 	}
 
-	checkParameters(properties, database, driverClassName, url, username, password);
+	checkParameters(database, driverClassName, url, username, password);
 
 	PoolProperties poolProperties = createPoolProperties(properties, database);
 	DataSource dataSource = new DataSource();
@@ -274,7 +274,6 @@ public class TomcatStarterUtil {
     }
 
     /**
-     * @param properties
      * @param database
      * @param driverClassName
      * @param url
@@ -282,8 +281,8 @@ public class TomcatStarterUtil {
      * @param password
      * @throws DatabaseConfigurationException
      */
-    private static void checkParameters(Properties properties, String database, String driverClassName, String url,
-	    String username, String password) throws DatabaseConfigurationException, IOException, SQLException {
+    private static void checkParameters(String database, String driverClassName, String url, String username,
+	    String password) throws DatabaseConfigurationException, IOException, SQLException {
 	if ((url == null) || url.isEmpty()) {
 	    throw new DatabaseConfigurationException(
 		    "the url property is not set in properties file for driverClassName " + driverClassName + ". "

@@ -11,11 +11,6 @@ import org.kawanfw.test.sql.metadata.aceql.ConnectionParms;
 
 public class SqlServerUtf8TestSqlServer {
 
-    public SqlServerUtf8TestSqlServer() {
-	// TODO Auto-generated constructor stub Value = "टेस्ट"
-
-    }
-
     /**
      * @param args
      */

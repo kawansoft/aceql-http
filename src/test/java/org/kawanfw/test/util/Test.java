@@ -12,13 +12,6 @@ import org.kawanfw.sql.api.server.util.SimpleSha1;
 public class Test {
 
     /**
-     *
-     */
-    public Test() {
-	// TODO Auto-generated constructor stub
-    }
-
-    /**
      * @param args
      */
     public static void main(String[] args) throws Exception {
