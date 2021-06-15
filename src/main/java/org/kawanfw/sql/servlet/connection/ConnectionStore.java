@@ -37,7 +37,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.kawanfw.sql.api.server.connectionstore.ConnectionKey;
@@ -135,35 +134,50 @@ public class ConnectionStore {
     }
 
     /**
-     * Returns the Savepoint associated to username + connectionId and savepointInfo
+     * Returns the Savepoint associated to username + connectionId and Savepoint ID
      *
-     * @param a Savepoint that is just a container with the info to find the real
-     *          one
+     * @param savepointId the ID of the Savepoint
      *
-     * @return the Savepoint associated to username + connectionId and savepointInfo
+     * @return the Savepoint associated to username + connectionId and Savepoint ID
      */
-    public Savepoint getSavepoint(Savepoint savepointInfo) {
+    public Savepoint getSavepoint(int savepointId) {
 	Set<Savepoint> savepointSet = savepointMap.get(connectionKey);
 
 	for (Iterator<Savepoint> iterator = savepointSet.iterator(); iterator.hasNext();) {
 	    Savepoint savepoint = iterator.next();
 
 	    try {
-		if (savepoint.getSavepointId() == savepointInfo.getSavepointId()) {
+		if (savepoint.getSavepointId() == savepointId) {
 		    return savepoint;
 		}
-	    } catch (SQLException e) {
-		// We don't care: it's a named Savepoint
+	    } catch (Throwable e) {
+		// Ignore. We don't care: it's a named Savepoint
 	    }
+	}
+
+	return null;
+    }
+    
+    /**
+     * Returns the Savepoint associated to username + connectionId and Savepoint Name
+     *
+     * @param savepointName the ID of the Savepoint
+     *
+     * @return the Savepoint associated to username + connectionId and Savepoint Name
+     */
+    public Savepoint getSavepoint(String savepointName) {
+	Set<Savepoint> savepointSet = savepointMap.get(connectionKey);
+
+	for (Iterator<Savepoint> iterator = savepointSet.iterator(); iterator.hasNext();) {
+	    Savepoint savepoint = iterator.next();
 
 	    try {
-		if (savepoint.getSavepointName().equals(savepointInfo.getSavepointName())) {
+		if (savepoint.getSavepointName().equals(savepointName)) {
 		    return savepoint;
 		}
-	    } catch (SQLException e) {
-		// We don't care: it's a unnamed Savepoint
+	    } catch (Throwable e) {
+		// Ignore. We don't care: it's a named Savepoint
 	    }
-
 	}
 
 	return null;
@@ -179,15 +193,12 @@ public class ConnectionStore {
     public void remove(Savepoint savepointInfo) {
 	Set<Savepoint> savepointSet = savepointMap.get(connectionKey);
 
-	Set<Savepoint> savepointSetNew = new TreeSet<Savepoint>();
-
 	for (Iterator<Savepoint> iterator = savepointSet.iterator(); iterator.hasNext();) {
 	    Savepoint savepoint = iterator.next();
 
-	    boolean addIt = true;
 	    try {
 		if (savepoint.getSavepointId() == savepointInfo.getSavepointId()) {
-		    addIt = false;
+		    savepointSet.remove(savepoint);
 		}
 	    } catch (SQLException e) {
 		// We don't care: it's a named Savepoint
@@ -195,19 +206,13 @@ public class ConnectionStore {
 
 	    try {
 		if (savepoint.getSavepointName().equals(savepointInfo.getSavepointName())) {
-		    addIt = false;
+		    savepointSet.remove(savepoint);
 		}
 	    } catch (SQLException e) {
 		// We don't care: it's a unnamed Savepoint
 	    }
-
-	    if (addIt) {
-		savepointSetNew.add(savepoint);
-	    }
 	}
 
-	// Replace old map by new
-	savepointMap.put(connectionKey, savepointSetNew);
     }
 
     /**

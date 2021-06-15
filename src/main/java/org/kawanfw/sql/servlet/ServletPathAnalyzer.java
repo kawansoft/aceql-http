@@ -119,6 +119,10 @@ public class ServletPathAnalyzer {
             return true;
         }
 
+        if (checkSavepointCommands(requestUri)) {
+            return true;
+        }
+        
         if (checkHoldabilityAndIsolationCommands(requestUri)) {
             return true;
         }
@@ -211,12 +215,40 @@ public class ServletPathAnalyzer {
             return true;
         }
 
-
         if (requestUri.endsWith("/get_auto_commit")) {
             connectionModifierOrReader = "get_auto_commit";
             return true;
         }
+        
+        return false;
+    }
+    
+    /**
+     * @param requestUri
+     */
+    private boolean checkSavepointCommands(String requestUri) {
 
+	// MUST BE FIRST IN TESTS
+	if (requestUri.contains("/set_savepoint_name")) {
+            connectionModifierOrReader = "set_savepoint_name";
+            return true;
+        }	
+	
+	if (requestUri.contains("/set_savepoint")) {
+            connectionModifierOrReader = "set_savepoint";
+            return true;
+        }
+	
+	if (requestUri.contains("/rollback_savepoint")) {
+            connectionModifierOrReader = "rollback_savepoint";
+            return true;
+        }
+	
+	if (requestUri.contains("/release_savepoint")) {
+            connectionModifierOrReader = "release_savepoint";
+            return true;
+        }
+        
         return false;
     }
 

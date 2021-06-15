@@ -27,8 +27,6 @@ package org.kawanfw.sql.transport;
 import java.sql.SQLException;
 import java.sql.Savepoint;
 
-import org.apache.commons.lang3.StringUtils;
-
 /**
  * @author Nicolas de Pomereu
  *
@@ -86,51 +84,6 @@ public class SavepointHttp implements Savepoint {
     @Override
     public String toString() {
 	return "[id=" + id + ", name=" + name + "]";
-    }
-
-    /**
-     * Builds a Savepoint from a String
-     * 
-     * @param savepointStrthe
-     *            String containing a SavepointHttp.toString()
-     * @return a SavepointHttp
-     */
-    public static Savepoint buildFromString(String savepointStr) {
-
-	if (savepointStr == null) {
-	    throw new IllegalArgumentException("Savepoint can not be null!");
-	}
-
-	if (!savepointStr.contains("[id=") || !savepointStr.contains(", name")
-		|| !savepointStr.endsWith("]")) {
-	    throw new IllegalArgumentException(
-		    "Savepoint String is not conform to pattern [id=theId, name=theName]: "
-			    + savepointStr);
-	}
-
-	String idStr = StringUtils.substringBetween(savepointStr, "[id=",
-		", name=");
-
-	if (idStr == null) {
-	    throw new IllegalArgumentException("id as String can not be null!");
-	}
-
-	idStr = idStr.trim();
-
-	int id = Integer.parseInt(idStr);
-
-	String name = StringUtils.substringBetween(savepointStr, ", name=",
-		"]");
-
-	if (name == null) {
-	    throw new IllegalArgumentException("name can not be null!");
-	}
-
-	name = name.trim();
-
-	SavepointHttp savepointHttp = new SavepointHttp(id, name);
-	return savepointHttp;
-
     }
 
 }

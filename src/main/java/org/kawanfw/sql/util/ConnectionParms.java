@@ -39,15 +39,6 @@ public class ConnectionParms {
     public static final String TRANSACTION_ISOLATION = "TRANSACTION_ISOLATION";
 
     public static final String NO_PARM = "NO_PARM";
-    public static final String NAME = "NAME";
-    public static final String SAVEPOINT = "SAVEPOINT";
-
-    // isValid(int timeout)
-    // setClientInfo(String name, String value)
-    // setClientInfo(Properties properties)
-    // getClientInfo(String name)
-    // getClientInfo()
-
     // Connection Info
     public static final String TIMEOUT = "timeout";
     public static final String VALUE = "value";

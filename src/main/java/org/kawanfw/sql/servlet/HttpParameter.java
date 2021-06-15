@@ -109,8 +109,8 @@ public class HttpParameter {
     public static final String ROLLBACK_SAVEPOINT = "rollback_savepoint";
     public static final String RELEASE_SAVEPOINT = "release_savepoint";
 
-    public static final String NAME = "NAME";
-    public static final String SAVEPOINT = "SAVEPOINT";
+    public static final String NAME = "name";
+    public static final String ID = "id";
 
     public static final String CLOSE = "close";
 

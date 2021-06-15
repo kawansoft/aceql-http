@@ -46,21 +46,6 @@ public class SqlActionTransaction {
     public static final String ACTION_SQL_GET_HOLDABILITY = "sql_get_holdability";
     public static final String ACTION_SQL_GET_TRANSACTION_ISOLATION = "sql_get_transaction_isolation=";
 
-    // public static final String ACTION_SQL_INIT_REMOTE_CONNECTION =
-    // "sql_init_remote_connection";
-
-    /*
-     * setSavepoint setSavepoint(name) rollback(Savepoint savepoint)
-     * releaseSavepoint(Savepoint savepoint)
-     * 
-     * SAVEPOINT
-     */
-
-    public static final String ACTION_SQL_SET_SAVEPOINT = "sql_set_savepoint";
-    public static final String ACTION_SQL_SET_SAVEPOINT_NAME = "sql_set_savepoint_name";
-    public static final String ACTION_SQL_SET_ROLLBACK_SAVEPOINT = "sql_set_rollback_savepoint";
-    public static final String ACTION_SQL_SET_RELEASE_SAVEPOINT = "sql_set_release_savepoint";
-
     /**
      * Protected Constructor
      */

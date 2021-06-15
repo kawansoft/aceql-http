@@ -39,7 +39,6 @@ import org.kawanfw.sql.servlet.ServerSqlManager;
 import org.kawanfw.sql.servlet.sql.json_return.JsonErrorReturn;
 import org.kawanfw.sql.servlet.sql.json_return.JsonOkReturn;
 import org.kawanfw.sql.transport.SavepointHttp;
-import org.kawanfw.sql.util.ConnectionParms;
 import org.kawanfw.sql.util.FrameworkDebug;
 import org.kawanfw.sql.util.HtmlConverter;
 
@@ -101,13 +100,15 @@ public class SavepointUtil {
 	ConnectionStore connectionStore = new ConnectionStore(username,
 		sessionId, connectionId);
 
+	debug("action: " + action);
+	
 	if (action.equals(HttpParameter.SET_SAVEPOINT)) {
 
 	    Savepoint savepoint = connection.setSavepoint();
 	    connectionStore.put(savepoint);
 
 	    SavepointHttp savepointHttp = new SavepointHttp(
-		    savepoint.getSavepointId(), "noname");
+		    savepoint.getSavepointId(), "aceql_savepoint_noname");
 	    String savepointStr = savepointHttp.toString();
 	    savepointStr = HtmlConverter.toHtml(savepointStr);
 
@@ -117,59 +118,61 @@ public class SavepointUtil {
 	    return;
 
 	} else if (action.equals(HttpParameter.SET_SAVEPOINT_NAME)) {
-	    String name = request.getParameter(ConnectionParms.NAME);
-
+	    String name = request.getParameter(HttpParameter.NAME);
 	    name = HtmlConverter.fromHtml(name);
 
+	    debug("set_savepoint_name name: " + name);
+	    
 	    Savepoint savepoint = connection.setSavepoint(name);
 	    connectionStore.put(savepoint);
 
-	    SavepointHttp savepointHttp = new SavepointHttp(-1,
-		    savepoint.getSavepointName());
+	    SavepointHttp savepointHttp = new SavepointHttp(-1, savepoint.getSavepointName());
 	    String savepointStr = savepointHttp.toString();
 	    savepointStr = HtmlConverter.toHtml(savepointStr);
 
+	    debug("savepointHttp: " + savepointHttp);
+	    
 	    ServerSqlManager.writeLine(out,
-		    JsonOkReturn.build("savepoint", savepointStr));
+		    JsonOkReturn.build("result", savepointStr));
 
 	    return;
 
 	} else if (action.equals(HttpParameter.ROLLBACK_SAVEPOINT)) {
-	    String savepointStr = request.getParameter(HttpParameter.SAVEPOINT);
-	    savepointStr = HtmlConverter.fromHtml(savepointStr);
+	    String idStr = request.getParameter(HttpParameter.ID);
+	    String name = request.getParameter(HttpParameter.NAME);
 
-	    Savepoint savepointInfo = SavepointHttp
-		    .buildFromString(savepointStr);
+	    int id = Integer.parseInt(idStr);
+	    name = HtmlConverter.fromHtml(name);
 
-	    Savepoint savepoint = connectionStore.getSavepoint(savepointInfo);
+	    debug("Uploaded savepoint id  : " + id);
+	    debug("Uploaded savepoint name: " + name);
+	    
+	    Savepoint savepoint = id >= 0 ? connectionStore.getSavepoint(id) : connectionStore.getSavepoint(name);
 
 	    if (savepoint == null) {
-		throw new SQLException("Savepoint does not exists anymore");
+		throw new SQLException("Savepoint does not exists anymore.");
 	    }
 
 	    connection.rollback(savepoint);
-
-	    // ServerSqlManager.writeLine(out, TransferStatus.SEND_OK);
+	    
 	    ServerSqlManager.writeLine(out, JsonOkReturn.build());
 	    return;
 
 	} else if (action.equals(HttpParameter.RELEASE_SAVEPOINT)) {
-	    String savepointStr = request.getParameter(HttpParameter.SAVEPOINT);
-	    savepointStr = HtmlConverter.fromHtml(savepointStr);
+	    String idStr = request.getParameter(HttpParameter.ID);
+	    String name = request.getParameter(HttpParameter.NAME);
 
-	    Savepoint savepointInfo = SavepointHttp
-		    .buildFromString(savepointStr);
-
-	    Savepoint savepoint = connectionStore.getSavepoint(savepointInfo);
+	    int id = Integer.parseInt(idStr);
+	    name = HtmlConverter.fromHtml(name);
+	    
+	    Savepoint savepoint = id >= 0 ? connectionStore.getSavepoint(id) : connectionStore.getSavepoint(name);
 
 	    if (savepoint == null) {
-		throw new SQLException("Savepoint does not esxists anymore");
+		throw new SQLException("Savepoint does not exists anymore.");
 	    }
-
 	    connection.releaseSavepoint(savepoint);
-	    connectionStore.remove(savepointInfo);
+	    connectionStore.remove(savepoint);
 
-	    // ServerSqlManager.writeLine(out, TransferStatus.SEND_OK);
 	    ServerSqlManager.writeLine(out, JsonOkReturn.build());
 	    return;
 	} else {
