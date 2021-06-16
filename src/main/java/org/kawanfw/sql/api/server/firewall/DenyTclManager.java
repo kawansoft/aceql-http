@@ -63,7 +63,7 @@ public class DenyTclManager extends DefaultSqlFirewallManager implements SqlFire
     public void runIfStatementRefused(String username, String database, Connection connection, String ipAddress,
 	    boolean isMetadataQuery, String sql, List<Object> parameterValues) throws IOException, SQLException {
 	String logInfo = "Client username " + username + " (IP: " + ipAddress
-		+ ") has been denied by DenyDdlManager SqlFirewallManager executing the TCL statement: " + sql + ".";
+		+ ") has been denied by DenyTclManager SqlFirewallManager executing the TCL statement: " + sql + ".";
 
 	DefaultDatabaseConfigurator defaultDatabaseConfigurator = new DefaultDatabaseConfigurator();
 	Logger logger = defaultDatabaseConfigurator.getLogger();
