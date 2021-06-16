@@ -407,7 +407,7 @@ So via cURL we connect to a database `sampledb` with the identifiers `(MyUsernam
 
 ```bash
 $ curl --data-urlencode "password=MySecret" \
- http://localhost:9090/aceql/database/sampledb/username/MyUsername/connect?password=MySecret
+ http://localhost:9090/aceql/database/sampledb/username/MyUsername/connect
 ```
 
  The command returns a JSON stream with a unique session identifier and a connection identifier:
