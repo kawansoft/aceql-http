@@ -654,13 +654,13 @@ From now on, you can read the [C# Client SDK User Guide](https://www.aceql.com/D
    ```xml
    <groupId>com.aceql</groupId>
    <artifactId>aceql-http-client-jdbc-driver</artifactId>
-   <version>6.1</version>
+   <version>6.2</version>
    ```
 
-2. If you don’t use Maven: the [aceql-http-client-jdbc-driver-all-6.1.jar](https://www.aceql.com/rest/soft_java_client/6.1/download/aceql-http-client-jdbc-driver-all-6.1.jar) file contains the SDK with all dependencies.
+2. If you don’t use Maven: the [aceql-http-client-jdbc-driver-all-6.2.jar](https://www.aceql.com/rest/soft_java_client/6.2/download/aceql-http-client-jdbc-driver-all-6.2.jar) file contains the SDK with all dependencies.
 3. Create an `com.aceql.jdbc.commons.examples` package in your IDE.
 
-4. Download this Java source file: [MyRemoteConnection.java](https://www.aceql.com/rest/soft_java_client/6.1/src/MyRemoteConnection.java). Then insert it in the package. 
+4. Download this Java source file: [MyRemoteConnection.java](https://www.aceql.com/rest/soft_java_client/6.2/src/MyRemoteConnection.java). Then insert it in the package. 
 
 5. The  connection to the remote database is  created  using loading the `AceQLDriver` class  and passing the URL of the AceQL Servlet Manager of your configuration:
 
@@ -776,9 +776,9 @@ From now on, you can read the [C# Client SDK User Guide](https://www.aceql.com/D
    }
    ```
 
-The `selectCustomerAndOrderLog` method of [MyRemoteConnection.java](https://www.aceql.com/rest/soft_java_client/6.1/src/MyRemoteConnection.java) displays back the inserted values.
+The `selectCustomerAndOrderLog` method of [MyRemoteConnection.java](https://www.aceql.com/rest/soft_java_client/6.2/src/MyRemoteConnection.java) displays back the inserted values.
 
-From now on, you can read the AceQL Client JDBC Driver [User Guide](https://www.aceql.com/DocDownload?doc=https://github.com/kawansoft/aceql-http-client-sdk/blob/master/README.md) or run through the [Javadoc](https://www.aceql.com/rest/soft_java_client/6.1/javadoc).
+From now on, you can read the AceQL Client JDBC Driver [User Guide](https://www.aceql.com/DocDownload?doc=https://github.com/kawansoft/aceql-http-client-sdk/blob/master/README.md) or run through the [Javadoc](https://www.aceql.com/rest/soft_java_client/6.2/javadoc).
 
 ## Python Client SDK
 
