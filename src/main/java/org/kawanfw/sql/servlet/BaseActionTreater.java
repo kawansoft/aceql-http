@@ -126,6 +126,7 @@ public class BaseActionTreater {
 	return false;
     }
 
+    
     /**
      * @param action
      * @param username
@@ -135,30 +136,29 @@ public class BaseActionTreater {
      * @throws SQLException
      * @throws IOException
      */
+    
     private boolean isActionGetConnection(String action, String username, String database, String sessionId, String connectionId)
 	    throws SQLException, IOException {
 	
 	if (action.equals(HttpParameter.GET_CONNECTION)) {
 
-	    if (ConnectionIdUtil.isStateless(connectionId)) {
-		ServerSqlManager.writeLine(out, JsonOkReturn.build("connection_id", connectionId));
-		return true;
+	    if (!ConnectionIdUtil.isStateless(connectionId)) {
+		// Statefull: We create the Connection and store it before returning id
+		Connection connection = databaseConfigurator.getConnection(database);
+		// Each Connection is identified by hashcode of connection
+		connectionId = ConnectionIdUtil.getConnectionId(connection);
+		// We store the Connection in Memory
+		ConnectionStore connectionStore = new ConnectionStore(username, sessionId, connectionId);
+		connectionStore.put(connection);
 	    }
 
-	    // Statefull: We create the Connection and store the
-	    Connection connection = databaseConfigurator.getConnection(database);
-	    // Each Connection is identified by hashcode of connection
-	    connectionId = ConnectionIdUtil.getConnectionId(connection);
-	    // We store the Connection in Memory
-	    ConnectionStore connectionStore = new ConnectionStore(username, sessionId, connectionId);
-	    connectionStore.put(connection);
-	    
+	    ServerSqlManager.writeLine(out, JsonOkReturn.build("connection_id", connectionId));
 	    return true;
 
 	}
 	return false;
     }
-
+    
     /**
      * @param database
      * @throws IOException

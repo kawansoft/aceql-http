@@ -185,6 +185,7 @@ public class ServerLoginActionSql extends HttpServlet {
      * @throws SQLException
      */
     @SuppressWarnings("unused")
+    // Keep method for now
     private static String getConnectionId(String sessionId, HttpServletRequest request, String username, String database,
 	    DatabaseConfigurator databaseConfigurator) throws SQLException {
 
