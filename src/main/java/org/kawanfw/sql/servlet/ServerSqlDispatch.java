@@ -124,6 +124,7 @@ public class ServerSqlDispatch {
 		// Create the Connection because passed client Id is stateless
 		connection = databaseConfigurator.getConnection(database);
 	    } else {
+		// Extracts the Connection from the store
 		ConnectionStoreGetter connectionStoreGetter = new ConnectionStoreGetter(request, response);
 		connection = connectionStoreGetter.getConnection();
 		if (connectionStoreGetter.getJsonErrorReturn() != null) {

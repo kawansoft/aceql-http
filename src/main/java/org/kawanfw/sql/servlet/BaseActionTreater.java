@@ -26,12 +26,15 @@ package org.kawanfw.sql.servlet;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.sql.Connection;
 import java.sql.SQLException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.kawanfw.sql.api.server.DatabaseConfigurator;
+import org.kawanfw.sql.servlet.connection.ConnectionIdUtil;
+import org.kawanfw.sql.servlet.connection.ConnectionStore;
 import org.kawanfw.sql.servlet.sql.json_return.JsonErrorReturn;
 import org.kawanfw.sql.servlet.sql.json_return.JsonOkReturn;
 
@@ -54,7 +57,8 @@ public class BaseActionTreater {
 	String username = request.getParameter(HttpParameter.USERNAME);
 	String database = request.getParameter(HttpParameter.DATABASE);
 	String sessionId = request.getParameter(HttpParameter.SESSION_ID);
-
+	String connectionId = request.getParameter(HttpParameter.CONNECTION_ID);
+	
 	if (isActionNullOrEmpty(action)) {
 	    return false;
 	}
@@ -67,7 +71,7 @@ public class BaseActionTreater {
 	    return false;
 	}
 
-	if (isActionGetConnection(action, username, database, sessionId)) {
+	if (isActionGetConnection(action, username, database, sessionId, connectionId)) {
 	    return false;
 	}
 
@@ -127,17 +131,30 @@ public class BaseActionTreater {
      * @param username
      * @param database
      * @param sessionId
+     * @param connectionId 
      * @throws SQLException
      * @throws IOException
      */
-    private boolean isActionGetConnection(String action, String username, String database, String sessionId)
+    private boolean isActionGetConnection(String action, String username, String database, String sessionId, String connectionId)
 	    throws SQLException, IOException {
-	String connectionId;
+	
 	if (action.equals(HttpParameter.GET_CONNECTION)) {
-	    connectionId = ServerLoginActionSql.getConnectionId(sessionId, request, username, database,
-		    databaseConfigurator);
-	    ServerSqlManager.writeLine(out, JsonOkReturn.build("connection_id", connectionId));
-	    return true ;
+
+	    if (ConnectionIdUtil.isStateless(connectionId)) {
+		ServerSqlManager.writeLine(out, JsonOkReturn.build("connection_id", connectionId));
+		return true;
+	    }
+
+	    // Statefull: We create the Connection and store the
+	    Connection connection = databaseConfigurator.getConnection(database);
+	    // Each Connection is identified by hashcode of connection
+	    connectionId = ConnectionIdUtil.getConnectionId(connection);
+	    // We store the Connection in Memory
+	    ConnectionStore connectionStore = new ConnectionStore(username, sessionId, connectionId);
+	    connectionStore.put(connection);
+	    
+	    return true;
+
 	}
 	return false;
     }

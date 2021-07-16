@@ -85,6 +85,7 @@ public class ServerLoginActionSql extends HttpServlet {
 	    debug("before request.getParameter(HttpParameter.LOGIN);");
 	    String username = request.getParameter(HttpParameter.USERNAME);
 	    String password = request.getParameter(HttpParameter.PASSWORD);
+	    boolean stateless = Boolean.parseBoolean(request.getParameter(HttpParameter.STATELESS));
 
 	    // User must provide a user
 	    if (! checkCredentialsAreSet(username, password)) {
@@ -130,8 +131,23 @@ public class ServerLoginActionSql extends HttpServlet {
 	    SessionConfigurator sessionConfigurator = ServerSqlManager.getSessionManagerConfigurator();
 	    String sessionId = sessionConfigurator.generateSessionId(username, database);
 
-	    String connectionId = getConnectionId(sessionId, request, username, database, databaseConfigurator);
-
+	    String connectionId = null;
+	    if (stateless) {
+		// Stateless: we just return the "stateless" Connection Id
+		connectionId = ConnectionIdUtil.getStatelessConnectionId();
+	    }
+	    else {
+		// Statefull: We create the Connection and store the 
+		Connection connection = databaseConfigurator.getConnection(database);
+		// Each Connection is identified by hashcode of connection 
+		connectionId = ConnectionIdUtil.getConnectionId(connection);
+		// We store the Connection in Memory
+		ConnectionStore connectionStore = new ConnectionStore(username, sessionId, connectionId);
+		connectionStore.put(connection);
+		
+		//connectionId = getConnectionId(sessionId, request, username, database, databaseConfigurator);
+	    }
+	    
 	    Trace.sessionId("sessionId: " + sessionId);
 
 	    Map<String, String> map = new HashMap<>();
@@ -141,9 +157,7 @@ public class ServerLoginActionSql extends HttpServlet {
 	    ServerSqlManager.writeLine(out, JsonOkReturn.build(map));
 
 	} catch (Exception e) {
-
 	    ExceptionReturner.logAndReturnException(request, response, out, e);
-
 	}
     }
 
@@ -151,10 +165,10 @@ public class ServerLoginActionSql extends HttpServlet {
      * Check that credentials are not null and not empty
      * @param username
      * @param password
-     * @return
+     * @return true if credentials are not null and are not empty
      */
     public boolean checkCredentialsAreSet(String username, String password) {
-	return username == null || username.isEmpty() || password == null || password.isEmpty();
+	return username != null && ! username.isEmpty() && password != null && ! password.isEmpty();
     }
 
     /**
@@ -169,7 +183,8 @@ public class ServerLoginActionSql extends HttpServlet {
      * @return
      * @throws SQLException
      */
-    public static String getConnectionId(String sessionId, HttpServletRequest request, String username, String database,
+    @SuppressWarnings("unused")
+    private static String getConnectionId(String sessionId, HttpServletRequest request, String username, String database,
 	    DatabaseConfigurator databaseConfigurator) throws SQLException {
 
 	// Extract connection from pool

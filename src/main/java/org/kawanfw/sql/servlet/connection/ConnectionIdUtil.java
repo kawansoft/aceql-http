@@ -12,6 +12,8 @@ import java.sql.Connection;
  */
 public class ConnectionIdUtil {
 
+    private static final String STATELESS = "stateless";
+
     /**
      * A simple wrapper for connection.hashCode();
      * @param connection
@@ -27,7 +29,18 @@ public class ConnectionIdUtil {
      * @return true if the Connection Id is a stateless one, else false
      */
     public static boolean isStateless(String connectionId) {
-	return connectionId.equals("stateless");
+	if (connectionId == null) {
+	    return false;
+	}
+	return connectionId.equals(STATELESS);
+    }
+
+    /**
+     * Returns the Connection Id value for a stateless Connection
+     * @return the Connection Id value for a stateless Connection
+     */
+    public static String getStatelessConnectionId() {
+	return STATELESS;
     }
 
 }
