@@ -45,7 +45,6 @@ import org.kawanfw.sql.servlet.connection.ConnectionUtil;
 import org.kawanfw.sql.servlet.sql.json_return.ExceptionReturner;
 import org.kawanfw.sql.servlet.sql.json_return.JsonErrorReturn;
 import org.kawanfw.sql.servlet.sql.json_return.JsonOkReturn;
-import org.kawanfw.sql.util.FrameworkDebug;
 
 /**
  * Login.
