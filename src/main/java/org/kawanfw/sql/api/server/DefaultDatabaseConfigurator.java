@@ -62,7 +62,7 @@ import org.kawanfw.sql.util.Tag;
  */
 public class DefaultDatabaseConfigurator implements DatabaseConfigurator {
 
-    /** The map of data sources to use for connection pooling */
+    /** The map of (database, data sources) to use for connection pooling */
     private Map<String, DataSource> dataSourceSet = new ConcurrentHashMap<>();
 
     private Properties properties = null;

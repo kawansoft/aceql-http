@@ -39,6 +39,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.kawanfw.sql.api.server.DatabaseConfigurator;
 import org.kawanfw.sql.api.server.auth.UserAuthenticator;
 import org.kawanfw.sql.api.server.session.SessionConfigurator;
+import org.kawanfw.sql.servlet.connection.ConnectionIdUtil;
 import org.kawanfw.sql.servlet.connection.ConnectionStore;
 import org.kawanfw.sql.servlet.connection.ConnectionUtil;
 import org.kawanfw.sql.servlet.sql.json_return.ExceptionReturner;
@@ -72,7 +73,7 @@ public class ServerLoginActionSql extends HttpServlet {
      *
      * @param request  the http request
      * @param response the http response
-     * @param out      TODO
+     * @param out      the servlet output stream
      * @param action   the login action: BEFORE_LOGIN_ACTION or LOGIN_ACTION
      * @throws IOException if any Servlet Exception occurs
      */
@@ -81,20 +82,12 @@ public class ServerLoginActionSql extends HttpServlet {
 
 	try {
 	    response.setContentType("text/html");
-
 	    debug("before request.getParameter(HttpParameter.LOGIN);");
-
 	    String username = request.getParameter(HttpParameter.USERNAME);
 	    String password = request.getParameter(HttpParameter.PASSWORD);
 
 	    // User must provide a user
-	    if ((username == null || username.isEmpty()) || (password == null || password.isEmpty())) {
-		debug("username.length() < 1!");
-		// No login transmitted
-		// Redirect to ClientLogin with error message.
-		// String logMessage = "username.length() < 1!";
-		// HttpStatus.set(response, HttpServletResponse.SC_UNAUTHORIZED,
-		// logMessage);
+	    if (! checkCredentialsAreSet(username, password)) {
 		JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_UNAUTHORIZED,
 			JsonErrorReturn.ERROR_ACEQL_ERROR, JsonErrorReturn.INVALID_USERNAME_OR_PASSWORD);
 		ServerSqlManager.writeLine(out, errorReturn.build());
@@ -105,9 +98,7 @@ public class ServerLoginActionSql extends HttpServlet {
 	    password = password.trim();
 
 	    debug("calling login");
-
 	    UserAuthenticator userAuthenticator = ServerSqlManager.getUserAuthenticator();
-
 	    String database = request.getParameter(HttpParameter.DATABASE);
 
 	    DatabaseConfigurator databaseConfigurator = ServerSqlManager.getDatabaseConfigurator(database);
@@ -139,9 +130,7 @@ public class ServerLoginActionSql extends HttpServlet {
 	    SessionConfigurator sessionConfigurator = ServerSqlManager.getSessionManagerConfigurator();
 	    String sessionId = sessionConfigurator.generateSessionId(username, database);
 
-	    String connectionId = null;
-
-	    connectionId = getConnectionId(sessionId, request, username, database, databaseConfigurator);
+	    String connectionId = getConnectionId(sessionId, request, username, database, databaseConfigurator);
 
 	    Trace.sessionId("sessionId: " + sessionId);
 
@@ -156,6 +145,16 @@ public class ServerLoginActionSql extends HttpServlet {
 	    ExceptionReturner.logAndReturnException(request, response, out, e);
 
 	}
+    }
+
+    /**
+     * Check that credentials are not null and not empty
+     * @param username
+     * @param password
+     * @return
+     */
+    public boolean checkCredentialsAreSet(String username, String password) {
+	return username == null || username.isEmpty() || password == null || password.isEmpty();
     }
 
     /**
@@ -177,7 +176,7 @@ public class ServerLoginActionSql extends HttpServlet {
 	Connection connection = databaseConfigurator.getConnection(database);
 
 	// Each Connection is identified by hashcode
-	String connectionId = getConnectionId(connection);
+	String connectionId = ConnectionIdUtil.getConnectionId(connection);
 
 	ConnectionStore connectionStore = new ConnectionStore(username, sessionId, connectionId);
 
@@ -189,10 +188,6 @@ public class ServerLoginActionSql extends HttpServlet {
 
 	connectionStore.put(connection);
 	return connectionId;
-    }
-
-    public static String getConnectionId(Connection connection) {
-	return "" + connection.hashCode();
     }
 
     private void debug(String s) {

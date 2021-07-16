@@ -40,6 +40,8 @@ import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.apache.tomcat.util.http.fileupload.servlet.ServletFileUpload;
 import org.kawanfw.sql.api.server.DatabaseConfigurator;
 import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
+import org.kawanfw.sql.servlet.connection.ConnectionStoreGetter;
+import org.kawanfw.sql.servlet.connection.ConnectionIdUtil;
 import org.kawanfw.sql.servlet.connection.ConnectionStore;
 import org.kawanfw.sql.servlet.connection.ConnectionStoreCleaner;
 import org.kawanfw.sql.servlet.connection.RollbackUtil;
@@ -115,34 +117,51 @@ public class ServerSqlDispatch {
 	// Start clean Connections thread
 	connectionStoreClean();
 
-	ConnectionGetter connectionGetter = new ConnectionGetter(request, response, out);
-	if (!connectionGetter.treatAndContinue()) {
-	    return;
+	Connection connection = null;
+	
+	try {
+	    if (ConnectionIdUtil.isStateless(connectionId)) {
+		// Create the Connection because passed client Id is stateless
+		connection = databaseConfigurator.getConnection(database);
+	    } else {
+		ConnectionStoreGetter connectionStoreGetter = new ConnectionStoreGetter(request, response);
+		connection = connectionStoreGetter.getConnection();
+		if (connectionStoreGetter.getJsonErrorReturn() != null) {
+		    ServerSqlManager.writeLine(out, connectionStoreGetter.getJsonErrorReturn().build());
+		    return;
+		}
+	    }
+
+	    // HACK NDP
+	    // System.out.println("connectionGetter.getConnection():
+	    // connection.getAutoCommit(): " + connection.getAutoCommit());
+
+	    // Release connection in pool & remove all references
+	    if (action.equals(HttpParameter.CLOSE)) {
+		treatCloseAction(response, out, username, sessionId, connectionId, databaseConfigurator, connection);
+		return;
+	    }
+
+	    List<SqlFirewallManager> sqlFirewallManagers = ServerSqlManager.getSqlFirewallMap().get(database);
+
+	    if (doTreatJdbcDatabaseMetaData(request, response, out, action, connection, sqlFirewallManagers)) {
+		return;
+	    }
+
+	    if (doTreatMetadataQuery(request, response, out, action, connection, sqlFirewallManagers)) {
+		return;
+	    }
+
+	    dumpHeaders(request);
+
+	    dispatch(request, response, out, action, connection, sqlFirewallManagers);
+	} finally {
+	    // Immediate close of a stateless Connection
+	    if (ConnectionIdUtil.isStateless(connectionId)) {
+		databaseConfigurator.close(connection);
+	    }
 	}
-	Connection connection = connectionGetter.getConnection();
 
-	//HACK NDP
-	//System.out.println("connectionGetter.getConnection(): connection.getAutoCommit(): " + connection.getAutoCommit());
-
-	// Release connection in pool & remove all references
-	if (action.equals(HttpParameter.CLOSE)) {
-	    treatCloseAction(response, out, username, sessionId, connectionId, databaseConfigurator, connection);
-	    return;
-	}
-
-	List<SqlFirewallManager> sqlFirewallManagers = ServerSqlManager.getSqlFirewallMap().get(database);
-
-	if (doTreatJdbcDatabaseMetaData(request, response, out, action, connection, sqlFirewallManagers)) {
-	    return;
-	}
-
-	if (doTreatMetadataQuery(request, response, out, action, connection, sqlFirewallManagers)) {
-	    return;
-	}
-
-	dumpHeaders(request);
-
-	dispatch(request, response, out, action, connection, sqlFirewallManagers);
     }
 
 
@@ -279,13 +298,17 @@ public class ServerSqlDispatch {
     private void treatCloseAction(HttpServletResponse response, OutputStream out, String username, String sessionId,
 	    final String connectionId, DatabaseConfigurator databaseConfigurator, Connection connection) throws IOException {
 	try {
-	    // ConnectionCloser.freeConnection(connection,
-	    // databaseConfigurator);
+	    
+	    // Nothing to do in stateless
+	    if (ConnectionIdUtil.isStateless(connectionId)) {
+		return;
+	    }
+	    
 	    databaseConfigurator.close(connection);
 
 	    String connectionIdNew = connectionId;
 	    if (connectionIdNew == null) {
-		connectionIdNew = ServerLoginActionSql.getConnectionId(connection);
+		connectionIdNew = ConnectionIdUtil.getConnectionId(connection);
 	    }
 	    ConnectionStore connectionStore = new ConnectionStore(username, sessionId, connectionIdNew);
 	    connectionStore.remove();

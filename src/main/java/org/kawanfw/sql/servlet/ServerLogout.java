@@ -72,7 +72,6 @@ public class ServerLogout {
 	    Set<Connection> connections = ConnectionStore.getAllConnections(username, sessionId);
 
 	    for (Connection connection : connections) {
-		// ConnectionCloser.freeConnection(connection, databaseConfigurator);
 		databaseConfigurator.close(connection);
 	    }
 

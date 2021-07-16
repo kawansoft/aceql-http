@@ -78,8 +78,7 @@ public class ConnectionStore {
      * @param sessionId
      * @param connectionId
      */
-    public ConnectionStore(String username, String sessionId, String connectionId) {
-
+    public ConnectionStore(String username, String sessionId, String connectionId) {	
 	if (username == null) {
 	    throw new IllegalArgumentException("username is null!");
 	}
@@ -88,11 +87,8 @@ public class ConnectionStore {
 	    throw new IllegalArgumentException("sessionId is null!");
 	}
 
-	// NO! Allow null connectionId
-	// if (connectionId == null) {
-	// throw new IllegalArgumentException("connectionId is null!");
-	// }
-
+	//8.0:
+	
 	this.connectionKey = new ConnectionKey(username, sessionId, connectionId);
 
     }
@@ -439,7 +435,7 @@ public class ConnectionStore {
 
     public static void removeAll(String username, String sessionId) {
 
-	// No!! Will triger a ConcurrentModificationException!
+	// No!! Will trigger a ConcurrentModificationException!
 	// for (ConnectionKey connectionKey : connectionMap.keySet())
 	// {
 	// if (connectionKey.getUsername().equals(username) &&

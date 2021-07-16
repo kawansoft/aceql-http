@@ -1,7 +1,6 @@
-package org.kawanfw.sql.servlet;
+package org.kawanfw.sql.servlet.connection;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -9,36 +8,47 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.kawanfw.sql.servlet.connection.ConnectionStore;
-import org.kawanfw.sql.servlet.connection.RollbackUtil;
+import org.kawanfw.sql.servlet.HttpParameter;
 import org.kawanfw.sql.servlet.sql.LoggerUtil;
 import org.kawanfw.sql.servlet.sql.json_return.JsonErrorReturn;
 
-public class ConnectionGetter {
+public class ConnectionStoreGetter {
 
     private HttpServletRequest request;
     private HttpServletResponse response;
-    private OutputStream out;
 
     private String username;
     private String sessionId;
     private String connectionId;
+    private JsonErrorReturn jsonErrorReturn;
 
-    private Connection connection;
-
-
-    public ConnectionGetter(HttpServletRequest request, HttpServletResponse response, OutputStream out) {
+    /**
+     * Constructor
+     * 
+     * @param request
+     * @param response
+     */
+    public ConnectionStoreGetter(HttpServletRequest request, HttpServletResponse response) {
 	super();
 	this.request = request;
 	this.response = response;
-	this.out = out;
 
 	username = request.getParameter(HttpParameter.USERNAME);
 	sessionId = request.getParameter(HttpParameter.SESSION_ID);
+
+	// Fix 16/07/21: this was not done:
+	connectionId = request.getParameter(HttpParameter.CONNECTION_ID);
+
     }
 
-    public boolean treatAndContinue() throws IOException {
-	// TODO Auto-generated method stub
+    /**
+     * Gets a Connection from the Store
+     * 
+     * @return A Connection, or null if can not get any
+     * @throws IOException
+     */
+    public Connection getConnection() throws IOException {
+	Connection connection = null;
 	try {
 	    ConnectionStore connectionStore = new ConnectionStore(username, sessionId, connectionId);
 
@@ -50,33 +60,29 @@ public class ConnectionGetter {
 	    }
 
 	    if (connection == null || connection.isClosed()) {
-		JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_NOT_FOUND,
+		jsonErrorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_NOT_FOUND,
 			JsonErrorReturn.ERROR_ACEQL_ERROR, JsonErrorReturn.INVALID_CONNECTION);
-		ServerSqlManager.writeLine(out, errorReturn.build());
-		return false;
 	    }
 
 	} catch (SQLException e) {
-
 	    RollbackUtil.rollback(connection);
 
-	    JsonErrorReturn jsonErrorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_BAD_REQUEST,
+	    jsonErrorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_BAD_REQUEST,
 		    JsonErrorReturn.ERROR_ACEQL_ERROR, JsonErrorReturn.UNABLE_TO_GET_A_CONNECTION,
 		    ExceptionUtils.getStackTrace(e));
-	    ServerSqlManager.writeLine(out, jsonErrorReturn.build());
 	    LoggerUtil.log(request, e);
 
-	    return false;
 	}
 
-	return true;
-
+	return connection;
     }
 
-    public Connection getConnection() {
-        return connection;
+    /**
+     * @return the Json error block in case any error when trying to get the
+     *         connection
+     */
+    public JsonErrorReturn getJsonErrorReturn() {
+	return jsonErrorReturn;
     }
-
-
 
 }
