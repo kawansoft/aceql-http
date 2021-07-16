@@ -55,7 +55,7 @@ import org.kawanfw.sql.util.FrameworkDebug;
  */
 public class ServerLoginActionSql extends HttpServlet {
 
-    public static boolean DEBUG = FrameworkDebug.isSet(ServerLoginActionSql.class);
+    public static boolean DEBUG = true; //FrameworkDebug.isSet(ServerLoginActionSql.class);
 
     /**
      * serialVersionUID
@@ -132,6 +132,7 @@ public class ServerLoginActionSql extends HttpServlet {
 	    String sessionId = sessionConfigurator.generateSessionId(username, database);
 
 	    String connectionId = null;
+	    	    
 	    if (stateless) {
 		// Stateless: we just return the "stateless" Connection Id
 		connectionId = ConnectionIdUtil.getStatelessConnectionId();
@@ -149,7 +150,8 @@ public class ServerLoginActionSql extends HttpServlet {
 	    }
 	    
 	    Trace.sessionId("sessionId: " + sessionId);
-
+	    debug("sessionId: "+ sessionId);
+	    
 	    Map<String, String> map = new HashMap<>();
 	    map.put("session_id", sessionId);
 	    map.put("connection_id", connectionId);
