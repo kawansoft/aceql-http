@@ -321,6 +321,10 @@ public class TomcatStarterUtil {
 	String aceQLManagerServletCallName = TomcatStarterUtil.getAceQLManagerSevletName(properties);
 
 	ServletParametersStore.setServletName(aceQLManagerServletCallName);
+	
+	boolean statelessMode = Boolean.parseBoolean(properties.getProperty(ServerSqlManager.STATELESS_MODE, "false"));
+	ServletParametersStore.setStatelessMode(statelessMode);
+	
 	Set<String> databases = getDatabaseNames(properties);
 	ServletParametersStore.setDatabaseNames(databases);
 

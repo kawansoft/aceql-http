@@ -58,7 +58,7 @@ import java.text.SimpleDateFormat;
  */
 public class AsyncDebug {
 
-    public static boolean DEBUG = true;
+    public static boolean DEBUG =  true; //FrameworkDebug.isSet(AsyncDebug.class);
 
     public static void debug(String s) {
 	if (DEBUG) {

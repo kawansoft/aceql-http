@@ -60,6 +60,8 @@ public class ServletParametersStore {
     private static Set<String> userServlets = new HashSet<>();
 
     private static Map<String, List<String>> sqlFirewallClassNamesMap = new ConcurrentHashMap<>();
+
+    private static boolean statelessMode;
     
 
     /**
@@ -274,4 +276,12 @@ public class ServletParametersStore {
         ServletParametersStore.requestHeadersAuthenticatorClassName = requestHeadersAuthenticatorClassName;
     }
 
+    public static void setStatelessMode(boolean statelessMode) {
+	ServletParametersStore.statelessMode = statelessMode;
+    }
+
+    public static boolean isStatelessMode() {
+        return statelessMode;
+    }
+    
 }

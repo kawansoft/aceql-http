@@ -40,10 +40,10 @@ import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.apache.tomcat.util.http.fileupload.servlet.ServletFileUpload;
 import org.kawanfw.sql.api.server.DatabaseConfigurator;
 import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
-import org.kawanfw.sql.servlet.connection.ConnectionStoreGetter;
 import org.kawanfw.sql.servlet.connection.ConnectionIdUtil;
 import org.kawanfw.sql.servlet.connection.ConnectionStore;
 import org.kawanfw.sql.servlet.connection.ConnectionStoreCleaner;
+import org.kawanfw.sql.servlet.connection.ConnectionStoreGetter;
 import org.kawanfw.sql.servlet.connection.RollbackUtil;
 import org.kawanfw.sql.servlet.connection.SavepointUtil;
 import org.kawanfw.sql.servlet.connection.TransactionUtil;
@@ -53,6 +53,7 @@ import org.kawanfw.sql.servlet.sql.ServerStatementRawExecute;
 import org.kawanfw.sql.servlet.sql.callable.ServerCallableStatement;
 import org.kawanfw.sql.servlet.sql.json_return.JsonErrorReturn;
 import org.kawanfw.sql.servlet.sql.json_return.JsonOkReturn;
+import org.kawanfw.sql.tomcat.ServletParametersStore;
 import org.kawanfw.sql.util.FrameworkDebug;
 
 /**
@@ -120,7 +121,7 @@ public class ServerSqlDispatch {
 	Connection connection = null;
 	
 	try {
-	    if (ConnectionIdUtil.isStateless(connectionId)) {
+	    if (ServletParametersStore.isStatelessMode()) {
 		// Create the Connection because passed client Id is stateless
 		connection = databaseConfigurator.getConnection(database);
 	    } else {
@@ -157,8 +158,8 @@ public class ServerSqlDispatch {
 
 	    dispatch(request, response, out, action, connection, sqlFirewallManagers);
 	} finally {
-	    // Immediate close of a stateless Connection
-	    if (ConnectionIdUtil.isStateless(connectionId)) {
+	    // Immediate close of a  Connection for stateless sessions
+	    if (ServletParametersStore.isStatelessMode()) {
 		databaseConfigurator.close(connection);
 	    }
 	}
@@ -301,7 +302,7 @@ public class ServerSqlDispatch {
 	try {
 	    
 	    // Nothing to do in stateless
-	    if (ConnectionIdUtil.isStateless(connectionId)) {
+	    if (ServletParametersStore.isStatelessMode()) {
 		return;
 	    }
 	    

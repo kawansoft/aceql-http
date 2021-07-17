@@ -77,6 +77,7 @@ public class ServerSqlManager extends HttpServlet {
     /** The properties file */
     private static File aceqlServerProperties = null;
 
+    public static final String STATELESS_MODE = "statelessMode";
     public static final String DATABASE_CONFIGURATOR_CLASS_NAME = "databaseConfiguratorClassName";
     public static final String USER_AUTHENTICATOR_CLASS_NAME = "userAuthenticatorClassName";
     public static final String REQUEST_HEADERS_AUTHENTICATOR_CLASS_NAME = "requestHeadersAuthenticatorClassName";

@@ -37,6 +37,7 @@ import org.kawanfw.sql.servlet.connection.ConnectionIdUtil;
 import org.kawanfw.sql.servlet.connection.ConnectionStore;
 import org.kawanfw.sql.servlet.sql.json_return.JsonErrorReturn;
 import org.kawanfw.sql.servlet.sql.json_return.JsonOkReturn;
+import org.kawanfw.sql.tomcat.ServletParametersStore;
 
 public class BaseActionTreater {
     private HttpServletRequest request;
@@ -142,7 +143,7 @@ public class BaseActionTreater {
 	
 	if (action.equals(HttpParameter.GET_CONNECTION)) {
 
-	    if (!ConnectionIdUtil.isStateless(connectionId)) {
+	    if (! ServletParametersStore.isStatelessMode()) {
 		// Statefull: We create the Connection and store it before returning id
 		Connection connection = databaseConfigurator.getConnection(database);
 		// Each Connection is identified by hashcode of connection

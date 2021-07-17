@@ -45,6 +45,8 @@ import org.kawanfw.sql.servlet.connection.ConnectionUtil;
 import org.kawanfw.sql.servlet.sql.json_return.ExceptionReturner;
 import org.kawanfw.sql.servlet.sql.json_return.JsonErrorReturn;
 import org.kawanfw.sql.servlet.sql.json_return.JsonOkReturn;
+import org.kawanfw.sql.tomcat.ServletParametersStore;
+import org.kawanfw.sql.util.FrameworkDebug;
 
 /**
  * Login.
@@ -54,7 +56,7 @@ import org.kawanfw.sql.servlet.sql.json_return.JsonOkReturn;
  */
 public class ServerLoginActionSql extends HttpServlet {
 
-    public static boolean DEBUG = true; //FrameworkDebug.isSet(ServerLoginActionSql.class);
+    public static boolean DEBUG = FrameworkDebug.isSet(ServerLoginActionSql.class);
 
     /**
      * serialVersionUID
@@ -84,7 +86,6 @@ public class ServerLoginActionSql extends HttpServlet {
 	    debug("before request.getParameter(HttpParameter.LOGIN);");
 	    String username = request.getParameter(HttpParameter.USERNAME);
 	    String password = request.getParameter(HttpParameter.PASSWORD);
-	    boolean stateless = Boolean.parseBoolean(request.getParameter(HttpParameter.STATELESS));
 
 	    // User must provide a user
 	    if (! checkCredentialsAreSet(username, password)) {
@@ -132,7 +133,7 @@ public class ServerLoginActionSql extends HttpServlet {
 
 	    String connectionId = null;
 	    	    
-	    if (stateless) {
+	    if (ServletParametersStore.isStatelessMode()) {
 		// Stateless: we just return the "stateless" Connection Id
 		connectionId = ConnectionIdUtil.getStatelessConnectionId();
 	    }

@@ -24,18 +24,6 @@ public class ConnectionIdUtil {
     }
 
     /**
-     * Says if the Connection Id is a stateless one
-     * @param connectionId the Connection Id
-     * @return true if the Connection Id is a stateless one, else false
-     */
-    public static boolean isStateless(String connectionId) {
-	if (connectionId == null) {
-	    return false;
-	}
-	return connectionId.equals(STATELESS);
-    }
-
-    /**
      * Returns the Connection Id value for a stateless Connection
      * @return the Connection Id value for a stateless Connection
      */
