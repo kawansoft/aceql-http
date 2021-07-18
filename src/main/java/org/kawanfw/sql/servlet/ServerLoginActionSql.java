@@ -149,9 +149,8 @@ public class ServerLoginActionSql extends HttpServlet {
 		if (FORCE_AUTO_COMMIT_AND_NOT_READ_ONLY) {
 		    ConnectionUtil.connectionInit(connection);
 		}
-		
+	
 		connectionStore.put(connection);
-		
 	    }
 	    
 	    Trace.sessionId("sessionId: " + sessionId);
