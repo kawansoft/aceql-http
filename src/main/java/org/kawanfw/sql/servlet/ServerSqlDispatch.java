@@ -135,7 +135,7 @@ public class ServerSqlDispatch {
 	    }
 
 	    // Do not treat if not in auto-commit mode if Server is Stateless
-	    if (! checkStatelessInAutoCommit(response, out, connection)) {
+	    if (! checkStatelessInAutoCommit(request, response, out, connection)) {
 		return;
 	    }
 	    
@@ -170,6 +170,7 @@ public class ServerSqlDispatch {
 
     /**
      * Checks that a stateless session is in auto commit, otherwise reply with error message.
+     * @param request TODO
      * @param response
      * @param out
      * @param connection
@@ -177,8 +178,23 @@ public class ServerSqlDispatch {
      * @throws IOException
      * @throws SQLException
      */
-    private boolean checkStatelessInAutoCommit(HttpServletResponse response, OutputStream out, Connection connection) throws IOException, SQLException {
-	if (ServletParametersStore.isStatelessMode() && ! connection.getAutoCommit() ) {
+    private boolean checkStatelessInAutoCommit(HttpServletRequest request, HttpServletResponse response, OutputStream out, Connection connection) throws IOException, SQLException {
+	
+	// Don't care in statefull mode
+	if (! ServletParametersStore.isStatelessMode()) {
+	    return true;
+	}
+		
+	// Stateless mode: 1) can not call setAutocommit(false):
+	if (ServerSqlDispatchUtil.isActionsSetAutoCommitFalse(request)) {
+	    JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_BAD_REQUEST,
+		    JsonErrorReturn.ERROR_JDBC_ERROR, "AceQL Server is in Stateless Mode: can not change auto-commit mode to false.");
+	    ServerSqlManager.writeLine(out, errorReturn.build());
+	    return false;	    
+	}
+	
+	// Stateless mode: 2) Connection must be in autocommit mode:
+	if (! connection.getAutoCommit() ) {
 	    JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_BAD_REQUEST,
 		    JsonErrorReturn.ERROR_JDBC_ERROR, "AceQL Server is in Stateless Mode: can not process SQL request because Connection must be in auto-commit.");
 	    ServerSqlManager.writeLine(out, errorReturn.build());

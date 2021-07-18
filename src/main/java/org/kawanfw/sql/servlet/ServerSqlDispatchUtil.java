@@ -26,6 +26,13 @@ public class ServerSqlDispatchUtil {
         return implicitStoredProcedure;
 
     }
+    
+    public static boolean isActionsSetAutoCommitFalse(HttpServletRequest request) {
+	String action = request.getParameter(HttpParameter.ACTION);
+	boolean autoCommit = Boolean.parseBoolean(request.getParameter(HttpParameter.ACTION_VALUE));
+	return action.equals(HttpParameter.SET_AUTO_COMMIT) && !autoCommit;
+    }
+    
 
     public static  boolean isSavepointModifier(String action) {
 	return action.equals(HttpParameter.SET_SAVEPOINT) || action.equals(HttpParameter.SET_NAMED_SAVEPOINT)
@@ -63,5 +70,7 @@ public class ServerSqlDispatchUtil {
     public static boolean isExecute(String action) {
 	return action.equals(HttpParameter.EXECUTE);
     }
+
+
 
 }
