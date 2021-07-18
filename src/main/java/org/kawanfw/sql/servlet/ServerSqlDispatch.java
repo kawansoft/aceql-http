@@ -84,7 +84,7 @@ public class ServerSqlDispatch {
     public void executeRequestInTryCatch(HttpServletRequest request, HttpServletResponse response, OutputStream out)
 	    throws IOException, SQLException, FileUploadException {
 
-	if (isBlobUpload(request, response, out)) {
+	if (doBlobUpload(request, response, out)) {
 	    return;
 	}
 
@@ -330,7 +330,7 @@ public class ServerSqlDispatch {
      * @throws FileUploadException
      * @throws SQLException
      */
-    private boolean isBlobUpload(HttpServletRequest request, HttpServletResponse response, OutputStream out)
+    private boolean doBlobUpload(HttpServletRequest request, HttpServletResponse response, OutputStream out)
 	    throws IOException, FileUploadException, SQLException {
 	// Immediate catch if we are asking a file upload, because
 	// parameters are in unknown sequence.
@@ -348,12 +348,15 @@ public class ServerSqlDispatch {
      * Clean connection store.
      */
     private void connectionStoreClean() {
-
+	// No clean of course in stateless mode
+	if (ServletParametersStore.isStatelessMode()) {
+	    return;
+	}
+	
 	if (ConnectionStoreCleaner.timeToCleanConnectionStore()) {
 	    ConnectionStoreCleaner cleaner = new ConnectionStoreCleaner();
 	    cleaner.start();
 	}
-
     }
 
     /**
