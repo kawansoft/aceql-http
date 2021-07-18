@@ -129,6 +129,7 @@ public class BaseActionTreater {
 
     
     /**
+     * Create a new Connection if /get_connection" has been asked
      * @param action
      * @param username
      * @param database
@@ -143,18 +144,25 @@ public class BaseActionTreater {
 	
 	if (action.equals(HttpParameter.GET_CONNECTION)) {
 
-	    if (! ServletParametersStore.isStatelessMode()) {
+	    if (ServletParametersStore.isStatelessMode()) {
+		// Stateless we return the present connection Id
+		ServerSqlManager.writeLine(out, JsonOkReturn.build("connection_id", connectionId));
+		return true;
+	    }
+	    else {
 		// Statefull: We create the Connection and store it before returning id
 		Connection connection = databaseConfigurator.getConnection(database);
 		// Each Connection is identified by hashcode of connection
-		connectionId = ConnectionIdUtil.getConnectionId(connection);
+		String connectionIdNew = ConnectionIdUtil.getConnectionId(connection);
 		// We store the Connection in Memory
-		ConnectionStore connectionStore = new ConnectionStore(username, sessionId, connectionId);
+		ConnectionStore connectionStore = new ConnectionStore(username, sessionId, connectionIdNew);
 		connectionStore.put(connection);
+
+		ServerSqlManager.writeLine(out, JsonOkReturn.build("connection_id", connectionIdNew));
+		return true;
 	    }
 
-	    ServerSqlManager.writeLine(out, JsonOkReturn.build("connection_id", connectionId));
-	    return true;
+
 
 	}
 	return false;
