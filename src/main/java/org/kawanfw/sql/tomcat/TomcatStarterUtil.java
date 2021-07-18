@@ -232,7 +232,10 @@ public class TomcatStarterUtil {
 		throw new DatabaseConfigurationException(
 			"Connection is null. Please verify all the values in properties file.");
 	    }
-	    // Future usage: Checks that DB Vendor is supported
+	    
+	    if( ServletParametersStore.isStatelessMode() && ! connection.getAutoCommit()) {
+		throw new DatabaseConfigurationException("Server is in Stateless Mode: Connection pool must be in default auto commit. Please fix configuration.");
+	    }
 
 	    System.out.println(SqlTag.SQL_PRODUCT_START + "  -> Connection OK!");
 

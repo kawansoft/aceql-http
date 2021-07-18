@@ -195,8 +195,10 @@ public class TomcatStarter {
 	    throw new IOException(SqlTag.SQL_PRODUCT_START_FAILURE + " " + "Can not call the AceQL ManagerServlet");
 	}
 
+	String StateModeMessage = ServletParametersStore.isStatelessMode() ? "(Stateless Mode)": "";
+	
 	String runningMessage = SqlTag.SQL_PRODUCT_START + " " + Version.PRODUCT.NAME
-		+ " Web Server OK. Running on port " + port;
+		+ " Web Server OK. Running on port " + port + " " + StateModeMessage;
 
 	System.out.println(runningMessage);
 	System.out.println();

@@ -40,7 +40,6 @@ import org.kawanfw.sql.api.server.auth.UserAuthenticator;
 import org.kawanfw.sql.api.server.session.SessionConfigurator;
 import org.kawanfw.sql.servlet.connection.ConnectionIdUtil;
 import org.kawanfw.sql.servlet.connection.ConnectionStore;
-import org.kawanfw.sql.servlet.connection.ConnectionUtil;
 import org.kawanfw.sql.servlet.sql.json_return.ExceptionReturner;
 import org.kawanfw.sql.servlet.sql.json_return.JsonErrorReturn;
 import org.kawanfw.sql.servlet.sql.json_return.JsonOkReturn;
@@ -64,8 +63,6 @@ public class ServerLoginActionSql extends HttpServlet {
 
     // A space
     public static final String SPACE = " ";
-
-    private static final boolean FORCE_AUTO_COMMIT_AND_NOT_READ_ONLY = false;
 
     /**
      *
@@ -144,12 +141,6 @@ public class ServerLoginActionSql extends HttpServlet {
 		// We store the Connection in Memory
 		ConnectionStore connectionStore = new ConnectionStore(username, sessionId, connectionId);
 		
-		// Make sure we are in auto-commit mode when user starts
-		// session
-		if (FORCE_AUTO_COMMIT_AND_NOT_READ_ONLY) {
-		    ConnectionUtil.connectionInit(connection);
-		}
-	
 		connectionStore.put(connection);
 	    }
 	    

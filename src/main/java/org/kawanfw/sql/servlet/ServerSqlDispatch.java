@@ -134,6 +134,11 @@ public class ServerSqlDispatch {
 		}
 	    }
 
+	    // Do not treat if not in auto-commit mode if Server is Stateless
+	    if (! checkStatelessInAutoCommit(response, out, connection)) {
+		return;
+	    }
+	    
 	    // Release connection in pool & remove all references
 	    if (action.equals(HttpParameter.CLOSE)) {
 		treatCloseAction(response, out, username, sessionId, connectionId, databaseConfigurator, connection);
@@ -161,6 +166,30 @@ public class ServerSqlDispatch {
 	}
 
     }
+
+
+    /**
+     * Checks that a stateless session is in auto commit, otherwise reply with error message.
+     * @param response
+     * @param out
+     * @param connection
+     * @return
+     * @throws IOException
+     * @throws SQLException
+     */
+    private boolean checkStatelessInAutoCommit(HttpServletResponse response, OutputStream out, Connection connection) throws IOException, SQLException {
+	if (ServletParametersStore.isStatelessMode() && ! connection.getAutoCommit() ) {
+	    JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_BAD_REQUEST,
+		    JsonErrorReturn.ERROR_JDBC_ERROR, "AceQL Server is in Stateless Mode: can not process SQL request because Connection must be in auto-commit.");
+	    ServerSqlManager.writeLine(out, errorReturn.build());
+	    return false;
+	}
+	else {
+	    return true;
+	}
+	
+    }
+
 
 
     private void dumpHeaders(HttpServletRequest request) {
@@ -299,6 +328,7 @@ public class ServerSqlDispatch {
 	    
 	    // Nothing to do in stateless
 	    if (ServletParametersStore.isStatelessMode()) {
+		ServerSqlManager.writeLine(out, JsonOkReturn.build());
 		return;
 	    }
 	    
