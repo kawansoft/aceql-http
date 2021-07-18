@@ -87,11 +87,11 @@ public class ConnectionStore {
 	    throw new IllegalArgumentException("sessionId is null!");
 	}
 
-	//8.0: Connections Id is now mandatory
-	if (connectionId == null) {
-	    throw new IllegalArgumentException("connectionId is null!");
-	}
-		
+	//8.0: Connections Id is still not mandatory!
+//	if (connectionId == null) {
+//	    throw new IllegalArgumentException("connectionId is null!");
+//	}
+	
 	this.connectionKey = new ConnectionKey(username, sessionId, connectionId);
 
     }

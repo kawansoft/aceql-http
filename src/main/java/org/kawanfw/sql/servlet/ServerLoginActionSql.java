@@ -27,7 +27,6 @@ package org.kawanfw.sql.servlet;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -144,9 +143,15 @@ public class ServerLoginActionSql extends HttpServlet {
 		connectionId = ConnectionIdUtil.getConnectionId(connection);
 		// We store the Connection in Memory
 		ConnectionStore connectionStore = new ConnectionStore(username, sessionId, connectionId);
+		
+		// Make sure we are in auto-commit mode when user starts
+		// session
+		if (FORCE_AUTO_COMMIT_AND_NOT_READ_ONLY) {
+		    ConnectionUtil.connectionInit(connection);
+		}
+		
 		connectionStore.put(connection);
 		
-		//connectionId = getConnectionId(sessionId, request, username, database, databaseConfigurator);
 	    }
 	    
 	    Trace.sessionId("sessionId: " + sessionId);
@@ -171,41 +176,6 @@ public class ServerLoginActionSql extends HttpServlet {
      */
     public boolean checkCredentialsAreSet(String username, String password) {
 	return username != null && ! username.isEmpty() && password != null && ! password.isEmpty();
-    }
-
-    /**
-     * Extract a Connection from the pool and return the connection id (hashcode) to
-     * client. Connections is stored in memory until client side calls close action
-     *
-     * @param sessionId
-     * @param request
-     * @param username
-     * @param database
-     * @param databaseConfigurator
-     * @return
-     * @throws SQLException
-     */
-    @SuppressWarnings("unused")
-    // Keep method for now
-    private static String getConnectionId(String sessionId, HttpServletRequest request, String username, String database,
-	    DatabaseConfigurator databaseConfigurator) throws SQLException {
-
-	// Extract connection from pool
-	Connection connection = databaseConfigurator.getConnection(database);
-
-	// Each Connection is identified by hashcode
-	String connectionId = ConnectionIdUtil.getConnectionId(connection);
-
-	ConnectionStore connectionStore = new ConnectionStore(username, sessionId, connectionId);
-
-	// Make sure we are in auto-commit mode when user starts
-	// session
-	if (FORCE_AUTO_COMMIT_AND_NOT_READ_ONLY) {
-	    ConnectionUtil.connectionInit(connection);
-	}
-
-	connectionStore.put(connection);
-	return connectionId;
     }
 
     private void debug(String s) {
