@@ -134,10 +134,6 @@ public class ServerSqlDispatch {
 		}
 	    }
 
-	    // HACK NDP
-	    // System.out.println("connectionGetter.getConnection():
-	    // connection.getAutoCommit(): " + connection.getAutoCommit());
-
 	    // Release connection in pool & remove all references
 	    if (action.equals(HttpParameter.CLOSE)) {
 		treatCloseAction(response, out, username, sessionId, connectionId, databaseConfigurator, connection);

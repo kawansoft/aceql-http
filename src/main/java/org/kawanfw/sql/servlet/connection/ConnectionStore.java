@@ -88,9 +88,7 @@ public class ConnectionStore {
 	}
 
 	//8.0: Connections Id is still not mandatory!
-//	if (connectionId == null) {
-//	    throw new IllegalArgumentException("connectionId is null!");
-//	}
+	// Because of legacy with API without languages.
 	
 	this.connectionKey = new ConnectionKey(username, sessionId, connectionId);
 
@@ -257,37 +255,6 @@ public class ConnectionStore {
 	return null;
     }
 
-    // /**
-    // * Remove the Array associated to username + connectionId and ArrayId
-    // *
-    // * @param arrayId
-    // * the array id (it's haschode())
-    // *
-    // */
-    // public void removeArray(int arrayId) {
-    // Set<Array> arraySet = arrayMap.get(connectionKey);
-    //
-    // Set<Array> ArraySetNew = new TreeSet<Array>();
-    //
-    // for (Iterator<Array> iterator = arraySet.iterator(); iterator.hasNext();)
-    // {
-    // Array array = (Array) iterator.next();
-    //
-    // boolean addIt = true;
-    //
-    // if (array.hashCode() == arrayId) {
-    // addIt = false;
-    // }
-    //
-    // if (addIt) {
-    // ArraySetNew.add(array);
-    // }
-    // }
-    //
-    // // Replace old map by new
-    // arrayMap.put(connectionKey, ArraySetNew);
-    // }
-    //
 
     /**
      * Stores the RowId in static for username + connectionId
@@ -308,7 +275,6 @@ public class ConnectionStore {
 
 	rowIdSet.add(rowId);
 	rowIdMap.put(connectionKey, rowIdSet);
-
     }
 
     /**
@@ -332,36 +298,6 @@ public class ConnectionStore {
 	return null;
     }
 
-    // /**
-    // * Remove the RowId associated to username + connectionId and hashCode
-    // *
-    // * @param arrayId
-    // * the array id (it's haschode())
-    // *
-    // */
-    // public void removeRowId(String rowIdHashCode) {
-    // Set<RowId> arraySet = rowIdMap.get(connectionKey);
-    //
-    // Set<RowId> ArraySetNew = new TreeSet<RowId>();
-    //
-    // for (Iterator<RowId> iterator = arraySet.iterator(); iterator.hasNext();)
-    // {
-    // RowId rowId = (RowId) iterator.next();
-    //
-    // boolean addIt = true;
-    //
-    // if (rowId.hashCode() == Integer.parseInt(rowIdHashCode)) {
-    // addIt = false;
-    // }
-    //
-    // if (addIt) {
-    // ArraySetNew.add(rowId);
-    // }
-    // }
-    //
-    // // Replace old map by new
-    // rowIdMap.put(connectionKey, ArraySetNew);
-    // }
 
     /**
      * Returns the Connection associated to username + connectionId
@@ -439,14 +375,15 @@ public class ConnectionStore {
     public static void removeAll(String username, String sessionId) {
 
 	// No!! Will trigger a ConcurrentModificationException!
-	// for (ConnectionKey connectionKey : connectionMap.keySet())
-	// {
-	// if (connectionKey.getUsername().equals(username) &&
-	// connectionKey.getSessionId().equals(sessionId)) {
-	// connectionMap.remove(connectionKey);
-	// }
-	// }
-	//
+	/**
+	<pre><code>
+	for (ConnectionKey connectionKey : connectionMap.keySet()) {
+	    if (connectionKey.getUsername().equals(username) && connectionKey.getSessionId().equals(sessionId)) {
+		connectionMap.remove(connectionKey);
+	    }
+	}
+	</code></pre>
+	*/
 	// Intermediate Collection to avoid ConcurrentModificationException on Map
 
 	Set<ConnectionKey> connectionsKeys = new HashSet<>(connectionMap.keySet());
@@ -456,7 +393,6 @@ public class ConnectionStore {
 		connectionMap.remove(connectionKey);
 	    }
 	}
-
     }
 
     /**

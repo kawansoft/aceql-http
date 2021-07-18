@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.Objects;
 import java.util.Set;
 
@@ -75,7 +76,11 @@ public class ServerLogout {
 		databaseConfigurator.close(connection);
 	    }
 
-	    ConnectionStore.removeAll(username, sessionId);
+	    try {
+		ConnectionStore.removeAll(username, sessionId);
+	    } catch (Exception e) {
+		System.out.println(new Date() + " Failure on ConnectionStore.removeAll: " + e.toString());
+	    }
 
 	    deleteOldBlobFiles(databaseConfigurator, username);
 
