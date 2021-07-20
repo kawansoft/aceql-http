@@ -71,7 +71,7 @@ public class ServletPathAnalyzer {
 	} else if (isBlobAction(requestUri)) {
 	    action = getBlobAction();
 	    buildElements(servletName, requestUri);
-	} else if (isExecuteRawOrUpdateOrQueryStatement(requestUri)) {
+	} else if (isExecuteFamily(requestUri)) {
 	    action = getSqlStatement();
 	    buildElements(servletName, requestUri);
 	}
@@ -323,7 +323,7 @@ public class ServletPathAnalyzer {
         return connectionModifierOrReader;
     }
 
-    public boolean isExecuteRawOrUpdateOrQueryStatement(String urlContent) {
+    public boolean isExecuteFamily(String urlContent) {
 	Objects.requireNonNull(urlContent, "urlContent cannot be null!");
 
         if (urlContent.endsWith("/execute_update")) {
@@ -336,6 +336,11 @@ public class ServletPathAnalyzer {
             return true;
         }
 
+        if (urlContent.endsWith("/execute_batch")) {
+            sqlStatement = "execute_batch";
+            return true;
+        }
+        
         if (urlContent.endsWith("/execute")) {
             sqlStatement = "execute";
             return true;
