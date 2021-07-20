@@ -28,28 +28,29 @@ import java.util.List;
  */
 public class StatementsBatchDto {
 
-    private List<String> sqlList = new ArrayList<>();
+    private List<String> batchList = new ArrayList<>();
 
     /**
-     * Constructor.
-     * @param sqlList	the list of SQL statements created with Statement.addBatch()
+     * 
+     * @param batchList the list of SQL statements created with Statement.addBatch()
      */
-    public StatementsBatchDto(List<String> sqlList) {
-	this.sqlList = sqlList;
+    public StatementsBatchDto(List<String> batchList) {
+	super();
+	this.batchList = batchList;
     }
 
     /**
-     * Returns the list of SQL statements created with Statement.addBatch()
-     * @return the list of SQL statements created 
+     * @return the batchList
      */
-    public List<String> getSqlList() {
-        return sqlList;
+    public List<String> getBatchList() {
+        return batchList;
     }
 
     @Override
     public String toString() {
-	return "StatementsBatchDto [sqlList=" + sqlList + "]";
+	return "StatementsBatchDto [batchList=" + batchList + "]";
     }
 
-   
+    
+ 
 }

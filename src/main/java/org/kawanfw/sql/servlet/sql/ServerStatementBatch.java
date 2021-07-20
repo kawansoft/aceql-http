@@ -260,8 +260,8 @@ public class ServerStatementBatch {
 	    debug("before addBatch() loop & executeBatch() ");
 	    
 	    StatementsBatchDto statementsBatchDto = GsonWsUtil.fromJson(jsonStringBatchList, StatementsBatchDto.class);
-	    List<String> sqlList = statementsBatchDto.getSqlList();
-	    for (String sql : sqlList) {
+	    List<String> batchList = statementsBatchDto.getBatchList();
+	    for (String sql : batchList) {
 		checkFirewallExecuteUpdate(username, database, sql, ipAddress);
 		statement.addBatch(sql);
 	    }
