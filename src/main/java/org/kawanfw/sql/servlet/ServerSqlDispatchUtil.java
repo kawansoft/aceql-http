@@ -71,6 +71,10 @@ public class ServerSqlDispatchUtil {
 	return action.equals(HttpParameter.EXECUTE);
     }
 
+    public static boolean isExecuteBatch(String action) {
+	return action.equals(HttpParameter.EXECUTE_BATCH);
+    }
+
 
 
 }

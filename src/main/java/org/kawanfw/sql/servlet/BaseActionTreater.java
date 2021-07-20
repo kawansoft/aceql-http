@@ -146,7 +146,7 @@ public class BaseActionTreater {
 
 	    if (ServletParametersStore.isStatelessMode()) {
 		// Stateless we return the present connection Id
-		ServerSqlManager.writeLine(out, JsonOkReturn.build("connection_id", connectionId));
+		ServerSqlManager.writeLine(out, JsonOkReturn.build("connection_id", ConnectionIdUtil.getStatelessConnectionId()));
 		return true;
 	    }
 	    else {
