@@ -48,6 +48,7 @@ import org.kawanfw.sql.servlet.connection.RollbackUtil;
 import org.kawanfw.sql.servlet.connection.SavepointUtil;
 import org.kawanfw.sql.servlet.connection.TransactionUtil;
 import org.kawanfw.sql.servlet.jdbc.metadata.JdbcDatabaseMetadataActionManager;
+import org.kawanfw.sql.servlet.sql.ServerPreparedStatementBatch;
 import org.kawanfw.sql.servlet.sql.ServerStatement;
 import org.kawanfw.sql.servlet.sql.ServerStatementBatch;
 import org.kawanfw.sql.servlet.sql.ServerStatementRawExecute;
@@ -269,8 +270,8 @@ public class ServerSqlDispatch {
 	    serverStatement.executeBatch(out);
 	}
 	else if (ServerSqlDispatchUtil.isPreparedStatementExecuteBatch(action)) {
-	    ServerStatementBatch serverStatement = new ServerStatementBatch(request, response, sqlFirewallManagers, connection);
-	    serverStatement.executeBatch(out);
+	    ServerPreparedStatementBatch serverPreparedStatementBatch = new ServerPreparedStatementBatch(request, response, sqlFirewallManagers, connection);
+	    serverPreparedStatementBatch.executeBatch(out);
 	}
 	else if (ServerSqlDispatchUtil.isStoredProcedure(request)) {
 	    ServerCallableStatement serverCallableStatement = new ServerCallableStatement(request, response,
