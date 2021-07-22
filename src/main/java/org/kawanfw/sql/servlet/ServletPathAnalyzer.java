@@ -336,8 +336,8 @@ public class ServletPathAnalyzer {
             return true;
         }
 
-        if (urlContent.endsWith("/execute_batch")) {
-            sqlStatement = "execute_batch";
+        if (urlContent.endsWith("/statement_execute_batch")) {
+            sqlStatement = "statement_execute_batch";
             return true;
         }
         

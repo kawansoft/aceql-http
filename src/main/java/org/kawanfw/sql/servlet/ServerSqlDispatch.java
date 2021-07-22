@@ -264,7 +264,7 @@ public class ServerSqlDispatch {
 	    ServerStatement serverStatement = new ServerStatement(request, response, sqlFirewallManagers, connection);
 	    serverStatement.executeQueryOrUpdate(out);
 	}
-	else if (ServerSqlDispatchUtil.isExecuteBatch(action)) {
+	else if (ServerSqlDispatchUtil.isStatementExecuteBatch(action)) {
 	    ServerStatementBatch serverStatement = new ServerStatementBatch(request, response, sqlFirewallManagers, connection);
 	    serverStatement.executeBatch(out);
 	}
