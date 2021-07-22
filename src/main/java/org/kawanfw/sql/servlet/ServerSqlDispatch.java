@@ -268,6 +268,10 @@ public class ServerSqlDispatch {
 	    ServerStatementBatch serverStatement = new ServerStatementBatch(request, response, sqlFirewallManagers, connection);
 	    serverStatement.executeBatch(out);
 	}
+	else if (ServerSqlDispatchUtil.isPreparedStatementExecuteBatch(action)) {
+	    ServerStatementBatch serverStatement = new ServerStatementBatch(request, response, sqlFirewallManagers, connection);
+	    serverStatement.executeBatch(out);
+	}
 	else if (ServerSqlDispatchUtil.isStoredProcedure(request)) {
 	    ServerCallableStatement serverCallableStatement = new ServerCallableStatement(request, response,
 		    sqlFirewallManagers, connection);

@@ -151,7 +151,9 @@ public class HttpParameter {
     public static final String FILL_RESULT_SET_META_DATA = "fill_result_set_meta_data";
     public static final String MAX_ROWS = "max_rows";
     
-    public static final Object STATEMENT_EXECUTE_BATCH = "statement_execute_batch";
+    public static final String STATEMENT_EXECUTE_BATCH = "statement_execute_batch";
+    public static final String PREPARED_STATEMENT_EXECUTE_BATCH = "prepared_statement_execute_batch";
+    
     public static final String BATCH_LIST = "batch_list";
     
     /**

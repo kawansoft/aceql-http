@@ -28,7 +28,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -40,7 +39,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.kawanfw.sql.api.server.DatabaseConfigurator;
 import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
 import org.kawanfw.sql.metadata.util.GsonWsUtil;
 import org.kawanfw.sql.servlet.HttpParameter;
@@ -58,6 +56,7 @@ import org.kawanfw.sql.util.FrameworkDebug;
  *         Allows to execute the Statement or Prepared Statement on the Server
  *         as executeQuery() or executeUpdate()
  */
+
 public class ServerStatementBatch {
     private static boolean DEBUG = FrameworkDebug.isSet(ServerStatementBatch.class);
 
@@ -105,13 +104,8 @@ public class ServerStatementBatch {
     public void executeBatch(OutputStream out) throws FileNotFoundException, IOException, SQLException {
 
 	try {
-
 	    // Execute it
-	    if (ServerStatementUtil.isPreparedStatement(request)) {
-		//executePrepStatement(out);
-	    } else {
-		executeStatement(out);
-	    }
+	    executeStatement(out);
 	} catch (SecurityException e) {
 	    JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_FORBIDDEN,
 		    JsonErrorReturn.ERROR_ACEQL_UNAUTHORIZED, e.getMessage());
@@ -141,87 +135,6 @@ public class ServerStatementBatch {
 
 	}
     }
-
-
-
-    /**
-     * Execute the passed SQL Statement and return: <br>
-     * - The result set as a List of Maps for SELECT statements. <br>
-     * - The return code for other statements
-     *
-     * @param sqlOrder the qsql order
-     * @param sqlParms the sql parameters
-     * @param out      the writer where to write to result set output
-     *
-     *
-     * @throws SQLException
-     */
-    
-    @SuppressWarnings("unused")
-    private void executePrepStatement(OutputStream out) throws SQLException, IOException {
-	String username = request.getParameter(HttpParameter.USERNAME);
-	String database = request.getParameter(HttpParameter.DATABASE);
-	String sqlOrder = request.getParameter(HttpParameter.SQL);
-
-	DatabaseConfigurator databaseConfigurator = ServerSqlManager.getDatabaseConfigurator(database);
-
-	PreparedStatement preparedStatement = null;
-
-	// Class to set all the statement parameters
-	ServerPreparedStatementParameters serverPreparedStatementParameters = null;
-
-	try {
-	    if (sqlOrder == null || sqlOrder.isEmpty()) {
-		throw new SQLException("A 'sql' statement is required.");
-	    }
-	    preparedStatement = connection.prepareStatement(sqlOrder);
-
-	    debug("before ServerPreparedStatementParameters");
-	    serverPreparedStatementParameters = new ServerPreparedStatementParameters(preparedStatement, request);
-
-	    try {
-		serverPreparedStatementParameters.setParameters();
-	    } catch (IllegalArgumentException e) {
-		JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_BAD_REQUEST,
-			JsonErrorReturn.ERROR_ACEQL_ERROR, e.getMessage());
-		ServerSqlManager.writeLine(out, errorReturn.build());
-		return;
-	    }
-
-	    // Throws a SQL exception if the order is not authorized:
-	    debug("before new SqlSecurityChecker()");
-	    String ipAddress = checkFirewallGeneral(username, database, sqlOrder, serverPreparedStatementParameters);
-
-	    debug("before executeQuery() / executeUpdate()");
-//	    doExecuteUpdate(out, username, database, sqlOrder, preparedStatement, serverPreparedStatementParameters,
-//		    ipAddress);
-		
-	} catch (SQLException e) {
-
-	    RollbackUtil.rollback(connection);
-
-	    String message = StatementFailure.prepStatementFailureBuild(sqlOrder, e.toString(),
-		    serverPreparedStatementParameters.getParameterTypes(),
-		    serverPreparedStatementParameters.getParameterValues(), doPrettyPrinting);
-
-	    LoggerUtil.log(request, e, message);
-	    throw e;
-	} finally {
-	    // Close the ServerPreparedStatementParameters
-	    if (serverPreparedStatementParameters != null) {
-		serverPreparedStatementParameters.close();
-	    }
-
-	    if (preparedStatement != null) {
-		preparedStatement.close();
-	    }
-
-	    // Clean all
-	    serverPreparedStatementParameters = null;
-
-	}
-    }
-
 
     /**
      * Execute the passed SQL Statement and return: <br>
@@ -262,7 +175,7 @@ public class ServerStatementBatch {
 	    StatementsBatchDto statementsBatchDto = GsonWsUtil.fromJson(jsonStringBatchList, StatementsBatchDto.class);
 	    List<String> batchList = statementsBatchDto.getBatchList();
 	    for (String sql : batchList) {
-		checkFirewallExecuteUpdate(username, database, sql, ipAddress);
+		checkFirewallExecute(username, database, sql, ipAddress);
 		statement.addBatch(sql);
 	    }
 	    
@@ -321,45 +234,6 @@ public class ServerStatementBatch {
 	}
     }
 
-    /**
-     * Checks the general firewall rules
-     * @param username
-     * @param database
-     * @param sqlOrder
-     * @param serverPreparedStatementParameters
-     * @return
-     * @throws IOException
-     * @throws SQLException
-     * @throws SecurityException
-     */
-    private String checkFirewallGeneral(String username, String database, String sqlOrder,
-	    ServerPreparedStatementParameters serverPreparedStatementParameters)
-	    throws IOException, SQLException, SecurityException {
-	String ipAddress = request.getRemoteAddr();
-
-	boolean isAllowedAfterAnalysis = false;
-	for (SqlFirewallManager sqlFirewallManager : sqlFirewallManagers) {
-	    isAllowedAfterAnalysis = sqlFirewallManager.allowSqlRunAfterAnalysis(username, database, connection,
-		    ipAddress, sqlOrder, ServerStatementUtil.isPreparedStatement(request), serverPreparedStatementParameters.getParameterValues());
-	    if (!isAllowedAfterAnalysis) {
-		List<Object> parameterValues = new ArrayList<>();
-		sqlFirewallManager.runIfStatementRefused(username, database, connection, ipAddress, false, sqlOrder,
-			parameterValues);
-		break;
-	    }
-	}
-
-	if (!isAllowedAfterAnalysis) {
-	    String message = JsonSecurityMessage.prepStatementNotAllowedBuild(sqlOrder,
-		    "Prepared Statement not allowed", serverPreparedStatementParameters.getParameterTypes(),
-		    serverPreparedStatementParameters.getParameterValues(), doPrettyPrinting);
-	    throw new SecurityException(message);
-	}
-	return ipAddress;
-    }
-
-
-
 
     /**
      * Checks the firewall rules for an ExecuteUpdate for a statement.
@@ -371,7 +245,7 @@ public class ServerStatementBatch {
      * @throws SQLException
      * @throws SecurityException
      */
-    private void checkFirewallExecuteUpdate(String username, String database, String sqlOrder, String ipAddress)
+    private void checkFirewallExecute(String username, String database, String sqlOrder, String ipAddress)
 	    throws IOException, SQLException, SecurityException {
 	boolean isAllowed;
 	for (SqlFirewallManager sqlFirewallManager : sqlFirewallManagers) {
@@ -428,9 +302,8 @@ public class ServerStatementBatch {
 	}
     }
 
-
-
     /**
+     * Debug function
      * @param s
      */
 
