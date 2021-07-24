@@ -51,10 +51,7 @@ import java.util.Objects;
 import java.util.TreeMap;
 import java.util.Vector;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.kawanfw.sql.api.server.DatabaseConfigurator;
-import org.kawanfw.sql.servlet.HttpParameter;
 import org.kawanfw.sql.servlet.ServerSqlManager;
 import org.kawanfw.sql.util.FrameworkDebug;
 import org.kawanfw.sql.util.HtmlConverter;
@@ -75,8 +72,6 @@ public class ServerPreparedStatementParameters {
 
     private static final String HTML_DECODED = ".html-decoded.txt";
 
-    private PreparedStatement preparedStatement = null;
-
     /** The parameter values as objects that can be casted */
     private Map<Integer, Object> parameterValues = new TreeMap<>();
 
@@ -85,8 +80,6 @@ public class ServerPreparedStatementParameters {
 
     /** The parameter types as objects that can be casted */
     private Map<Integer, String> parameterStringValues = new TreeMap<>();
-
-    private HttpServletRequest request;
 
     /** The InputStream corresponding to a Blob */
     private List<InputStream> inList = new Vector<InputStream>();
@@ -97,21 +90,41 @@ public class ServerPreparedStatementParameters {
     /** The blob/clob files list */
     private List<File> blobsOrClobs = new Vector<File>();
 
-    private Map<Integer, AceQLParameter> inOutStatementParameters = new TreeMap<Integer, AceQLParameter>();
-
+    private String username;
+    private String database;
+    private String sql;
+    private PreparedStatement preparedStatement = null;
+    private Map<Integer, AceQLParameter> inOutStatementParameters;
+    private String htlmEncoding; // Can be null
+	
+   
     /**
-     * Constructor
-     *
-     * @param preparedStatement the prepared statement for whiv to set the
-     *                          parameters
-     * @param request           the servlet request
+     * 
+     * @param username
+     * @param database
+     * @param sql
+     * @param preparedStatement
+     * @param inOutStatementParameters
+     * @param htlmEncoding
      */
-    public ServerPreparedStatementParameters(PreparedStatement preparedStatement, HttpServletRequest request) {
+    public ServerPreparedStatementParameters(String username, String database, String sql,
+	    PreparedStatement preparedStatement, Map<Integer, AceQLParameter> inOutStatementParameters,
+	    String htlmEncoding) {
 
+	Objects.requireNonNull(username, "username cannot be null!");
+	Objects.requireNonNull(database, "database cannot be null!");
+	Objects.requireNonNull(sql, "sql cannot be null!");
 	Objects.requireNonNull(preparedStatement, "preparedStatement cannot be null!");
+	Objects.requireNonNull(inOutStatementParameters, "inOutStatementParameters cannot be null!");
+	
+	this.username = username;
+	this.database = database;
+	this.sql = sql;
 	this.preparedStatement = preparedStatement;
-	this.request = request;
+	this.inOutStatementParameters = inOutStatementParameters;
+	this.htlmEncoding = htlmEncoding;
     }
+
 
     /**
      * Sets the parameters from JSon String
@@ -121,8 +134,6 @@ public class ServerPreparedStatementParameters {
      * @throws IllegalArgumentException if use passes bad parameters
      */
     public void setParameters() throws SQLException, IllegalArgumentException, IOException {
-
-	buildInOutStatementParametersMap();
 
 	if (inOutStatementParameters.isEmpty()) {
 	    return;
@@ -472,54 +483,6 @@ public class ServerPreparedStatementParameters {
 	debug("AFTER setNull");
     }
 
-    /**
-     * @throws IllegalArgumentException
-     * @throws SQLException
-     */
-    private void buildInOutStatementParametersMap() throws IllegalArgumentException, SQLException {
-	int i = 1;
-
-	while (true) {
-	    String requestParamType = request.getParameter(HttpParameter.PARAM_TYPE_ + i);
-
-	    if (requestParamType != null && !requestParamType.isEmpty()) {
-		String requestParamValue = request.getParameter(HttpParameter.PARAM_VALUE_ + i);
-
-		String parameterDirection = request.getParameter(HttpParameter.PARAM_DIRECTION_ + i);
-
-		if (parameterDirection == null) {
-		    parameterDirection = ParameterDirection.IN;
-		}
-		parameterDirection = parameterDirection.toLowerCase();
-
-		if (!parameterDirection.equals(ParameterDirection.IN)
-			&& !parameterDirection.equals(ParameterDirection.OUT)
-			&& !parameterDirection.equals(ParameterDirection.INOUT)) {
-		    throw new IllegalArgumentException(
-			    "Invalid direction for parameter of index " + i + ": " + parameterDirection);
-		}
-
-		// Out parameters may have a f...ing name!! We have to handle it.
-		String outParameterName = request.getParameter(HttpParameter.OUT_PARAM_NAME_ + i);
-
-		inOutStatementParameters.put(i, new AceQLParameter(i, requestParamType, requestParamValue,
-			parameterDirection, outParameterName));
-
-		debug("index: " + i + " / type " + requestParamType + " / direction: " + parameterDirection
-			+ " / value: " + requestParamValue);
-
-		// NO: fix to accept "" (empty values) now:  if (isInParameter(parameterDirection) && (requestParamValue == null || requestParamValue.isEmpty())) {
-		if (isInParameter(parameterDirection) && requestParamValue == null) {
-		    throw new SQLException("No parameter value for IN parameter index " + i);
-		}
-
-	    } else {
-		break;
-	    }
-
-	    i++;
-	}
-    }
 
     private void registerOutParameter(int paramIndex, String paramType, String paramDirection) throws SQLException {
 	if (isOutParameter(paramDirection)) {
@@ -556,8 +519,6 @@ public class ServerPreparedStatementParameters {
     private void setCharacterStream(PreparedStatement preparedStatement, int parameterIndex, String paramValue)
 	    throws SQLException, IOException {
 
-	String username = request.getParameter(HttpParameter.USERNAME);
-	String database = request.getParameter(HttpParameter.DATABASE);
 	DatabaseConfigurator databaseConfigurator = ServerSqlManager.getDatabaseConfigurator(database);
 
 	// Extract the Clob file from the parameter
@@ -574,7 +535,6 @@ public class ServerPreparedStatementParameters {
 
 	long theLength = -1;
 
-	String htlmEncoding = request.getParameter(HttpParameter.HTML_ENCODING);
 	if (Boolean.parseBoolean(htlmEncoding)) {
 	    File clobFileHtmlDecoded = new File(clobFile + HTML_DECODED);
 	    blobsOrClobs.add(clobFileHtmlDecoded);
@@ -626,8 +586,6 @@ public class ServerPreparedStatementParameters {
 	    throws SQLException, IOException {
 	// Extract the Blob file from the parameter
 
-	String username = request.getParameter(HttpParameter.USERNAME);
-	String database = request.getParameter(HttpParameter.DATABASE);
 	DatabaseConfigurator databaseConfigurator = ServerSqlManager.getDatabaseConfigurator(database);
 
 	// Extract the Blob/Clob file from the parameter
@@ -655,7 +613,6 @@ public class ServerPreparedStatementParameters {
 	debug("before preparedStatement.setBinaryStream()");
 
 	Connection connection = preparedStatement.getConnection();
-	String sql = request.getParameter(HttpParameter.SQL);
 
 	// Test if we are in PostgreSQL with OID column for large file
 	if (PostgreSqlUtil.isPostgreSqlStatementWithOID(connection, sql)) {

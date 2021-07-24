@@ -51,6 +51,7 @@ import org.kawanfw.sql.servlet.sql.AceQLParameter;
 import org.kawanfw.sql.servlet.sql.LoggerUtil;
 import org.kawanfw.sql.servlet.sql.ResultSetWriter;
 import org.kawanfw.sql.servlet.sql.ServerPreparedStatementParameters;
+import org.kawanfw.sql.servlet.sql.ServerPreparedStatementParametersUtil;
 import org.kawanfw.sql.servlet.sql.StatementFailure;
 import org.kawanfw.sql.servlet.sql.json_return.JsonErrorReturn;
 import org.kawanfw.sql.servlet.sql.json_return.JsonSecurityMessage;
@@ -189,7 +190,8 @@ public class ServerCallableStatement {
 	String username = request.getParameter(HttpParameter.USERNAME);
 	String database = request.getParameter(HttpParameter.DATABASE);
 	String sqlOrder = request.getParameter(HttpParameter.SQL);
-
+	String htlmEncoding = request.getParameter(HttpParameter.HTML_ENCODING);
+	
 	debug("sqlOrder        : " + sqlOrder);
 	CallableStatement callableStatement = null;
 
@@ -205,7 +207,8 @@ public class ServerCallableStatement {
 
 	    // Set the IN Parameters
 	    debug("before ServerPreparedStatementParameters");
-	    serverPreparedStatementParameters = new ServerPreparedStatementParameters(callableStatement, request);
+	    Map<Integer, AceQLParameter> inOutStatementParameters = ServerPreparedStatementParametersUtil.buildParametersFromRequest(request);
+	    serverPreparedStatementParameters = new ServerPreparedStatementParameters(username, database, sqlOrder, callableStatement, inOutStatementParameters, htlmEncoding);
 
 	    try {
 		serverPreparedStatementParameters.setParameters();

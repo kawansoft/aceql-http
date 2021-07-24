@@ -3,7 +3,7 @@
  */
 package org.kawanfw.sql.servlet.sql.dto;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -13,7 +13,7 @@ import java.util.Map;
 public class PrepStatementParamsHolder {
 
     /** All the PreparedStatement parameters and ther values */
-    private Map<String, String> statementParameters = new HashMap<>();
+    private Map<String, String> statementParameters = new LinkedHashMap<>();
 
     public PrepStatementParamsHolder(Map<String, String> statementParameters) {
 	this.statementParameters = statementParameters;

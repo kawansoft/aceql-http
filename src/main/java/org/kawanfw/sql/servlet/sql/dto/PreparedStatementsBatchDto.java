@@ -1,6 +1,4 @@
-/**
- * 
- */
+
 package org.kawanfw.sql.servlet.sql.dto;
 
 import java.util.ArrayList;

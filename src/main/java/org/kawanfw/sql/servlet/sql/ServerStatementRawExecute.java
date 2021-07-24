@@ -36,6 +36,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 import javax.json.stream.JsonGenerator;
@@ -219,7 +220,8 @@ public class ServerStatementRawExecute {
 	String username = request.getParameter(HttpParameter.USERNAME);
 	String database = request.getParameter(HttpParameter.DATABASE);
 	String sqlOrder = request.getParameter(HttpParameter.SQL);
-
+	String htlmEncoding = request.getParameter(HttpParameter.HTML_ENCODING);
+	
 	PreparedStatement preparedStatement = null;
 	DatabaseConfigurator databaseConfigurator = ServerSqlManager.getDatabaseConfigurator(database);
 
@@ -233,7 +235,8 @@ public class ServerStatementRawExecute {
 	    preparedStatement = connection.prepareStatement(sqlOrder);
 
 	    debug("before ServerPreparedStatementParameters");
-	    serverPreparedStatementParameters = new ServerPreparedStatementParameters(preparedStatement, request);
+	    Map<Integer, AceQLParameter> inOutStatementParameters = ServerPreparedStatementParametersUtil.buildParametersFromRequest(request);
+	    serverPreparedStatementParameters = new ServerPreparedStatementParameters(username, database, sqlOrder, preparedStatement, inOutStatementParameters, htlmEncoding);
 
 	    try {
 		serverPreparedStatementParameters.setParameters();

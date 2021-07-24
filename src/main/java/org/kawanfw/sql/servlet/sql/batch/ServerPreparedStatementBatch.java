@@ -22,14 +22,14 @@
  * Any modifications to this file must keep this entire header
  * intact.
  */
-package org.kawanfw.sql.servlet.sql;
+package org.kawanfw.sql.servlet.sql.batch;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -44,6 +44,10 @@ import org.kawanfw.sql.metadata.util.GsonWsUtil;
 import org.kawanfw.sql.servlet.HttpParameter;
 import org.kawanfw.sql.servlet.ServerSqlManager;
 import org.kawanfw.sql.servlet.connection.RollbackUtil;
+import org.kawanfw.sql.servlet.sql.LoggerUtil;
+import org.kawanfw.sql.servlet.sql.ServerPreparedStatementParameters;
+import org.kawanfw.sql.servlet.sql.ServerStatementUtil;
+import org.kawanfw.sql.servlet.sql.StatementFailure;
 import org.kawanfw.sql.servlet.sql.dto.StatementsBatchDto;
 import org.kawanfw.sql.servlet.sql.dto.UpdateCountsArrayDto;
 import org.kawanfw.sql.servlet.sql.json_return.JsonErrorReturn;
@@ -57,8 +61,8 @@ import org.kawanfw.sql.util.FrameworkDebug;
  *         as executeQuery() or executeUpdate()
  */
 
-public class ServerStatementBatch {
-    private static boolean DEBUG = FrameworkDebug.isSet(ServerStatementBatch.class);
+public class ServerPreparedStatementBatch {
+    private static boolean DEBUG = FrameworkDebug.isSet(ServerPreparedStatementBatch.class);
 
     public static String CR_LF = System.getProperty("line.separator");
 
@@ -83,13 +87,14 @@ public class ServerStatementBatch {
      * @param sqlOrderAndParmsStore the Sql order and parms
      */
 
-    public ServerStatementBatch(HttpServletRequest request, HttpServletResponse response,
+    public ServerPreparedStatementBatch(HttpServletRequest request, HttpServletResponse response,
 	    List<SqlFirewallManager> sqlFirewallManagers, Connection connection) throws SQLException {
 	this.request = request;
 	this.response = response;
 	this.sqlFirewallManagers = sqlFirewallManagers;
 	this.connection = connection;
 	doPrettyPrinting = true; // Always pretty printing
+
     }
 
     /**
@@ -149,10 +154,11 @@ public class ServerStatementBatch {
 
 	String username = request.getParameter(HttpParameter.USERNAME);
 	String database = request.getParameter(HttpParameter.DATABASE);
+	String sqlOrder = request.getParameter(HttpParameter.SQL);
 	String jsonStringBatchList = request.getParameter(HttpParameter.BATCH_LIST);
 	debug("jsonString BATCH_LIST: " + jsonStringBatchList);
 
-	Statement statement = null;
+	PreparedStatement preparedStatement = null;
 
 	try {
 
@@ -160,23 +166,25 @@ public class ServerStatementBatch {
 		throw new SQLException("At least one 'sql' statement is required in batch mode.");
 	    }
 
-	    // Throws a SQL exception if the order is not authorized:
-	    debug("before new SqlSecurityChecker()");
+	    preparedStatement = connection.prepareStatement(sqlOrder);
+
 	    String ipAddress = request.getRemoteAddr();
 
-	    statement = connection.createStatement();
-	    debug("before statement.addBatch() loop");
+	    debug("before addBatch() loop & executeBatch() ");
 	    
 	    StatementsBatchDto statementsBatchDto = GsonWsUtil.fromJson(jsonStringBatchList, StatementsBatchDto.class);
 	    List<String> batchList = statementsBatchDto.getBatchList();
+	    
 	    for (String sql : batchList) {
+		// Throws a SQL exception if the order is not authorized:
+		debug("before new SqlSecurityChecker()");
+
 		checkFirewallGeneral(username, database, sql, ipAddress);
 		checkFirewallExecute(username, database, sql, ipAddress);
-		statement.addBatch(sql);
+		// statement.addBatch(sql);
 	    }
 	    
-	    debug("before statement.executeBatch()");
-	    int [] rc = statement.executeBatch();
+	    int [] rc = null; //statement.executeBatch();
 	    UpdateCountsArrayDto updateCountsArrayDto = new UpdateCountsArrayDto(rc);
 	    String jsonString = GsonWsUtil.getJSonString(updateCountsArrayDto);
 	    ServerSqlManager.writeLine(out, jsonString);
@@ -192,8 +200,8 @@ public class ServerStatementBatch {
 	} finally {
 	    // NO! IOUtils.closeQuietly(out);
 
-	    if (statement != null) {
-		statement.close();
+	    if (preparedStatement != null) {
+		preparedStatement.close();
 	    }
 	}
     }
