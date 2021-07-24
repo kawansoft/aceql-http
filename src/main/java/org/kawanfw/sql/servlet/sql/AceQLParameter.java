@@ -24,6 +24,8 @@
  */
 package org.kawanfw.sql.servlet.sql;
 
+import org.kawanfw.sql.servlet.sql.parameters.ServerPreparedStatementParameters;
+
 /**
  * Immutable Holder for a PreparedStatement Parameter.
  * 

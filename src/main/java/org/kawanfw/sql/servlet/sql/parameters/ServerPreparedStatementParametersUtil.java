@@ -1,4 +1,4 @@
-package org.kawanfw.sql.servlet.sql;
+package org.kawanfw.sql.servlet.sql.parameters;
 
 import java.sql.SQLException;
 import java.util.Date;
@@ -9,6 +9,8 @@ import java.util.TreeMap;
 import javax.servlet.http.HttpServletRequest;
 
 import org.kawanfw.sql.servlet.HttpParameter;
+import org.kawanfw.sql.servlet.sql.AceQLParameter;
+import org.kawanfw.sql.servlet.sql.ParameterDirection;
 import org.kawanfw.sql.util.FrameworkDebug;
 
 public class ServerPreparedStatementParametersUtil {
@@ -24,6 +26,7 @@ public class ServerPreparedStatementParametersUtil {
     public static Map<Integer, AceQLParameter> buildParametersFromRequest(HttpServletRequest request) throws SQLException {
 	
 	Map<Integer, AceQLParameter> inOutStatementParameters = new TreeMap<Integer, AceQLParameter>();
+	
 	int i = 1;
 
 	while (true) {

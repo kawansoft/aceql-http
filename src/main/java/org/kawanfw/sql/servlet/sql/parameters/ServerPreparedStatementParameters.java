@@ -22,7 +22,7 @@
  * Any modifications to this file must keep this entire header
  * intact.
  */
-package org.kawanfw.sql.servlet.sql;
+package org.kawanfw.sql.servlet.sql.parameters;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -53,6 +53,11 @@ import java.util.Vector;
 
 import org.kawanfw.sql.api.server.DatabaseConfigurator;
 import org.kawanfw.sql.servlet.ServerSqlManager;
+import org.kawanfw.sql.servlet.sql.AceQLParameter;
+import org.kawanfw.sql.servlet.sql.AceQLTypes;
+import org.kawanfw.sql.servlet.sql.JavaSqlConversion;
+import org.kawanfw.sql.servlet.sql.ParameterDirection;
+import org.kawanfw.sql.servlet.sql.PostgreSqlUtil;
 import org.kawanfw.sql.util.FrameworkDebug;
 import org.kawanfw.sql.util.HtmlConverter;
 import org.kawanfw.sql.util.KeepTempFilePolicyParms;
