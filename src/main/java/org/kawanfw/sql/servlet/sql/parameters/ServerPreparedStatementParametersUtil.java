@@ -2,15 +2,20 @@ package org.kawanfw.sql.servlet.sql.parameters;
 
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.kawanfw.sql.servlet.HttpParameter;
 import org.kawanfw.sql.servlet.sql.AceQLParameter;
 import org.kawanfw.sql.servlet.sql.ParameterDirection;
+import org.kawanfw.sql.servlet.sql.dto.PrepStatementParamsHolder;
 import org.kawanfw.sql.util.FrameworkDebug;
 
 public class ServerPreparedStatementParametersUtil {
@@ -79,8 +84,63 @@ public class ServerPreparedStatementParametersUtil {
 	return parameterDirection.equals(ParameterDirection.IN) || parameterDirection.equals(ParameterDirection.INOUT);
     }
     
+
     /**
-     * Debug 
+     * PreparedStatement parameters converter.
+     * To be used for PreparedStatement with batch mode
+     * @param prepStatementParamsHolder	the prepared statement parameters in PrepStatementParamsHolder format
+     * @return the prepared statement parameters in Map<Integer, AceQLParameter> format.
+     */
+    public static Map<Integer, AceQLParameter> buildParametersFromHolder(
+	    PrepStatementParamsHolder prepStatementParamsHolder) {
+	Objects.requireNonNull(prepStatementParamsHolder, "prepStatementParamsHolder cannot be null!");
+	Map<String, String> holderStatementParameters = prepStatementParamsHolder.getStatementParameters();
+	
+	Set<String> keys = holderStatementParameters.keySet();
+	
+	debug("PreparedStatement parameters index as set unsorted: ");
+	debug(keys);
+
+	// Simple way of sorting
+	List<String> list = keys.stream().sorted((e1, e2) -> 
+	e1.compareTo(e2)).collect(Collectors.toList());
+	
+	debug("PreparedStatement parameters index as list sorted: ");
+	debug(list);
+	
+	Map<Integer, AceQLParameter> parameters = new HashMap<>();
+	
+	int i = 1;
+	for (String key : list) {
+	    String value = holderStatementParameters.get(key);
+	    String parameterDirection = ParameterDirection.IN;
+	    AceQLParameter aceQLParameter = new AceQLParameter(i, key, value, parameterDirection, null);
+	    parameters.put(i, aceQLParameter);
+	    
+	    i++;
+	}
+
+	return parameters;
+    }
+
+    private static void debug(List<String> list) {
+	if (DEBUG) {
+	    System.out.println(new Date() + " " + list);
+	}
+    }
+
+    /**
+     * @param keys
+     */
+    public static void debug(Set<String> keys) {
+	if (DEBUG) {
+	    System.out.println(new Date() + " " + keys);
+	}
+    }
+
+    /**
+     * Debug
+     * 
      * @param s
      */
 
@@ -89,5 +149,5 @@ public class ServerPreparedStatementParametersUtil {
 	    System.out.println(new Date() + " " + s);
 	}
     }
-
+    
 }
