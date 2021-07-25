@@ -114,4 +114,11 @@ public class AceQLParameter {
 
     }
 
+    @Override
+    public String toString() {
+	return "AceQLParameter [parameterIndex=" + parameterIndex + ", parameterType=" + parameterType
+		+ ", parameterValue=" + parameterValue + ", parameterDirection=" + parameterDirection
+		+ ", outParameterName=" + outParameterName + "]";
+    }
+    
 }

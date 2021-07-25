@@ -177,6 +177,13 @@ public class ServerPreparedStatementBatch {
 	    PreparedStatementsBatchDto preparedStatementsBatchDto = GsonWsUtil.fromJson(jsonStringBatchList, PreparedStatementsBatchDto.class);
 	    List<PrepStatementParamsHolder> prepStatementParamsHolderList = preparedStatementsBatchDto.getPrepStatementParamsHolderList();
 	    
+	    if (DEBUG) {
+		ServerPreparedStatementParametersUtil.dump("prepStatementParamsHolderList:");
+		for (PrepStatementParamsHolder prepStatementParamsHolder : prepStatementParamsHolderList) {
+		    ServerPreparedStatementParametersUtil.dump(prepStatementParamsHolder.toString());
+		}
+	    }
+	    
 	    for (PrepStatementParamsHolder prepStatementParamsHolder : prepStatementParamsHolderList) {
 
 		Map<Integer, AceQLParameter> inOutStatementParameters = ServerPreparedStatementParametersUtil

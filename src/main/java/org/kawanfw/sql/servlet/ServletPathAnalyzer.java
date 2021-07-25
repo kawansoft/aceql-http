@@ -336,6 +336,11 @@ public class ServletPathAnalyzer {
             return true;
         }
 
+        if (urlContent.endsWith("/prepared_statement_execute_batch")) {
+            sqlStatement = "prepared_statement_execute_batch";
+            return true;
+        }
+        
         if (urlContent.endsWith("/statement_execute_batch")) {
             sqlStatement = "statement_execute_batch";
             return true;
