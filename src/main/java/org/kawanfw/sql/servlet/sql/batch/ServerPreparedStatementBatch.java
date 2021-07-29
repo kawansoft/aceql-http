@@ -161,7 +161,8 @@ public class ServerPreparedStatementBatch {
 	String jsonStringBatchList = request.getParameter(HttpParameter.BATCH_LIST);
 	String htlmEncoding = request.getParameter(HttpParameter.HTML_ENCODING);
 	
-	debug("jsonString BATCH_LIST: " + jsonStringBatchList);
+	debug("sqlOrder             : " + sqlOrder);
+	debug("jsonString batch_list: " + jsonStringBatchList);
 
 	PreparedStatement preparedStatement = null;
 
@@ -175,6 +176,8 @@ public class ServerPreparedStatementBatch {
 	    debug("before PreparedStatement.addBatch() loop & executeBatch() ");
 	    
 	    PreparedStatementsBatchDto preparedStatementsBatchDto = GsonWsUtil.fromJson(jsonStringBatchList, PreparedStatementsBatchDto.class);
+	    debug("preparedStatementsBatchDto: " + preparedStatementsBatchDto);
+	   
 	    List<PrepStatementParamsHolder> prepStatementParamsHolderList = preparedStatementsBatchDto.getPrepStatementParamsHolderList();
 	    
 	    if (DEBUG) {
