@@ -58,7 +58,6 @@ public class BaseActionTreater {
 	String username = request.getParameter(HttpParameter.USERNAME);
 	String database = request.getParameter(HttpParameter.DATABASE);
 	String sessionId = request.getParameter(HttpParameter.SESSION_ID);
-	String connectionId = request.getParameter(HttpParameter.CONNECTION_ID);
 	
 	if (isActionNullOrEmpty(action)) {
 	    return false;
@@ -72,7 +71,7 @@ public class BaseActionTreater {
 	    return false;
 	}
 
-	if (isActionGetConnection(action, username, database, sessionId, connectionId)) {
+	if (isActionGetConnection(action, username, database, sessionId)) {
 	    return false;
 	}
 
@@ -134,12 +133,11 @@ public class BaseActionTreater {
      * @param username
      * @param database
      * @param sessionId
-     * @param connectionId 
      * @throws SQLException
      * @throws IOException
      */
     
-    private boolean isActionGetConnection(String action, String username, String database, String sessionId, String connectionId)
+    private boolean isActionGetConnection(String action, String username, String database, String sessionId)
 	    throws SQLException, IOException {
 	
 	if (action.equals(HttpParameter.GET_CONNECTION)) {
