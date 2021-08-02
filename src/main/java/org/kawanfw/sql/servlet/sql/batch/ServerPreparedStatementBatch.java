@@ -121,17 +121,20 @@ public class ServerPreparedStatementBatch {
 	    // Execute it
 	    executeStatement(out);
 	} catch (SecurityException e) {
+	    RollbackUtil.rollback(connection);
+	    
 	    JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_FORBIDDEN,
 		    JsonErrorReturn.ERROR_ACEQL_UNAUTHORIZED, e.getMessage());
 	    ServerSqlManager.writeLine(out, errorReturn.build());
 	} catch (SQLException e) {
-
 	    RollbackUtil.rollback(connection);
 
 	    JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_BAD_REQUEST,
 		    JsonErrorReturn.ERROR_JDBC_ERROR, e.getMessage());
 	    ServerSqlManager.writeLine(out, errorReturn.build());
 	} catch (Exception e) {
+	    RollbackUtil.rollback(connection);
+	    
 	    JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
 		    JsonErrorReturn.ERROR_ACEQL_FAILURE, e.getMessage(), ExceptionUtils.getStackTrace(e));
 	    ServerSqlManager.writeLine(out, errorReturn.build());
@@ -166,11 +169,9 @@ public class ServerPreparedStatementBatch {
 	String database = request.getParameter(HttpParameter.DATABASE);
 	String sqlOrder = request.getParameter(HttpParameter.SQL);
 	String blobId = request.getParameter(HttpParameter.BLOB_ID);
-	String jsonStringBatchList = request.getParameter(HttpParameter.BATCH_LIST);
 	String htlmEncoding = request.getParameter(HttpParameter.HTML_ENCODING);
 	
 	debug("sqlOrder             : " + sqlOrder);
-	debug("jsonString batch_list: " + jsonStringBatchList);
 	debug("blobId: " + blobId);
 	
 	PreparedStatement preparedStatement = null;
@@ -235,7 +236,7 @@ public class ServerPreparedStatementBatch {
 	} catch (SQLException e) {
 
 	    RollbackUtil.rollback(connection);
-	    String message = StatementFailure.statementFailureBuild(jsonStringBatchList, e.toString(), doPrettyPrinting);
+	    String message = StatementFailure.statementFailureBuild(sqlOrder, e.toString(), doPrettyPrinting);
 
 	    LoggerUtil.log(request, e, message);
 	    throw e;

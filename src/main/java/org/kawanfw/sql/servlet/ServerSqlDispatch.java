@@ -36,6 +36,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.apache.tomcat.util.http.fileupload.servlet.ServletFileUpload;
 import org.kawanfw.sql.api.server.DatabaseConfigurator;
@@ -369,11 +370,17 @@ public class ServerSqlDispatch {
 	    connectionStore.remove();
 	    ServerSqlManager.writeLine(out, JsonOkReturn.build());
 	} catch (SQLException e) {
-
 	    RollbackUtil.rollback(connection);
 
 	    JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_BAD_REQUEST,
 		    JsonErrorReturn.ERROR_JDBC_ERROR, e.getMessage());
+	    ServerSqlManager.writeLine(out, errorReturn.build());
+
+	} catch (Exception e) {
+	    RollbackUtil.rollback(connection);
+	    
+	    JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+		    JsonErrorReturn.ERROR_ACEQL_FAILURE, e.getMessage(), ExceptionUtils.getStackTrace(e));
 	    ServerSqlManager.writeLine(out, errorReturn.build());
 	}
     }

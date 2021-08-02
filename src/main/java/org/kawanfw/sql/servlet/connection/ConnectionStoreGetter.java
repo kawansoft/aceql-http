@@ -9,12 +9,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.kawanfw.sql.servlet.HttpParameter;
-import org.kawanfw.sql.servlet.sql.LoggerUtil;
 import org.kawanfw.sql.servlet.sql.json_return.JsonErrorReturn;
 
 public class ConnectionStoreGetter {
 
-    private HttpServletRequest request;
     private HttpServletResponse response;
 
     private String username;
@@ -30,7 +28,6 @@ public class ConnectionStoreGetter {
      */
     public ConnectionStoreGetter(HttpServletRequest request, HttpServletResponse response) {
 	super();
-	this.request = request;
 	this.response = response;
 
 	username = request.getParameter(HttpParameter.USERNAME);
@@ -70,8 +67,12 @@ public class ConnectionStoreGetter {
 	    jsonErrorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_BAD_REQUEST,
 		    JsonErrorReturn.ERROR_ACEQL_ERROR, JsonErrorReturn.UNABLE_TO_GET_A_CONNECTION,
 		    ExceptionUtils.getStackTrace(e));
-	    LoggerUtil.log(request, e);
-
+	} catch (Exception e) {
+	    
+	    RollbackUtil.rollback(connection);
+	    
+	    jsonErrorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+		    JsonErrorReturn.ERROR_ACEQL_FAILURE, e.getMessage(), ExceptionUtils.getStackTrace(e));
 	}
 
 	return connection;

@@ -130,17 +130,20 @@ public class ServerStatement {
 		executeStatement(outFinal);
 	    }
 	} catch (SecurityException e) {
+	    RollbackUtil.rollback(connection);
+	    
 	    JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_FORBIDDEN,
 		    JsonErrorReturn.ERROR_ACEQL_UNAUTHORIZED, e.getMessage());
 	    ServerSqlManager.writeLine(outFinal, errorReturn.build());
 	} catch (SQLException e) {
-
 	    RollbackUtil.rollback(connection);
 
 	    JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_BAD_REQUEST,
 		    JsonErrorReturn.ERROR_JDBC_ERROR, e.getMessage());
 	    ServerSqlManager.writeLine(outFinal, errorReturn.build());
 	} catch (Exception e) {
+	    RollbackUtil.rollback(connection);
+	    
 	    JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
 		    JsonErrorReturn.ERROR_ACEQL_FAILURE, e.getMessage(), ExceptionUtils.getStackTrace(e));
 	    ServerSqlManager.writeLine(outFinal, errorReturn.build());
@@ -243,7 +246,6 @@ public class ServerStatement {
 		doSelect(out, username, database, sqlOrder, preparedStatement, databaseConfigurator);
 	    }
 	} catch (SQLException e) {
-
 	    RollbackUtil.rollback(connection);
 
 	    String message = StatementFailure.prepStatementFailureBuild(sqlOrder, e.toString(),

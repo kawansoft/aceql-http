@@ -34,6 +34,7 @@ import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.kawanfw.sql.servlet.HttpParameter;
 import org.kawanfw.sql.servlet.ServerSqlManager;
 import org.kawanfw.sql.servlet.sql.json_return.JsonErrorReturn;
@@ -92,15 +93,22 @@ public class TransactionUtil {
 	    ServerSqlManager.writeLine(out, JsonOkReturn.build());
 
 	} catch (IllegalArgumentException e) {
+	    RollbackUtil.rollback(connection);
 	    JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
 		    JsonErrorReturn.ERROR_ACEQL_ERROR, e.getMessage());
 	    ServerSqlManager.writeLine(out, errorReturn.build());
 	} catch (SQLException e) {
-
 	    RollbackUtil.rollback(connection);
 
 	    JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_BAD_REQUEST,
 		    JsonErrorReturn.ERROR_JDBC_ERROR, e.getMessage());
+	    ServerSqlManager.writeLine(out, errorReturn.build());
+	} catch (Exception e) {
+	    
+	    RollbackUtil.rollback(connection);
+	    
+	    JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+		    JsonErrorReturn.ERROR_ACEQL_FAILURE, e.getMessage(), ExceptionUtils.getStackTrace(e));
 	    ServerSqlManager.writeLine(out, errorReturn.build());
 	}
 
@@ -151,15 +159,22 @@ public class TransactionUtil {
 		throw new IllegalArgumentException("Invalid Sql Action: " + action);
 	    }
 	} catch (IllegalArgumentException e) {
+	    RollbackUtil.rollback(connection);
+	    
 	    JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
 		    JsonErrorReturn.ERROR_ACEQL_ERROR, e.getMessage());
 	    ServerSqlManager.writeLine(out, errorReturn.build());
 	} catch (SQLException e) {
-
 	    RollbackUtil.rollback(connection);
 
 	    JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_BAD_REQUEST,
 		    JsonErrorReturn.ERROR_JDBC_ERROR, e.getMessage());
+	    ServerSqlManager.writeLine(out, errorReturn.build());
+	} catch (Exception e) {  
+	    RollbackUtil.rollback(connection);
+	    
+	    JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+		    JsonErrorReturn.ERROR_ACEQL_FAILURE, e.getMessage(), ExceptionUtils.getStackTrace(e));
 	    ServerSqlManager.writeLine(out, errorReturn.build());
 	}
     }

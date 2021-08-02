@@ -239,7 +239,7 @@ public class TomcatStarterUtil {
 
 	    System.out.println(SqlTag.SQL_PRODUCT_START + "  -> Connection OK!");
 
-	} catch (SQLException e) {
+	} catch (Exception e) {
 	    RollbackUtil.rollback(connection);
 
 	    throw new DatabaseConfigurationException(e.getMessage() + " " + e.getCause());
