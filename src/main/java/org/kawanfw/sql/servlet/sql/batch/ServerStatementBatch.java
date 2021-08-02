@@ -24,7 +24,10 @@
  */
 package org.kawanfw.sql.servlet.sql.batch;
 
+import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.Connection;
@@ -39,6 +42,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.kawanfw.sql.api.server.DatabaseConfigurator;
 import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
 import org.kawanfw.sql.metadata.util.GsonWsUtil;
 import org.kawanfw.sql.servlet.HttpParameter;
@@ -47,7 +51,6 @@ import org.kawanfw.sql.servlet.connection.RollbackUtil;
 import org.kawanfw.sql.servlet.sql.LoggerUtil;
 import org.kawanfw.sql.servlet.sql.ServerStatementUtil;
 import org.kawanfw.sql.servlet.sql.StatementFailure;
-import org.kawanfw.sql.servlet.sql.dto.StatementsBatchDto;
 import org.kawanfw.sql.servlet.sql.dto.UpdateCountsArrayDto;
 import org.kawanfw.sql.servlet.sql.json_return.JsonErrorReturn;
 import org.kawanfw.sql.servlet.sql.json_return.JsonSecurityMessage;
@@ -77,6 +80,8 @@ public class ServerStatementBatch {
 
     private List<SqlFirewallManager> sqlFirewallManagers;
 
+    private DatabaseConfigurator databaseConfigurator;
+
     /**
      * Default Constructor
      *
@@ -84,15 +89,17 @@ public class ServerStatementBatch {
      * @param response              the http servlet response
      * @param sqlFirewallManagers
      * @param connection
+     * @param databaseConfigurator
      * @param sqlOrderAndParmsStore the Sql order and parms
      */
 
     public ServerStatementBatch(HttpServletRequest request, HttpServletResponse response,
-	    List<SqlFirewallManager> sqlFirewallManagers, Connection connection) throws SQLException {
+	    List<SqlFirewallManager> sqlFirewallManagers, Connection connection, DatabaseConfigurator databaseConfigurator) throws SQLException {
 	this.request = request;
 	this.response = response;
 	this.sqlFirewallManagers = sqlFirewallManagers;
 	this.connection = connection;
+	this.databaseConfigurator = databaseConfigurator;
 	doPrettyPrinting = true; // Always pretty printing
     }
 
@@ -153,30 +160,41 @@ public class ServerStatementBatch {
 
 	String username = request.getParameter(HttpParameter.USERNAME);
 	String database = request.getParameter(HttpParameter.DATABASE);
-	String jsonStringBatchList = request.getParameter(HttpParameter.BATCH_LIST);
-	debug("jsonString BATCH_LIST: " + jsonStringBatchList);
+	String blobId = request.getParameter(HttpParameter.BLOB_ID);
+	debug("blobId: " + blobId);
 
 	Statement statement = null;
-
+	File blobFile = null;
+	
 	try {
 
-	    if (jsonStringBatchList == null || jsonStringBatchList.isEmpty()) {
-		throw new SQLException("At least one 'sql' statement is required in batch mode.");
+	    if (blobId == null || blobId.isEmpty()) {
+		throw new SQLException("blobId cannnot be null!.");
 	    }
 
+	    File blobsDir = databaseConfigurator.getBlobsDirectory(username);
+	    blobFile = new File(blobsDir.toString() + File.separator + blobId);
+	    
+	    if (! blobFile.exists()) {
+		throw new FileNotFoundException("Cannot find file of batch SQL statement for Id: " + blobId);
+	    }
+	    
 	    // Throws a SQL exception if the order is not authorized:
 	    String ipAddress = request.getRemoteAddr();
 
 	    statement = connection.createStatement();
 	    debug("before statement.addBatch() loop");
 	    
-	    StatementsBatchDto statementsBatchDto = GsonWsUtil.fromJson(jsonStringBatchList, StatementsBatchDto.class);
-	    List<String> batchList = statementsBatchDto.getBatchList();
-	    for (String sql : batchList) {
-		debug("before new SqlSecurityChecker()");
-		checkFirewallGeneral(username, database, sql, ipAddress);
-		checkFirewallExecute(username, database, sql, ipAddress);
-		statement.addBatch(sql);
+	    
+	    try (BufferedReader bufferedReader = new BufferedReader(new FileReader(blobFile));) {
+		String line = null;
+		while ((line = bufferedReader.readLine()) != null) {
+		    String sql = line.trim();
+		    debug("before new SqlSecurityChecker()");
+		    checkFirewallGeneral(username, database, sql, ipAddress);
+		    checkFirewallExecute(username, database, sql, ipAddress);
+		    statement.addBatch(sql);
+		}
 	    }
 	    
 	    debug("before statement.executeBatch()");
@@ -188,7 +206,7 @@ public class ServerStatementBatch {
 	} catch (SQLException e) {
 
 	    RollbackUtil.rollback(connection);
-	    String message = StatementFailure.statementFailureBuild(jsonStringBatchList, e.toString(), doPrettyPrinting);
+	    String message = StatementFailure.statementFailureBuild(blobId, e.toString(), doPrettyPrinting);
 
 	    LoggerUtil.log(request, e, message);
 	    throw e;
@@ -198,6 +216,10 @@ public class ServerStatementBatch {
 
 	    if (statement != null) {
 		statement.close();
+	    }
+	    
+	    if (blobFile != null) {
+		blobFile.delete();
 	    }
 	}
     }

@@ -24,7 +24,10 @@
  */
 package org.kawanfw.sql.servlet.sql.batch;
 
+import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.Connection;
@@ -39,6 +42,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.kawanfw.sql.api.server.DatabaseConfigurator;
 import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
 import org.kawanfw.sql.metadata.util.GsonWsUtil;
 import org.kawanfw.sql.servlet.HttpParameter;
@@ -49,7 +53,6 @@ import org.kawanfw.sql.servlet.sql.LoggerUtil;
 import org.kawanfw.sql.servlet.sql.ServerStatementUtil;
 import org.kawanfw.sql.servlet.sql.StatementFailure;
 import org.kawanfw.sql.servlet.sql.dto.PrepStatementParamsHolder;
-import org.kawanfw.sql.servlet.sql.dto.PreparedStatementsBatchDto;
 import org.kawanfw.sql.servlet.sql.dto.UpdateCountsArrayDto;
 import org.kawanfw.sql.servlet.sql.json_return.JsonErrorReturn;
 import org.kawanfw.sql.servlet.sql.json_return.JsonSecurityMessage;
@@ -80,6 +83,8 @@ public class ServerPreparedStatementBatch {
 
     private List<SqlFirewallManager> sqlFirewallManagers;
 
+    private DatabaseConfigurator databaseConfigurator;
+
     /**
      * Default Constructor
      *
@@ -87,16 +92,18 @@ public class ServerPreparedStatementBatch {
      * @param response              the http servlet response
      * @param sqlFirewallManagers
      * @param connection
+     * @param databaseConfigurator
      * @param sqlOrderAndParmsStore the Sql order and parms
      */
 
     public ServerPreparedStatementBatch(HttpServletRequest request, HttpServletResponse response,
-	    List<SqlFirewallManager> sqlFirewallManagers, Connection connection) throws SQLException {
+	    List<SqlFirewallManager> sqlFirewallManagers, Connection connection, DatabaseConfigurator databaseConfigurator) throws SQLException {
 	this.request = request;
 	this.response = response;
 	this.sqlFirewallManagers = sqlFirewallManagers;
 	this.connection = connection;
 	doPrettyPrinting = true; // Always pretty printing
+	this.databaseConfigurator = databaseConfigurator;
 
     }
 
@@ -158,57 +165,66 @@ public class ServerPreparedStatementBatch {
 	String username = request.getParameter(HttpParameter.USERNAME);
 	String database = request.getParameter(HttpParameter.DATABASE);
 	String sqlOrder = request.getParameter(HttpParameter.SQL);
+	String blobId = request.getParameter(HttpParameter.BLOB_ID);
 	String jsonStringBatchList = request.getParameter(HttpParameter.BATCH_LIST);
 	String htlmEncoding = request.getParameter(HttpParameter.HTML_ENCODING);
 	
 	debug("sqlOrder             : " + sqlOrder);
 	debug("jsonString batch_list: " + jsonStringBatchList);
-
+	debug("blobId: " + blobId);
+	
 	PreparedStatement preparedStatement = null;
-
+	File blobFile = null;
+	
 	try {
 
-	    if (jsonStringBatchList == null || jsonStringBatchList.isEmpty()) {
-		throw new SQLException("At least one 'sql' statement is required in prepared staatement batch mode.");
+	    if (blobId == null || blobId.isEmpty()) {
+		throw new SQLException("blobId cannnot be null!.");
 	    }
 
+	    File blobsDir = databaseConfigurator.getBlobsDirectory(username);
+	    blobFile = new File(blobsDir.toString() + File.separator + blobId);
+	    
+	    if (! blobFile.exists()) {
+		throw new FileNotFoundException("Cannot find file of batch SQL prepared statement parameters for Id: " + blobId);
+	    }
+	    
 	    preparedStatement = connection.prepareStatement(sqlOrder);
 	    debug("before PreparedStatement.addBatch() loop & executeBatch() ");
-	    
-	    PreparedStatementsBatchDto preparedStatementsBatchDto = GsonWsUtil.fromJson(jsonStringBatchList, PreparedStatementsBatchDto.class);
-	    debug("preparedStatementsBatchDto: " + preparedStatementsBatchDto);
-	   
-	    List<PrepStatementParamsHolder> prepStatementParamsHolderList = preparedStatementsBatchDto.getPrepStatementParamsHolderList();
-	    
-	    if (DEBUG) {
-		ServerPreparedStatementParametersUtil.dump("prepStatementParamsHolderList:");
-		for (PrepStatementParamsHolder prepStatementParamsHolder : prepStatementParamsHolderList) {
-		    ServerPreparedStatementParametersUtil.dump(prepStatementParamsHolder.toString());
+	    	    
+	    try (BufferedReader bufferedReader = new BufferedReader(new FileReader(blobFile));) {
+		String line = null;
+
+		while ((line = bufferedReader.readLine()) != null) {
+		    
+		    if (DEBUG) {
+			ServerPreparedStatementParametersUtil.dump("line: " + line);
+		    }
+		    
+		    PrepStatementParamsHolder paramsHolder = GsonWsUtil.fromJson(line.trim(), PrepStatementParamsHolder.class);
+
+		    Map<Integer, AceQLParameter> inOutStatementParameters = ServerPreparedStatementParametersUtil
+			    .buildParametersFromHolder(paramsHolder);
+
+		    ServerPreparedStatementParameters serverPreparedStatementParameters = new ServerPreparedStatementParameters(
+			    username, database, sqlOrder, preparedStatement, inOutStatementParameters, htlmEncoding);
+
+		    try {
+			serverPreparedStatementParameters.setParameters();
+		    } catch (IllegalArgumentException e) {
+			JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_BAD_REQUEST,
+				JsonErrorReturn.ERROR_ACEQL_ERROR, e.getMessage());
+			ServerSqlManager.writeLine(out, errorReturn.build());
+			return;
+		    }	    
+		    
+		    debug("before new SqlSecurityChecker()");
+			String ipAddress = checkFirewallGeneral(username, database, sqlOrder,
+				serverPreparedStatementParameters);
+			checkFirewallForExecuteUpdate(username, database, sqlOrder, serverPreparedStatementParameters,
+				ipAddress);
+			preparedStatement.addBatch();
 		}
-	    }
-	    
-	    for (PrepStatementParamsHolder prepStatementParamsHolder : prepStatementParamsHolderList) {
-
-		Map<Integer, AceQLParameter> inOutStatementParameters = ServerPreparedStatementParametersUtil
-			.buildParametersFromHolder(prepStatementParamsHolder);
-
-		ServerPreparedStatementParameters serverPreparedStatementParameters = new ServerPreparedStatementParameters(
-			username, database, sqlOrder, preparedStatement, inOutStatementParameters, htlmEncoding);
-
-		try {
-		    serverPreparedStatementParameters.setParameters();
-		} catch (IllegalArgumentException e) {
-		    JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_BAD_REQUEST,
-			    JsonErrorReturn.ERROR_ACEQL_ERROR, e.getMessage());
-		    ServerSqlManager.writeLine(out, errorReturn.build());
-		    return;
-		}
-
-		String ipAddress = checkFirewallGeneral(username, database, sqlOrder,
-			serverPreparedStatementParameters);
-		checkFirewallForExecuteUpdate(username, database, sqlOrder, serverPreparedStatementParameters,
-			ipAddress);
-		preparedStatement.addBatch();
 	    }
 	    
 	    int [] rc = preparedStatement.executeBatch();

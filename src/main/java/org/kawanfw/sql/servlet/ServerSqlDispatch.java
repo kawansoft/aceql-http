@@ -159,7 +159,7 @@ public class ServerSqlDispatch {
 
 	    dumpHeaders(request);
 
-	    dispatch(request, response, out, action, connection, sqlFirewallManagers);
+	    dispatch(request, response, out, action, connection, databaseConfigurator, sqlFirewallManagers);
 	} finally {
 	    // Immediate close of a  Connection for stateless sessions
 	    if (ServletParametersStore.isStatelessMode()) {
@@ -172,7 +172,7 @@ public class ServerSqlDispatch {
 
     /**
      * Checks that a stateless session is in auto commit, otherwise reply with error message.
-     * @param request TODO
+     * @param request
      * @param response
      * @param out
      * @param connection
@@ -248,6 +248,7 @@ public class ServerSqlDispatch {
      * @param out
      * @param action
      * @param connection
+     * @param databaseConfigurator
      * @param sqlFirewallManagers
      * @throws SQLException
      * @throws FileNotFoundException
@@ -255,7 +256,7 @@ public class ServerSqlDispatch {
      * @throws IllegalArgumentException
      */
     private void dispatch(HttpServletRequest request, HttpServletResponse response, OutputStream out, String action,
-	    Connection connection, List<SqlFirewallManager> sqlFirewallManagers)
+	    Connection connection, DatabaseConfigurator databaseConfigurator, List<SqlFirewallManager> sqlFirewallManagers)
 	    throws SQLException, FileNotFoundException, IOException, IllegalArgumentException {
 	if (ServerSqlDispatchUtil.isExecute(action) && !ServerSqlDispatchUtil.isStoredProcedure(request)) {
 	    ServerStatementRawExecute serverStatement = new ServerStatementRawExecute(request, response, sqlFirewallManagers, connection);
@@ -266,11 +267,11 @@ public class ServerSqlDispatch {
 	    serverStatement.executeQueryOrUpdate(out);
 	}
 	else if (ServerSqlDispatchUtil.isStatementExecuteBatch(action)) {
-	    ServerStatementBatch serverStatement = new ServerStatementBatch(request, response, sqlFirewallManagers, connection);
+	    ServerStatementBatch serverStatement = new ServerStatementBatch(request, response, sqlFirewallManagers, connection, databaseConfigurator);
 	    serverStatement.executeBatch(out);
 	}
 	else if (ServerSqlDispatchUtil.isPreparedStatementExecuteBatch(action)) {
-	    ServerPreparedStatementBatch serverPreparedStatementBatch = new ServerPreparedStatementBatch(request, response, sqlFirewallManagers, connection);
+	    ServerPreparedStatementBatch serverPreparedStatementBatch = new ServerPreparedStatementBatch(request, response, sqlFirewallManagers, connection, databaseConfigurator);
 	    serverPreparedStatementBatch.executeBatch(out);
 	}
 	else if (ServerSqlDispatchUtil.isStoredProcedure(request)) {
