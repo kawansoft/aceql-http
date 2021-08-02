@@ -179,7 +179,7 @@ public class ServerPreparedStatementBatch {
 	try {
 
 	    if (blobId == null || blobId.isEmpty()) {
-		throw new SQLException("blobId cannnot be null!.");
+		throw new SQLException("blob_id cannnot be null!.");
 	    }
 
 	    File blobsDir = databaseConfigurator.getBlobsDirectory(username);
