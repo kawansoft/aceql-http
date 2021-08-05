@@ -234,7 +234,6 @@ public class ServerPreparedStatementBatch {
 	    ServerSqlManager.writeLine(out, jsonString);
 	    
 	} catch (SQLException e) {
-
 	    RollbackUtil.rollback(connection);
 	    String message = StatementFailure.statementFailureBuild(sqlOrder, e.toString(), doPrettyPrinting);
 

@@ -68,7 +68,6 @@ public class ConnectionStoreGetter {
 		    JsonErrorReturn.ERROR_ACEQL_ERROR, JsonErrorReturn.UNABLE_TO_GET_A_CONNECTION,
 		    ExceptionUtils.getStackTrace(e));
 	} catch (Exception e) {
-	    
 	    RollbackUtil.rollback(connection);
 	    
 	    jsonErrorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR,

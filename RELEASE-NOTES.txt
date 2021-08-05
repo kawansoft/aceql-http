@@ -24,6 +24,16 @@ AceQL HTTP is licensed through the GNU Lesser General Public License
 (LGPL v2.1).
 
 
+AceQL HTTP Version 8.0 - 05-Aug-2021
+------------------------------------
+
+What's New:
+- AceQL Server may be run in stateless mode. See conf/aceql-server.properties 
+  file comments & User Documentation.
+- Core has be changed to support INSERT and UPDATE calls in batch
+  mode  from C# Client SDK, Java Client JDBC Driver and Python Client SDK.
+
+
 AceQL HTTP Version 7.2 - 15-Jun-2021
 ------------------------------------
 

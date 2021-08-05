@@ -237,7 +237,6 @@ public class ServerCallableStatement {
 		doSelect(out, sqlOrder, callableStatement, serverPreparedStatementParameters);
 	    }
 	} catch (SQLException e) {
-
 	    RollbackUtil.rollback(connection);
 
 	    String message = StatementFailure.prepStatementFailureBuild(sqlOrder, e.toString(),

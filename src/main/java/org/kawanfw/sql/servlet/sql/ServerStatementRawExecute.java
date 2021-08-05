@@ -191,7 +191,6 @@ public class ServerStatementRawExecute {
 	    doExecute(out, databaseConfigurator, username, database, sqlOrder, statement, ipAddress);
 
 	} catch (SQLException e) {
-
 	    RollbackUtil.rollback(connection);
 
 	    e.printStackTrace();
@@ -261,7 +260,6 @@ public class ServerStatementRawExecute {
 		    serverPreparedStatementParameters, ipAddress);
 
 	} catch (SQLException e) {
-
 	    RollbackUtil.rollback(connection);
 
 	    String message = StatementFailure.prepStatementFailureBuild(sqlOrder, e.toString(),
