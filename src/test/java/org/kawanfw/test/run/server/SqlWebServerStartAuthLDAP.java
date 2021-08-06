@@ -34,14 +34,14 @@ import org.kawanfw.sql.api.server.web.WebServerApi;
  * @author Nicolas de Pomereu
  *
  */
-public class SqlWebServerStartWindowsAuth {
+public class SqlWebServerStartAuthLDAP {
 
     private static Map<Integer, String> map = new HashMap<>();
 
     /**
      * no constructor
      */
-    private SqlWebServerStartWindowsAuth() {
+    private SqlWebServerStartAuthLDAP() {
 
     }
 
@@ -51,9 +51,9 @@ public class SqlWebServerStartWindowsAuth {
      */
     public static void main(String[] args) throws Exception {
 
-	int port = 9094;
+	int port = 9092;
 
-	map.put(port, "I:\\_dev_awake\\aceql-http-main\\aceql-http\\conf\\aceql-server-auth-windows.properties");
+	map.put(port, "I:\\_dev_awake\\aceql-http-main\\aceql-http\\conf\\aceql-server-auth-ldap.properties");
 	start(port);
 
 	while(true) {
