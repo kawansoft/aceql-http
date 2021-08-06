@@ -114,13 +114,13 @@
 		<dependency>
 			<groupId>org.apache.tomcat.embed</groupId>
 			<artifactId>tomcat-embed-core</artifactId>
-			<version>9.0.45</version>
+			<version>9.0.50</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.apache.tomcat</groupId>
 			<artifactId>tomcat-jdbc</artifactId>
-			<version>9.0.45</version>
+			<version>9.0.50</version>
 		</dependency>
 
 		<!-- API, java.xml.bind module. Required for modern versions of MS SQL Server Drivers -->
