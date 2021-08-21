@@ -27,6 +27,8 @@ package org.kawanfw.sql.metadata;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 
+import org.kawanfw.sql.util.FrameworkDebug;
+
 /**
  * A holder for a DatabaseMetaData that we want transport.
  *
@@ -35,7 +37,7 @@ import java.sql.SQLException;
 
 public class JdbcDatabaseMetaData {
 
-    public static boolean DEBUG = false;
+    public static boolean DEBUG = FrameworkDebug.isSet(JdbcDatabaseMetaData.class);
 
     private String getURL;
     private boolean isReadOnly;

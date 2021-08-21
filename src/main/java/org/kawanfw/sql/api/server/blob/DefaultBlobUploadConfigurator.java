@@ -43,6 +43,7 @@ import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.apache.tomcat.util.http.fileupload.disk.DiskFileItemFactory;
 import org.apache.tomcat.util.http.fileupload.servlet.ServletFileUpload;
 import org.apache.tomcat.util.http.fileupload.util.Streams;
+import org.kawanfw.sql.util.FrameworkDebug;
 
 /**
  *
@@ -59,7 +60,7 @@ import org.apache.tomcat.util.http.fileupload.util.Streams;
  */
 
 public class DefaultBlobUploadConfigurator implements BlobUploadConfigurator {
-    private static boolean DEBUG = false;
+    private static boolean DEBUG = FrameworkDebug.isSet(DefaultBlobUploadConfigurator.class);
 
     // Max file size
     @SuppressWarnings("unused")
