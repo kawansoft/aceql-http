@@ -43,7 +43,7 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class FrameworkDebug {
     /** The file that contain the classes to debug in user.home */
-    private static String KAWANSOFT_DEBUG_INI = "kawansoft-debug.ini";
+    private static String ACEQL_DEBUG_FILE = "aceql-debug-server.ini";
 
     /** Stores the classes to debug */
     private static Set<String> CLASSES_TO_DEBUG = new HashSet<String>();
@@ -85,7 +85,7 @@ public class FrameworkDebug {
 		FrameworkFileUtil.getUserHomeDotKawansoftDir());
 	kawansoftDir.mkdirs();
 
-	String file = kawansoftDir + File.separator + KAWANSOFT_DEBUG_INI;
+	String file = kawansoftDir + File.separator + ACEQL_DEBUG_FILE;
 
 	// Nothing to load if file not set
 	if (!new File(file).exists()) {
