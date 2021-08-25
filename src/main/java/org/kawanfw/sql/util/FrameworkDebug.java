@@ -38,7 +38,7 @@ import org.apache.commons.lang3.StringUtils;
  * @author Nicolas de Pomereu
  *
  *         Allow to debug files contained in
- *         user.home/.kanwansoft/kanwansoft-debug.ini.
+ *         user.home/.kanwansoft/aceql-debug-server.ini.
  *
  */
 public class FrameworkDebug {
