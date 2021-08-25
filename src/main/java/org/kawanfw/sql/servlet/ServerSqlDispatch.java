@@ -161,7 +161,12 @@ public class ServerSqlDispatch {
 	    dumpHeaders(request);
 
 	    dispatch(request, response, out, action, connection, databaseConfigurator, sqlFirewallManagers);
-	} finally {
+	} 
+	catch (Exception e) {
+	    RollbackUtil.rollback(connection);
+	    throw e;
+	}
+	finally {
 	    // Immediate close of a  Connection for stateless sessions
 	    if (ServletParametersStore.isStatelessMode()) {
 		databaseConfigurator.close(connection);
