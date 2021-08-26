@@ -43,7 +43,8 @@ public class RollbackUtil {
 	        connection.rollback();
 	    }
 	} catch (Exception e) {
-	    e.printStackTrace();
+	    System.out.println("RollbackUtil Exception thrown:");
+	    e.printStackTrace(System.out);
 	}
     }
 
