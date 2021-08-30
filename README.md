@@ -712,7 +712,7 @@ sessionConfiguratorClassName=com.acme.MySessionConfigurator
 
 Restart the AceQL Web Server for activation. 
 
-## State management : stateful & stateless modes
+## State management : stateful and stateless modes
 
 AceQL may be run either in stateful or stateless mode.
 
