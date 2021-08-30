@@ -40,8 +40,12 @@ import org.kawanfw.sql.servlet.connection.RollbackUtil;
 import org.kawanfw.sql.servlet.sql.json_return.JsonErrorReturn;
 import org.kawanfw.sql.servlet.sql.json_return.JsonOkReturn;
 import org.kawanfw.sql.tomcat.ServletParametersStore;
+import org.kawanfw.sql.util.FrameworkDebug;
 
 public class BaseActionTreater {
+    
+    private static boolean DEBUG = FrameworkDebug.isSet(BaseActionTreater.class);
+    
     private HttpServletRequest request;
     private HttpServletResponse response;
     private DatabaseConfigurator databaseConfigurator;
@@ -144,8 +148,7 @@ public class BaseActionTreater {
 
 	if (action.equals(HttpParameter.GET_CONNECTION)) {
 
-	    
-	    System.err.println(new Date() + " /get_connection called!!");
+	    debug(new Date() + " /get_connection called!");
 	    
 	    if (ServletParametersStore.isStatelessMode()) {
 		// Stateless we return the present connection Id
@@ -224,4 +227,10 @@ public class BaseActionTreater {
 	return databaseConfigurator;
     }
 
+    public static void debug(String s) {
+	if (DEBUG) {
+	    System.out.println(new Date() + " " + s);
+	}
+    }
+    
 }

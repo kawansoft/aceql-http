@@ -412,10 +412,7 @@ public class ServerSqlDispatch {
 	}
     }
 
-    /**
-     * Method called by children Servlet for debug purpose Println is done only if
-     * class name name is in kawansoft-debug.ini
-     */
+
     public static void debug(String s) {
 	if (DEBUG) {
 	    System.out.println(new Date() + " " + s);
