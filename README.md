@@ -731,19 +731,17 @@ The `Connection` will be released from the AceQL Manager Servlet memory and rele
 - *Choice 1:  make sure that client applications explicitly and systematically call the`/logout` API before the application exits,.* 
 - *Choice 2: configure in the `aceql-server.proprties` file  the "Tomcat JDBC Connection Pool" Section in order to remove abandoned connections. See `removeAbandoned` & `removeAbandonedTimeout` property comments in the file.*
 
-Note that it is thus required in stateful mode that the client always accesses the same AceQL server during his whole session life.
+Note that it is thus required in the stateful mode that the client always accesses the same AceQL server during his whole session life.
 
 ### Stateless Mode
 
-AceQL may also run in stateless mode (`statelessMode=true`). 
+In stateless mode  (`statelessMode=true`),  the JDBC `Connection` is extracted by the AceQL servlet from the Connection pool at each client SQL request. The `Connection` is also closed and released in the pool at the end of each client SQL request. 
 
-In stateless mode, the JDBC `Connection` is extracted by the AceQL servlet from the Connection pool at each client SQL request. The `Connection` is also closed and released in the pool at the end of each client SQL request. 
+The Java server on which AceQL Server is running does not hold any session info or any state structure. Different client SQL requests can thus be processed by different physical servers, assuming that the SQL database is on a dedicated and separated location (or that each server has a copy of the SQL database that is consolidated elsewhere at a chosen timeframe.) 
 
-The Java server on which AceQL Server is running does not hold any session info or any state. Different client SQL requests can thus be processed by different physical servers, assuming that the SQL database is on a dedicated and separated location (or that each server has a copy of the SQL database that is consolidated elsewhere at a chosen timeframe.) 
+Stateless mode enables resiliency and elasticity, and easier deployment: one can typically easily deploy AceQL instances using such renowned tools as Docker & Kurbenetes. 
 
-Stateless mode enables resiliency and elasticity,  and easier deployment : one can typically easily deploy AceQL instances using such renowned tools as Docker & Kurbenetes. 
-
-Closing a `Connection` from client-side is unnecessary when running in stateless mode (a call to the `/close` or `/logout` API will do nothing).
+Closing a `Connection` from the client-side is unnecessary when running in stateless mode (a call to the `/close` or `/logout` API will do nothing).
 
 Note that in this 8.0 version SQL transactions are not supported in stateless mode.
 
