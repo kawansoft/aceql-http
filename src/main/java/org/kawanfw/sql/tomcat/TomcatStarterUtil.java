@@ -89,6 +89,7 @@ public class TomcatStarterUtil {
 	for (String database : databases) {
 	    createAndStoreDataSource(properties, database.trim());
 	}
+	
     }
 
     public static void addServlets(Properties properties, Context rootCtx) {
@@ -219,6 +220,8 @@ public class TomcatStarterUtil {
 	checkParameters(database, driverClassName, url, username, password);
 
 	PoolProperties poolProperties = createPoolProperties(properties, database);
+	poolProperties.setJdbcInterceptors("org.kawanfw.sql.tomcat.AceQLJdbcInterceptor");
+	
 	DataSource dataSource = new DataSource();
 	dataSource.setPoolProperties(poolProperties);
 
@@ -227,7 +230,7 @@ public class TomcatStarterUtil {
 	    System.out.println(
 		    SqlTag.SQL_PRODUCT_START + " Testing DataSource.getConnection() for " + database + " database:");
 	    connection = dataSource.getConnection();
-
+	    
 	    if (connection == null) {
 		throw new DatabaseConfigurationException(
 			"Connection is null. Please verify all the values in properties file.");

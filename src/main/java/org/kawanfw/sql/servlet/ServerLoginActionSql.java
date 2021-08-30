@@ -134,7 +134,7 @@ public class ServerLoginActionSql extends HttpServlet {
 		connectionId = ConnectionIdUtil.getStatelessConnectionId();
 	    }
 	    else {
-		// Statefull: We create the Connection and store the 
+		// Statefull: We create the Connection and store it: 
 		Connection connection = databaseConfigurator.getConnection(database);
 		// Each Connection is identified by hashcode of connection 
 		connectionId = ConnectionIdUtil.getConnectionId(connection);

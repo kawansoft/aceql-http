@@ -43,7 +43,6 @@ import org.kawanfw.sql.api.server.DatabaseConfigurator;
 import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
 import org.kawanfw.sql.servlet.connection.ConnectionIdUtil;
 import org.kawanfw.sql.servlet.connection.ConnectionStore;
-import org.kawanfw.sql.servlet.connection.ConnectionStoreCleaner;
 import org.kawanfw.sql.servlet.connection.ConnectionStoreGetter;
 import org.kawanfw.sql.servlet.connection.RollbackUtil;
 import org.kawanfw.sql.servlet.connection.SavepointUtil;
@@ -119,7 +118,7 @@ public class ServerSqlDispatch {
 	}
 
 	// Start clean Connections thread
-	connectionStoreClean();
+	//connectionStoreClean();
 
 	Connection connection = null;
 	
@@ -410,21 +409,6 @@ public class ServerSqlDispatch {
 	    return true;
 	} else {
 	    return false;
-	}
-    }
-
-    /**
-     * Clean connection store.
-     */
-    private void connectionStoreClean() {
-	// No clean of course in stateless mode
-	if (ServletParametersStore.isStatelessMode()) {
-	    return;
-	}
-	
-	if (ConnectionStoreCleaner.timeToCleanConnectionStore()) {
-	    ConnectionStoreCleaner cleaner = new ConnectionStoreCleaner();
-	    cleaner.start();
 	}
     }
 

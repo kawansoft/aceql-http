@@ -6,69 +6,11 @@
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/d14142d5d6f04ba891d505e2e47b417d)](https://www.codacy.com/gh/kawansoft/aceql-http?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=kawansoft/aceql-http&amp;utm_campaign=Badge_Grade)
 ![GitHub contributors](https://img.shields.io/github/contributors/kawansoft/aceql-http)
 
-# AceQL HTTP v8.0   - August 5,  2021
+# AceQL HTTP v8.0   - August 30,  2021
 # Server Installation and Configuration Guide  
 
 <img src="https://www.aceql.com/favicon.png" alt="AceQL HTTP Icon"/> 
 
-   * [Fundamentals](#fundamentals)
-      * [Overview](#overview)
-      * [Technical operating environment](#technical-operating-environment)
-   * [Download and Installation](#download-and-installation)
-      * [Linux / Unix Installation](#linux--unix-installation)
-         * [Update the PATH (Optional)](#update-the-path-optional)
-         * [Testing server installation](#testing-server-installation)
-      * [Windows Installation](#windows-installation)
-   * [Quickstart](#quickstart)
-      * [The AceQL Manager servlet](#the-aceql-manager-servlet)
-      * [The aceql-server.properties file](#the-aceql-serverproperties-file)
-         * [Tomcat JDBC Connection Pool Section](#tomcat-jdbc-connection-pool-section)
-         * [User Authentication Section](#user-authentication-section)
-            * [The WebServiceUserAuthenticator usage](#the-webserviceuserauthenticator-usage)
-         * [SQL Firewall Managers Section](#sql-firewall-managers-section)
-            * [The CsvRulesManager SQL Firewall Manager](#the-csvrulesmanager-sql-firewall-manager)
-         * [SSL Configuration Section](#ssl-configuration-section)
-         * [Sample aceql-server.properties file](#sample-aceql-serverproperties-file)
-      * [Starting/Stopping the AceQL Web Server from Linux/Unix](#startingstopping-the-aceql-web-server-from-linuxunix)
-         * [Add your JDBC driver to the AceQL installation](#add-your-jdbc-driver-to-the-aceql-installation)
-         * [Starting the AceQL Web Server](#starting-the-aceql-web-server)
-         * [Examples](#examples)
-            * [Starting the AceQL Web Server on port 9090](#starting-the-aceql-web-server-on-port-9090)
-            * [Starting the AceQL Web Server on port 9091](#starting-the-aceql-web-server-on-port-9091)
-         * [Using SSL from the client side](#using-ssl-from-the-client-side)
-         * [Stopping the AceQL Web Server](#stopping-the-aceql-web-server)
-         * [Linux: running the AceQL Web server as a service](#linux-running-the-aceql-web-server-as-a-service)
-      * [Starting/Stopping the AceQL WebServer from Windows](#startingstopping-the-aceql-webserver-from-windows)
-   * [Advanced Usage](#advanced-usage)
-      * [Development Environment](#development-environment)
-      * [AceQL Servlet Name Configuration](#aceql-servlet-name-configuration)
-      * [Advanced Connection Pool Management](#advanced-connection-pool-management)
-      * [Advanced Authentication Configuration](#advanced-authentication-configuration)
-      * [Tomcat HTTP Connector Configuration](#tomcat-http-connector-configuration)
-      * [ThreadPoolExecutor Configuration](#threadpoolexecutor-configuration)
-      * [Session Management](#session-management)
-         * [SessionConfigurator interface](#sessionconfigurator-interface)
-         * [Session management default implementation](#session-management-default-implementation)
-         * [Session management using JWT](#session-management-using-jwt)
-            * [Activating JwtSessionConfigurator](#activating-jwtsessionconfigurator)
-         * [Creating your own session management](#creating-your-own-session-management)
-      * [Advanced Firewall Configuration](#advanced-firewall-configuration)
-      * [Encrypting Properties in the aceql-server.properties file](#encrypting-properties-in-the-aceql-serverproperties-file)
-         * [Running the PropertiesEncryptor class](#running-the-propertiesencryptor-class)
-      * [Interacting with the JDBC Pool at runtime](#interacting-with-the-jdbc-pool-at-runtime)
-      * [Running the AceQL Web Server](#running-the-aceql-web-server)
-         * [Running the AceQL Web Server without Windows Desktop](#running-the-aceql-web-server-without-windows-desktop)
-         * [Starting/Stopping the AceQL WebServer from a Java program](#startingstopping-the-aceql-webserver-from-a-java-program)
-         * [Running AceQL HTTP in a Java EE servlet container](#running-aceql-http-in-a-java-ee-servlet-container)
-            * [Installation](#installation)
-            * [AceQL servlet configuration in web.xml](#aceql-servlet-configuration-in-webxml)
-         * [Testing the servlet configuration](#testing-the-servlet-configuration)
-   * [AceQL internals](#aceql-internals)
-      * [State management / Stateful Mode](#state-management--stateful-mode)
-      * [Data transport](#data-transport)
-         * [Transport format](#transport-format)
-         * [Content streaming and memory management](#content-streaming-and-memory-management)
-      * [Managing temporary files](#managing-temporary-files)
 
 
 # Fundamentals
@@ -770,6 +712,41 @@ sessionConfiguratorClassName=com.acme.MySessionConfigurator
 
 Restart the AceQL Web Server for activation. 
 
+## State management : stateful & stateless modes
+
+AceQL may be run either in stateful or stateless mode.
+
+See the **AceQL Manager servlet Section** in the `aceql-server.proprties` file. Statefull or stateless running mode is configured using the `statelessMode` property. 
+
+### Stateful Mode
+
+AceQL runs by default in stateful mode (`statelessMode=false`) : when creating a session on the client-side with the `/login` API, the AceQL servlet that is contacted extracts a JDBC `Connection` from the connection pool (with `DatabaseConfigurator.getConnection()`) and stores it in memory in a static Java `Map`. 
+
+The server's JDBC Connection is persistent, attributed to the client user, and will not be used by other users: the same `Connection` will be used for each JDBC call until the end of the session. This allows to create SQL transactions. 
+
+The `Connection` will be released from the AceQL Manager Servlet memory and released into the connection pool by a client side  `/close` or `/logout` API call. 
+
+*Therefore in stateful mode, it is cleaner in order to avoid phantom JDBC connections persisting for a period of time on the server.  There are two options:*
+
+- *Choice 1:  make sure that client applications explicitly and systematically call the`/logout` API before the application exits,.* 
+- *Choice 2: configure in the `aceql-server.proprties` file  the "Tomcat JDBC Connection Pool" Section in order to remove abandoned connections. See `removeAbandoned` & `removeAbandonedTimeout` property comments in the file.*
+
+Note that it is thus required in stateful mode that the client always accesses the same AceQL server during his whole session life.
+
+### Stateless Mode
+
+AceQL may also run in stateless mode (`statelessMode=true`). 
+
+In stateless mode, the JDBC `Connection` is extracted by the AceQL servlet from the Connection pool at each client SQL request. The `Connection` is also closed and released in the pool at the end of each client SQL request. 
+
+The Java server on which AceQL Server is running does not hold any session info or any state. Different client SQL requests can thus be processed by different physical servers, assuming that the SQL database is on a dedicated and separated location (or that each server has a copy of the SQL database that is consolidated elsewhere at a chosen timeframe.) 
+
+Stateless mode enables resiliency and elasticity,  and easier deployment : one can typically easily deploy AceQL instances using such renowned tools as Docker & Kurbenetes. 
+
+Closing a `Connection` from client-side is unnecessary when running in stateless mode (a call to the `/close` or `/logout` API will do nothing).
+
+Note that in this 8.0 version SQL transactions are not supported in stateless mode.
+
 ## Advanced Firewall Configuration
 
 AceQL provides several built-in and ready to use SQL Firewall Managers, as described earlier in the  [SQL Firewall Managers Section](#sql-firewall-managers-section) chapter. You also may plug-in your own implementation or third party SQL firewalling tools. 
@@ -909,18 +886,6 @@ It will display a JSON string and should display a status of `"OK"` and the curr
 If not, the configuration errors are detailed for correction. 
 
 # AceQL internals
-
-## State management / Stateful Mode
-
-AceQL runs in "Stateful Mode":  when creating a session on the client side with `/login` API, the AceQL servlet that is contacted extracts a JDBC `Connection` from the connection pool (with `DatabaseConfigurator.getConnection(`)) and stores it in memory in a static Java `Map`. 
-
-The server's JDBC Connection is persistent, attributed to the client user, and will not be used by other users: the same `Connection` will be used for each JDBC call until the end of the session. This allows you SQL transactions to be created.
-
-The `Connection` will be released from the AceQL Manager Servlet memory and released into the connection pool by a client side  `/close` or `/logout` API call. 
-
-A server side background thread will release phantom Connections that were not closed by the client side. 
-
-**Therefore, it is important for client applications to explicitly and systematically call `/logout` API before the application exits, in order to avoid phantom Connections to persist for a period of time on the server.**
 
 ## Data transport  
 

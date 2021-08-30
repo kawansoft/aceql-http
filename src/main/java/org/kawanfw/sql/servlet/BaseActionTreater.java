@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -128,7 +129,7 @@ public class BaseActionTreater {
     }
 
     /**
-     * Create a new Connection if /get_connection" has been asked
+     * Create a new Connection if "/get_connection" has been asked
      * 
      * @param action
      * @param username
@@ -143,6 +144,9 @@ public class BaseActionTreater {
 
 	if (action.equals(HttpParameter.GET_CONNECTION)) {
 
+	    
+	    System.err.println(new Date() + " /get_connection called!!");
+	    
 	    if (ServletParametersStore.isStatelessMode()) {
 		// Stateless we return the present connection Id
 		ServerSqlManager.writeLine(out,

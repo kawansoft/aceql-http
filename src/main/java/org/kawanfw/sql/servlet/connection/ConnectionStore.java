@@ -62,6 +62,13 @@ public class ConnectionStore {
     /** Map of (username + sessionId + connectionId), connection= */
     private static Map<ConnectionKey, Connection> connectionMap = new ConcurrentHashMap<>();
 
+    /**
+     * @return the connectionMap
+     */
+    public static Map<ConnectionKey, Connection> getConnectionMap() {
+        return connectionMap;
+    }
+
     /** The map of Savepoints */
     private static Map<ConnectionKey, Set<Savepoint>> savepointMap = new ConcurrentHashMap<>();
 
@@ -321,6 +328,17 @@ public class ConnectionStore {
     }
 
     /**
+     * Static remove. To be used by an JdbcInterceptor.
+     * @param connectionKey
+     */
+    public static void remove(ConnectionKey connectionKey) {
+	connectionMap.remove(connectionKey);
+	savepointMap.remove(connectionKey);
+	arrayMap.remove(connectionKey);
+	rowIdMap.remove(connectionKey);
+    }
+    
+    /**
      * Returns the size of the Connection Store
      *
      * @return the size of the Connection Store
@@ -404,5 +422,7 @@ public class ConnectionStore {
 	    System.out.println(new Date() + " " + s);
 	}
     }
+
+
 
 }

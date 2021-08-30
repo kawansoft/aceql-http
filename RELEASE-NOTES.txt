@@ -32,6 +32,9 @@ What's New:
   comments the AceQL Manager Servlet Section & User Documentation.
 - Core has be changed to support INSERT and UPDATE calls in batch
   mode  from C# Client SDK, Java Client JDBC Driver and Python Client SDK.
+- The garbage collectors thread for the abandoned/unclosed JDBC Connections 
+  has been suppressed in order to simplify the architecture. Cleanup is now
+  done use Tomcat JdbcInterceptor implementation.
 - Tomcat base libraries have been upgraded to 9.0.52.
 - Waffle library has been upgraded to 3.0.0.
 
