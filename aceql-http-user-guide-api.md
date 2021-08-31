@@ -1,4 +1,4 @@
-# AceQL HTTP v8.0 - August 5, 2021
+# AceQL HTTP v8.0 - September 1, 2021
 
 # API User Guide
 
