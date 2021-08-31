@@ -58,7 +58,13 @@ public class AceQLJdbcInterceptor extends JdbcInterceptor {
 
     @Override
     public void reset(ConnectionPool parent, PooledConnection con) {
-	// We do nothing. Just to implement as it is mandatory
+	if (con != null) {
+	    Connection connection = con.getConnection();
+	    debug("AceQLJdbcInterceptor. reset call: connection borrowed from pool: " + connection);
+	}
+	else {
+	    debug("AceQLJdbcInterceptor. reset call: connection borrowed from pool. con is null!");	    
+	}
     }
 
     @Override
@@ -83,7 +89,6 @@ public class AceQLJdbcInterceptor extends JdbcInterceptor {
 		return;
 	    }
 
-	    // private static Map<ConnectionKey, Connection> connectionMap
 	    Map<ConnectionKey, Connection> map = ConnectionStore.getConnectionMap();
 	    Set<ConnectionKey> set = map.keySet();
 
