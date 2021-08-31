@@ -62,13 +62,6 @@ public class ConnectionStore {
     /** Map of (username + sessionId + connectionId), connection= */
     private static Map<ConnectionKey, Connection> connectionMap = new ConcurrentHashMap<>();
 
-    /**
-     * @return the connectionMap
-     */
-    public static Map<ConnectionKey, Connection> getConnectionMap() {
-        return connectionMap;
-    }
-
     /** The map of Savepoints */
     private static Map<ConnectionKey, Set<Savepoint>> savepointMap = new ConcurrentHashMap<>();
 
@@ -314,6 +307,15 @@ public class ConnectionStore {
     public Connection get() {
 	return connectionMap.get(connectionKey);
     }
+    
+    /**
+     * Returns the full Map of Connections associated to username + connectionId
+     * @return the connectionMap
+     */
+    public static Map<ConnectionKey, Connection> getConnectionMap() {
+        return connectionMap;
+    }
+
 
     /**
      * Remove all stored instances in the ConnectionStore. This must be done only in
