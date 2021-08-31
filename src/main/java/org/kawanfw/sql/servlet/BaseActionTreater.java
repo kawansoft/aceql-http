@@ -160,7 +160,7 @@ public class BaseActionTreater {
 		Connection connection = null;
 
 		try {
-		    // Statefull: We create the Connection and store it before returning id
+		    // Stateful: We create the Connection and store it before returning id
 		    connection = databaseConfigurator.getConnection(database);
 		    // Each Connection is identified by hashcode of connection
 		    String connectionIdNew = ConnectionIdUtil.getConnectionId(connection);

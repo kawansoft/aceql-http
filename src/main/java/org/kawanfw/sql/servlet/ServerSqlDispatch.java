@@ -187,7 +187,7 @@ public class ServerSqlDispatch {
      */
     private boolean checkStatelessInAutoCommit(HttpServletRequest request, HttpServletResponse response, OutputStream out, Connection connection) throws IOException, SQLException {
 	
-	// Don't care in statefull mode
+	// Don't care in stateful mode
 	if (! ServletParametersStore.isStatelessMode()) {
 	    return true;
 	}
