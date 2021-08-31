@@ -26,6 +26,7 @@
 package org.kawanfw.sql.tomcat;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.Map;
 import java.util.Set;
@@ -98,15 +99,15 @@ public class AceQLJdbcInterceptor extends JdbcInterceptor {
 
 	    for (Map.Entry<ConnectionKey, Connection> entry : map.entrySet()) {
 
-		Connection unwrappedConnection = getUnwrappedConnection(entry.getValue());
+		Connection unwrappedStoredConnection = getUnwrappedConnection(entry.getValue());
 		
-		if (unwrappedConnection != null) {
+		if (unwrappedStoredConnection != null) {
 		    ConnectionKey connectionKey = entry.getKey();
 		    
-		    debug("AceQLJdbcInterceptor. connection.toString()         : " + connection.toString());
-		    debug("AceQLJdbcInterceptor. unwrappedConnection.toString(): " + unwrappedConnection.toString());
+		    debug("AceQLJdbcInterceptor. JdbcInterceptor connection.toString(): " + connection.toString());
+		    debug("AceQLJdbcInterceptor. unwrappedStoredConnection.toString() : " + unwrappedStoredConnection.toString());
 		    
-		    if (connection.toString().equals(unwrappedConnection.toString())) {
+		    if (connection.equals(unwrappedStoredConnection)) {
 			ConnectionStore.remove(connectionKey);
 			debug("AceQLJdbcInterceptor. ConnectionStore all removed for connectionKey: " + connectionKey);
 		    } else {
@@ -130,16 +131,18 @@ public class AceQLJdbcInterceptor extends JdbcInterceptor {
      * Unwraps the Connection if it's a PooledConnection
      * @param connection the wrapped Connection
      * @return the unwrapped Connection
+     * @throws SQLException 
      */
-    public Connection getUnwrappedConnection(Connection connection) {
+    public Connection getUnwrappedConnection(Connection connection) throws SQLException {
 	
 	// Try to unwrap following https://tomcat.apache.org/tomcat-9.0-doc/jdbc-pool.html.
-	try {
+	// Purpose is to be able to compare the two Connections...
+	if (connection instanceof javax.sql.PooledConnection) {
 	    Connection actual = ((javax.sql.PooledConnection)connection).getConnection(); 
-	    return actual;
+	    return actual;	    
 	}
-	catch (Exception e) {
-	   return connection;
+	else {
+	    return connection;
 	}
 
     }
