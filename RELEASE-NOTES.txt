@@ -24,7 +24,7 @@ AceQL HTTP is licensed through the GNU Lesser General Public License
 (LGPL v2.1).
 
 
-AceQL HTTP Version 8.0 - 30-Aug-2021
+AceQL HTTP Version 8.0 - 01-Sep-2021
 ------------------------------------
 
 What's New:
@@ -34,8 +34,8 @@ What's New:
   mode  from C# Client SDK, Java Client JDBC Driver, and Python Client SDK.
 - The garbage collectors thread for the abandoned/unclosed JDBC Connections 
   has been suppressed in order to simplify the architecture. Cleanup is now
-  done using Tomcat JdbcInterceptor implementation. This eliminates the need
-  for a dedicated background thread.
+  done using a Tomcat JdbcInterceptor class implementation. This eliminates 
+  the need for a dedicated background thread.
 - Tomcat base libraries have been upgraded to 9.0.52.
 - Waffle library has been upgraded to 3.0.0.
 
