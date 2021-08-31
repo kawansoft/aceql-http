@@ -220,7 +220,7 @@ public class TomcatStarterUtil {
 	checkParameters(database, driverClassName, url, username, password);
 
 	PoolProperties poolProperties = createPoolProperties(properties, database);
-	poolProperties.setJdbcInterceptors(AceQLJdbcInterceptor.class.getName());
+	poolProperties = addOurJdbcInterceptor(poolProperties);
 	
 	DataSource dataSource = new DataSource();
 	dataSource.setPoolProperties(poolProperties);
@@ -257,6 +257,21 @@ public class TomcatStarterUtil {
 	}
 
 	TomcatSqlModeStore.setDataSource(database, dataSource);
+    }
+
+    /**
+     * Add our AceQLJdbcInterceptor.class to the list of set JdbcInterceptors by the user.
+     * @param poolProperties
+     */
+    public static PoolProperties addOurJdbcInterceptor(PoolProperties poolProperties) {
+	String existingJdbcInterceptors = poolProperties.getJdbcInterceptors();
+	String jdbcInterceptors = "org.kawanfw.sql.tomcat.AceQLJdbcInterceptor";
+	if (existingJdbcInterceptors != null && ! existingJdbcInterceptors.isEmpty()) {
+	    jdbcInterceptors+= ";" + existingJdbcInterceptors;
+	}
+
+	poolProperties.setJdbcInterceptors(jdbcInterceptors);
+	return poolProperties;
     }
 
     /**

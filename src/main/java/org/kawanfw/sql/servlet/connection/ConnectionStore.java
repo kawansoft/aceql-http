@@ -330,7 +330,7 @@ public class ConnectionStore {
     }
 
     /**
-     * Static remove. To be used by an JdbcInterceptor.
+     * Static remove. To be used by an JdbcInterceptorTest.
      * @param connectionKey
      */
     public static void remove(ConnectionKey connectionKey) {

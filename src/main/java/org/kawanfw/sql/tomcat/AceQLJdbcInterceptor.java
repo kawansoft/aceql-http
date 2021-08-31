@@ -109,7 +109,7 @@ public class AceQLJdbcInterceptor extends JdbcInterceptor {
 		if (unwrappedStoredConnection != null) {
 		    ConnectionKey connectionKey = entry.getKey();
 		    
-		    debug("AceQLJdbcInterceptor. JdbcInterceptor connection.toString(): " + connection.toString());
+		    debug("AceQLJdbcInterceptor. JdbcInterceptorTest connection.toString(): " + connection.toString());
 		    debug("AceQLJdbcInterceptor. unwrappedStoredConnection.toString() : " + unwrappedStoredConnection.toString());
 		    
 		    if (connection.equals(unwrappedStoredConnection)) {
