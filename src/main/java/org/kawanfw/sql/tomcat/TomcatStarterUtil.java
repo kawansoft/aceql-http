@@ -220,7 +220,7 @@ public class TomcatStarterUtil {
 	checkParameters(database, driverClassName, url, username, password);
 
 	PoolProperties poolProperties = createPoolProperties(properties, database);
-	poolProperties.setJdbcInterceptors("org.kawanfw.sql.tomcat.AceQLJdbcInterceptor");
+	poolProperties.setJdbcInterceptors(org.kawanfw.sql.tomcat.AceQLJdbcInterceptor.class.getName());
 	
 	DataSource dataSource = new DataSource();
 	dataSource.setPoolProperties(poolProperties);
