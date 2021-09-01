@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Date;
 
+import org.apache.commons.io.FileUtils;
 import org.kawanfw.sql.api.server.auth.SshUserAuthenticator;
 import org.kawanfw.sql.servlet.ServerSqlManager;
 
@@ -46,7 +47,8 @@ public class SshUserAuthenticatorTest {
     public static void test() throws IOException, SQLException {
 	ServerSqlManager.setAceqlServerProperties(new File("I:\\_dev_awake\\aceql-http-main\\aceql-http\\conf\\aceql-server.properties"));
 	SshUserAuthenticator sshUserAuthenticator = new SshUserAuthenticator();
-	boolean logged = sshUserAuthenticator.login("user1", "password1".toCharArray(), "database", "10.0.0.10");
+	String password = FileUtils.readFileToString(new File("I:\\__NDP\\_MyPasswords\\login_user1.txt"), "UTF-8");
+	boolean logged = sshUserAuthenticator.login("user1", password.toCharArray(), "database", "10.0.0.10");
 	System.out.println(new Date() + " SshUserAuthenticator logged: " + logged);
     }
 

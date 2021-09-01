@@ -89,6 +89,7 @@ public class TomcatStarterUtil {
 	for (String database : databases) {
 	    createAndStoreDataSource(properties, database.trim());
 	}
+	
     }
 
     public static void addServlets(Properties properties, Context rootCtx) {
@@ -219,6 +220,8 @@ public class TomcatStarterUtil {
 	checkParameters(database, driverClassName, url, username, password);
 
 	PoolProperties poolProperties = createPoolProperties(properties, database);
+	poolProperties = addOurJdbcInterceptor(poolProperties);
+	
 	DataSource dataSource = new DataSource();
 	dataSource.setPoolProperties(poolProperties);
 
@@ -227,16 +230,19 @@ public class TomcatStarterUtil {
 	    System.out.println(
 		    SqlTag.SQL_PRODUCT_START + " Testing DataSource.getConnection() for " + database + " database:");
 	    connection = dataSource.getConnection();
-
+	    
 	    if (connection == null) {
 		throw new DatabaseConfigurationException(
 			"Connection is null. Please verify all the values in properties file.");
 	    }
-	    // Future usage: Checks that DB Vendor is supported
+	    
+	    if( ServletParametersStore.isStatelessMode() && ! connection.getAutoCommit()) {
+		throw new DatabaseConfigurationException("Server is in Stateless Mode: Connection pool must be in default auto commit. Please fix configuration.");
+	    }
 
 	    System.out.println(SqlTag.SQL_PRODUCT_START + "  -> Connection OK!");
 
-	} catch (SQLException e) {
+	} catch (Exception e) {
 	    RollbackUtil.rollback(connection);
 
 	    throw new DatabaseConfigurationException(e.getMessage() + " " + e.getCause());
@@ -251,6 +257,21 @@ public class TomcatStarterUtil {
 	}
 
 	TomcatSqlModeStore.setDataSource(database, dataSource);
+    }
+
+    /**
+     * Add our AceQLJdbcInterceptor.class to the list of set JdbcInterceptors by the user.
+     * @param poolProperties
+     */
+    public static PoolProperties addOurJdbcInterceptor(PoolProperties poolProperties) {
+	String existingJdbcInterceptors = poolProperties.getJdbcInterceptors();
+	String jdbcInterceptors = "org.kawanfw.sql.tomcat.AceQLJdbcInterceptor";
+	if (existingJdbcInterceptors != null && ! existingJdbcInterceptors.isEmpty()) {
+	    jdbcInterceptors+= ";" + existingJdbcInterceptors;
+	}
+
+	poolProperties.setJdbcInterceptors(jdbcInterceptors);
+	return poolProperties;
     }
 
     /**
@@ -321,6 +342,10 @@ public class TomcatStarterUtil {
 	String aceQLManagerServletCallName = TomcatStarterUtil.getAceQLManagerSevletName(properties);
 
 	ServletParametersStore.setServletName(aceQLManagerServletCallName);
+	
+	boolean statelessMode = Boolean.parseBoolean(properties.getProperty(ServerSqlManager.STATELESS_MODE, "false"));
+	ServletParametersStore.setStatelessMode(statelessMode);
+	
 	Set<String> databases = getDatabaseNames(properties);
 	ServletParametersStore.setDatabaseNames(databases);
 

@@ -97,7 +97,6 @@ public class ConnectionStoreManager {
 	// Release the Connection into the pool
 	connectionStore.remove();
 	databaseConfigurator.close(connection);
-	//ConnectionCloser.freeConnection(connection, databaseConfigurator);
 
     }
 

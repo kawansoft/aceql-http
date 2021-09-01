@@ -78,8 +78,7 @@ public class ConnectionStore {
      * @param sessionId
      * @param connectionId
      */
-    public ConnectionStore(String username, String sessionId, String connectionId) {
-
+    public ConnectionStore(String username, String sessionId, String connectionId) {	
 	if (username == null) {
 	    throw new IllegalArgumentException("username is null!");
 	}
@@ -88,11 +87,9 @@ public class ConnectionStore {
 	    throw new IllegalArgumentException("sessionId is null!");
 	}
 
-	// NO! Allow null connectionId
-	// if (connectionId == null) {
-	// throw new IllegalArgumentException("connectionId is null!");
-	// }
-
+	//8.0: Connections Id is still not mandatory!
+	// Because of legacy with API without languages.
+	
 	this.connectionKey = new ConnectionKey(username, sessionId, connectionId);
 
     }
@@ -258,37 +255,6 @@ public class ConnectionStore {
 	return null;
     }
 
-    // /**
-    // * Remove the Array associated to username + connectionId and ArrayId
-    // *
-    // * @param arrayId
-    // * the array id (it's haschode())
-    // *
-    // */
-    // public void removeArray(int arrayId) {
-    // Set<Array> arraySet = arrayMap.get(connectionKey);
-    //
-    // Set<Array> ArraySetNew = new TreeSet<Array>();
-    //
-    // for (Iterator<Array> iterator = arraySet.iterator(); iterator.hasNext();)
-    // {
-    // Array array = (Array) iterator.next();
-    //
-    // boolean addIt = true;
-    //
-    // if (array.hashCode() == arrayId) {
-    // addIt = false;
-    // }
-    //
-    // if (addIt) {
-    // ArraySetNew.add(array);
-    // }
-    // }
-    //
-    // // Replace old map by new
-    // arrayMap.put(connectionKey, ArraySetNew);
-    // }
-    //
 
     /**
      * Stores the RowId in static for username + connectionId
@@ -309,7 +275,6 @@ public class ConnectionStore {
 
 	rowIdSet.add(rowId);
 	rowIdMap.put(connectionKey, rowIdSet);
-
     }
 
     /**
@@ -333,36 +298,6 @@ public class ConnectionStore {
 	return null;
     }
 
-    // /**
-    // * Remove the RowId associated to username + connectionId and hashCode
-    // *
-    // * @param arrayId
-    // * the array id (it's haschode())
-    // *
-    // */
-    // public void removeRowId(String rowIdHashCode) {
-    // Set<RowId> arraySet = rowIdMap.get(connectionKey);
-    //
-    // Set<RowId> ArraySetNew = new TreeSet<RowId>();
-    //
-    // for (Iterator<RowId> iterator = arraySet.iterator(); iterator.hasNext();)
-    // {
-    // RowId rowId = (RowId) iterator.next();
-    //
-    // boolean addIt = true;
-    //
-    // if (rowId.hashCode() == Integer.parseInt(rowIdHashCode)) {
-    // addIt = false;
-    // }
-    //
-    // if (addIt) {
-    // ArraySetNew.add(rowId);
-    // }
-    // }
-    //
-    // // Replace old map by new
-    // rowIdMap.put(connectionKey, ArraySetNew);
-    // }
 
     /**
      * Returns the Connection associated to username + connectionId
@@ -372,6 +307,15 @@ public class ConnectionStore {
     public Connection get() {
 	return connectionMap.get(connectionKey);
     }
+    
+    /**
+     * Returns the full Map of Connections associated to username + connectionId
+     * @return the connectionMap
+     */
+    public static Map<ConnectionKey, Connection> getConnectionMap() {
+        return connectionMap;
+    }
+
 
     /**
      * Remove all stored instances in the ConnectionStore. This must be done only in
@@ -385,6 +329,17 @@ public class ConnectionStore {
 	rowIdMap.remove(connectionKey);
     }
 
+    /**
+     * Static remove. To be used by an JdbcInterceptorTest.
+     * @param connectionKey
+     */
+    public static void remove(ConnectionKey connectionKey) {
+	connectionMap.remove(connectionKey);
+	savepointMap.remove(connectionKey);
+	arrayMap.remove(connectionKey);
+	rowIdMap.remove(connectionKey);
+    }
+    
     /**
      * Returns the size of the Connection Store
      *
@@ -439,15 +394,16 @@ public class ConnectionStore {
 
     public static void removeAll(String username, String sessionId) {
 
-	// No!! Will triger a ConcurrentModificationException!
-	// for (ConnectionKey connectionKey : connectionMap.keySet())
-	// {
-	// if (connectionKey.getUsername().equals(username) &&
-	// connectionKey.getSessionId().equals(sessionId)) {
-	// connectionMap.remove(connectionKey);
-	// }
-	// }
-	//
+	// No!! Will trigger a ConcurrentModificationException!
+	/**
+	<pre><code>
+	for (ConnectionKey connectionKey : connectionMap.keySet()) {
+	    if (connectionKey.getUsername().equals(username) && connectionKey.getSessionId().equals(sessionId)) {
+		connectionMap.remove(connectionKey);
+	    }
+	}
+	</code></pre>
+	*/
 	// Intermediate Collection to avoid ConcurrentModificationException on Map
 
 	Set<ConnectionKey> connectionsKeys = new HashSet<>(connectionMap.keySet());
@@ -457,7 +413,6 @@ public class ConnectionStore {
 		connectionMap.remove(connectionKey);
 	    }
 	}
-
     }
 
     /**
@@ -469,5 +424,7 @@ public class ConnectionStore {
 	    System.out.println(new Date() + " " + s);
 	}
     }
+
+
 
 }

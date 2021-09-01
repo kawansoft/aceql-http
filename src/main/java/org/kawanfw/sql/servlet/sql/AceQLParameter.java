@@ -24,6 +24,8 @@
  */
 package org.kawanfw.sql.servlet.sql;
 
+import org.kawanfw.sql.servlet.sql.parameters.ServerPreparedStatementParameters;
+
 /**
  * Immutable Holder for a PreparedStatement Parameter.
  * 
@@ -112,4 +114,11 @@ public class AceQLParameter {
 
     }
 
+    @Override
+    public String toString() {
+	return "AceQLParameter [parameterIndex=" + parameterIndex + ", parameterType=" + parameterType
+		+ ", parameterValue=" + parameterValue + ", parameterDirection=" + parameterDirection
+		+ ", outParameterName=" + outParameterName + "]";
+    }
+    
 }

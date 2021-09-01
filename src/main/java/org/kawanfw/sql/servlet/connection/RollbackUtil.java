@@ -33,12 +33,18 @@ import java.sql.Connection;
 public class RollbackUtil {
 
     public static void rollback(Connection connection) {
+	
+	if (connection == null) {
+	    return;
+	}
+	
 	try {
 	    if (! connection.getAutoCommit()) {
 	        connection.rollback();
 	    }
 	} catch (Exception e) {
-	    e.printStackTrace();
+	    System.out.println("RollbackUtil Exception thrown:");
+	    e.printStackTrace(System.out);
 	}
     }
 

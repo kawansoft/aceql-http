@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.Objects;
 import java.util.Set;
 
@@ -41,6 +42,7 @@ import org.kawanfw.sql.api.server.session.SessionConfigurator;
 import org.kawanfw.sql.servlet.connection.ConnectionStore;
 import org.kawanfw.sql.servlet.sql.json_return.JsonErrorReturn;
 import org.kawanfw.sql.servlet.sql.json_return.JsonOkReturn;
+import org.kawanfw.sql.tomcat.ServletParametersStore;
 import org.kawanfw.sql.util.FrameworkDebug;
 
 /**
@@ -56,9 +58,8 @@ public class ServerLogout {
 
     private static final long TWENTY_MINUTES_IN_MILLISECONDS = 1000 * 60 * 20;
 
-
-    public static void logout(HttpServletRequest request, HttpServletResponse response,
-	    OutputStream out, DatabaseConfigurator databaseConfigurator) throws IOException {
+    public static void logout(HttpServletRequest request, HttpServletResponse response, OutputStream out,
+	    DatabaseConfigurator databaseConfigurator) throws IOException {
 
 	try {
 	    response.setContentType("text/html");
@@ -69,16 +70,21 @@ public class ServerLogout {
 	    SessionConfigurator sessionConfigurator = ServerSqlManager.getSessionManagerConfigurator();
 	    sessionConfigurator.remove(sessionId);
 
-	    Set<Connection> connections = ConnectionStore.getAllConnections(username, sessionId);
+	    deleteOldBlobFiles(databaseConfigurator, username);
 
-	    for (Connection connection : connections) {
-		// ConnectionCloser.freeConnection(connection, databaseConfigurator);
-		databaseConfigurator.close(connection);
+	    if (!ServletParametersStore.isStatelessMode()) {
+		Set<Connection> connections = ConnectionStore.getAllConnections(username, sessionId);
+
+		for (Connection connection : connections) {
+		    databaseConfigurator.close(connection);
+		}
 	    }
 
-	    ConnectionStore.removeAll(username, sessionId);
-
-	    deleteOldBlobFiles(databaseConfigurator, username);
+	    try {
+		ConnectionStore.removeAll(username, sessionId);
+	    } catch (Exception e) {
+		System.out.println(new Date() + " Failure on ConnectionStore.removeAll: " + e.toString());
+	    }
 
 	    String jSonReturn = JsonOkReturn.build();
 

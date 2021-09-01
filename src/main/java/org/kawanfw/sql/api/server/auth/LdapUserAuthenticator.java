@@ -88,7 +88,7 @@ public class LdapUserAuthenticator implements UserAuthenticator {
 	// env.put(Context.SECURITY_AUTHENTICATION, "simple");
 	env.put(Context.SECURITY_PRINCIPAL, username);
 	env.put(Context.SECURITY_CREDENTIALS, new String(password));
-
+		
 	// Create the initial context
 	DirContext ctx = null;
 

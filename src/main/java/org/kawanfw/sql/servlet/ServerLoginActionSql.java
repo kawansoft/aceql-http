@@ -27,7 +27,6 @@ package org.kawanfw.sql.servlet;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -39,11 +38,12 @@ import javax.servlet.http.HttpServletResponse;
 import org.kawanfw.sql.api.server.DatabaseConfigurator;
 import org.kawanfw.sql.api.server.auth.UserAuthenticator;
 import org.kawanfw.sql.api.server.session.SessionConfigurator;
+import org.kawanfw.sql.servlet.connection.ConnectionIdUtil;
 import org.kawanfw.sql.servlet.connection.ConnectionStore;
-import org.kawanfw.sql.servlet.connection.ConnectionUtil;
 import org.kawanfw.sql.servlet.sql.json_return.ExceptionReturner;
 import org.kawanfw.sql.servlet.sql.json_return.JsonErrorReturn;
 import org.kawanfw.sql.servlet.sql.json_return.JsonOkReturn;
+import org.kawanfw.sql.tomcat.ServletParametersStore;
 import org.kawanfw.sql.util.FrameworkDebug;
 
 /**
@@ -64,15 +64,13 @@ public class ServerLoginActionSql extends HttpServlet {
     // A space
     public static final String SPACE = " ";
 
-    private static final boolean FORCE_AUTO_COMMIT_AND_NOT_READ_ONLY = false;
-
     /**
      *
      * Execute the login request
      *
      * @param request  the http request
      * @param response the http response
-     * @param out      TODO
+     * @param out      the servlet output stream
      * @param action   the login action: BEFORE_LOGIN_ACTION or LOGIN_ACTION
      * @throws IOException if any Servlet Exception occurs
      */
@@ -81,20 +79,12 @@ public class ServerLoginActionSql extends HttpServlet {
 
 	try {
 	    response.setContentType("text/html");
-
 	    debug("before request.getParameter(HttpParameter.LOGIN);");
-
 	    String username = request.getParameter(HttpParameter.USERNAME);
 	    String password = request.getParameter(HttpParameter.PASSWORD);
 
 	    // User must provide a user
-	    if ((username == null || username.isEmpty()) || (password == null || password.isEmpty())) {
-		debug("username.length() < 1!");
-		// No login transmitted
-		// Redirect to ClientLogin with error message.
-		// String logMessage = "username.length() < 1!";
-		// HttpStatus.set(response, HttpServletResponse.SC_UNAUTHORIZED,
-		// logMessage);
+	    if (! checkCredentialsAreSet(username, password)) {
 		JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_UNAUTHORIZED,
 			JsonErrorReturn.ERROR_ACEQL_ERROR, JsonErrorReturn.INVALID_USERNAME_OR_PASSWORD);
 		ServerSqlManager.writeLine(out, errorReturn.build());
@@ -105,9 +95,7 @@ public class ServerLoginActionSql extends HttpServlet {
 	    password = password.trim();
 
 	    debug("calling login");
-
 	    UserAuthenticator userAuthenticator = ServerSqlManager.getUserAuthenticator();
-
 	    String database = request.getParameter(HttpParameter.DATABASE);
 
 	    DatabaseConfigurator databaseConfigurator = ServerSqlManager.getDatabaseConfigurator(database);
@@ -140,11 +128,25 @@ public class ServerLoginActionSql extends HttpServlet {
 	    String sessionId = sessionConfigurator.generateSessionId(username, database);
 
 	    String connectionId = null;
-
-	    connectionId = getConnectionId(sessionId, request, username, database, databaseConfigurator);
-
+	    	    
+	    if (ServletParametersStore.isStatelessMode()) {
+		// Stateless: we just return the "stateless" Connection Id
+		connectionId = ConnectionIdUtil.getStatelessConnectionId();
+	    }
+	    else {
+		// Stateful: We create the Connection and store it: 
+		Connection connection = databaseConfigurator.getConnection(database);
+		// Each Connection is identified by hashcode of connection 
+		connectionId = ConnectionIdUtil.getConnectionId(connection);
+		// We store the Connection in Memory
+		ConnectionStore connectionStore = new ConnectionStore(username, sessionId, connectionId);
+		
+		connectionStore.put(connection);
+	    }
+	    
 	    Trace.sessionId("sessionId: " + sessionId);
-
+	    debug("sessionId: "+ sessionId);
+	    
 	    Map<String, String> map = new HashMap<>();
 	    map.put("session_id", sessionId);
 	    map.put("connection_id", connectionId);
@@ -152,47 +154,18 @@ public class ServerLoginActionSql extends HttpServlet {
 	    ServerSqlManager.writeLine(out, JsonOkReturn.build(map));
 
 	} catch (Exception e) {
-
 	    ExceptionReturner.logAndReturnException(request, response, out, e);
-
 	}
     }
 
     /**
-     * Extract a Connection from the pool and return the connection id (hashcode) to
-     * client. Connections is stored in memory until client side calls close action
-     *
-     * @param sessionId
-     * @param request
+     * Check that credentials are not null and not empty
      * @param username
-     * @param database
-     * @param databaseConfigurator
-     * @return
-     * @throws SQLException
+     * @param password
+     * @return true if credentials are not null and are not empty
      */
-    public static String getConnectionId(String sessionId, HttpServletRequest request, String username, String database,
-	    DatabaseConfigurator databaseConfigurator) throws SQLException {
-
-	// Extract connection from pool
-	Connection connection = databaseConfigurator.getConnection(database);
-
-	// Each Connection is identified by hashcode
-	String connectionId = getConnectionId(connection);
-
-	ConnectionStore connectionStore = new ConnectionStore(username, sessionId, connectionId);
-
-	// Make sure we are in auto-commit mode when user starts
-	// session
-	if (FORCE_AUTO_COMMIT_AND_NOT_READ_ONLY) {
-	    ConnectionUtil.connectionInit(connection);
-	}
-
-	connectionStore.put(connection);
-	return connectionId;
-    }
-
-    public static String getConnectionId(Connection connection) {
-	return "" + connection.hashCode();
+    public boolean checkCredentialsAreSet(String username, String password) {
+	return username != null && ! username.isEmpty() && password != null && ! password.isEmpty();
     }
 
     private void debug(String s) {

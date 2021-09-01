@@ -45,6 +45,7 @@ import org.kawanfw.sql.api.util.firewall.DatabaseUserTableTriplet;
 import org.kawanfw.sql.api.util.firewall.TableAllowStatements;
 import org.kawanfw.sql.metadata.AceQLMetaData;
 import org.kawanfw.sql.servlet.ServerSqlManager;
+import org.kawanfw.sql.util.FrameworkDebug;
 
 /**
  * Firewall manager that checks each SQL request against the content of a CSV
@@ -100,7 +101,7 @@ import org.kawanfw.sql.servlet.ServerSqlManager;
  */
 public class CsvRulesManager extends DefaultSqlFirewallManager implements SqlFirewallManager {
 
-    private static boolean DEBUG = false;
+    private static boolean DEBUG = FrameworkDebug.isSet(CsvRulesManager.class);
 
     /**
      * The map that contains for each database/username the table and their rights

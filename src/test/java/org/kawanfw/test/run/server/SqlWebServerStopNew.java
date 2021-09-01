@@ -51,6 +51,8 @@ public class SqlWebServerStopNew {
 	stopOnPort(9094);
 	stopOnPort(9095);
 	stopOnPort(9096);
+	stopOnPort(9096);
+	stopOnPort(9097);
     }
 
     /**

@@ -181,7 +181,8 @@ public class PoolPropertiesCreator {
 	    NumberFormatException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {
 
 	String theMethod = "set" + StringUtils.capitalize(propertyName);
-
+	debug("theMethod: " + theMethod);
+	
 	String propertyValueToDisplay = propertyValue;
 	if (propertyName.equals("password")) {
 	    propertyValueToDisplay = TomcatStarter.MASKED_PASSWORD;

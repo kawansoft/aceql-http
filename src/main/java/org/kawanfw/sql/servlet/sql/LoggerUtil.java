@@ -25,7 +25,6 @@
 package org.kawanfw.sql.servlet.sql;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -57,12 +56,12 @@ public class LoggerUtil {
      * the reason of the SQLException to ease debug.
      *
      * @param request
-     * @param sqlException
+     * @param exception
      * @param aceQLErrorMessage
      * @throws IOException
      */
     public static void log(HttpServletRequest request,
-	    SQLException sqlException, String aceQLErrorMessage)
+	    Exception exception, String aceQLErrorMessage)
 	    throws IOException {
 
 	String database = request.getParameter(HttpParameter.DATABASE);
@@ -72,7 +71,7 @@ public class LoggerUtil {
 
 	Logger logger = databaseConfigurator.getLogger();
 	logger.log(Level.WARNING, aceQLErrorMessage);
-	logger.log(Level.WARNING, sqlException.toString());
+	logger.log(Level.WARNING, exception.toString());
 
     }
 

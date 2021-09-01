@@ -36,6 +36,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 import javax.json.stream.JsonGenerator;
@@ -52,6 +53,8 @@ import org.kawanfw.sql.servlet.connection.RollbackUtil;
 import org.kawanfw.sql.servlet.sql.json_return.JsonErrorReturn;
 import org.kawanfw.sql.servlet.sql.json_return.JsonSecurityMessage;
 import org.kawanfw.sql.servlet.sql.json_return.JsonUtil;
+import org.kawanfw.sql.servlet.sql.parameters.ServerPreparedStatementParameters;
+import org.kawanfw.sql.servlet.sql.parameters.ServerPreparedStatementParametersUtil;
 import org.kawanfw.sql.util.FrameworkDebug;
 
 /**
@@ -119,17 +122,20 @@ public class ServerStatementRawExecute {
 		executeStatement(out);
 	    }
 	} catch (SecurityException e) {
+	    RollbackUtil.rollback(connection);
+	    
 	    JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_FORBIDDEN,
 		    JsonErrorReturn.ERROR_ACEQL_UNAUTHORIZED, e.getMessage());
 	    ServerSqlManager.writeLine(out, errorReturn.build());
 	} catch (SQLException e) {
-
 	    RollbackUtil.rollback(connection);
 
 	    JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_BAD_REQUEST,
 		    JsonErrorReturn.ERROR_JDBC_ERROR, e.getMessage());
 	    ServerSqlManager.writeLine(out, errorReturn.build());
 	} catch (Exception e) {
+	    RollbackUtil.rollback(connection);
+	    
 	    JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
 		    JsonErrorReturn.ERROR_ACEQL_FAILURE, e.getMessage(), ExceptionUtils.getStackTrace(e));
 	    ServerSqlManager.writeLine(out, errorReturn.build());
@@ -185,7 +191,6 @@ public class ServerStatementRawExecute {
 	    doExecute(out, databaseConfigurator, username, database, sqlOrder, statement, ipAddress);
 
 	} catch (SQLException e) {
-
 	    RollbackUtil.rollback(connection);
 
 	    e.printStackTrace();
@@ -219,7 +224,8 @@ public class ServerStatementRawExecute {
 	String username = request.getParameter(HttpParameter.USERNAME);
 	String database = request.getParameter(HttpParameter.DATABASE);
 	String sqlOrder = request.getParameter(HttpParameter.SQL);
-
+	String htlmEncoding = request.getParameter(HttpParameter.HTML_ENCODING);
+	
 	PreparedStatement preparedStatement = null;
 	DatabaseConfigurator databaseConfigurator = ServerSqlManager.getDatabaseConfigurator(database);
 
@@ -233,7 +239,8 @@ public class ServerStatementRawExecute {
 	    preparedStatement = connection.prepareStatement(sqlOrder);
 
 	    debug("before ServerPreparedStatementParameters");
-	    serverPreparedStatementParameters = new ServerPreparedStatementParameters(preparedStatement, request);
+	    Map<Integer, AceQLParameter> inOutStatementParameters = ServerPreparedStatementParametersUtil.buildParametersFromRequest(request);
+	    serverPreparedStatementParameters = new ServerPreparedStatementParameters(username, database, sqlOrder, preparedStatement, inOutStatementParameters, htlmEncoding);
 
 	    try {
 		serverPreparedStatementParameters.setParameters();
@@ -253,7 +260,6 @@ public class ServerStatementRawExecute {
 		    serverPreparedStatementParameters, ipAddress);
 
 	} catch (SQLException e) {
-
 	    RollbackUtil.rollback(connection);
 
 	    String message = StatementFailure.prepStatementFailureBuild(sqlOrder, e.toString(),
