@@ -788,7 +788,7 @@ The `Connection` will be released from the AceQL Manager Servlet memory and rele
 
 *Therefore in stateful mode, it is cleaner in order to avoid phantom JDBC connections persisting for a period of time on the server.  There are two options:*
 
-- *Choice 1:  make sure that client applications explicitly and systematically call the`/logout` API before the application exits,.* 
+- *Choice 1:  make sure that client applications explicitly and systematically call the`/logout` API before the application exits.* 
 - *Choice 2: configure in the `aceql-server.proprties` file  the "Tomcat JDBC Connection Pool" Section in order to remove abandoned connections. See `removeAbandoned` & `removeAbandonedTimeout` property comments in the file.*
 
 Note that it is thus required in the stateful mode that the client always accesses the same AceQL server during his whole session life.
