@@ -776,7 +776,7 @@ Restart the AceQL Web Server for activation.
 
 AceQL may be run either in stateful or stateless mode.
 
-See the **AceQL Manager servlet Section** in the `aceql-server.proprties` file. Statefull or stateless running mode is configured using the `statelessMode` property. 
+See the **AceQL Manager servlet Section** in the `aceql-server.properties` file. Stateful or stateless running mode is configured using the `statelessMode` property. 
 
 ### Stateful Mode
 
