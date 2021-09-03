@@ -52,7 +52,7 @@
          * [Session management using JWT](#session-management-using-jwt)
             * [Activating JwtSessionConfigurator](#activating-jwtsessionconfigurator)
          * [Creating your own session management](#creating-your-own-session-management)
-      * [State management : stateful and stateless modes](#state-management--stateful-and-stateless-modes)
+      * [Stateful and stateless modes](#stateful-and-stateless-modes)
          * [Stateful Mode](#stateful-mode)
          * [Stateless Mode](#stateless-mode)
       * [Advanced Firewall Configuration](#advanced-firewall-configuration)
@@ -772,7 +772,7 @@ sessionConfiguratorClassName=com.acme.MySessionConfigurator
 
 Restart the AceQL Web Server for activation. 
 
-## State management : stateful and stateless modes
+## Stateful and stateless modes
 
 AceQL may be run either in stateful or stateless mode.
 
@@ -780,7 +780,7 @@ See the **AceQL Manager servlet Section** in the `aceql-server.properties` file.
 
 ### Stateful Mode
 
-AceQL runs by default in stateful mode (`statelessMode=false`) : when creating a session on the client-side with the `/login` API, the AceQL servlet that is contacted extracts a JDBC `Connection` from the connection pool (with `DatabaseConfigurator.getConnection()`) and stores it in memory in a static Java `Map`. 
+AceQL runs by default in stateful mode (`statelessMode=false`): when creating a session on the client-side with the `/login` API, the AceQL servlet that is contacted extracts a JDBC `Connection` from the connection pool (with `DatabaseConfigurator.getConnection()`) and stores it in memory in a static Java `Map`. 
 
 The server's JDBC Connection is persistent, attributed to the client user, and will not be used by other users: the same `Connection` will be used for each JDBC call until the end of the session. This allows to create SQL transactions. 
 
@@ -801,7 +801,7 @@ The Java server on which AceQL Server is running does not hold any session info 
 
 Stateless mode enables resiliency and elasticity, and easier deployment: one can typically easily deploy AceQL instances using such renowned tools as Docker & Kurbenetes. 
 
-Closing a `Connection` from the client-side is unnecessary when running in stateless mode (a call to the `/close` or `/logout` API will do nothing).
+Closing a `Connection` from the client-side is unnecessary when running in stateless mode (a call to the `/logout` API will do nothing).
 
 Note that in this 8.0 version SQL transactions are not supported in stateless mode.
 
