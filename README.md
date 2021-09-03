@@ -52,7 +52,7 @@
          * [Session management using JWT](#session-management-using-jwt)
             * [Activating JwtSessionConfigurator](#activating-jwtsessionconfigurator)
          * [Creating your own session management](#creating-your-own-session-management)
-      * [Stateful and stateless modes](#stateful-and-stateless-modes)
+      * [Stateful and Stateless Modes](#stateful-and-stateless-modes)
          * [Stateful Mode](#stateful-mode)
          * [Stateless Mode](#stateless-mode)
       * [Advanced Firewall Configuration](#advanced-firewall-configuration)
@@ -772,7 +772,7 @@ sessionConfiguratorClassName=com.acme.MySessionConfigurator
 
 Restart the AceQL Web Server for activation. 
 
-## Stateful and stateless modes
+## Stateful and Stateless Modes
 
 AceQL may be run either in stateful or stateless mode.
 
