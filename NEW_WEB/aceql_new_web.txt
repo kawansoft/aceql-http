@@ -34,8 +34,8 @@ Seven boxes:
 - Languages & future languages.
 - Comes with complete SQL features: Transactions / Blob / Stored Procedures / Batch Management.
 
+- C# and Xamarin Developers
 - Java developers
-- C# Xamarin Developers
 - Python Developers & Data Scientists : Get easy access to all your SQL corporate databases.
   from your desktop Python Apps.
   
