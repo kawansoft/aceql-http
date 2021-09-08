@@ -1,0 +1,51 @@
+New Web content
+---------------
+
+ wget https://www.aceql.com/rest/soft/8.0/download/aceql-http-8.0.run
+ 
+What
+
+
+
+Why
+FAQ
+
+Alternate blocs:
+
+- Access directly to all your inhouse or Cloud databases from your Java, C# or Python Desktop and you iOS or Androod Mobile Apps. (Don't worry it can be highly secured).
+- Desktop Developers: Access SQL data directly from your Windows, macOS or Linux app. 
+  No more pain of Web services development and deployment and documentation & debug.
+- Mobile Developers : The JDBC Driver works on Android. The C# Client SDK allows Xamarin usage.
+- Python data analysts & scientists : Get easy access to all your corporate database from your desktop Python Apps.
+- Easy customization with design for full control. 
+- Guaranty of SQL data integrity: full SQL transaction support.
+- Need to deploy an app that can gets heavy load: Deploy the AceQL Async servlet in stateless mode.
+- Streaming mode by design: allows huge SQL requests.
+- Full Server customization: ThreadPoolExecutor.
+- Feed your database in the blink of an eye with full batch support.
+- Manage documents in your Desktop or Mobile app with BLOB support.
+- Data marketer & vendors: give easy HTTP access to yours databases to the World. No need to recompile.
+- Cloud agnostic: get control back over your Cloud SQL databases. 
+
+
+Seven boxes:
+
+- What is.
+- Languages & future languages.
+- Comes with complete SQL features: Transactions / Blob / Stored Procedures / Batch Management.
+
+- Java developers
+- C# Xamarin Developers
+- Python Developers & Data Scientists : Get easy access to all your SQL corporate databases.
+  from your desktop Python Apps.
+  
+- Easy configuration & full control customization by dependency injection.
+- Async mode & stateless & Streaming mode by design. 
+- Security.
+
+
+
+
+
+
+
