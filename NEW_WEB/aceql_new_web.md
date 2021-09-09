@@ -62,9 +62,9 @@ AceQL is not limited to simple SELECT / INSERT / UPDATE / DELETE calls.
 You can use advanced SQL options:
 
 - create transactions by passing a series of commands in autocommit off mode,
-- Insert BLOBs or read Blobs.
-- Schedule batches to quickly feed your remote databases,
-- Call all existing stored procedures of your company or organization.
+- insert BLOBs or read Blobs,
+- schedule batches to quickly feed your remote databases,
+- call all existing stored procedures of your company or organization.
 
 ___________________
 
@@ -79,7 +79,7 @@ string server = "https://www.acme.com:9443/aceql";
 string database = "sampledb";
 
 string connectionString = $"Server={server}; Database={database}";
-string username = "MyUsername";
+string username = "MyUsername"; // User & Password are hardcoded to simplify our sample...
 char[] password = { 'M', 'y', 'S', 'e', 'c', 'r', 'e', 't' };
 
 AceQLConnection connection = new AceQLConnection(connectionString)
@@ -170,6 +170,10 @@ The AceQL Client JDBC Driver can be integrated directly into your favorite datab
 
 <img src="https://www.aceql.com/img/dbvisualiser_meta_2.png" alt="DbVisualizer MetaData"/>
 
+<img src="https://www.aceql.com/img/dbvisualiser_select.png" alt="DbVisualizer MetaData"/>
+
+
+
 _________________________________________________
 
 
@@ -178,9 +182,27 @@ _________________________________________________
 
 The module supports Python 3.6–3.9 and provides a SQL interface compliant with the DB-API 2.0 specification described by PEP 249.
 
+Connection to a remote database:
+
+SELECT on the remote database:
+
+__________________________
 
 
-**Easy configuration & full control customization by dependency injection**
+
+**Take complete control of your server side configuration**
+
+
+
+_________________
+
+
+
+**Deploy using your favorites virtualization tools**
+
+
+
+__________________________
 
 
 
