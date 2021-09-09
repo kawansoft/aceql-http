@@ -233,7 +233,7 @@ __________________________
 
 
 
-**Define your database security**
+**Define your SQL databases security**
 
 AceQL HTTP is a 3 tier architecture and includes a very complete [security manager](https://www.aceql.com/sql-over-http-database-security.html):
 
