@@ -58,7 +58,7 @@ AceQL is not limited to simple SELECT / INSERT / UPDATE / DELETE calls.
 You can use advanced SQL options:
 
 - create transactions by passing a series of SQL commands in autocommit off mode,
-- insert BLOBs or read Blobs,
+- insert BLOBs or read BLOBS,
 - schedule batches to quickly feed your remote databases,
 - call all existing stored procedures of your company or organization.
 
@@ -68,7 +68,7 @@ ___________________
 
 **Code your Desktop & Mobile C # and Xamarin apps with Microsoft SQL Server syntax **
 
-The C# AceQL Client SDK usedMicrosoft SQL Server like syntax. SDK class names are the equivalent of SQL Server [System.Data.SqlClient](https://msdn.microsoft.com/en-us/library/system.data.sqlclient.aspx) namespace. They share the same suffix name for the classes, and the same method names.
+The C# AceQL Client SDK uses Microsoft SQL Server like syntax. SDK class names are the equivalent of SQL Server [System.Data.SqlClient](https://msdn.microsoft.com/en-us/library/system.data.sqlclient.aspx) namespace. They share the same suffix name for the classes, and the same method names.
 
 Connection to a remote database:
 
