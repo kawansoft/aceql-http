@@ -5,6 +5,10 @@ Just develop regular SQL calls with your usual C#, Java, or Python IDE. The soft
 
 ![https://www.aceql.com/img/AceQL-Schema-min.jpg](https://www.aceql.com/img/AceQL-Schema-min.jpg)
 
+_________________________________________
+
+
+
 **Why AceQL?**
 
 **Simplify your Desktop and Mobile App developments**...
@@ -19,7 +23,7 @@ The framework takes care of all the complex aspects of the client-server dialog 
 
 ...**And Give your users easy and secured access to your SQL DBs from their favorite database tool** 
 
-No need to setup VPN for your users to access their SQL databases from their favorite. No need to configurate the firewall, just allow regular HTTPS flow. Because AceQL uses only HTTP protocol, just give your users the address of the database, the username and password and they are ready.  Of course, all this can be [highly secured](https://www.aceql.com/sql-over-http-database-security.html).
+No need to setup VPN for your users to access their SQL databases from their favorite. No need to configurate the firewall, just allow regular HTTPS flow. Because AceQL HTTP uses only HTTP protocol, just give your users the address of the database, the username and password and they are ready.  Of course, all this can be [highly secured](https://www.aceql.com/sql-over-http-database-security.html).
 
 ________________________________________
 
@@ -51,24 +55,24 @@ _____________________________________________________
 
 
 
-**Utilisez des fonctionnalités SQL avancées directement dans le code de vos applications de bureau et mobiles**
+**Use advanced SQL features directly in the code of your desktop and mobile apps**
 
-AceQL ne se limite pas aux simples appels SELECT / INSERT / UPDATE / DELETE. 
+AceQL is not limited to simple SELECT / INSERT / UPDATE / DELETE calls.
 
-Vous pouvez utiliser les options avancées de SQL :
+You can use advanced SQL options:
 
-- créer des transactions en passant une série de commandes en autocommit off,
-- Insérer des BLOBs ou lire des Blobs.
-- Programmer des batchs  pour alimenter rapidement vos bases de données distantes, 
-- Appeler toutes les procédures stockées existantes de votre entreprise ou organisation.
+- create transactions by passing a series of commands in autocommit off mode,
+- Insert BLOBs or read Blobs.
+- Schedule batches to quickly feed your remote databases,
+- Call all existing stored procedures of your company or organization.
 
 ___________________
 
-**Développeurs C# et Xamarin : Codez avec une syntaxe Microsoft SQL Server vos apps Desktop & Mobile**
+**C # and Xamarin developers: Code your Desktop & Mobile apps with Microsoft SQL Server syntax **
 
-The C# AceQL Client SDK usedMicrosoft SQL Server like syntax.
-SDK class names are the equivalent of SQL Server [System.Data.SqlClient](https://msdn.microsoft.com/en-us/library/system.data.sqlclient.aspx) namespace.
-They share the same suffix name for the classes, and the same method names.
+The C# AceQL Client SDK usedMicrosoft SQL Server like syntax. SDK class names are the equivalent of SQL Server [System.Data.SqlClient](https://msdn.microsoft.com/en-us/library/system.data.sqlclient.aspx) namespace. They share the same suffix name for the classes, and the same method names.
+
+Connection to a remote database:
 
 ```C#
 string server = "https://www.acme.com:9443/aceql";
@@ -88,6 +92,24 @@ await connection.OpenAsync();
 Console.WriteLine("Successfully connected to database " + database + "!");
 ```
 
+SELECT on the remote database:
+
+```c#
+string sql = "select customer_id, customer_title, lname from customer where customer_id = 1";
+
+using (AceQLCommand command = new AceQLCommand(sql, connection))
+using (AceQLDataReader dataReader = await command.ExecuteReaderAsync())
+{
+    while (dataReader.Read())
+    {
+        Console.WriteLine();
+        Console.WriteLine("customer_id   : " + dataReader.GetValue(0));
+        Console.WriteLine("customer_title: " + dataReader.GetValue(1);
+        Console.WriteLine("lname         : " + dataReader.GetValue(2);
+    }
+} 
+```
+
 The C# Client SDK is packaged as a .Net Standard 2.0 Library to use in your Xamarin projects.
 There is no adaptation per target required. Write a unique and shared C# code and make it run on all major desktop & mobile operating systems:
 
@@ -99,13 +121,16 @@ There is no adaptation per target required. Write a unique and shared C# code an
 
 - Windows Desktop
 
-  
 
-**Développeurs Java : Intégrez facilement le Driver JDBC dans vos apps Desktop & Mobile**
+___________________________________
 
-Le Driver JDBC AceQL vous permet de développer votre code SQL/JDBC sans aucune apprentissage ni adaptation. Les principales classes et méthodes JDBC sont supportées telles quelles. Il est possible d'intégrer le Driver à vos apps sans modifier leur code source.
 
-Connection à une database distante :
+
+**Java developers: Immediately integrate the JDBC Driver into your Desktop & Mobile apps**
+
+The AceQL Client JDBC Driver allows you to develop your SQL / JDBC code without any learning or adaptation. The main JDBC classes and methods are supported as is. It's possible to integrate the Driver into your apps without modifying their source code.
+
+Connection to a remote database:
 
 ```java
 // The URL of the AceQL Server servlet
@@ -125,7 +150,7 @@ Connection connection = DriverManager.getConnection(url, info);
 System.out.println("Successfully connected to database " + database + "!");
 ```
 
-SELECT sur la base distante :
+SELECT on the remote database:
 
 ```java
 String sql = "SELECT CUSTOMER_ID, FNAME, LNAME FROM CUSTOMER WHERE CUSTOMER_ID = ?";
@@ -141,7 +166,33 @@ while (rs.next()) {
 }
 ```
 
-Le Driver JDBC AceQL Professionnel Edition s'intègre directement dans votre database visualizer préféré, avec gestion des metadata. 
+The AceQL Client JDBC Driver can be integrated directly into your favorite database visualizer, including  metadata management:
+
+<img src="https://www.aceql.com/img/dbvisualiser_meta_2.png" alt="DbVisualizer MetaData"/>
+
+_________________________________________________
+
+
+
+**Python Developers & Data Scientists : Get easy access to all your SQL corporate databases**
+
+The module supports Python 3.6–3.9 and provides a SQL interface compliant with the DB-API 2.0 specification described by PEP 249.
+
+
+
+**Easy configuration & full control customization by dependency injection**
+
+
+
+**Manage your data securely and easily**
+
+AceQL HTTP is a 3 tier architecture and includes a very complete [security manager](https://www.aceql.com/sql-over-http-database-security.html):
+
+- You freely choose and configure your strong authentication system to protect your SQL databases.
+- You control the syntax and parameters of incoming SQL commands.
+- You trigger the actions in the event of unexpected SQL commands.
+
+Your SQL data moves via SSL and is protected from hackers.
 
 
 
