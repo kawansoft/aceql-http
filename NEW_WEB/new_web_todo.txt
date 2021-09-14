@@ -38,5 +38,38 @@ Voici le modèle les noms de champs et le CGI à appeler :
 - https://download.aceql.com/contact.html en view source pour les noms de champs.
 - CGI en POST : https://download.aceql.com/AwakeSqlInfoForm
 
+
+Nouveau 15/09/21
+----------------
+
+9) Faire 2 vignettes pour les 2 images Db
+ (Pavé "Immediately integrate the JDBC Driver into your Desktop & Mobile Java apps")
+- https://www.aceql.com/img/dbvisualiser_meta_2.png
+- https://www.aceql.com/img/dbvisualiser_select.png
+
+- https://www.aceql.com/img/dbvisualiser_meta_2_vignette.png
+- https://www.aceql.com/img/dbvisualiser_select_vignette.png
+
+10) Rajouter Docker & Kubernetes dans le paragraphe 
+(Pavé "Take complete control of your server-side configuration and deployment"):
+ - https://icon-icons.com/fr/icone/docker-dorigine-le-mot-symbole-logo/146557
+ - https://icon-icons.com/fr/icone/kubernetes-logo/168359
+
+11) Partout - Réduire la taille des exemples de code à celle des exemples de ce site : 
+https://www.jooq.org/
+
+12) Redirections en +:
+- https://www.aceql.com/CheckForUpdates ==> https://download.aceql.com/CheckForUpdates 
+- https://www.aceql.com/soft/download/  ==> https://download.aceql.com/soft/download/ 
+
+13) Les titres couleur or doivent être en minuscule et toujours de la même taille (comme https://www.graphql.org)
+
+14) ajouter code API Rest:
+$ curl --data-urlencode \
+ "sql=select id, title, lname from customer where customer_id = 1" \
+ https://www.acme.com:9443/aceql/session/mn7andp2tt049iaeaskr28j9ch/execute_query
+ 
+https://download.aceql.com/CheckForUpdates?version=v8.0&edition=Community
+
 A demain,
 N.
