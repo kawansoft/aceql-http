@@ -1,0 +1,42 @@
+Hello Franky,
+
+Merci, ça commence à être bien !
+
+Voici le recensement des détails à corriger pour peut-être gagner du temps pour demain :
+
+1) Les 3 anciens logos des langages C#, Java et Python ne sont pas propres. 
+   Reprendre STP les 3 suivants : 
+   C# : 	https://icon-icons.com/fr/icone/csharp-dorigine-logo/146578
+   Java: 	https://icon-icons.com/fr/icone/java-dorigine-le-mot-symbole-logo/146459
+   Python : https://icon-icons.com/fr/icone/python/104452
+   
+2) https://www.aceql.com/aceql-download-page/ : Ca ne pointe pas vers les nouvelles versions, voir les nouvelles versions sur l'actuelle page de download en ligne: https://www.aceql.com/aceql-download-page.html
+
+3) Page de download pour le Maven. Il n'y a qu'une ligne (com.aceql aceql-http-client-jdbc-driver 6.2) alors qu'il y a trois lignes dans un Maven:
+	com.aceql
+aceql-http-client-jdbc-driver
+	  7.0
+
+4) Bas de page : remplacer "POLITIQUE DE CONFIDENTIALITÉ" par "PRIVACY"
+
+5) Pour les blocs de code, est-il possible de réduire la taille de la police pour éviter les retours à la ligne (On verra ensemble...) ?
+
+6) en Home dans "TAKE COMPLETE CONTROL OF YOUR SERVER-SIDE CONFIGURATION AND DEPLOYMENT" : il faut un retour à la ligne 
+  après "Chained SQL firewall rulesets for each database".
+
+7) Pour le certificat SSL, est-il prêt où faut-il prévoir quelque chose ? Je pourrai m'en occuper avant notre rendez-vous pour gagner du temps...
+   
+8) Problème avec les Forms: 
+
+La forme https://www.aceql.com/trial/ ne fonctionne pas.
+Voici le modèle les noms de champs et le CGI à appeler : 
+- https://download.aceql.com/trial.html en view source pour les noms de champs.
+- CGI en POST : https://download.aceql.com/GenerateAceQLJdbcTrialLicense
+
+La forme https://www.aceql.com/contact/ ne fonctionne pas : 
+Voici le modèle les noms de champs et le CGI à appeler : 
+- https://download.aceql.com/contact.html en view source pour les noms de champs.
+- CGI en POST : https://download.aceql.com/AwakeSqlInfoForm
+
+A demain,
+N.
