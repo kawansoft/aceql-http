@@ -3,6 +3,12 @@
 (ANNULLE & REMPLACE LA VERSION PRECEDENTE)
 
 
+
+call all existing stored procedures for your company or organization.
+==> call all your company or organization stored procedures
+
+
+
 https://www.aceql.com/aceql-download-page/
 
     Remplacer "Python Client SDK 4.2.2" par  "Python Client SDK 5.0.1"
