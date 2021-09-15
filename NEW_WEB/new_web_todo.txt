@@ -28,15 +28,18 @@ aceql-http-client-jdbc-driver
    
 8) Problème avec les Forms: 
 
+OK:
+La forme https://www.aceql.com/contact/ ne fonctionne pas : 
+Voici le modèle les noms de champs et le CGI à appeler : 
+- https://download.aceql.com/contact.html en view source pour les noms de champs.
+- CGI en POST : https://download.aceql.com/AwakeSqlInfoForm
+
 La forme https://www.aceql.com/trial/ ne fonctionne pas.
 Voici le modèle les noms de champs et le CGI à appeler : 
 - https://download.aceql.com/trial.html en view source pour les noms de champs.
 - CGI en POST : https://download.aceql.com/GenerateAceQLJdbcTrialLicense
 
-La forme https://www.aceql.com/contact/ ne fonctionne pas : 
-Voici le modèle les noms de champs et le CGI à appeler : 
-- https://download.aceql.com/contact.html en view source pour les noms de champs.
-- CGI en POST : https://download.aceql.com/AwakeSqlInfoForm
+
 
 
 Nouveau 15/09/21

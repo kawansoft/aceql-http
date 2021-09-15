@@ -1,0 +1,45 @@
+
+15/09/21 à 18:13
+
+https://www.aceql.com/:
+
+	1) CODE YOUR DESKTOP & MOBILE C# AND XAMARIN APPS WITH MICROSOFT SQL SERVER SYNTAX
+	Get Started ==> DEAD LINK
+
+	2) DEFINE YOUR SQL DATABASES SECURITY
+	security manager ==> 404
+	
+	Tous les codes sources : enlever le port dans les URLs 
+	("https://www.acme.com:9443/aceql"; ==> "https://www.acme.com/aceql";)
+
+
+https://www.aceql.com/http-access-remote-sql-database-documentation/
+
+	Run through the Javadoc
+	==> AceQL HTTP – Javadoc
+	Remplacer 7.2 par 8.0
+
+	Documentation ==> C# Client SDK Documentation
+	Remplacer 6.3 par 7.0
+
+	Run through the JDBC Driver Javadoc
+	==> Java Client JDBC Driver Javadoc
+	Remplacer 7.2 par 8.0
+
+
+https://www.aceql.com/sql-over-http-database-security/
+
+Remplacer tous les 7.2 par 8.0.
+
+
+Remarques
+---------
+
+Notes sur le versions en cas de doute :
+
+- AceQL HTTP Server : 8.0.
+- AceQL JDBC Client Driver: 7.0.
+- AceQL C# Client SDK : 7.0
+- AceQL Python Client SDK : 5.0.1
+
+
