@@ -10,7 +10,9 @@ https://www.aceql.com/aceql-download-page/
     
 https://www.aceql.com/:
 
-    Cf. le fichier C# SelectCusomerOneSample.cs qui est auto-documenté.
+    1) Le titre "WHY ACEQL?" n'est pas correctement aligné.
+    
+    2) Cf. le fichier C# SelectCusomerOneSample.cs qui est auto-documenté.
 
 
 https://www.aceql.com/:
