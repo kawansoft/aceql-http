@@ -1,3 +1,14 @@
+
+
+16/09/21
+
+- Favicon.png.
+- PCL ==> .Net Standard.
+- Flèche qui ne passe pas. 
+- Jetpack.
+- Backups.
+
+
 Hello Franky,
 
 Merci, ça commence à être bien !
