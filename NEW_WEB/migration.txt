@@ -1,0 +1,13 @@
+https://www.aceql.com/rest/soft_java_client
+https://download.aceql.com/rest/soft_java_client
+
+https://www.aceql.com/rest/soft_csharp
+https://download.aceql.com/rest/soft_csharp
+
+https://www.aceql.com/rest/soft_python
+https://download.aceql.com/rest/soft_python
+
+https://www.aceql.com/images
+https://download.aceql.com/images
+
+Use new URLs because of Web site migration
