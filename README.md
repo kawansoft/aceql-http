@@ -9,7 +9,7 @@
 # AceQL HTTP v8.0   - September 1,  2021
 # Server Installation and Configuration Guide  
 
-<img src="https://www.aceql.com/favicon.png" alt="AceQL HTTP Icon"/> 
+<img src="https://download.aceql.com/favicon.png" alt="AceQL HTTP Icon"/> 
 
  * [Fundamentals](#fundamentals)
       * [Overview](#overview)
@@ -79,7 +79,7 @@
 
 AceQL HTTP is a library of REST like APIs that allows you access to remote SQL databases over HTTP from any device that supports HTTP. This software has been designed to handle heavy traffic in production environments.
 
-<img src="https://www.aceql.com/img/AceQL-Schema-min.jpg" alt="AceQL Draw"/>
+<img src="https://download.aceql.com/img/AceQL-Schema-min.jpg" alt="AceQL Draw"/>
 
 For example, a select command would be called from the client side using this http call with cURL:
 
@@ -204,7 +204,7 @@ These databases are supported by KawanSoft only through [commercial support](htt
 Open a terminal and download with Wget.
 
 ```bash
-$ wget https://www.aceql.com/rest/soft/8.0/download/aceql-http-8.0.run
+$ wget https://download.aceql.com/rest/soft/8.0/download/aceql-http-8.0.run
 ```
 
 If you get a certificate error message, do one of the following:
@@ -264,7 +264,7 @@ AceQL HTTP Community v8.0 - 01-Sep-2021
 
 ## Windows Installation
 
-[Download AceQL Windows Installer.](https://www.aceql.com/download)
+Download [AceQL Windows Installer](https://www.aceql.com/aceql-download-page/).
 
 Because the software installs and runs a Windows Service, you must be logged as a Windows Administrator to install AceQL.
 
