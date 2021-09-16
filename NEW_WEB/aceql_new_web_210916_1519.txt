@@ -1,0 +1,13 @@
+https://www.aceql.com/http-access-remote-sql-database-documentation/
+
+1) Dans "C# SDK USER GUIDE"
+
+Remplacer à la fois le texte et l'URL du lien : "AceQL HTTP – Demo Guide"
+par :
+<a href="https://github.com/kawansoft/AceQL.Client2/blob/master/README.md">C# Client SDK User Guide</a>.
+
+2) Dans "JAVA CLIENT JDBC DRIVER USER GUIDE"
+
+Remplacer l'URL du lien de "Java Client JDBC Driver Javadoc"
+par :
+https://download.aceql.com/rest/soft_java_client/7.0/javadoc
