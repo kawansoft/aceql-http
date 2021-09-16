@@ -1,12 +1,16 @@
 
-15/09/21 à 20:52
-(ANNULLE & REMPLACE LA VERSION PRECEDENTE)
+16/09/21 à 10:50
+(ANNULLE & REMPLACE/COMPLETE LA VERSION PRECEDENTE)
 
+https://www.aceql.com/:
 
+   1)  "call all existing stored procedures for your company or organization."
+    ==> call the stored procedures of your company or organization."
 
-call all existing stored procedures for your company or organization.
-==> call all your company or organization stored procedures
-
+Remplacer les images de Db Visualiser qui ne sont pas libres de droits par
+les images jointes :
+    dbeaver_metadata.png
+    dbeaver_select.png
 
 
 https://www.aceql.com/aceql-download-page/
