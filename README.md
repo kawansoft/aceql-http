@@ -210,7 +210,7 @@ $ wget https://download.aceql.com/rest/soft/8.0/download/aceql-http-8.0.run
 If you get a certificate error message, do one of the following:
 
 1. If the problem is that a known root CA is missing and when you are using Ubuntu or Debian,  then you can solve the problem with this one line: `sudo apt-getinstall ca-certificates`. Then retry the Wget call.
-2. Retry the Wget call with `--no-check-certificate` at end of command line. Then check the PGP signature of the downloaded file using the corresponding `.asc` signature file available on [download page](https://www.aceql.com/download) using the PGP hyperlink.
+2. Retry the Wget call with `--no-check-certificate` at end of command line. Then check the PGP signature of the downloaded file using the corresponding `.asc` signature file available on [download page](https://www.aceql.com/aceql-download-page/) using the PGP hyperlink.
 
 Make the file executable and then run it:
 
