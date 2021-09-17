@@ -2,7 +2,7 @@
 
 # Demo Guide
 
-<img src="https://download.aceql.com/favicon.png" alt="AceQ HTTP Icon"/>
+<img src="https://docs.aceql.com/favicon.png" alt="AceQ HTTP Icon"/>
 
    * [Overview](#overview)
    * [Server Side Settings](#server-side-settings)
@@ -30,7 +30,7 @@
 
 AceQL HTTP is a library of REST like APIs that allows you access to remote SQL databases over HTTP from any device that supports HTTP. This software has been designed to handle heavy traffic in production environments.
 
-<img src="https://download.aceql.com/img/AceQL-Schema-min.jpg" alt="AceQL Draw"/>
+<img src="https://docs.aceql.com/img/AceQL-Schema-min.jpg" alt="AceQL Draw"/>
 
 For example, a select command would be called from the client side using this http call with cURL:
 
@@ -107,13 +107,13 @@ The execution of each AceQL HTTP API statement is conditioned by optional rules,
 
 Download the database `sampledb` schema corresponding to your database engine: 
 
-- [sampledb_mysq.txt](https://www.aceql.com/rest/soft/8.0/src/sampledb_mysql.txt )
-- [sampledb_postgresql.txt](https://www.aceql.com/rest/soft/8.0/src/sampledb_postgresql.txt)
-- [sampledb_ms_sql_serverl.txt](https://www.aceql.com/rest/soft/8.0/src/sampledb_ms_sql_server.txt)
-- [sampledb_oracle_database.txt](https://www.aceql.com/rest/soft/8.0/src/sampledb_oracle_database.txt)
+- [sampledb_mysq.txt](https://docs.aceql.com/rest/soft/8.0/src/sampledb_mysql.txt )
+- [sampledb_postgresql.txt](https://docs.aceql.com/rest/soft/8.0/src/sampledb_postgresql.txt)
+- [sampledb_ms_sql_serverl.txt](https://docs.aceql.com/rest/soft/8.0/src/sampledb_ms_sql_server.txt)
+- [sampledb_oracle_database.txt](https://docs.aceql.com/rest/soft/8.0/src/sampledb_oracle_database.txt)
 
 
-For other databases engines, just tailor the file as indicated: [sampledb_other_databases.txt](https://www.aceql.com/rest/soft/8.0/src/sampledb_other_databases.txt)
+For other databases engines, just tailor the file as indicated: [sampledb_other_databases.txt](https://docs.aceql.com/rest/soft/8.0/src/sampledb_other_databases.txt)
 
 Then launch the script that will create the tables in a database
 
@@ -132,7 +132,7 @@ $ wget https://download.aceql.com/rest/soft/8.0/download/aceql-http-8.0.run
 If you get a certificate error message, do one of the following:
 
 1. If the problem is that a known root CA is missing and when you are using Ubuntu or Debian,  then you can solve the problem with this one line: `sudo apt-getinstall ca-certificates`. Then retry the `Wget` call.
-2. Retry the `Wget` call with `--no-check-certificate` at end of command line. Then check the PGP signature of the downloaded file using the corresponding `.asc` signature file available on [download page](https://www.aceql.com/download) using the PGP hyperlink.
+2. Retry the `Wget` call with `--no-check-certificate` at end of command line. Then check the PGP signature of the downloaded file using the corresponding `.asc` signature file available on [download](https://www.aceql.com/aceql-download-page/) page using the PGP hyperlink.
 
 In following lines we will assume that the Open Source edition is chosen. (Operating mode is the same for Pro edition).
 
@@ -284,7 +284,7 @@ Run the installer.
 
 It will run AceQL at end of installation and display the Window:
 
-<img src="https://www.aceql.com/rest/soft/8.0/img/aceql_windows_gui_home_flatlaf.png" alt="AceQ HTTP GUI Main Windows"/>
+<img src="https://docs.aceql.com/rest/soft/8.0/img/aceql_windows_gui_home_flatlaf.png" alt="AceQ HTTP GUI Main Windows"/>
 
 **N.B:** Because of a bug in all Java versions > 8 on Windows, the interface will appear "ugly"  or "blurred" on Java version > 8 if you have increased Windows Screen Resolution Options to 125% or 150%.  See [Java Bug Database](https://bugs.java.com/bugdatabase/view_bug.do?bug_id=JDK-8194165) for more info. Set back Windows Screen Resolution to 100% for clean display.
 
@@ -540,7 +540,7 @@ From now, you can read the [API User Guide](https://github.com/kawansoft/aceql-h
 
 2. Install the [AceQL.Client](https://www.nuget.org/packages/AceQL.Client) package with NuGet.
 
-3. Download this C# source file: [MyRemoteConnection.cs](https://download.aceql.com/rest/soft_csharp/7.0/src/MyRemoteConnection.cs). Then insert it in your project. 
+3. Download this C# source file: [MyRemoteConnection.cs](https://docs.aceql.com/rest/soft_csharp/7.0/src/MyRemoteConnection.cs). Then insert it in your project. 
 
 4. The  connection to the remote database is created  using `AceQLConnection` class and passing the URL of the AceQL Servlet Manager of your configuration: 
 
@@ -643,7 +643,7 @@ From now, you can read the [API User Guide](https://github.com/kawansoft/aceql-h
 
 
 
-The `SelectCustomerAndOrderLogAsync()` method of [MyRemoteConnection.cs](https://download.aceql.com/rest/soft_csharp/7.0/src/MyRemoteConnection.cs) displays back the inserted values.
+The `SelectCustomerAndOrderLogAsync()` method of [MyRemoteConnection.cs](https://docs.aceql.com/rest/soft_csharp/7.0/src/MyRemoteConnection.cs) displays back the inserted values.
 
 From now on, you can read the [C# Client SDK User Guide](https://github.com/kawansoft/AceQL.Client2/blob/master/README.md).
 
@@ -657,10 +657,10 @@ From now on, you can read the [C# Client SDK User Guide](https://github.com/kawa
    <version>7.0</version>
    ```
 
-2. If you don’t use Maven: the [aceql-http-client-jdbc-driver-all-7.0.jar](https://download.aceql.com/rest/soft_java_client/7.0/download/aceql-http-client-jdbc-driver-all-7.0.jar) file contains the SDK with all dependencies.
+2. If you don’t use Maven: the [aceql-http-client-jdbc-driver-all-7.0.jar](https://docs.aceql.com/rest/soft_java_client/7.0/download/aceql-http-client-jdbc-driver-all-7.0.jar) file contains the SDK with all dependencies.
 3. Create an `com.aceql.jdbc.commons.examples` package in your IDE.
 
-4. Download this Java source file: [MyRemoteConnection.java](https://download.aceql.com/rest/soft_java_client/7.0/src/MyRemoteConnection.java). Then insert it in the package. 
+4. Download this Java source file: [MyRemoteConnection.java](https://docs.aceql.com/rest/soft_java_client/7.0/src/MyRemoteConnection.java). Then insert it in the package. 
 
 5. The  connection to the remote database is  created  using loading the `AceQLDriver` class  and passing the URL of the AceQL Servlet Manager of your configuration:
 
@@ -776,9 +776,9 @@ From now on, you can read the [C# Client SDK User Guide](https://github.com/kawa
    }
    ```
 
-The `selectCustomerAndOrderLog` method of [MyRemoteConnection.java](https://download.aceql.com/rest/soft_java_client/7.0/src/MyRemoteConnection.java) displays back the inserted values.
+The `selectCustomerAndOrderLog` method of [MyRemoteConnection.java](https://docs.aceql.com/rest/soft_java_client/7.0/src/MyRemoteConnection.java) displays back the inserted values.
 
-From now on, you can read the AceQL Client JDBC Driver [User Guide](https://github.com/kawansoft/aceql-http-client-sdk/blob/master/README.md) or run through the [Javadoc](https://download.aceql.com/rest/soft_java_client/7.0/javadoc).
+From now on, you can read the AceQL Client JDBC Driver [User Guide](https://github.com/kawansoft/aceql-http-client-sdk/blob/master/README.md) or run through the [Javadoc](https://docs.aceql.com/rest/soft_java_client/7.0/javadoc).
 
 ## Python Client SDK
 
@@ -791,7 +791,7 @@ The aceql module supports Python 3.4–3.8.
 $ pip install aceql
 ```
 
-3.    Download this Python class: [my_remote_connection.py](https://www.aceql.com/rest/soft/8.0/src/my_remote_connection.py)
+3.    Download this Python class: [my_remote_connection.py](https://docs.aceql.com/rest/soft/8.0/src/my_remote_connection.py)
 
 4.    The  connection to the remote database is  created  using a [DB API 2.0](https://www.python.org/dev/peps/pep-0249/)  `Connection` class and passing the URL of the AceQL Servlet Manager of your configuration:
 
@@ -866,7 +866,7 @@ $ pip install aceql
 
 
 
-The `select_customer_and_orderlog` method of [my_remote_connection.py](https://www.aceql.com/rest/soft/8.0/src/my_remote_connection.py) displays back the inserted values.
+The `select_customer_and_orderlog` method of [my_remote_connection.py](https://docs.aceql.com/rest/soft/8.0/src/my_remote_connection.py) displays back the inserted values.
 
 From now on, you can read the [Python Client SDK User Guide](https://github.com/kawansoft/aceql-http-client-python/blob/master/README.md).
 
