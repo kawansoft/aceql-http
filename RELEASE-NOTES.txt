@@ -25,6 +25,11 @@ AceQL HTTP is licensed through the GNU Lesser General Public License
 (LGPL v2.1).
 
 
+
+To be fixed:
+- CsvRulesManager:// Test username woth all tables
+        
+
 AceQL HTTP Version 8.0 - 01-Sep-2021
 ------------------------------------
 
