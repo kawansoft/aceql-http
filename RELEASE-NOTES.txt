@@ -28,7 +28,16 @@ AceQL HTTP is licensed through the GNU Lesser General Public License
 
 To be fixed:
 - CsvRulesManager:// Test username woth all tables
+  
+
+AceQL HTTP Version 8.1 - 23-Sep-2021
+------------------------------------
         
+Bugs fixed:
+- Spaces were not supported around commas in sqlFirewallManagerClassNames
+  array.
+  This has been fixed.       
+
 
 AceQL HTTP Version 8.0 - 01-Sep-2021
 ------------------------------------
