@@ -26,7 +26,6 @@
 package org.kawanfw.sql.tomcat;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class TomcatStarterUtilFirewall {
@@ -41,8 +40,10 @@ public class TomcatStarterUtilFirewall {
 	}
 
 	String [] array = sqlFirewallClassNameArray.split(",");
-
-	sqlFirewallClassNames = Arrays.asList(array);
+	for (String sqlFirewallClassName  : array) {
+	    sqlFirewallClassNames.add(sqlFirewallClassName.trim());
+	}
+	
 	return sqlFirewallClassNames;
     }
 
