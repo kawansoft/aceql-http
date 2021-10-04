@@ -190,7 +190,7 @@ public class CsvRulesManager extends DefaultSqlFirewallManager implements SqlFir
 		}
 	    }
 
-	    // Test username woth all tables
+	    // Test username with all tables
 	    databaseUserTableTriplet = new DatabaseUserTableTriplet(database, username, "all");
 	    tableAllowStatements = mapTableAllowStatementsSet.get(databaseUserTableTriplet);
 

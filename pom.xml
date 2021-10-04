@@ -5,7 +5,7 @@
 
 	<groupId>com.aceql</groupId>
 	<artifactId>aceql-http</artifactId>
-	<version>8.0</version>
+	<version>8.1</version>
 	<packaging>jar</packaging>
 
 	<name>AceQL HTTP</name>
@@ -82,7 +82,7 @@
 		<dependency>
 			<groupId>com.github.jsqlparser</groupId>
 			<artifactId>jsqlparser</artifactId>
-			<version>3.2</version>
+			<version>4.2</version>
 		</dependency>
 
 		<dependency>

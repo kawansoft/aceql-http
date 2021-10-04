@@ -114,6 +114,7 @@ public class StatementAnalyzer {
 	    throw new IllegalArgumentException(Tag.PRODUCT_PRODUCT_FAIL + "parameterValues can not be null!");
 	}
 
+	
 	this.sql = trimAndremoveTrailingSemicolons(sql);
 
 	this.tables = new ArrayList<>();
@@ -204,7 +205,9 @@ public class StatementAnalyzer {
 	    sqlNew = StringUtils.removeEnd(sqlNew, ";");
 	    sqlNew = sqlNew.trim();
 	}
-	return sql;
+	
+	sqlNew = StatementAnalyzerUtil.fixForJsqlparser(sqlNew);
+	return sqlNew;
     }
 
     /**

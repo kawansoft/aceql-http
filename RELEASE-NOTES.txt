@@ -24,19 +24,21 @@ and code strong security rules in order to protect the databases.
 AceQL HTTP is licensed through the GNU Lesser General Public License 
 (LGPL v2.1).
 
-
-
-To be fixed:
-- CsvRulesManager:// Test username woth all tables
   
 
 AceQL HTTP Version 8.1 - 23-Sep-2021
 ------------------------------------
-        
+     
+            
 Bugs fixed:
+- StatementAnalyzer.isWithSemicolons() would always return false.
+  This has been fixed.
 - Spaces were not supported around commas in sqlFirewallManagerClassNames
-  array.
-  This has been fixed.       
+  array in aceql-server.properties files. This has been fixed.      
+- A SELECT containing a column named FULLTEXT induced request rejection by 
+  any SqlFirewallManager implementation. Because the bug is due to an external Java 
+  library code, this has been temporarily fixed by replacing FULLTEXT occurrences 
+  by ACEQL_FULLTEXT_ACEQL when checking the SELECT. 
 
 
 AceQL HTTP Version 8.0 - 01-Sep-2021
