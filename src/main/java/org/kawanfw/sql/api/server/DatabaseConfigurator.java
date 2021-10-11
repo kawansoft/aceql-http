@@ -48,7 +48,7 @@ import java.util.logging.Logger;
  * <li>Define the {@code Logger} to use to trap server Exceptions.</li>
  * </ul>
  * <p>
- * Note that the framework comes with a Default
+ * Note that the framework comes with a default
  * <code>DatabaseConfigurator</code> implementation that is *not* secured and
  * should be extended: {@link DefaultDatabaseConfigurator}.
  * <p>

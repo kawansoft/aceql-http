@@ -120,7 +120,7 @@ public interface SqlFirewallManager {
 
     /**
      * Allows, for the passed client username and its IP address, to know if
-     * statement is a prepared statement an to analyze the string representation of
+     * statement is a prepared statement and to analyze the string representation of
      * the SQL statement that is received on the server. <br>
      * If the analysis defined by the method returns false, the SQL statement won't
      * be executed.
