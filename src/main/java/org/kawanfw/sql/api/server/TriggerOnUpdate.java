@@ -33,7 +33,7 @@ import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
 
 /**
  *
- * Interface that defines a trigger that will execute Java code after a DELETE, 
+ * Interface that defines a trigger that will run Java code after a DELETE, 
  * INSERT or UPDATE call.
  * <p>
  * Note that there is no API for trigger *before* update calls: it would be unnecessarily redundant with 
@@ -41,7 +41,7 @@ import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
  * <p>
  * Note that the framework comes with a default
  * <code>TriggerOnUpdate</code> implementation that does nothing:
- * {@link DefaultJavaTriggerOnUpdate}.
+ * {@link DefaultTriggerOnUpdate}.
  * <p>
  *
  * @author Nicolas de Pomereu
@@ -49,7 +49,7 @@ import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
 public interface TriggerOnUpdate {
 
     /**
-     * Allows to execute a trigger after a database update ({@code DELETE},
+     * Allows to execute a trigger code in Java only after a database update ({@code DELETE},
      * {@code INSERT}, {@code UPDATE}) operation.<br>
      * <br>
      * Parameters allow for the passed client username and its IP address, to know
