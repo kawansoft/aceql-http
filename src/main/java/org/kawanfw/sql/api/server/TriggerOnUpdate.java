@@ -37,7 +37,7 @@ import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
  * INSERT or UPDATE call.
  * <p>
  * Note that there is no API for trigger *before* update calls: it would be unnecessarily redundant with 
- * {@link SqlFirewallManager#allowSqlRunAfterAnalysis(String, String, Connection, String, String, boolean, List)}.
+ * {@link SqlFirewallManager#allowSqlRunAfterAnalysis}.
  * <p>
  * Note that the framework comes with a default
  * <code>TriggerOnUpdate</code> implementation that does nothing:
