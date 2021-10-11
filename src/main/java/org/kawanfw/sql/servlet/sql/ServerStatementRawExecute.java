@@ -287,7 +287,7 @@ public class ServerStatementRawExecute {
     /**
      * Calls the Statement.execute() method.
      * @param out
-     * @param atabaseConfigurator TODO
+     * @param databaseConfigurator
      * @param username
      * @param database
      * @param sqlOrder
