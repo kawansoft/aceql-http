@@ -26,10 +26,9 @@ AceQL HTTP is licensed through the GNU Lesser General Public License
 
   
 
-AceQL HTTP Version 8.1 - 04-Oct-2021
+AceQL HTTP Version 8.1 - 11-Oct-2021
 ------------------------------------
-     
-            
+             
 Bugs fixed:
 - StatementAnalyzer.isWithSemicolons() would always return false.
   This has been fixed.
