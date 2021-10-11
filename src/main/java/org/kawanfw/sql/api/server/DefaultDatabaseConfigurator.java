@@ -28,6 +28,7 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
@@ -225,4 +226,11 @@ public class DefaultDatabaseConfigurator implements DatabaseConfigurator {
 
     }
 
+    /**
+     * This default implementation does nothing for the sake of speed execution.
+     */
+    @Override
+    public void runAfterSqlExecute(String username, String database, Connection connection, String ipAddress,
+	    String sql, boolean isPreparedStatement, List<Object> parameterValues) throws IOException, SQLException {
+    }
 }

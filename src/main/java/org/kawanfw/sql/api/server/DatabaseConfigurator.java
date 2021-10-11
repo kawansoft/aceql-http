@@ -28,6 +28,7 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.logging.Logger;
 
 /**
@@ -46,6 +47,8 @@ import java.util.logging.Logger;
  * <li>Define the maximum number of rows that may be returned to the
  * client.</li>
  * <li>Define the {@code Logger} to use to trap server Exceptions.</li>
+ * </ul>
+ * <li>Define some Java code to run on successful completion of the SQL call.</li>
  * </ul>
  * <p>
  * Note that the framework comes with a default
@@ -146,4 +149,25 @@ public interface DatabaseConfigurator {
      */
     public Logger getLogger() throws IOException;
 
+    /**
+     * Allows to run some Java code after the successful execution of a SQL call.
+     * <br>
+     * Parameters allow for the passed client username and its IP address, to know
+     * if statement is a prepared statement and to analyze the string representation
+     * of the SQL statement that is received on the server. <br>
+     *
+     * @param username            the client username that sends the request
+     * @param database            the database name as defined in the JDBC URL field
+     * @param connection          The current SQL/JDBC <code>Connection</code>
+     * @param ipAddress           the IP address of the client user
+     * @param sql                 the SQL statement
+     * @param isPreparedStatement Says if the statement is a prepared statement
+     * @param parameterValues     the parameter values of a prepared statement in
+     *                            the natural order, empty list for a (non prepared)
+     *                            statement
+     * @throws IOException  if an IOException occurs
+     * @throws SQLException if a SQLException occurs
+     */
+    public void runAfterSqlExecute(String username, String database, Connection connection, String ipAddress, String sql,
+	    boolean isPreparedStatement, List<Object> parameterValues) throws IOException, SQLException;
 }
