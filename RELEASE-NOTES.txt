@@ -28,6 +28,9 @@ AceQL HTTP is licensed through the GNU Lesser General Public License
 
 AceQL HTTP Version 8.1 - 19-Oct-2021
 ------------------------------------
+
+What's New:             
+- Tomcat base libraries have been upgraded to 9.0.54.
              
 Bugs fixed:
 - StatementAnalyzer.isWithSemicolons() would always return false.
