@@ -26,25 +26,42 @@
 package org.kawanfw.sql.tomcat;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+
+import org.kawanfw.sql.util.FrameworkDebug;
 
 public class TomcatStarterUtilFirewall {
 
-
+    private static boolean DEBUG = FrameworkDebug.isSet(TomcatStarterUtilFirewall.class);
+    
     public static List<String> getList(String sqlFirewallClassNameArray) {
 
+	debug("sqlFirewallClassNameArray: " + sqlFirewallClassNameArray + ":");
+	
 	List<String> sqlFirewallClassNames = new ArrayList<>();
 
 	if (sqlFirewallClassNameArray == null || sqlFirewallClassNameArray.isEmpty()) {
 	    return sqlFirewallClassNames;
 	}
 
-	String [] array = sqlFirewallClassNameArray.split(",");
+	String [] array = sqlFirewallClassNameArray.split(", ");
 	for (String sqlFirewallClassName  : array) {
+	    debug("sqlFirewallClassName: " + sqlFirewallClassName.trim() + ":");
 	    sqlFirewallClassNames.add(sqlFirewallClassName.trim());
 	}
 	
 	return sqlFirewallClassNames;
     }
 
+    /**
+     * Method called by children Servlet for debug purpose Println is done only if
+     * class name name is in kawansoft-debug.ini
+     */
+    public static void debug(String s) {
+	if (DEBUG) {
+	    System.out.println(new Date() + " " + s);
+	}
+    }
+    
 }

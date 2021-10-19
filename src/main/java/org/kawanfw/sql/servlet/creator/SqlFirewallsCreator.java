@@ -90,6 +90,7 @@ public class SqlFirewallsCreator {
 
 	    for (String sqlFirewallClassName : sqlFirewallClassNames) {
 
+		sqlFirewallClassName = sqlFirewallClassName.trim();
 		sqlFirewallClassName = getNameWithPackage(sqlFirewallClassName);
 
 		Class<?> c = Class.forName(sqlFirewallClassName);
