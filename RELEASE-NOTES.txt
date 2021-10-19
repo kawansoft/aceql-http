@@ -26,18 +26,20 @@ AceQL HTTP is licensed through the GNU Lesser General Public License
 
   
 
-AceQL HTTP Version 8.1 - 11-Oct-2021
+AceQL HTTP Version 8.1 - 19-Oct-2021
 ------------------------------------
              
 Bugs fixed:
 - StatementAnalyzer.isWithSemicolons() would always return false.
   This has been fixed.
 - Spaces were not supported around commas in sqlFirewallManagerClassNames
-  array in aceql-server.properties files. This has been fixed.      
+  array in the aceql-server.properties files. This has been fixed.   
+- sqlFirewallManager.runIfStatementRefused() would not set the values of 
+  parameter List<Object> parameterValues on some SQL calls. This has been fixed.   
 - A SELECT containing a column named FULLTEXT induced request rejection by 
-  any SqlFirewallManager implementation. Because the bug is due to an external Java 
-  library code, this has been temporarily fixed by replacing FULLTEXT occurrences 
-  by _FULLTEXT_ when checking the SELECT. 
+  any SqlFirewallManager implementation.  The bug is due to an external
+  Java library code. This has been temporarily fixed by replacing FULLTEXT 
+  occurrences by _FULLTEXT_ when checking the SELECT. 
 
 
 AceQL HTTP Version 8.0 - 01-Sep-2021

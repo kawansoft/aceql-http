@@ -33,7 +33,6 @@ import java.io.OutputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -267,9 +266,8 @@ public class ServerPreparedStatementBatch {
 	for (SqlFirewallManager sqlFirewallManager : sqlFirewallManagers) {
 	    isAllowedAfterAnalysis = sqlFirewallManager.allowExecuteUpdate(username, database, connection);
 	    if (!isAllowedAfterAnalysis) {
-		List<Object> parameterValues = new ArrayList<>();
 		sqlFirewallManager.runIfStatementRefused(username, database, connection, ipAddress, false, sqlOrder,
-			parameterValues);
+			serverPreparedStatementParameters.getParameterValues());
 
 		String message = JsonSecurityMessage.prepStatementNotAllowedBuild(sqlOrder,
 			"Prepared Statement not allowed for executeUpdate",
@@ -306,9 +304,8 @@ public class ServerPreparedStatementBatch {
 	    isAllowedAfterAnalysis = sqlFirewallManager.allowSqlRunAfterAnalysis(username, database, connection,
 		    ipAddress, sqlOrder, ServerStatementUtil.isPreparedStatement(request), serverPreparedStatementParameters.getParameterValues());
 	    if (!isAllowedAfterAnalysis) {
-		List<Object> parameterValues = new ArrayList<>();
 		sqlFirewallManager.runIfStatementRefused(username, database, connection, ipAddress, false, sqlOrder,
-			parameterValues);
+			serverPreparedStatementParameters.getParameterValues());
 		break;
 	    }
 	}

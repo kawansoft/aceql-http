@@ -388,9 +388,8 @@ public class ServerStatementRawExecute {
 	for (SqlFirewallManager sqlFirewallManager : sqlFirewallManagers) {
 	    isAllowedAfterAnalysis = sqlFirewallManager.allowExecute(username, database, connection);
 	    if (!isAllowedAfterAnalysis) {
-		List<Object> parameterValues = new ArrayList<>();
 		sqlFirewallManager.runIfStatementRefused(username, database, connection, ipAddress, false, sqlOrder,
-			parameterValues);
+			serverPreparedStatementParameters.getParameterValues());
 
 		String message = JsonSecurityMessage.prepStatementNotAllowedBuild(sqlOrder,
 			"Prepared Statement not allowed for executeUpdate",
@@ -423,9 +422,8 @@ public class ServerStatementRawExecute {
 		    ipAddress, sqlOrder, ServerStatementUtil.isPreparedStatement(request),
 		    serverPreparedStatementParameters.getParameterValues());
 	    if (!isAllowedAfterAnalysis) {
-		List<Object> parameterValues = new ArrayList<>();
 		sqlFirewallManager.runIfStatementRefused(username, database, connection, ipAddress, false, sqlOrder,
-			parameterValues);
+			serverPreparedStatementParameters.getParameterValues());
 		break;
 	    }
 	}

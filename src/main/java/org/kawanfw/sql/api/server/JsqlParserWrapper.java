@@ -39,7 +39,7 @@ import net.sf.jsqlparser.util.TablesNamesFinder;
  *
  * Parses a SQL statement using JSQLParser.
  * <br>
- * Allows to get the table names ans the statement type.
+ * Allows to get the table names and the statement type.
  * @author Nicolas de Pomereu
  *
  */
