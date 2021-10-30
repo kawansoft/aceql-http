@@ -40,8 +40,8 @@ import javax.sql.DataSource;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
-import org.kawanfw.sql.api.server.util.NoFormatter;
 import org.kawanfw.sql.api.server.util.UsernameConverter;
+import org.kawanfw.sql.api.server.util.VerySimpleFormatter;
 import org.kawanfw.sql.servlet.ServerSqlManager;
 import org.kawanfw.sql.tomcat.TomcatSqlModeStore;
 import org.kawanfw.sql.tomcat.TomcatStarterUtilProperties;
@@ -219,7 +219,7 @@ public class DefaultDatabaseConfigurator implements DatabaseConfigurator {
 
 	ACEQL_LOGGER = Logger.getLogger(DefaultDatabaseConfigurator.class.getName());
 	Handler fh = new FileHandler(pattern, 200 * 1024 * 1024, 2, true);
-	fh.setFormatter(new NoFormatter());
+	fh.setFormatter(new VerySimpleFormatter());
 	ACEQL_LOGGER.addHandler(fh);
 	return ACEQL_LOGGER;
 

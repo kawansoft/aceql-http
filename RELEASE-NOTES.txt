@@ -24,12 +24,19 @@ and code strong security rules in order to protect the databases.
 AceQL HTTP is licensed through the GNU Lesser General Public License 
 (LGPL v2.1).
 
-  
 
+AceQL HTTP Version 9.0 - 30-Oct-2021
+------------------------------------
+
+What's New:  
+- DefaultDatabaseConfigurator Logger uses now the Formatter   
+  VerySimpleFormatter that includes date/time. 
+  
+  
 AceQL HTTP Version 8.1 - 19-Oct-2021
 ------------------------------------
 
-What's New:             
+What's New:         
 - Tomcat base libraries have been upgraded to 9.0.54.
              
 Bugs fixed:
