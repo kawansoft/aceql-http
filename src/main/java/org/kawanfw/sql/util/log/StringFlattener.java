@@ -42,6 +42,10 @@ public class StringFlattener {
 	this.inString = inString;
     }
 
+    /**
+     * Flatten the inString by removing all CR/LF.
+     * @return The flattened inString
+     */
     public String flatten() {
 	StringBuffer buffer = new StringBuffer();
 
@@ -56,13 +60,6 @@ public class StringFlattener {
 	    throw new IllegalStateException(e);
 	}
 	return buffer.toString();
-    }
-
-    /**
-     * @param args
-     */
-    public static void main(String[] args) throws IOException {
-
     }
 
 }
