@@ -25,12 +25,15 @@ AceQL HTTP is licensed through the GNU Lesser General Public License
 (LGPL v2.1).
 
 
-AceQL HTTP Version 9.0 - 30-Oct-2021
+AceQL HTTP Version 8.2 - 05-Nov-2021
 ------------------------------------
 
 What's New:  
-- DefaultDatabaseConfigurator Logger uses now the Formatter   
-  VerySimpleFormatter that includes date/time. 
+- The new Logger format provided by DefaultDatabaseConfigurator.getLogger() 
+  includes now trailing date/time.
+- The new defaultDatabaseConfigurator.flattenLogMessages property in the 
+  aceql-server.properties file allows to define if multi-line messages 
+  must be flattened into one line log entry/message.
   
   
 AceQL HTTP Version 8.1 - 19-Oct-2021

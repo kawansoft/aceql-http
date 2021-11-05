@@ -44,21 +44,25 @@ public class StringFlattener {
 
     /**
      * Flatten the inString by removing all CR/LF.
+     * 
      * @return The flattened inString
+     * @throws IOException 
      */
-    public String flatten() {
+    public String flatten() throws IOException {
+
+	if (inString == null) {
+	    return null;
+	}
+
 	StringBuffer buffer = new StringBuffer();
 
 	BufferedReader bufferedReader = new BufferedReader(new StringReader(inString));
 
 	String line = null;
-	try {
-	    while ((line = bufferedReader.readLine()) != null) {
-	        buffer.append(line);
-	    }
-	} catch (IOException e) {
-	    throw new IllegalStateException(e);
+	while ((line = bufferedReader.readLine()) != null) {
+	    buffer.append(line);
 	}
+
 	return buffer.toString();
     }
 

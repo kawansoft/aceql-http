@@ -38,8 +38,6 @@ import java.util.logging.LogRecord;
  */
 public class VerySimpleFormatter extends Formatter {
 
-
-
     private static final String PATTERN = "yyyy-MM-dd HH:mm:ss.SSS";
 
     @Override

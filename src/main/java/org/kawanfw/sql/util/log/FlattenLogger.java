@@ -53,9 +53,15 @@ public class FlattenLogger extends Logger {
 
     @Override
     public void log(Level level, String msg) {
-	StringFlattener stringFlattener = new StringFlattener(msg);
-	String flatten = stringFlattener.flatten();
-	super.log(level, flatten);
+	String flatten;
+	try {
+	    StringFlattener stringFlattener = new StringFlattener(msg);
+	    flatten = stringFlattener.flatten();
+	    super.log(level, flatten);
+	} catch (Throwable throwable) {
+	    super.log(level, "CAN NOT FLATTEN MSG IN LOG: " + throwable.toString());
+	    super.log(level, msg);
+	}
     }
     
 }

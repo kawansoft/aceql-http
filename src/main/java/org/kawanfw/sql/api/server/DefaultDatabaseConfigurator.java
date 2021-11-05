@@ -70,7 +70,6 @@ public class DefaultDatabaseConfigurator implements DatabaseConfigurator {
 
     private static Logger ACEQL_LOGGER = null;
 
-
     /**
      * Returns a {@code Connection} from
      * <a href="http://tomcat.apache.org/tomcat-9.0-doc/jdbc-pool.html" >Tomcat JDBC
@@ -146,17 +145,15 @@ public class DefaultDatabaseConfigurator implements DatabaseConfigurator {
     }
 
     /**
-     * @return the value of the property {@code default.maxRows} defined in the {@code aceql-server.properties} file at server startup.
-     * If property does not exist, returns 0.
+     * @return the value of the property {@code default.maxRows} defined in the
+     *         {@code aceql-server.properties} file at server startup. If property
+     *         does not exist, returns 0.
      */
     @Override
     public int getMaxRows(String username, String database) throws IOException, SQLException {
 
 	int maxRows = 0;
-	if (properties == null) {
-	    File file = ServerSqlManager.getAceqlServerProperties();
-	    properties = TomcatStarterUtilProperties.getProperties(file);
-	}
+	setProperties();
 
 	String maxRowsStr = properties.getProperty("defaultDatabaseConfigurator.maxRows");
 
@@ -166,7 +163,8 @@ public class DefaultDatabaseConfigurator implements DatabaseConfigurator {
 	}
 
 	if (!StringUtils.isNumeric(maxRowsStr)) {
-	    throw new IllegalArgumentException("The defaultDatabaseConfigurator.maxRows property is not numeric: " + maxRowsStr);
+	    throw new IllegalArgumentException(
+		    "The defaultDatabaseConfigurator.maxRows property is not numeric: " + maxRowsStr);
 	}
 
 	maxRows = Integer.parseInt(maxRowsStr);
@@ -218,14 +216,39 @@ public class DefaultDatabaseConfigurator implements DatabaseConfigurator {
 
 	String pattern = logDir.toString() + File.separator + "AceQL.log";
 
-	Logger logger= 	Logger.getLogger(DefaultDatabaseConfigurator.class.getName());
-	
-	ACEQL_LOGGER = new FlattenLogger(logger.getName(), logger.getResourceBundleName());
+	Logger logger = Logger.getLogger(DefaultDatabaseConfigurator.class.getName());
+
+	setProperties();
+	String flattenLogMessagesStr= properties.getProperty("defaultDatabaseConfigurator.flattenLogMessages");
+	if (flattenLogMessagesStr == null || flattenLogMessagesStr.isEmpty()) {
+	    flattenLogMessagesStr = "true";
+	}
+	boolean flatenLogMessages = Boolean.parseBoolean(flattenLogMessagesStr);
+	if (flatenLogMessages) {
+	    ACEQL_LOGGER = new FlattenLogger(logger.getName(), logger.getResourceBundleName());
+	} else {
+	    ACEQL_LOGGER = logger;
+	}
+
 	Handler fh = new FileHandler(pattern, 200 * 1024 * 1024, 2, true);
 	fh.setFormatter(new VerySimpleFormatter());
 	ACEQL_LOGGER.addHandler(fh);
 	return ACEQL_LOGGER;
 
+    }
+
+    /**
+     * Sets in memory the Properties of the used {@code aceql-server.properties}
+     * file.
+     * 
+     * @throws IOException
+     * @throws DatabaseConfigurationException
+     */
+    private void setProperties() throws IOException, DatabaseConfigurationException {
+	if (properties == null) {
+	    File file = ServerSqlManager.getAceqlServerProperties();
+	    properties = TomcatStarterUtilProperties.getProperties(file);
+	}
     }
 
 }
