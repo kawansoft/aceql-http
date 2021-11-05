@@ -46,6 +46,7 @@ import org.kawanfw.sql.servlet.ServerSqlManager;
 import org.kawanfw.sql.tomcat.TomcatSqlModeStore;
 import org.kawanfw.sql.tomcat.TomcatStarterUtilProperties;
 import org.kawanfw.sql.util.Tag;
+import org.kawanfw.sql.util.log.FlattenLogger;
 
 /**
  * Default implementation of server side configuration for AceQL.
@@ -217,7 +218,9 @@ public class DefaultDatabaseConfigurator implements DatabaseConfigurator {
 
 	String pattern = logDir.toString() + File.separator + "AceQL.log";
 
-	ACEQL_LOGGER = Logger.getLogger(DefaultDatabaseConfigurator.class.getName());
+	Logger logger= 	Logger.getLogger(DefaultDatabaseConfigurator.class.getName());
+	
+	ACEQL_LOGGER = new FlattenLogger(logger.getName(), logger.getResourceBundleName());
 	Handler fh = new FileHandler(pattern, 200 * 1024 * 1024, 2, true);
 	fh.setFormatter(new VerySimpleFormatter());
 	ACEQL_LOGGER.addHandler(fh);
