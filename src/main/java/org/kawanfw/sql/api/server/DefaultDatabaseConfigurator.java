@@ -63,6 +63,12 @@ import org.kawanfw.sql.util.log.FlattenLogger;
  */
 public class DefaultDatabaseConfigurator implements DatabaseConfigurator {
 
+    /**
+     * If {@code true}, allows to "flatten" the log messages to make sure each log entry/message has only 
+     * one line (CR/LF of the message will be suppressed). See {@link #getLogger()} code.
+     */
+    protected boolean flattenLogMessages = true;
+    
     /** The map of (database, data sources) to use for connection pooling */
     private Map<String, DataSource> dataSourceSet = new ConcurrentHashMap<>();
 
@@ -218,13 +224,7 @@ public class DefaultDatabaseConfigurator implements DatabaseConfigurator {
 
 	Logger logger = Logger.getLogger(DefaultDatabaseConfigurator.class.getName());
 
-	setProperties();
-	String flattenLogMessagesStr= properties.getProperty("defaultDatabaseConfigurator.flattenLogMessages");
-	if (flattenLogMessagesStr == null || flattenLogMessagesStr.isEmpty()) {
-	    flattenLogMessagesStr = "true";
-	}
-	boolean flatenLogMessages = Boolean.parseBoolean(flattenLogMessagesStr);
-	if (flatenLogMessages) {
+	if (flattenLogMessages) {
 	    ACEQL_LOGGER = new FlattenLogger(logger.getName(), logger.getResourceBundleName());
 	} else {
 	    ACEQL_LOGGER = logger;
