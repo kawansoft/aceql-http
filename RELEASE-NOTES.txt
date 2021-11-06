@@ -35,7 +35,7 @@ What's New:
   flattened into one line log entry/message. This may be changed by overriding
   DefaultDatabaseConfigurator flattenLogMessages boolean value. See code.
 - PropertiesEncryptor class call is now done using a Windows bat or Linux Bash.
-  See User 
+  See Server Installation and Configuration Guide. 
   
   
 AceQL HTTP Version 8.1 - 19-Oct-2021
