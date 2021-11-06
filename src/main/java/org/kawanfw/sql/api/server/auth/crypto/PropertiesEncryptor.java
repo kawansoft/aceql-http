@@ -37,9 +37,9 @@ import org.jasypt.iv.RandomIvGenerator;
  * In order to run:
  * <ul>
  * <li>Open a command line on Windows or Linux/Bash.</li>
- * <li>cd &lt;installation-directory>/AceQL/bin&gt;</li>
- * <li>Windows: run properties-encryptor.bat.</li>
- * <li>linux: run properties-encryptor Bash.</li>
+ * <li>{@code cd <installation-directory>/AceQL/bin}</li>
+ * <li>Windows: run {@code properties-encryptor.bat}.</li>
+ * <li>Linux: run {@code properties-encryptor} Bash.</li>
  * <li>Follow the instructions in order to create the password and to encrypt
  * some property values.</li>
  * </ul>
