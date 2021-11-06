@@ -45,7 +45,7 @@ public class TomcatStarterUtilFirewall {
 	    return sqlFirewallClassNames;
 	}
 
-	String [] array = sqlFirewallClassNameArray.split(", ");
+	String [] array = sqlFirewallClassNameArray.split(",");
 	for (String sqlFirewallClassName  : array) {
 	    debug("sqlFirewallClassName: " + sqlFirewallClassName.trim() + ":");
 	    sqlFirewallClassNames.add(sqlFirewallClassName.trim());

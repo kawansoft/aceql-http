@@ -36,8 +36,12 @@ What's New:
   DefaultDatabaseConfigurator flattenLogMessages boolean value. See code.
 - PropertiesEncryptor class call is now done using a Windows bat or Linux Bash.
   See Server Installation and Configuration Guide. 
-  
-  
+                
+Bugs fixed:
+- sqlFirewallManagerClassNames split on comma separated class names could fail.
+  This has been fixed.
+
+ 
 AceQL HTTP Version 8.1 - 19-Oct-2021
 ------------------------------------
 
