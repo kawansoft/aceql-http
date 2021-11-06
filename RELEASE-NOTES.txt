@@ -34,6 +34,8 @@ What's New:
 - DefaultDatabaseConfigurator: Multi-line log messages are now per default 
   flattened into one line log entry/message. This may be changed by overriding
   DefaultDatabaseConfigurator flattenLogMessages boolean value. See code.
+- PropertiesEncryptor class call is now done using a Windows bat or Linux Bash.
+  See User 
   
   
 AceQL HTTP Version 8.1 - 19-Oct-2021

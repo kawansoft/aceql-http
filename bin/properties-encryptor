@@ -1,0 +1,70 @@
+#*********************************************************************
+# AceQL PropertiesEncryptor Launcher                                          *
+#*********************************************************************
+
+# For macOS, can not use readlink -fm
+# So we have a special code
+
+if [[ $OSTYPE == *"darwin"* ]]; then
+
+    # dirname=`perl -e 'use Cwd "abs_path";print abs_path(shift)' $0`
+    # dirname2=${dirname%/*}
+    # ACEQL_HOME=${dirname2%/*}
+
+    pushd . > /dev/null
+    SCRIPT_PATH="${BASH_SOURCE[0]}";
+    while([ -h "${SCRIPT_PATH}" ]) do
+        cd "`dirname "${SCRIPT_PATH}"`"
+        SCRIPT_PATH="$(readlink "`basename "${SCRIPT_PATH}"`")";
+    done
+    cd "`dirname "${SCRIPT_PATH}"`" > /dev/null
+    SCRIPT_PATH="`pwd`";
+    > /dev/null
+
+    #echo "srcipt=[${SCRIPT_PATH}]"
+    #echo "pwd   =[`pwd`]"
+
+    ACEQL_HOME_BIN=${SCRIPT_PATH}
+    ACEQL_HOME=${ACEQL_HOME_BIN%/*}
+
+fi
+
+if [ -z ${OSTYPE+x} ] || [[ $OSTYPE != *"darwin"* ]]; then 
+  ACEQL_HOME="$(dirname "$(dirname "$(readlink -fm "$0")")")"
+fi
+
+export ACEQL_HOME
+
+if [ -z "$ACEQL_HOME" ]; then 
+   echo "ACEQL_HOME is not defined! Can not start PropertiesEncryptor."; 
+   exit -1; 
+fi
+
+if [ ! -d "$ACEQL_HOME" ]; then
+   echo "ACEQL_HOME directory does not exist: $ACEQL_HOME."
+   echo "Can not start PropertiesEncryptor."; 
+   echo "Check that ACEQL_HOME points to correct AceQL installation directory.";
+   exit -1; 
+fi
+
+if [ ! -d "$ACEQL_HOME/lib-server" ]; then 
+   echo "AceQL library directory does not exist: $ACEQL_HOME/lib-server. "; 
+   echo "Can not start PropertiesEncryptor.";
+   echo "Check that ACEQL_HOME points to correct AceQL installation directory.";
+   exit -1; 
+fi
+
+#case "$ACEQL_HOME" in 
+#     *\ * )
+#           echo "ACEQL_HOME directory with spaces is not supported: $ACEQL_HOME.";
+#          echo "Can not start PropertiesEncryptor.";
+#           exit -1;
+#       ;;
+#       *)
+#           #echo "no match"
+#           ;;
+#esac
+
+java -Xms256M -Xmx4096M -classpath "$ACEQL_HOME/lib-server/*":"$ACEQL_HOME/lib-jdbc/*":$CLASSPATH  \
+     -Dfrom.aceql-server.script=true org.kawanfw.sql.api.server.auth.crypto.PropertiesEncryptor
+

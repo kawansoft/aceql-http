@@ -53,8 +53,8 @@ import org.kawanfw.sql.util.FrameworkDebug;
  * </ul>
  * <br>
  * Example on our sampledb test database
- * <a href="http://www.aceql.com/soft/4.1/src/sampledb.txt"
- * >sampledb</a>: <blockquote>
+ * <a href="http://docs.aceql.com/soft/8.2/src/sampledb.txt">sampledb</a>:
+ * <blockquote>
  *
  * <pre>
  * String sql = &quot;select * from customer limit 5&quot;;
@@ -110,8 +110,8 @@ public class ResultSetPrinter {
     private static String CR_LF = System.getProperty("line.separator");
 
     /**
-     * The map than contains per column number (starts at 1) the maximum
-     * required length
+     * The map than contains per column number (starts at 1) the maximum required
+     * length
      */
     private Map<Integer, Integer> columnWidth = new ConcurrentHashMap<Integer, Integer>();
 
@@ -122,8 +122,8 @@ public class ResultSetPrinter {
     private PrintStream printStream = null;
 
     /**
-     * if true, result will be formatted for CSV format with ";" separator
-     * instead of "|"
+     * if true, result will be formatted for CSV format with ";" separator instead
+     * of "|"
      */
     private boolean formatForCSV = false;
 
@@ -131,16 +131,12 @@ public class ResultSetPrinter {
      * Constructor to use to display a human readable or a CSV formatted
      * <code>ResultSet</code>
      *
-     * @param resultSet
-     *            the result set to display
-     * @param printStream
-     *            the print stream to use for display
-     * @param formatForCSV
-     *            if true, result will be formatted for CSV format with ";"
-     *            separator instead of "|"
+     * @param resultSet    the result set to display
+     * @param printStream  the print stream to use for display
+     * @param formatForCSV if true, result will be formatted for CSV format with ";"
+     *                     separator instead of "|"
      */
-    public ResultSetPrinter(ResultSet resultSet, PrintStream printStream,
-	    boolean formatForCSV) {
+    public ResultSetPrinter(ResultSet resultSet, PrintStream printStream, boolean formatForCSV) {
 
 	if (resultSet == null) {
 	    throw new IllegalArgumentException("resultSet can not be null!");
@@ -158,10 +154,8 @@ public class ResultSetPrinter {
     /**
      * Constructor to use to display a human readable <code>ResultSet</code>.
      *
-     * @param resultSet
-     *            the result set to display
-     * @param printStream
-     *            the print stream to use for display
+     * @param resultSet   the result set to display
+     * @param printStream the print stream to use for display
      */
     public ResultSetPrinter(ResultSet resultSet, PrintStream printStream) {
 	this(resultSet, printStream, false);
@@ -209,8 +203,7 @@ public class ResultSetPrinter {
 		debug("str:" + str);
 
 		int colType = meta.getColumnType(i);
-		if (str.startsWith(
-			TransportConverter.KAWANFW_BYTES_STREAM_FILE)) {
+		if (str.startsWith(TransportConverter.KAWANFW_BYTES_STREAM_FILE)) {
 		    if (isBinaryColumn(colType) || colType == Types.BIGINT) {
 			str = getBinaryDataMessage();
 		    }
@@ -219,9 +212,9 @@ public class ResultSetPrinter {
 		int length = str.length();
 
 		/*
-		 * if (columnWidth.get(i) == null) { columnWidth.put(i, length +
-		 * 2); } else { int storedLength = columnWidth.get(i); if
-		 * (length > storedLength) { columnWidth.put(i, length + 2); } }
+		 * if (columnWidth.get(i) == null) { columnWidth.put(i, length + 2); } else {
+		 * int storedLength = columnWidth.get(i); if (length > storedLength) {
+		 * columnWidth.put(i, length + 2); } }
 		 */
 
 		if (length + 2 > columnWidth.get(i)) {
@@ -241,14 +234,12 @@ public class ResultSetPrinter {
     /**
      * Prints the first line of a text
      *
-     * @param str
-     *            the text
+     * @param str the text
      * @return the first line of the text
      * @throws SQLException
      */
     private String getFirstLineOfText(String str) throws SQLException {
-	BufferedReader bufferedReader = new BufferedReader(
-		new StringReader(str));
+	BufferedReader bufferedReader = new BufferedReader(new StringReader(str));
 
 	String line = null;
 
@@ -378,8 +369,7 @@ public class ResultSetPrinter {
 		String str = getFirstLineOfText(strNoTrim);
 		str = str.trim();
 
-		if (str.startsWith(
-			TransportConverter.KAWANFW_BYTES_STREAM_FILE)) {
+		if (str.startsWith(TransportConverter.KAWANFW_BYTES_STREAM_FILE)) {
 		    if (isBinaryColumn(colType) || colType == Types.BIGINT) {
 			str = getBinaryDataMessage();
 		    }
@@ -429,17 +419,13 @@ public class ResultSetPrinter {
     /**
      * Returns true if the column is a binary type
      *
-     * @param columnType
-     *            the sql column type
-     * @param columnName
-     *            the sql column name
-     * @param columnTable
-     *            the table name of the column
+     * @param columnType  the sql column type
+     * @param columnName  the sql column name
+     * @param columnTable the table name of the column
      * @return true if it's a binary type
      */
     private static boolean isBinaryColumn(int columnType) {
-	if (columnType == Types.BINARY || columnType == Types.VARBINARY
-		|| columnType == Types.LONGVARBINARY
+	if (columnType == Types.BINARY || columnType == Types.VARBINARY || columnType == Types.LONGVARBINARY
 		|| columnType == Types.BLOB) {
 	    return true;
 	} else {
@@ -450,16 +436,14 @@ public class ResultSetPrinter {
     /**
      * Returns true if column is numeric
      *
-     * @param colType
-     *            the meta column type
+     * @param colType the meta column type
      * @return true if column is numeric
      */
     private static boolean isColumnNumeric(int colType) {
 
-	if (colType == Types.TINYINT || colType == Types.SMALLINT
-		|| colType == Types.INTEGER || colType == Types.BIGINT
-		|| colType == Types.FLOAT || colType == Types.REAL
-		|| colType == Types.NUMERIC || colType == Types.DECIMAL) {
+	if (colType == Types.TINYINT || colType == Types.SMALLINT || colType == Types.INTEGER || colType == Types.BIGINT
+		|| colType == Types.FLOAT || colType == Types.REAL || colType == Types.NUMERIC
+		|| colType == Types.DECIMAL) {
 	    return true;
 	} else {
 	    return false;
@@ -470,12 +454,9 @@ public class ResultSetPrinter {
     /**
      * Fills the value of the result set column with surrounding blanks.
      *
-     * @param size
-     *            the size to fill with blanks
-     * @param str
-     *            the column value
-     * @param colType
-     *            TODO
+     * @param size    the size to fill with blanks
+     * @param str     the column value
+     * @param colType TODO
      * @return the string filled with blank
      */
     private String fillValueWithBlanks(int size, String str, int colType) {
@@ -516,10 +497,8 @@ public class ResultSetPrinter {
     /**
      * Fills the header with surrounding blanks.
      *
-     * @param label
-     *            the header label
-     * @param size
-     *            the size to fill with blanks
+     * @param label the header label
+     * @param size  the size to fill with blanks
      * @return the header filled with surrounding blanks
      */
     private String fillHeaderWithBlanks(String label, int size) {

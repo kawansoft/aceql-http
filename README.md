@@ -825,7 +825,7 @@ sampledb.sqlFirewallManagerClassNames=\
 
 In order to protect configuration passwords and other confidential values from eavesdropping, each property value may be replaced by an encrypted value in the `aceql-server.properties` file.
 
-The encrypted values are generated using the [PropertiesEncryptor](https://docs.aceql.com/rest/soft/8.2/javadoc/org/kawanfw/sql/api/server/auth/crypto/PropertiesEncryptor.html) class which is wrapped in the provided  `properties-encryptor-1.0.jar`.  The `PropertiesEncryptor` class allows both:
+The encrypted values are generated using the [PropertiesEncryptor](https://docs.aceql.com/rest/soft/8.2/javadoc/org/kawanfw/sql/api/server/auth/crypto/PropertiesEncryptor.html)  class which allows both:
 
 1. To choose a secret password that will be used for encrypting each selected property value.
 2. To encrypt each selected value.  
@@ -839,7 +839,9 @@ The `PropertiesPasswordManager`  concrete class name must then be defined with t
 In order to run the `PropertiesEncryptor` class:
 
 - Open a command line on Windows or Linux/Bash.
-- `java -jar <aceql installation dir>/lib-server/properties-encryptor-1.0.jar`.
+- `cd <installation-directory>/AceQL/bin>`
+  - Windows: run `properties-encryptor.bat`.
+  - Linux: run `properties-encryptor` Bash.
 - Follow the instructions in order to create the password and to encrypt some property values.
 
 ## Interacting with the JDBC Pool at runtime
