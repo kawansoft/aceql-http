@@ -47,6 +47,7 @@ import org.kawanfw.sql.servlet.connection.ConnectionStoreGetter;
 import org.kawanfw.sql.servlet.connection.RollbackUtil;
 import org.kawanfw.sql.servlet.connection.SavepointUtil;
 import org.kawanfw.sql.servlet.connection.TransactionUtil;
+import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesUtil;
 import org.kawanfw.sql.servlet.jdbc.metadata.JdbcDatabaseMetadataActionManager;
 import org.kawanfw.sql.servlet.sql.ServerStatement;
 import org.kawanfw.sql.servlet.sql.ServerStatementRawExecute;
@@ -55,7 +56,6 @@ import org.kawanfw.sql.servlet.sql.batch.ServerStatementBatch;
 import org.kawanfw.sql.servlet.sql.callable.ServerCallableStatement;
 import org.kawanfw.sql.servlet.sql.json_return.JsonErrorReturn;
 import org.kawanfw.sql.servlet.sql.json_return.JsonOkReturn;
-import org.kawanfw.sql.tomcat.ServletParametersStore;
 import org.kawanfw.sql.util.FrameworkDebug;
 
 /**
@@ -123,7 +123,7 @@ public class ServerSqlDispatch {
 	Connection connection = null;
 	
 	try {
-	    if (ServletParametersStore.isStatelessMode()) {
+	    if (ConfPropertiesUtil.isStatelessMode()) {
 		// Create the Connection because passed client Id is stateless
 		connection = databaseConfigurator.getConnection(database);
 	    } else {
@@ -167,7 +167,7 @@ public class ServerSqlDispatch {
 	}
 	finally {
 	    // Immediate close of a  Connection for stateless sessions
-	    if (ServletParametersStore.isStatelessMode()) {
+	    if (ConfPropertiesUtil.isStatelessMode()) {
 		databaseConfigurator.close(connection);
 	    }
 	}
@@ -188,7 +188,7 @@ public class ServerSqlDispatch {
     private boolean checkStatelessInAutoCommit(HttpServletRequest request, HttpServletResponse response, OutputStream out, Connection connection) throws IOException, SQLException {
 	
 	// Don't care in stateful mode
-	if (! ServletParametersStore.isStatelessMode()) {
+	if (! ConfPropertiesUtil.isStatelessMode()) {
 	    return true;
 	}
 		
@@ -359,7 +359,7 @@ public class ServerSqlDispatch {
 	try {
 	    
 	    // Nothing to do in stateless
-	    if (ServletParametersStore.isStatelessMode()) {
+	    if (ConfPropertiesUtil.isStatelessMode()) {
 		ServerSqlManager.writeLine(out, JsonOkReturn.build());
 		return;
 	    }

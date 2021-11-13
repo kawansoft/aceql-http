@@ -36,6 +36,7 @@ import org.apache.tomcat.jdbc.pool.JdbcInterceptor;
 import org.apache.tomcat.jdbc.pool.PooledConnection;
 import org.kawanfw.sql.api.server.connectionstore.ConnectionKey;
 import org.kawanfw.sql.servlet.connection.ConnectionStore;
+import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesUtil;
 import org.kawanfw.sql.util.FrameworkDebug;
 
 /**
@@ -72,7 +73,7 @@ public class AceQLJdbcInterceptor extends JdbcInterceptor {
 
 	try {
 	    // No clean of course in stateless mode!
-	    if (ServletParametersStore.isStatelessMode()) {
+	    if (ConfPropertiesUtil.isStatelessMode()) {
 		debug("AceQLJdbcInterceptor. Stateless mode. Nothing to do.");
 		return;
 	    }

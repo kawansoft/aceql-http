@@ -40,9 +40,9 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.kawanfw.sql.api.server.DatabaseConfigurator;
 import org.kawanfw.sql.api.server.session.SessionConfigurator;
 import org.kawanfw.sql.servlet.connection.ConnectionStore;
+import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesUtil;
 import org.kawanfw.sql.servlet.sql.json_return.JsonErrorReturn;
 import org.kawanfw.sql.servlet.sql.json_return.JsonOkReturn;
-import org.kawanfw.sql.tomcat.ServletParametersStore;
 import org.kawanfw.sql.util.FrameworkDebug;
 
 /**
@@ -72,7 +72,7 @@ public class ServerLogout {
 
 	    deleteOldBlobFiles(databaseConfigurator, username);
 
-	    if (!ServletParametersStore.isStatelessMode()) {
+	    if (!ConfPropertiesUtil.isStatelessMode()) {
 		Set<Connection> connections = ConnectionStore.getAllConnections(username, sessionId);
 
 		for (Connection connection : connections) {

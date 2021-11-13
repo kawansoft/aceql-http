@@ -35,6 +35,5 @@ public class ConfPropertiesUtil {
 	return ConfPropertiesStore.get().isStatelessMode();
     }
 
-    
-    
+  
 }

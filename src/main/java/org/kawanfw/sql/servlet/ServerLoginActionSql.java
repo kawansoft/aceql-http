@@ -40,10 +40,10 @@ import org.kawanfw.sql.api.server.auth.UserAuthenticator;
 import org.kawanfw.sql.api.server.session.SessionConfigurator;
 import org.kawanfw.sql.servlet.connection.ConnectionIdUtil;
 import org.kawanfw.sql.servlet.connection.ConnectionStore;
+import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesUtil;
 import org.kawanfw.sql.servlet.sql.json_return.ExceptionReturner;
 import org.kawanfw.sql.servlet.sql.json_return.JsonErrorReturn;
 import org.kawanfw.sql.servlet.sql.json_return.JsonOkReturn;
-import org.kawanfw.sql.tomcat.ServletParametersStore;
 import org.kawanfw.sql.util.FrameworkDebug;
 
 /**
@@ -129,7 +129,7 @@ public class ServerLoginActionSql extends HttpServlet {
 
 	    String connectionId = null;
 	    	    
-	    if (ServletParametersStore.isStatelessMode()) {
+	    if (ConfPropertiesUtil.isStatelessMode()) {
 		// Stateless: we just return the "stateless" Connection Id
 		connectionId = ConnectionIdUtil.getStatelessConnectionId();
 	    }

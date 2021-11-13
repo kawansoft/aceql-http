@@ -45,6 +45,7 @@ import org.kawanfw.sql.servlet.ServerSqlManager;
 import org.kawanfw.sql.servlet.injection.properties.ConfProperties;
 import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesManager;
 import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesStore;
+import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesUtil;
 import org.kawanfw.sql.tomcat.util.PortSemaphoreFile;
 import org.kawanfw.sql.util.FrameworkDebug;
 import org.kawanfw.sql.util.SqlTag;
@@ -198,7 +199,7 @@ public class TomcatStarter {
 	    throw new IOException(SqlTag.SQL_PRODUCT_START_FAILURE + " " + "Can not call the AceQL ManagerServlet");
 	}
 
-	String StateModeMessage = ServletParametersStore.isStatelessMode() ? "(Stateless Mode)": "";
+	String StateModeMessage = ConfPropertiesUtil.isStatelessMode() ? "(Stateless Mode)": "";
 	
 	String runningMessage = SqlTag.SQL_PRODUCT_START + " " + Version.PRODUCT.NAME
 		+ " Web Server OK. Running on port " + port + " " + StateModeMessage;
@@ -342,7 +343,7 @@ public class TomcatStarter {
 	rootCtx.addServletMappingDecoded("/*", aceQLManagerServletCallName);
 
 	//HACK NDP
-	TomcatStarterUtil.setInitParametersInStore(properties);
+	//TomcatStarterUtil.setInitParametersInStore(properties);
 	
 	// Create all configuration properties from the Properties and store
 	ConfPropertiesManager confPropertiesManager = new ConfPropertiesManager(properties);

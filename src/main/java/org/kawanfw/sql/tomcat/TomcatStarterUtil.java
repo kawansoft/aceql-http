@@ -29,9 +29,7 @@ import java.net.DatagramSocket;
 import java.net.ServerSocket;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
@@ -43,8 +41,8 @@ import org.apache.commons.lang3.SystemUtils;
 import org.apache.tomcat.jdbc.pool.DataSource;
 import org.apache.tomcat.jdbc.pool.PoolProperties;
 import org.kawanfw.sql.api.server.DatabaseConfigurationException;
-import org.kawanfw.sql.servlet.ServerSqlManager;
 import org.kawanfw.sql.servlet.connection.RollbackUtil;
+import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesUtil;
 import org.kawanfw.sql.util.SqlTag;
 
 /**
@@ -236,7 +234,7 @@ public class TomcatStarterUtil {
 			"Connection is null. Please verify all the values in properties file.");
 	    }
 	    
-	    if( ServletParametersStore.isStatelessMode() && ! connection.getAutoCommit()) {
+	    if( ConfPropertiesUtil.isStatelessMode() && ! connection.getAutoCommit()) {
 		throw new DatabaseConfigurationException("Server is in Stateless Mode: Connection pool must be in default auto commit. Please fix configuration.");
 	    }
 
@@ -336,6 +334,7 @@ public class TomcatStarterUtil {
      * @throws IllegalArgumentException
      */
     
+    /*
     public static void setInitParametersInStore(Properties properties) throws IllegalArgumentException {
 
 	ServletParametersStore.init(); // Set back to null static values
@@ -400,7 +399,7 @@ public class TomcatStarterUtil {
 
 	ServletParametersStore.setJwtSessionConfiguratorSecretValue(jwtSessionConfiguratorSecretValue);
     }
-   
+   */
     
     /**
      * Safely trim a String
