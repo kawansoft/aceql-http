@@ -55,10 +55,10 @@ import org.kawanfw.sql.api.server.blob.BlobDownloadConfigurator;
 import org.kawanfw.sql.api.server.blob.BlobUploadConfigurator;
 import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
 import org.kawanfw.sql.api.server.session.SessionConfigurator;
+import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesStore;
 import org.kawanfw.sql.servlet.sql.json_return.ExceptionReturner;
 import org.kawanfw.sql.servlet.sql.json_return.JsonErrorReturn;
 import org.kawanfw.sql.servlet.sql.json_return.JsonOkReturn;
-import org.kawanfw.sql.tomcat.ServletParametersStore;
 import org.kawanfw.sql.util.FrameworkDebug;
 
 /**
@@ -320,7 +320,7 @@ public class ServerSqlManager extends HttpServlet {
 	String servletPath = request.getServletPath();
 	String requestUri = request.getRequestURI();
 
-	String servletName = ServletParametersStore.getServletName();
+	String servletName = ConfPropertiesStore.get().getServletName();
 	if (!checkRequestStartsWithAceqlServlet(response, out, servletPath, requestUri, servletName)) {
 	    return;
 	}

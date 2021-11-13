@@ -79,23 +79,35 @@ public class ConfProperties {
     /**
      * @return the databaseSet
      */
-    public Set<String> getDatabaseSet() {
+    public Set<String> getDatabaseNames() {
 	return databaseSet;
     }
 
     /**
      * @return the databaseConfiguratorClassNameMap
      */
-    public Map<String, String> getDatabaseConfiguratorClassNameMap() {
+    @SuppressWarnings("unused")
+    private Map<String, String> getDatabaseConfiguratorClassNameMap() {
 	return databaseConfiguratorClassNameMap;
     }
+    
+    /**
+     * Returns the Database configurator class name for the specified database
+     * @param database
+     * @return the Database configurator class name for the specified database
+     */
+    public String getDatabaseConfiguratorClassName(String database) {
+	return databaseConfiguratorClassNameMap.get(database);
+    }
 
+ 
     /**
      * @return the servletName
      */
     public String getServletName() {
 	return servletName;
     }
+
 
     /**
      * @return the blobDownloadConfiguratorClassName
@@ -149,10 +161,15 @@ public class ConfProperties {
     /**
      * @return the sqlFirewallClassNamesMap
      */
-    public Map<String, List<String>> getSqlFirewallClassNamesMap() {
+    @SuppressWarnings("unused")
+    private Map<String, List<String>> getSqlFirewallClassNamesMap() {
 	return sqlFirewallClassNamesMap;
     }
 
+    public List<String> getSqlFirewallClassNames(String database) {
+	return sqlFirewallClassNamesMap.get(database);
+    }
+    
     /**
      * @return the statelessMode
      */

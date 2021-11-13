@@ -30,7 +30,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.sql.DataSource;
 
-import org.kawanfw.sql.tomcat.ServletParametersStore;
+import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesStore;
 import org.kawanfw.sql.tomcat.TomcatSqlModeStore;
 
 /**
@@ -65,7 +65,7 @@ public class DataSourceStore {
 	 *         per database
 	 */
 	public static Map<String, DataSource> getDataSources() {
-		Set<String> databases = ServletParametersStore.getDatabaseNames();
+		Set<String> databases = ConfPropertiesStore.get().getDatabaseNames();
 
 		Map<String, DataSource> dataSourceSet = new ConcurrentHashMap<>();
 

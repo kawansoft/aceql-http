@@ -36,7 +36,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.kawanfw.sql.api.server.DatabaseConfigurationException;
 import org.kawanfw.sql.api.server.DefaultDatabaseConfigurator;
-import org.kawanfw.sql.tomcat.ServletParametersStore;
+import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesStore;
 import org.kawanfw.sql.tomcat.TomcatSqlModeStore;
 import org.kawanfw.sql.util.FrameworkDebug;
 import org.kawanfw.sql.version.Version;
@@ -120,7 +120,7 @@ public class ServerSqlManagerDoGetTester {
      * @param status
      */
     private void printResult(String servletName, PrintWriter out, String status) {
-	Set<String> databases = ServletParametersStore.getDatabaseNames();
+	Set<String> databases = ConfPropertiesStore.get().getDatabaseNames();
 
 	out.println("<!--OK-->");
 	out.println("<br>");
@@ -162,8 +162,7 @@ public class ServerSqlManagerDoGetTester {
      */
     private void printDatabaseConfigurators(PrintWriter out, Set<String> databases) {
 	for (String database : databases) {
-	    String databaseConfiguratorClassName = ServletParametersStore.getInitParameter(database,
-		    DATABASE_CONFIGURATOR_CLASS_NAME);
+	    String databaseConfiguratorClassName = ConfPropertiesStore.get().getDatabaseConfiguratorClassName(database);
 
 	    if (databaseConfiguratorClassName == null || databaseConfiguratorClassName.isEmpty()) {
 		databaseConfiguratorClassName = DefaultDatabaseConfigurator.class.getName();

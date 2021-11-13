@@ -39,7 +39,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Nicolas de Pomereu
  *
  */
-public class ServletParametersStore {
+abstract class ServletParametersStore {
 
     /** The database names */
     private static Set<String> databaseSet = null;

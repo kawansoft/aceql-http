@@ -31,7 +31,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.kawanfw.sql.servlet.ServerSqlManager;
-import org.kawanfw.sql.tomcat.ServletParametersStore;
+import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesStore;
 import org.kawanfw.sql.tomcat.TomcatStarterUtilProperties;
 
 import com.auth0.jwt.JWT;
@@ -86,7 +86,7 @@ public class JwtSessionConfigurator implements SessionConfigurator {
     public String generateSessionId(String username, String database) throws IOException {
 
 	try {
-	    String secret = ServletParametersStore.getJwtSessionConfiguratorSecretValue();
+	    String secret = ConfPropertiesStore.get().getJwtSessionConfiguratorSecretValue();
 
 	    if (secret == null || secret.isEmpty()) {
 		throw new IllegalArgumentException(
@@ -191,7 +191,7 @@ public class JwtSessionConfigurator implements SessionConfigurator {
     public boolean verifySessionId(String sessionId) throws IOException {
 
 	try {
-	    String secret = ServletParametersStore.getJwtSessionConfiguratorSecretValue();
+	    String secret = ConfPropertiesStore.get().getJwtSessionConfiguratorSecretValue();
 	    Algorithm algorithm = Algorithm.HMAC256(secret);
 	    JWTVerifier verifier = JWT.require(algorithm).build(); // Reusable
 								   // verifier

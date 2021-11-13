@@ -39,7 +39,6 @@ import java.util.concurrent.ThreadPoolExecutor;
 
 import javax.servlet.ServletConfig;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.kawanfw.sql.api.server.DatabaseConfigurationException;
 import org.kawanfw.sql.api.server.DatabaseConfigurator;
@@ -59,7 +58,6 @@ import org.kawanfw.sql.servlet.creator.UserAuthenticatorCreator;
 import org.kawanfw.sql.servlet.injection.properties.ConfProperties;
 import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesManager;
 import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesStore;
-import org.kawanfw.sql.tomcat.ServletParametersStore;
 import org.kawanfw.sql.tomcat.ThreadPoolExecutorStore;
 import org.kawanfw.sql.tomcat.TomcatSqlModeStore;
 import org.kawanfw.sql.tomcat.TomcatStarterUtil;
@@ -158,7 +156,7 @@ public class ServerSqlManagerInit {
 	    loadUserAuthenticator();
 	    loadRequestHeadersAuthenticator();
 
-	    Set<String> databases = ServletParametersStore.getDatabaseNames();
+	    Set<String> databases = ConfPropertiesStore.get().getDatabaseNames();
 
 	    // Load the classes
 	    loadDatabaseConfigurators(databases);
@@ -233,7 +231,7 @@ public class ServerSqlManagerInit {
 	    throws ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException,
 	    InvocationTargetException, NoSuchMethodException, SecurityException {
 	// Load Configurators for SessionManager
-	String sessionManagerConfiguratorClassName = ServletParametersStore.getSessionConfiguratorClassName();
+	String sessionManagerConfiguratorClassName = ConfPropertiesStore.get().getSessionConfiguratorClassName();
 	classNameToLoad = sessionManagerConfiguratorClassName;
 	SessionConfiguratorCreator sessionConfiguratorCreator = new SessionConfiguratorCreator(
 		sessionManagerConfiguratorClassName);
@@ -261,7 +259,7 @@ public class ServerSqlManagerInit {
     private void loadBlobUploadConfigurator()
 	    throws ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException,
 	    InvocationTargetException, NoSuchMethodException, SecurityException {
-	String blobUploadConfiguratorClassName = ServletParametersStore.getBlobUploadConfiguratorClassName();
+	String blobUploadConfiguratorClassName = ConfPropertiesStore.get().getBlobUploadConfiguratorClassName();
 	classNameToLoad = blobUploadConfiguratorClassName;
 	BlobUploadConfiguratorCreator blobUploadConfiguratorCreator = new BlobUploadConfiguratorCreator(
 		blobUploadConfiguratorClassName);
@@ -290,7 +288,7 @@ public class ServerSqlManagerInit {
 	    throws ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException,
 	    InvocationTargetException, NoSuchMethodException, SecurityException {
 	// Load Configurators for Blobs/Clobs
-	String blobDownloadConfiguratorClassName = ServletParametersStore.getBlobDownloadConfiguratorClassName();
+	String blobDownloadConfiguratorClassName = ConfPropertiesStore.get().getBlobDownloadConfiguratorClassName();
 	classNameToLoad = blobDownloadConfiguratorClassName;
 	BlobDownloadConfiguratorCreator blobDownloadConfiguratorCreator = new BlobDownloadConfiguratorCreator(
 		blobDownloadConfiguratorClassName);
@@ -317,7 +315,7 @@ public class ServerSqlManagerInit {
      */
     private void loadUserAuthenticator() throws ClassNotFoundException, NoSuchMethodException, SecurityException,
 	    InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-	String userAuthenticatorClassName = ServletParametersStore.getUserAuthenticatorClassName();
+	String userAuthenticatorClassName = ConfPropertiesStore.get().getUserAuthenticatorClassName();
 
 	classNameToLoad = userAuthenticatorClassName;
 	UserAuthenticatorCreator userAuthenticatorCreator = new UserAuthenticatorCreator(userAuthenticatorClassName);
@@ -343,7 +341,7 @@ public class ServerSqlManagerInit {
 	    throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException,
 	    IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 
-	String requestHeadersAuthenticatorClassName = ServletParametersStore.getRequestHeadersAuthenticatorClassName();
+	String requestHeadersAuthenticatorClassName = ConfPropertiesStore.get().getRequestHeadersAuthenticatorClassName();
 
 	classNameToLoad = requestHeadersAuthenticatorClassName;
 	RequestHeadersAuthenticatorCreator userAuthenticatorCreator = new RequestHeadersAuthenticatorCreator(
@@ -374,7 +372,7 @@ public class ServerSqlManagerInit {
 	    IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException, IOException {
 
 	for (String database : databases) {
-	    List<String> sqlFirewallClassNames = ServletParametersStore.getSqlFirewallClassNames(database);
+	    List<String> sqlFirewallClassNames = ConfPropertiesStore.get().getSqlFirewallClassNames(database);
 	    classNameToLoad = sqlFirewallClassNames.toString();
 
 	    String tagSQLFirewallManager = null;
@@ -421,17 +419,17 @@ public class ServerSqlManagerInit {
 	// WARNING: Database configurator must be loaded prior to firewalls
 	// because a getConnection() is used to test SqlFirewallManager
 	for (String database : databases) {
-	    databaseConfiguratorClassName = ServletParametersStore.getInitParameter(database,
-		    ServerSqlManager.DATABASE_CONFIGURATOR_CLASS_NAME);
+	    databaseConfiguratorClassName = ConfPropertiesStore.get().getDatabaseConfiguratorClassName(database);
 
 	    debug("databaseConfiguratorClassName    : " + databaseConfiguratorClassName);
 
 	    // Check spelling with first letter capitalized
-
-	    if (databaseConfiguratorClassName == null || databaseConfiguratorClassName.isEmpty()) {
-		String capitalized = StringUtils.capitalize(ServerSqlManager.DATABASE_CONFIGURATOR_CLASS_NAME);
-		databaseConfiguratorClassName = ServletParametersStore.getInitParameter(database, capitalized);
-	    }
+	    //HACK NDP
+	    //TODO LATER
+//	    if (databaseConfiguratorClassName == null || databaseConfiguratorClassName.isEmpty()) {
+//		String capitalized = StringUtils.capitalize(ServerSqlManager.DATABASE_CONFIGURATOR_CLASS_NAME);
+//		databaseConfiguratorClassName = ServletParametersStore.getInitParameter(database, capitalized);
+//	    }
 
 	    // Call the specific DatabaseConfigurator class to use
 	    classNameToLoad = databaseConfiguratorClassName;
