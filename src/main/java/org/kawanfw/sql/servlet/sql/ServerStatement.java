@@ -292,6 +292,12 @@ public class ServerStatement {
 
 	checkFirewallForExecuteUpdate(username, database, sqlOrder, serverPreparedStatementParameters, ipAddress);
 
+	if (DEBUG) {
+	    debug("BEGIN doExecuteUpdate:");
+	    debug("sqlOrder: " + sqlOrder);  
+	    debug("ParameterMetaData: " + preparedStatement.getParameterMetaData());  
+	}
+	
 	int rc = preparedStatement.executeUpdate();
 
 	StringWriter sw = new StringWriter();
