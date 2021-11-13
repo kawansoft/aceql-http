@@ -342,8 +342,6 @@ public class TomcatStarter {
 	wrapper.setAsyncSupported(true);
 	rootCtx.addServletMappingDecoded("/*", aceQLManagerServletCallName);
 
-	//HACK NDP
-	//TomcatStarterUtil.setInitParametersInStore(properties);
 	
 	// Create all configuration properties from the Properties and store
 	ConfPropertiesManager confPropertiesManager = new ConfPropertiesManager(properties);

@@ -476,9 +476,6 @@ public class ServerSqlManagerInit {
 	// (for CsvRulesManager load file, per example).
 	ServerSqlManager.setAceqlServerProperties(propertiesFile);
 	Properties properties = TomcatStarterUtilProperties.getProperties(propertiesFile);
-
-	//HACK NDP
-	//TomcatStarterUtil.setInitParametersInStore(properties);
 	
 	// Create all configuration properties from the Properties and store
 	ConfPropertiesManager confPropertiesManager = new ConfPropertiesManager(properties);
