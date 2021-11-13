@@ -102,8 +102,6 @@ public class ServerSqlManagerInit {
     private ThreadPoolExecutor threadPoolExecutor = null;
     private String classNameToLoad;
 
-
-
     /**
      * Constructor.
      *
@@ -338,13 +336,15 @@ public class ServerSqlManagerInit {
      * @throws IllegalArgumentException
      * @throws InvocationTargetException
      */
-    private void loadRequestHeadersAuthenticator() throws ClassNotFoundException, NoSuchMethodException, SecurityException,
-	    InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+    private void loadRequestHeadersAuthenticator()
+	    throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException,
+	    IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 
 	String requestHeadersAuthenticatorClassName = ServletParametersStore.getRequestHeadersAuthenticatorClassName();
 
 	classNameToLoad = requestHeadersAuthenticatorClassName;
-	RequestHeadersAuthenticatorCreator userAuthenticatorCreator = new RequestHeadersAuthenticatorCreator(requestHeadersAuthenticatorClassName);
+	RequestHeadersAuthenticatorCreator userAuthenticatorCreator = new RequestHeadersAuthenticatorCreator(
+		requestHeadersAuthenticatorClassName);
 	requestHeadersAuthenticator = userAuthenticatorCreator.getRequestHeadersAuthenticator();
 	requestHeadersAuthenticatorClassName = userAuthenticatorCreator.getRequestHeadersAuthenticatorClassName();
 
@@ -491,7 +491,7 @@ public class ServerSqlManagerInit {
      * @return the requestHeadersAuthenticator
      */
     public RequestHeadersAuthenticator getRequestHeadersAuthenticator() {
-        return requestHeadersAuthenticator;
+	return requestHeadersAuthenticator;
     }
 
     public Map<String, DatabaseConfigurator> getDatabaseConfigurators() {
