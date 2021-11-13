@@ -335,6 +335,7 @@ public class TomcatStarterUtil {
      * @param properties Properties extracted from the server-sql.properties files
      * @throws IllegalArgumentException
      */
+    
     public static void setInitParametersInStore(Properties properties) throws IllegalArgumentException {
 
 	ServletParametersStore.init(); // Set back to null static values
@@ -399,7 +400,8 @@ public class TomcatStarterUtil {
 
 	ServletParametersStore.setJwtSessionConfiguratorSecretValue(jwtSessionConfiguratorSecretValue);
     }
-
+   
+    
     /**
      * Safely trim a String
      *
@@ -459,7 +461,7 @@ public class TomcatStarterUtil {
 		+ SystemUtils.JAVA_RUNTIME_NAME + " / " + SystemUtils.JAVA_VERSION;
     }
 
-    static String getAceQLManagerSevletName(Properties properties) {
+    public static String getAceQLManagerSevletName(Properties properties) {
 	String aceQLManagerServletCallName = properties.getProperty("aceQLManagerServletCallName");
 
 	// Support old name:

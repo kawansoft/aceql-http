@@ -42,6 +42,9 @@ import org.apache.catalina.connector.Connector;
 import org.apache.catalina.startup.Tomcat;
 import org.kawanfw.sql.api.server.DatabaseConfigurationException;
 import org.kawanfw.sql.servlet.ServerSqlManager;
+import org.kawanfw.sql.servlet.injection.properties.ConfProperties;
+import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesManager;
+import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesStore;
 import org.kawanfw.sql.tomcat.util.PortSemaphoreFile;
 import org.kawanfw.sql.util.FrameworkDebug;
 import org.kawanfw.sql.util.SqlTag;
@@ -338,7 +341,13 @@ public class TomcatStarter {
 	wrapper.setAsyncSupported(true);
 	rootCtx.addServletMappingDecoded("/*", aceQLManagerServletCallName);
 
+	//HACK NDP
 	TomcatStarterUtil.setInitParametersInStore(properties);
+	
+	// Create all configuration properties from the Properties and store
+	ConfPropertiesManager confPropertiesManager = new ConfPropertiesManager(properties);
+	ConfProperties confProperties = confPropertiesManager.createConfProperties();
+	ConfPropertiesStore.set(confProperties);
 
 	// Unecessary because we must start at / because of ou Rest API
 	// String serverSqlManagerUrlPattern = serverSqlManagerServletName;

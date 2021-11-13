@@ -56,6 +56,9 @@ import org.kawanfw.sql.servlet.creator.RequestHeadersAuthenticatorCreator;
 import org.kawanfw.sql.servlet.creator.SessionConfiguratorCreator;
 import org.kawanfw.sql.servlet.creator.SqlFirewallsCreator;
 import org.kawanfw.sql.servlet.creator.UserAuthenticatorCreator;
+import org.kawanfw.sql.servlet.injection.properties.ConfProperties;
+import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesManager;
+import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesStore;
 import org.kawanfw.sql.tomcat.ServletParametersStore;
 import org.kawanfw.sql.tomcat.ThreadPoolExecutorStore;
 import org.kawanfw.sql.tomcat.TomcatSqlModeStore;
@@ -476,7 +479,14 @@ public class ServerSqlManagerInit {
 	ServerSqlManager.setAceqlServerProperties(propertiesFile);
 	Properties properties = TomcatStarterUtilProperties.getProperties(propertiesFile);
 
+	//HACK NDP
 	TomcatStarterUtil.setInitParametersInStore(properties);
+	
+	// Create all configuration properties from the Properties and store
+	ConfPropertiesManager confPropertiesManager = new ConfPropertiesManager(properties);
+	ConfProperties confProperties = confPropertiesManager.createConfProperties();
+	ConfPropertiesStore.set(confProperties);
+	
 
 	// Create the default DataSource if necessary
 	TomcatStarterUtil.createAndStoreDataSources(properties);
