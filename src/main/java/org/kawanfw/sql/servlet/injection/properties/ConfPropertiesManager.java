@@ -64,8 +64,6 @@ public class ConfPropertiesManager {
 
 	ConfPropertiesBuilder confPropertiesBuilder = new ConfPropertiesBuilder();	
 	
-	//ServletParametersStore.init(); // Set back to null static values
-
 	String aceQLManagerServletCallName = TomcatStarterUtil.getAceQLManagerSevletName(properties);
 
 	//ServletParametersStore.setServletName(aceQLManagerServletCallName);
