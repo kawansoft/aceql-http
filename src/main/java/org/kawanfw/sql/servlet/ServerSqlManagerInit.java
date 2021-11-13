@@ -58,6 +58,7 @@ import org.kawanfw.sql.servlet.creator.UserAuthenticatorCreator;
 import org.kawanfw.sql.servlet.injection.properties.ConfProperties;
 import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesManager;
 import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesStore;
+import org.kawanfw.sql.servlet.injection.properties.PropertiesFileStore;
 import org.kawanfw.sql.tomcat.ThreadPoolExecutorStore;
 import org.kawanfw.sql.tomcat.TomcatSqlModeStore;
 import org.kawanfw.sql.tomcat.TomcatStarterUtil;
@@ -474,7 +475,7 @@ public class ServerSqlManagerInit {
 
 	// Set properties file. Will be used elsewhere
 	// (for CsvRulesManager load file, per example).
-	ServerSqlManager.setAceqlServerProperties(propertiesFile);
+	PropertiesFileStore.set(propertiesFile);
 	Properties properties = TomcatStarterUtilProperties.getProperties(propertiesFile);
 	
 	// Create all configuration properties from the Properties and store

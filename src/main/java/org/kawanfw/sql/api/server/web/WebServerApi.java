@@ -100,7 +100,7 @@ public class WebServerApi {
 		    "The properties file " + propertiesFile + " does not exists. " + SqlTag.PLEASE_CORRECT);
 	}
 
-//	if (ServerSqlManager.getAceqlServerProperties() != null) {
+//	if (PropertiesFileStore.get() != null) {
 //	    throw new IllegalArgumentException("AceQL is already started in this JVM. Cant not start a second AceQL instance in the same JVM.");
 //	}
 

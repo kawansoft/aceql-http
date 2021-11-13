@@ -30,7 +30,7 @@ import java.sql.SQLException;
 import java.util.Date;
 
 import org.kawanfw.sql.api.server.auth.WebServiceUserAuthenticator;
-import org.kawanfw.sql.servlet.ServerSqlManager;
+import org.kawanfw.sql.servlet.injection.properties.PropertiesFileStore;
 
 public class WebServiceUserAuthenticatorTest {
 
@@ -40,7 +40,7 @@ public class WebServiceUserAuthenticatorTest {
      * @throws SQLException
      */
     public static void test() throws IOException, SQLException {
-	ServerSqlManager.setAceqlServerProperties(new File("I:\\_dev_awake\\aceql-http-main\\aceql-http\\conf\\aceql-server.properties"));
+	PropertiesFileStore.set(new File("I:\\_dev_awake\\aceql-http-main\\aceql-http\\conf\\aceql-server.properties"));
 	WebServiceUserAuthenticator webServiceUserAuthenticator = new WebServiceUserAuthenticator();
 	String username = "user1";
 	String password = "password1";

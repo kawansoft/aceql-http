@@ -35,7 +35,7 @@ import java.util.logging.Logger;
 
 import org.apache.commons.lang3.StringUtils;
 import org.kawanfw.sql.api.server.DefaultDatabaseConfigurator;
-import org.kawanfw.sql.servlet.ServerSqlManager;
+import org.kawanfw.sql.servlet.injection.properties.PropertiesFileStore;
 import org.kawanfw.sql.tomcat.TomcatStarterUtilProperties;
 import org.kawanfw.sql.util.Tag;
 
@@ -71,7 +71,7 @@ public class SshUserAuthenticator implements UserAuthenticator {
 	    throws IOException, SQLException {
 
 	if (properties == null) {
-	    File file = ServerSqlManager.getAceqlServerProperties();
+	    File file = PropertiesFileStore.get();
 	    properties = TomcatStarterUtilProperties.getProperties(file);
 	}
 

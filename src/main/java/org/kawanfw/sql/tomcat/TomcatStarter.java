@@ -46,6 +46,7 @@ import org.kawanfw.sql.servlet.injection.properties.ConfProperties;
 import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesManager;
 import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesStore;
 import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesUtil;
+import org.kawanfw.sql.servlet.injection.properties.PropertiesFileStore;
 import org.kawanfw.sql.tomcat.util.PortSemaphoreFile;
 import org.kawanfw.sql.util.FrameworkDebug;
 import org.kawanfw.sql.util.SqlTag;
@@ -138,7 +139,7 @@ public class TomcatStarter {
 	System.out.println(SqlTag.SQL_PRODUCT_START + " " + "Using properties file: ");
 	System.out.println(SqlTag.SQL_PRODUCT_START + "  -> " + propertiesFile);
 
-	ServerSqlManager.setAceqlServerProperties(propertiesFile);
+	PropertiesFileStore.set(propertiesFile);
 	Properties properties = TomcatStarterUtilProperties.getProperties(propertiesFile);
 
 	String tomcatLoggingLevel = properties.getProperty("tomcatLoggingLevel");

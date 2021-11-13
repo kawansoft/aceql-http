@@ -74,9 +74,6 @@ public class ServerSqlManager extends HttpServlet {
 
     public static String CR_LF = System.getProperty("line.separator");
 
-    /** The properties file */
-    private static File aceqlServerProperties = null;
-
     public static final String STATELESS_MODE = "statelessMode";
     public static final String DATABASE_CONFIGURATOR_CLASS_NAME = "databaseConfiguratorClassName";
     public static final String USER_AUTHENTICATOR_CLASS_NAME = "userAuthenticatorClassName";
@@ -175,13 +172,6 @@ public class ServerSqlManager extends HttpServlet {
 	return sqlFirewallMap;
     }
 
-    public static File getAceqlServerProperties() {
-	return aceqlServerProperties;
-    }
-
-    public static void setAceqlServerProperties(File aceqlServerProperties) {
-	ServerSqlManager.aceqlServerProperties = aceqlServerProperties;
-    }
 
     /**
      * Init

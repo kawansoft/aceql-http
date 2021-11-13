@@ -33,7 +33,7 @@ import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.lang3.StringUtils;
-import org.kawanfw.sql.servlet.ServerSqlManager;
+import org.kawanfw.sql.servlet.injection.properties.PropertiesFileStore;
 import org.kawanfw.sql.tomcat.TomcatStarterUtilProperties;
 import org.kawanfw.sql.util.Tag;
 
@@ -182,7 +182,7 @@ public class DefaultSessionConfigurator implements SessionConfigurator {
     public int getSessionTimelifeMinutes() throws IOException {
 
 	if (properties == null) {
-	    File file = ServerSqlManager.getAceqlServerProperties();
+	    File file = PropertiesFileStore.get();
 	    properties = TomcatStarterUtilProperties.getProperties(file);
 	}
 

@@ -44,7 +44,7 @@ import org.kawanfw.sql.api.util.firewall.CsvRulesManagerLoader;
 import org.kawanfw.sql.api.util.firewall.DatabaseUserTableTriplet;
 import org.kawanfw.sql.api.util.firewall.TableAllowStatements;
 import org.kawanfw.sql.metadata.AceQLMetaData;
-import org.kawanfw.sql.servlet.ServerSqlManager;
+import org.kawanfw.sql.servlet.injection.properties.PropertiesFileStore;
 import org.kawanfw.sql.util.FrameworkDebug;
 
 /**
@@ -278,14 +278,14 @@ public class CsvRulesManager extends DefaultSqlFirewallManager implements SqlFir
      * @throws FileNotFoundException
      */
     private static File getCsvFile(String database) throws FileNotFoundException {
-	File file = ServerSqlManager.getAceqlServerProperties();
+	File file = PropertiesFileStore.get();
 
 	Objects.requireNonNull(file, "file cannot be null!");
 
 	if (!file.exists()) {
 	    throw new FileNotFoundException("The properties file does not exist: " + file);
 	}
-	File dir = ServerSqlManager.getAceqlServerProperties().getParentFile();
+	File dir = PropertiesFileStore.get().getParentFile();
 	File csvFile = new File(dir + File.separator + database + "_rules_manager.csv");
 
 	if (!csvFile.exists()) {

@@ -30,7 +30,7 @@ import java.sql.SQLException;
 import java.util.Date;
 
 import org.kawanfw.sql.api.server.auth.LdapUserAuthenticator;
-import org.kawanfw.sql.servlet.ServerSqlManager;
+import org.kawanfw.sql.servlet.injection.properties.PropertiesFileStore;
 
 /**
  * @author Nicolas de Pomereu
@@ -48,7 +48,7 @@ public class LdapUserAuthenticatorTest {
 	String user = "cn=read-only-admin,dc=example,dc=com";
 	String password = "password";
 
-	ServerSqlManager.setAceqlServerProperties(new File("I:\\_dev_awake\\aceql-http-main\\aceql-http\\conf\\aceql-server-auth-ldap.properties"));
+	PropertiesFileStore.set(new File("I:\\_dev_awake\\aceql-http-main\\aceql-http\\conf\\aceql-server-auth-ldap.properties"));
 	LdapUserAuthenticator ldapUserAuthenticator = new LdapUserAuthenticator();
 
 	boolean logged = ldapUserAuthenticator.login(user, password.toCharArray(), "database", "10.0.0.10");
