@@ -26,7 +26,7 @@
 package org.kawanfw.sql.servlet.injection.properties;
 
 /**
- * Static store of the ConfProperties instance containing all properties in use
+ * Static store of the ConfProperties instance containing all properties in use.
  * @author Nicolas de Pomereu
  *
  */

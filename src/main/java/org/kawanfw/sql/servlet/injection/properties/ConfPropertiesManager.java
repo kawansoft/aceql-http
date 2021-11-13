@@ -38,6 +38,12 @@ import org.kawanfw.sql.servlet.injection.properties.ConfProperties.ConfPropertie
 import org.kawanfw.sql.tomcat.TomcatStarterUtil;
 import org.kawanfw.sql.tomcat.TomcatStarterUtilFirewall;
 
+/**
+ * Create a ConfProperties from the passed properties.
+ * @author Nicolas de Pomereu
+ *
+ */
+
 public class ConfPropertiesManager {
 
     private Properties properties;
