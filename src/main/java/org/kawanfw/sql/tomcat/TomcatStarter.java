@@ -301,8 +301,9 @@ public class TomcatStarter {
 	SystemPropUpdater systemPropUpdater = new SystemPropUpdater(properties);
 	systemPropUpdater.update();
 
-	ThreadPoolExecutorStore threadPoolExecutorStore = new ThreadPoolExecutorStore(properties);
-	threadPoolExecutorStore.create();
+	//HACK NDP
+	//ThreadPoolExecutorCreator threadPoolExecutorStore = new ThreadPoolExecutorCreator(properties);
+	//threadPoolExecutorStore.create();
 
 	// Set & create connectors
 	TomcatConnectorsUpdater tomcatConnectorsUpdater = new TomcatConnectorsUpdater(tomcat, properties);

@@ -58,7 +58,7 @@ import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesManager;
 import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesStore;
 import org.kawanfw.sql.servlet.injection.properties.PropertiesFileStore;
 import org.kawanfw.sql.servlet.injection.properties.PropertiesFileUtil;
-import org.kawanfw.sql.tomcat.ThreadPoolExecutorStore;
+import org.kawanfw.sql.tomcat.ThreadPoolExecutorCreator;
 import org.kawanfw.sql.tomcat.TomcatSqlModeStore;
 import org.kawanfw.sql.tomcat.TomcatStarterUtil;
 import org.kawanfw.sql.util.FrameworkDebug;
@@ -100,6 +100,8 @@ public class ServerSqlManagerInit {
 	    System.out.println(SqlTag.SQL_PRODUCT_START + " " + Version.getServerVersion());
 	}
 
+	ThreadPoolExecutor threadPoolExecutor = null;
+	
 	// Test the only thing we can test in DatabaseConfigurator
 	// getBlobsDirectory()
 
@@ -121,12 +123,17 @@ public class ServerSqlManagerInit {
 
 		Properties properties = PropertiesFileUtil.getProperties(propertiesFile);
 
-		ThreadPoolExecutorStore threadPoolExecutorStore = new ThreadPoolExecutorStore(properties);
-		threadPoolExecutorStore.create();
+		ThreadPoolExecutorCreator threadPoolExecutorCreator = new ThreadPoolExecutorCreator(properties);
+		threadPoolExecutor = threadPoolExecutorCreator.create();
 	    }
-
-	    ThreadPoolExecutor threadPoolExecutor = ThreadPoolExecutorStore.getThreadPoolExecutor();
-
+	    else {
+		File propertiesFile = PropertiesFileStore.get();
+		Properties properties = PropertiesFileUtil.getProperties(propertiesFile);
+		
+		ThreadPoolExecutorCreator threadPoolExecutorCreator = new ThreadPoolExecutorCreator(properties);
+		threadPoolExecutor = threadPoolExecutorCreator.create();		
+	    }
+	    
 	    if (!TomcatSqlModeStore.isTomcatEmbedded()) {
 		createDataSources(config);
 	    }

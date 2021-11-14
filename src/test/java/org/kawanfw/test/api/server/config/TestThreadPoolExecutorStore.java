@@ -6,8 +6,9 @@ package org.kawanfw.test.api.server.config;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.Properties;
+import java.util.concurrent.ThreadPoolExecutor;
 
-import org.kawanfw.sql.tomcat.ThreadPoolExecutorStore;
+import org.kawanfw.sql.tomcat.ThreadPoolExecutorCreator;
 
 /**
  * @author Nicolas de Pomereu
@@ -26,11 +27,11 @@ public class TestThreadPoolExecutorStore {
 	Properties properties = new Properties();
 	properties.load(new FileInputStream(file));
 	
-	ThreadPoolExecutorStore threadPoolExecutorStore = new ThreadPoolExecutorStore(properties);
-	threadPoolExecutorStore.create();
+	ThreadPoolExecutorCreator threadPoolExecutorCreator = new ThreadPoolExecutorCreator(properties);
+	ThreadPoolExecutor threadPoolExecutor = threadPoolExecutorCreator.create();
 	
 	System.out.println();
-	System.out.println(ThreadPoolExecutorStore.getThreadPoolExecutor());
+	System.out.println("threadPoolExecutor: " + threadPoolExecutor);
 	
 	/*
 	Class<?> c =  Class.forName("java.util.concurrent.ArrayBlockingQueue");

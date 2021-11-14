@@ -34,14 +34,13 @@ import java.util.concurrent.TimeUnit;
 
 import org.kawanfw.sql.util.SqlTag;
 
-public class ThreadPoolExecutorStore {
+public class ThreadPoolExecutorCreator {
 
     public static final int DEFAULT_CORE_POOL_SIZE = 100;
     public static final int DEFAULT_MAXIMUM_POOL_SIZE = 200;
     public static final long DEFAULT_KEEP_ALIVE_TIME = 10;
     public static final int DEFAULT_BLOCKING_QUEUE_CAPACITY = 50000;
 
-    private static ThreadPoolExecutor threadPoolExecutor = null;
     private Properties properties = null;
 
     /**
@@ -49,7 +48,7 @@ public class ThreadPoolExecutorStore {
      *
      * @param properties the ThreadPoolExecutor configuration is the properties
      */
-    public ThreadPoolExecutorStore(Properties properties) {
+    public ThreadPoolExecutorCreator(Properties properties) {
 	this.properties = Objects.requireNonNull(properties, "properties cannot be null!");
     }
 
@@ -64,7 +63,7 @@ public class ThreadPoolExecutorStore {
      * @throws IllegalAccessException
      * @throws InstantiationException
      */
-    public void create() {
+    public ThreadPoolExecutor create() {
 
 	ThreadPoolProperties threadPoolProperties = new ThreadPoolProperties(properties);
 
@@ -74,7 +73,7 @@ public class ThreadPoolExecutorStore {
 	long keepAliveTime = threadPoolProperties.getKeepAliveTime();
 	BlockingQueue<Runnable> workQueue = threadPoolProperties.getWorkQueue();
 
-	threadPoolExecutor = new ThreadPoolExecutor(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue);
+	ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue);
 
 	System.out.println(SqlTag.SQL_PRODUCT_START + "  -> [corePoolSize: " + threadPoolExecutor.getCorePoolSize()
 		+ ", maximumPoolSize: " + threadPoolExecutor.getMaximumPoolSize() + ", unit: " + unit + ", ");
@@ -82,14 +81,7 @@ public class ThreadPoolExecutorStore {
 		.println(SqlTag.SQL_PRODUCT_START + "  ->  keepAliveTime: " + threadPoolExecutor.getKeepAliveTime(unit)
 			+ ", workQueue: " + threadPoolExecutor.getQueue().getClass().getSimpleName() + "("
 			+ threadPoolExecutor.getQueue().remainingCapacity() + ")]");
-    }
-
-    /**
-     * Gets the static instance of ThreadPoolExecutor to be used in main servlet
-     *
-     * @return the threadPoolExecutor the instance to be used in main servlet
-     */
-    public static ThreadPoolExecutor getThreadPoolExecutor() {
+	
 	return threadPoolExecutor;
     }
 
