@@ -29,8 +29,8 @@ import java.util.logging.Formatter;
 import java.util.logging.LogRecord;
 
 /**
- * A nothing to do formater
- *
+ * A nothing to do formatter.
+ * 
  * @author Nicolas de Pomereu
  *
  */
@@ -40,5 +40,5 @@ public class NoFormatter extends Formatter {
     public String format(final LogRecord record) {
 	return String.format("%1$s\n", formatMessage(record));
     }
-
+    
 }

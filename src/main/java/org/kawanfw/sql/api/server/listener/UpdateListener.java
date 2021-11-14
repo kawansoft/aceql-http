@@ -39,7 +39,7 @@ public interface UpdateListener {
 
     /**
      * Invoked when a SQL update event  is successfully executed.
-     * @param evt		the SQl update  event that is successfully processed
+     * @param evt		the SQL update  event that is successfully processed
      * @param connection	the Connection in use for the SQL update event
      * 
      * @throws IOException  if an IOException occurs

@@ -33,7 +33,7 @@ import java.util.Objects;
  * and successfully executed on the AceQL Server.
  * 
  * @author Nicolas de Pomereu
- *
+ * @since 9.0
  */
 public class SqlActionEvent {
 
