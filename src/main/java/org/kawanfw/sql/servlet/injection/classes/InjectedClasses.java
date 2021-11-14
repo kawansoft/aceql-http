@@ -218,6 +218,14 @@ public class InjectedClasses {
 	    // if user object does not break any assumption of system
 	}
 
+	/**
+	 * Necessary, because Database Configurators are needed when building firewall...
+	 * @return
+	 */
+	public Map<String, DatabaseConfigurator> getDatabaseConfigurators() {
+	    return databaseConfigurators;
+	}
+
     }
 
 }

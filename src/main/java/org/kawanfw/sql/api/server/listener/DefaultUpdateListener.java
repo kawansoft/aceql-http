@@ -22,7 +22,7 @@ public class DefaultUpdateListener implements UpdateListener {
      */
     @Override
     public void updateActionPerformed(SqlActionEvent evt, Connection connection) throws IOException, SQLException {
-	// Default implemenation Does nothing for the sake of speed execution
+	// Default implementation Does nothing for the sake of speed execution
     }
 
 }

@@ -35,7 +35,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadPoolExecutor;
 
 import javax.servlet.AsyncContext;
@@ -55,6 +54,7 @@ import org.kawanfw.sql.api.server.blob.BlobDownloadConfigurator;
 import org.kawanfw.sql.api.server.blob.BlobUploadConfigurator;
 import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
 import org.kawanfw.sql.api.server.session.SessionConfigurator;
+import org.kawanfw.sql.servlet.injection.classes.InjectedClassesStore;
 import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesStore;
 import org.kawanfw.sql.servlet.sql.json_return.ExceptionReturner;
 import org.kawanfw.sql.servlet.sql.json_return.JsonErrorReturn;
@@ -83,63 +83,40 @@ public class ServerSqlManager extends HttpServlet {
     public static final String BLOB_UPLOAD_CONFIGURATOR_CLASS_NAME = "blobUploadConfiguratorClassName";
     public static final String SESSION_CONFIGURATOR_CLASS_NAME = "sessionConfiguratorClassName";
     public static final String JWT_SESSION_CONFIGURATOR_SECRET = "jwtSessionConfiguratorSecret";
-
-    /** The map of (database, DatabaseConfigurator) */
-    private static Map<String, DatabaseConfigurator> databaseConfigurators = new ConcurrentHashMap<>();
-
-    /** The map of (database, List<SqlFirewallManager>) */
-    private static Map<String, List<SqlFirewallManager>> sqlFirewallMap = new ConcurrentHashMap<>();
-
-    /** The UserAuthenticator instance */
-    private static UserAuthenticator userAuthenticator = null;
-
-    /** The RequestHeadersAuthenticator instance */
-    private static RequestHeadersAuthenticator requestHeadersAuthenticator = null;
-
-    /** The BlobUploadConfigurator instance */
-    private static BlobUploadConfigurator blobUploadConfigurator = null;
-
-    /** The BlobUploadConfigurator instance */
-    private static BlobDownloadConfigurator blobDownloadConfigurator = null;
-
-    /** The SessionConfigurator instance */
-    private static SessionConfigurator sessionConfigurator = null;
-
+    
     /** The Exception thrown at init */
     private Exception exception = null;
 
     /** The init error message trapped */
     private String initErrrorMesage = null;
 
-    /** The executor to use */
-    private ThreadPoolExecutor threadPoolExecutor = null;
 
     /**
      * @return userAuthenticator
      */
     public static UserAuthenticator getUserAuthenticator() {
-	return userAuthenticator;
+	return InjectedClassesStore.get().getUserAuthenticator();
     }
 
     /**
      * @return the requestHeadersAuthenticator
      */
     public static RequestHeadersAuthenticator getRequestHeadersAuthenticator() {
-	return requestHeadersAuthenticator;
+	return InjectedClassesStore.get().getRequestHeadersAuthenticator();
     }
 
     /**
      * @return the blobUploadConfigurator
      */
     public static BlobUploadConfigurator getBlobUploadConfigurator() {
-	return blobUploadConfigurator;
+	return InjectedClassesStore.get().getBlobUploadConfigurator();
     }
 
     /**
      * @return the blobDownloadConfigurator
      */
     public static BlobDownloadConfigurator getBlobDownloadConfigurator() {
-	return blobDownloadConfigurator;
+	return InjectedClassesStore.get().getBlobDownloadConfigurator();
     }
 
     /**
@@ -151,7 +128,7 @@ public class ServerSqlManager extends HttpServlet {
      * @return
      */
     public static DatabaseConfigurator getDatabaseConfigurator(String database) {
-	return databaseConfigurators.get(database);
+	return InjectedClassesStore.get().getDatabaseConfigurators().get(database);
     }
 
     /**
@@ -160,7 +137,7 @@ public class ServerSqlManager extends HttpServlet {
      * @return the sessionConfigurator
      */
     public static SessionConfigurator getSessionManagerConfigurator() {
-	return sessionConfigurator;
+	return InjectedClassesStore.get().getSessionConfigurator();
     }
 
     /**
@@ -169,7 +146,7 @@ public class ServerSqlManager extends HttpServlet {
      * @return the list of SqlFirewallManager
      */
     public static Map<String, List<SqlFirewallManager>> getSqlFirewallMap() {
-	return sqlFirewallMap;
+	return InjectedClassesStore.get().getSqlFirewallMap();
     }
 
 
@@ -180,22 +157,16 @@ public class ServerSqlManager extends HttpServlet {
     public void init(ServletConfig config) throws ServletException {
 	super.init(config);
 	ServerSqlManagerInit serverSqlManagerInit = new ServerSqlManagerInit(config);
-	userAuthenticator = serverSqlManagerInit.getUserAuthenticator();
-	requestHeadersAuthenticator = serverSqlManagerInit.getRequestHeadersAuthenticator();
-	databaseConfigurators = serverSqlManagerInit.getDatabaseConfigurators();
-	sqlFirewallMap = serverSqlManagerInit.getSqlFirewallMap();
-	blobUploadConfigurator = serverSqlManagerInit.getBlobUploadConfigurator();
-	blobDownloadConfigurator = serverSqlManagerInit.getBlobDownloadConfigurator();
-	sessionConfigurator = serverSqlManagerInit.getSessionConfigurator();
+	serverSqlManagerInit.treat();
 
 	exception = serverSqlManagerInit.getException();
 	initErrrorMesage = serverSqlManagerInit.getInitErrrorMesage();
-	threadPoolExecutor = serverSqlManagerInit.getThreadPoolExecutor();
     }
 
     @Override
     public void destroy() {
 	super.destroy();
+	ThreadPoolExecutor threadPoolExecutor = InjectedClassesStore.get().getThreadPoolExecutor();
 	if (threadPoolExecutor != null) {
 	    try {
 		threadPoolExecutor.shutdown();
@@ -218,6 +189,8 @@ public class ServerSqlManager extends HttpServlet {
 	asyncContext.setTimeout(0);
 	asyncContext.addListener(new ServerAsyncListener());
 
+	ThreadPoolExecutor threadPoolExecutor = InjectedClassesStore.get().getThreadPoolExecutor();
+	
 	// Just in case
 	Objects.requireNonNull(threadPoolExecutor, "threadPoolExecutor cannot be null!");
 
@@ -350,6 +323,8 @@ public class ServerSqlManager extends HttpServlet {
 		return;
 	    }
 
+	    SessionConfigurator sessionConfigurator = InjectedClassesStore.get().getSessionConfigurator();
+		
 	    username = sessionConfigurator.getUsername(sessionId);
 	    database = sessionConfigurator.getDatabase(sessionId);
 
@@ -393,6 +368,7 @@ public class ServerSqlManager extends HttpServlet {
 	    headers.put(key, value);
 	}
 
+	RequestHeadersAuthenticator requestHeadersAuthenticator = InjectedClassesStore.get().getRequestHeadersAuthenticator();
 	boolean checked = requestHeadersAuthenticator.validate(headers);
 
 	if (!checked) {
@@ -452,6 +428,7 @@ public class ServerSqlManager extends HttpServlet {
      */
     private boolean checkSessionIsVerified(HttpServletResponse response, OutputStream out, String sessionId)
 	    throws IOException {
+	SessionConfigurator sessionConfigurator = InjectedClassesStore.get().getSessionConfigurator();
 	boolean isVerified = sessionConfigurator.verifySessionId(sessionId);
 
 	if (!isVerified) {
