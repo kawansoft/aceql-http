@@ -22,7 +22,7 @@
  * Any modifications to this file must keep this entire header
  * intact.
  */
-package org.kawanfw.sql.servlet.creator;
+package org.kawanfw.sql.servlet.injection.classes.creator;
 
 import java.io.IOException;
 import java.lang.reflect.Constructor;

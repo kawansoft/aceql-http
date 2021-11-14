@@ -22,24 +22,23 @@
  * Any modifications to this file must keep this entire header
  * intact.
  */
-package org.kawanfw.sql.servlet.creator;
+
+package org.kawanfw.sql.servlet.injection.classes.creator;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
-import org.kawanfw.sql.api.server.blob.BlobDownloadConfigurator;
-import org.kawanfw.sql.api.server.blob.DefaultBlobDownloadConfigurator;
+import org.kawanfw.sql.api.server.blob.BlobUploadConfigurator;
+import org.kawanfw.sql.api.server.blob.DefaultBlobUploadConfigurator;
 
-/**
- * @author Nicolas de Pomereu
- *
- */
-public class BlobDownloadConfiguratorCreator {
+public class BlobUploadConfiguratorCreator {
 
-    private BlobDownloadConfigurator blobDownloadConfigurator = null;
-    private String blobDownloadConfiguratorClassName = null;
+    private BlobUploadConfigurator blobUploadConfigurator = null;
+    private String blobUploadConfiguratorClassName = null;
 
-    private static String[] PREDEFINED_CLASS_NAMES = { DefaultBlobDownloadConfigurator.class.getSimpleName(), };
+    private static String[] PREDEFINED_CLASS_NAMES = {
+	    DefaultBlobUploadConfigurator.class.getSimpleName(),
+	    };
 
     /**
      * Allows to add automatically the package for predefined classes
@@ -52,8 +51,8 @@ public class BlobDownloadConfiguratorCreator {
 	for (int i = 0; i < PREDEFINED_CLASS_NAMES.length; i++) {
 	    if (PREDEFINED_CLASS_NAMES[i].equals(theClassName)) {
 		// Add prefix package
-		String theClassNameNew = DefaultBlobDownloadConfigurator.class.getPackage().getName() + "."
-			+ theClassName;
+		String theClassNameNew = DefaultBlobUploadConfigurator.class.getPackage()
+			.getName() + "." + theClassName;
 		return theClassNameNew;
 	    }
 	}
@@ -61,31 +60,31 @@ public class BlobDownloadConfiguratorCreator {
 	return theClassName;
     }
 
-    public BlobDownloadConfiguratorCreator(final String theBlobDownloadConfiguratorClassName)
+    public BlobUploadConfiguratorCreator(final String theBlobUploadConfiguratorClassName)
 	    throws ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException,
 	    InvocationTargetException, NoSuchMethodException, SecurityException {
 
-	if (theBlobDownloadConfiguratorClassName != null && !theBlobDownloadConfiguratorClassName.isEmpty()) {
+	if (theBlobUploadConfiguratorClassName != null && !theBlobUploadConfiguratorClassName.isEmpty()) {
 
-	    String theBlobDownloadConfiguratorClassNameNew = getNameWithPackage(theBlobDownloadConfiguratorClassName);
+	    String theBlobUploadConfiguratorClassNameNew = getNameWithPackage(theBlobUploadConfiguratorClassName);
 
-	    Class<?> c = Class.forName(theBlobDownloadConfiguratorClassNameNew);
+	    Class<?> c = Class.forName(theBlobUploadConfiguratorClassNameNew);
 	    Constructor<?> constructor = c.getConstructor();
-	    blobDownloadConfigurator = (BlobDownloadConfigurator) constructor.newInstance();
-	    this.blobDownloadConfiguratorClassName = theBlobDownloadConfiguratorClassNameNew;
+	    blobUploadConfigurator = (BlobUploadConfigurator) constructor.newInstance();
+	    this.blobUploadConfiguratorClassName = theBlobUploadConfiguratorClassNameNew;
 	} else {
-	    blobDownloadConfigurator = new DefaultBlobDownloadConfigurator();
-	    this.blobDownloadConfiguratorClassName = blobDownloadConfigurator.getClass().getName();
+	    blobUploadConfigurator = new DefaultBlobUploadConfigurator();
+	    this.blobUploadConfiguratorClassName = blobUploadConfigurator.getClass().getName();
 	}
 
     }
 
-    public BlobDownloadConfigurator getBlobDownloadConfigurator() {
-	return blobDownloadConfigurator;
+    public BlobUploadConfigurator getBlobUploadConfigurator() {
+        return blobUploadConfigurator;
     }
 
-    public String getBlobDownloadConfiguratorClassName() {
-	return blobDownloadConfiguratorClassName;
+    public String getBlobUploadConfiguratorClassName() {
+        return blobUploadConfiguratorClassName;
     }
 
 }

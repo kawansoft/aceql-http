@@ -205,10 +205,6 @@ public class ConfProperties {
 	private Map<String, List<String>> sqlFirewallClassNamesMap = new ConcurrentHashMap<>();
 	private boolean statelessMode;
 
-	public ConfPropertiesBuilder() {
-
-	}
-
 	public ConfPropertiesBuilder databaseSet(Set<String> databaseSet) {
 	    this.databaseSet = databaseSet;
 	    return this;
@@ -272,12 +268,12 @@ public class ConfProperties {
 
 	// Return the finally constructed User object
 	public ConfProperties build() {
-	    ConfProperties user = new ConfProperties(this);
-	    validateUserObject(user);
-	    return user;
+	    ConfProperties confProperties = new ConfProperties(this);
+	    validateUserObject(confProperties);
+	    return confProperties;
 	}
 
-	private void validateUserObject(ConfProperties user) {
+	private void validateUserObject(ConfProperties confProperties) {
 	    // HACK NDP 
 	    // TODO LATER
 	    // Do some basic validations to check

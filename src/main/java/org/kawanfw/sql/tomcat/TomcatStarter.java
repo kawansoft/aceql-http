@@ -289,7 +289,7 @@ public class TomcatStarter {
      */
     private void tomcatBeforeStartSetConnectors(Tomcat tomcat, Properties properties)
 	    throws DatabaseConfigurationException, ConnectException {
-	// NO: do in the Creators in org.kawanfw.sql.servlet.creator package
+	// NO: do in the Creators in org.kawanfw.sql.servlet.injection.classes.creator package
 	// TomcatStarterUtil.testConfigurators(properties);
 
 	// Very important to allow port reuse without System.exit()

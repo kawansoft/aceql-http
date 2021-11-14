@@ -22,36 +22,28 @@
  * Any modifications to this file must keep this entire header
  * intact.
  */
-package org.kawanfw.sql.servlet.creator;
+package org.kawanfw.sql.servlet.injection.classes.creator;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
-import org.kawanfw.sql.api.server.auth.DefaultUserAuthenticator;
-import org.kawanfw.sql.api.server.auth.LdapUserAuthenticator;
-import org.kawanfw.sql.api.server.auth.SshUserAuthenticator;
-import org.kawanfw.sql.api.server.auth.UserAuthenticator;
-import org.kawanfw.sql.api.server.auth.WebServiceUserAuthenticator;
-import org.kawanfw.sql.api.server.auth.WindowsUserAuthenticator;
+import org.kawanfw.sql.api.server.auth.headers.DefaultRequestHeadersAuthenticator;
+import org.kawanfw.sql.api.server.auth.headers.RequestHeadersAuthenticator;
 
 /**
  * @author Nicolas de Pomereu
  *
  */
-public class UserAuthenticatorCreator {
+public class RequestHeadersAuthenticatorCreator {
 
     private static String[] PREDEFINED_CLASS_NAMES = {
-	    DefaultUserAuthenticator.class.getSimpleName(),
-	    SshUserAuthenticator.class.getSimpleName(),
-	    LdapUserAuthenticator.class.getSimpleName(),
-	    WebServiceUserAuthenticator.class.getSimpleName(),
-	    WindowsUserAuthenticator.class.getSimpleName() };
+	    DefaultRequestHeadersAuthenticator.class.getSimpleName() };
 
-    private UserAuthenticator userAuthenticator = null;
-    private String userAuthenticatorClassName = null;
+    private RequestHeadersAuthenticator requestHeadersAuthenticator = null;
+    private String requestHeadersAuthenticatorClassName = null;
 
     /**
-     * @param userAuthenticatorClassName
+     * @param theRequestHeadersAuthenticatorClassName
      * @throws ClassNotFoundException
      * @throws SecurityException
      * @throws NoSuchMethodException
@@ -61,21 +53,21 @@ public class UserAuthenticatorCreator {
      * @throws InstantiationException
      *
      */
-    public UserAuthenticatorCreator(final String theUserAuthenticatorClassName)
+    public RequestHeadersAuthenticatorCreator(final String theRequestHeadersAuthenticatorClassName)
 	    throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException,
 	    IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 
-	if (theUserAuthenticatorClassName != null && !theUserAuthenticatorClassName.isEmpty()) {
+	if (theRequestHeadersAuthenticatorClassName != null && !theRequestHeadersAuthenticatorClassName.isEmpty()) {
 
-	    String theUserAuthenticatorClassNameNew = getNameWithPackage(theUserAuthenticatorClassName);
+	    String theRequestHeadersAuthenticatorClassNameNew = getNameWithPackage(theRequestHeadersAuthenticatorClassName);
 
-	    Class<?> c = Class.forName(theUserAuthenticatorClassNameNew);
+	    Class<?> c = Class.forName(theRequestHeadersAuthenticatorClassNameNew);
 	    Constructor<?> constructor = c.getConstructor();
-	    userAuthenticator = (UserAuthenticator) constructor.newInstance();
-	    userAuthenticatorClassName = theUserAuthenticatorClassNameNew;
+	    requestHeadersAuthenticator = (RequestHeadersAuthenticator) constructor.newInstance();
+	    requestHeadersAuthenticatorClassName = theRequestHeadersAuthenticatorClassNameNew;
 	} else {
-	    userAuthenticator = new DefaultUserAuthenticator();
-	    userAuthenticatorClassName = userAuthenticator.getClass().getName();
+	    requestHeadersAuthenticator = new DefaultRequestHeadersAuthenticator();
+	    requestHeadersAuthenticatorClassName = requestHeadersAuthenticator.getClass().getName();
 	}
 
     }
@@ -91,7 +83,7 @@ public class UserAuthenticatorCreator {
 	for (int i = 0; i < PREDEFINED_CLASS_NAMES.length; i++) {
 	    if (PREDEFINED_CLASS_NAMES[i].equals(theClassName)) {
 		// Add prefix package
-		String theClassNameNew = UserAuthenticator.class.getPackage()
+		String theClassNameNew = RequestHeadersAuthenticator.class.getPackage()
 			.getName() + "." + theClassName;
 		return theClassNameNew;
 	    }
@@ -100,12 +92,12 @@ public class UserAuthenticatorCreator {
 	return theClassName;
     }
 
-    public UserAuthenticator getUserAuthenticator() {
-	return userAuthenticator;
+    public RequestHeadersAuthenticator getRequestHeadersAuthenticator() {
+	return requestHeadersAuthenticator;
     }
 
-    public String getUserAuthenticatorClassName() {
-	return userAuthenticatorClassName;
+    public String getRequestHeadersAuthenticatorClassName() {
+	return requestHeadersAuthenticatorClassName;
     }
 
 }
