@@ -43,8 +43,8 @@ import org.apache.commons.lang3.SystemUtils;
 import org.kawanfw.sql.api.server.util.UsernameConverter;
 import org.kawanfw.sql.api.server.util.VerySimpleFormatter;
 import org.kawanfw.sql.servlet.injection.properties.PropertiesFileStore;
+import org.kawanfw.sql.servlet.injection.properties.PropertiesFileUtil;
 import org.kawanfw.sql.tomcat.TomcatSqlModeStore;
-import org.kawanfw.sql.tomcat.TomcatStarterUtilProperties;
 import org.kawanfw.sql.util.Tag;
 import org.kawanfw.sql.util.log.FlattenLogger;
 
@@ -247,7 +247,7 @@ public class DefaultDatabaseConfigurator implements DatabaseConfigurator {
     private void setProperties() throws IOException, DatabaseConfigurationException {
 	if (properties == null) {
 	    File file = PropertiesFileStore.get();
-	    properties = TomcatStarterUtilProperties.getProperties(file);
+	    properties = PropertiesFileUtil.getProperties(file);
 	}
     }
 

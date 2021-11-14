@@ -59,10 +59,10 @@ import org.kawanfw.sql.servlet.injection.properties.ConfProperties;
 import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesManager;
 import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesStore;
 import org.kawanfw.sql.servlet.injection.properties.PropertiesFileStore;
+import org.kawanfw.sql.servlet.injection.properties.PropertiesFileUtil;
 import org.kawanfw.sql.tomcat.ThreadPoolExecutorStore;
 import org.kawanfw.sql.tomcat.TomcatSqlModeStore;
 import org.kawanfw.sql.tomcat.TomcatStarterUtil;
-import org.kawanfw.sql.tomcat.TomcatStarterUtilProperties;
 import org.kawanfw.sql.util.FrameworkDebug;
 import org.kawanfw.sql.util.SqlTag;
 import org.kawanfw.sql.util.Tag;
@@ -94,14 +94,15 @@ public class ServerSqlManagerInit {
     /** The SessionConfigurator instance */
     private static SessionConfigurator sessionConfigurator = null;
 
+    /** The executor to use */
+    private ThreadPoolExecutor threadPoolExecutor = null;
+    
     /** The Exception thrown at init */
     private Exception exception = null;
 
     /** The init error message trapped */
     private String initErrrorMesage = null;
 
-    /** The executor to use */
-    private ThreadPoolExecutor threadPoolExecutor = null;
     private String classNameToLoad;
 
     /**
@@ -142,7 +143,7 @@ public class ServerSqlManagerInit {
 			    Tag.PRODUCT_USER_CONFIG_FAIL + " properties file not found: " + propertiesFile);
 		}
 
-		Properties properties = TomcatStarterUtilProperties.getProperties(propertiesFile);
+		Properties properties = PropertiesFileUtil.getProperties(propertiesFile);
 
 		ThreadPoolExecutorStore threadPoolExecutorStore = new ThreadPoolExecutorStore(properties);
 		threadPoolExecutorStore.create();
@@ -476,7 +477,7 @@ public class ServerSqlManagerInit {
 	// Set properties file. Will be used elsewhere
 	// (for CsvRulesManager load file, per example).
 	PropertiesFileStore.set(propertiesFile);
-	Properties properties = TomcatStarterUtilProperties.getProperties(propertiesFile);
+	Properties properties = PropertiesFileUtil.getProperties(propertiesFile);
 	
 	// Create all configuration properties from the Properties and store
 	ConfPropertiesManager confPropertiesManager = new ConfPropertiesManager(properties);

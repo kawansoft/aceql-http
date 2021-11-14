@@ -32,7 +32,7 @@ import java.util.Properties;
 
 import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesStore;
 import org.kawanfw.sql.servlet.injection.properties.PropertiesFileStore;
-import org.kawanfw.sql.tomcat.TomcatStarterUtilProperties;
+import org.kawanfw.sql.servlet.injection.properties.PropertiesFileUtil;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTCreator.Builder;
@@ -235,7 +235,7 @@ public class JwtSessionConfigurator implements SessionConfigurator {
     public int getSessionTimelifeMinutes() throws IOException {
 	if (properties == null) {
 	    File file = PropertiesFileStore.get();
-	    properties = TomcatStarterUtilProperties.getProperties(file);
+	    properties = PropertiesFileUtil.getProperties(file);
 	}
 
 	return DefaultSessionConfigurator.getSessionTimelifeMinutesPropertyValue(properties);

@@ -31,6 +31,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * All decoded Properties ready to use.
+ * @author Nicolas de Pomereu
+ *
+ */
+
 public class ConfProperties {
 
     /** The database names */
@@ -272,6 +278,8 @@ public class ConfProperties {
 	}
 
 	private void validateUserObject(ConfProperties user) {
+	    // HACK NDP 
+	    // TODO LATER
 	    // Do some basic validations to check
 	    // if user object does not break any assumption of system
 	}

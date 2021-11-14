@@ -22,7 +22,7 @@
  * Any modifications to this file must keep this entire header
  * intact.
  */
-package org.kawanfw.sql.tomcat;
+package org.kawanfw.sql.servlet.injection.properties;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -47,10 +47,10 @@ import org.kawanfw.sql.util.FrameworkDebug;
  * @author Nicolas de Pomereu
  *
  */
-public class TomcatStarterUtilProperties {
+public class PropertiesFileUtil {
 
     /** Debug info */
-    private static boolean DEBUG = FrameworkDebug.isSet(TomcatStarterUtilProperties.class);
+    private static boolean DEBUG = FrameworkDebug.isSet(PropertiesFileUtil.class);
 
     /**
      * Returns the Properties extracted from a file.
