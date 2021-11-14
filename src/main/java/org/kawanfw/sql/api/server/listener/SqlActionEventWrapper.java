@@ -39,7 +39,7 @@ import java.util.List;
 
 public class SqlActionEventWrapper {
 
-    public static SqlActionEvent SqlActionEventBuilder(String username, String database, String ipAddress, String sql,
+    public static SqlActionEvent sqlActionEventBuilder(String username, String database, String ipAddress, String sql,
 	    boolean isPreparedStatement, List<Object> parameterValues) throws SQLException {
 	return new SqlActionEvent(username, database, ipAddress, sql, isPreparedStatement, parameterValues);
     }
