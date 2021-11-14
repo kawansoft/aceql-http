@@ -48,6 +48,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.kawanfw.sql.api.server.auth.headers.RequestHeadersAuthenticator;
 import org.kawanfw.sql.api.server.session.SessionConfigurator;
+import org.kawanfw.sql.servlet.injection.classes.InjectedClassesManager;
 import org.kawanfw.sql.servlet.injection.classes.InjectedClassesStore;
 import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesStore;
 import org.kawanfw.sql.servlet.sql.json_return.ExceptionReturner;
@@ -91,11 +92,11 @@ public class ServerSqlManager extends HttpServlet {
     @Override
     public void init(ServletConfig config) throws ServletException {
 	super.init(config);
-	ServerSqlManagerInit serverSqlManagerInit = new ServerSqlManagerInit(config);
-	serverSqlManagerInit.treat();
+	InjectedClassesManager injectedClassesManager = new InjectedClassesManager(config);
+	injectedClassesManager.createClasses();
 
-	exception = serverSqlManagerInit.getException();
-	initErrrorMesage = serverSqlManagerInit.getInitErrrorMesage();
+	exception = injectedClassesManager.getException();
+	initErrrorMesage = injectedClassesManager.getInitErrrorMesage();
     }
 
     @Override

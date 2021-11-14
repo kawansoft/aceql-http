@@ -25,6 +25,8 @@
 
 package org.kawanfw.sql.servlet.injection.classes;
 
+import java.util.Objects;
+
 /**
  * Static store of the injected classes instances ready to use.
  * @author Nicolas de Pomereu
@@ -39,6 +41,7 @@ public class InjectedClassesStore {
     }
 
     public static InjectedClasses get() {
+	Objects.requireNonNull(injectedClasses, "injectedClasses is null and was never set!");
 	return injectedClasses;
     }
 

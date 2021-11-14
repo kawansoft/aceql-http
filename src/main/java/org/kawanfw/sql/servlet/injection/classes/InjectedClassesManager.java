@@ -23,7 +23,7 @@
  * intact.
  */
 
-package org.kawanfw.sql.servlet;
+package org.kawanfw.sql.servlet.injection.classes;
 
 import java.io.File;
 import java.io.IOException;
@@ -43,9 +43,8 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.kawanfw.sql.api.server.DatabaseConfigurationException;
 import org.kawanfw.sql.api.server.DatabaseConfigurator;
 import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
-import org.kawanfw.sql.servlet.injection.classes.InjectedClasses;
+import org.kawanfw.sql.servlet.ServerSqlManager;
 import org.kawanfw.sql.servlet.injection.classes.InjectedClasses.InjectedClassesBuilder;
-import org.kawanfw.sql.servlet.injection.classes.InjectedClassesStore;
 import org.kawanfw.sql.servlet.injection.classes.creator.BlobDownloadConfiguratorCreator;
 import org.kawanfw.sql.servlet.injection.classes.creator.BlobUploadConfiguratorCreator;
 import org.kawanfw.sql.servlet.injection.classes.creator.DatabaseConfiguratorCreator;
@@ -53,24 +52,20 @@ import org.kawanfw.sql.servlet.injection.classes.creator.RequestHeadersAuthentic
 import org.kawanfw.sql.servlet.injection.classes.creator.SessionConfiguratorCreator;
 import org.kawanfw.sql.servlet.injection.classes.creator.SqlFirewallsCreator;
 import org.kawanfw.sql.servlet.injection.classes.creator.UserAuthenticatorCreator;
-import org.kawanfw.sql.servlet.injection.properties.ConfProperties;
-import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesManager;
 import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesStore;
 import org.kawanfw.sql.servlet.injection.properties.PropertiesFileStore;
 import org.kawanfw.sql.servlet.injection.properties.PropertiesFileUtil;
 import org.kawanfw.sql.tomcat.ThreadPoolExecutorCreator;
 import org.kawanfw.sql.tomcat.TomcatSqlModeStore;
-import org.kawanfw.sql.tomcat.TomcatStarterUtil;
 import org.kawanfw.sql.util.FrameworkDebug;
 import org.kawanfw.sql.util.SqlTag;
 import org.kawanfw.sql.util.Tag;
 import org.kawanfw.sql.version.Version;
 
-public class ServerSqlManagerInit {
+public class InjectedClassesManager {
 
     private static boolean DEBUG = FrameworkDebug.isSet(ServerSqlManager.class);
     public static String CR_LF = System.getProperty("line.separator");
-
 
     /** The Exception thrown at init */
     private Exception exception = null;
@@ -81,70 +76,43 @@ public class ServerSqlManagerInit {
     private String classNameToLoad;
 
     private ServletConfig config;
+
     /**
      * Constructor.
      *
      * @param config
      */
-    public ServerSqlManagerInit(ServletConfig config) {
+    public InjectedClassesManager(ServletConfig config) {
 	this.config = config;
     }
 
     /**
      * Created all injected classes instances.
      */
-    public void treat() {
+    public void createClasses() {
 	classNameToLoad = null;
-
-	if (!TomcatSqlModeStore.isTomcatEmbedded()) {
-	    System.out.println(SqlTag.SQL_PRODUCT_START + " " + Version.getServerVersion());
-	}
-
-	ThreadPoolExecutor threadPoolExecutor = null;
-	
-	// Test the only thing we can test in DatabaseConfigurator
-	// getBlobsDirectory()
-
 	try {
-	    // Previously created by Tomcat
+	    // Test if we are in Native Tomcat and do specific stuff.
 	    if (!TomcatSqlModeStore.isTomcatEmbedded()) {
-		String propertiesFileStr = config.getInitParameter("properties");
-
-		if (propertiesFileStr == null || propertiesFileStr.isEmpty()) {
-		    throw new DatabaseConfigurationException(Tag.PRODUCT_USER_CONFIG_FAIL
-			    + " AceQL servlet param-name \"properties\" not set. Impossible to load the AceQL Server properties file.");
-		}
-		File propertiesFile = new File(propertiesFileStr);
-
-		if (!propertiesFile.exists()) {
-		    throw new DatabaseConfigurationException(
-			    Tag.PRODUCT_USER_CONFIG_FAIL + " properties file not found: " + propertiesFile);
-		}
-		
-		PropertiesFileStore.set(propertiesFile);
-		Properties properties = PropertiesFileUtil.getProperties(propertiesFile);
-		ThreadPoolExecutorCreator threadPoolExecutorCreator = new ThreadPoolExecutorCreator(properties);
-		threadPoolExecutor = threadPoolExecutorCreator.create();
-		
-		createDataSourcesForNativeTomcat(properties);
+		NativeTomcatElementsCreator nativeTomcatElementsCreator = new NativeTomcatElementsCreator(config);
+		nativeTomcatElementsCreator.create();
 	    }
-	    else {
-		File propertiesFile = PropertiesFileStore.get();
-		Properties properties = PropertiesFileUtil.getProperties(propertiesFile);
-		ThreadPoolExecutorCreator threadPoolExecutorCreator = new ThreadPoolExecutorCreator(properties);
-		threadPoolExecutor = threadPoolExecutorCreator.create();		
-	    }
-	    
+
+	    File propertiesFile = PropertiesFileStore.get();
+	    Properties properties = PropertiesFileUtil.getProperties(propertiesFile);
+	    ThreadPoolExecutorCreator threadPoolExecutorCreator = new ThreadPoolExecutorCreator(properties);
+	    ThreadPoolExecutor threadPoolExecutor = threadPoolExecutorCreator.create();
+
 	    Set<String> databases = ConfPropertiesStore.get().getDatabaseNames();
 
 	    // Create out InjectedClasses builder
 	    InjectedClassesBuilder injectedClassesBuilder = new InjectedClassesBuilder();
+
+	    // Load all the classes and set our InjectedClassesBuilder instance
 	    injectedClassesBuilder.threadPoolExecutor(threadPoolExecutor);
 
 	    loadUserAuthenticator(injectedClassesBuilder);
 	    loadRequestHeadersAuthenticator(injectedClassesBuilder);
-
-	    // Load the classes
 	    loadDatabaseConfigurators(databases, injectedClassesBuilder);
 	    loadSqlFirewallManagers(databases, injectedClassesBuilder);
 	    loadBlobDownloadConfigurator(injectedClassesBuilder);
@@ -154,7 +122,7 @@ public class ServerSqlManagerInit {
 	    // Create the InjectedClasses instance
 	    InjectedClasses injectedClasses = injectedClassesBuilder.build();
 
-	    // Store it statically
+	    // Store the InjectedClasses instance statically
 	    InjectedClassesStore.set(injectedClasses);
 
 	} catch (ClassNotFoundException e) {
@@ -391,7 +359,7 @@ public class ServerSqlManagerInit {
 	    System.out.println(SqlTag.SQL_PRODUCT_START + " Loading Database " + database + tagSQLFirewallManager);
 
 	    Map<String, DatabaseConfigurator> databaseConfigurators = injectedClassesBuilder.getDatabaseConfigurators();
-	    
+
 	    DatabaseConfigurator databaseConfigurator = databaseConfigurators.get(database);
 	    SqlFirewallsCreator sqlFirewallsCreator = new SqlFirewallsCreator(sqlFirewallClassNames, database,
 		    databaseConfigurator);
@@ -465,30 +433,6 @@ public class ServerSqlManagerInit {
 
 	injectedClassesBuilder.databaseConfigurators(databaseConfigurators);
     }
-
-    /**
-     * Creates the data sources - this is called only if AceQL is used in Servlet
-     * Container
-     *
-     * @param config
-     * @throws IOException
-     */
-    private void createDataSourcesForNativeTomcat(Properties properties) throws IOException, Exception {
-	
-	System.out.println(TomcatStarterUtil.getJavaInfo());
-	System.out.println(SqlTag.SQL_PRODUCT_START + " " + "Using properties file: ");
-	System.out.println(SqlTag.SQL_PRODUCT_START + "  -> " + PropertiesFileStore.get());
-
-	// Create all configuration properties from the Properties and store
-	ConfPropertiesManager confPropertiesManager = new ConfPropertiesManager(properties);
-	ConfProperties confProperties = confPropertiesManager.createConfProperties();
-	ConfPropertiesStore.set(confProperties);
-
-	// Create the default DataSource if necessary
-	TomcatStarterUtil.createAndStoreDataSources(properties);
-
-    }
-
 
     public Exception getException() {
 	return exception;
