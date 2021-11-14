@@ -120,24 +120,21 @@ public class ServerSqlManagerInit {
 		    throw new DatabaseConfigurationException(
 			    Tag.PRODUCT_USER_CONFIG_FAIL + " properties file not found: " + propertiesFile);
 		}
-
+		
+		PropertiesFileStore.set(propertiesFile);
 		Properties properties = PropertiesFileUtil.getProperties(propertiesFile);
-
 		ThreadPoolExecutorCreator threadPoolExecutorCreator = new ThreadPoolExecutorCreator(properties);
 		threadPoolExecutor = threadPoolExecutorCreator.create();
+		
+		createDataSourcesForNativeTomcat(properties);
 	    }
 	    else {
 		File propertiesFile = PropertiesFileStore.get();
 		Properties properties = PropertiesFileUtil.getProperties(propertiesFile);
-		
 		ThreadPoolExecutorCreator threadPoolExecutorCreator = new ThreadPoolExecutorCreator(properties);
 		threadPoolExecutor = threadPoolExecutorCreator.create();		
 	    }
 	    
-	    if (!TomcatSqlModeStore.isTomcatEmbedded()) {
-		createDataSources(config);
-	    }
-
 	    Set<String> databases = ConfPropertiesStore.get().getDatabaseNames();
 
 	    // Create out InjectedClasses builder
@@ -476,29 +473,11 @@ public class ServerSqlManagerInit {
      * @param config
      * @throws IOException
      */
-    private void createDataSources(ServletConfig config) throws IOException, Exception {
-	String propertiesFileStr = config.getInitParameter("properties");
-
-	if (propertiesFileStr == null || propertiesFileStr.isEmpty()) {
-	    throw new DatabaseConfigurationException(Tag.PRODUCT_USER_CONFIG_FAIL
-		    + " AceQL servlet param-name \"properties\" not set. Impossible to load the AceQL Server properties file.");
-	}
-
-	File propertiesFile = new File(propertiesFileStr);
-
-	if (!propertiesFile.exists()) {
-	    throw new DatabaseConfigurationException(
-		    Tag.PRODUCT_USER_CONFIG_FAIL + " properties file not found: " + propertiesFile);
-	}
-
+    private void createDataSourcesForNativeTomcat(Properties properties) throws IOException, Exception {
+	
 	System.out.println(TomcatStarterUtil.getJavaInfo());
 	System.out.println(SqlTag.SQL_PRODUCT_START + " " + "Using properties file: ");
-	System.out.println(SqlTag.SQL_PRODUCT_START + "  -> " + propertiesFile);
-
-	// Set properties file. Will be used elsewhere
-	// (for CsvRulesManager load file, per example).
-	PropertiesFileStore.set(propertiesFile);
-	Properties properties = PropertiesFileUtil.getProperties(propertiesFile);
+	System.out.println(SqlTag.SQL_PRODUCT_START + "  -> " + PropertiesFileStore.get());
 
 	// Create all configuration properties from the Properties and store
 	ConfPropertiesManager confPropertiesManager = new ConfPropertiesManager(properties);
