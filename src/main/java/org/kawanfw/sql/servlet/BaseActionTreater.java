@@ -37,6 +37,7 @@ import org.kawanfw.sql.api.server.DatabaseConfigurator;
 import org.kawanfw.sql.servlet.connection.ConnectionIdUtil;
 import org.kawanfw.sql.servlet.connection.ConnectionStore;
 import org.kawanfw.sql.servlet.connection.RollbackUtil;
+import org.kawanfw.sql.servlet.injection.classes.InjectedClassesStore;
 import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesUtil;
 import org.kawanfw.sql.servlet.sql.json_return.JsonErrorReturn;
 import org.kawanfw.sql.servlet.sql.json_return.JsonOkReturn;
@@ -185,7 +186,7 @@ public class BaseActionTreater {
      * @throws IOException
      */
     private boolean isDatabaseConfiguratorNull(String database) throws IOException {
-	databaseConfigurator = ServerSqlManager.getDatabaseConfigurator(database);
+	databaseConfigurator = InjectedClassesStore.get().getDatabaseConfigurators().get(database);
 
 	if (databaseConfigurator == null) {
 	    JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_BAD_REQUEST,

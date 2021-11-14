@@ -50,6 +50,7 @@ import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
 import org.kawanfw.sql.servlet.HttpParameter;
 import org.kawanfw.sql.servlet.ServerSqlManager;
 import org.kawanfw.sql.servlet.connection.RollbackUtil;
+import org.kawanfw.sql.servlet.injection.classes.InjectedClassesStore;
 import org.kawanfw.sql.servlet.sql.json_return.JsonErrorReturn;
 import org.kawanfw.sql.servlet.sql.json_return.JsonSecurityMessage;
 import org.kawanfw.sql.servlet.sql.json_return.JsonUtil;
@@ -170,7 +171,7 @@ public class ServerStatementRawExecute {
 
 	Statement statement = null;
 
-	DatabaseConfigurator databaseConfigurator = ServerSqlManager.getDatabaseConfigurator(database);
+	DatabaseConfigurator databaseConfigurator = InjectedClassesStore.get().getDatabaseConfigurators().get(database);
 
 	try {
 
@@ -227,7 +228,7 @@ public class ServerStatementRawExecute {
 	String htlmEncoding = request.getParameter(HttpParameter.HTML_ENCODING);
 	
 	PreparedStatement preparedStatement = null;
-	DatabaseConfigurator databaseConfigurator = ServerSqlManager.getDatabaseConfigurator(database);
+	DatabaseConfigurator databaseConfigurator = InjectedClassesStore.get().getDatabaseConfigurators().get(database);
 
 	// Class to set all the statement parameters
 	ServerPreparedStatementParameters serverPreparedStatementParameters = null;

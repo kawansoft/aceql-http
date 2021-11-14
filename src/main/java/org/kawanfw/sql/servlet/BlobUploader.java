@@ -36,6 +36,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.kawanfw.sql.api.server.DatabaseConfigurator;
 import org.kawanfw.sql.api.server.blob.BlobUploadConfigurator;
+import org.kawanfw.sql.servlet.injection.classes.InjectedClassesStore;
 import org.kawanfw.sql.servlet.sql.LoggerUtil;
 import org.kawanfw.sql.servlet.sql.json_return.JsonErrorReturn;
 import org.kawanfw.sql.servlet.sql.json_return.JsonOkReturn;
@@ -66,7 +67,7 @@ public class BlobUploader {
 
 	String username = request.getParameter(HttpParameter.USERNAME);
 	String database = request.getParameter(HttpParameter.DATABASE);
-	DatabaseConfigurator databaseConfigurator = ServerSqlManager.getDatabaseConfigurator(database);
+	DatabaseConfigurator databaseConfigurator = InjectedClassesStore.get().getDatabaseConfigurators().get(database);
 
 	File blobDirectory = databaseConfigurator.getBlobsDirectory(username);
 
@@ -84,7 +85,7 @@ public class BlobUploader {
 	}
 
 	try {
-	    BlobUploadConfigurator blobUploadConfigurator = ServerSqlManager.getBlobUploadConfigurator();
+	    BlobUploadConfigurator blobUploadConfigurator = InjectedClassesStore.get().getBlobUploadConfigurator();
 	    blobUploadConfigurator.upload(request, response, blobDirectory);
 
 	    // Say it's OK to the client

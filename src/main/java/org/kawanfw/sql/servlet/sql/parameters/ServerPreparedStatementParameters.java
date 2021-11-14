@@ -52,7 +52,7 @@ import java.util.TreeMap;
 import java.util.Vector;
 
 import org.kawanfw.sql.api.server.DatabaseConfigurator;
-import org.kawanfw.sql.servlet.ServerSqlManager;
+import org.kawanfw.sql.servlet.injection.classes.InjectedClassesStore;
 import org.kawanfw.sql.servlet.sql.AceQLParameter;
 import org.kawanfw.sql.servlet.sql.AceQLTypes;
 import org.kawanfw.sql.servlet.sql.JavaSqlConversion;
@@ -524,7 +524,7 @@ public class ServerPreparedStatementParameters {
     private void setCharacterStream(PreparedStatement preparedStatement, int parameterIndex, String paramValue)
 	    throws SQLException, IOException {
 
-	DatabaseConfigurator databaseConfigurator = ServerSqlManager.getDatabaseConfigurator(database);
+	DatabaseConfigurator databaseConfigurator = InjectedClassesStore.get().getDatabaseConfigurators().get(database);
 
 	// Extract the Clob file from the parameter
 	String blobId = paramValue;
@@ -591,7 +591,7 @@ public class ServerPreparedStatementParameters {
 	    throws SQLException, IOException {
 	// Extract the Blob file from the parameter
 
-	DatabaseConfigurator databaseConfigurator = ServerSqlManager.getDatabaseConfigurator(database);
+	DatabaseConfigurator databaseConfigurator = InjectedClassesStore.get().getDatabaseConfigurators().get(database);
 
 	// Extract the Blob/Clob file from the parameter
 	String blobId = paramValue;

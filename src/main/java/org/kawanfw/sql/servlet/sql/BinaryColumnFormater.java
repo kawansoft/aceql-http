@@ -42,7 +42,7 @@ import org.apache.commons.io.IOUtils;
 import org.kawanfw.sql.api.server.DatabaseConfigurator;
 import org.kawanfw.sql.api.util.SqlUtil;
 import org.kawanfw.sql.servlet.HttpParameter;
-import org.kawanfw.sql.servlet.ServerSqlManager;
+import org.kawanfw.sql.servlet.injection.classes.InjectedClassesStore;
 import org.kawanfw.sql.util.FrameworkFileUtil;
 
 /**
@@ -138,7 +138,7 @@ public class BinaryColumnFormater {
 
 	String hostFileName = null;
 
-	DatabaseConfigurator databaseConfigurator = ServerSqlManager.getDatabaseConfigurator(database);
+	DatabaseConfigurator databaseConfigurator = InjectedClassesStore.get().getDatabaseConfigurators().get(database);
 	hostFileName = databaseConfigurator.getBlobsDirectory(username) + File.separator + fileName;
 	//debug("formatBinaryColumn:outStream: " + hostFileName);
 

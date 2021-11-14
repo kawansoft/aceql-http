@@ -40,6 +40,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.kawanfw.sql.api.server.DatabaseConfigurator;
 import org.kawanfw.sql.api.server.session.SessionConfigurator;
 import org.kawanfw.sql.servlet.connection.ConnectionStore;
+import org.kawanfw.sql.servlet.injection.classes.InjectedClassesStore;
 import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesUtil;
 import org.kawanfw.sql.servlet.sql.json_return.JsonErrorReturn;
 import org.kawanfw.sql.servlet.sql.json_return.JsonOkReturn;
@@ -67,7 +68,7 @@ public class ServerLogout {
 	    String username = request.getParameter(HttpParameter.USERNAME);
 	    String sessionId = request.getParameter(HttpParameter.SESSION_ID);
 
-	    SessionConfigurator sessionConfigurator = ServerSqlManager.getSessionManagerConfigurator();
+	    SessionConfigurator sessionConfigurator = InjectedClassesStore.get().getSessionConfigurator();
 	    sessionConfigurator.remove(sessionId);
 
 	    deleteOldBlobFiles(databaseConfigurator, username);

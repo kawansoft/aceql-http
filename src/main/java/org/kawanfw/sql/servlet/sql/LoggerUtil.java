@@ -33,7 +33,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.kawanfw.sql.api.server.DatabaseConfigurator;
 import org.kawanfw.sql.api.server.DefaultDatabaseConfigurator;
 import org.kawanfw.sql.servlet.HttpParameter;
-import org.kawanfw.sql.servlet.ServerSqlManager;
+import org.kawanfw.sql.servlet.injection.classes.InjectedClassesStore;
 
 /**
  * Logs all Exceptions thrown on server side, even user and application
@@ -66,8 +66,7 @@ public class LoggerUtil {
 
 	String database = request.getParameter(HttpParameter.DATABASE);
 
-	DatabaseConfigurator databaseConfigurator = ServerSqlManager
-		.getDatabaseConfigurator(database);
+	DatabaseConfigurator databaseConfigurator = InjectedClassesStore.get().getDatabaseConfigurators().get(database);
 
 	Logger logger = databaseConfigurator.getLogger();
 	logger.log(Level.WARNING, aceQLErrorMessage);
@@ -91,8 +90,7 @@ public class LoggerUtil {
 	    databaseConfigurator = new DefaultDatabaseConfigurator();
 	}
 	else {
-	    databaseConfigurator = ServerSqlManager
-			.getDatabaseConfigurator(database);
+	    databaseConfigurator = InjectedClassesStore.get().getDatabaseConfigurators().get(database);
 
 	    if (databaseConfigurator == null) {
 		databaseConfigurator = new DefaultDatabaseConfigurator();

@@ -32,7 +32,6 @@ import java.sql.SQLException;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -47,12 +46,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
-import org.kawanfw.sql.api.server.DatabaseConfigurator;
-import org.kawanfw.sql.api.server.auth.UserAuthenticator;
 import org.kawanfw.sql.api.server.auth.headers.RequestHeadersAuthenticator;
-import org.kawanfw.sql.api.server.blob.BlobDownloadConfigurator;
-import org.kawanfw.sql.api.server.blob.BlobUploadConfigurator;
-import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
 import org.kawanfw.sql.api.server.session.SessionConfigurator;
 import org.kawanfw.sql.servlet.injection.classes.InjectedClassesStore;
 import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesStore;
@@ -89,65 +83,6 @@ public class ServerSqlManager extends HttpServlet {
 
     /** The init error message trapped */
     private String initErrrorMesage = null;
-
-
-    /**
-     * @return userAuthenticator
-     */
-    public static UserAuthenticator getUserAuthenticator() {
-	return InjectedClassesStore.get().getUserAuthenticator();
-    }
-
-    /**
-     * @return the requestHeadersAuthenticator
-     */
-    public static RequestHeadersAuthenticator getRequestHeadersAuthenticator() {
-	return InjectedClassesStore.get().getRequestHeadersAuthenticator();
-    }
-
-    /**
-     * @return the blobUploadConfigurator
-     */
-    public static BlobUploadConfigurator getBlobUploadConfigurator() {
-	return InjectedClassesStore.get().getBlobUploadConfigurator();
-    }
-
-    /**
-     * @return the blobDownloadConfigurator
-     */
-    public static BlobDownloadConfigurator getBlobDownloadConfigurator() {
-	return InjectedClassesStore.get().getBlobDownloadConfigurator();
-    }
-
-    /**
-     * Getter to used in all classes to get the DatabaseConfigurator for the
-     * database name
-     *
-     * @param database the database to load the DatabaseConfigurator for the
-     *                 database name
-     * @return
-     */
-    public static DatabaseConfigurator getDatabaseConfigurator(String database) {
-	return InjectedClassesStore.get().getDatabaseConfigurators().get(database);
-    }
-
-    /**
-     * Getter to used in all classes to get the SessionConfigurator
-     *
-     * @return the sessionConfigurator
-     */
-    public static SessionConfigurator getSessionManagerConfigurator() {
-	return InjectedClassesStore.get().getSessionConfigurator();
-    }
-
-    /**
-     * Returns the list of SqlFirewallManager
-     *
-     * @return the list of SqlFirewallManager
-     */
-    public static Map<String, List<SqlFirewallManager>> getSqlFirewallMap() {
-	return InjectedClassesStore.get().getSqlFirewallMap();
-    }
 
 
     /**

@@ -51,6 +51,7 @@ import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
 import org.kawanfw.sql.servlet.HttpParameter;
 import org.kawanfw.sql.servlet.ServerSqlManager;
 import org.kawanfw.sql.servlet.connection.RollbackUtil;
+import org.kawanfw.sql.servlet.injection.classes.InjectedClassesStore;
 import org.kawanfw.sql.servlet.sql.json_return.JsonErrorReturn;
 import org.kawanfw.sql.servlet.sql.json_return.JsonSecurityMessage;
 import org.kawanfw.sql.servlet.sql.json_return.JsonUtil;
@@ -204,7 +205,7 @@ public class ServerStatement {
 	String sqlOrder = request.getParameter(HttpParameter.SQL);
 	String htlmEncoding = request.getParameter(HttpParameter.HTML_ENCODING);
 	    
-	DatabaseConfigurator databaseConfigurator = ServerSqlManager.getDatabaseConfigurator(database);
+	DatabaseConfigurator databaseConfigurator = InjectedClassesStore.get().getDatabaseConfigurators().get(database);
 
 	PreparedStatement preparedStatement = null;
 
@@ -395,7 +396,7 @@ public class ServerStatement {
 	debug("sqlOrder   : " + sqlOrder);
 
 	Statement statement = null;
-	DatabaseConfigurator databaseConfigurator = ServerSqlManager.getDatabaseConfigurator(database);
+	DatabaseConfigurator databaseConfigurator = InjectedClassesStore.get().getDatabaseConfigurators().get(database);
 
 	try {
 

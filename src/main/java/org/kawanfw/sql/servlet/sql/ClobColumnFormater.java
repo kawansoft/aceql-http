@@ -38,7 +38,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.kawanfw.sql.api.server.DatabaseConfigurator;
 import org.kawanfw.sql.servlet.HttpParameter;
-import org.kawanfw.sql.servlet.ServerSqlManager;
+import org.kawanfw.sql.servlet.injection.classes.InjectedClassesStore;
 import org.kawanfw.sql.util.FrameworkFileUtil;
 import org.kawanfw.sql.util.HtmlConverter;
 
@@ -83,7 +83,7 @@ public class ClobColumnFormater {
 	// Maybe null, we want to keep the info
 	Reader reader = resultSet.getCharacterStream(columnIndex);
 
-	DatabaseConfigurator databaseConfigurator = ServerSqlManager.getDatabaseConfigurator(database);
+	DatabaseConfigurator databaseConfigurator = InjectedClassesStore.get().getDatabaseConfigurators().get(database);
 	String hostFileName = databaseConfigurator.getBlobsDirectory(username) + File.separator + fileName;
 
 	//debug("formatClobColumn:writer: " + hostFileName);

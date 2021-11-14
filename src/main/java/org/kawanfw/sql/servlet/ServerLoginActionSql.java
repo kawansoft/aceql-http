@@ -40,6 +40,7 @@ import org.kawanfw.sql.api.server.auth.UserAuthenticator;
 import org.kawanfw.sql.api.server.session.SessionConfigurator;
 import org.kawanfw.sql.servlet.connection.ConnectionIdUtil;
 import org.kawanfw.sql.servlet.connection.ConnectionStore;
+import org.kawanfw.sql.servlet.injection.classes.InjectedClassesStore;
 import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesUtil;
 import org.kawanfw.sql.servlet.sql.json_return.ExceptionReturner;
 import org.kawanfw.sql.servlet.sql.json_return.JsonErrorReturn;
@@ -95,10 +96,10 @@ public class ServerLoginActionSql extends HttpServlet {
 	    password = password.trim();
 
 	    debug("calling login");
-	    UserAuthenticator userAuthenticator = ServerSqlManager.getUserAuthenticator();
+	    UserAuthenticator userAuthenticator = InjectedClassesStore.get().getUserAuthenticator();
 	    String database = request.getParameter(HttpParameter.DATABASE);
 
-	    DatabaseConfigurator databaseConfigurator = ServerSqlManager.getDatabaseConfigurator(database);
+	    DatabaseConfigurator databaseConfigurator = InjectedClassesStore.get().getDatabaseConfigurators().get(database);
 
 	    if (databaseConfigurator == null) {
 		JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_BAD_REQUEST,
@@ -124,7 +125,7 @@ public class ServerLoginActionSql extends HttpServlet {
 	    debug("Login done!");
 
 	    // Generate the session id
-	    SessionConfigurator sessionConfigurator = ServerSqlManager.getSessionManagerConfigurator();
+	    SessionConfigurator sessionConfigurator = InjectedClassesStore.get().getSessionConfigurator();
 	    String sessionId = sessionConfigurator.generateSessionId(username, database);
 
 	    String connectionId = null;

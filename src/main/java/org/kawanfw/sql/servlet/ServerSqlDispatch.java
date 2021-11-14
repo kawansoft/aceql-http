@@ -47,6 +47,7 @@ import org.kawanfw.sql.servlet.connection.ConnectionStoreGetter;
 import org.kawanfw.sql.servlet.connection.RollbackUtil;
 import org.kawanfw.sql.servlet.connection.SavepointUtil;
 import org.kawanfw.sql.servlet.connection.TransactionUtil;
+import org.kawanfw.sql.servlet.injection.classes.InjectedClassesStore;
 import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesUtil;
 import org.kawanfw.sql.servlet.jdbc.metadata.JdbcDatabaseMetadataActionManager;
 import org.kawanfw.sql.servlet.sql.ServerStatement;
@@ -147,7 +148,7 @@ public class ServerSqlDispatch {
 		return;
 	    }
 
-	    List<SqlFirewallManager> sqlFirewallManagers = ServerSqlManager.getSqlFirewallMap().get(database);
+	    List<SqlFirewallManager> sqlFirewallManagers = InjectedClassesStore.get().getSqlFirewallMap().get(database);
 
 	    if (doTreatJdbcDatabaseMetaData(request, response, out, action, connection, sqlFirewallManagers)) {
 		return;

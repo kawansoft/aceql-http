@@ -35,6 +35,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.kawanfw.sql.api.server.DatabaseConfigurator;
 import org.kawanfw.sql.api.server.blob.BlobDownloadConfigurator;
+import org.kawanfw.sql.servlet.injection.classes.InjectedClassesStore;
 import org.kawanfw.sql.servlet.sql.LoggerUtil;
 import org.kawanfw.sql.servlet.sql.json_return.JsonErrorReturn;
 
@@ -89,7 +90,7 @@ public class BlobDownloader {
 	}
 
 	try {
-	    BlobDownloadConfigurator BlobDownloader = ServerSqlManager.getBlobDownloadConfigurator();
+	    BlobDownloadConfigurator BlobDownloader = InjectedClassesStore.get().getBlobDownloadConfigurator();
 	    BlobDownloader.download(request, file, out);
 	} catch (Exception e) {
 	    JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
