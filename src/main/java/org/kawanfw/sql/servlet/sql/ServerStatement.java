@@ -48,6 +48,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.kawanfw.sql.api.server.DatabaseConfigurator;
 import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
+import org.kawanfw.sql.api.server.listener.SqlActionEvent;
+import org.kawanfw.sql.api.server.listener.SqlActionEventWrapper;
+import org.kawanfw.sql.api.server.listener.UpdateListener;
 import org.kawanfw.sql.servlet.HttpParameter;
 import org.kawanfw.sql.servlet.ServerSqlManager;
 import org.kawanfw.sql.servlet.connection.RollbackUtil;
@@ -81,6 +84,8 @@ public class ServerStatement {
 
     private List<SqlFirewallManager> sqlFirewallManagers;
 
+    private List<UpdateListener> updateListeners;
+
     /**
      * Default Constructor
      *
@@ -98,7 +103,9 @@ public class ServerStatement {
 	this.sqlFirewallManagers = sqlFirewallManagers;
 	this.connection = connection;
 	doPrettyPrinting = true; // Always pretty printing
-
+	
+	String database = request.getParameter(HttpParameter.DATABASE);
+	updateListeners = InjectedClassesStore.get().getUpdateListenerMap().get(database);
     }
 
     /**
@@ -307,6 +314,12 @@ public class ServerStatement {
 
 	gen.writeStartObject().write("status", "OK").write("row_count", rc).writeEnd();
 	gen.close();
+
+	SqlActionEvent sqlActionEvent = SqlActionEventWrapper.sqlActionEventBuilder(username, database, ipAddress,
+		sqlOrder, true, serverPreparedStatementParameters.getParameterValues());
+	for (UpdateListener updateListener : updateListeners) {
+	    updateListener.updateActionPerformed(sqlActionEvent, connection);
+	}
 
 	ServerSqlManager.write(out, sw.toString());
     }
@@ -555,6 +568,13 @@ public class ServerStatement {
 
 	gen.writeStartObject().write("status", "OK").write("row_count", rc).writeEnd();
 	gen.close();
+	
+	List<Object> parameterValues = new ArrayList<>();
+	SqlActionEvent sqlActionEvent = SqlActionEventWrapper.sqlActionEventBuilder(username, database, ipAddress,
+		sqlOrder, false, parameterValues);
+	for (UpdateListener updateListener : updateListeners) {
+	    updateListener.updateActionPerformed(sqlActionEvent, connection);
+	}
 
 	ServerSqlManager.write(out, sw.toString());
     }
