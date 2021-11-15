@@ -47,7 +47,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.kawanfw.sql.api.server.DatabaseConfigurator;
-import org.kawanfw.sql.api.server.StatementAnalyzer;
 import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
 import org.kawanfw.sql.api.server.listener.DefaultUpdateListener;
 import org.kawanfw.sql.api.server.listener.SqlActionEvent;
