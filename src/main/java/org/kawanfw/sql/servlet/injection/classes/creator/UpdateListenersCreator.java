@@ -42,9 +42,9 @@ import org.kawanfw.sql.api.server.listener.UpdateListener;
 
 public class UpdateListenersCreator {
 
-    private static String[] PREDEFINED_CLASS_NAMES = {
-	    JsonLoggerUpdateListener.class.getSimpleName()
-	    };
+    private static final boolean TRACE_ON_START = false;
+
+    private static String[] PREDEFINED_CLASS_NAMES = { JsonLoggerUpdateListener.class.getSimpleName() };
 
     private List<String> updateListenerClassNames = new ArrayList<>();
     private List<UpdateListener> updateListenerManagers = new ArrayList<>();
@@ -65,14 +65,17 @@ public class UpdateListenersCreator {
 		Constructor<?> constructor = c.getConstructor();
 		UpdateListener updateListenerManager = (UpdateListener) constructor.newInstance();
 
-		try (Connection connection = databaseConfigurator.getConnection(database);) {
-		    List<Object> parameterValues = new ArrayList<>();
-		    parameterValues.add("value1");
-		    parameterValues.add("value2");
-		    
-		    // We call code just to verify it's OK:
-		    SqlActionEvent sqlActionEvent = SqlActionEventWrapper.sqlActionEventBuilder("username", database, "127.0.0.1", "select * from table",  false, parameterValues);
-		    updateListenerManager.updateActionPerformed(sqlActionEvent, connection);
+		if (TRACE_ON_START) {
+		    try (Connection connection = databaseConfigurator.getConnection(database);) {
+			List<Object> parameterValues = new ArrayList<>();
+			parameterValues.add("value1");
+			parameterValues.add("value2");
+
+			// We call code just to verify it's OK:
+			SqlActionEvent sqlActionEvent = SqlActionEventWrapper.sqlActionEventBuilder("username",
+				database, "127.0.0.1", "select * from table", false, parameterValues);
+			updateListenerManager.updateActionPerformed(sqlActionEvent, connection);
+		    }
 		}
 
 		updateListenerClassName = updateListenerManager.getClass().getName();
@@ -101,8 +104,7 @@ public class UpdateListenersCreator {
 	for (int i = 0; i < PREDEFINED_CLASS_NAMES.length; i++) {
 	    if (PREDEFINED_CLASS_NAMES[i].equals(theClassName)) {
 		// Add prefix package
-		String theClassNameNew = UpdateListener.class.getPackage()
-			.getName() + "." + theClassName;
+		String theClassNameNew = UpdateListener.class.getPackage().getName() + "." + theClassName;
 		return theClassNameNew;
 	    }
 	}
