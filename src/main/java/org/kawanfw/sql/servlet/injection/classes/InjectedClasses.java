@@ -35,6 +35,7 @@ import org.kawanfw.sql.api.server.auth.headers.RequestHeadersAuthenticator;
 import org.kawanfw.sql.api.server.blob.BlobDownloadConfigurator;
 import org.kawanfw.sql.api.server.blob.BlobUploadConfigurator;
 import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
+import org.kawanfw.sql.api.server.listener.UpdateListener;
 import org.kawanfw.sql.api.server.session.SessionConfigurator;
 
 /**
@@ -69,6 +70,9 @@ public class InjectedClasses {
     /** The executor to use */
     private ThreadPoolExecutor threadPoolExecutor = null;
 
+    /** The map of (database, List<UpdateListener>) */
+    private Map<String, List<UpdateListener>> updateListenerMap = new ConcurrentHashMap<>();
+    
     private InjectedClasses(InjectedClassesBuilder injectedClassesBuilder) {
 	this.userAuthenticator = injectedClassesBuilder.userAuthenticator;
 	this.requestHeadersAuthenticator = injectedClassesBuilder.requestHeadersAuthenticator;
@@ -79,6 +83,8 @@ public class InjectedClasses {
 	this.blobDownloadConfigurator = injectedClassesBuilder.blobDownloadConfigurator;
 	this.sessionConfigurator = injectedClassesBuilder.sessionConfigurator;
 	this.threadPoolExecutor = injectedClassesBuilder.threadPoolExecutor;
+	
+	this.updateListenerMap = injectedClassesBuilder.updateListenerMap;
 
     }
 
@@ -138,6 +144,16 @@ public class InjectedClasses {
 	return threadPoolExecutor;
     }
 
+ 
+    /**
+     * @return the updateListenerMap
+     */
+    public Map<String, List<UpdateListener>> getUpdateListenerMap() {
+        return updateListenerMap;
+    }
+
+
+
     public static class InjectedClassesBuilder {
 	/** The UserAuthenticator instance */
 	private UserAuthenticator userAuthenticator = null;
@@ -163,6 +179,9 @@ public class InjectedClasses {
 	/** The executor to use */
 	private ThreadPoolExecutor threadPoolExecutor = null;
 
+	/** The map of (database, List<UpdateListener>) */
+	private Map<String, List<UpdateListener>> updateListenerMap = new ConcurrentHashMap<>();
+	    
 	public InjectedClassesBuilder userAuthenticator(UserAuthenticator userAuthenticator) {
 	    this.userAuthenticator = userAuthenticator;
 	    return this;
@@ -209,6 +228,11 @@ public class InjectedClasses {
 	
 	public InjectedClassesBuilder threadPoolExecutor(ThreadPoolExecutor threadPoolExecutor) {
 	    this.threadPoolExecutor = threadPoolExecutor;
+	    return this;
+	}
+	
+	public InjectedClassesBuilder updateListenerMap(Map<String, List<UpdateListener>> updateListenerMap) {
+	    this.updateListenerMap = updateListenerMap;
 	    return this;
 	}
 
