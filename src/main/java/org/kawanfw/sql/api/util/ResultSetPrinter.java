@@ -53,7 +53,7 @@ import org.kawanfw.sql.util.FrameworkDebug;
  * </ul>
  * <br>
  * Example on our sampledb test database
- * <a href="http://docs.aceql.com/soft/8.2/src/sampledb.txt">sampledb</a>:
+ * <a href="http://docs.aceql.com/soft/9.0/src/sampledb.txt">sampledb</a>:
  * <blockquote>
  *
  * <pre>

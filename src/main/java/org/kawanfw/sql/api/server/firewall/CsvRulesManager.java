@@ -92,7 +92,7 @@ import org.kawanfw.sql.util.FrameworkDebug;
  * </ul>
  * <br>
  * See an example of CSV file: <a href=
- * "https://docs.aceql.com/rest/soft/8.2/src/sampledb_rules_manager.csv">sampledb_rules_manager.csv</a>
+ * "https://docs.aceql.com/rest/soft/9.0/src/sampledb_rules_manager.csv">sampledb_rules_manager.csv</a>
  * <br>
  * <br>
  *
