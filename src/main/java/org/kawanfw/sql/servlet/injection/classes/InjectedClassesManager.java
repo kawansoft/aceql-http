@@ -354,7 +354,7 @@ public class InjectedClassesManager {
 	    classNameToLoad = sqlFirewallClassNames.toString();
 
 	    String tagSQLFirewallManager = null;
-	    if (sqlFirewallClassNames.size() == 0)
+	    if (sqlFirewallClassNames.size() < 2)
 		tagSQLFirewallManager = " SQLFirewallManager class: ";
 	    else
 		tagSQLFirewallManager = " SQLFirewallManager classes: ";
@@ -392,7 +392,7 @@ public class InjectedClassesManager {
 	    classNameToLoad = updateListenerClassNames.toString();
 
 	    String tagUpdateListener = null;
-	    if (updateListenerClassNames.size() == 0)
+	    if (updateListenerClassNames.size() < 2)
 		tagUpdateListener = " UpdateListener class: ";
 	    else
 		tagUpdateListener = " UpdateListener classes: ";
@@ -402,8 +402,8 @@ public class InjectedClassesManager {
 	    Map<String, DatabaseConfigurator> databaseConfigurators = injectedClassesBuilder.getDatabaseConfigurators();
 
 	    DatabaseConfigurator databaseConfigurator = databaseConfigurators.get(database);
-	    UpdateListenersCreator updateListenersCreator = new UpdateListenersCreator(updateListenerClassNames, database,
-		    databaseConfigurator);
+	    UpdateListenersCreator updateListenersCreator = new UpdateListenersCreator(updateListenerClassNames,
+		    database, databaseConfigurator);
 	    List<UpdateListener> updateListeners = updateListenersCreator.getUpdateListeners();
 	    updateListenerMap.put(database, updateListeners);
 
@@ -418,7 +418,7 @@ public class InjectedClassesManager {
 	injectedClassesBuilder.updateListenerMap(updateListenerMap);
 
     }
-    
+
     /**
      * Loads the database configurators.
      *
