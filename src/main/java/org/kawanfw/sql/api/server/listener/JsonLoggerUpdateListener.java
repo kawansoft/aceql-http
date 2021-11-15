@@ -65,7 +65,7 @@ public class JsonLoggerUpdateListener implements UpdateListener {
     @Override
     public void updateActionPerformed(SqlActionEvent evt, Connection connection) throws IOException, SQLException {
 	String jsonString = UpdateListenerUtil.toJsonString(evt);
-	getLogger().log(Level.ALL, jsonString);
+	getLogger().log(Level.WARNING, jsonString);
     }
 
     private Logger getLogger() throws IOException {

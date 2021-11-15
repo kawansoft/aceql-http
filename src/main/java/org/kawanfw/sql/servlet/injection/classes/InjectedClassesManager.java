@@ -43,6 +43,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.kawanfw.sql.api.server.DatabaseConfigurationException;
 import org.kawanfw.sql.api.server.DatabaseConfigurator;
 import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
+import org.kawanfw.sql.api.server.listener.UpdateListener;
 import org.kawanfw.sql.servlet.ServerSqlManager;
 import org.kawanfw.sql.servlet.injection.classes.InjectedClasses.InjectedClassesBuilder;
 import org.kawanfw.sql.servlet.injection.classes.creator.BlobDownloadConfiguratorCreator;
@@ -51,6 +52,7 @@ import org.kawanfw.sql.servlet.injection.classes.creator.DatabaseConfiguratorCre
 import org.kawanfw.sql.servlet.injection.classes.creator.RequestHeadersAuthenticatorCreator;
 import org.kawanfw.sql.servlet.injection.classes.creator.SessionConfiguratorCreator;
 import org.kawanfw.sql.servlet.injection.classes.creator.SqlFirewallsCreator;
+import org.kawanfw.sql.servlet.injection.classes.creator.UpdateListenersCreator;
 import org.kawanfw.sql.servlet.injection.classes.creator.UserAuthenticatorCreator;
 import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesStore;
 import org.kawanfw.sql.servlet.injection.properties.PropertiesFileStore;
@@ -115,6 +117,7 @@ public class InjectedClassesManager {
 	    loadRequestHeadersAuthenticator(injectedClassesBuilder);
 	    loadDatabaseConfigurators(databases, injectedClassesBuilder);
 	    loadSqlFirewallManagers(databases, injectedClassesBuilder);
+	    loadUpdateListeners(databases, injectedClassesBuilder);
 	    loadBlobDownloadConfigurator(injectedClassesBuilder);
 	    loadBlobUploadConfigurator(injectedClassesBuilder);
 	    loadSessionManagerConfigurator(injectedClassesBuilder);
@@ -378,6 +381,44 @@ public class InjectedClassesManager {
 
     }
 
+    private void loadUpdateListeners(Set<String> databases, InjectedClassesBuilder injectedClassesBuilder)
+	    throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException,
+	    IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException, IOException {
+
+	Map<String, List<UpdateListener>> updateListenerMap = new HashMap<>();
+
+	for (String database : databases) {
+	    List<String> updateListenerClassNames = ConfPropertiesStore.get().getUpdateListenerClassNames(database);
+	    classNameToLoad = updateListenerClassNames.toString();
+
+	    String tagUpdateListener = null;
+	    if (updateListenerClassNames.size() == 0)
+		tagUpdateListener = " UpdateListener class: ";
+	    else
+		tagUpdateListener = " UpdateListener classes: ";
+
+	    System.out.println(SqlTag.SQL_PRODUCT_START + " Loading Database " + database + tagUpdateListener);
+
+	    Map<String, DatabaseConfigurator> databaseConfigurators = injectedClassesBuilder.getDatabaseConfigurators();
+
+	    DatabaseConfigurator databaseConfigurator = databaseConfigurators.get(database);
+	    UpdateListenersCreator updateListenersCreator = new UpdateListenersCreator(updateListenerClassNames, database,
+		    databaseConfigurator);
+	    List<UpdateListener> updateListeners = updateListenersCreator.getUpdateListeners();
+	    updateListenerMap.put(database, updateListeners);
+
+	    updateListenerClassNames = updateListenersCreator.getUpdateListenerClassNames();
+	    classNameToLoad = updateListenerClassNames.toString();
+
+	    for (String updateListenerClassName : updateListenerClassNames) {
+		System.out.println(SqlTag.SQL_PRODUCT_START + "   -> " + updateListenerClassName);
+	    }
+	}
+
+	injectedClassesBuilder.updateListenerMap(updateListenerMap);
+
+    }
+    
     /**
      * Loads the database configurators.
      *

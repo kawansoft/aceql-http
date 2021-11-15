@@ -36,6 +36,7 @@ import java.util.List;
 import org.kawanfw.sql.api.server.DatabaseConfigurator;
 import org.kawanfw.sql.api.server.listener.DefaultUpdateListener;
 import org.kawanfw.sql.api.server.listener.JsonLoggerUpdateListener;
+import org.kawanfw.sql.api.server.listener.SqlActionEvent;
 import org.kawanfw.sql.api.server.listener.SqlActionEventWrapper;
 import org.kawanfw.sql.api.server.listener.UpdateListener;
 
@@ -66,10 +67,12 @@ public class UpdateListenersCreator {
 
 		try (Connection connection = databaseConfigurator.getConnection(database);) {
 		    List<Object> parameterValues = new ArrayList<>();
-
+		    parameterValues.add("value1");
+		    parameterValues.add("value2");
+		    
 		    // We call code just to verify it's OK:
-		    SqlActionEventWrapper.sqlActionEventBuilder("username", database, "127.0.0.1", "select * from table",  false, parameterValues);
-		    updateListenerManager.updateActionPerformed(null, connection);
+		    SqlActionEvent sqlActionEvent = SqlActionEventWrapper.sqlActionEventBuilder("username", database, "127.0.0.1", "select * from table",  false, parameterValues);
+		    updateListenerManager.updateActionPerformed(sqlActionEvent, connection);
 		}
 
 		updateListenerClassName = updateListenerManager.getClass().getName();
