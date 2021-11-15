@@ -59,6 +59,8 @@ public class ConfProperties {
 
     private Map<String, List<String>> sqlFirewallClassNamesMap = new ConcurrentHashMap<>();
     private boolean statelessMode;
+    
+    private Map<String, List<String>> updateListenerClassNamesMap = new ConcurrentHashMap<>();
 
     
     private ConfProperties(ConfPropertiesBuilder confPropertiesBuilder) {
@@ -79,7 +81,8 @@ public class ConfProperties {
 
 	this.sqlFirewallClassNamesMap = confPropertiesBuilder.sqlFirewallClassNamesMap;
 	this.statelessMode = confPropertiesBuilder.statelessMode;
-
+	
+	this.updateListenerClassNamesMap = confPropertiesBuilder.updateListenerClassNamesMap;
     }
 
     /**
@@ -183,6 +186,19 @@ public class ConfProperties {
 	return statelessMode;
     }
 
+    
+    /**
+     * @return the updateListenerClassNamesMap
+     */
+    @SuppressWarnings("unused")
+    private Map<String, List<String>> getUpdateListenerClassNamesMap() {
+        return updateListenerClassNamesMap;
+    }
+
+    public List<String> getUpdateListenerClassNames(String database) {
+	return updateListenerClassNamesMap.get(database);
+    }
+
     public static class ConfPropertiesBuilder {
 	/** The database names */
 	private Set<String> databaseSet = null;
@@ -204,7 +220,8 @@ public class ConfProperties {
 
 	private Map<String, List<String>> sqlFirewallClassNamesMap = new ConcurrentHashMap<>();
 	private boolean statelessMode;
-
+	private Map<String, List<String>> updateListenerClassNamesMap = new ConcurrentHashMap<>();
+	    
 	public ConfPropertiesBuilder databaseSet(Set<String> databaseSet) {
 	    this.databaseSet = databaseSet;
 	    return this;
@@ -266,6 +283,11 @@ public class ConfProperties {
 	    return this;
 	}
 
+	public ConfPropertiesBuilder updateListenerClassNamesMap(Map<String, List<String>> updateListenerClassNamesMap) {
+	    this.updateListenerClassNamesMap = updateListenerClassNamesMap;
+	    return this;
+	}
+	
 	// Return the finally constructed User object
 	public ConfProperties build() {
 	    ConfProperties confProperties = new ConfProperties(this);
