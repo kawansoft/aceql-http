@@ -269,10 +269,11 @@ public class ConfProperties {
 	// Return the finally constructed User object
 	public ConfProperties build() {
 	    ConfProperties confProperties = new ConfProperties(this);
-	    validateUserObject(confProperties);
+	    //validateUserObject(confProperties);
 	    return confProperties;
 	}
 
+	@SuppressWarnings("unused")
 	private void validateUserObject(ConfProperties confProperties) {
 	    // HACK NDP 
 	    // TODO LATER

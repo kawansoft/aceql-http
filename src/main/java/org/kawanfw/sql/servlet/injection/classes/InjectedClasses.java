@@ -199,6 +199,14 @@ public class InjectedClasses {
 	    return this;
 	}
 
+	/**
+	 * Necessary, because Database Configurators are needed when building firewall...
+	 * @return
+	 */
+	public Map<String, DatabaseConfigurator> getDatabaseConfigurators() {
+	    return databaseConfigurators;
+	}
+	
 	public InjectedClassesBuilder threadPoolExecutor(ThreadPoolExecutor threadPoolExecutor) {
 	    this.threadPoolExecutor = threadPoolExecutor;
 	    return this;
@@ -207,10 +215,11 @@ public class InjectedClasses {
 	// Return the finally constructed User object
 	public InjectedClasses build() {
 	    InjectedClasses injectedClasses = new InjectedClasses(this);
-	    validateUserObject(injectedClasses);
+	    //validateUserObject(injectedClasses);
 	    return injectedClasses;
 	}
 
+	@SuppressWarnings("unused")
 	private void validateUserObject(InjectedClasses injectedClasses) {
 	    // HACK NDP
 	    // TODO LATER
@@ -218,13 +227,7 @@ public class InjectedClasses {
 	    // if user object does not break any assumption of system
 	}
 
-	/**
-	 * Necessary, because Database Configurators are needed when building firewall...
-	 * @return
-	 */
-	public Map<String, DatabaseConfigurator> getDatabaseConfigurators() {
-	    return databaseConfigurators;
-	}
+
 
     }
 

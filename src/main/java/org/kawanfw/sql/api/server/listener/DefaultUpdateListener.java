@@ -39,7 +39,7 @@ import java.sql.SQLException;
 public class DefaultUpdateListener implements UpdateListener {
 
     /**
-     * Does nothing.
+     * This default implementation does nothing for the sake of speed execution.
      */
     @Override
     public void updateActionPerformed(SqlActionEvent evt, Connection connection) throws IOException, SQLException {
