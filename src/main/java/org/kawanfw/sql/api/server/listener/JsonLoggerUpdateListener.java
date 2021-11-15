@@ -41,7 +41,6 @@ import javax.json.stream.JsonGenerator;
 import javax.json.stream.JsonGeneratorFactory;
 
 import org.apache.commons.lang3.SystemUtils;
-import org.kawanfw.sql.api.server.DefaultDatabaseConfigurator;
 import org.kawanfw.sql.api.server.util.NoFormatter;
 import org.kawanfw.sql.servlet.sql.json_return.JsonUtil;
 import org.kawanfw.sql.util.TimestampUtil;
@@ -49,8 +48,8 @@ import org.kawanfw.sql.util.log.FlattenLogger;
 
 /**
  * Concrete implementation of {@code UpdateListener}. The
- * {@code updateActionPerformed(SqlActionEvent, Connection)}
- * logs in Json format the  {@code SqlActionEvent}.
+ * {@code updateActionPerformed(SqlActionEvent, Connection)} logs in Json format
+ * the {@code SqlActionEvent}.
  * 
  * @author Nicolas de Pomereu
  * @since 9.0
@@ -61,14 +60,14 @@ public class JsonLoggerUpdateListener implements UpdateListener {
     private static Logger ACEQL_LOGGER = null;
 
     /**
-     * Logs in Json format the {@code SqlActionEvent} into a {@code Logger} with parameters:
-     *         <ul>
-     *         <li>Output file pattern:
-     *         {@code user.home/.kawansoft/log/JsonLoggerUpdateListener.log}.</li>
-     *         <li>Formatter: {@code SimpleFormatter}.</li>
-     *         <li>Limit: 200Mb.</li>
-     *         <li>Count (number of files to use): 2.</li>
-     *         </ul>
+     * Logs in Json format the {@code SqlActionEvent} into a {@code Logger} with
+     * parameters:
+     * <ul>
+     * <li>Output file pattern:
+     * {@code user.home/.kawansoft/log/JsonLoggerUpdateListener.log}.</li>
+     * <li>Limit: 1Gb.</li>
+     * <li>Count (number of files to use): 3.</li>
+     * </ul>
      */
     @Override
     public void updateActionPerformed(SqlActionEvent evt, Connection connection) throws IOException, SQLException {
@@ -78,8 +77,9 @@ public class JsonLoggerUpdateListener implements UpdateListener {
 
     /**
      * Transforms the input {@code SqlActionEvent} into Json String.
-     * @param evt	the SqlActionEvent
-     * @return	the output Json String 
+     * 
+     * @param evt the SqlActionEvent
+     * @return the output Json String
      */
     public static String toJsonString(SqlActionEvent evt) {
 
@@ -91,25 +91,26 @@ public class JsonLoggerUpdateListener implements UpdateListener {
 	gen.write("username", evt.getUsername());
 	gen.write("database", evt.getDatabase());
 	gen.write("ipAddress", evt.getIpAddress());
-	
+
 	gen.write("sql", evt.getSql());
 	gen.write("isPreparedStatement", evt.isPreparedStatement());
-	
+
 	gen.writeStartArray("parameterValues");
 	List<String> values = paramValuesAsList(evt.getParameterValues());
 	for (String value : values) {
-	    gen.write(value);  
+	    gen.write(value);
 	}
 	gen.writeEnd();
-	
+
 	gen.writeEnd();
 	gen.close();
 	return bos.toString();
     }
-    
+
     /**
      * Transforms the Object parameters values into strings
-     * @param parameterValues	the Object parameter values
+     * 
+     * @param parameterValues the Object parameter values
      * @return the converted String parameter values
      */
     private static List<String> paramValuesAsList(List<Object> parameterValues) {
@@ -119,7 +120,7 @@ public class JsonLoggerUpdateListener implements UpdateListener {
 	}
 	return list;
     }
-    
+
     private Logger getLogger() throws IOException {
 	if (ACEQL_LOGGER != null) {
 	    return ACEQL_LOGGER;
@@ -130,15 +131,14 @@ public class JsonLoggerUpdateListener implements UpdateListener {
 
 	String pattern = logDir.toString() + File.separator + "JsonLoggerUpdateListener.log";
 
-	Logger logger = Logger.getLogger(DefaultDatabaseConfigurator.class.getName());
+	Logger logger = Logger.getLogger(JsonLoggerUpdateListener.class.getName());
 	ACEQL_LOGGER = new FlattenLogger(logger.getName(), logger.getResourceBundleName());
 
-	Handler fh = new FileHandler(pattern, 200 * 1024 * 1024, 2, true);
+	Handler fh = new FileHandler(pattern, 1000 * 1024 * 1024, 3, true);
 	fh.setFormatter(new NoFormatter());
 	ACEQL_LOGGER.addHandler(fh);
 	return ACEQL_LOGGER;
 
     }
-    
 
 }
