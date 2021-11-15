@@ -66,42 +66,36 @@ public class ConfPropertiesManager {
 	
 	String aceQLManagerServletCallName = TomcatStarterUtil.getAceQLManagerSevletName(properties);
 
-	//ServletParametersStore.setServletName(aceQLManagerServletCallName);
 	confPropertiesBuilder.servletName(aceQLManagerServletCallName);
 	
 	boolean statelessMode = Boolean.parseBoolean(properties.getProperty(ServerSqlManager.STATELESS_MODE, "false"));
-	//ServletParametersStore.setStatelessMode(statelessMode);
 	confPropertiesBuilder.statelessMode(statelessMode);
 	
 	Set<String> databases = TomcatStarterUtil.getDatabaseNames(properties);
-	//ServletParametersStore.setDatabaseNames(databases);
 	confPropertiesBuilder.databaseSet(databases);
 
 	String userAuthenticatorClassName = TomcatStarterUtil
 		.trimSafe(properties.getProperty(ServerSqlManager.USER_AUTHENTICATOR_CLASS_NAME));
 	if (userAuthenticatorClassName != null && !userAuthenticatorClassName.isEmpty()) {
-	    //ServletParametersStore.setUserAuthenticatorClassName(userAuthenticatorClassName);
 	    confPropertiesBuilder.userAuthenticatorClassName(userAuthenticatorClassName);
 	}
 
 	String requestHeadersAuthenticatorClassName = TomcatStarterUtil
 		.trimSafe(properties.getProperty(ServerSqlManager.REQUEST_HEADERS_AUTHENTICATOR_CLASS_NAME));
 	if (requestHeadersAuthenticatorClassName != null && !requestHeadersAuthenticatorClassName.isEmpty()) {
-	    //ServletParametersStore.setRequestHeadersAuthenticatorClassName(requestHeadersAuthenticatorClassName);
 	    confPropertiesBuilder.requestHeadersAuthenticatorClassName(requestHeadersAuthenticatorClassName);
 	}
 
 	Map<String, String> databaseConfiguratorClassNameMap = new HashMap<>();
 	Map<String, List<String>> sqlFirewallClassNamesMap = new HashMap<>();
-	 
+	Map<String, List<String>> updateListenerClassNamesMap = new HashMap<>();
+	
 	for (String database : databases) {
 	    // Set the configurator to use for this database
 	    String databaseConfiguratorClassName = TomcatStarterUtil.trimSafe(
 		    properties.getProperty(database + "." + ServerSqlManager.DATABASE_CONFIGURATOR_CLASS_NAME));
 
 	    if (databaseConfiguratorClassName != null && !databaseConfiguratorClassName.isEmpty()) {
-		//ServletParametersStore.setInitParameter(database, new InitParamNameValuePair(
-		//	ServerSqlManager.DATABASE_CONFIGURATOR_CLASS_NAME, databaseConfiguratorClassName));
 		databaseConfiguratorClassNameMap.put(database, databaseConfiguratorClassName);
 	    }
 
@@ -111,34 +105,39 @@ public class ConfPropertiesManager {
 	    if (sqlFirewallClassNameArray != null && !sqlFirewallClassNameArray.isEmpty()) {
 		List<String> sqlFirewallClassNames = TomcatStarterUtilProperties.getList(sqlFirewallClassNameArray);
 		sqlFirewallClassNamesMap.put(database, sqlFirewallClassNames );
-		//ServletParametersStore.setSqlFirewallClassNames(database, sqlFirewallClassNames);
 	    } else {
-		//ServletParametersStore.setSqlFirewallClassNames(database, new ArrayList<String>());
 		sqlFirewallClassNamesMap.put(database, new ArrayList<String>() );
+	    }
+	  
+	    String updateListenerClassNameArray = TomcatStarterUtil.trimSafe(
+		    properties.getProperty(database + "." + ServerSqlManager.UPDATE_LISTENER_MANAGER_CLASS_NAMES));
+
+	    if (updateListenerClassNameArray != null && !updateListenerClassNameArray.isEmpty()) {
+		List<String> updateListenerClassNames = TomcatStarterUtilProperties.getList(updateListenerClassNameArray);
+		updateListenerClassNamesMap.put(database, updateListenerClassNames );
+	    } else {
+		updateListenerClassNamesMap.put(database, new ArrayList<String>() );
 	    }
 	}
 	
 	confPropertiesBuilder.databaseConfiguratorClassNameMap(databaseConfiguratorClassNameMap);
 	confPropertiesBuilder.sqlFirewallClassNamesMap(sqlFirewallClassNamesMap);
+	confPropertiesBuilder.updateListenerClassNamesMap(updateListenerClassNamesMap);
 	
 	String blobDownloadConfiguratorClassName = TomcatStarterUtil
 		.trimSafe(properties.getProperty(ServerSqlManager.BLOB_DOWNLOAD_CONFIGURATOR_CLASS_NAME));
-	//ServletParametersStore.setBlobDownloadConfiguratorClassName(blobDownloadConfiguratorClassName);
 	confPropertiesBuilder.blobDownloadConfiguratorClassName(blobDownloadConfiguratorClassName);
 	
 	String blobUploadConfiguratorClassName = TomcatStarterUtil
 		.trimSafe(properties.getProperty(ServerSqlManager.BLOB_UPLOAD_CONFIGURATOR_CLASS_NAME));
-	//ServletParametersStore.setBlobUploadConfiguratorClassName(blobUploadConfiguratorClassName);
 	confPropertiesBuilder.blobUploadConfiguratorClassName(blobUploadConfiguratorClassName);
 	
 	String sessionConfiguratorClassName = TomcatStarterUtil
 		.trimSafe(properties.getProperty(ServerSqlManager.SESSION_CONFIGURATOR_CLASS_NAME));
-	//ServletParametersStore.setSessionConfiguratorClassName(sessionConfiguratorClassName);
 	confPropertiesBuilder.sessionConfiguratorClassName(sessionConfiguratorClassName);
 
 	String jwtSessionConfiguratorSecretValue = TomcatStarterUtil
-		.trimSafe(properties.getProperty(ServerSqlManager.JWT_SESSION_CONFIGURATOR_SECRET));
-	//ServletParametersStore.setJwtSessionConfiguratorSecretValue(jwtSessionConfiguratorSecretValue);	
+		.trimSafe(properties.getProperty(ServerSqlManager.JWT_SESSION_CONFIGURATOR_SECRET));	
 	confPropertiesBuilder.jwtSessionConfiguratorSecretValue(jwtSessionConfiguratorSecretValue);
 	
 	ConfProperties confProperties = confPropertiesBuilder.build();

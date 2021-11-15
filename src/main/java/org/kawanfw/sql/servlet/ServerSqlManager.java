@@ -78,6 +78,8 @@ public class ServerSqlManager extends HttpServlet {
     public static final String BLOB_UPLOAD_CONFIGURATOR_CLASS_NAME = "blobUploadConfiguratorClassName";
     public static final String SESSION_CONFIGURATOR_CLASS_NAME = "sessionConfiguratorClassName";
     public static final String JWT_SESSION_CONFIGURATOR_SECRET = "jwtSessionConfiguratorSecret";
+
+    public static final String UPDATE_LISTENER_MANAGER_CLASS_NAMES = "updateListenerClassNames";
     
     /** The Exception thrown at init */
     private Exception exception = null;
