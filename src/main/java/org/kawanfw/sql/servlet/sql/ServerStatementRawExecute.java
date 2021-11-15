@@ -46,7 +46,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.kawanfw.sql.api.server.DatabaseConfigurator;
+import org.kawanfw.sql.api.server.StatementAnalyzer;
 import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
+import org.kawanfw.sql.api.server.listener.DefaultUpdateListener;
 import org.kawanfw.sql.api.server.listener.SqlActionEvent;
 import org.kawanfw.sql.api.server.listener.SqlActionEventWrapper;
 import org.kawanfw.sql.api.server.listener.UpdateListener;
@@ -325,12 +327,8 @@ public class ServerStatementRawExecute {
 	    gen.close();
 
 	    List<Object> parameterValues = new ArrayList<>();
-	    SqlActionEvent sqlActionEvent = SqlActionEventWrapper.sqlActionEventBuilder(username, database, ipAddress,
-		    sqlOrder, false, parameterValues);
-	    for (UpdateListener updateListener : updateListeners) {
-		updateListener.updateActionPerformed(sqlActionEvent, connection);
-	    }
-		
+	    callUpdateListeners(username, database, sqlOrder, parameterValues, ipAddress, false);
+
 	    ServerSqlManager.write(out, sw.toString());
 	}
 	else {
@@ -375,12 +373,9 @@ public class ServerStatementRawExecute {
 	    gen.writeStartObject().write("status", "OK").write("row_count", preparedStatement.getUpdateCount()).writeEnd();
 	    gen.close();
 
-	    SqlActionEvent sqlActionEvent = SqlActionEventWrapper.sqlActionEventBuilder(username, database, ipAddress,
-		    sqlOrder, true, serverPreparedStatementParameters.getParameterValues());
-	    for (UpdateListener updateListener : updateListeners) {
-		updateListener.updateActionPerformed(sqlActionEvent, connection);
-	    }
-		
+	    List<Object> parameterValues = serverPreparedStatementParameters.getParameterValues();
+	    callUpdateListeners(username, database, sqlOrder, parameterValues, ipAddress, true);
+
 	    ServerSqlManager.write(out, sw.toString());
 	}
 	else {
@@ -390,6 +385,31 @@ public class ServerStatementRawExecute {
 	}
 
 
+    }
+
+    /**
+     * Call the UpdateListener updateActionPerformed method
+     * @param username
+     * @param database
+     * @param sqlOrder
+     * @param ipAddress
+     * @param isPreparedStatement TODO
+     * @param serverPreparedStatementParameters
+     * @throws SQLException
+     * @throws IOException
+     */
+    public void callUpdateListeners(String username, String database, String sqlOrder, List<Object> parameterValues,
+	    String ipAddress, boolean isPreparedStatement) throws SQLException, IOException {
+	if (updateListeners.size() != 1 || !(updateListeners.get(0) instanceof DefaultUpdateListener)) {
+	    StatementAnalyzer analyzer = new StatementAnalyzer(sqlOrder, parameterValues);
+	    if (analyzer.isDelete() || analyzer.isUpdate() || analyzer.isInsert()) {
+		SqlActionEvent sqlActionEvent = SqlActionEventWrapper.sqlActionEventBuilder(username, database,
+			ipAddress, sqlOrder, isPreparedStatement, parameterValues);
+		for (UpdateListener updateListener : updateListeners) {
+		    updateListener.updateActionPerformed(sqlActionEvent, connection);
+		}
+	    }
+	}
     }
 
     /**
