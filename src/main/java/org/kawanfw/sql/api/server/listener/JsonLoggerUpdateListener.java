@@ -25,25 +25,18 @@
 
 package org.kawanfw.sql.api.server.listener;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.FileHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.json.stream.JsonGenerator;
-import javax.json.stream.JsonGeneratorFactory;
-
 import org.apache.commons.lang3.SystemUtils;
 import org.kawanfw.sql.api.server.util.NoFormatter;
-import org.kawanfw.sql.servlet.sql.json_return.JsonUtil;
-import org.kawanfw.sql.util.TimestampUtil;
+import org.kawanfw.sql.servlet.util.UpdateListenerUtil;
 import org.kawanfw.sql.util.log.FlattenLogger;
 
 /**
@@ -71,54 +64,8 @@ public class JsonLoggerUpdateListener implements UpdateListener {
      */
     @Override
     public void updateActionPerformed(SqlActionEvent evt, Connection connection) throws IOException, SQLException {
-	String jsonString = toJsonString(evt);
+	String jsonString = UpdateListenerUtil.toJsonString(evt);
 	getLogger().log(Level.ALL, jsonString);
-    }
-
-    /**
-     * Transforms the input {@code SqlActionEvent} into Json String.
-     * 
-     * @param evt the SqlActionEvent
-     * @return the output Json String
-     */
-    public static String toJsonString(SqlActionEvent evt) {
-
-	JsonGeneratorFactory jf = JsonUtil.getJsonGeneratorFactory(false);
-	ByteArrayOutputStream bos = new ByteArrayOutputStream();
-	JsonGenerator gen = jf.createGenerator(bos);
-	gen.writeStartObject();
-	gen.write("date", TimestampUtil.getHumanTimestampNow());
-	gen.write("username", evt.getUsername());
-	gen.write("database", evt.getDatabase());
-	gen.write("ipAddress", evt.getIpAddress());
-
-	gen.write("sql", evt.getSql());
-	gen.write("isPreparedStatement", evt.isPreparedStatement());
-
-	gen.writeStartArray("parameterValues");
-	List<String> values = paramValuesAsList(evt.getParameterValues());
-	for (String value : values) {
-	    gen.write(value);
-	}
-	gen.writeEnd();
-
-	gen.writeEnd();
-	gen.close();
-	return bos.toString();
-    }
-
-    /**
-     * Transforms the Object parameters values into strings
-     * 
-     * @param parameterValues the Object parameter values
-     * @return the converted String parameter values
-     */
-    private static List<String> paramValuesAsList(List<Object> parameterValues) {
-	List<String> list = new ArrayList<>();
-	for (Object object : parameterValues) {
-	    list.add(String.valueOf(object));
-	}
-	return list;
     }
 
     private Logger getLogger() throws IOException {
