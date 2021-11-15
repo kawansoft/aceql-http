@@ -31,27 +31,27 @@ import java.util.List;
 
 import org.kawanfw.sql.util.FrameworkDebug;
 
-public class TomcatStarterUtilFirewall {
+public class TomcatStarterUtilProperties {
 
-    private static boolean DEBUG = FrameworkDebug.isSet(TomcatStarterUtilFirewall.class);
+    private static boolean DEBUG = FrameworkDebug.isSet(TomcatStarterUtilProperties.class);
     
-    public static List<String> getList(String sqlFirewallClassNameArray) {
+    public static List<String> getList(String classNameArray) {
 
-	debug("sqlFirewallClassNameArray: " + sqlFirewallClassNameArray + ":");
+	debug("classNameArray: " + classNameArray + ":");
 	
-	List<String> sqlFirewallClassNames = new ArrayList<>();
+	List<String> classNames = new ArrayList<>();
 
-	if (sqlFirewallClassNameArray == null || sqlFirewallClassNameArray.isEmpty()) {
-	    return sqlFirewallClassNames;
+	if (classNameArray == null || classNameArray.isEmpty()) {
+	    return classNames;
 	}
 
-	String [] array = sqlFirewallClassNameArray.split(",");
-	for (String sqlFirewallClassName  : array) {
-	    debug("sqlFirewallClassName: " + sqlFirewallClassName.trim() + ":");
-	    sqlFirewallClassNames.add(sqlFirewallClassName.trim());
+	String [] array = classNameArray.split(",");
+	for (String className  : array) {
+	    debug("className: " + className.trim() + ":");
+	    classNames.add(className.trim());
 	}
 	
-	return sqlFirewallClassNames;
+	return classNames;
     }
 
     /**

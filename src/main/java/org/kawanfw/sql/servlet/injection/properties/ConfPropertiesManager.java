@@ -36,7 +36,7 @@ import java.util.Set;
 import org.kawanfw.sql.servlet.ServerSqlManager;
 import org.kawanfw.sql.servlet.injection.properties.ConfProperties.ConfPropertiesBuilder;
 import org.kawanfw.sql.tomcat.TomcatStarterUtil;
-import org.kawanfw.sql.tomcat.TomcatStarterUtilFirewall;
+import org.kawanfw.sql.tomcat.TomcatStarterUtilProperties;
 
 /**
  * Create a ConfProperties from the passed properties.
@@ -109,7 +109,7 @@ public class ConfPropertiesManager {
 		    properties.getProperty(database + "." + ServerSqlManager.SQL_FIREWALL_MANAGER_CLASS_NAMES));
 
 	    if (sqlFirewallClassNameArray != null && !sqlFirewallClassNameArray.isEmpty()) {
-		List<String> sqlFirewallClassNames = TomcatStarterUtilFirewall.getList(sqlFirewallClassNameArray);
+		List<String> sqlFirewallClassNames = TomcatStarterUtilProperties.getList(sqlFirewallClassNameArray);
 		sqlFirewallClassNamesMap.put(database, sqlFirewallClassNames );
 		//ServletParametersStore.setSqlFirewallClassNames(database, sqlFirewallClassNames);
 	    } else {
