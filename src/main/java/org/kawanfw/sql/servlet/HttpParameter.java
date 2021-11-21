@@ -155,6 +155,7 @@ public class HttpParameter {
     public static final String PREPARED_STATEMENT_EXECUTE_BATCH = "prepared_statement_execute_batch";
     
     public static final String BATCH_LIST = "batch_list";
+    public static final Object GET_DATABASE_INFO = "get_database_info";
     
     /**
      * Protected

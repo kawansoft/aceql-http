@@ -28,6 +28,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.Enumeration;
@@ -41,6 +42,7 @@ import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.apache.tomcat.util.http.fileupload.servlet.ServletFileUpload;
 import org.kawanfw.sql.api.server.DatabaseConfigurator;
 import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
+import org.kawanfw.sql.metadata.util.GsonWsUtil;
 import org.kawanfw.sql.servlet.connection.ConnectionIdUtil;
 import org.kawanfw.sql.servlet.connection.ConnectionStore;
 import org.kawanfw.sql.servlet.connection.ConnectionStoreGetter;
@@ -55,6 +57,7 @@ import org.kawanfw.sql.servlet.sql.ServerStatementRawExecute;
 import org.kawanfw.sql.servlet.sql.batch.ServerPreparedStatementBatch;
 import org.kawanfw.sql.servlet.sql.batch.ServerStatementBatch;
 import org.kawanfw.sql.servlet.sql.callable.ServerCallableStatement;
+import org.kawanfw.sql.servlet.sql.dto.DatabaseInfoDto;
 import org.kawanfw.sql.servlet.sql.json_return.JsonErrorReturn;
 import org.kawanfw.sql.servlet.sql.json_return.JsonOkReturn;
 import org.kawanfw.sql.util.FrameworkDebug;
@@ -74,7 +77,7 @@ public class ServerSqlDispatch {
     private static boolean DEBUG = FrameworkDebug.isSet(ServerSqlDispatch.class);
 
     /**
-     * /** Execute the client sent sql request that is already wrapped in the
+     * Execute the client sent sql request that is already wrapped in the
      * calling try/catch that handles Throwable
      *
      * @param request  the http request
@@ -118,9 +121,6 @@ public class ServerSqlDispatch {
 	    return;
 	}
 
-	// Start clean Connections thread
-	//connectionStoreClean();
-
 	Connection connection = null;
 	
 	try {
@@ -137,6 +137,11 @@ public class ServerSqlDispatch {
 		}
 	    }
 
+	    // get_database_info
+	    if (isGetDatabaseInfo(out, action, connection)) {
+		return;
+	    }
+	    
 	    // Do not treat if not in auto-commit mode if Server is Stateless
 	    if (! checkStatelessInAutoCommit(request, response, out, connection)) {
 		return;
@@ -173,6 +178,31 @@ public class ServerSqlDispatch {
 	    }
 	}
 
+    }
+
+    /**
+     * Returns on out srvlet stream all remote database & driver info.
+     * @param out
+     * @param action
+     * @param connection
+     * @return
+     * @throws IOException
+     * @throws SQLException
+     */
+    private boolean isGetDatabaseInfo(OutputStream out, String action, Connection connection) throws IOException, SQLException {
+	if (action.equals(HttpParameter.GET_DATABASE_INFO)) {
+	   
+	    // Meta data
+	    DatabaseMetaData meta = connection.getMetaData();
+	    DatabaseInfoDto databaseInfoDto = new DatabaseInfoDto(meta);
+	    
+	    String jsonString = GsonWsUtil.getJSonString(databaseInfoDto);
+	    ServerSqlManager.writeLine(out, jsonString);
+	    
+	    return true;
+	} else {
+	    return false;
+	}
     }
 
 
