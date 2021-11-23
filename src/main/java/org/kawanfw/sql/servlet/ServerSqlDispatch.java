@@ -57,6 +57,7 @@ import org.kawanfw.sql.servlet.sql.ServerStatementRawExecute;
 import org.kawanfw.sql.servlet.sql.batch.ServerPreparedStatementBatch;
 import org.kawanfw.sql.servlet.sql.batch.ServerStatementBatch;
 import org.kawanfw.sql.servlet.sql.callable.ServerCallableStatement;
+import org.kawanfw.sql.servlet.sql.dto.DatabaseInfo;
 import org.kawanfw.sql.servlet.sql.dto.DatabaseInfoDto;
 import org.kawanfw.sql.servlet.sql.json_return.JsonErrorReturn;
 import org.kawanfw.sql.servlet.sql.json_return.JsonOkReturn;
@@ -194,8 +195,9 @@ public class ServerSqlDispatch {
 	   
 	    // Meta data
 	    DatabaseMetaData meta = connection.getMetaData();
-	    DatabaseInfoDto databaseInfoDto = new DatabaseInfoDto(meta);
+	    DatabaseInfo databaseInfo = new DatabaseInfo(meta);
 	    
+	    DatabaseInfoDto databaseInfoDto = new DatabaseInfoDto(databaseInfo);
 	    String jsonString = GsonWsUtil.getJSonString(databaseInfoDto);
 	    ServerSqlManager.writeLine(out, jsonString);
 	    

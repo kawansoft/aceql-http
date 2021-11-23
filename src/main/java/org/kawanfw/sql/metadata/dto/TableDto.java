@@ -52,7 +52,7 @@ public class TableDto {
 
     @Override
     public String toString() {
-	return "TableDto [status=" + status + ", table=" + table + "]";
+	return "DatabaseInfoDto [status=" + status + ", table=" + table + "]";
     }
 
 }
