@@ -90,6 +90,42 @@ public class ConfPropertiesManager {
 	Map<String, List<String>> sqlFirewallClassNamesMap = new HashMap<>();
 	Map<String, List<String>> updateListenerClassNamesMap = new HashMap<>();
 	
+	buildObjectsPerDatabase(databases, databaseConfiguratorClassNameMap, sqlFirewallClassNamesMap,
+		updateListenerClassNamesMap);
+	
+	confPropertiesBuilder.databaseConfiguratorClassNameMap(databaseConfiguratorClassNameMap);
+	confPropertiesBuilder.sqlFirewallClassNamesMap(sqlFirewallClassNamesMap);
+	confPropertiesBuilder.updateListenerClassNamesMap(updateListenerClassNamesMap);
+	
+	String blobDownloadConfiguratorClassName = TomcatStarterUtil
+		.trimSafe(properties.getProperty(ServerSqlManager.BLOB_DOWNLOAD_CONFIGURATOR_CLASS_NAME));
+	confPropertiesBuilder.blobDownloadConfiguratorClassName(blobDownloadConfiguratorClassName);
+	
+	String blobUploadConfiguratorClassName = TomcatStarterUtil
+		.trimSafe(properties.getProperty(ServerSqlManager.BLOB_UPLOAD_CONFIGURATOR_CLASS_NAME));
+	confPropertiesBuilder.blobUploadConfiguratorClassName(blobUploadConfiguratorClassName);
+	
+	String sessionConfiguratorClassName = TomcatStarterUtil
+		.trimSafe(properties.getProperty(ServerSqlManager.SESSION_CONFIGURATOR_CLASS_NAME));
+	confPropertiesBuilder.sessionConfiguratorClassName(sessionConfiguratorClassName);
+
+	String jwtSessionConfiguratorSecretValue = TomcatStarterUtil
+		.trimSafe(properties.getProperty(ServerSqlManager.JWT_SESSION_CONFIGURATOR_SECRET));	
+	confPropertiesBuilder.jwtSessionConfiguratorSecretValue(jwtSessionConfiguratorSecretValue);
+	
+	ConfProperties confProperties = confPropertiesBuilder.build();
+	return confProperties;
+	
+    }
+
+    /**
+     * @param databases
+     * @param databaseConfiguratorClassNameMap
+     * @param sqlFirewallClassNamesMap
+     * @param updateListenerClassNamesMap
+     */
+    public void buildObjectsPerDatabase(Set<String> databases, Map<String, String> databaseConfiguratorClassNameMap,
+	    Map<String, List<String>> sqlFirewallClassNamesMap, Map<String, List<String>> updateListenerClassNamesMap) {
 	for (String database : databases) {
 	    // Set the configurator to use for this database
 	    String databaseConfiguratorClassName = TomcatStarterUtil.trimSafe(
@@ -119,30 +155,6 @@ public class ConfPropertiesManager {
 		updateListenerClassNamesMap.put(database, new ArrayList<String>() );
 	    }
 	}
-	
-	confPropertiesBuilder.databaseConfiguratorClassNameMap(databaseConfiguratorClassNameMap);
-	confPropertiesBuilder.sqlFirewallClassNamesMap(sqlFirewallClassNamesMap);
-	confPropertiesBuilder.updateListenerClassNamesMap(updateListenerClassNamesMap);
-	
-	String blobDownloadConfiguratorClassName = TomcatStarterUtil
-		.trimSafe(properties.getProperty(ServerSqlManager.BLOB_DOWNLOAD_CONFIGURATOR_CLASS_NAME));
-	confPropertiesBuilder.blobDownloadConfiguratorClassName(blobDownloadConfiguratorClassName);
-	
-	String blobUploadConfiguratorClassName = TomcatStarterUtil
-		.trimSafe(properties.getProperty(ServerSqlManager.BLOB_UPLOAD_CONFIGURATOR_CLASS_NAME));
-	confPropertiesBuilder.blobUploadConfiguratorClassName(blobUploadConfiguratorClassName);
-	
-	String sessionConfiguratorClassName = TomcatStarterUtil
-		.trimSafe(properties.getProperty(ServerSqlManager.SESSION_CONFIGURATOR_CLASS_NAME));
-	confPropertiesBuilder.sessionConfiguratorClassName(sessionConfiguratorClassName);
-
-	String jwtSessionConfiguratorSecretValue = TomcatStarterUtil
-		.trimSafe(properties.getProperty(ServerSqlManager.JWT_SESSION_CONFIGURATOR_SECRET));	
-	confPropertiesBuilder.jwtSessionConfiguratorSecretValue(jwtSessionConfiguratorSecretValue);
-	
-	ConfProperties confProperties = confPropertiesBuilder.build();
-	return confProperties;
-	
     }
     
 
