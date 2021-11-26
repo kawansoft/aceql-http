@@ -78,8 +78,8 @@ public class ServerSqlDispatch {
     private static boolean DEBUG = FrameworkDebug.isSet(ServerSqlDispatch.class);
 
     /**
-     * Execute the client sent sql request that is already wrapped in the
-     * calling try/catch that handles Throwable
+     * Execute the client sent sql request that is already wrapped in the calling
+     * try/catch that handles Throwable
      *
      * @param request  the http request
      * @param response the http response
@@ -123,7 +123,7 @@ public class ServerSqlDispatch {
 	}
 
 	Connection connection = null;
-	
+
 	try {
 	    if (ConfPropertiesUtil.isStatelessMode()) {
 		// Create the Connection because passed client Id is stateless
@@ -138,23 +138,23 @@ public class ServerSqlDispatch {
 		}
 	    }
 
+	    List<SqlFirewallManager> sqlFirewallManagers = InjectedClassesStore.get().getSqlFirewallMap().get(database);
+
 	    // get_database_info
-	    if (isGetDatabaseInfo(out, action, connection)) {
+	    if (isGetDatabaseInfo(request, out, action, connection, sqlFirewallManagers)) {
 		return;
 	    }
-	    
+
 	    // Do not treat if not in auto-commit mode if Server is Stateless
-	    if (! checkStatelessInAutoCommit(request, response, out, connection)) {
+	    if (!checkStatelessInAutoCommit(request, response, out, connection)) {
 		return;
 	    }
-	    
+
 	    // Release connection in pool & remove all references
 	    if (action.equals(HttpParameter.CLOSE)) {
 		treatCloseAction(response, out, username, sessionId, connectionId, databaseConfigurator, connection);
 		return;
 	    }
-
-	    List<SqlFirewallManager> sqlFirewallManagers = InjectedClassesStore.get().getSqlFirewallMap().get(database);
 
 	    if (doTreatJdbcDatabaseMetaData(request, response, out, action, connection, sqlFirewallManagers)) {
 		return;
@@ -167,13 +167,11 @@ public class ServerSqlDispatch {
 	    dumpHeaders(request);
 
 	    dispatch(request, response, out, action, connection, databaseConfigurator, sqlFirewallManagers);
-	} 
-	catch (Exception e) {
+	} catch (Exception e) {
 	    RollbackUtil.rollback(connection);
 	    throw e;
-	}
-	finally {
-	    // Immediate close of a  Connection for stateless sessions
+	} finally {
+	    // Immediate close of a Connection for stateless sessions
 	    if (ConfPropertiesUtil.isStatelessMode()) {
 		databaseConfigurator.close(connection);
 	    }
@@ -183,33 +181,41 @@ public class ServerSqlDispatch {
 
     /**
      * Returns on out srvlet stream all remote database & driver info.
+     * 
+     * @param request
      * @param out
      * @param action
      * @param connection
+     * @param sqlFirewallManagers
      * @return
      * @throws IOException
      * @throws SQLException
      */
-    private boolean isGetDatabaseInfo(OutputStream out, String action, Connection connection) throws IOException, SQLException {
+    private boolean isGetDatabaseInfo(HttpServletRequest request, OutputStream out, String action,
+	    Connection connection, List<SqlFirewallManager> sqlFirewallManagers) throws IOException, SQLException {
 	if (action.equals(HttpParameter.GET_DATABASE_INFO)) {
-	   
+
+	    // Throws SecurityException if not authorized 
+	    ServerSqlDispatchUtil.checkMetadataAuthorized(request, connection, sqlFirewallManagers);
+	    
 	    // Meta data
 	    DatabaseMetaData meta = connection.getMetaData();
 	    DatabaseInfo databaseInfo = new DatabaseInfo(meta);
-	    
+
 	    DatabaseInfoDto databaseInfoDto = new DatabaseInfoDto(databaseInfo);
 	    String jsonString = GsonWsUtil.getJSonString(databaseInfoDto);
 	    ServerSqlManager.writeLine(out, jsonString);
-	    
+
 	    return true;
 	} else {
 	    return false;
 	}
     }
 
-
     /**
-     * Checks that a stateless session is in auto commit, otherwise reply with error message.
+     * Checks that a stateless session is in auto commit, otherwise reply with error
+     * message.
+     * 
      * @param request
      * @param response
      * @param out
@@ -218,47 +224,47 @@ public class ServerSqlDispatch {
      * @throws IOException
      * @throws SQLException
      */
-    private boolean checkStatelessInAutoCommit(HttpServletRequest request, HttpServletResponse response, OutputStream out, Connection connection) throws IOException, SQLException {
-	
+    private boolean checkStatelessInAutoCommit(HttpServletRequest request, HttpServletResponse response,
+	    OutputStream out, Connection connection) throws IOException, SQLException {
+
 	// Don't care in stateful mode
-	if (! ConfPropertiesUtil.isStatelessMode()) {
+	if (!ConfPropertiesUtil.isStatelessMode()) {
 	    return true;
 	}
-		
+
 	// Stateless mode: 1) can not call setAutocommit(false):
 	if (ServerSqlDispatchUtil.isActionsSetAutoCommitFalse(request)) {
 	    JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_BAD_REQUEST,
-		    JsonErrorReturn.ERROR_JDBC_ERROR, "AceQL Server is in Stateless Mode: can not change auto-commit mode to false.");
-	    ServerSqlManager.writeLine(out, errorReturn.build());
-	    return false;	    
-	}
-	
-	// Stateless mode: 2) Connection must be in autocommit mode:
-	if (! connection.getAutoCommit() ) {
-	    JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_BAD_REQUEST,
-		    JsonErrorReturn.ERROR_JDBC_ERROR, "AceQL Server is in Stateless Mode: can not process SQL request because Connection must be in auto-commit.");
+		    JsonErrorReturn.ERROR_JDBC_ERROR,
+		    "AceQL Server is in Stateless Mode: can not change auto-commit mode to false.");
 	    ServerSqlManager.writeLine(out, errorReturn.build());
 	    return false;
 	}
-	else {
+
+	// Stateless mode: 2) Connection must be in autocommit mode:
+	if (!connection.getAutoCommit()) {
+	    JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_BAD_REQUEST,
+		    JsonErrorReturn.ERROR_JDBC_ERROR,
+		    "AceQL Server is in Stateless Mode: can not process SQL request because Connection must be in auto-commit.");
+	    ServerSqlManager.writeLine(out, errorReturn.build());
+	    return false;
+	} else {
 	    return true;
 	}
-	
+
     }
-
-
 
     private void dumpHeaders(HttpServletRequest request) {
 
-	if (! DUMP_HEADERS) {
+	if (!DUMP_HEADERS) {
 	    return;
 	}
 
-        Enumeration<String> reqHeaderEnum = request.getHeaderNames();
-        while( reqHeaderEnum.hasMoreElements() ) {
-            String name = reqHeaderEnum.nextElement();
-            System.out.println("Header: " + name + " / " + request.getHeader(name));
-       }
+	Enumeration<String> reqHeaderEnum = request.getHeaderNames();
+	while (reqHeaderEnum.hasMoreElements()) {
+	    String name = reqHeaderEnum.nextElement();
+	    System.out.println("Header: " + name + " / " + request.getHeader(name));
+	}
     }
 
     /**
@@ -294,25 +300,26 @@ public class ServerSqlDispatch {
      * @throws IllegalArgumentException
      */
     private void dispatch(HttpServletRequest request, HttpServletResponse response, OutputStream out, String action,
-	    Connection connection, DatabaseConfigurator databaseConfigurator, List<SqlFirewallManager> sqlFirewallManagers)
+	    Connection connection, DatabaseConfigurator databaseConfigurator,
+	    List<SqlFirewallManager> sqlFirewallManagers)
 	    throws SQLException, FileNotFoundException, IOException, IllegalArgumentException {
 	if (ServerSqlDispatchUtil.isExecute(action) && !ServerSqlDispatchUtil.isStoredProcedure(request)) {
-	    ServerStatementRawExecute serverStatement = new ServerStatementRawExecute(request, response, sqlFirewallManagers, connection);
+	    ServerStatementRawExecute serverStatement = new ServerStatementRawExecute(request, response,
+		    sqlFirewallManagers, connection);
 	    serverStatement.execute(out);
-	}
-	else if (ServerSqlDispatchUtil.isExecuteQueryOrExecuteUpdate(action) && !ServerSqlDispatchUtil.isStoredProcedure(request)) {
+	} else if (ServerSqlDispatchUtil.isExecuteQueryOrExecuteUpdate(action)
+		&& !ServerSqlDispatchUtil.isStoredProcedure(request)) {
 	    ServerStatement serverStatement = new ServerStatement(request, response, sqlFirewallManagers, connection);
 	    serverStatement.executeQueryOrUpdate(out);
-	}
-	else if (ServerSqlDispatchUtil.isStatementExecuteBatch(action)) {
-	    ServerStatementBatch serverStatement = new ServerStatementBatch(request, response, sqlFirewallManagers, connection, databaseConfigurator);
+	} else if (ServerSqlDispatchUtil.isStatementExecuteBatch(action)) {
+	    ServerStatementBatch serverStatement = new ServerStatementBatch(request, response, sqlFirewallManagers,
+		    connection, databaseConfigurator);
 	    serverStatement.executeBatch(out);
-	}
-	else if (ServerSqlDispatchUtil.isPreparedStatementExecuteBatch(action)) {
-	    ServerPreparedStatementBatch serverPreparedStatementBatch = new ServerPreparedStatementBatch(request, response, sqlFirewallManagers, connection, databaseConfigurator);
+	} else if (ServerSqlDispatchUtil.isPreparedStatementExecuteBatch(action)) {
+	    ServerPreparedStatementBatch serverPreparedStatementBatch = new ServerPreparedStatementBatch(request,
+		    response, sqlFirewallManagers, connection, databaseConfigurator);
 	    serverPreparedStatementBatch.executeBatch(out);
-	}
-	else if (ServerSqlDispatchUtil.isStoredProcedure(request)) {
+	} else if (ServerSqlDispatchUtil.isStoredProcedure(request)) {
 	    ServerCallableStatement serverCallableStatement = new ServerCallableStatement(request, response,
 		    sqlFirewallManagers, connection);
 	    serverCallableStatement.executeOrExecuteQuery(out);
@@ -329,6 +336,7 @@ public class ServerSqlDispatch {
 
     /**
      * Treat
+     * 
      * @param request
      * @param response
      * @param out
@@ -339,11 +347,11 @@ public class ServerSqlDispatch {
      */
     private boolean doTreatJdbcDatabaseMetaData(HttpServletRequest request, HttpServletResponse response,
 	    OutputStream out, String action, Connection connection, List<SqlFirewallManager> sqlFirewallManagers)
-		    throws SQLException, IOException {
+	    throws SQLException, IOException {
 	// Redirect if it's a JDBC DatabaseMetaData call
 	if (ActionUtil.isJdbcDatabaseMetaDataQuery(action)) {
-	    JdbcDatabaseMetadataActionManager jdbcDatabaseMetadataActionManager = new JdbcDatabaseMetadataActionManager(request, response,
-		    out, sqlFirewallManagers, connection);
+	    JdbcDatabaseMetadataActionManager jdbcDatabaseMetadataActionManager = new JdbcDatabaseMetadataActionManager(
+		    request, response, out, sqlFirewallManagers, connection);
 	    jdbcDatabaseMetadataActionManager.execute();
 	    return true;
 	} else {
@@ -388,15 +396,16 @@ public class ServerSqlDispatch {
      * @throws IOException
      */
     private void treatCloseAction(HttpServletResponse response, OutputStream out, String username, String sessionId,
-	    final String connectionId, DatabaseConfigurator databaseConfigurator, Connection connection) throws IOException {
+	    final String connectionId, DatabaseConfigurator databaseConfigurator, Connection connection)
+	    throws IOException {
 	try {
-	    
+
 	    // Nothing to do in stateless
 	    if (ConfPropertiesUtil.isStatelessMode()) {
 		ServerSqlManager.writeLine(out, JsonOkReturn.build());
 		return;
 	    }
-	    
+
 	    databaseConfigurator.close(connection);
 
 	    String connectionIdNew = connectionId;
@@ -415,18 +424,17 @@ public class ServerSqlDispatch {
 
 	} catch (Exception e) {
 	    RollbackUtil.rollback(connection);
-	    
+
 	    JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
 		    JsonErrorReturn.ERROR_ACEQL_FAILURE, e.getMessage(), ExceptionUtils.getStackTrace(e));
 	    ServerSqlManager.writeLine(out, errorReturn.build());
 	}
     }
 
-
     /**
      * @param request
      * @param response
-     * @param out TODO
+     * @param out      TODO
      * @throws IOException
      * @throws FileUploadException
      * @throws SQLException
@@ -444,7 +452,6 @@ public class ServerSqlDispatch {
 	    return false;
 	}
     }
-
 
     public static void debug(String s) {
 	if (DEBUG) {

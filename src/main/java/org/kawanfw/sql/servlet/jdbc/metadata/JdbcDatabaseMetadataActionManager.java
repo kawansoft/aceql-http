@@ -31,9 +31,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -44,10 +42,10 @@ import org.kawanfw.sql.jdbc.metadata.DatabaseMetaDataMethodCallDTO;
 import org.kawanfw.sql.metadata.util.GsonWsUtil;
 import org.kawanfw.sql.servlet.ActionUtil;
 import org.kawanfw.sql.servlet.HttpParameter;
+import org.kawanfw.sql.servlet.ServerSqlDispatchUtil;
 import org.kawanfw.sql.servlet.ServerSqlManager;
 import org.kawanfw.sql.servlet.connection.RollbackUtil;
 import org.kawanfw.sql.servlet.sql.json_return.JsonErrorReturn;
-import org.kawanfw.sql.servlet.sql.json_return.JsonSecurityMessage;
 
 /**
  * Execute the DatabaseMetaData method call asked by client side.
@@ -118,37 +116,15 @@ public class JdbcDatabaseMetadataActionManager {
 	    FileNotFoundException, IllegalArgumentException, ClassNotFoundException, NoSuchMethodException,
 	    InstantiationException, IllegalAccessException, InvocationTargetException {
 	String action = request.getParameter(HttpParameter.ACTION);
-	String username = request.getParameter(HttpParameter.USERNAME);
-	String database = request.getParameter(HttpParameter.DATABASE);
 
 	// Double check
 	if (!ActionUtil.isJdbcDatabaseMetaDataQuery(action)) {
 	    throw new IllegalArgumentException("Unknown JDBC DatabaseMetaData query action: " + action);
 	}
 
-	boolean allow = false;
-	String sql = "<void>";
-	for (SqlFirewallManager sqlFirewallManager : sqlFirewallManagers) {
-	    allow = sqlFirewallManager.allowMetadataQuery(username, database, connection);
-	    if (!allow) {
-		String ipAddress = request.getRemoteAddr();
-		List<Object> parameterValues = new ArrayList<>();
-
-		sqlFirewallManager.runIfStatementRefused(username, database, connection, ipAddress, true, sql,
-			parameterValues);
-		break;
-	    }
-	}
-
-	if (!allow) {
-	    Map<Integer, String> parameters = new HashMap<>();
-
-	    List<Object> values = new ArrayList<>();
-	    String message = JsonSecurityMessage.prepStatementNotAllowedBuild(sql,
-		    "Metadata Query API calls are not allowed!", parameters, values, true);
-	    throw new SecurityException(message);
-	}
-
+	 // Throws SecurityException if not authorized 
+	ServerSqlDispatchUtil.checkMetadataAuthorized(request, connection, sqlFirewallManagers);
+	
 	// Get the DTO
 	// jsonDatabaseMetaDataMethodCallDTO
 	// String database_meta_data_method_call_dto
