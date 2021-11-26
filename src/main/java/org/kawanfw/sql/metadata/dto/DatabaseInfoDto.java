@@ -23,7 +23,7 @@
  * intact.
  */
 
-package org.kawanfw.sql.servlet.sql.dto;
+package org.kawanfw.sql.metadata.dto;
 
 /**
  * Container to transport DatabaseInfo instance.

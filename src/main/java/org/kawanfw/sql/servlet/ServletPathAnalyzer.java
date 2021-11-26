@@ -65,7 +65,7 @@ public class ServletPathAnalyzer {
 	} else if (isVersionAction(requestUri)) {
 	    action = "get_version";
 	    buildElements(servletName, requestUri);
-	} else if (isDatabaseInfoAction(requestUri)) {
+	} else if (isGetDatabaseInfoAction(requestUri)) {
 	    action = "get_database_info";
 	    buildElements(servletName, requestUri);
 	} 	
@@ -96,7 +96,7 @@ public class ServletPathAnalyzer {
 
 
 
-    private boolean isDatabaseInfoAction(String urlContent) {
+    private boolean isGetDatabaseInfoAction(String urlContent) {
 	Objects.requireNonNull(urlContent, "urlContent cannot be null!");
 	return urlContent.endsWith("/get_database_info");
     }
