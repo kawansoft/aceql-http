@@ -90,7 +90,7 @@ public class ServerSqlDispatchUtil {
 	return action.equals(HttpParameter.PREPARED_STATEMENT_EXECUTE_BATCH);
     }
 
-    public static boolean checkMetadataAuthorized(HttpServletRequest request, Connection connection,
+    public static void checkMetadataAuthorized(HttpServletRequest request, Connection connection,
 	    List<SqlFirewallManager> sqlFirewallManagers) throws IOException, SQLException {
 
 	String username = request.getParameter(HttpParameter.USERNAME);
@@ -119,7 +119,6 @@ public class ServerSqlDispatchUtil {
 	    throw new SecurityException(message);
 	}
 
-	return false;
     }
 
 }
