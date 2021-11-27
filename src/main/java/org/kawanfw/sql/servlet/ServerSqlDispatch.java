@@ -42,7 +42,6 @@ import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.apache.tomcat.util.http.fileupload.servlet.ServletFileUpload;
 import org.kawanfw.sql.api.server.DatabaseConfigurator;
 import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
-import org.kawanfw.sql.metadata.dto.DatabaseInfo;
 import org.kawanfw.sql.metadata.dto.DatabaseInfoDto;
 import org.kawanfw.sql.metadata.util.GsonWsUtil;
 import org.kawanfw.sql.servlet.connection.ConnectionIdUtil;
@@ -200,9 +199,8 @@ public class ServerSqlDispatch {
 	    
 	    // Meta data
 	    DatabaseMetaData meta = connection.getMetaData();
-	    DatabaseInfo databaseInfo = new DatabaseInfo(meta);
-
-	    DatabaseInfoDto databaseInfoDto = new DatabaseInfoDto(databaseInfo);
+	    
+	    DatabaseInfoDto databaseInfoDto = new DatabaseInfoDto(meta);
 	    String jsonString = GsonWsUtil.getJSonString(databaseInfoDto);
 	    ServerSqlManager.writeLine(out, jsonString);
 

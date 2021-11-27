@@ -18,15 +18,15 @@
  */
 package org.kawanfw.sql.metadata.dto;
 
-import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 import java.util.Objects;
 
 /**
  * 
- * All Remote database info Holder.
+ * A simple shortcut class that contains main remote database & JDBC info.
+ * 
  * @author Nicolas de Pomereu
- *
+ * @since 8.1
  */
 public class DatabaseInfo {
     
@@ -44,55 +44,16 @@ public class DatabaseInfo {
      * @param databaseMetaData
      * @throws SQLException
      */
-    public DatabaseInfo(DatabaseMetaData databaseMetaData) throws SQLException {
+    DatabaseInfo(DatabaseInfoDto databaseMetaData) throws SQLException {
 	Objects.requireNonNull(databaseMetaData, "databaseMetaData cannot be null!");
-	
-	try {
-	    datatabaseMajorVersion = databaseMetaData.getDatabaseMajorVersion();
-	} catch (SQLException e) {
-	    datatabaseMajorVersion = 0;
-	}
-	try {
-	    databaseMinorVersion = databaseMetaData.getDatabaseMinorVersion();
-	} catch (SQLException e) {
-	    databaseMinorVersion = 0;
-	}
-	
-	try {
-	    databaseProductName = databaseMetaData.getDatabaseProductName();
-	} catch (SQLException e) {
-	    databaseProductName = "unknown";
-	}
-	
-	try {
-	    databaseProductVersion = databaseMetaData.getDatabaseProductVersion();
-	} catch (SQLException e) {
-	    databaseProductVersion = "unknown";
-	}
-	
-	try {
-	    driverMajorVersion = databaseMetaData.getDriverMajorVersion();
-	} catch (Exception e) {
-	    driverMajorVersion = 0;
-	}
-	
-	try {
-	    driverMinorVersion = databaseMetaData.getDriverMinorVersion();
-	} catch (Exception e) {
-	    driverMinorVersion = 0;
-	}	
-	
-	try {
-	    driverName = databaseMetaData.getDriverName();
-	} catch (SQLException e) {
-	    driverName = "unknown";
-	}
-	
-	try {
-	    driverVersion = databaseMetaData.getDriverVersion();
-	} catch (SQLException e) {
-	    driverVersion = "unknown";
-	}
+	datatabaseMajorVersion = databaseMetaData.getDatatabaseMajorVersion();
+	databaseMinorVersion = databaseMetaData.getDatabaseMinorVersion();
+	databaseProductName = databaseMetaData.getDatabaseProductName();
+	databaseProductVersion = databaseMetaData.getDatabaseProductVersion();
+	driverMajorVersion = databaseMetaData.getDriverMajorVersion();
+	driverMinorVersion = databaseMetaData.getDriverMinorVersion();
+	driverName = databaseMetaData.getDriverName();
+	driverVersion = databaseMetaData.getDriverVersion();
     }
 
     /**
