@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * Allows to get all details of a SQL (update) event asked by the client side
+ * Allows to get all details of a SQL event asked by the client side
  * and successfully executed on the AceQL Server.
  * 
  * @author Nicolas de Pomereu
@@ -45,14 +45,15 @@ public class SqlActionEvent {
     private List<Object> parameterValues;
 
     /**
-     * Package protected
+     * Package protected constructor.
      * 
-     * @param username
-     * @param database
-     * @param ipAddress
-     * @param sql
-     * @param isPreparedStatement
-     * @param parameterValues
+     * @param username   the client username to check the rule for.
+     * @param database   the database name as defined in the JDBC URL field
+     * @param ipAddress           the IP address of the client user
+     * @param sql                 the SQL statement
+     * @param isPreparedStatement Says if the statement is a prepared statement
+     * @param parameterValues     the parameter values of a prepared statement in
+     *                            the natural order, empty list for a (non prepared)
      */
     SqlActionEvent(String username, String database, String ipAddress, String sql, boolean isPreparedStatement,
 	    List<Object> parameterValues) {

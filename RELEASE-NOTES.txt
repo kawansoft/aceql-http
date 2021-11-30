@@ -25,12 +25,12 @@ AceQL HTTP is licensed through the GNU Lesser General Public License
 (LGPL v2.1).
 
 
-AceQL HTTP Version 9.0 - 26-Nov-2021
+AceQL HTTP Version 9.0 - 30-Nov-2021
 ------------------------------------
 
 What's New: 
-- The new UpdateListener interface allows to define listener and thus actions to
-  trigger when a database is updated.
+- The new UpdateListener interface allows to define listeners and thus actions 
+  to trigger when a database is updated.
 - The new /get_databas_info API allows client side programs to easily
   get all info about the remote database and the remote DBC Driver.
 

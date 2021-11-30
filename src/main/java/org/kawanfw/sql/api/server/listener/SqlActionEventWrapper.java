@@ -43,5 +43,4 @@ public class SqlActionEventWrapper {
 	    boolean isPreparedStatement, List<Object> parameterValues) throws SQLException {
 	return new SqlActionEvent(username, database, ipAddress, sql, isPreparedStatement, parameterValues);
     }
-
 }
