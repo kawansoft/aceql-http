@@ -29,7 +29,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 /**
- * The listener interface for receiving  SQL update events.
+ * The listener interface for receiving SQL update events.
  * 
  * @author Nicolas de Pomereu
  * @since 9.0
