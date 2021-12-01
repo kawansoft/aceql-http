@@ -30,6 +30,6 @@ package org.kawanfw.sql.version;
 
 public class VersionValues {
     public static final String VERSION = "v9.0";
-    public static final String DATE = "30-Nov-2021";
+    public static final String DATE = "01-Dec-2021";
 }
 
