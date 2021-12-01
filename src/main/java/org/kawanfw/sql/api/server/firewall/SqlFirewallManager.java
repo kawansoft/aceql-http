@@ -53,7 +53,7 @@ import org.kawanfw.sql.api.server.StatementAnalyzer;
  * <p>
  * Multiple {@code SqlFirewallManager} may be defined and chained.
  * <p>
- * Note that the framework comes with a Default <code>SqlFirewallManager</code>
+ * Note that the framework comes with a default <code>SqlFirewallManager</code>
  * implementation that is *not* secured and should be extended:
  * {@link DefaultSqlFirewallManager}.
  * <p>
