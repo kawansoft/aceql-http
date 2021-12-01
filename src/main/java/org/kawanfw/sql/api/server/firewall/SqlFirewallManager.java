@@ -130,7 +130,7 @@ public interface SqlFirewallManager {
      * @param connection          The current SQL/JDBC <code>Connection</code>
      * @param ipAddress           the IP address of the client user
      * @param sql                 the SQL statement
-     * @param isPreparedStatement Says if the statement is a prepared statement
+     * @param isPreparedStatement says if the statement is a prepared statement
      * @param parameterValues     the parameter values of a prepared statement in
      *                            the natural order, empty list for a (non prepared)
      *                            statement
