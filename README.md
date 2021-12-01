@@ -11,7 +11,7 @@
 
 <img src="https://docs.aceql.com/favicon.png" alt="AceQL HTTP Icon"/> 
 
- * [Fundamentals](#fundamentals)
+   * [Fundamentals](#fundamentals)
       * [Overview](#overview)
       * [Technical operating environment](#technical-operating-environment)
    * [Download and Installation](#download-and-installation)
@@ -56,6 +56,7 @@
          * [Stateful Mode](#stateful-mode)
          * [Stateless Mode](#stateless-mode)
       * [Advanced Firewall Configuration](#advanced-firewall-configuration)
+      * [Update Listeners Configuration](#update-listeners-configuration)
       * [Encrypting Properties in the aceql-server.properties file](#encrypting-properties-in-the-aceql-serverproperties-file)
          * [Running the PropertiesEncryptor class](#running-the-propertiesencryptor-class)
       * [Interacting with the JDBC Pool at runtime](#interacting-with-the-jdbc-pool-at-runtime)
@@ -831,7 +832,7 @@ The actions to trigger are defined through one or more "Update Listeners ",  Jav
 
 The `DefaultUpdateListener` default Update Listener does nothing. AceQL provides a built-in (and ready to use without any coding)  Update Listener:
 
-| Update Listerner Name      | Details                                                      |
+| Update Listener Name       | Details                                                      |
 | -------------------------- | ------------------------------------------------------------ |
 | `JsonLoggerUpdateListener` | Logs all successful & completed SQL update details using JSON format. |
 
@@ -845,8 +846,8 @@ The following example defines two Update Listeners to chain for the `sampledb` d
 
 ```properties
 sampledb.updateListenerClassNames=\
-    com.mycompany.firewall.MyUpdateListener1\
-    com.mycompany.firewall.MyUpdateListener2
+    com.mycompany.listener.MyUpdateListener1\
+    com.mycompany.listener.MyUpdateListener2
 ```
 
 ## Encrypting Properties in the aceql-server.properties file
