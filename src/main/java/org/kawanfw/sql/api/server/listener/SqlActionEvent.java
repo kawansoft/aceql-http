@@ -29,8 +29,8 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * Allows to get all details of a SQL event asked by the client side
- * and successfully executed on the AceQL Server.
+ * Allows to get all details of a SQL event asked by the client side and
+ * successfully executed on the AceQL Server.
  * 
  * @author Nicolas de Pomereu
  * @since 9.0
@@ -47,13 +47,15 @@ public class SqlActionEvent {
     /**
      * Package protected constructor.
      * 
-     * @param username   the client username to check the rule for.
-     * @param database   the database name as defined in the JDBC URL field
+     * @param username            the client username that asked for the SQL request
+     * @param database            the database name as defined in the JDBC URL field
      * @param ipAddress           the IP address of the client user
      * @param sql                 the SQL statement
      * @param isPreparedStatement Says if the statement is a prepared statement
+     * @param isPreparedStatement Says if the statement is a prepared statement
      * @param parameterValues     the parameter values of a prepared statement in
      *                            the natural order, empty list for a (non prepared)
+     *                            statement
      */
     SqlActionEvent(String username, String database, String ipAddress, String sql, boolean isPreparedStatement,
 	    List<Object> parameterValues) {
@@ -112,12 +114,14 @@ public class SqlActionEvent {
     @Override
     public String toString() {
 	return "SqlActionEvent [username=" + username + ", database=" + database + ", ipAddress=" + ipAddress + ", sql="
-		+ sql + ", isPreparedStatement=" + isPreparedStatement + ", parameterValues=" + toString(parameterValues) + "]";
+		+ sql + ", isPreparedStatement=" + isPreparedStatement + ", parameterValues="
+		+ toString(parameterValues) + "]";
     }
 
     /**
      * Transforms the Object parameters values into strings
-     * @param parameterValues	the Object parameter values
+     * 
+     * @param parameterValues the Object parameter values
      * @return the converted String parameter values
      */
     private List<String> toString(List<Object> parameterValues) {
@@ -128,5 +132,4 @@ public class SqlActionEvent {
 	return list;
     }
 
-   
 }

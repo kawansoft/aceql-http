@@ -125,7 +125,7 @@ public interface SqlFirewallManager {
      * If the analysis defined by the method returns false, the SQL statement won't
      * be executed.
      *
-     * @param username            the client username to check the rule for.
+     * @param username            the client username to check the rule for
      * @param database            the database name as defined in the JDBC URL field
      * @param connection          The current SQL/JDBC <code>Connection</code>
      * @param ipAddress           the IP address of the client user
@@ -163,7 +163,7 @@ public interface SqlFirewallManager {
      * Allows to define if the passed username is allowed to call a statement that
      * updates the database.
      *
-     * @param username   the client username to check the rule for.
+     * @param username   the client username to check the rule for
      * @param database   the database name as defined in the JDBC URL field
      * @param connection The current SQL/JDBC <code>Connection</code>
      * @return <code>true</code> if the user has the right call a database update
