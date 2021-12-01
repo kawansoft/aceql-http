@@ -384,7 +384,7 @@ The Web service must just implement these features:
 
 The SQL Firewall Managers Section allows to define SQL firewall rulesets to use for each database.
 
-The rulesets are defines through one or more "SQL Firewall Managers",  Java classes that are injected at AceQL Server startup. A SQL Firewall Manager It a built-in or user-developed Java class that implements the   [SqlFirewallManager](https://docs.aceql.com/rest/soft/9.0/javadoc/org/kawanfw/sql/api/server/firewall/SqlFirewallManager.html) interface.
+The rulesets are defines through one or more "SQL Firewall Managers",  Java classes that are injected at AceQL Server startup. A SQL Firewall Manager is a built-in or user-developed Java class that implements the  [SqlFirewallManager](https://docs.aceql.com/rest/soft/9.0/javadoc/org/kawanfw/sql/api/server/firewall/SqlFirewallManager.html) interface.
 
 A `SqlFirewallManager`concrete implementation allows to: 
 
@@ -819,6 +819,34 @@ The following example defines two firewalls to chain for the `sampledb` database
 sampledb.sqlFirewallManagerClassNames=\
     com.mycompany.firewall.MySqlFirewallManager1\
     com.mycompany.firewall.MySqlFirewallManager2
+```
+
+## Update Listeners Configuration
+
+The Update Listeners Section allows defining Java code to execute after a successful SQL database update is done. 
+
+Update Listeners can be viewed as a kind of Java "trigger" executed on the completion  of SQL updates.
+
+The actions to trigger are defined through one or more "Update Listeners ",  Java classes that are injected at AceQL Server startup. An Update Listener is a built-in or user-developed Java class that implements the [UpdateListener](https://docs.aceql.com/rest/soft/9.0/javadoc/org/kawanfw/sql/api/server/listener/UpdateListener.html) interface with code to execute defined in the unique `updateActionPerformed` method. Multiple `UpdateListener` may be defined and chained. 
+
+The `DefaultUpdateListener` default Update Listener does nothing. AceQL provides a built-in (and ready to use without any coding)  Update Listener:
+
+| Update Listerner Name      | Details                                                      |
+| -------------------------- | ------------------------------------------------------------ |
+| `JsonLoggerUpdateListener` | Logs all successful & completed SQL update details using JSON format. |
+
+Only the following property must be defined per database name if you want to add Update Listeners:
+
+`updateListenerClassNames`.
+
+`UpdateListener` may be chained in property value by separating class names by a comma.  
+
+The following example defines two Update Listeners to chain for the `sampledb` database:
+
+```properties
+sampledb.updateListenerClassNames=\
+    com.mycompany.firewall.MyUpdateListener1\
+    com.mycompany.firewall.MyUpdateListener2
 ```
 
 ## Encrypting Properties in the aceql-server.properties file
