@@ -41,7 +41,7 @@ import org.kawanfw.sql.util.log.FlattenLogger;
 
 /**
  * Concrete implementation of {@code UpdateListener}. The
- * {@code updateActionPerformed(SqlActionEvent, Connection)} logs in JSON format
+ * {@code updateActionPerformed(SqlActionEvent, Connection)} logs using JSON format
  * the {@code SqlActionEvent}.
  * 
  * @author Nicolas de Pomereu
@@ -53,7 +53,7 @@ public class JsonLoggerUpdateListener implements UpdateListener {
     private static Logger ACEQL_LOGGER = null;
 
     /**
-     * Logs in JSON format the {@code SqlActionEvent} into a {@code Logger} with
+     * Logs using JSON format the {@code SqlActionEvent} into a {@code Logger} with
      * parameters:
      * <ul>
      * <li>Output file pattern:
