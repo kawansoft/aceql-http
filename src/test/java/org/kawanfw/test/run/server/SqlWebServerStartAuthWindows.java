@@ -53,7 +53,7 @@ public class SqlWebServerStartAuthWindows {
 
 	int port = 9094;
 
-	map.put(port, "I:\\_dev_awake\\aceql-http-main\\aceql-http\\conf\\aceql-server-auth-windows.properties");
+	map.put(port, "I:\\_dev_awake\\aceql-http-main\\aceql-http\\conf_test\\aceql-server-auth-windows.properties");
 	start(port);
 
 	while(true) {

@@ -53,7 +53,7 @@ public class SqlWebServerStartAuthLDAP {
 
 	int port = 9092;
 
-	map.put(port, "I:\\_dev_awake\\aceql-http-main\\aceql-http\\conf\\aceql-server-auth-ldap.properties");
+	map.put(port, "I:\\_dev_awake\\aceql-http-main\\aceql-http\\conf_test\\aceql-server-auth-ldap.properties");
 	start(port);
 
 	while(true) {

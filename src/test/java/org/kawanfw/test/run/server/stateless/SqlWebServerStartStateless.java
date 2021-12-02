@@ -53,7 +53,7 @@ public class SqlWebServerStartStateless {
 
 	int port = 9090;
 
-	map.put(port, "I:\\_dev_awake\\aceql-http-main\\aceql-http\\conf\\aceql-server-stateless.properties");
+	map.put(port, "I:\\_dev_awake\\aceql-http-main\\aceql-http\\conf_test\\aceql-server-stateless.properties");
 	start(port);
 
 	while(true) {
