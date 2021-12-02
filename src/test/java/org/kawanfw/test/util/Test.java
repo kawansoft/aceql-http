@@ -22,6 +22,14 @@ public class Test {
      * @param args
      */
     public static void main(String[] args) throws Exception {
+
+
+    }
+
+    /**
+     * 
+     */
+    public static void extractVersion() {
 	String version = "AceQL HTTP Community v9.0 - 26-Nov-2021";
 	String newVersion = StringUtils.substringBetween(version, "v", "-");
 	System.out.println(newVersion);
@@ -31,10 +39,10 @@ public class Test {
      * @throws JSQLParserException
      */
     public static void testFullText() throws JSQLParserException {
-	//System.out.println("Default Charset: " + Charset.defaultCharset());
+	// System.out.println("Default Charset: " + Charset.defaultCharset());
 	TablesNamesFinder tablesNamesFinder = new TablesNamesFinder();
 	String statement = "SELECT _fulltext_ FROM _fulltext_";
-	Statement parsedStatement = CCJSqlParserUtil.parse(statement); // Throws the Exception 
+	Statement parsedStatement = CCJSqlParserUtil.parse(statement); // Throws the Exception
 	List<String> tables = tablesNamesFinder.getTableList(parsedStatement);
 	System.out.println(tables);
     }

@@ -123,6 +123,7 @@
 			<version>9.0.54</version>
 		</dependency>
 
+
 		<!-- API, java.xml.bind module. Required for modern versions of MS SQL Server Drivers -->
 		<dependency>
 		    <groupId>jakarta.xml.bind</groupId>
