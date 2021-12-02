@@ -5,7 +5,7 @@
 JAVA_HOME=/usr/local/java
 
 # Define AceQL Home and the AceQL host & port
-ACEQL_HOME=/home/admin/aceql-http-8.2
+ACEQL_HOME=/home/admin/aceql-http-9.0
 
 ACEQL_HOST=www.aceql.com
 ACEQL_PORT=9090
