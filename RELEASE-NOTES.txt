@@ -31,7 +31,7 @@ AceQL HTTP Version 9.0 - 02-Dec-2021
 What's New: 
 - The new UpdateListener interface allows to define listeners and thus actions 
   to trigger when a database is updated.
-- The new /get_databas_info API allows client side programs to easily
+- The new /get_database_info API allows client side programs to easily
   get all info about the remote database and the remote DBC Driver.
 
 Bugs fixed:
