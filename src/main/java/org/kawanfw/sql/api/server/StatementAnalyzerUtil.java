@@ -35,7 +35,7 @@ class StatementAnalyzerUtil {
      * @param sql	the sql query
      * @return	the sql query with fulltext replaced by _fulltext_ and FULLTEXT replaced by _FULLTEXT_
      */
-    public static String fixForJsqlparser(final String sql) {
+    static String fixForJsqlparser(final String sql) {
 
 	if (sql == null) {
 	    return null;
