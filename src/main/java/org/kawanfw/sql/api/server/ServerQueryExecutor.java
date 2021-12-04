@@ -10,11 +10,12 @@ import java.sql.SQLException;
 /**
  * Allows client side to call a server side programmed class that returns a {@code ResultSet}.
  * This a kind of stored procedure in Java.
- * <br><br>
+ * <br>
  * @author Nicolas de Pomereu
+ * @since 9.1
  *
  */
-public interface QueryExecutor {
+public interface ServerQueryExecutor {
     
     /**
      * Executes a a query and return {@code ResultSet}.
