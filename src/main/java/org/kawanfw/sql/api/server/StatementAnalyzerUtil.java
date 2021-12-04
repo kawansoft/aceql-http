@@ -28,7 +28,7 @@ package org.kawanfw.sql.api.server;
  * @author Nicolas de Pomereu
  *
  */
-public class StatementAnalyzerUtil {
+class StatementAnalyzerUtil {
 
     /**
      * Replace fulltext with _fulltext_ because of a bug in JSQLParser.
