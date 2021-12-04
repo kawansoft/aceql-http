@@ -818,7 +818,7 @@ The following example defines two firewalls to chain for the `sampledb` database
 
 ```properties
 sampledb.sqlFirewallManagerClassNames=\
-    com.mycompany.firewall.MySqlFirewallManager1\
+    com.mycompany.firewall.MySqlFirewallManager1,\
     com.mycompany.firewall.MySqlFirewallManager2
 ```
 
@@ -846,7 +846,7 @@ The following example defines two Update Listeners to chain for the `sampledb` d
 
 ```properties
 sampledb.updateListenerClassNames=\
-    com.mycompany.listener.MyUpdateListener1\
+    com.mycompany.listener.MyUpdateListener1,\
     com.mycompany.listener.MyUpdateListener2
 ```
 
