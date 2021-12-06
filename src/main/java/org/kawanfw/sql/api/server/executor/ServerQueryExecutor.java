@@ -1,11 +1,12 @@
 /**
  * 
  */
-package org.kawanfw.sql.api.server;
+package org.kawanfw.sql.api.server.executor;
 
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 /**
  * Allows client side to call a server side programmed class that returns a {@code ResultSet}.
@@ -25,6 +26,6 @@ public interface ServerQueryExecutor {
      * @throws IOException
      * @throws IOException           if an IOException occurs
      */
-    public ResultSet executeQuery(String[] args) throws IOException, SQLException;
+    public ResultSet executeQuery(List<String> args) throws IOException, SQLException;
 
 }
