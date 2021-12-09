@@ -17,7 +17,7 @@ import java.sql.SQLException;
  * @since 9.1
  *
  */
-public interface RemoteQueryExecutor {
+public interface ServerQueryExecutor {
 
     /**
      * Executes a a query and return {@code ResultSet}.
