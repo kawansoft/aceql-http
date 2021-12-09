@@ -25,6 +25,8 @@ public interface ServerQueryExecutor {
      * 
      * @param username   the client username that asks for the query. Allows to
      *                   perform a security check.
+     * @param database   the database name as defined in the JDBC URL field. Allows to
+     *                   perform a security check.    
      * @param connection The current SQL/JDBC <code>Connection</code>.
      * @param args       the parameters passed by the client side.
      * @return a <code>ResultSet</code> object that contains the data produced by
@@ -32,7 +34,7 @@ public interface ServerQueryExecutor {
      * @throws IOException  if an IOException occurs
      * @throws SQLException if a SQLException occurs
      */
-    public ResultSet executeQuery(String username, Connection connection, Object... params)
+    public ResultSet executeQuery(String username, String database, Connection connection, Object... params)
 	    throws IOException, SQLException;
 
 }
