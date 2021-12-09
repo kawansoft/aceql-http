@@ -48,14 +48,10 @@ public class MyUpdateListener implements UpdateListener {
      * Prints all successful SQL updates main info on stdout
      */
     @Override
-    public void updateActionPerformed(SqlActionEvent evt, Connection connection) 
-	    throws IOException, SQLException {
+    public void updateActionPerformed(SqlActionEvent evt, Connection connection) throws IOException, SQLException {
 
-	System.out.println(new Date() 
-		+ " client username: " + evt.getUsername() 
-		+ " database: " + evt.getDatabase()
-		+ " SQL statement:  " + evt.getSql()
-		+ " user IP address: " + evt.getIpAddress());
+	System.out.println(new Date() + " client username: " + evt.getUsername() + " database: " + evt.getDatabase()
+		+ " SQL statement:  " + evt.getSql() + " user IP address: " + evt.getIpAddress());
     }
 
 }

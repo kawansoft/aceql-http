@@ -38,9 +38,10 @@ import java.sql.SQLException;
 public interface UpdateListener {
 
     /**
-     * Invoked when a SQL update event  is successfully executed.
-     * @param evt		the SQL update  event that is successfully processed
-     * @param connection	the Connection in use for the SQL update event
+     * Invoked when a SQL update event is successfully executed.
+     * 
+     * @param evt        the SQL update event that is successfully processed
+     * @param connection the Connection in use for the SQL update event
      * 
      * @throws IOException  if an IOException occurs
      * @throws SQLException if a SQLException occurs
