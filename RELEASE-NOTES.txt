@@ -25,6 +25,20 @@ AceQL HTTP is licensed through the GNU Lesser General Public License
 (LGPL v2.1).
 
 
+AceQL HTTP Version 9.1 - 09-Dec-2021
+------------------------------------
+
+What's New: 
+- The new ServerQueryExecutor interface allows to create server classes
+  that return directly ResultSet to the client side.
+- SqlActionEvent.getParameterStringValues() allows to get the list
+  of parameters object values casted to string. 
+
+Bugs fixed:
+- org.kawanfw.sql.api.server.StatementAnalyzerUtil was public instead
+  of package protected. This has been protected.
+  
+
 AceQL HTTP Version 9.0 - 02-Dec-2021
 ------------------------------------
 

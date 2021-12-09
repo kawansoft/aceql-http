@@ -109,6 +109,14 @@ public class SqlActionEvent {
     public List<Object> getParameterValues() {
 	return parameterValues;
     }
+    
+    /**
+     * @return the parameter String values of a prepared statement in the natural order,
+     *         empty list for a (non prepared) statement
+     */
+    public List<String> getParameterStringValues() {
+	return toString(parameterValues);
+    }
 
     @Override
     public String toString() {
