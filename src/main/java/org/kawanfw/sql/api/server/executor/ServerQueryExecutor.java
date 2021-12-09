@@ -22,12 +22,13 @@ public interface ServerQueryExecutor {
     /**
      * Executes a a query and return {@code ResultSet}.
      * 
-     * @param args the parameters to pass to the method
+     * @param username  the client username that asks for the query. Allows to perform a security check.
+     * @param args 	the parameters passed by the client side.
      * @return a <code>ResultSet</code> object that contains the data produced by
      *         the query; never <code>null</code>
      * @throws IOException  if an IOException occurs
      * @throws SQLException if a SQLException occurs
      */
-    public ResultSet executeQuery(Object... params) throws IOException, SQLException;
+    public ResultSet executeQuery(String username, Object... params) throws IOException, SQLException;
 
 }
