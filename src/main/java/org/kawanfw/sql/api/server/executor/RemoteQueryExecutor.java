@@ -16,7 +16,7 @@ import java.util.List;
  * @since 9.1
  *
  */
-public interface ServerQueryExecutor {
+public interface RemoteQueryExecutor {
     
     /**
      * Executes a a query and return {@code ResultSet}.
@@ -26,6 +26,6 @@ public interface ServerQueryExecutor {
      * @throws IOException
      * @throws IOException           if an IOException occurs
      */
-    public ResultSet executeQuery(List<String> args) throws IOException, SQLException;
+    public ResultSet executeQuery(List<Object> args) throws IOException, SQLException;
 
 }
