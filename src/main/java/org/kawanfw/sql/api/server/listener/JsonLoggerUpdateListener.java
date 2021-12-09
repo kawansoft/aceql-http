@@ -76,7 +76,7 @@ public class JsonLoggerUpdateListener implements UpdateListener {
 	File logDir = new File(SystemUtils.USER_HOME + File.separator + ".kawansoft" + File.separator + "log");
 	logDir.mkdirs();
 
-	String pattern = logDir.toString() + File.separator + "JsonLoggerUpdateListener.log";
+	String pattern = logDir.toString() + File.separator + "MyUpdateListener.log";
 
 	Logger logger = Logger.getLogger(JsonLoggerUpdateListener.class.getName());
 	ACEQL_LOGGER = new FlattenLogger(logger.getName(), logger.getResourceBundleName());
