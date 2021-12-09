@@ -10,7 +10,7 @@ import java.sql.SQLException;
 
 /**
  * Allows client side to call a server side programmed class that returns a
- * {@code ResultSet}. This a kind of stored procedure in Java. <br>
+ * {@code ResultSet}. This is ad a kind of stored procedure in Java. <br>
  * <br>
  * Client usage is limited to the Client JDBC Driver for this version.<br>
  * 
@@ -25,7 +25,7 @@ public interface ServerQueryExecutor {
      * 
      * @param username   the client username that asks for the query. Allows to
      *                   perform a security check.
-     * @param connection The current SQL/JDBC <code>Connection</code>
+     * @param connection The current SQL/JDBC <code>Connection</code>.
      * @param args       the parameters passed by the client side.
      * @return a <code>ResultSet</code> object that contains the data produced by
      *         the query; never <code>null</code>
