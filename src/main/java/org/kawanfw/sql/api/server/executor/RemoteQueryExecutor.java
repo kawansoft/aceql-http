@@ -23,8 +23,8 @@ public interface RemoteQueryExecutor {
      * @param args	the parameters to pass to the method
      * @return a <code>ResultSet</code> object that contains the data produced by the
      *         query; never <code>null</code>
-     * @throws IOException
-     * @throws IOException           if an IOException occurs
+     * @throws IOException  if an IOException occurs
+     * @throws SQLException if a SQLException occurs
      */
     public ResultSet executeQuery(List<Object> args) throws IOException, SQLException;
 
