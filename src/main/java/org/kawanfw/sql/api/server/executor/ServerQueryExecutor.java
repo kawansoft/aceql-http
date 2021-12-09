@@ -23,12 +23,12 @@ public interface ServerQueryExecutor {
      * Executes a a query and return {@code ResultSet}.
      * 
      * @param username   the client username that asks for the query. Allows to
-     *                   perform a security check.
+     *                   perform security checks.
      * @param database   the database name as defined in the JDBC URL field. Allows
-     *                   to perform a security check.
+     *                   to perform security checks.
      * @param connection The current SQL/JDBC <code>Connection</code>.
-     * @param ipAddress  the IP address of the client user. Allows to perform a
-     *                   security check.
+     * @param ipAddress  the IP address of the client user. Allows to perform
+     *                   security checks.
      * @param args       the parameters passed by the client side.
      * @return a <code>ResultSet</code> object that contains the data produced by
      *         the query; never <code>null</code>
