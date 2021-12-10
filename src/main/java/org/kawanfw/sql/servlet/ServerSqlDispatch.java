@@ -27,8 +27,10 @@ package org.kawanfw.sql.servlet;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.lang.reflect.Constructor;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.Enumeration;
@@ -41,8 +43,10 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.apache.tomcat.util.http.fileupload.servlet.ServletFileUpload;
 import org.kawanfw.sql.api.server.DatabaseConfigurator;
+import org.kawanfw.sql.api.server.executor.ServerQueryExecutor;
 import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
 import org.kawanfw.sql.metadata.dto.DatabaseInfoDto;
+import org.kawanfw.sql.metadata.dto.ServerQueryExecutorDto;
 import org.kawanfw.sql.metadata.util.GsonWsUtil;
 import org.kawanfw.sql.servlet.connection.ConnectionIdUtil;
 import org.kawanfw.sql.servlet.connection.ConnectionStore;
@@ -137,6 +141,11 @@ public class ServerSqlDispatch {
 		}
 	    }
 
+	    // 9.1: isExecuteServerQuery
+	    if (isExecuteServerQuery(request, out, action, connection)) {
+		return;
+	    }
+
 	    List<SqlFirewallManager> sqlFirewallManagers = InjectedClassesStore.get().getSqlFirewallMap().get(database);
 
 	    // get_database_info
@@ -178,8 +187,44 @@ public class ServerSqlDispatch {
 
     }
 
+    private boolean isExecuteServerQuery(HttpServletRequest request, OutputStream out, String action,
+	    Connection connection) throws SQLException, IOException {
+	
+	if (action.equals(HttpParameter.EXECUTE_SERVER_QUERY)) {
+	    // Get username / database / ServerQueryExecutorDto
+	    // Execute the classname with reflection (no aceql-server.properties preloading in first version)
+	    String username = request.getParameter(HttpParameter.USERNAME);
+	    String database = request.getParameter(HttpParameter.DATABASE);
+
+	    try {
+		String jsonString = request.getParameter(HttpParameter.SERVER_QUERY_EXECUTOR_DTO);
+		ServerQueryExecutorDto serverQueryExecutorDto = GsonWsUtil.fromJson(jsonString,
+		    ServerQueryExecutorDto.class);
+
+		Class<?> c = Class.forName(serverQueryExecutorDto.getServerQueryExecutorClassName());
+		Constructor<?> constructor = c.getConstructor();
+		ServerQueryExecutor serverQueryExecutor = (ServerQueryExecutor) constructor.newInstance();
+		
+		List<String> paramTypes = serverQueryExecutorDto.getParameterTypes();
+		List<String> paramValues = serverQueryExecutorDto.getParameterTypes();
+		
+		Object [] params = ServerQueryExecutorUtil.buildParametersValuesFromTypes(paramTypes, paramValues);
+		
+		ResultSet rs = serverQueryExecutor.executeQuery(username, database, connection, request.getLocalAddr(), params);
+		ServerQueryExecutorUtil.dumpResultSetOnServletOutStream(request, rs, out);
+		
+	    } catch (Exception exception) {
+		throw new SQLException(exception);
+	    } 
+	   
+	    return true;
+	} else {
+	    return false;
+	}
+    }
+
     /**
-     * Returns on out srvlet stream all remote database & driver info.
+     * Returns on out servlet stream all remote database & driver info.
      * 
      * @param request
      * @param out
@@ -194,12 +239,12 @@ public class ServerSqlDispatch {
 	    Connection connection, List<SqlFirewallManager> sqlFirewallManagers) throws IOException, SQLException {
 	if (action.equals(HttpParameter.GET_DATABASE_INFO)) {
 
-	    // Throws SecurityException if not authorized 
+	    // Throws SecurityException if not authorized
 	    ServerSqlDispatchUtil.checkMetadataAuthorized(request, connection, sqlFirewallManagers);
-	    
+
 	    // Meta data
 	    DatabaseMetaData meta = connection.getMetaData();
-	    
+
 	    DatabaseInfoDto databaseInfoDto = new DatabaseInfoDto(meta);
 	    String jsonString = GsonWsUtil.getJSonString(databaseInfoDto);
 	    ServerSqlManager.writeLine(out, jsonString);

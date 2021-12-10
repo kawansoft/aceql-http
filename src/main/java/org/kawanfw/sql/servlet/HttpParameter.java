@@ -156,6 +156,8 @@ public class HttpParameter {
     
     public static final String BATCH_LIST = "batch_list";
     public static final Object GET_DATABASE_INFO = "get_database_info";
+    public static final Object EXECUTE_SERVER_QUERY = "execute_server_query";
+    public static final String SERVER_QUERY_EXECUTOR_DTO = "server_query_executor_dto";
     
     /**
      * Protected

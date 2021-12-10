@@ -67,8 +67,11 @@ public class ServletPathAnalyzer {
 	    buildElements(servletName, requestUri);
 	} else if (isGetDatabaseInfoAction(requestUri)) {
 	    action = "get_database_info";
+	    buildElements(servletName, requestUri);	
+	} else if (isExecuteServerQuery(requestUri)) {
+	    action = "execute_server_query";
 	    buildElements(servletName, requestUri);
-	} 	
+	} 
 	else if (isConnectionModifierOrReader(requestUri)) {
 	    action = getConnectionModifierOrReader();
 	    buildElements(servletName, requestUri);
@@ -94,8 +97,11 @@ public class ServletPathAnalyzer {
 	}
     }
 
-
-
+    private boolean isExecuteServerQuery(String urlContent) {
+	Objects.requireNonNull(urlContent, "urlContent cannot be null!");
+	return urlContent.endsWith("/execute_server_query");
+    }
+    
     private boolean isGetDatabaseInfoAction(String urlContent) {
 	Objects.requireNonNull(urlContent, "urlContent cannot be null!");
 	return urlContent.endsWith("/get_database_info");
