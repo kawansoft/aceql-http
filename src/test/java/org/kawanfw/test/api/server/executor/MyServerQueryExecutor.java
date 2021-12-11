@@ -22,39 +22,36 @@
  * Any modifications to this file must keep this entire header
  * intact.
  */
-package org.kawanfw.test.api.server.config;
+package org.kawanfw.test.api.server.executor;
 
-import java.io.FileInputStream;
-import java.util.Properties;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.List;
 
-import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
-import org.jasypt.iv.RandomIvGenerator;
-import org.jasypt.properties.EncryptableProperties;
+import org.kawanfw.sql.api.server.executor.ServerQueryExecutor;
 
 /**
+ * A query on sampledb database
  * @author Nicolas de Pomereu
  *
  */
-public class PropertiesPasswordManagerTest {
-
+public class MyServerQueryExecutor implements ServerQueryExecutor {
 
     /**
-     * @param args
+     * Simple select * from customer where customer_id >= 1 order by customer_id query
      */
-    public static void main(String[] args) throws Exception {
-	 StandardPBEStringEncryptor encryptor = new StandardPBEStringEncryptor();
-	 encryptor.setPassword("azerty123"); // could be got from web, env variable...
-	 encryptor.setAlgorithm("PBEWithHMACSHA512AndAES_256");
-	 encryptor.setIvGenerator(new RandomIvGenerator());
-	 
-	 /*
-	  * Create our EncryptableProperties object and load it the usual way.
-	  */
-	 Properties props = new EncryptableProperties(encryptor);
-	 props.load(new FileInputStream("I:\\_dev_awake\\aceql-http-main\\aceql-http\\conf\\aceql-server.properties"));
-	 
-	 System.out.println(props.get("sampledb.username"));
-	 System.out.println(props.get("sampledb.password"));
+    @Override
+    public ResultSet executeQuery(String username, String database, Connection connection, String ipAddress,
+	    List<Object> params) throws IOException, SQLException {
+	String sql = "select * from customer where customer_id >= 1 order by customer_id";
+	Statement statement = connection.createStatement();
+	statement.execute(sql);
+
+	ResultSet rs = statement.getResultSet();
+	return rs;
     }
 
 }
