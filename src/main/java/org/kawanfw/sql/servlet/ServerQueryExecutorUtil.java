@@ -165,7 +165,7 @@ public class ServerQueryExecutorUtil {
 	ResultSetWriter resultSetWriter = new ResultSetWriter(request, sql, gen, fillResultSetMetaData);
 	resultSetWriter.write(rs);
 
-	ServerSqlManager.writeLine(out);
+	ServerSqlManager.writeLine(outFinal);
 
 	gen.writeEnd(); // .write("status", "OK")
 	gen.flush();

@@ -1,42 +1,41 @@
 /*
- * Awake File: Easy file upload & download through HTTP with Java
- * Awake SQL: Remote JDBC access through HTTP.                                    
- * Copyright (C) 2012, Kawan Softwares S.A.S.
- * (http://www.awakeframework.org). All rights reserved.                                
- *                                                                               
- * Awake File/SQL is free software; you can redistribute it and/or                 
- * modify it under the terms of the GNU Lesser General Public                    
- * License as published by the Free Software Foundation; either                  
- * version 2.1 of the License, or (at your option) any later version.            
- *                                                                               
- * Awake File/SQL is distributed in the hope that it will be useful,               
- * but WITHOUT ANY WARRANTY; without even the implied warranty of                
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU             
- * Lesser General Public License for more details.                               
- *                                                                               
- * You should have received a copy of the GNU Lesser General Public              
- * License along with this library; if not, write to the Free Software           
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  
+ * This file is part of AceQL HTTP.
+ * AceQL HTTP: SQL Over HTTP
+ * Copyright (C) 2021,  KawanSoft SAS
+ * (http://www.kawansoft.com). All rights reserved.
+ *
+ * AceQL HTTP is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * AceQL HTTP is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
  * 02110-1301  USA
  *
  * Any modifications to this file must keep this entire header
  * intact.
  */
- 
+
 package org.kawanfw.sql.servlet;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
-import java.sql.Connection;
 import java.util.Date;
 
 import org.kawanfw.sql.util.FrameworkDebug;
 
-
 /**
  * 
- * Class that builds the class and the object from a transported value on http. <br>
+ * Class that builds the class and the object from a transported value on http.
+ * <br>
  * Value is transported as (java class name, string value). JavaValueBuilder
  * allows to rebuild:
  * <ul>
@@ -52,8 +51,7 @@ public class JavaValueBuilder {
     private static boolean DEBUG = FrameworkDebug.isSet(JavaValueBuilder.class);
 
     /**
-     * The transported value java type (without package name). Example:
-     * "Integer"
+     * The transported value java type (without package name). Example: "Integer"
      */
     private String javaType = null;
 
@@ -69,11 +67,9 @@ public class JavaValueBuilder {
     /**
      * Constructor.
      * 
-     * @param javaType
-     *            the transported value java type (without package name).
-     *            Example: "Integer"
-     * @param stringValue
-     *            the transported value
+     * @param javaType    the transported value java type (without package name).
+     *                    Example: "Integer"
+     * @param stringValue the transported value
      * @throws ClassNotFoundException
      * @throws NoSuchMethodException
      * @throws SecurityException
@@ -82,10 +78,9 @@ public class JavaValueBuilder {
      * @throws InstantiationException
      * @throws IllegalArgumentException
      */
-    public JavaValueBuilder(String javaType, String stringValue) throws ClassNotFoundException,
-	    SecurityException, NoSuchMethodException, IllegalArgumentException,
-	    InstantiationException, IllegalAccessException,
-	    InvocationTargetException {
+    public JavaValueBuilder(String javaType, String stringValue)
+	    throws ClassNotFoundException, SecurityException, NoSuchMethodException, IllegalArgumentException,
+	    InstantiationException, IllegalAccessException, InvocationTargetException {
 	this.javaType = javaType;
 	this.stringValue = stringValue;
 
@@ -104,10 +99,8 @@ public class JavaValueBuilder {
      * @throws InstantiationException
      * @throws IllegalArgumentException
      */
-    private void decode() throws ClassNotFoundException, SecurityException,
-	    NoSuchMethodException, IllegalArgumentException,
-	    InstantiationException, IllegalAccessException,
-	    InvocationTargetException {
+    private void decode() throws ClassNotFoundException, SecurityException, NoSuchMethodException,
+	    IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException {
 
 	if (javaType.endsWith("null")) // Should never happen
 	{
@@ -119,9 +112,6 @@ public class JavaValueBuilder {
 	} else if (javaType.endsWith("Boolean")) {
 	    classOfValue = boolean.class;
 	    value = new Boolean(stringValue);
-	} else if (javaType.endsWith("Connection")) {
-	    classOfValue = Connection.class;
-	    value = null; // Will be set outside
 	} else if (javaType.endsWith("Date")) {
 	    classOfValue = java.sql.Date.class;
 	    value = java.sql.Date.valueOf(stringValue);
@@ -152,14 +142,13 @@ public class JavaValueBuilder {
 	} else if (javaType.endsWith("Timestamp")) {
 	    classOfValue = java.sql.Date.class;
 	    value = java.sql.Timestamp.valueOf(stringValue);
-	} else // Support all classes that have a TheClass(String s) contructor:	
+	} else // Support all classes that have a TheClass(String s) contructor:
 	{
 	    debug("javaType   : " + javaType + ":");
 	    debug("stringValue: " + stringValue + ":");
 
 	    Class<?> paramClass = Class.forName(javaType);
-	    Constructor<?> ctor = paramClass
-		    .getDeclaredConstructor(String.class);
+	    Constructor<?> ctor = paramClass.getDeclaredConstructor(String.class);
 	    ctor.setAccessible(true);
 	    Object o = ctor.newInstance(stringValue);
 
@@ -179,14 +168,12 @@ public class JavaValueBuilder {
 
     /**
      * 
-     * @return the object value corresponding to the string value, correctly
-     *         casted
+     * @return the object value corresponding to the string value, correctly casted
      */
     public Object getValue() {
 	return this.value;
     }
 
-    
     public static void debug(String s) {
 	if (DEBUG) {
 	    System.out.println(new Date() + " " + s);
