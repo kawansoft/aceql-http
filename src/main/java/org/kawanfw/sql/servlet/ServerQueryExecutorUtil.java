@@ -43,6 +43,7 @@ import org.kawanfw.sql.metadata.dto.ServerQueryExecutorDto;
 import org.kawanfw.sql.metadata.util.GsonWsUtil;
 import org.kawanfw.sql.servlet.sql.ResultSetWriter;
 import org.kawanfw.sql.servlet.sql.json_return.JsonUtil;
+import org.kawanfw.sql.util.SqlTag;
 
 /**
  * @author Nicolas de Pomereu
@@ -66,27 +67,48 @@ public class ServerQueryExecutorUtil {
             String username = request.getParameter(HttpParameter.USERNAME);
             String database = request.getParameter(HttpParameter.DATABASE);
     
-            try {
-        	String jsonString = request.getParameter(HttpParameter.SERVER_QUERY_EXECUTOR_DTO);
-        	ServerQueryExecutorDto serverQueryExecutorDto = GsonWsUtil.fromJson(jsonString,
-        	    ServerQueryExecutorDto.class);
-    
-        	Class<?> c = Class.forName(serverQueryExecutorDto.getServerQueryExecutorClassName());
-        	Constructor<?> constructor = c.getConstructor();
-        	ServerQueryExecutor serverQueryExecutor = (ServerQueryExecutor) constructor.newInstance();
+
+	    String jsonString = request.getParameter(HttpParameter.SERVER_QUERY_EXECUTOR_DTO);
+	    ServerQueryExecutorDto serverQueryExecutorDto = GsonWsUtil.fromJson(jsonString,
+		    ServerQueryExecutorDto.class);
+
+	    Class<?> c = null;
+	    String className = null;
+	    try {
+		className = serverQueryExecutorDto.getServerQueryExecutorClassName();
+		c = Class.forName(className);
+	    } catch (ClassNotFoundException e) {
+		throw new SQLException(SqlTag.USER_CONFIGURATION_FAILURE +  ". Cannot load class: " + className + ". " + e.toString());
+	    }
+	    
+	    Constructor<?> constructor;
+	    try {
+		constructor = c.getConstructor();
+	    } catch (Exception e) {
+		throw new SQLException(SqlTag.USER_CONFIGURATION_FAILURE +  ". Cannot create constructor for class: " + className + ". " + e.toString());
+	    } 
+	    
+	    ServerQueryExecutor serverQueryExecutor = null;
+	    try {
+		serverQueryExecutor = (ServerQueryExecutor) constructor.newInstance();
+	    } catch (Exception e) {
+		throw new SQLException(SqlTag.USER_CONFIGURATION_FAILURE +  ". Cannot create new instance for class: " + className + ". " + e.toString());
+	    } 
+
+	    List<String> paramTypes = serverQueryExecutorDto.getParameterTypes();
+	    List<String> paramValues = serverQueryExecutorDto.getParameterTypes();
+
+	    Object[] params = null;
+	    try {
+		params = buildParametersValuesFromTypes(paramTypes, paramValues);
+	    } catch (Exception e) {
+		throw new SQLException(SqlTag.USER_CONFIGURATION_FAILURE +  ". Cannot load parameters for class: " + className + ". " + e.toString());
+	    } 
+
+	    String ipAddress = request.getRemoteAddr();
+	    ResultSet rs = serverQueryExecutor.executeQuery(username, database, connection, ipAddress, params);
+	    dumpResultSetOnServletOutStream(request, rs, out);
         	
-        	List<String> paramTypes = serverQueryExecutorDto.getParameterTypes();
-        	List<String> paramValues = serverQueryExecutorDto.getParameterTypes();
-        	
-        	Object [] params = buildParametersValuesFromTypes(paramTypes, paramValues);
-        	
-        	ResultSet rs = serverQueryExecutor.executeQuery(username, database, connection, request.getLocalAddr(), params);
-        	dumpResultSetOnServletOutStream(request, rs, out);
-        	
-            } catch (Exception exception) {
-        	throw new SQLException(exception);
-            } 
-           
             return true;
         } else {
             return false;
@@ -106,7 +128,6 @@ public class ServerQueryExecutorUtil {
 
 	    JavaValueBuilder javaValueBuilder = new JavaValueBuilder(javaType, value);
 	    values[i] = javaValueBuilder.getValue();
-
 	}
 
 	return values;
