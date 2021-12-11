@@ -25,6 +25,7 @@
 
 package org.kawanfw.sql.servlet;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.reflect.Constructor;
@@ -32,7 +33,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.zip.GZIPOutputStream;
 
 import javax.json.stream.JsonGenerator;
 import javax.json.stream.JsonGeneratorFactory;
@@ -103,7 +106,7 @@ public class ServerQueryExecutorUtil {
 	    List<String> paramTypes = serverQueryExecutorDto.getParameterTypes();
 	    List<String> paramValues = serverQueryExecutorDto.getParameterTypes();
 
-	    Object[] params = null;
+	    List<Object> params = new ArrayList<>();
 	    try {
 		params = buildParametersValuesFromTypes(paramTypes, paramValues);
 	    } catch (Exception e) {
@@ -121,7 +124,7 @@ public class ServerQueryExecutorUtil {
 	}
     }
 
-    private static Object[] buildParametersValuesFromTypes(List<String> paramTypes, List<String> paramValues)
+    private static List<Object> buildParametersValuesFromTypes(List<String> paramTypes, List<String> paramValues)
 	    throws ClassNotFoundException, SecurityException, NoSuchMethodException, IllegalArgumentException,
 	    InstantiationException, IllegalAccessException, InvocationTargetException {
 
@@ -129,7 +132,7 @@ public class ServerQueryExecutorUtil {
 	    return null;
 	}
 
-	Object[] values = new Object[paramValues.size()];
+	List<Object> values = new ArrayList<>();
 
 	for (int i = 0; i < paramTypes.size(); i++) {
 
@@ -137,7 +140,7 @@ public class ServerQueryExecutorUtil {
 	    String javaType = paramTypes.get(i);
 
 	    JavaValueBuilder javaValueBuilder = new JavaValueBuilder(javaType, value);
-	    values[i] = javaValueBuilder.getValue();
+	    values.add(javaValueBuilder.getValue());
 	}
 
 	return values;
@@ -146,10 +149,13 @@ public class ServerQueryExecutorUtil {
     private static void dumpResultSetOnServletOutStream(HttpServletRequest request, ResultSet rs, OutputStream out)
 	    throws SQLException, IOException {
 
+	boolean doGzip = Boolean.parseBoolean(request.getParameter(HttpParameter.GZIP_RESULT));
+	OutputStream outFinal =  getFinalOutputStream(out, doGzip);
+	
 	boolean doPrettyPrinting = true;
 	JsonGeneratorFactory jf = JsonUtil.getJsonGeneratorFactory(doPrettyPrinting);
 
-	JsonGenerator gen = jf.createGenerator(out);
+	JsonGenerator gen = jf.createGenerator(outFinal);
 	gen.writeStartObject().write("status", "OK");
 
 	String fillResultSetMetaDataStr = request.getParameter(HttpParameter.FILL_RESULT_SET_META_DATA);
@@ -164,6 +170,25 @@ public class ServerQueryExecutorUtil {
 	gen.writeEnd(); // .write("status", "OK")
 	gen.flush();
 	gen.close();
+    }
+    
+    /**
+     * Get the OutputStream to use. A regular one or a GZIP_RESULT one
+     * @param out
+     * @param doGzip
+     * @return
+     * @throws FileNotFoundException
+     * @throws IOException
+     */
+    private static OutputStream getFinalOutputStream(OutputStream out, boolean doGzip) throws FileNotFoundException, IOException {
+
+	if (doGzip) {
+	    GZIPOutputStream gZipOut = new GZIPOutputStream(out);
+	    return gZipOut;
+	} else {
+	    OutputStream outFinal = out;
+	    return outFinal;
+	}
     }
 
 }
