@@ -27,7 +27,9 @@ package org.kawanfw.sql.servlet;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
@@ -36,6 +38,9 @@ import javax.json.stream.JsonGenerator;
 import javax.json.stream.JsonGeneratorFactory;
 import javax.servlet.http.HttpServletRequest;
 
+import org.kawanfw.sql.api.server.executor.ServerQueryExecutor;
+import org.kawanfw.sql.metadata.dto.ServerQueryExecutorDto;
+import org.kawanfw.sql.metadata.util.GsonWsUtil;
 import org.kawanfw.sql.servlet.sql.ResultSetWriter;
 import org.kawanfw.sql.servlet.sql.json_return.JsonUtil;
 
@@ -52,7 +57,43 @@ public class ServerQueryExecutorUtil {
 
     }
 
-    public static Object[] buildParametersValuesFromTypes(List<String> paramTypes, List<String> paramValues)
+    public static boolean isExecuteServerQuery(HttpServletRequest request, OutputStream out, String action,
+            Connection connection) throws SQLException, IOException {
+        
+        if (action.equals(HttpParameter.EXECUTE_SERVER_QUERY)) {
+            // Get username / database / ServerQueryExecutorDto
+            // Execute the classname with reflection (no aceql-server.properties preloading in first version)
+            String username = request.getParameter(HttpParameter.USERNAME);
+            String database = request.getParameter(HttpParameter.DATABASE);
+    
+            try {
+        	String jsonString = request.getParameter(HttpParameter.SERVER_QUERY_EXECUTOR_DTO);
+        	ServerQueryExecutorDto serverQueryExecutorDto = GsonWsUtil.fromJson(jsonString,
+        	    ServerQueryExecutorDto.class);
+    
+        	Class<?> c = Class.forName(serverQueryExecutorDto.getServerQueryExecutorClassName());
+        	Constructor<?> constructor = c.getConstructor();
+        	ServerQueryExecutor serverQueryExecutor = (ServerQueryExecutor) constructor.newInstance();
+        	
+        	List<String> paramTypes = serverQueryExecutorDto.getParameterTypes();
+        	List<String> paramValues = serverQueryExecutorDto.getParameterTypes();
+        	
+        	Object [] params = buildParametersValuesFromTypes(paramTypes, paramValues);
+        	
+        	ResultSet rs = serverQueryExecutor.executeQuery(username, database, connection, request.getLocalAddr(), params);
+        	dumpResultSetOnServletOutStream(request, rs, out);
+        	
+            } catch (Exception exception) {
+        	throw new SQLException(exception);
+            } 
+           
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
+    private static Object[] buildParametersValuesFromTypes(List<String> paramTypes, List<String> paramValues)
 	    throws ClassNotFoundException, SecurityException, NoSuchMethodException, IllegalArgumentException,
 	    InstantiationException, IllegalAccessException, InvocationTargetException {
 
@@ -69,10 +110,9 @@ public class ServerQueryExecutorUtil {
 	}
 
 	return values;
-
     }
 
-    public static void dumpResultSetOnServletOutStream(HttpServletRequest request, ResultSet rs, OutputStream out)
+    private static void dumpResultSetOnServletOutStream(HttpServletRequest request, ResultSet rs, OutputStream out)
 	    throws SQLException, IOException {
 
 	boolean doPrettyPrinting = true;
