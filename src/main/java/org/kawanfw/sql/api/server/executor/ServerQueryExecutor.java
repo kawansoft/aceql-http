@@ -32,7 +32,8 @@ import java.sql.SQLException;
 
 /**
  * Implementation of this interface allow client side to call a server side
- * programmed class that returns a {@code ResultSet}. This is a a kind of
+ * programmed class that returns a {@code ResultSet}. 
+ * <br>This is a a kind of
  * <i>AceQL stored procedure</i> written in Java. <br>
  * 
  * @author Nicolas de Pomereu

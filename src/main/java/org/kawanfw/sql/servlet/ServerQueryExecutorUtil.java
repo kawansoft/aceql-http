@@ -59,14 +59,14 @@ public class ServerQueryExecutorUtil {
     }
 
     public static boolean isExecuteServerQuery(HttpServletRequest request, OutputStream out, String action,
-            Connection connection) throws SQLException, IOException {
-        
-        if (action.equals(HttpParameter.EXECUTE_SERVER_QUERY)) {
-            // Get username / database / ServerQueryExecutorDto
-            // Execute the classname with reflection (no aceql-server.properties preloading in first version)
-            String username = request.getParameter(HttpParameter.USERNAME);
-            String database = request.getParameter(HttpParameter.DATABASE);
-    
+	    Connection connection) throws SQLException, IOException {
+
+	if (action.equals(HttpParameter.EXECUTE_SERVER_QUERY)) {
+	    // Get username / database / ServerQueryExecutorDto
+	    // Execute the classname with reflection (no aceql-server.properties preloading
+	    // in first version)
+	    String username = request.getParameter(HttpParameter.USERNAME);
+	    String database = request.getParameter(HttpParameter.DATABASE);
 
 	    String jsonString = request.getParameter(HttpParameter.SERVER_QUERY_EXECUTOR_DTO);
 	    ServerQueryExecutorDto serverQueryExecutorDto = GsonWsUtil.fromJson(jsonString,
@@ -78,22 +78,27 @@ public class ServerQueryExecutorUtil {
 		className = serverQueryExecutorDto.getServerQueryExecutorClassName();
 		c = Class.forName(className);
 	    } catch (ClassNotFoundException e) {
-		throw new SQLException(SqlTag.USER_CONFIGURATION_FAILURE +  ". Cannot load class: " + className + ". " + e.toString());
+		throw new SQLException(SqlTag.USER_CONFIGURATION_FAILURE + ". Cannot load ServerQueryExecutor class: "
+			+ className + ". " + e.toString());
 	    }
-	    
+
 	    Constructor<?> constructor;
 	    try {
 		constructor = c.getConstructor();
 	    } catch (Exception e) {
-		throw new SQLException(SqlTag.USER_CONFIGURATION_FAILURE +  ". Cannot create constructor for class: " + className + ". " + e.toString());
-	    } 
-	    
+		throw new SQLException(SqlTag.USER_CONFIGURATION_FAILURE
+			+ ". Cannot create constructor for ServerQueryExecutor class: " + className + ". "
+			+ e.toString());
+	    }
+
 	    ServerQueryExecutor serverQueryExecutor = null;
 	    try {
 		serverQueryExecutor = (ServerQueryExecutor) constructor.newInstance();
 	    } catch (Exception e) {
-		throw new SQLException(SqlTag.USER_CONFIGURATION_FAILURE +  ". Cannot create new instance for class: " + className + ". " + e.toString());
-	    } 
+		throw new SQLException(SqlTag.USER_CONFIGURATION_FAILURE
+			+ ". Cannot create new instance for ServerQueryExecutor class: " + className + ". "
+			+ e.toString());
+	    }
 
 	    List<String> paramTypes = serverQueryExecutorDto.getParameterTypes();
 	    List<String> paramValues = serverQueryExecutorDto.getParameterTypes();
@@ -102,22 +107,27 @@ public class ServerQueryExecutorUtil {
 	    try {
 		params = buildParametersValuesFromTypes(paramTypes, paramValues);
 	    } catch (Exception e) {
-		throw new SQLException(SqlTag.USER_CONFIGURATION_FAILURE +  ". Cannot load parameters for class: " + className + ". " + e.toString());
-	    } 
+		throw new SQLException(SqlTag.USER_CONFIGURATION_FAILURE
+			+ ". Cannot load parameters for ServerQueryExecutor class: " + className + ". " + e.toString());
+	    }
 
 	    String ipAddress = request.getRemoteAddr();
 	    ResultSet rs = serverQueryExecutor.executeQuery(username, database, connection, ipAddress, params);
 	    dumpResultSetOnServletOutStream(request, rs, out);
-        	
-            return true;
-        } else {
-            return false;
-        }
+
+	    return true;
+	} else {
+	    return false;
+	}
     }
-    
+
     private static Object[] buildParametersValuesFromTypes(List<String> paramTypes, List<String> paramValues)
 	    throws ClassNotFoundException, SecurityException, NoSuchMethodException, IllegalArgumentException,
 	    InstantiationException, IllegalAccessException, InvocationTargetException {
+
+	if (paramTypes == null || paramTypes.isEmpty()) {
+	    return null;
+	}
 
 	Object[] values = new Object[paramValues.size()];
 
@@ -145,8 +155,8 @@ public class ServerQueryExecutorUtil {
 	String fillResultSetMetaDataStr = request.getParameter(HttpParameter.FILL_RESULT_SET_META_DATA);
 	boolean fillResultSetMetaData = Boolean.parseBoolean(fillResultSetMetaDataStr);
 
-	ResultSetWriter resultSetWriter = new ResultSetWriter(request, "select * from table", gen,
-		fillResultSetMetaData);
+	String sql = "select * from table"; // Will not be used
+	ResultSetWriter resultSetWriter = new ResultSetWriter(request, sql, gen, fillResultSetMetaData);
 	resultSetWriter.write(rs);
 
 	ServerSqlManager.writeLine(out);
