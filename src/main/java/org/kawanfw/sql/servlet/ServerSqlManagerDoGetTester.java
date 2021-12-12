@@ -46,7 +46,7 @@ import org.kawanfw.sql.version.Version;
  */
 public class ServerSqlManagerDoGetTester {
 
-    private static boolean DEBUG = FrameworkDebug.isSet(ServerSqlManager.class);
+    private static boolean DEBUG = FrameworkDebug.isSet(ServerSqlManagerDoGetTester.class);
 
     /** Color used by servlet display in all KawanSoft Frameworks */
     public static final String KAWANSOFT_COLOR = "E7403E";

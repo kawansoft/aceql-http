@@ -44,7 +44,6 @@ import org.kawanfw.sql.api.server.DatabaseConfigurationException;
 import org.kawanfw.sql.api.server.DatabaseConfigurator;
 import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
 import org.kawanfw.sql.api.server.listener.UpdateListener;
-import org.kawanfw.sql.servlet.ServerSqlManager;
 import org.kawanfw.sql.servlet.injection.classes.InjectedClasses.InjectedClassesBuilder;
 import org.kawanfw.sql.servlet.injection.classes.creator.BlobDownloadConfiguratorCreator;
 import org.kawanfw.sql.servlet.injection.classes.creator.BlobUploadConfiguratorCreator;
@@ -66,7 +65,7 @@ import org.kawanfw.sql.version.Version;
 
 public class InjectedClassesManager {
 
-    private static boolean DEBUG = FrameworkDebug.isSet(ServerSqlManager.class);
+    private static boolean DEBUG = FrameworkDebug.isSet(InjectedClassesManager.class);
     public static String CR_LF = System.getProperty("line.separator");
 
     /** The Exception thrown at init */
