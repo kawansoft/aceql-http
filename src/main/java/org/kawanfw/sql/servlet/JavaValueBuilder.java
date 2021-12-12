@@ -111,7 +111,7 @@ public class JavaValueBuilder {
 	    value = new BigDecimal(stringValue);
 	} else if (javaType.endsWith("Boolean")) {
 	    classOfValue = boolean.class;
-	    value = new Boolean(stringValue);
+	    value = Boolean.valueOf(stringValue);
 	} else if (javaType.endsWith("Date")) {
 	    classOfValue = java.sql.Date.class;
 	    value = java.sql.Date.valueOf(stringValue);

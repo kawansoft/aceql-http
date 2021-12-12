@@ -22,8 +22,9 @@ public class Test {
      * @param args
      */
     public static void main(String[] args) throws Exception {
-
-
+	System.out.println(System.currentTimeMillis());
+	Thread.sleep(1000);
+	System.out.println(System.currentTimeMillis());
     }
 
     /**
