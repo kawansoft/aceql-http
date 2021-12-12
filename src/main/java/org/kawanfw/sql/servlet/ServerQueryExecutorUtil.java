@@ -34,6 +34,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.zip.GZIPOutputStream;
 
@@ -46,6 +47,7 @@ import org.kawanfw.sql.metadata.dto.ServerQueryExecutorDto;
 import org.kawanfw.sql.metadata.util.GsonWsUtil;
 import org.kawanfw.sql.servlet.sql.ResultSetWriter;
 import org.kawanfw.sql.servlet.sql.json_return.JsonUtil;
+import org.kawanfw.sql.util.FrameworkDebug;
 import org.kawanfw.sql.util.SqlTag;
 
 /**
@@ -54,6 +56,8 @@ import org.kawanfw.sql.util.SqlTag;
  */
 public class ServerQueryExecutorUtil {
 
+    private static boolean DEBUG = FrameworkDebug.isSet(ServerQueryExecutorUtil.class);
+    
     /**
      * Static class.
      */
@@ -104,7 +108,7 @@ public class ServerQueryExecutorUtil {
 	    }
 
 	    List<String> paramTypes = serverQueryExecutorDto.getParameterTypes();
-	    List<String> paramValues = serverQueryExecutorDto.getParameterTypes();
+	    List<String> paramValues = serverQueryExecutorDto.getParameterValues();
 
 	    List<Object> params = new ArrayList<>();
 	    try {
@@ -139,6 +143,8 @@ public class ServerQueryExecutorUtil {
 	    String value = paramValues.get(i);
 	    String javaType = paramTypes.get(i);
 
+	    debug("javaType / value: " + javaType + " / " + value);
+	    
 	    JavaValueBuilder javaValueBuilder = new JavaValueBuilder(javaType, value);
 	    values.add(javaValueBuilder.getValue());
 	}
@@ -188,6 +194,12 @@ public class ServerQueryExecutorUtil {
 	} else {
 	    OutputStream outFinal = out;
 	    return outFinal;
+	}
+    }
+    
+    public static void debug(String s) {
+	if (DEBUG) {
+	    System.out.println(new Date() + " " + s);
 	}
     }
 

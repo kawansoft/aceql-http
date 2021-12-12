@@ -26,9 +26,9 @@ package org.kawanfw.test.api.server.executor;
 
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.List;
 
 import org.kawanfw.sql.api.server.executor.ServerQueryExecutor;
@@ -46,11 +46,20 @@ public class MyServerQueryExecutor implements ServerQueryExecutor {
     @Override
     public ResultSet executeQuery(String username, String database, Connection connection, String ipAddress,
 	    List<Object> params) throws IOException, SQLException {
-	String sql = "select * from customer where customer_id >= 1 order by customer_id";
-	Statement statement = connection.createStatement();
-	statement.execute(sql);
+	
+//	System.err.println("params: ");
+//	for (Object object : params) {
+//	    System.err.println(object.toString());
+//	}
+	
+	Integer customerIdParam = (Integer)params.get(0);
+	
+	String sql = "select * from customer where customer_id >= ? order by customer_id";
+	PreparedStatement preparedStatement = connection.prepareStatement(sql);
+	preparedStatement.setInt(1, customerIdParam.intValue());
+	preparedStatement.execute();
 
-	ResultSet rs = statement.getResultSet();
+	ResultSet rs = preparedStatement.getResultSet();
 	return rs;
     }
 
