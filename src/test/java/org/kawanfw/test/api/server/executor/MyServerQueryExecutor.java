@@ -46,12 +46,7 @@ public class MyServerQueryExecutor implements ServerQueryExecutor {
     @Override
     public ResultSet executeQuery(String username, String database, Connection connection, String ipAddress,
 	    List<Object> params) throws IOException, SQLException {
-	
-//	System.err.println("params: ");
-//	for (Object object : params) {
-//	    System.err.println(object.toString());
-//	}
-	
+		
 	Integer customerIdParam = (Integer)params.get(0);
 	
 	String sql = "select * from customer where customer_id >= ? order by customer_id";

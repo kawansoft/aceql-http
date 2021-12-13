@@ -122,6 +122,12 @@ public class ServerQueryExecutorUtil {
 
 	    String ipAddress = request.getRemoteAddr();
 	    ResultSet rs = serverQueryExecutor.executeQuery(username, database, connection, ipAddress, params);
+	    
+	    if (rs == null) {
+		throw new SQLException(SqlTag.USER_CONFIGURATION_FAILURE
+			+ ". ResultSet cannot be null! The ServerQueryExecutor class returns a null ResultSet: " + className + ". ");	
+	    }
+	    
 	    dumpResultSetOnServletOutStream(request, rs, out);
 
 	    return true;
