@@ -79,6 +79,8 @@ public class ServerQueryExecutorUtil {
 	    ServerQueryExecutorDto serverQueryExecutorDto = GsonWsUtil.fromJson(jsonString,
 		    ServerQueryExecutorDto.class);
 
+	    debug("serverQueryExecutorDto: " + serverQueryExecutorDto.toString());
+	    
 	    Class<?> c = null;
 	    String className = null;
 	    try {

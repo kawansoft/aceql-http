@@ -25,7 +25,7 @@ AceQL HTTP is licensed through the GNU Lesser General Public License
 (LGPL v2.1).
 
 
-AceQL HTTP Version 9.1 - 09-Dec-2021
+AceQL HTTP Version 9.1 - 13-Dec-2021
 ------------------------------------
 
 What's New: 
@@ -36,7 +36,7 @@ What's New:
 
 Bugs fixed:
 - org.kawanfw.sql.api.server.StatementAnalyzerUtil was public instead
-  of package protected. This has been protected.
+  of package protected. This has been fixed.
   
 
 AceQL HTTP Version 9.0 - 02-Dec-2021
