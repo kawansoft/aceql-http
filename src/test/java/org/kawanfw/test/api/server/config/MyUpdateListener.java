@@ -30,7 +30,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Date;
 
-import org.kawanfw.sql.api.server.listener.SqlEvent;
+import org.kawanfw.sql.api.server.SqlEvent;
 import org.kawanfw.sql.api.server.listener.UpdateListener;
 
 /**
@@ -48,10 +48,10 @@ public class MyUpdateListener implements UpdateListener {
      * Prints all successful SQL updates main info on stdout
      */
     @Override
-    public void updateActionPerformed(SqlEvent evt, Connection connection) throws IOException, SQLException {
+    public void updateActionPerformed(SqlEvent sqlEvent, Connection connection) throws IOException, SQLException {
 
-	System.out.println(new Date() + " client username: " + evt.getUsername() + " database: " + evt.getDatabase()
-		+ " SQL statement:  " + evt.getSql() + " user IP address: " + evt.getIpAddress());
+	System.out.println(new Date() + " client username: " + sqlEvent.getUsername() + " database: " + sqlEvent.getDatabase()
+		+ " SQL statement:  " + sqlEvent.getSql() + " user IP address: " + sqlEvent.getIpAddress());
     }
 
 }

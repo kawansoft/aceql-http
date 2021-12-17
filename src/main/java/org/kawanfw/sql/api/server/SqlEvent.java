@@ -55,8 +55,8 @@ public class SqlEvent {
      * @param parameterValues     the parameter values of a prepared statement in
      *                            the natural order, empty list for a (non prepared)
      *                            statement
-     * @param isMetadataQuery	  Says if the client request was an AceQL specific
-     *                        	   Metadata Query API
+     * @param isMetadataQuery	  says if the client request was an AceQL specific
+     *                        	  Metadata Query API
      */
     SqlEvent(String username, String database, String ipAddress, String sql, boolean isPreparedStatement,
 	    List<Object> parameterValues, boolean isMetadataQuery) {
@@ -66,6 +66,7 @@ public class SqlEvent {
 	this.sql = Objects.requireNonNull(sql, "sql cannnot be null!");
 	this.isPreparedStatement = isPreparedStatement;
 	this.parameterValues = Objects.requireNonNull(parameterValues, "parameterValues cannnot be null!");
+	this.isMetadataQuery =  isMetadataQuery;
     }
 
     /**

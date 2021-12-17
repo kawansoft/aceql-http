@@ -73,7 +73,7 @@ public class UpdateListenersCreator {
 
 			// We call code just to verify it's OK:
 			SqlEvent sqlEvent = SqlEventWrapper.sqlActionEventBuilder("username",
-				database, "127.0.0.1", "select * from table", false, parameterValues);
+				database, "127.0.0.1", "select * from table", false, parameterValues, false);
 			updateListenerManager.updateActionPerformed(sqlEvent, connection);
 		    }
 		}

@@ -42,7 +42,7 @@ public class JsonLoggerUpdateListenerTest {
 	list.add("value1");
 	list.add("value2");
 	list.add("value3");
-	SqlEvent evt = SqlEventWrapper.sqlActionEventBuilder("user1", "db1", "10.0.0.0", "select * from table", false, list);
+	SqlEvent evt = SqlEventWrapper.sqlActionEventBuilder("user1", "db1", "10.0.0.0", "select * from table", false, list, false);
 	
 	String jsonString = UpdateListenerUtil.toJsonString(evt);
 	System.out.println(jsonString);

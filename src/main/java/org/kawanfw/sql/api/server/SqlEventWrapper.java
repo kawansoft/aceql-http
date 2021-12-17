@@ -40,7 +40,7 @@ import java.util.List;
 public class SqlEventWrapper {
 
     public static SqlEvent sqlActionEventBuilder(String username, String database, String ipAddress, String sql,
-	    boolean isPreparedStatement, List<Object> parameterValues) throws SQLException {
-	return new SqlEvent(username, database, ipAddress, sql, isPreparedStatement, parameterValues, false);
+	    boolean isPreparedStatement, List<Object> parameterValues, boolean isMetadataQuery) throws SQLException {
+	return new SqlEvent(username, database, ipAddress, sql, isPreparedStatement, parameterValues, isMetadataQuery);
     }
 }

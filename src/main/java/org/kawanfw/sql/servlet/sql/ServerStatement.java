@@ -588,7 +588,7 @@ public class ServerStatement {
 	    String ipAddress, boolean isPreparedStatement) throws SQLException, IOException {
 	if (updateListeners.size() != 1 || !(updateListeners.get(0) instanceof DefaultUpdateListener)) {
 	    SqlEvent sqlEvent = SqlEventWrapper.sqlActionEventBuilder(username, database, ipAddress,
-		    sqlOrder, isPreparedStatement, parameterValues);
+		    sqlOrder, isPreparedStatement, parameterValues, false);
 	    for (UpdateListener updateListener : updateListeners) {
 		updateListener.updateActionPerformed(sqlEvent, connection);
 	    }

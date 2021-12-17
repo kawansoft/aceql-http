@@ -404,7 +404,7 @@ public class ServerStatementRawExecute {
 	    StatementAnalyzer analyzer = new StatementAnalyzer(sqlOrder, parameterValues);
 	    if (analyzer.isDelete() || analyzer.isUpdate() || analyzer.isInsert()) {
 		SqlEvent sqlEvent = SqlEventWrapper.sqlActionEventBuilder(username, database,
-			ipAddress, sqlOrder, isPreparedStatement, parameterValues);
+			ipAddress, sqlOrder, isPreparedStatement, parameterValues, false);
 		for (UpdateListener updateListener : updateListeners) {
 		    updateListener.updateActionPerformed(sqlEvent, connection);
 		}
