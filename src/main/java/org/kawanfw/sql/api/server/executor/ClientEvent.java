@@ -57,9 +57,9 @@ public class ClientEvent {
     }
 
     /**
-     * Returns the client username that asked for the SQL request
+     * Returns the client username that asked to execute the server query.
      * 
-     * @return the client username that asked for the SQL request.
+     * @return the client username that asked to execute the server query.
      */
     public String getUsername() {
 	return username;
@@ -84,9 +84,9 @@ public class ClientEvent {
     }
 
      /**
-     * Returns the parameter values
+     * Returns the parameter values to pass to the server query.
      * 
-     * @return the parameter values
+     * @return the parameter values to pass to the server query.
      */
     public List<Object> getParameterValues() {
 	return parameterValues;
