@@ -29,7 +29,6 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
 
 /**
  * Implementation of this interface allow client side to call a server side
@@ -47,21 +46,12 @@ public interface ServerQueryExecutor {
      * 
      * @param clientEvent contains all info about the request asked by the client
      *                    side
-     * @param username    the client username that asks for the query. Allows to
-     *                    perform security checks.
-     * @param database    the database name as defined in the JDBC URL field. Allows
-     *                    to perform security checks.
-     * @param ipAddress   the IP address of the client user. Allows to perform
-     *                    security checks.
-     * @param params      the parameters list passed by the client side.
      * @param connection  the current SQL/JDBC <code>Connection</code>.
-     * 
      * @return a <code>ResultSet</code> object that contains the data produced by
      *         the query; never <code>null</code>
      * @throws IOException  if an IOException occurs
      * @throws SQLException if a SQLException occurs
      */
-    public ResultSet executeQuery(ClientEvent clientEvent, String username, String database, String ipAddress,
-	    List<Object> params, Connection connection) throws IOException, SQLException;
+    public ResultSet executeQuery(ClientEvent clientEvent, Connection connection) throws IOException, SQLException;
 
 }
