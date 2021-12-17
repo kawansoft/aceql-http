@@ -31,6 +31,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
+import org.kawanfw.sql.api.server.executor.ClientEvent;
 import org.kawanfw.sql.api.server.executor.ServerQueryExecutor;
 
 /**
@@ -44,8 +45,8 @@ public class MyServerQueryExecutor implements ServerQueryExecutor {
      * Simple select * from customer where customer_id >= 1 order by customer_id query
      */
     @Override
-    public ResultSet executeQuery(String username, String database, String ipAddress, List<Object> params,
-	    Connection connection) throws IOException, SQLException {
+    public ResultSet executeQuery(ClientEvent clientEvent, String username, String database, String ipAddress,
+	    List<Object> params, Connection connection) throws IOException, SQLException {
 		
 	Integer customerIdParam = (Integer)params.get(0);
 	

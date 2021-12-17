@@ -32,7 +32,7 @@ import org.kawanfw.sql.api.server.SqlEvent;
 
 /**
  * Default implementation of {@code UpdateListener}. The
- * {@code updateActionPerformed(SqlEvent, Connection)}
+ * {@code updateActionPerformed(ClientEvent, Connection)}
  * does nothing for the sake of speed execution.
  * 
  * @author Nicolas de Pomereu

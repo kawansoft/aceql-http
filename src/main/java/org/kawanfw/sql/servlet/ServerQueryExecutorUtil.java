@@ -42,6 +42,8 @@ import javax.json.stream.JsonGenerator;
 import javax.json.stream.JsonGeneratorFactory;
 import javax.servlet.http.HttpServletRequest;
 
+import org.kawanfw.sql.api.server.executor.ClientEvent;
+import org.kawanfw.sql.api.server.executor.ClientEventWrapper;
 import org.kawanfw.sql.api.server.executor.ServerQueryExecutor;
 import org.kawanfw.sql.metadata.dto.ServerQueryExecutorDto;
 import org.kawanfw.sql.metadata.util.GsonWsUtil;
@@ -121,7 +123,8 @@ public class ServerQueryExecutorUtil {
 	    }
 
 	    String ipAddress = request.getRemoteAddr();
-	    ResultSet rs = serverQueryExecutor.executeQuery(username, database, ipAddress, params, connection);
+	    ClientEvent clientEvent = ClientEventWrapper.builderClientEvent(username, database, ipAddress, params);
+	    ResultSet rs = serverQueryExecutor.executeQuery(clientEvent, username, database, ipAddress, params, connection);
 	    
 	    if (rs == null) {
 		throw new SQLException(SqlTag.USER_CONFIGURATION_FAILURE

@@ -33,9 +33,8 @@ import java.util.List;
 
 /**
  * Implementation of this interface allow client side to call a server side
- * programmed class that returns a {@code ResultSet}. 
- * <br>This is a a kind of
- * <i>AceQL stored procedure</i> written in Java. <br>
+ * programmed class that returns a {@code ResultSet}. <br>
+ * This is a a kind of <i>AceQL stored procedure</i> written in Java. <br>
  * 
  * @author Nicolas de Pomereu
  * @since 9.1
@@ -46,20 +45,23 @@ public interface ServerQueryExecutor {
     /**
      * Executes a query and returns {@code ResultSet} for the client-side
      * 
-     * @param username   the client username that asks for the query. Allows to
-     *                   perform security checks.
-     * @param database   the database name as defined in the JDBC URL field. Allows
-     *                   to perform security checks.
-     * @param ipAddress  the IP address of the client user. Allows to perform
-     *                   security checks.
-     * @param params     the parameters list passed by the client side.                  
-     * @param connection the current SQL/JDBC <code>Connection</code>.
+     * @param clientEvent contains all info about the request asked by the client
+     *                    side
+     * @param username    the client username that asks for the query. Allows to
+     *                    perform security checks.
+     * @param database    the database name as defined in the JDBC URL field. Allows
+     *                    to perform security checks.
+     * @param ipAddress   the IP address of the client user. Allows to perform
+     *                    security checks.
+     * @param params      the parameters list passed by the client side.
+     * @param connection  the current SQL/JDBC <code>Connection</code>.
+     * 
      * @return a <code>ResultSet</code> object that contains the data produced by
      *         the query; never <code>null</code>
      * @throws IOException  if an IOException occurs
      * @throws SQLException if a SQLException occurs
      */
-    public ResultSet executeQuery(String username, String database, String ipAddress, List<Object> params,
-	    Connection connection) throws IOException, SQLException;
+    public ResultSet executeQuery(ClientEvent clientEvent, String username, String database, String ipAddress,
+	    List<Object> params, Connection connection) throws IOException, SQLException;
 
 }

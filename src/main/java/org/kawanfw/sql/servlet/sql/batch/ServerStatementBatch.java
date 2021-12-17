@@ -248,7 +248,7 @@ public class ServerStatementBatch {
 	    isAllowedAfterAnalysis = sqlFirewallManager.allowExecuteUpdate(username, database, connection);
 	    if (!isAllowedAfterAnalysis) {
 		
-		SqlEvent sqlEvent = SqlEventWrapper.sqlActionEventBuilder(username, database, ipAddress, sqlOrder,
+		SqlEvent sqlEvent = SqlEventWrapper.sqlEventBuild(username, database, ipAddress, sqlOrder,
 			ServerStatementUtil.isPreparedStatement(request),
 			serverPreparedStatementParameters.getParameterValues(), false);
 		    
@@ -284,7 +284,7 @@ public class ServerStatementBatch {
 	    if (!isAllowed) {
 		List<Object> parameterValues = new ArrayList<>();
 		
-		SqlEvent sqlEvent = SqlEventWrapper.sqlActionEventBuilder(username, database, ipAddress, sqlOrder,
+		SqlEvent sqlEvent = SqlEventWrapper.sqlEventBuild(username, database, ipAddress, sqlOrder,
 			ServerStatementUtil.isPreparedStatement(request), parameterValues, false);
 		    
 		sqlFirewallManager.runIfStatementRefused(sqlEvent, username, database, connection, ipAddress,
@@ -319,7 +319,7 @@ public class ServerStatementBatch {
 		break;
 	    }
 
-	    SqlEvent sqlEvent = SqlEventWrapper.sqlActionEventBuilder(username, database, ipAddress, sqlOrder,
+	    SqlEvent sqlEvent = SqlEventWrapper.sqlEventBuild(username, database, ipAddress, sqlOrder,
 		    ServerStatementUtil.isPreparedStatement(request),
 		    new Vector<Object>(), false);
 	    
@@ -334,7 +334,7 @@ public class ServerStatementBatch {
 	if (!isAllowed) {
 	    List<Object> parameterValues = new ArrayList<>();
 	    
-	    SqlEvent sqlEvent = SqlEventWrapper.sqlActionEventBuilder(username, database, ipAddress, sqlOrder,
+	    SqlEvent sqlEvent = SqlEventWrapper.sqlEventBuild(username, database, ipAddress, sqlOrder,
 		    ServerStatementUtil.isPreparedStatement(request),
 		    new Vector<Object>(), false);
 	    

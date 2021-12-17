@@ -23,35 +23,24 @@
  * intact.
  */
 
-package org.kawanfw.test.api.server.config;
+package org.kawanfw.sql.api.server.executor;
 
-import java.io.IOException;
-import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Date;
-
-import org.kawanfw.sql.api.server.SqlEvent;
-import org.kawanfw.sql.api.server.listener.UpdateListener;
+import java.util.List;
 
 /**
- * Concrete implementation of {@code UpdateListener}. The
- * {@code updateActionPerformed(ClientEvent, Connection)} logs
- * {@code ClientEvent} on stdout.
- * 
+ * A internal wrapper for Java package protected calls. <br>
+ * This is an internal undocumented class that should not be used nor called by
+ * the users of the AceQL APis.
+ *
  * @author Nicolas de Pomereu
  * @since 9.0
  */
 
-public class MyUpdateListener implements UpdateListener {
+public class ClientEventWrapper {
 
-    /**
-     * Prints all successful SQL updates main info on stdout
-     */
-    @Override
-    public void updateActionPerformed(SqlEvent sqlEvent, Connection connection) throws IOException, SQLException {
-
-	System.out.println(new Date() + " client username: " + sqlEvent.getUsername() + " database: " + sqlEvent.getDatabase()
-		+ " SQL statement:  " + sqlEvent.getSql() + " user IP address: " + sqlEvent.getIpAddress());
+    public static ClientEvent builderClientEvent(String username, String database, String ipAddress,
+	    List<Object> parameterValues) throws SQLException {
+	return new ClientEvent(username, database, ipAddress, parameterValues);
     }
-
 }

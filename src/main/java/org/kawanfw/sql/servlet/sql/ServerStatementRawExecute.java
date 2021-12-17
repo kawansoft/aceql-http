@@ -403,7 +403,7 @@ public class ServerStatementRawExecute {
 	if (updateListeners.size() != 1 || !(updateListeners.get(0) instanceof DefaultUpdateListener)) {
 	    StatementAnalyzer analyzer = new StatementAnalyzer(sqlOrder, parameterValues);
 	    if (analyzer.isDelete() || analyzer.isUpdate() || analyzer.isInsert()) {
-		SqlEvent sqlEvent = SqlEventWrapper.sqlActionEventBuilder(username, database,
+		SqlEvent sqlEvent = SqlEventWrapper.sqlEventBuild(username, database,
 			ipAddress, sqlOrder, isPreparedStatement, parameterValues, false);
 		for (UpdateListener updateListener : updateListeners) {
 		    updateListener.updateActionPerformed(sqlEvent, connection);
@@ -430,7 +430,7 @@ public class ServerStatementRawExecute {
 	    isAllowedAfterAnalysis = sqlFirewallManager.allowExecute(username, database, connection);
 	    if (!isAllowedAfterAnalysis) {
 		
-		SqlEvent sqlEvent = SqlEventWrapper.sqlActionEventBuilder(username, database, ipAddress, sqlOrder,
+		SqlEvent sqlEvent = SqlEventWrapper.sqlEventBuild(username, database, ipAddress, sqlOrder,
 			ServerStatementUtil.isPreparedStatement(request),
 			serverPreparedStatementParameters.getParameterValues(), false);
 		    
@@ -465,7 +465,7 @@ public class ServerStatementRawExecute {
 	boolean isAllowedAfterAnalysis = false;
 	for (SqlFirewallManager sqlFirewallManager : sqlFirewallManagers) {
 	    
-	    SqlEvent sqlEvent = SqlEventWrapper.sqlActionEventBuilder(username, database, ipAddress, sqlOrder,
+	    SqlEvent sqlEvent = SqlEventWrapper.sqlEventBuild(username, database, ipAddress, sqlOrder,
 		    ServerStatementUtil.isPreparedStatement(request),
 		    serverPreparedStatementParameters.getParameterValues(), false);
 	    
@@ -546,7 +546,7 @@ public class ServerStatementRawExecute {
 	    isAllowed = sqlFirewallManager.allowExecute(username, database, connection);
 	    if (!isAllowed) {
 		List<Object> parameterValues = new ArrayList<>();
-		SqlEvent sqlEvent = SqlEventWrapper.sqlActionEventBuilder(username, database, ipAddress, sqlOrder,
+		SqlEvent sqlEvent = SqlEventWrapper.sqlEventBuild(username, database, ipAddress, sqlOrder,
 			ServerStatementUtil.isPreparedStatement(request), parameterValues, false);
 		    
 		sqlFirewallManager.runIfStatementRefused(sqlEvent, username, database, connection, ipAddress, false,
@@ -580,7 +580,7 @@ public class ServerStatementRawExecute {
 		break;
 	    }
 
-	    SqlEvent sqlEvent = SqlEventWrapper.sqlActionEventBuilder(username, database, ipAddress, sqlOrder,
+	    SqlEvent sqlEvent = SqlEventWrapper.sqlEventBuild(username, database, ipAddress, sqlOrder,
 		    ServerStatementUtil.isPreparedStatement(request),
 		    new Vector<Object>(), false);
 	    
@@ -594,7 +594,7 @@ public class ServerStatementRawExecute {
 	if (!isAllowed) {
 	    List<Object> parameterValues = new ArrayList<>();
 
-	    SqlEvent sqlEvent = SqlEventWrapper.sqlActionEventBuilder(username, database, ipAddress, sqlOrder,
+	    SqlEvent sqlEvent = SqlEventWrapper.sqlEventBuild(username, database, ipAddress, sqlOrder,
 		    ServerStatementUtil.isPreparedStatement(request),
 		    parameterValues, false);
 	    

@@ -39,9 +39,9 @@ import org.kawanfw.sql.util.TimestampUtil;
 public class UpdateListenerUtil {
 
     /**
-     * Transforms the input {@code SqlEvent} into Json String.
+     * Transforms the input {@code ClientEvent} into Json String.
      * 
-     * @param evt the SqlEvent
+     * @param evt the ClientEvent
      * @return the output Json String
      */
     public static String toJsonString(SqlEvent evt) {

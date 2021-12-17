@@ -367,7 +367,7 @@ public class ServerCallableStatement {
 	    isAllowed = sqlFirewallManager.allowExecuteUpdate(username, database, connection);
 	    if (!isAllowed) {
 		
-		SqlEvent sqlEvent = SqlEventWrapper.sqlActionEventBuilder(username, database, ipAddress, sqlOrder,
+		SqlEvent sqlEvent = SqlEventWrapper.sqlEventBuild(username, database, ipAddress, sqlOrder,
 			ServerStatementUtil.isPreparedStatement(request),
 			serverPreparedStatementParameters.getParameterValues(), false);
 		    
@@ -401,7 +401,7 @@ public class ServerCallableStatement {
 	for (SqlFirewallManager sqlFirewallManager : sqlFirewallManagers) {
 	    sqlFirewallOnDeny = sqlFirewallManager;
 
-	    SqlEvent sqlEvent = SqlEventWrapper.sqlActionEventBuilder(username, database, ipAddress, sqlOrder,
+	    SqlEvent sqlEvent = SqlEventWrapper.sqlEventBuild(username, database, ipAddress, sqlOrder,
 		    ServerStatementUtil.isPreparedStatement(request),
 		    serverPreparedStatementParameters.getParameterValues(), false);
 
@@ -414,7 +414,7 @@ public class ServerCallableStatement {
 
 	if (!isAllowed) {
 
-	    SqlEvent sqlEvent = SqlEventWrapper.sqlActionEventBuilder(username, database, ipAddress, sqlOrder,
+	    SqlEvent sqlEvent = SqlEventWrapper.sqlEventBuild(username, database, ipAddress, sqlOrder,
 		    ServerStatementUtil.isPreparedStatement(request),
 		    serverPreparedStatementParameters.getParameterValues(), false);
 	    

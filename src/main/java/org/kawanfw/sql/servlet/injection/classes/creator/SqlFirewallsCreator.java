@@ -102,7 +102,7 @@ public class SqlFirewallsCreator {
 		try (Connection connection = databaseConfigurator.getConnection(database);) {
 		    List<Object> parameterValues = new ArrayList<>();
 		    // We call code just to verify it's OK:
-		    SqlEvent sqlEvent = SqlEventWrapper.sqlActionEventBuilder("username", database,  "127.0.0.1", "select * from table", false, parameterValues, false) ;
+		    SqlEvent sqlEvent = SqlEventWrapper.sqlEventBuild("username", database,  "127.0.0.1", "select * from table", false, parameterValues, false) ;
 		    sqlFirewallManager.allowSqlRunAfterAnalysis(sqlEvent, "username", database, connection,
 			    "127.0.0.1", "select * from table", false, parameterValues);
 		}

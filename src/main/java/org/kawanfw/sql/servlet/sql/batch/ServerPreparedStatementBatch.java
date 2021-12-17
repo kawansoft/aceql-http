@@ -269,7 +269,7 @@ public class ServerPreparedStatementBatch {
 	    isAllowedAfterAnalysis = sqlFirewallManager.allowExecuteUpdate(username, database, connection);
 	    if (!isAllowedAfterAnalysis) {
 		
-		SqlEvent sqlEvent = SqlEventWrapper.sqlActionEventBuilder(username, database, ipAddress, sqlOrder,
+		SqlEvent sqlEvent = SqlEventWrapper.sqlEventBuild(username, database, ipAddress, sqlOrder,
 			ServerStatementUtil.isPreparedStatement(request),
 			serverPreparedStatementParameters.getParameterValues(), false);
 		    
@@ -309,7 +309,7 @@ public class ServerPreparedStatementBatch {
 	boolean isAllowedAfterAnalysis = false;
 	for (SqlFirewallManager sqlFirewallManager : sqlFirewallManagers) {
 	    
-	    SqlEvent sqlEvent = SqlEventWrapper.sqlActionEventBuilder(username, database, ipAddress, sqlOrder,
+	    SqlEvent sqlEvent = SqlEventWrapper.sqlEventBuild(username, database, ipAddress, sqlOrder,
 		    ServerStatementUtil.isPreparedStatement(request),
 		    serverPreparedStatementParameters.getParameterValues(), false);
 	    
