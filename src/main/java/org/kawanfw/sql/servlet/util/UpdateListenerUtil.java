@@ -32,19 +32,19 @@ import java.util.List;
 import javax.json.stream.JsonGenerator;
 import javax.json.stream.JsonGeneratorFactory;
 
-import org.kawanfw.sql.api.server.listener.SqlActionEvent;
+import org.kawanfw.sql.api.server.SqlEvent;
 import org.kawanfw.sql.servlet.sql.json_return.JsonUtil;
 import org.kawanfw.sql.util.TimestampUtil;
 
 public class UpdateListenerUtil {
 
     /**
-     * Transforms the input {@code SqlActionEvent} into Json String.
+     * Transforms the input {@code SqlEvent} into Json String.
      * 
-     * @param evt the SqlActionEvent
+     * @param evt the SqlEvent
      * @return the output Json String
      */
-    public static String toJsonString(SqlActionEvent evt) {
+    public static String toJsonString(SqlEvent evt) {
     
         JsonGeneratorFactory jf = JsonUtil.getJsonGeneratorFactory(false);
         ByteArrayOutputStream bos = new ByteArrayOutputStream();

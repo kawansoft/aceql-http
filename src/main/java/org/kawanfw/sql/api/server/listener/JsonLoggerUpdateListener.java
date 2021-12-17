@@ -35,14 +35,15 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.commons.lang3.SystemUtils;
+import org.kawanfw.sql.api.server.SqlEvent;
 import org.kawanfw.sql.api.server.util.NoFormatter;
 import org.kawanfw.sql.servlet.util.UpdateListenerUtil;
 import org.kawanfw.sql.util.log.FlattenLogger;
 
 /**
  * Concrete implementation of {@code UpdateListener}. The
- * {@code updateActionPerformed(SqlActionEvent, Connection)} logs using JSON format
- * the {@code SqlActionEvent}.
+ * {@code updateActionPerformed(SqlEvent, Connection)} logs using JSON format
+ * the {@code SqlEvent}.
  * 
  * @author Nicolas de Pomereu
  * @since 9.0
@@ -53,7 +54,7 @@ public class JsonLoggerUpdateListener implements UpdateListener {
     private static Logger ACEQL_LOGGER = null;
 
     /**
-     * Logs using JSON format the {@code SqlActionEvent} into a {@code Logger} with
+     * Logs using JSON format the {@code SqlEvent} into a {@code Logger} with
      * parameters:
      * <ul>
      * <li>Output file pattern:
@@ -63,7 +64,7 @@ public class JsonLoggerUpdateListener implements UpdateListener {
      * </ul>
      */
     @Override
-    public void updateActionPerformed(SqlActionEvent evt, Connection connection) throws IOException, SQLException {
+    public void updateActionPerformed(SqlEvent evt, Connection connection) throws IOException, SQLException {
 	String jsonString = UpdateListenerUtil.toJsonString(evt);
 	getLogger().log(Level.WARNING, jsonString);
     }

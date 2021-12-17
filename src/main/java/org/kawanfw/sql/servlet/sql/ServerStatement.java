@@ -47,10 +47,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.kawanfw.sql.api.server.DatabaseConfigurator;
+import org.kawanfw.sql.api.server.SqlEvent;
+import org.kawanfw.sql.api.server.SqlEventWrapper;
 import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
 import org.kawanfw.sql.api.server.listener.DefaultUpdateListener;
-import org.kawanfw.sql.api.server.listener.SqlActionEvent;
-import org.kawanfw.sql.api.server.listener.SqlActionEventWrapper;
 import org.kawanfw.sql.api.server.listener.UpdateListener;
 import org.kawanfw.sql.servlet.HttpParameter;
 import org.kawanfw.sql.servlet.ServerSqlManager;
@@ -587,10 +587,10 @@ public class ServerStatement {
     public void callUpdateListeners(String username, String database, String sqlOrder, List<Object> parameterValues,
 	    String ipAddress, boolean isPreparedStatement) throws SQLException, IOException {
 	if (updateListeners.size() != 1 || !(updateListeners.get(0) instanceof DefaultUpdateListener)) {
-	    SqlActionEvent sqlActionEvent = SqlActionEventWrapper.sqlActionEventBuilder(username, database, ipAddress,
+	    SqlEvent sqlEvent = SqlEventWrapper.sqlActionEventBuilder(username, database, ipAddress,
 		    sqlOrder, isPreparedStatement, parameterValues);
 	    for (UpdateListener updateListener : updateListeners) {
-		updateListener.updateActionPerformed(sqlActionEvent, connection);
+		updateListener.updateActionPerformed(sqlEvent, connection);
 	    }
 	}
     }

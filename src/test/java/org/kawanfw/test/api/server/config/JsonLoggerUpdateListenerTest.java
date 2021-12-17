@@ -27,8 +27,8 @@ package org.kawanfw.test.api.server.config;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.kawanfw.sql.api.server.listener.SqlActionEvent;
-import org.kawanfw.sql.api.server.listener.SqlActionEventWrapper;
+import org.kawanfw.sql.api.server.SqlEvent;
+import org.kawanfw.sql.api.server.SqlEventWrapper;
 import org.kawanfw.sql.servlet.util.UpdateListenerUtil;
 
 /**
@@ -42,7 +42,7 @@ public class JsonLoggerUpdateListenerTest {
 	list.add("value1");
 	list.add("value2");
 	list.add("value3");
-	SqlActionEvent evt = SqlActionEventWrapper.sqlActionEventBuilder("user1", "db1", "10.0.0.0", "select * from table", false, list);
+	SqlEvent evt = SqlEventWrapper.sqlActionEventBuilder("user1", "db1", "10.0.0.0", "select * from table", false, list);
 	
 	String jsonString = UpdateListenerUtil.toJsonString(evt);
 	System.out.println(jsonString);

@@ -28,6 +28,8 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import org.kawanfw.sql.api.server.SqlEvent;
+
 /**
  * The listener interface for receiving SQL update events.
  * 
@@ -40,11 +42,11 @@ public interface UpdateListener {
     /**
      * Invoked when a SQL update event is successfully executed.
      * 
-     * @param evt        the SQL update event that is successfully processed
+     * @param sqlEvent   the SQL update event that is successfully processed
      * @param connection the Connection in use for the SQL update event
      * 
      * @throws IOException  if an IOException occurs
      * @throws SQLException if a SQLException occurs
      */
-    public void updateActionPerformed(SqlActionEvent evt, Connection connection) throws IOException, SQLException;
+    public void updateActionPerformed(SqlEvent sqlEvent, Connection connection) throws IOException, SQLException;
 }

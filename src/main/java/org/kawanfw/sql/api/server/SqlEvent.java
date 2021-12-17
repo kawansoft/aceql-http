@@ -22,20 +22,19 @@
  * Any modifications to this file must keep this entire header
  * intact.
  */
-package org.kawanfw.sql.api.server.listener;
+package org.kawanfw.sql.api.server;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 /**
- * Allows to get all details of a SQL event asked by the client side and
- * successfully executed on the AceQL Server.
+ * Allows to get all details of a SQL event asked by the client side.
  * 
  * @author Nicolas de Pomereu
  * @since 9.0
  */
-public class SqlActionEvent {
+public class SqlEvent {
 
     private String username;
     private String database;
@@ -43,7 +42,8 @@ public class SqlActionEvent {
     private String sql;
     private boolean isPreparedStatement;
     private List<Object> parameterValues;
-
+    private boolean isMetadataQuery;
+    
     /**
      * Package protected constructor.
      * 
@@ -55,9 +55,11 @@ public class SqlActionEvent {
      * @param parameterValues     the parameter values of a prepared statement in
      *                            the natural order, empty list for a (non prepared)
      *                            statement
+     * @param isMetadataQuery	  Says if the client request was an AceQL specific
+     *                        	   Metadata Query API
      */
-    SqlActionEvent(String username, String database, String ipAddress, String sql, boolean isPreparedStatement,
-	    List<Object> parameterValues) {
+    SqlEvent(String username, String database, String ipAddress, String sql, boolean isPreparedStatement,
+	    List<Object> parameterValues, boolean isMetadataQuery) {
 	this.username = Objects.requireNonNull(username, "username cannnot be null!");
 	this.database = Objects.requireNonNull(database, "database cannnot be null!");
 	this.ipAddress = Objects.requireNonNull(ipAddress, "ipAddress cannnot be null!");
@@ -67,6 +69,8 @@ public class SqlActionEvent {
     }
 
     /**
+     * Returns the client username that asked for the SQL request
+     * 
      * @return the client username that asked for the SQL request.
      */
     public String getUsername() {
@@ -74,6 +78,8 @@ public class SqlActionEvent {
     }
 
     /**
+     * Returns the database name
+     * 
      * @return the database name.
      */
     public String getDatabase() {
@@ -81,6 +87,8 @@ public class SqlActionEvent {
     }
 
     /**
+     * Returns the ipAddress of the client user
+     * 
      * @return the ipAddress of the client user.
      */
     public String getIpAddress() {
@@ -88,13 +96,18 @@ public class SqlActionEvent {
     }
 
     /**
-     * @return the sql statement executed.
+     * Returns the sql statement to execute.
+     * 
+     * @return the sql statement to execute.
      */
     public String getSql() {
 	return sql;
     }
 
     /**
+     * Returns {@code true} if the statement is a {@code PreparedStatement}, else
+     * {@code false}.
+     * 
      * @return {@code true} if the statement is a {@code PreparedStatement}, else
      *         {@code false}.
      */
@@ -103,26 +116,41 @@ public class SqlActionEvent {
     }
 
     /**
+     * Returns the parameter values of a prepared statement in the natural order,
+     * empty list for a (non prepared) statement
+     * 
      * @return the parameter values of a prepared statement in the natural order,
      *         empty list for a (non prepared) statement
      */
     public List<Object> getParameterValues() {
 	return parameterValues;
     }
-    
+
     /**
-     * @return the parameter String values of a prepared statement in the natural order,
-     *         empty list for a (non prepared) statement
+     * Returns the parameter String values of a prepared statement in the natural
+     * order, empty list for a (non prepared) statement
+     * 
+     * @return the parameter String values of a prepared statement in the natural
+     *         order, empty list for a (non prepared) statement
      */
     public List<String> getParameterStringValues() {
 	return toString(parameterValues);
     }
 
+    
+    /**
+     * Says if the SQL event is a special Metadata query
+     * @return {@code true} if the SQL event is a special Metadata query, else {@code false}
+     */
+    public boolean isMetadataQuery() {
+        return isMetadataQuery;
+    }
+
     @Override
     public String toString() {
-	return "SqlActionEvent [username=" + username + ", database=" + database + ", ipAddress=" + ipAddress + ", sql="
-		+ sql + ", isPreparedStatement=" + isPreparedStatement + ", parameterValues="
-		+ toString(parameterValues) + "]";
+	return "SqlEvent [username=" + username + ", database=" + database + ", ipAddress=" + ipAddress + ", sql=" + sql
+		+ ", isPreparedStatement=" + isPreparedStatement + ", parameterValues=" + parameterValues
+		+ ", isMetadataQuery=" + isMetadataQuery + "]";
     }
 
     /**

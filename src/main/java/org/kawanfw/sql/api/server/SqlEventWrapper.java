@@ -23,7 +23,7 @@
  * intact.
  */
 
-package org.kawanfw.sql.api.server.listener;
+package org.kawanfw.sql.api.server;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -37,10 +37,10 @@ import java.util.List;
  * @since 9.0
  */
 
-public class SqlActionEventWrapper {
+public class SqlEventWrapper {
 
-    public static SqlActionEvent sqlActionEventBuilder(String username, String database, String ipAddress, String sql,
+    public static SqlEvent sqlActionEventBuilder(String username, String database, String ipAddress, String sql,
 	    boolean isPreparedStatement, List<Object> parameterValues) throws SQLException {
-	return new SqlActionEvent(username, database, ipAddress, sql, isPreparedStatement, parameterValues);
+	return new SqlEvent(username, database, ipAddress, sql, isPreparedStatement, parameterValues, false);
     }
 }

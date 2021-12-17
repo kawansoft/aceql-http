@@ -34,10 +34,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.kawanfw.sql.api.server.DatabaseConfigurator;
+import org.kawanfw.sql.api.server.SqlEvent;
+import org.kawanfw.sql.api.server.SqlEventWrapper;
 import org.kawanfw.sql.api.server.listener.DefaultUpdateListener;
 import org.kawanfw.sql.api.server.listener.JsonLoggerUpdateListener;
-import org.kawanfw.sql.api.server.listener.SqlActionEvent;
-import org.kawanfw.sql.api.server.listener.SqlActionEventWrapper;
 import org.kawanfw.sql.api.server.listener.UpdateListener;
 
 public class UpdateListenersCreator {
@@ -72,9 +72,9 @@ public class UpdateListenersCreator {
 			parameterValues.add("value2");
 
 			// We call code just to verify it's OK:
-			SqlActionEvent sqlActionEvent = SqlActionEventWrapper.sqlActionEventBuilder("username",
+			SqlEvent sqlEvent = SqlEventWrapper.sqlActionEventBuilder("username",
 				database, "127.0.0.1", "select * from table", false, parameterValues);
-			updateListenerManager.updateActionPerformed(sqlActionEvent, connection);
+			updateListenerManager.updateActionPerformed(sqlEvent, connection);
 		    }
 		}
 

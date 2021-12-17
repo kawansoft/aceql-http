@@ -28,9 +28,11 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import org.kawanfw.sql.api.server.SqlEvent;
+
 /**
  * Default implementation of {@code UpdateListener}. The
- * {@code updateActionPerformed(SqlActionEvent, Connection)}
+ * {@code updateActionPerformed(SqlEvent, Connection)}
  * does nothing for the sake of speed execution.
  * 
  * @author Nicolas de Pomereu
@@ -42,7 +44,7 @@ public class DefaultUpdateListener implements UpdateListener {
      * This default implementation does nothing for the sake of speed execution.
      */
     @Override
-    public void updateActionPerformed(SqlActionEvent evt, Connection connection) throws IOException, SQLException {
+    public void updateActionPerformed(SqlEvent evt, Connection connection) throws IOException, SQLException {
 	// Default implementation Does nothing for the sake of speed execution
     }
 
