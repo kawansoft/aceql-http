@@ -32,6 +32,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.kawanfw.sql.api.server.DefaultDatabaseConfigurator;
+import org.kawanfw.sql.api.server.SqlEvent;
 
 /**
  * Default firewall manager for all SQL databases. <br>
@@ -61,8 +62,8 @@ public class DefaultSqlFirewallManager implements SqlFirewallManager {
      *         are authorized.
      */
     @Override
-    public boolean allowSqlRunAfterAnalysis(String username, String database, Connection connection, String ipAddress,
-	    String sql, boolean isPreparedStatement, List<Object> parameterValues) throws IOException, SQLException {
+    public boolean allowSqlRunAfterAnalysis(SqlEvent sqlEvent, String username, String database, Connection connection,
+	    String ipAddress, String sql, boolean isPreparedStatement, List<Object> parameterValues) throws IOException, SQLException {
 	return true;
     }
 
@@ -99,8 +100,8 @@ public class DefaultSqlFirewallManager implements SqlFirewallManager {
      * Logs the info using {@link DefaultDatabaseConfigurator#getLogger()} {@code Logger}.
      */
     @Override
-    public void runIfStatementRefused(String username, String database, Connection connection, String ipAddress,
-	    boolean isMetadataQuery, String sql, List<Object> parameterValues) throws IOException, SQLException {
+    public void runIfStatementRefused(SqlEvent sqlEvent, String username, String database, Connection connection,
+	    String ipAddress, boolean isMetadataQuery, String sql, List<Object> parameterValues) throws IOException, SQLException {
 
 	String logInfo = null;
 

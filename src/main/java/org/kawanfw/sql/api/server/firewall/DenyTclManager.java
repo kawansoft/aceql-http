@@ -33,6 +33,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.kawanfw.sql.api.server.DefaultDatabaseConfigurator;
+import org.kawanfw.sql.api.server.SqlEvent;
 import org.kawanfw.sql.api.server.StatementAnalyzer;
 
 /**
@@ -48,8 +49,8 @@ public class DenyTclManager extends DefaultSqlFirewallManager implements SqlFire
      *         Control Language)
      */
     @Override
-    public boolean allowSqlRunAfterAnalysis(String username, String database, Connection connection, String ipAddress,
-	    String sql, boolean isPreparedStatement, List<Object> parameterValues) throws IOException, SQLException {
+    public boolean allowSqlRunAfterAnalysis(SqlEvent sqlEvent, String username, String database, Connection connection,
+	    String ipAddress, String sql, boolean isPreparedStatement, List<Object> parameterValues) throws IOException, SQLException {
 	StatementAnalyzer statementAnalyzer = new StatementAnalyzer(sql, parameterValues);
 
 	return !statementAnalyzer.isTcl();
@@ -60,8 +61,8 @@ public class DenyTclManager extends DefaultSqlFirewallManager implements SqlFire
      * {@code Logger}.
      */
     @Override
-    public void runIfStatementRefused(String username, String database, Connection connection, String ipAddress,
-	    boolean isMetadataQuery, String sql, List<Object> parameterValues) throws IOException, SQLException {
+    public void runIfStatementRefused(SqlEvent sqlEvent, String username, String database, Connection connection,
+	    String ipAddress, boolean isMetadataQuery, String sql, List<Object> parameterValues) throws IOException, SQLException {
 	String logInfo = "Client username " + username + " (IP: " + ipAddress
 		+ ") has been denied by DenyTclManager SqlFirewallManager executing the TCL statement: " + sql + ".";
 

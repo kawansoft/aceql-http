@@ -31,6 +31,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
+import org.kawanfw.sql.api.server.SqlEvent;
 import org.kawanfw.sql.api.server.StatementAnalyzer;
 import org.kawanfw.sql.api.server.firewall.DefaultSqlFirewallManager;
 
@@ -48,7 +49,6 @@ public class MySqlFirewallManager extends DefaultSqlFirewallManager {
      * representation of the SQL statement that is received on the server. <br>
      * If the analysis defined by the method returns false, the SQL statement
      * won't be executed.
-     *
      * @param username
      *            the client username to check the rule for.
      * @param database
@@ -58,13 +58,14 @@ public class MySqlFirewallManager extends DefaultSqlFirewallManager {
      *            the database name as defined in the JDBC URL field
      * @param ipAddress
      *            the IP address of the client user
-     * @param isPreparedStatement
-     *            Says if the statement is a prepared statement
      * @param sql
      *            the SQL statement
+     * @param isPreparedStatement
+     *            Says if the statement is a prepared statement
      * @param parameterValues
      *            the parameter values of a prepared statement in the natural
      *            order, empty list for a (non prepared) statement
+     *
      * @return <code><b>true</b></code> if all following requirements are met:
      *         <ul>
      *         <li>username does not exists in applicative SQL table
@@ -88,9 +89,9 @@ public class MySqlFirewallManager extends DefaultSqlFirewallManager {
      *             if a SQLException occurs
      */
     @Override
-    public boolean allowSqlRunAfterAnalysis(String username, String database,
-	    Connection connection, String ipAddress,
-	    String sql, boolean isPreparedStatement, List<Object> parameterValues)
+    public boolean allowSqlRunAfterAnalysis(SqlEvent sqlEvent, String username,
+	    String database, Connection connection,
+	    String ipAddress, String sql, boolean isPreparedStatement, List<Object> parameterValues)
 		    throws IOException, SQLException {
 
 	// First thing is to test if the username has previously been stored in
@@ -167,7 +168,6 @@ public class MySqlFirewallManager extends DefaultSqlFirewallManager {
      * Insert the username that made an illegal SQL call and it's IP address
      * into the BANNED_USERNAMES table. From now on, the username will not be
      * able to do any further AceQL HTTP calls.
-     *
      * @param username
      *            the discarded client username
      * @param database
@@ -189,14 +189,14 @@ public class MySqlFirewallManager extends DefaultSqlFirewallManager {
      *             if a SQLException occurs
      */
     @Override
-    public void runIfStatementRefused(String username, String database,
-	    Connection connection, String ipAddress,
-	    boolean isMetadataQuery, String sql, List<Object> parameterValues)
+    public void runIfStatementRefused(SqlEvent sqlEvent, String username,
+	    String database, Connection connection,
+	    String ipAddress, boolean isMetadataQuery, String sql, List<Object> parameterValues)
 		    throws IOException, SQLException {
 
 	// Call the parent method that logs the event:
-	super.runIfStatementRefused(username, database, connection, ipAddress,
-		isMetadataQuery, sql, parameterValues);
+	super.runIfStatementRefused(sqlEvent, username, database, connection,
+		ipAddress, isMetadataQuery, sql, parameterValues);
 
 	connection.setAutoCommit(true);
 

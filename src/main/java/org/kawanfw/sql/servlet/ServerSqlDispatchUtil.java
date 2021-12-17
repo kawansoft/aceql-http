@@ -104,8 +104,8 @@ public class ServerSqlDispatchUtil {
 	    if (!allow) {
 		List<Object> parameterValues = new ArrayList<>();
 
-		sqlFirewallManager.runIfStatementRefused(username, database, connection, ipAddress, true, sql,
-			parameterValues);
+		sqlFirewallManager.runIfStatementRefused(null, username, database, connection, ipAddress, true,
+			sql, parameterValues);
 		break;
 	    }
 	}

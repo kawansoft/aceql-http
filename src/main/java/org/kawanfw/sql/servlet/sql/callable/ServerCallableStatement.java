@@ -43,6 +43,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.kawanfw.sql.api.server.SqlEvent;
+import org.kawanfw.sql.api.server.SqlEventWrapper;
 import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
 import org.kawanfw.sql.servlet.HttpParameter;
 import org.kawanfw.sql.servlet.ServerSqlManager;
@@ -50,6 +52,7 @@ import org.kawanfw.sql.servlet.connection.RollbackUtil;
 import org.kawanfw.sql.servlet.sql.AceQLParameter;
 import org.kawanfw.sql.servlet.sql.LoggerUtil;
 import org.kawanfw.sql.servlet.sql.ResultSetWriter;
+import org.kawanfw.sql.servlet.sql.ServerStatementUtil;
 import org.kawanfw.sql.servlet.sql.StatementFailure;
 import org.kawanfw.sql.servlet.sql.json_return.JsonErrorReturn;
 import org.kawanfw.sql.servlet.sql.json_return.JsonSecurityMessage;
@@ -359,8 +362,8 @@ public class ServerCallableStatement {
 	for (SqlFirewallManager sqlFirewallManager : sqlFirewallManagers) {
 	    isAllowed = sqlFirewallManager.allowExecuteUpdate(username, database, connection);
 	    if (!isAllowed) {
-		sqlFirewallManager.runIfStatementRefused(username, database, connection, ipAddress, false,
-			sqlOrder, serverPreparedStatementParameters.getParameterValues());
+		sqlFirewallManager.runIfStatementRefused(null, username, database, connection, ipAddress,
+			false, sqlOrder, serverPreparedStatementParameters.getParameterValues());
 
 		String message = JsonSecurityMessage.statementNotAllowedBuild(sqlOrder,
 			"Statement not allowed for executeUpdate", doPrettyPrinting);
@@ -388,8 +391,13 @@ public class ServerCallableStatement {
 	SqlFirewallManager sqlFirewallOnDeny = null;
 	for (SqlFirewallManager sqlFirewallManager : sqlFirewallManagers) {
 	sqlFirewallOnDeny = sqlFirewallManager;
-	isAllowed = sqlFirewallManager.allowSqlRunAfterAnalysis(username, database, connection, ipAddress, sqlOrder,
-		true, serverPreparedStatementParameters.getParameterValues());
+	
+	SqlEvent sqlEvent = SqlEventWrapper.sqlActionEventBuilder(username, database, ipAddress, sqlOrder,
+		ServerStatementUtil.isPreparedStatement(request),
+		serverPreparedStatementParameters.getParameterValues(), false);
+	    
+	isAllowed = sqlFirewallManager.allowSqlRunAfterAnalysis(sqlEvent, username, database, connection, ipAddress,
+		sqlOrder, true, serverPreparedStatementParameters.getParameterValues());
 	if (!isAllowed) {
 	    break;
 	}
@@ -397,8 +405,8 @@ public class ServerCallableStatement {
 
 	if (!isAllowed) {
 
-	sqlFirewallOnDeny.runIfStatementRefused(username, database, connection, ipAddress, false,
-		sqlOrder, serverPreparedStatementParameters.getParameterValues());
+	sqlFirewallOnDeny.runIfStatementRefused(null, username, database, connection, ipAddress,
+		false, sqlOrder, serverPreparedStatementParameters.getParameterValues());
 
 	String message = JsonSecurityMessage.prepStatementNotAllowedBuild(sqlOrder,
 		"Callable Statement not allowed", serverPreparedStatementParameters.getParameterTypes(),

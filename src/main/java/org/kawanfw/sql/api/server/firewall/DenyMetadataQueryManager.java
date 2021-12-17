@@ -32,6 +32,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.kawanfw.sql.api.server.DefaultDatabaseConfigurator;
+import org.kawanfw.sql.api.server.SqlEvent;
 
 /**
  * Firewall manager that denies the use of the AceQL Metadata Query API.
@@ -55,8 +56,8 @@ public class DenyMetadataQueryManager extends DefaultSqlFirewallManager implemen
      * Logs the info using {@link DefaultDatabaseConfigurator#getLogger()} {@code Logger}.
      */
     @Override
-    public void runIfStatementRefused(String username, String database, Connection connection, String ipAddress,
-	    boolean isMetadataQuery, String sql, List<Object> parameterValues) throws IOException, SQLException {
+    public void runIfStatementRefused(SqlEvent sqlEvent, String username, String database, Connection connection,
+	    String ipAddress, boolean isMetadataQuery, String sql, List<Object> parameterValues) throws IOException, SQLException {
 	String logInfo = "Client username " + username + " (IP: " + ipAddress + ") has been denied by DenyMetadataQueryManager to execute a Metadata Query Call.";
 
 	DefaultDatabaseConfigurator defaultDatabaseConfigurator = new DefaultDatabaseConfigurator();

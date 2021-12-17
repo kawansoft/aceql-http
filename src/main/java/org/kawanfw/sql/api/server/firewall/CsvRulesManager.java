@@ -39,6 +39,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.kawanfw.sql.api.server.DefaultDatabaseConfigurator;
+import org.kawanfw.sql.api.server.SqlEvent;
 import org.kawanfw.sql.api.server.StatementAnalyzer;
 import org.kawanfw.sql.api.util.firewall.CsvRulesManagerLoader;
 import org.kawanfw.sql.api.util.firewall.DatabaseUserTableTriplet;
@@ -113,8 +114,8 @@ public class CsvRulesManager extends DefaultSqlFirewallManager implements SqlFir
      * the:&nbsp; <code>&lt;database&gt;_rules_manager.csv</code> file.
      */
     @Override
-    public boolean allowSqlRunAfterAnalysis(String username, String database, Connection connection, String ipAddress,
-	    String sql, boolean isPreparedStatement, List<Object> parameterValues) throws IOException, SQLException {
+    public boolean allowSqlRunAfterAnalysis(SqlEvent sqlEvent, String username, String database, Connection connection,
+	    String ipAddress, String sql, boolean isPreparedStatement, List<Object> parameterValues) throws IOException, SQLException {
 
 	// Load all rules if not already done:
 	loadRules(database, connection);
@@ -128,8 +129,8 @@ public class CsvRulesManager extends DefaultSqlFirewallManager implements SqlFir
      * {@code Logger}.
      */
     @Override
-    public void runIfStatementRefused(String username, String database, Connection connection, String ipAddress,
-	    boolean isMetadataQuery, String sql, List<Object> parameterValues) throws IOException, SQLException {
+    public void runIfStatementRefused(SqlEvent sqlEvent, String username, String database, Connection connection,
+	    String ipAddress, boolean isMetadataQuery, String sql, List<Object> parameterValues) throws IOException, SQLException {
 
 	String logInfo = "Client username " + username + " (IP: " + ipAddress
 		+ ") has been denied by CsvRulesManager SqlFirewallManager executing the statement: " + sql + ".";

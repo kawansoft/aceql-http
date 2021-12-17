@@ -32,6 +32,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.kawanfw.sql.api.server.DefaultDatabaseConfigurator;
+import org.kawanfw.sql.api.server.SqlEvent;
 
 /**
  * Firewall manager that denies any update of the database. The database is
@@ -54,8 +55,8 @@ public class DenyExecuteUpdateManager extends DefaultSqlFirewallManager implemen
      * Logs the info using {@link DefaultDatabaseConfigurator#getLogger()} {@code Logger}.
      */
     @Override
-    public void runIfStatementRefused(String username, String database, Connection connection, String ipAddress,
-	    boolean isMetadataQuery, String sql, List<Object> parameterValues) throws IOException, SQLException {
+    public void runIfStatementRefused(SqlEvent sqlEvent, String username, String database, Connection connection,
+	    String ipAddress, boolean isMetadataQuery, String sql, List<Object> parameterValues) throws IOException, SQLException {
 	String logInfo = "Client username " + username + " (IP: " + ipAddress
 		+ ") has been denied by DenyExecuteUpdateManager SqlFirewallManager executing the datadase write statement: "
 		+ sql + ".";

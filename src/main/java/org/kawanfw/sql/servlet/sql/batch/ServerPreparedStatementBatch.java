@@ -42,6 +42,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.kawanfw.sql.api.server.DatabaseConfigurator;
+import org.kawanfw.sql.api.server.SqlEvent;
+import org.kawanfw.sql.api.server.SqlEventWrapper;
 import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
 import org.kawanfw.sql.metadata.util.GsonWsUtil;
 import org.kawanfw.sql.servlet.HttpParameter;
@@ -266,8 +268,8 @@ public class ServerPreparedStatementBatch {
 	for (SqlFirewallManager sqlFirewallManager : sqlFirewallManagers) {
 	    isAllowedAfterAnalysis = sqlFirewallManager.allowExecuteUpdate(username, database, connection);
 	    if (!isAllowedAfterAnalysis) {
-		sqlFirewallManager.runIfStatementRefused(username, database, connection, ipAddress, false, sqlOrder,
-			serverPreparedStatementParameters.getParameterValues());
+		sqlFirewallManager.runIfStatementRefused(null, username, database, connection, ipAddress, false,
+			sqlOrder, serverPreparedStatementParameters.getParameterValues());
 
 		String message = JsonSecurityMessage.prepStatementNotAllowedBuild(sqlOrder,
 			"Prepared Statement not allowed for executeUpdate",
@@ -301,11 +303,16 @@ public class ServerPreparedStatementBatch {
 
 	boolean isAllowedAfterAnalysis = false;
 	for (SqlFirewallManager sqlFirewallManager : sqlFirewallManagers) {
-	    isAllowedAfterAnalysis = sqlFirewallManager.allowSqlRunAfterAnalysis(username, database, connection,
-		    ipAddress, sqlOrder, ServerStatementUtil.isPreparedStatement(request), serverPreparedStatementParameters.getParameterValues());
+	    
+	    SqlEvent sqlEvent = SqlEventWrapper.sqlActionEventBuilder(username, database, ipAddress, sqlOrder,
+		    ServerStatementUtil.isPreparedStatement(request),
+		    serverPreparedStatementParameters.getParameterValues(), false);
+	    
+	    isAllowedAfterAnalysis = sqlFirewallManager.allowSqlRunAfterAnalysis(sqlEvent, username, database,
+		    connection, ipAddress, sqlOrder, ServerStatementUtil.isPreparedStatement(request), serverPreparedStatementParameters.getParameterValues());
 	    if (!isAllowedAfterAnalysis) {
-		sqlFirewallManager.runIfStatementRefused(username, database, connection, ipAddress, false, sqlOrder,
-			serverPreparedStatementParameters.getParameterValues());
+		sqlFirewallManager.runIfStatementRefused(sqlEvent, username, database, connection, ipAddress, false,
+			sqlOrder, serverPreparedStatementParameters.getParameterValues());
 		break;
 	    }
 	}

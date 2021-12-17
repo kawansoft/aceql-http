@@ -32,6 +32,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.kawanfw.sql.api.server.DefaultDatabaseConfigurator;
+import org.kawanfw.sql.api.server.SqlEvent;
 import org.kawanfw.sql.api.server.StatementAnalyzer;
 
 /**
@@ -47,8 +48,8 @@ public class DenyDclManager extends DefaultSqlFirewallManager implements SqlFire
      *         Language).
      */
     @Override
-    public boolean allowSqlRunAfterAnalysis(String username, String database, Connection connection, String ipAddress,
-	    String sql, boolean isPreparedStatement, List<Object> parameterValues) throws IOException, SQLException {
+    public boolean allowSqlRunAfterAnalysis(SqlEvent sqlEvent, String username, String database, Connection connection,
+	    String ipAddress, String sql, boolean isPreparedStatement, List<Object> parameterValues) throws IOException, SQLException {
 	StatementAnalyzer statementAnalyzer = new StatementAnalyzer(sql, parameterValues);
 
 	return ! statementAnalyzer.isDcl();
@@ -58,8 +59,8 @@ public class DenyDclManager extends DefaultSqlFirewallManager implements SqlFire
      * Logs the info using {@link DefaultDatabaseConfigurator#getLogger()} {@code Logger}.
      */
     @Override
-    public void runIfStatementRefused(String username, String database, Connection connection, String ipAddress,
-	    boolean isMetadataQuery, String sql, List<Object> parameterValues) throws IOException, SQLException {
+    public void runIfStatementRefused(SqlEvent sqlEvent, String username, String database, Connection connection,
+	    String ipAddress, boolean isMetadataQuery, String sql, List<Object> parameterValues) throws IOException, SQLException {
 	String logInfo = "Client username " + username + " (IP: " + ipAddress
 		+ ") has been denied by DenyDclManager SqlFirewallManager executing the DCL statement: " + sql + ".";
 

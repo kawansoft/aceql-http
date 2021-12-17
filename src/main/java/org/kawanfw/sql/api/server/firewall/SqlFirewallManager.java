@@ -30,6 +30,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 
+import org.kawanfw.sql.api.server.SqlEvent;
 import org.kawanfw.sql.api.server.StatementAnalyzer;
 
 /**
@@ -124,7 +125,7 @@ public interface SqlFirewallManager {
      * the SQL statement that is received on the server. <br>
      * If the analysis defined by the method returns false, the SQL statement won't
      * be executed.
-     *
+     * @param sqlEvent		  the SQL event asked by the client side
      * @param username            the client username to check the rule for
      * @param database            the database name as defined in the JDBC URL field
      * @param connection          The current SQL/JDBC <code>Connection</code>
@@ -134,14 +135,15 @@ public interface SqlFirewallManager {
      * @param parameterValues     the parameter values of a prepared statement in
      *                            the natural order, empty list for a (non prepared)
      *                            statement
+     *
      * @return <code>true</code> if the analyzed statement or prepared statement is
      *         validated and authorized to run, else <code>false</code>.
      *         <p>
      * @throws IOException  if an IOException occurs
      * @throws SQLException if a SQLException occurs
      */
-    public boolean allowSqlRunAfterAnalysis(String username, String database, Connection connection, String ipAddress,
-	    String sql, boolean isPreparedStatement, List<Object> parameterValues) throws IOException, SQLException;
+    public boolean allowSqlRunAfterAnalysis(SqlEvent sqlEvent, String username, String database, Connection connection,
+	    String ipAddress, String sql, boolean isPreparedStatement, List<Object> parameterValues) throws IOException, SQLException;
 
     /**
      * Allows to define if the passed username is allowed to call a raw JDBC
@@ -191,7 +193,7 @@ public interface SqlFirewallManager {
      * <li>Etc.</li>
      * </ul>
      * <p>
-     *
+     * @param sqlEvent	      the SQL event asked by the client side
      * @param username        the discarded client username
      * @param database        the database name as defined in the JDBC URL field
      * @param connection      The current SQL/JDBC <code>Connection</code>
@@ -202,10 +204,11 @@ public interface SqlFirewallManager {
      * @param parameterValues the parameter values of a prepared statement in the
      *                        natural order, empty list for a (non prepared)
      *                        statement
+     *
      * @throws IOException  if an IOException occurs
      * @throws SQLException if a SQLException occurs
      */
-    public void runIfStatementRefused(String username, String database, Connection connection, String ipAddress,
-	    boolean isMetadataQuery, String sql, List<Object> parameterValues) throws IOException, SQLException;
+    public void runIfStatementRefused(SqlEvent sqlEvent, String username, String database, Connection connection,
+	    String ipAddress, boolean isMetadataQuery, String sql, List<Object> parameterValues) throws IOException, SQLException;
 
 }

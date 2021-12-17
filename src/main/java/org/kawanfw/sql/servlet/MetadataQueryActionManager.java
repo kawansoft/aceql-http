@@ -127,7 +127,7 @@ public class MetadataQueryActionManager {
 		String ipAddress = request.getRemoteAddr();
 		List<Object> parameterValues = new ArrayList<>();
 
-		sqlFirewallManager.runIfStatementRefused(username, database, connection, ipAddress, true, sql, parameterValues);
+		sqlFirewallManager.runIfStatementRefused(null, username, database, connection, ipAddress, true, sql, parameterValues);
 		break;
 	    }
 	}

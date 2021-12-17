@@ -33,6 +33,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.kawanfw.sql.api.server.DatabaseConfigurator;
+import org.kawanfw.sql.api.server.SqlEvent;
+import org.kawanfw.sql.api.server.SqlEventWrapper;
 import org.kawanfw.sql.api.server.firewall.CsvRulesManager;
 import org.kawanfw.sql.api.server.firewall.DefaultSqlFirewallManager;
 import org.kawanfw.sql.api.server.firewall.DenyDclManager;
@@ -100,8 +102,9 @@ public class SqlFirewallsCreator {
 		try (Connection connection = databaseConfigurator.getConnection(database);) {
 		    List<Object> parameterValues = new ArrayList<>();
 		    // We call code just to verify it's OK:
-		    sqlFirewallManager.allowSqlRunAfterAnalysis("username", database, connection, "127.0.0.1",
-			    "select * from table", false, parameterValues);
+		    SqlEvent sqlEvent = SqlEventWrapper.sqlActionEventBuilder("username", database,  "127.0.0.1", "select * from table", false, parameterValues, false) ;
+		    sqlFirewallManager.allowSqlRunAfterAnalysis(sqlEvent, "username", database, connection,
+			    "127.0.0.1", "select * from table", false, parameterValues);
 		}
 
 		sqlFirewallClassName = sqlFirewallManager.getClass().getName();
