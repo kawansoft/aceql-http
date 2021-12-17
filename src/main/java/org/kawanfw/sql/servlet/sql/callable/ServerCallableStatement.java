@@ -93,8 +93,7 @@ public class ServerCallableStatement {
      */
 
     public ServerCallableStatement(HttpServletRequest request, HttpServletResponse response,
-	    List<SqlFirewallManager> sqlFirewallManagers, Connection connection)
-	    throws SQLException {
+	    List<SqlFirewallManager> sqlFirewallManagers, Connection connection) throws SQLException {
 	this.request = request;
 	this.response = response;
 	this.sqlFirewallManagers = sqlFirewallManagers;
@@ -122,7 +121,7 @@ public class ServerCallableStatement {
 	    executePrepStatement(outFinal);
 	} catch (SecurityException e) {
 	    RollbackUtil.rollback(connection);
-	    
+
 	    JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_FORBIDDEN,
 		    JsonErrorReturn.ERROR_ACEQL_UNAUTHORIZED, e.getMessage());
 	    ServerSqlManager.writeLine(outFinal, errorReturn.build());
@@ -134,7 +133,7 @@ public class ServerCallableStatement {
 	    ServerSqlManager.writeLine(outFinal, errorReturn.build());
 	} catch (Exception e) {
 	    RollbackUtil.rollback(connection);
-	    
+
 	    JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
 		    JsonErrorReturn.ERROR_ACEQL_FAILURE, e.getMessage(), ExceptionUtils.getStackTrace(e));
 	    ServerSqlManager.writeLine(outFinal, errorReturn.build());
@@ -197,7 +196,7 @@ public class ServerCallableStatement {
 	String database = request.getParameter(HttpParameter.DATABASE);
 	String sqlOrder = request.getParameter(HttpParameter.SQL);
 	String htlmEncoding = request.getParameter(HttpParameter.HTML_ENCODING);
-	
+
 	debug("sqlOrder        : " + sqlOrder);
 	CallableStatement callableStatement = null;
 
@@ -213,8 +212,10 @@ public class ServerCallableStatement {
 
 	    // Set the IN Parameters
 	    debug("before ServerPreparedStatementParameters");
-	    Map<Integer, AceQLParameter> inOutStatementParameters = ServerPreparedStatementParametersUtil.buildParametersFromRequest(request);
-	    serverPreparedStatementParameters = new ServerPreparedStatementParameters(username, database, sqlOrder, callableStatement, inOutStatementParameters, htlmEncoding);
+	    Map<Integer, AceQLParameter> inOutStatementParameters = ServerPreparedStatementParametersUtil
+		    .buildParametersFromRequest(request);
+	    serverPreparedStatementParameters = new ServerPreparedStatementParameters(username, database, sqlOrder,
+		    callableStatement, inOutStatementParameters, htlmEncoding);
 
 	    try {
 		serverPreparedStatementParameters.setParameters();
@@ -271,7 +272,8 @@ public class ServerCallableStatement {
      * @throws SQLException
      * @throws IOException
      */
-    private void doSelect(OutputStream out, String sqlOrder, CallableStatement callableStatement, ServerPreparedStatementParameters serverPreparedStatementParameters) throws SQLException, IOException {
+    private void doSelect(OutputStream out, String sqlOrder, CallableStatement callableStatement,
+	    ServerPreparedStatementParameters serverPreparedStatementParameters) throws SQLException, IOException {
 	ResultSet rs = null;
 
 	try {
@@ -324,7 +326,9 @@ public class ServerCallableStatement {
      * @throws SQLException
      * @throws SecurityException
      */
-    private void doExecute(OutputStream out, CallableStatement callableStatement, ServerPreparedStatementParameters serverPreparedStatementParameters) throws IOException, SQLException, SecurityException {
+    private void doExecute(OutputStream out, CallableStatement callableStatement,
+	    ServerPreparedStatementParameters serverPreparedStatementParameters)
+	    throws IOException, SQLException, SecurityException {
 
 	callableStatement.execute();
 
@@ -362,8 +366,13 @@ public class ServerCallableStatement {
 	for (SqlFirewallManager sqlFirewallManager : sqlFirewallManagers) {
 	    isAllowed = sqlFirewallManager.allowExecuteUpdate(username, database, connection);
 	    if (!isAllowed) {
-		sqlFirewallManager.runIfStatementRefused(null, username, database, connection, ipAddress,
-			false, sqlOrder, serverPreparedStatementParameters.getParameterValues());
+		
+		SqlEvent sqlEvent = SqlEventWrapper.sqlActionEventBuilder(username, database, ipAddress, sqlOrder,
+			ServerStatementUtil.isPreparedStatement(request),
+			serverPreparedStatementParameters.getParameterValues(), false);
+		    
+		sqlFirewallManager.runIfStatementRefused(sqlEvent, username, database, connection, ipAddress, false,
+			sqlOrder, serverPreparedStatementParameters.getParameterValues());
 
 		String message = JsonSecurityMessage.statementNotAllowedBuild(sqlOrder,
 			"Statement not allowed for executeUpdate", doPrettyPrinting);
@@ -390,28 +399,32 @@ public class ServerCallableStatement {
 
 	SqlFirewallManager sqlFirewallOnDeny = null;
 	for (SqlFirewallManager sqlFirewallManager : sqlFirewallManagers) {
-	sqlFirewallOnDeny = sqlFirewallManager;
-	
-	SqlEvent sqlEvent = SqlEventWrapper.sqlActionEventBuilder(username, database, ipAddress, sqlOrder,
-		ServerStatementUtil.isPreparedStatement(request),
-		serverPreparedStatementParameters.getParameterValues(), false);
+	    sqlFirewallOnDeny = sqlFirewallManager;
+
+	    SqlEvent sqlEvent = SqlEventWrapper.sqlActionEventBuilder(username, database, ipAddress, sqlOrder,
+		    ServerStatementUtil.isPreparedStatement(request),
+		    serverPreparedStatementParameters.getParameterValues(), false);
+
+	    isAllowed = sqlFirewallManager.allowSqlRunAfterAnalysis(sqlEvent, username, database, connection, ipAddress,
+		    sqlOrder, true, serverPreparedStatementParameters.getParameterValues());
+	    if (!isAllowed) {
+		break;
+	    }
+	}
+
+	if (!isAllowed) {
+
+	    SqlEvent sqlEvent = SqlEventWrapper.sqlActionEventBuilder(username, database, ipAddress, sqlOrder,
+		    ServerStatementUtil.isPreparedStatement(request),
+		    serverPreparedStatementParameters.getParameterValues(), false);
 	    
-	isAllowed = sqlFirewallManager.allowSqlRunAfterAnalysis(sqlEvent, username, database, connection, ipAddress,
-		sqlOrder, true, serverPreparedStatementParameters.getParameterValues());
-	if (!isAllowed) {
-	    break;
-	}
-	}
+	    sqlFirewallOnDeny.runIfStatementRefused(sqlEvent, username, database, connection, ipAddress, false, sqlOrder,
+		    serverPreparedStatementParameters.getParameterValues());
 
-	if (!isAllowed) {
-
-	sqlFirewallOnDeny.runIfStatementRefused(null, username, database, connection, ipAddress,
-		false, sqlOrder, serverPreparedStatementParameters.getParameterValues());
-
-	String message = JsonSecurityMessage.prepStatementNotAllowedBuild(sqlOrder,
-		"Callable Statement not allowed", serverPreparedStatementParameters.getParameterTypes(),
-		serverPreparedStatementParameters.getParameterValues(), doPrettyPrinting);
-	throw new SecurityException(message);
+	    String message = JsonSecurityMessage.prepStatementNotAllowedBuild(sqlOrder,
+		    "Callable Statement not allowed", serverPreparedStatementParameters.getParameterTypes(),
+		    serverPreparedStatementParameters.getParameterValues(), doPrettyPrinting);
+	    throw new SecurityException(message);
 	}
 	return ipAddress;
     }

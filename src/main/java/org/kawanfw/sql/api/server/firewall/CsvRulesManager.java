@@ -118,10 +118,16 @@ public class CsvRulesManager extends DefaultSqlFirewallManager implements SqlFir
 	    String ipAddress, String sql, boolean isPreparedStatement, List<Object> parameterValues) throws IOException, SQLException {
 
 	// Load all rules if not already done:
-	loadRules(database, connection);
+//	loadRules(database, connection);
+//
+//	boolean isAllowed = isAllowed(username, database, sql, parameterValues);
+//	return isAllowed;
+	Objects.requireNonNull(sqlEvent ,"sqlEvent cannot be null!");
+	loadRules(sqlEvent.getDatabase(), connection);
 
-	boolean isAllowed = isAllowed(username, database, sql, parameterValues);
+	boolean isAllowed = isAllowed(sqlEvent.getUsername(), sqlEvent.getDatabase(), sqlEvent.getSql(), sqlEvent.getParameterValues());
 	return isAllowed;
+	
     }
 
     /**
@@ -132,12 +138,18 @@ public class CsvRulesManager extends DefaultSqlFirewallManager implements SqlFir
     public void runIfStatementRefused(SqlEvent sqlEvent, String username, String database, Connection connection,
 	    String ipAddress, boolean isMetadataQuery, String sql, List<Object> parameterValues) throws IOException, SQLException {
 
-	String logInfo = "Client username " + username + " (IP: " + ipAddress
-		+ ") has been denied by CsvRulesManager SqlFirewallManager executing the statement: " + sql + ".";
+//	String logInfo = "Client username " + username + " (IP: " + ipAddress
+//		+ ") has been denied by CsvRulesManager SqlFirewallManager executing the statement: " + sql + ".";
+//
 
+	Objects.requireNonNull(sqlEvent ,"sqlEvent cannot be null!");
+	String logInfo = "Client username " + sqlEvent.getUsername() + " (IP: " + sqlEvent.getIpAddress()
+		+ ") has been denied by CsvRulesManager SqlFirewallManager executing the statement: " + sqlEvent.getSql() + ".";
+	
 	DefaultDatabaseConfigurator defaultDatabaseConfigurator = new DefaultDatabaseConfigurator();
 	Logger logger = defaultDatabaseConfigurator.getLogger();
 	logger.log(Level.WARNING, logInfo);
+	
     }
 
     /**

@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -50,8 +51,11 @@ public class DenyDclManager extends DefaultSqlFirewallManager implements SqlFire
     @Override
     public boolean allowSqlRunAfterAnalysis(SqlEvent sqlEvent, String username, String database, Connection connection,
 	    String ipAddress, String sql, boolean isPreparedStatement, List<Object> parameterValues) throws IOException, SQLException {
-	StatementAnalyzer statementAnalyzer = new StatementAnalyzer(sql, parameterValues);
-
+	
+	//StatementAnalyzer statementAnalyzer = new StatementAnalyzer(sql, parameterValues);
+	
+	Objects.requireNonNull(sqlEvent ,"sqlEvent cannot be null!");
+	StatementAnalyzer statementAnalyzer = new StatementAnalyzer(sqlEvent.getSql(), sqlEvent.getParameterValues());
 	return ! statementAnalyzer.isDcl();
     }
 
@@ -61,9 +65,14 @@ public class DenyDclManager extends DefaultSqlFirewallManager implements SqlFire
     @Override
     public void runIfStatementRefused(SqlEvent sqlEvent, String username, String database, Connection connection,
 	    String ipAddress, boolean isMetadataQuery, String sql, List<Object> parameterValues) throws IOException, SQLException {
-	String logInfo = "Client username " + username + " (IP: " + ipAddress
-		+ ") has been denied by DenyDclManager SqlFirewallManager executing the DCL statement: " + sql + ".";
+	
+//	String logInfo = "Client username " + username + " (IP: " + ipAddress
+//		+ ") has been denied by DenyDclManager SqlFirewallManager executing the DCL statement: " + sql + ".";
 
+	Objects.requireNonNull(sqlEvent ,"sqlEvent cannot be null!");
+	String logInfo = "Client username " + sqlEvent.getUsername() + " (IP: " + sqlEvent.getIpAddress()
+		+ ") has been denied by DenyDclManager SqlFirewallManager executing the DCL statement: " + sqlEvent.getSql() + ".";
+	
 	DefaultDatabaseConfigurator defaultDatabaseConfigurator = new DefaultDatabaseConfigurator();
 	Logger logger = defaultDatabaseConfigurator.getLogger();
 	logger.log(Level.WARNING, logInfo);

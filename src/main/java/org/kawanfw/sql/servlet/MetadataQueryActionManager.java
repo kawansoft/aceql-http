@@ -40,6 +40,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.kawanfw.sql.api.server.SqlEvent;
+import org.kawanfw.sql.api.server.SqlEventWrapper;
 import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
 import org.kawanfw.sql.metadata.AceQLMetaData;
 import org.kawanfw.sql.metadata.JdbcDatabaseMetaData;
@@ -49,6 +51,7 @@ import org.kawanfw.sql.metadata.dto.TableDto;
 import org.kawanfw.sql.metadata.dto.TableNamesDto;
 import org.kawanfw.sql.metadata.util.GsonWsUtil;
 import org.kawanfw.sql.servlet.connection.RollbackUtil;
+import org.kawanfw.sql.servlet.sql.ServerStatementUtil;
 import org.kawanfw.sql.servlet.sql.json_return.JsonErrorReturn;
 import org.kawanfw.sql.servlet.sql.json_return.JsonSecurityMessage;
 
@@ -127,7 +130,10 @@ public class MetadataQueryActionManager {
 		String ipAddress = request.getRemoteAddr();
 		List<Object> parameterValues = new ArrayList<>();
 
-		sqlFirewallManager.runIfStatementRefused(null, username, database, connection, ipAddress, true, sql, parameterValues);
+		SqlEvent sqlEvent = SqlEventWrapper.sqlActionEventBuilder(username, database, ipAddress, sql,
+			ServerStatementUtil.isPreparedStatement(request), parameterValues, false);
+		    
+		sqlFirewallManager.runIfStatementRefused(sqlEvent, username, database, connection, ipAddress, true, sql, parameterValues);
 		break;
 	    }
 	}

@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -57,10 +58,18 @@ public class DenyExecuteUpdateManager extends DefaultSqlFirewallManager implemen
     @Override
     public void runIfStatementRefused(SqlEvent sqlEvent, String username, String database, Connection connection,
 	    String ipAddress, boolean isMetadataQuery, String sql, List<Object> parameterValues) throws IOException, SQLException {
-	String logInfo = "Client username " + username + " (IP: " + ipAddress
-		+ ") has been denied by DenyExecuteUpdateManager SqlFirewallManager executing the datadase write statement: "
-		+ sql + ".";
+	
+	
+//	String logInfo = "Client username " + username + " (IP: " + ipAddress
+//		+ ") has been denied by DenyExecuteUpdateManager SqlFirewallManager executing the datadase write statement: "
+//		+ sql + ".";
 
+	Objects.requireNonNull(sqlEvent ,"sqlEvent cannot be null!");
+	
+	String logInfo = "Client username " + sqlEvent.getUsername() + " (IP: " + sqlEvent.getIpAddress()
+	+ ") has been denied by DenyExecuteUpdateManager SqlFirewallManager executing the datadase write statement: "
+	+ sqlEvent.getSql() + ".";
+	
 	DefaultDatabaseConfigurator defaultDatabaseConfigurator = new DefaultDatabaseConfigurator();
 	Logger logger = defaultDatabaseConfigurator.getLogger();
 	logger.log(Level.WARNING, logInfo);

@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -103,21 +104,30 @@ public class DefaultSqlFirewallManager implements SqlFirewallManager {
     public void runIfStatementRefused(SqlEvent sqlEvent, String username, String database, Connection connection,
 	    String ipAddress, boolean isMetadataQuery, String sql, List<Object> parameterValues) throws IOException, SQLException {
 
+	Objects.requireNonNull(sqlEvent ,"sqlEvent cannot be null!");
 	String logInfo = null;
 
+//	if (isMetadataQuery) {
+//	    logInfo = "Client username " + username + " (IP: " + ipAddress
+//		    + ") has been denied by DefaultSqlFirewallManager SqlFirewallManager executing a Metadata Query API.";
+//	} else {
+//	    logInfo = "Client username " + username + " (IP: " + ipAddress
+//		    + ") has been denied by DefaultSqlFirewallManager SqlFirewallManager executing sql statement: "
+//		    + sql + " with parameters: " + parameterValues;
+//	}
+
 	if (isMetadataQuery) {
-	    logInfo = "Client username " + username + " (IP: " + ipAddress
+	    logInfo = "Client username " + sqlEvent.getUsername() + " (IP: " + sqlEvent.getIpAddress()
 		    + ") has been denied by DefaultSqlFirewallManager SqlFirewallManager executing a Metadata Query API.";
 	} else {
-	    logInfo = "Client username " + username + " (IP: " + ipAddress
+	    logInfo = "Client username " + sqlEvent.getUsername() + " (IP: " + sqlEvent.getIpAddress()
 		    + ") has been denied by DefaultSqlFirewallManager SqlFirewallManager executing sql statement: "
-		    + sql + " with parameters: " + parameterValues;
+		    + sql + " with parameters: " + sqlEvent.getParameterStringValues();
 	}
-
+	
 	DefaultDatabaseConfigurator defaultDatabaseConfigurator = new DefaultDatabaseConfigurator();
 	Logger logger = defaultDatabaseConfigurator.getLogger();
 	logger.log(Level.WARNING, logInfo);
 
-    }
-
+	}
 }

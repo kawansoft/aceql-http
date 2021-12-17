@@ -10,7 +10,10 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.kawanfw.sql.api.server.SqlEvent;
+import org.kawanfw.sql.api.server.SqlEventWrapper;
 import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
+import org.kawanfw.sql.servlet.sql.ServerStatementUtil;
 import org.kawanfw.sql.servlet.sql.json_return.JsonSecurityMessage;
 
 public class ServerSqlDispatchUtil {
@@ -104,7 +107,10 @@ public class ServerSqlDispatchUtil {
 	    if (!allow) {
 		List<Object> parameterValues = new ArrayList<>();
 
-		sqlFirewallManager.runIfStatementRefused(null, username, database, connection, ipAddress, true,
+		SqlEvent sqlEvent = SqlEventWrapper.sqlActionEventBuilder(username, database, ipAddress, sql,
+			ServerStatementUtil.isPreparedStatement(request), parameterValues, false);
+		
+		sqlFirewallManager.runIfStatementRefused(sqlEvent, username, database, connection, ipAddress, true,
 			sql, parameterValues);
 		break;
 	    }
