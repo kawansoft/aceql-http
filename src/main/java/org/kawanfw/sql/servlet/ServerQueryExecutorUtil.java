@@ -121,7 +121,7 @@ public class ServerQueryExecutorUtil {
 	    }
 
 	    String ipAddress = request.getRemoteAddr();
-	    ResultSet rs = serverQueryExecutor.executeQuery(username, database, connection, ipAddress, params);
+	    ResultSet rs = serverQueryExecutor.executeQuery(username, database, ipAddress, params, connection);
 	    
 	    if (rs == null) {
 		throw new SQLException(SqlTag.USER_CONFIGURATION_FAILURE

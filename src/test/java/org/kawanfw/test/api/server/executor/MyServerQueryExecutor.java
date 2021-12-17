@@ -44,8 +44,8 @@ public class MyServerQueryExecutor implements ServerQueryExecutor {
      * Simple select * from customer where customer_id >= 1 order by customer_id query
      */
     @Override
-    public ResultSet executeQuery(String username, String database, Connection connection, String ipAddress,
-	    List<Object> params) throws IOException, SQLException {
+    public ResultSet executeQuery(String username, String database, String ipAddress, List<Object> params,
+	    Connection connection) throws IOException, SQLException {
 		
 	Integer customerIdParam = (Integer)params.get(0);
 	
