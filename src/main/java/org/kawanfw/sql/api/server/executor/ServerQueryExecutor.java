@@ -52,8 +52,8 @@ public interface ServerQueryExecutor {
      *                   to perform security checks.
      * @param ipAddress  the IP address of the client user. Allows to perform
      *                   security checks.
-     * @param connection The current SQL/JDBC <code>Connection</code>.
-     * @param args       the parameters list passed by the client side.
+     * @param params     the parameters list passed by the client side.                  
+     * @param connection the current SQL/JDBC <code>Connection</code>.
      * @return a <code>ResultSet</code> object that contains the data produced by
      *         the query; never <code>null</code>
      * @throws IOException  if an IOException occurs
