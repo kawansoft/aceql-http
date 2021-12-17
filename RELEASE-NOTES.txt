@@ -29,14 +29,18 @@ AceQL HTTP Version 9.1 - 13-Dec-2021
 ------------------------------------
 
 What's New: 
+- SqlActionEvent has been renamed to SqlEvent and moved to
+  org.kawanfw.sql.api.server package. 
+- SqlEvent has a new parameter getter: isMetadataQuery().
+- SqlEvent.getParameterStringValues() allows to get the list
+  of parameters object values casted to string. 
+  
 - The new ServerQueryExecutor interface allows to create server classes
   that return directly ResultSet to the client side.
-- SqlActionEvent.getParameterStringValues() allows to get the list
-  of parameters object values casted to string. 
 
 Bugs fixed:
 - org.kawanfw.sql.api.server.StatementAnalyzerUtil was public instead
-  of package protected. This has been fixed.
+  of hidden. This has been fixed.
   
 
 AceQL HTTP Version 9.0 - 02-Dec-2021
