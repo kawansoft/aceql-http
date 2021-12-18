@@ -134,8 +134,7 @@ public class CsvRulesManager extends DefaultSqlFirewallManager implements SqlFir
      * {@code Logger}.
      */
     @Override
-    public void runIfStatementRefused(SqlEvent sqlEvent, String username, String database, Connection connection,
-	    String ipAddress, boolean isMetadataQuery, String sql, List<Object> parameterValues) throws IOException, SQLException {
+    public void runIfStatementRefused(SqlEvent sqlEvent, Connection connection) throws IOException, SQLException {
 
 //	String logInfo = "Client username " + username + " (IP: " + ipAddress
 //		+ ") has been denied by CsvRulesManager SqlFirewallManager executing the statement: " + sql + ".";

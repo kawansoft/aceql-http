@@ -371,8 +371,7 @@ public class ServerCallableStatement {
 			ServerStatementUtil.isPreparedStatement(request),
 			serverPreparedStatementParameters.getParameterValues(), false);
 		    
-		sqlFirewallManager.runIfStatementRefused(sqlEvent, username, database, connection, ipAddress, false,
-			sqlOrder, serverPreparedStatementParameters.getParameterValues());
+		sqlFirewallManager.runIfStatementRefused(sqlEvent, connection);
 
 		String message = JsonSecurityMessage.statementNotAllowedBuild(sqlOrder,
 			"Statement not allowed for executeUpdate", doPrettyPrinting);
@@ -417,8 +416,7 @@ public class ServerCallableStatement {
 		    ServerStatementUtil.isPreparedStatement(request),
 		    serverPreparedStatementParameters.getParameterValues(), false);
 	    
-	    sqlFirewallOnDeny.runIfStatementRefused(sqlEvent, username, database, connection, ipAddress, false, sqlOrder,
-		    serverPreparedStatementParameters.getParameterValues());
+	    sqlFirewallOnDeny.runIfStatementRefused(sqlEvent, connection);
 
 	    String message = JsonSecurityMessage.prepStatementNotAllowedBuild(sqlOrder,
 		    "Callable Statement not allowed", serverPreparedStatementParameters.getParameterTypes(),

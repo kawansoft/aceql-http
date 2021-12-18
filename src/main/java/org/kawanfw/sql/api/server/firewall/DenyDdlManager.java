@@ -28,7 +28,6 @@ package org.kawanfw.sql.api.server.firewall;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -63,15 +62,14 @@ public class DenyDdlManager extends DefaultSqlFirewallManager implements SqlFire
      * Logs the info using {@link DefaultDatabaseConfigurator#getLogger()} {@code Logger}.
      */
     @Override
-    public void runIfStatementRefused(SqlEvent sqlEvent, String username, String database, Connection connection,
-	    String ipAddress, boolean isMetadataQuery, String sql, List<Object> parameterValues) throws IOException, SQLException {
+    public void runIfStatementRefused(SqlEvent sqlEvent, Connection connection) throws IOException, SQLException {
 	
 //	String logInfo = "Client username " + username + " (IP: " + ipAddress
 //		+ ") has been denied by DenyDdlManager SqlFirewallManager executing the DDL statement: " + sql + ".";
 
 	Objects.requireNonNull(sqlEvent ,"sqlEvent cannot be null!");
 	String logInfo = "Client username " + sqlEvent.getUsername() + " (IP: " + sqlEvent.getIpAddress()
-		+ ") has been denied by DenyDdlManager SqlFirewallManager executing the DDL statement: " + sql + ".";
+		+ ") has been denied by DenyDdlManager SqlFirewallManager executing the DDL statement: " + sqlEvent.getSql() + ".";
 	
 	DefaultDatabaseConfigurator defaultDatabaseConfigurator = new DefaultDatabaseConfigurator();
 	Logger logger = defaultDatabaseConfigurator.getLogger();

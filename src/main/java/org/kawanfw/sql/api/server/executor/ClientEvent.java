@@ -29,10 +29,10 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * Allows to get all details of a {@link ServerQueryExecutor} event asked by the client side.
+ * Allows to get all details of a {@link ServerQueryExecutor} call asked by the client side.
  * 
  * @author Nicolas de Pomereu
- * @since 9.0
+ * @since 9.1
  */
 public class ClientEvent {
 

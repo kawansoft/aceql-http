@@ -273,8 +273,7 @@ public class ServerPreparedStatementBatch {
 			ServerStatementUtil.isPreparedStatement(request),
 			serverPreparedStatementParameters.getParameterValues(), false);
 		    
-		sqlFirewallManager.runIfStatementRefused(sqlEvent, username, database, connection, ipAddress, false,
-			sqlOrder, serverPreparedStatementParameters.getParameterValues());
+		sqlFirewallManager.runIfStatementRefused(sqlEvent, connection);
 
 		String message = JsonSecurityMessage.prepStatementNotAllowedBuild(sqlOrder,
 			"Prepared Statement not allowed for executeUpdate",
@@ -315,8 +314,7 @@ public class ServerPreparedStatementBatch {
 	    
 	    isAllowedAfterAnalysis = sqlFirewallManager.allowSqlRunAfterAnalysis(sqlEvent, connection);
 	    if (!isAllowedAfterAnalysis) {
-		sqlFirewallManager.runIfStatementRefused(sqlEvent, username, database, connection, ipAddress, false,
-			sqlOrder, serverPreparedStatementParameters.getParameterValues());
+		sqlFirewallManager.runIfStatementRefused(sqlEvent, connection);
 		break;
 	    }
 	}

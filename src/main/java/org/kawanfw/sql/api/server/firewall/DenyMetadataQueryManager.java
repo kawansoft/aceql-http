@@ -27,7 +27,6 @@ package org.kawanfw.sql.api.server.firewall;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -58,8 +57,7 @@ public class DenyMetadataQueryManager extends DefaultSqlFirewallManager implemen
      * {@code Logger}.
      */
     @Override
-    public void runIfStatementRefused(SqlEvent sqlEvent, String username, String database, Connection connection,
-	    String ipAddress, boolean isMetadataQuery, String sql, List<Object> parameterValues)
+    public void runIfStatementRefused(SqlEvent sqlEvent, Connection connection)
 	    throws IOException, SQLException {
 //
 //	String logInfo = "Client username " + username + " (IP: " + ipAddress

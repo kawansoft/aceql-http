@@ -28,7 +28,6 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.List;
 
 import org.kawanfw.sql.api.server.SqlEvent;
 import org.kawanfw.sql.api.server.StatementAnalyzer;
@@ -191,22 +190,11 @@ public interface SqlFirewallManager {
      *                        info about the SQL call (client username, database
      *                        name, IP Address of the client, and SQL statement
      *                        details).
-     * @param username        the discarded client username
-     * @param database        the database name as defined in the JDBC URL field
      * @param connection      The current SQL/JDBC <code>Connection</code>
-     * @param ipAddress       the IP address of the client user
-     * @param isMetadataQuery Says if the client request was an AceQL specific
-     *                        Metadata Query API
-     * @param sql             the SQL statement
-     * @param parameterValues the parameter values of a prepared statement in the
-     *                        natural order, empty list for a (non prepared)
-     *                        statement
-     *
      * @throws IOException  if an IOException occurs
      * @throws SQLException if a SQLException occurs
      */
-    public void runIfStatementRefused(SqlEvent sqlEvent, String username, String database, Connection connection,
-	    String ipAddress, boolean isMetadataQuery, String sql, List<Object> parameterValues)
+    public void runIfStatementRefused(SqlEvent sqlEvent, Connection connection)
 	    throws IOException, SQLException;
 
 }

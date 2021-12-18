@@ -347,8 +347,7 @@ public class ServerStatement {
 			ServerStatementUtil.isPreparedStatement(request),
 			serverPreparedStatementParameters.getParameterValues(), false);
 		    
-		sqlFirewallManager.runIfStatementRefused(sqlEvent, username, database, connection, ipAddress, false,
-			sqlOrder, serverPreparedStatementParameters.getParameterValues());
+		sqlFirewallManager.runIfStatementRefused(sqlEvent, connection);
 
 		String message = JsonSecurityMessage.prepStatementNotAllowedBuild(sqlOrder,
 			"Prepared Statement not allowed for executeUpdate",
@@ -386,8 +385,7 @@ public class ServerStatement {
 	    isAllowedAfterAnalysis = sqlFirewallManager.allowSqlRunAfterAnalysis(sqlEvent, connection);
 
 	    if (!isAllowedAfterAnalysis) {
-		sqlFirewallManager.runIfStatementRefused(sqlEvent, username, database, connection, ipAddress, false,
-			sqlOrder, serverPreparedStatementParameters.getParameterValues());
+		sqlFirewallManager.runIfStatementRefused(sqlEvent, connection);
 		break;
 	    }
 	}
@@ -631,8 +629,7 @@ public class ServerStatement {
 		SqlEvent sqlEvent = SqlEventWrapper.sqlEventBuild(username, database, ipAddress, sqlOrder,
 			ServerStatementUtil.isPreparedStatement(request), parameterValues, false);
 		    
-		sqlFirewallManager.runIfStatementRefused(sqlEvent, username, database, connection, ipAddress, false,
-			sqlOrder, parameterValues);
+		sqlFirewallManager.runIfStatementRefused(sqlEvent, connection);
 
 		String message = JsonSecurityMessage.statementNotAllowedBuild(sqlOrder,
 			"Statement not allowed for for executeUpdate", doPrettyPrinting);
@@ -678,10 +675,9 @@ public class ServerStatement {
 	    List<Object> parameterValues = new ArrayList<>();
 	    SqlEvent sqlEvent = SqlEventWrapper.sqlEventBuild(username, database, ipAddress, sqlOrder,
 		    ServerStatementUtil.isPreparedStatement(request),
-		    new Vector<Object>(), false);
+		    parameterValues, false);
 
-	    sqlFirewallOnDeny.runIfStatementRefused(sqlEvent, username, database, connection, ipAddress, false, sqlOrder,
-		    parameterValues);
+	    sqlFirewallOnDeny.runIfStatementRefused(sqlEvent, connection);
 
 	    String message = JsonSecurityMessage.statementNotAllowedBuild(sqlOrder, "Statement not allowed",
 		    doPrettyPrinting);

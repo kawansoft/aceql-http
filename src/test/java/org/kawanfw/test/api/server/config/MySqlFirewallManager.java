@@ -152,45 +152,29 @@ public class MySqlFirewallManager extends DefaultSqlFirewallManager {
      * Insert the username that made an illegal SQL call and it's IP address
      * into the BANNED_USERNAMES table. From now on, the username will not be
      * able to do any further AceQL HTTP calls.
-     * @param username
-     *            the discarded client username
-     * @param database
-     *            the database name as defined in the JDBC URL field
      * @param connection
      *            The current SQL/JDBC <code>Connection</code>
-     * @param ipAddress
-     *            the IP address of the client user
-     * @param isMetadataQuery Says if the call is an AceQL Metadata Query API call.
-     * @param sql
-     *            the SQL statement
-     * @param parameterValues
-     *            the parameter values of a prepared statement in the natural
-     *            order, empty list for a (non prepared) statement
-     *
      * @throws IOException
      *             if an IOException occurs
      * @throws SQLException
      *             if a SQLException occurs
      */
     @Override
-    public void runIfStatementRefused(SqlEvent sqlEvent, String username,
-	    String database, Connection connection,
-	    String ipAddress, boolean isMetadataQuery, String sql, List<Object> parameterValues)
+    public void runIfStatementRefused(SqlEvent sqlEvent, Connection connection)
 		    throws IOException, SQLException {
 
 	// Call the parent method that logs the event:
-	super.runIfStatementRefused(sqlEvent, username, database, connection,
-		ipAddress, isMetadataQuery, sql, parameterValues);
+	super.runIfStatementRefused(sqlEvent, connection);
 
 	connection.setAutoCommit(true);
 
-	System.err.println("Statement refused by MySqlFirewallManager: " + sql);
+	System.err.println("Statement refused by MySqlFirewallManager: " + sqlEvent.getSql());
 
 	// Insert the username & its IP into the banned usernames table
 	String sqlOrder = "INSERT INTO BANNED_USERNAMES VALUES (?)";
 
 	PreparedStatement prepStatement = connection.prepareStatement(sqlOrder);
-	prepStatement.setString(1, username);
+	prepStatement.setString(1, sqlEvent.getUsername());
 	try {
 	    prepStatement.executeUpdate();
 	} catch (SQLException e) {
