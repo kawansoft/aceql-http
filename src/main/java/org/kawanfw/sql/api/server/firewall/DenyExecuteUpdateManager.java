@@ -56,12 +56,6 @@ public class DenyExecuteUpdateManager extends DefaultSqlFirewallManager implemen
      */
     @Override
     public void runIfStatementRefused(SqlEvent sqlEvent, Connection connection) throws IOException, SQLException {
-	
-	
-//	String logInfo = "Client username " + username + " (IP: " + ipAddress
-//		+ ") has been denied by DenyExecuteUpdateManager SqlFirewallManager executing the datadase write statement: "
-//		+ sql + ".";
-
 	Objects.requireNonNull(sqlEvent ,"sqlEvent cannot be null!");
 	
 	String logInfo = "Client username " + sqlEvent.getUsername() + " (IP: " + sqlEvent.getIpAddress()

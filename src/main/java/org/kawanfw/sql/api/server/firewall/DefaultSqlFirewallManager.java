@@ -104,15 +104,6 @@ public class DefaultSqlFirewallManager implements SqlFirewallManager {
 	Objects.requireNonNull(sqlEvent ,"sqlEvent cannot be null!");
 	String logInfo = null;
 
-//	if (isMetadataQuery) {
-//	    logInfo = "Client username " + username + " (IP: " + ipAddress
-//		    + ") has been denied by DefaultSqlFirewallManager SqlFirewallManager executing a Metadata Query API.";
-//	} else {
-//	    logInfo = "Client username " + username + " (IP: " + ipAddress
-//		    + ") has been denied by DefaultSqlFirewallManager SqlFirewallManager executing sql statement: "
-//		    + sql + " with parameters: " + parameterValues;
-//	}
-
 	if (sqlEvent.isMetadataQuery()) {
 	    logInfo = "Client username " + sqlEvent.getUsername() + " (IP: " + sqlEvent.getIpAddress()
 		    + ") has been denied by DefaultSqlFirewallManager SqlFirewallManager executing a Metadata Query API.";

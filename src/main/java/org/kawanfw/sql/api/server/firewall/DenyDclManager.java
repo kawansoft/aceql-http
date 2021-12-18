@@ -48,10 +48,7 @@ public class DenyDclManager extends DefaultSqlFirewallManager implements SqlFire
      *         Language).
      */
     @Override
-    public boolean allowSqlRunAfterAnalysis(SqlEvent sqlEvent, Connection connection) throws IOException, SQLException {
-	
-	//StatementAnalyzer statementAnalyzer = new StatementAnalyzer(sql, parameterValues);
-	
+    public boolean allowSqlRunAfterAnalysis(SqlEvent sqlEvent, Connection connection) throws IOException, SQLException {	
 	Objects.requireNonNull(sqlEvent ,"sqlEvent cannot be null!");
 	StatementAnalyzer statementAnalyzer = new StatementAnalyzer(sqlEvent.getSql(), sqlEvent.getParameterValues());
 	return ! statementAnalyzer.isDcl();
@@ -62,10 +59,6 @@ public class DenyDclManager extends DefaultSqlFirewallManager implements SqlFire
      */
     @Override
     public void runIfStatementRefused(SqlEvent sqlEvent, Connection connection) throws IOException, SQLException {
-	
-//	String logInfo = "Client username " + username + " (IP: " + ipAddress
-//		+ ") has been denied by DenyDclManager SqlFirewallManager executing the DCL statement: " + sql + ".";
-
 	Objects.requireNonNull(sqlEvent ,"sqlEvent cannot be null!");
 	String logInfo = "Client username " + sqlEvent.getUsername() + " (IP: " + sqlEvent.getIpAddress()
 		+ ") has been denied by DenyDclManager SqlFirewallManager executing the DCL statement: " + sqlEvent.getSql() + ".";

@@ -50,12 +50,8 @@ public class DenyTclManager extends DefaultSqlFirewallManager implements SqlFire
      */
     @Override
     public boolean allowSqlRunAfterAnalysis(SqlEvent sqlEvent, Connection connection) throws IOException, SQLException {
-	
-	//StatementAnalyzer statementAnalyzer = new StatementAnalyzer(sql, parameterValues);
-
 	Objects.requireNonNull(sqlEvent ,"sqlEvent cannot be null!");
 	StatementAnalyzer statementAnalyzer = new StatementAnalyzer(sqlEvent.getSql(), sqlEvent.getParameterValues());
-	
 	return !statementAnalyzer.isTcl();
     }
 
@@ -65,11 +61,6 @@ public class DenyTclManager extends DefaultSqlFirewallManager implements SqlFire
      */
     @Override
     public void runIfStatementRefused(SqlEvent sqlEvent, Connection connection) throws IOException, SQLException {
-	
-	
-//	String logInfo = "Client username " + username + " (IP: " + ipAddress
-//		+ ") has been denied by DenyTclManager SqlFirewallManager executing the TCL statement: " + sql + ".";
-
 	Objects.requireNonNull(sqlEvent ,"sqlEvent cannot be null!");
 	String logInfo = "Client username " + sqlEvent.getUsername() + " (IP: " + sqlEvent.getIpAddress()
 		+ ") has been denied by DenyTclManager SqlFirewallManager executing the TCL statement: " + sqlEvent.getSql() + ".";

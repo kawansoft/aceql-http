@@ -59,10 +59,6 @@ public class DenyMetadataQueryManager extends DefaultSqlFirewallManager implemen
     @Override
     public void runIfStatementRefused(SqlEvent sqlEvent, Connection connection)
 	    throws IOException, SQLException {
-//
-//	String logInfo = "Client username " + username + " (IP: " + ipAddress
-//		+ ") has been denied by DenyMetadataQueryManager to execute a Metadata Query Call.";
-
 	Objects.requireNonNull(sqlEvent, "sqlEvent cannot be null!");
 	String logInfo = "Client username " + sqlEvent.getUsername() + " (IP: " + sqlEvent.getIpAddress()
 		+ ") has been denied by DenyMetadataQueryManager to execute a Metadata Query Call.";

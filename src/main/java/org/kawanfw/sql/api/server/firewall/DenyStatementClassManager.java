@@ -58,11 +58,6 @@ public class DenyStatementClassManager extends DefaultSqlFirewallManager impleme
      */
     @Override
     public void runIfStatementRefused(SqlEvent sqlEvent, Connection connection) throws IOException, SQLException {
-	
-//	String logInfo = "Client username " + username + " (IP: " + ipAddress
-//		+ ") has been denied by DenyStatementClassManager SqlFirewallManager executing the statement: " + sql
-//		+ ".";
-	
 	Objects.requireNonNull(sqlEvent, "sqlEvent cannot be null!");
 	String logInfo = "Client username " + sqlEvent.getUsername() + " (IP: " + sqlEvent.getIpAddress()
 		+ ") has been denied by DenyStatementClassManager SqlFirewallManager executing the statement: " + sqlEvent.getSql()
