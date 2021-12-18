@@ -120,30 +120,23 @@ public interface SqlFirewallManager {
 	    throws IOException, SQLException;
 
     /**
-     * Allows, for the passed client username and its IP address, to know if
-     * statement is a prepared statement and to analyze the string representation of
-     * the SQL statement that is received on the server. <br>
+     * Allows, for the username and IP address described by a SqlEvent to know if
+     * the statement is a prepared statement and to analyze the string
+     * representation of the SQL statement that is received on the server. <br>
      * If the analysis defined by the method returns false, the SQL statement won't
      * be executed.
-     * @param sqlEvent		  the SQL event asked by the client side
-     * @param username            the client username to check the rule for
-     * @param database            the database name as defined in the JDBC URL field
-     * @param connection          The current SQL/JDBC <code>Connection</code>
-     * @param ipAddress           the IP address of the client user
-     * @param sql                 the SQL statement
-     * @param isPreparedStatement says if the statement is a prepared statement
-     * @param parameterValues     the parameter values of a prepared statement in
-     *                            the natural order, empty list for a (non prepared)
-     *                            statement
-     *
+     * 
+     * @param sqlEvent   the SQL event asked by the client side. Contains all info
+     *                   about the SQL call (client username, database name, IP
+     *                   Address of the client, and SQL statement details).
+     * @param connection The current SQL/JDBC <code>Connection</code>
      * @return <code>true</code> if the analyzed statement or prepared statement is
      *         validated and authorized to run, else <code>false</code>.
      *         <p>
      * @throws IOException  if an IOException occurs
      * @throws SQLException if a SQLException occurs
      */
-    public boolean allowSqlRunAfterAnalysis(SqlEvent sqlEvent, String username, String database, Connection connection,
-	    String ipAddress, String sql, boolean isPreparedStatement, List<Object> parameterValues) throws IOException, SQLException;
+    public boolean allowSqlRunAfterAnalysis(SqlEvent sqlEvent, Connection connection) throws IOException, SQLException;
 
     /**
      * Allows to define if the passed username is allowed to call a raw JDBC
@@ -180,8 +173,8 @@ public interface SqlFirewallManager {
 
     /**
      * Allows to implement specific a Java rule immediately after a SQL statement
-     * has been refused because one of the <code>SqlFirewallManager.allowXxx</code>
-     * method returned false. <br>
+     * described by a SqlEvent has been refused because one of the
+     * <code>SqlFirewallManager.allowXxx</code> method returned false. <br>
      * <br>
      * Examples:
      * <ul>
@@ -193,7 +186,11 @@ public interface SqlFirewallManager {
      * <li>Etc.</li>
      * </ul>
      * <p>
-     * @param sqlEvent	      the SQL event asked by the client side
+     * 
+     * @param sqlEvent        the SQL event asked by the client side. Contains all
+     *                        info about the SQL call (client username, database
+     *                        name, IP Address of the client, and SQL statement
+     *                        details).
      * @param username        the discarded client username
      * @param database        the database name as defined in the JDBC URL field
      * @param connection      The current SQL/JDBC <code>Connection</code>
@@ -209,6 +206,7 @@ public interface SqlFirewallManager {
      * @throws SQLException if a SQLException occurs
      */
     public void runIfStatementRefused(SqlEvent sqlEvent, String username, String database, Connection connection,
-	    String ipAddress, boolean isMetadataQuery, String sql, List<Object> parameterValues) throws IOException, SQLException;
+	    String ipAddress, boolean isMetadataQuery, String sql, List<Object> parameterValues)
+	    throws IOException, SQLException;
 
 }

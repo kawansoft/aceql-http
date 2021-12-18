@@ -49,23 +49,9 @@ public class MySqlFirewallManager extends DefaultSqlFirewallManager {
      * representation of the SQL statement that is received on the server. <br>
      * If the analysis defined by the method returns false, the SQL statement
      * won't be executed.
-     * @param username
-     *            the client username to check the rule for.
-     * @param database
-     *            the database name as defined in the JDBC URL field
      * @param connection
      *            The current SQL/JDBC <code>Connection</code>
      *            the database name as defined in the JDBC URL field
-     * @param ipAddress
-     *            the IP address of the client user
-     * @param sql
-     *            the SQL statement
-     * @param isPreparedStatement
-     *            Says if the statement is a prepared statement
-     * @param parameterValues
-     *            the parameter values of a prepared statement in the natural
-     *            order, empty list for a (non prepared) statement
-     *
      * @return <code><b>true</b></code> if all following requirements are met:
      *         <ul>
      *         <li>username does not exists in applicative SQL table
@@ -89,9 +75,7 @@ public class MySqlFirewallManager extends DefaultSqlFirewallManager {
      *             if a SQLException occurs
      */
     @Override
-    public boolean allowSqlRunAfterAnalysis(SqlEvent sqlEvent, String username,
-	    String database, Connection connection,
-	    String ipAddress, String sql, boolean isPreparedStatement, List<Object> parameterValues)
+    public boolean allowSqlRunAfterAnalysis(SqlEvent sqlEvent, Connection connection)
 		    throws IOException, SQLException {
 
 	// First thing is to test if the username has previously been stored in
@@ -99,7 +83,7 @@ public class MySqlFirewallManager extends DefaultSqlFirewallManager {
 	String sqlOrder = "SELECT USERNAME FROM BANNED_USERNAMES WHERE USERNAME = ?";
 
 	PreparedStatement prepStatement = connection.prepareStatement(sqlOrder);
-	prepStatement.setString(1, username);
+	prepStatement.setString(1, sqlEvent.getUsername());
 	ResultSet rs = prepStatement.executeQuery();
 
 	boolean usernameBanned = rs.next();
@@ -111,8 +95,8 @@ public class MySqlFirewallManager extends DefaultSqlFirewallManager {
 	}
 
 	// We will start statement analysis on the SQL string.
-	StatementAnalyzer statementAnalyzer = new StatementAnalyzer(sql,
-		parameterValues);
+	StatementAnalyzer statementAnalyzer = new StatementAnalyzer(sqlEvent.getSql(),
+		sqlEvent.getParameterValues());
 
 	// SQL string must *not* contain SQL comments ==> Possible security
 	// hole.
@@ -143,7 +127,7 @@ public class MySqlFirewallManager extends DefaultSqlFirewallManager {
 
 	    String table = tables.get(0);
 
-	    if (!isPreparedStatement) {
+	    if (!sqlEvent.isPreparedStatement()) {
 		return false;
 	    }
 
@@ -154,7 +138,7 @@ public class MySqlFirewallManager extends DefaultSqlFirewallManager {
 		lastParamValue = statementAnalyzer.getLastParameter()
 			.toString();
 
-		if (!lastParamValue.equals(username)) {
+		if (!lastParamValue.equals(sqlEvent.getUsername())) {
 		    return false;
 		}
 	    }

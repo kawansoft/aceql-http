@@ -313,8 +313,7 @@ public class ServerPreparedStatementBatch {
 		    ServerStatementUtil.isPreparedStatement(request),
 		    serverPreparedStatementParameters.getParameterValues(), false);
 	    
-	    isAllowedAfterAnalysis = sqlFirewallManager.allowSqlRunAfterAnalysis(sqlEvent, username, database,
-		    connection, ipAddress, sqlOrder, ServerStatementUtil.isPreparedStatement(request), serverPreparedStatementParameters.getParameterValues());
+	    isAllowedAfterAnalysis = sqlFirewallManager.allowSqlRunAfterAnalysis(sqlEvent, connection);
 	    if (!isAllowedAfterAnalysis) {
 		sqlFirewallManager.runIfStatementRefused(sqlEvent, username, database, connection, ipAddress, false,
 			sqlOrder, serverPreparedStatementParameters.getParameterValues());

@@ -114,8 +114,7 @@ public class CsvRulesManager extends DefaultSqlFirewallManager implements SqlFir
      * the:&nbsp; <code>&lt;database&gt;_rules_manager.csv</code> file.
      */
     @Override
-    public boolean allowSqlRunAfterAnalysis(SqlEvent sqlEvent, String username, String database, Connection connection,
-	    String ipAddress, String sql, boolean isPreparedStatement, List<Object> parameterValues) throws IOException, SQLException {
+    public boolean allowSqlRunAfterAnalysis(SqlEvent sqlEvent, Connection connection) throws IOException, SQLException {
 
 	// Load all rules if not already done:
 //	loadRules(database, connection);

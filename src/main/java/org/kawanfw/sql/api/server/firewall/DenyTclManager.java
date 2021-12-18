@@ -50,8 +50,7 @@ public class DenyTclManager extends DefaultSqlFirewallManager implements SqlFire
      *         Control Language)
      */
     @Override
-    public boolean allowSqlRunAfterAnalysis(SqlEvent sqlEvent, String username, String database, Connection connection,
-	    String ipAddress, String sql, boolean isPreparedStatement, List<Object> parameterValues) throws IOException, SQLException {
+    public boolean allowSqlRunAfterAnalysis(SqlEvent sqlEvent, Connection connection) throws IOException, SQLException {
 	
 	//StatementAnalyzer statementAnalyzer = new StatementAnalyzer(sql, parameterValues);
 

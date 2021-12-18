@@ -69,7 +69,6 @@ public class MetadataQueryActionManager {
 
     private OutputStream out = null;
 
-
     public MetadataQueryActionManager(HttpServletRequest request, HttpServletResponse response, OutputStream out,
 	    List<SqlFirewallManager> sqlFirewallManagers, Connection connection) {
 	super();
@@ -87,7 +86,7 @@ public class MetadataQueryActionManager {
 	    executeInTryCatch(out);
 	} catch (SecurityException e) {
 	    RollbackUtil.rollback(connection);
-	    
+
 	    JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_FORBIDDEN,
 		    JsonErrorReturn.ERROR_ACEQL_UNAUTHORIZED, e.getMessage());
 	    ServerSqlManager.writeLine(out, errorReturn.build());
@@ -99,7 +98,7 @@ public class MetadataQueryActionManager {
 	    ServerSqlManager.writeLine(out, errorReturn.build());
 	} catch (Exception e) {
 	    RollbackUtil.rollback(connection);
-	    
+
 	    JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
 		    JsonErrorReturn.ERROR_ACEQL_FAILURE, e.getMessage(), ExceptionUtils.getStackTrace(e));
 	    ServerSqlManager.writeLine(out, errorReturn.build());
@@ -131,9 +130,10 @@ public class MetadataQueryActionManager {
 		List<Object> parameterValues = new ArrayList<>();
 
 		SqlEvent sqlEvent = SqlEventWrapper.sqlEventBuild(username, database, ipAddress, sql,
-			ServerStatementUtil.isPreparedStatement(request), parameterValues, false);
-		    
-		sqlFirewallManager.runIfStatementRefused(sqlEvent, username, database, connection, ipAddress, true, sql, parameterValues);
+			ServerStatementUtil.isPreparedStatement(request), parameterValues, true);
+
+		sqlFirewallManager.runIfStatementRefused(sqlEvent, username, database, connection, ipAddress, true, sql,
+			parameterValues);
 		break;
 	    }
 	}

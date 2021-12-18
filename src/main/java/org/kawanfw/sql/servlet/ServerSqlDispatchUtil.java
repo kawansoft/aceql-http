@@ -108,7 +108,7 @@ public class ServerSqlDispatchUtil {
 		List<Object> parameterValues = new ArrayList<>();
 
 		SqlEvent sqlEvent = SqlEventWrapper.sqlEventBuild(username, database, ipAddress, sql,
-			ServerStatementUtil.isPreparedStatement(request), parameterValues, false);
+			ServerStatementUtil.isPreparedStatement(request), parameterValues, true);
 		
 		sqlFirewallManager.runIfStatementRefused(sqlEvent, username, database, connection, ipAddress, true,
 			sql, parameterValues);

@@ -103,8 +103,7 @@ public class SqlFirewallsCreator {
 		    List<Object> parameterValues = new ArrayList<>();
 		    // We call code just to verify it's OK:
 		    SqlEvent sqlEvent = SqlEventWrapper.sqlEventBuild("username", database,  "127.0.0.1", "select * from table", false, parameterValues, false) ;
-		    sqlFirewallManager.allowSqlRunAfterAnalysis(sqlEvent, "username", database, connection,
-			    "127.0.0.1", "select * from table", false, parameterValues);
+		    sqlFirewallManager.allowSqlRunAfterAnalysis(sqlEvent, connection);
 		}
 
 		sqlFirewallClassName = sqlFirewallManager.getClass().getName();

@@ -405,8 +405,7 @@ public class ServerCallableStatement {
 		    ServerStatementUtil.isPreparedStatement(request),
 		    serverPreparedStatementParameters.getParameterValues(), false);
 
-	    isAllowed = sqlFirewallManager.allowSqlRunAfterAnalysis(sqlEvent, username, database, connection, ipAddress,
-		    sqlOrder, true, serverPreparedStatementParameters.getParameterValues());
+	    isAllowed = sqlFirewallManager.allowSqlRunAfterAnalysis(sqlEvent, connection);
 	    if (!isAllowed) {
 		break;
 	    }

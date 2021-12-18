@@ -323,8 +323,7 @@ public class ServerStatementBatch {
 		    ServerStatementUtil.isPreparedStatement(request),
 		    new Vector<Object>(), false);
 	    
-	    isAllowed = sqlFirewallManager.allowSqlRunAfterAnalysis(sqlEvent, username, database, connection, ipAddress,
-		    sqlOrder, ServerStatementUtil.isPreparedStatement(request), new Vector<Object>());
+	    isAllowed = sqlFirewallManager.allowSqlRunAfterAnalysis(sqlEvent, connection);
 	    
 	    if (!isAllowed) {
 		break;

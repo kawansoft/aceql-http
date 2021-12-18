@@ -383,9 +383,7 @@ public class ServerStatement {
 		    ServerStatementUtil.isPreparedStatement(request),
 		    serverPreparedStatementParameters.getParameterValues(), false);
 	    
-	    isAllowedAfterAnalysis = sqlFirewallManager.allowSqlRunAfterAnalysis(sqlEvent, username, database,
-		    connection, ipAddress, sqlOrder, ServerStatementUtil.isPreparedStatement(request),
-		    serverPreparedStatementParameters.getParameterValues());
+	    isAllowedAfterAnalysis = sqlFirewallManager.allowSqlRunAfterAnalysis(sqlEvent, connection);
 
 	    if (!isAllowedAfterAnalysis) {
 		sqlFirewallManager.runIfStatementRefused(sqlEvent, username, database, connection, ipAddress, false,
@@ -670,8 +668,7 @@ public class ServerStatement {
 		    ServerStatementUtil.isPreparedStatement(request),
 		    new Vector<Object>(), false);
 	    
-	    isAllowed = sqlFirewallManager.allowSqlRunAfterAnalysis(sqlEvent, username, database, connection, ipAddress,
-		    sqlOrder, ServerStatementUtil.isPreparedStatement(request), new Vector<Object>());
+	    isAllowed = sqlFirewallManager.allowSqlRunAfterAnalysis(sqlEvent, connection);
 	    if (!isAllowed) {
 		break;
 	    }

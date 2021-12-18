@@ -63,8 +63,7 @@ public class DefaultSqlFirewallManager implements SqlFirewallManager {
      *         are authorized.
      */
     @Override
-    public boolean allowSqlRunAfterAnalysis(SqlEvent sqlEvent, String username, String database, Connection connection,
-	    String ipAddress, String sql, boolean isPreparedStatement, List<Object> parameterValues) throws IOException, SQLException {
+    public boolean allowSqlRunAfterAnalysis(SqlEvent sqlEvent, Connection connection) throws IOException, SQLException {
 	return true;
     }
 
