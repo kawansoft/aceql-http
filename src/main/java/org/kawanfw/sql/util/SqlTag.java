@@ -37,7 +37,7 @@ public class SqlTag {
     public static final String SQL_PRODUCT_START_FAILURE = "["
 	    + Version.PRODUCT.NAME.toUpperCase() + " START FAILURE]";
 
-    public static final String USER_CONFIGURATION_FAILURE = "[USER CONFIGURATION]";
+    public static final String USER_CONFIGURATION = "[USER CONFIGURATION]";
     public static final String SQL_PRODUCT_LICENSE_FAILURE = "["
 	    + Version.PRODUCT.NAME.toUpperCase() + " - LICENSE FAILURE]";
 

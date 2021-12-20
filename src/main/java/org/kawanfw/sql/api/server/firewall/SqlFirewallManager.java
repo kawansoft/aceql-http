@@ -62,6 +62,8 @@ import org.kawanfw.sql.api.server.StatementAnalyzer;
  * <ul>
  * <li>{@link CsvRulesManager}: manager that apply rules written in a CSV
  * file.</li>
+ * <li>{@link CsvRulesManagerNoReload}: same as {@code CsvRulesManager}, but
+ * dynamic reload of rules is prohibited if the CSV file is updated.</li>
  * <li>{@link DenyDclManager}: manager that denies any DCL (Data Control
  * Language) call.</li>
  * <li>{@link DenyDdlManager}: manager that denies any DDL (Data Definition
@@ -186,15 +188,13 @@ public interface SqlFirewallManager {
      * </ul>
      * <p>
      * 
-     * @param sqlEvent        the SQL event asked by the client side. Contains all
-     *                        info about the SQL call (client username, database
-     *                        name, IP Address of the client, and SQL statement
-     *                        details).
-     * @param connection      The current SQL/JDBC <code>Connection</code>
+     * @param sqlEvent   the SQL event asked by the client side. Contains all info
+     *                   about the SQL call (client username, database name, IP
+     *                   Address of the client, and SQL statement details).
+     * @param connection The current SQL/JDBC <code>Connection</code>
      * @throws IOException  if an IOException occurs
      * @throws SQLException if a SQLException occurs
      */
-    public void runIfStatementRefused(SqlEvent sqlEvent, Connection connection)
-	    throws IOException, SQLException;
+    public void runIfStatementRefused(SqlEvent sqlEvent, Connection connection) throws IOException, SQLException;
 
 }

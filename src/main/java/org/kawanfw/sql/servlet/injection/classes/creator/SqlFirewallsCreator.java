@@ -36,6 +36,7 @@ import org.kawanfw.sql.api.server.DatabaseConfigurator;
 import org.kawanfw.sql.api.server.SqlEvent;
 import org.kawanfw.sql.api.server.SqlEventWrapper;
 import org.kawanfw.sql.api.server.firewall.CsvRulesManager;
+import org.kawanfw.sql.api.server.firewall.CsvRulesManagerNoReload;
 import org.kawanfw.sql.api.server.firewall.DefaultSqlFirewallManager;
 import org.kawanfw.sql.api.server.firewall.DenyDclManager;
 import org.kawanfw.sql.api.server.firewall.DenyDdlManager;
@@ -70,15 +71,13 @@ import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
  */
 public class SqlFirewallsCreator {
 
-    private static String[] PREDEFINED_CLASS_NAMES = {
-	    CsvRulesManager.class.getSimpleName(),
-	    DefaultSqlFirewallManager.class.getSimpleName(),
-	    DenyDclManager.class.getSimpleName(),
-	    DenyDdlManager.class.getSimpleName(),
-	    DenyExecuteUpdateManager.class.getSimpleName(),
-	    DenyMetadataQueryManager.class.getSimpleName(),
-	    DenyStatementClassManager.class.getSimpleName(),
-	    };
+    private static final boolean TEST_FIREWALLS = false;
+
+    private static String[] PREDEFINED_CLASS_NAMES = { CsvRulesManager.class.getSimpleName(),
+	    CsvRulesManagerNoReload.class.getSimpleName(), DefaultSqlFirewallManager.class.getSimpleName(),
+	    DenyDclManager.class.getSimpleName(), DenyDdlManager.class.getSimpleName(),
+	    DenyExecuteUpdateManager.class.getSimpleName(), DenyMetadataQueryManager.class.getSimpleName(),
+	    DenyStatementClassManager.class.getSimpleName(), };
 
     private List<String> sqlFirewallClassNames = new ArrayList<>();
     private List<SqlFirewallManager> sqlFirewallManagers = new ArrayList<>();
@@ -99,11 +98,14 @@ public class SqlFirewallsCreator {
 		Constructor<?> constructor = c.getConstructor();
 		SqlFirewallManager sqlFirewallManager = (SqlFirewallManager) constructor.newInstance();
 
-		try (Connection connection = databaseConfigurator.getConnection(database);) {
-		    List<Object> parameterValues = new ArrayList<>();
-		    // We call code just to verify it's OK:
-		    SqlEvent sqlEvent = SqlEventWrapper.sqlEventBuild("username", database,  "127.0.0.1", "select * from table", false, parameterValues, false) ;
-		    sqlFirewallManager.allowSqlRunAfterAnalysis(sqlEvent, connection);
+		if (TEST_FIREWALLS) {
+		    try (Connection connection = databaseConfigurator.getConnection(database);) {
+			List<Object> parameterValues = new ArrayList<>();
+			// We call code just to verify it's OK:
+			SqlEvent sqlEvent = SqlEventWrapper.sqlEventBuild("username", database, "127.0.0.1",
+				"select * from table", false, parameterValues, false);
+			sqlFirewallManager.allowSqlRunAfterAnalysis(sqlEvent, connection);
+		    }
 		}
 
 		sqlFirewallClassName = sqlFirewallManager.getClass().getName();
@@ -132,8 +134,7 @@ public class SqlFirewallsCreator {
 	for (int i = 0; i < PREDEFINED_CLASS_NAMES.length; i++) {
 	    if (PREDEFINED_CLASS_NAMES[i].equals(theClassName)) {
 		// Add prefix package
-		String theClassNameNew = SqlFirewallManager.class.getPackage()
-			.getName() + "." + theClassName;
+		String theClassNameNew = SqlFirewallManager.class.getPackage().getName() + "." + theClassName;
 		return theClassNameNew;
 	    }
 	}

@@ -27,6 +27,9 @@ package org.kawanfw.sql.api.server.firewall;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.file.attribute.FileTime;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Date;
@@ -47,6 +50,8 @@ import org.kawanfw.sql.api.util.firewall.TableAllowStatements;
 import org.kawanfw.sql.metadata.AceQLMetaData;
 import org.kawanfw.sql.servlet.injection.properties.PropertiesFileStore;
 import org.kawanfw.sql.util.FrameworkDebug;
+import org.kawanfw.sql.util.SqlTag;
+import org.kawanfw.sql.util.TimestampUtil;
 
 /**
  * Firewall manager that checks each SQL request against the content of a CSV
@@ -92,8 +97,11 @@ import org.kawanfw.sql.util.FrameworkDebug;
  * for the same CSV column.
  * </ul>
  * <br>
+ * <b>Note that updating the CSV file will reload the rules.</b> If you prefer to
+ * disallow dynamic reloading, use a {@link CsvRulesManagerNoReload} implementation.
+ * <br><br>
  * See an example of CSV file: <a href=
- * "https://docs.aceql.com/rest/soft/9.0/src/sampledb_rules_manager.csv">sampledb_rules_manager.csv</a>
+ * "https://docs.aceql.com/rest/soft/10.0/src/sampledb_rules_manager.csv">sampledb_rules_manager.csv</a>
  * <br>
  * <br>
  *
@@ -109,6 +117,11 @@ public class CsvRulesManager extends DefaultSqlFirewallManager implements SqlFir
      */
     private Map<DatabaseUserTableTriplet, TableAllowStatements> mapTableAllowStatementsSet = null;
 
+    private FileTime storedFileTime = null;
+
+    /** Default dehavior is to allow reload of rules if CSV file is updated */
+    protected boolean allowReload = true;
+
     /**
      * Allows the execution of the statement if an allowing rules exists in
      * the:&nbsp; <code>&lt;database&gt;_rules_manager.csv</code> file.
@@ -117,16 +130,13 @@ public class CsvRulesManager extends DefaultSqlFirewallManager implements SqlFir
     public boolean allowSqlRunAfterAnalysis(SqlEvent sqlEvent, Connection connection) throws IOException, SQLException {
 
 	// Load all rules if not already done:
-//	loadRules(database, connection);
-//
-//	boolean isAllowed = isAllowed(username, database, sql, parameterValues);
-//	return isAllowed;
-	Objects.requireNonNull(sqlEvent ,"sqlEvent cannot be null!");
+	Objects.requireNonNull(sqlEvent, "sqlEvent cannot be null!");
 	loadRules(sqlEvent.getDatabase(), connection);
 
-	boolean isAllowed = isAllowed(sqlEvent.getUsername(), sqlEvent.getDatabase(), sqlEvent.getSql(), sqlEvent.getParameterValues());
+	boolean isAllowed = isAllowed(sqlEvent.getUsername(), sqlEvent.getDatabase(), sqlEvent.getSql(),
+		sqlEvent.getParameterValues());
 	return isAllowed;
-	
+
     }
 
     /**
@@ -135,19 +145,15 @@ public class CsvRulesManager extends DefaultSqlFirewallManager implements SqlFir
      */
     @Override
     public void runIfStatementRefused(SqlEvent sqlEvent, Connection connection) throws IOException, SQLException {
-
-//	String logInfo = "Client username " + username + " (IP: " + ipAddress
-//		+ ") has been denied by CsvRulesManager SqlFirewallManager executing the statement: " + sql + ".";
-//
-
-	Objects.requireNonNull(sqlEvent ,"sqlEvent cannot be null!");
+	Objects.requireNonNull(sqlEvent, "sqlEvent cannot be null!");
 	String logInfo = "Client username " + sqlEvent.getUsername() + " (IP: " + sqlEvent.getIpAddress()
-		+ ") has been denied by CsvRulesManager SqlFirewallManager executing the statement: " + sqlEvent.getSql() + ".";
-	
+		+ ") has been denied by CsvRulesManager SqlFirewallManager executing the statement: "
+		+ sqlEvent.getSql() + ".";
+
 	DefaultDatabaseConfigurator defaultDatabaseConfigurator = new DefaultDatabaseConfigurator();
 	Logger logger = defaultDatabaseConfigurator.getLogger();
 	logger.log(Level.WARNING, logInfo);
-	
+
     }
 
     /**
@@ -256,8 +262,26 @@ public class CsvRulesManager extends DefaultSqlFirewallManager implements SqlFir
      */
     private void loadRules(String database, Connection connection)
 	    throws FileNotFoundException, SQLException, IOException {
+
+	File csvFile = getCsvFile(database);
+	BasicFileAttributes basicFileAttributes = Files.readAttributes(csvFile.toPath(), BasicFileAttributes.class);
+	FileTime currentFileTime = basicFileAttributes.lastModifiedTime();
+
+	debug("storedFileTime : "  + storedFileTime);
+	debug("currentFileTime: " + currentFileTime);
+	
+	if (storedFileTime != null && ! currentFileTime.equals(storedFileTime) && allowReload) {
+	    mapTableAllowStatementsSet = null;
+	    String logInfo = TimestampUtil.getHumanTimestampNow() + " " + SqlTag.USER_CONFIGURATION
+		    + " Reloading CsvRulesManager configuration file: " + csvFile;
+	    System.err.println(logInfo);
+	    DefaultDatabaseConfigurator defaultDatabaseConfigurator = new DefaultDatabaseConfigurator();
+	    Logger logger = defaultDatabaseConfigurator.getLogger();
+	    logger.log(Level.WARNING, logInfo);
+	    storedFileTime = currentFileTime;
+	}
+
 	if (mapTableAllowStatementsSet == null) {
-	    File csvFile = getCsvFile(database);
 
 	    AceQLMetaData aceQLMetaData = new AceQLMetaData(connection);
 	    List<String> tables = aceQLMetaData.getTableNames();
@@ -278,6 +302,8 @@ public class CsvRulesManager extends DefaultSqlFirewallManager implements SqlFir
 	    for (TableAllowStatements tableAllowStatements : tableAllowStatementsSet) {
 		debug("" + tableAllowStatements.toString());
 	    }
+	    
+	    storedFileTime = currentFileTime;
 	}
     }
 

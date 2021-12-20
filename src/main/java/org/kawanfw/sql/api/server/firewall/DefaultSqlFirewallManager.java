@@ -67,7 +67,8 @@ public class DefaultSqlFirewallManager implements SqlFirewallManager {
     }
 
     /**
-     * @return <code><b>true</b></code>. (Client programs will be allowed to call a JDBC raw {@code Statement.execute}.)
+     * @return <code><b>true</b></code>. (Client programs will be allowed to call a
+     *         JDBC raw {@code Statement.execute}.)
      */
     @Override
     public boolean allowExecute(String username, String database, Connection connection)
@@ -96,12 +97,13 @@ public class DefaultSqlFirewallManager implements SqlFirewallManager {
     }
 
     /**
-     * Logs the info using {@link DefaultDatabaseConfigurator#getLogger()} {@code Logger}.
+     * Logs the info using {@link DefaultDatabaseConfigurator#getLogger()}
+     * {@code Logger}.
      */
     @Override
     public void runIfStatementRefused(SqlEvent sqlEvent, Connection connection) throws IOException, SQLException {
 
-	Objects.requireNonNull(sqlEvent ,"sqlEvent cannot be null!");
+	Objects.requireNonNull(sqlEvent, "sqlEvent cannot be null!");
 	String logInfo = null;
 
 	if (sqlEvent.isMetadataQuery()) {
@@ -112,10 +114,10 @@ public class DefaultSqlFirewallManager implements SqlFirewallManager {
 		    + ") has been denied by DefaultSqlFirewallManager SqlFirewallManager executing sql statement: "
 		    + sqlEvent.getSql() + " with parameters: " + sqlEvent.getParameterStringValues();
 	}
-	
+
 	DefaultDatabaseConfigurator defaultDatabaseConfigurator = new DefaultDatabaseConfigurator();
 	Logger logger = defaultDatabaseConfigurator.getLogger();
 	logger.log(Level.WARNING, logInfo);
 
-	}
+    }
 }

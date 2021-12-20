@@ -89,7 +89,7 @@ public class ServerQueryExecutorUtil {
 		className = serverQueryExecutorDto.getServerQueryExecutorClassName();
 		c = Class.forName(className);
 	    } catch (ClassNotFoundException e) {
-		throw new SQLException(SqlTag.USER_CONFIGURATION_FAILURE + ". Cannot load ServerQueryExecutor class: "
+		throw new SQLException(SqlTag.USER_CONFIGURATION + ". Cannot load ServerQueryExecutor class: "
 			+ className + ". " + e.toString());
 	    }
 
@@ -97,7 +97,7 @@ public class ServerQueryExecutorUtil {
 	    try {
 		constructor = c.getConstructor();
 	    } catch (Exception e) {
-		throw new SQLException(SqlTag.USER_CONFIGURATION_FAILURE
+		throw new SQLException(SqlTag.USER_CONFIGURATION
 			+ ". Cannot create constructor for ServerQueryExecutor class: " + className + ". "
 			+ e.toString());
 	    }
@@ -106,7 +106,7 @@ public class ServerQueryExecutorUtil {
 	    try {
 		serverQueryExecutor = (ServerQueryExecutor) constructor.newInstance();
 	    } catch (Exception e) {
-		throw new SQLException(SqlTag.USER_CONFIGURATION_FAILURE
+		throw new SQLException(SqlTag.USER_CONFIGURATION
 			+ ". Cannot create new instance for ServerQueryExecutor class: " + className + ". "
 			+ e.toString());
 	    }
@@ -118,7 +118,7 @@ public class ServerQueryExecutorUtil {
 	    try {
 		params = buildParametersValuesFromTypes(paramTypes, paramValues);
 	    } catch (Exception e) {
-		throw new SQLException(SqlTag.USER_CONFIGURATION_FAILURE
+		throw new SQLException(SqlTag.USER_CONFIGURATION
 			+ ". Cannot load parameters for ServerQueryExecutor class: " + className + ". " + e.toString());
 	    }
 
@@ -127,7 +127,7 @@ public class ServerQueryExecutorUtil {
 	    ResultSet rs = serverQueryExecutor.executeQuery(clientEvent, connection);
 	    
 	    if (rs == null) {
-		throw new SQLException(SqlTag.USER_CONFIGURATION_FAILURE
+		throw new SQLException(SqlTag.USER_CONFIGURATION
 			+ ". ResultSet cannot be null! The ServerQueryExecutor class returns a null ResultSet: " + className + ". ");	
 	    }
 	    
