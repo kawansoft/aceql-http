@@ -1,4 +1,4 @@
-# AceQL HTTP v9.0 - December 2, 2021
+# AceQL HTTP v10.0 - December 20, 2021
 
 # API User Guide
 
@@ -239,7 +239,7 @@ In case of error:
 
 All the following examples use a MySQL database named `sampledb`.
 
-Connection to the [sampledb](http://www.aceql.com/rest/soft/9.0/src/sampledb.txt) database with (MyUsername, MySecret) credentials:
+Connection to the [sampledb](http://www.aceql.com/rest/soft/10.0/src/sampledb.txt) database with (MyUsername, MySecret) credentials:
 
 ```bash
 $ curl \
