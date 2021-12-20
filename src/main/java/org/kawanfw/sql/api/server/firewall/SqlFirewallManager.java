@@ -122,7 +122,7 @@ public interface SqlFirewallManager {
 
     /**
      * Allows to analyze the SQL call event asked by the client side and thus allow
-     * or forbid the SQL execution.<br>
+     * or forbid the SQL execution on the server.<br>
      * If the analysis defined by the method returns false, the SQL statement won't
      * be executed.
      * 
