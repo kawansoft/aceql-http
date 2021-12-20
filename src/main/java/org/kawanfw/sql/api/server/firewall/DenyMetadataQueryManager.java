@@ -27,7 +27,6 @@ package org.kawanfw.sql.api.server.firewall;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -59,7 +58,6 @@ public class DenyMetadataQueryManager extends DefaultSqlFirewallManager implemen
     @Override
     public void runIfStatementRefused(SqlEvent sqlEvent, Connection connection)
 	    throws IOException, SQLException {
-	Objects.requireNonNull(sqlEvent, "sqlEvent cannot be null!");
 	String logInfo = "Client username " + sqlEvent.getUsername() + " (IP: " + sqlEvent.getIpAddress()
 		+ ") has been denied by DenyMetadataQueryManager to execute a Metadata Query Call.";
 

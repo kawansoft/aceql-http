@@ -27,7 +27,6 @@ package org.kawanfw.sql.api.server.firewall;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -102,8 +101,6 @@ public class DefaultSqlFirewallManager implements SqlFirewallManager {
      */
     @Override
     public void runIfStatementRefused(SqlEvent sqlEvent, Connection connection) throws IOException, SQLException {
-
-	Objects.requireNonNull(sqlEvent, "sqlEvent cannot be null!");
 	String logInfo = null;
 
 	if (sqlEvent.isMetadataQuery()) {

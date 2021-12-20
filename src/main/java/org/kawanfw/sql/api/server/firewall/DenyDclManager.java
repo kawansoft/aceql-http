@@ -27,7 +27,6 @@ package org.kawanfw.sql.api.server.firewall;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -48,21 +47,21 @@ public class DenyDclManager extends DefaultSqlFirewallManager implements SqlFire
      *         Language).
      */
     @Override
-    public boolean allowSqlRunAfterAnalysis(SqlEvent sqlEvent, Connection connection) throws IOException, SQLException {	
-	Objects.requireNonNull(sqlEvent ,"sqlEvent cannot be null!");
-	StatementAnalyzer statementAnalyzer = new StatementAnalyzer(sqlEvent.getSql(), sqlEvent.getParameterValues());
-	return ! statementAnalyzer.isDcl();
+    public boolean allowSqlRunAfterAnalysis(SqlEvent sqlEvent, Connection connection) throws IOException, SQLException {
+	StatementAnalyzer analyzer = new StatementAnalyzer(sqlEvent.getSql(), sqlEvent.getParameterValues());
+	return !analyzer.isDcl();
     }
 
     /**
-     * Logs the info using {@link DefaultDatabaseConfigurator#getLogger()} {@code Logger}.
+     * Logs the info using {@link DefaultDatabaseConfigurator#getLogger()}
+     * {@code Logger}.
      */
     @Override
     public void runIfStatementRefused(SqlEvent sqlEvent, Connection connection) throws IOException, SQLException {
-	Objects.requireNonNull(sqlEvent ,"sqlEvent cannot be null!");
 	String logInfo = "Client username " + sqlEvent.getUsername() + " (IP: " + sqlEvent.getIpAddress()
-		+ ") has been denied by DenyDclManager SqlFirewallManager executing the DCL statement: " + sqlEvent.getSql() + ".";
-	
+		+ ") has been denied by DenyDclManager SqlFirewallManager executing the DCL statement: "
+		+ sqlEvent.getSql() + ".";
+
 	DefaultDatabaseConfigurator defaultDatabaseConfigurator = new DefaultDatabaseConfigurator();
 	Logger logger = defaultDatabaseConfigurator.getLogger();
 	logger.log(Level.WARNING, logInfo);

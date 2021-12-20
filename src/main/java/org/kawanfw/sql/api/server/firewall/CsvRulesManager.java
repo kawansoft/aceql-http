@@ -128,9 +128,7 @@ public class CsvRulesManager extends DefaultSqlFirewallManager implements SqlFir
      */
     @Override
     public boolean allowSqlRunAfterAnalysis(SqlEvent sqlEvent, Connection connection) throws IOException, SQLException {
-
 	// Load all rules if not already done:
-	Objects.requireNonNull(sqlEvent, "sqlEvent cannot be null!");
 	loadRules(sqlEvent.getDatabase(), connection);
 
 	boolean isAllowed = isAllowed(sqlEvent.getUsername(), sqlEvent.getDatabase(), sqlEvent.getSql(),
@@ -145,7 +143,6 @@ public class CsvRulesManager extends DefaultSqlFirewallManager implements SqlFir
      */
     @Override
     public void runIfStatementRefused(SqlEvent sqlEvent, Connection connection) throws IOException, SQLException {
-	Objects.requireNonNull(sqlEvent, "sqlEvent cannot be null!");
 	String logInfo = "Client username " + sqlEvent.getUsername() + " (IP: " + sqlEvent.getIpAddress()
 		+ ") has been denied by CsvRulesManager SqlFirewallManager executing the statement: "
 		+ sqlEvent.getSql() + ".";

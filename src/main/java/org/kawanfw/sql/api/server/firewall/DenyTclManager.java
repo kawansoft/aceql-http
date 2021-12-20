@@ -28,7 +28,6 @@ package org.kawanfw.sql.api.server.firewall;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -50,9 +49,8 @@ public class DenyTclManager extends DefaultSqlFirewallManager implements SqlFire
      */
     @Override
     public boolean allowSqlRunAfterAnalysis(SqlEvent sqlEvent, Connection connection) throws IOException, SQLException {
-	Objects.requireNonNull(sqlEvent ,"sqlEvent cannot be null!");
-	StatementAnalyzer statementAnalyzer = new StatementAnalyzer(sqlEvent.getSql(), sqlEvent.getParameterValues());
-	return !statementAnalyzer.isTcl();
+	StatementAnalyzer analyzer = new StatementAnalyzer(sqlEvent.getSql(), sqlEvent.getParameterValues());
+	return !analyzer.isTcl();
     }
 
     /**
@@ -61,10 +59,10 @@ public class DenyTclManager extends DefaultSqlFirewallManager implements SqlFire
      */
     @Override
     public void runIfStatementRefused(SqlEvent sqlEvent, Connection connection) throws IOException, SQLException {
-	Objects.requireNonNull(sqlEvent ,"sqlEvent cannot be null!");
 	String logInfo = "Client username " + sqlEvent.getUsername() + " (IP: " + sqlEvent.getIpAddress()
-		+ ") has been denied by DenyTclManager SqlFirewallManager executing the TCL statement: " + sqlEvent.getSql() + ".";
-	
+		+ ") has been denied by DenyTclManager SqlFirewallManager executing the TCL statement: "
+		+ sqlEvent.getSql() + ".";
+
 	DefaultDatabaseConfigurator defaultDatabaseConfigurator = new DefaultDatabaseConfigurator();
 	Logger logger = defaultDatabaseConfigurator.getLogger();
 	logger.log(Level.WARNING, logInfo);
