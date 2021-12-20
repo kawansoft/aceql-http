@@ -121,9 +121,8 @@ public interface SqlFirewallManager {
 	    throws IOException, SQLException;
 
     /**
-     * Allows, for the username and IP address described by a SqlEvent to know if
-     * the statement is a prepared statement and to analyze the string
-     * representation of the SQL statement that is received on the server. <br>
+     * Allows to analyze the SQL call event asked by the client side and thus allow
+     * or forbid the SQL execution.<br>
      * If the analysis defined by the method returns false, the SQL statement won't
      * be executed.
      * 
