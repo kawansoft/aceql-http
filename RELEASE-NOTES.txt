@@ -40,6 +40,7 @@ What's New:
 - SqlEvent has a new parameter getter: isMetadataQuery().
 - SqlEvent.getParameterStringValues() allows to get the list
   of parameters object values casted to string. 
+- Tomcat base libraries have been upgraded to 9.0.56.
   
 - The new ServerQueryExecutor interface allows to create server classes
   that return directly ResultSet to the client side.

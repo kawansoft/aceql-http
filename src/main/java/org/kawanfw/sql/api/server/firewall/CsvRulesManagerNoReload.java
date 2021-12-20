@@ -33,6 +33,9 @@ package org.kawanfw.sql.api.server.firewall;
  */
 public class CsvRulesManagerNoReload extends CsvRulesManager {
 
+    /**
+     * Constructor.
+     */
     public CsvRulesManagerNoReload() {
 	super.allowReload = true;
     }
