@@ -92,11 +92,11 @@ public interface SqlFirewallManager {
      * Says if the username is allowed call the Metadata Query API for the passed
      * database.
      *
-     * @param username   the client username to check the rule for.
+     * @param username   the client username to check the rule for
      * @param database   the database name as defined in the JDBC URL field
      * @param connection The current SQL/JDBC <code>Connection</code>
      * @return <code>true</code> if the user has the right to call the Metada Query
-     *         API, else <code>false</code>.
+     *         API, else <code>false</code>
      * @throws IOException  if an IOException occurs
      * @throws SQLException if a SQLException occurs
      */
@@ -105,9 +105,9 @@ public interface SqlFirewallManager {
 
     /**
      * Allows to define if the passed username is allowed to create and use a
-     * {@link Statement} instance that is not a <code>PreparedStatement</code>
+     * {@link Statement} instance that is not a <code>PreparedStatement</code>.
      *
-     * @param username   the client username to check the rule for.
+     * @param username   the client username to check the rule for
      * @param database   the database name as defined in the JDBC URL field
      * @param connection The current SQL/JDBC <code>Connection</code>
      * @return <code>true</code> if the user has the right to call a raw
@@ -142,7 +142,7 @@ public interface SqlFirewallManager {
      * Allows to define if the passed username is allowed to call a raw JDBC
      * {@code Statement.execute}.
      *
-     * @param username   the client username to check the rule for.
+     * @param username   the client username to check the rule for
      * @param database   the database name as defined in the JDBC URL field
      * @param connection The current SQL/JDBC <code>Connection</code>
      * @return <code>true</code> if the user has the right call a database update

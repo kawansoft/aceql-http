@@ -25,7 +25,7 @@ AceQL HTTP is licensed through the GNU Lesser General Public License
 (LGPL v2.1).
 
 
-AceQL HTTP Version 10.0 - 20-Dec-2021
+AceQL HTTP Version 10.0 - 21-Dec-2021
 -------------------------------------
 
 What's New: 
@@ -33,13 +33,13 @@ What's New:
 - The new CsvRulesManagerNoReload SqlFirewallManager implementation
   works the same as CsvRulesManager, but prohibit the reloading of
   the rules if the CSV file is updated. 
-- The SqlFirewallManager APIs have been refactored to limit the 
-  parameters. The new SQLEvent class allows this. 
 - SqlActionEvent has been renamed to SqlEvent and moved to
   org.kawanfw.sql.api.server package. 
 - SqlEvent has a new parameter getter: isMetadataQuery().
 - SqlEvent.getParameterStringValues() allows to get the list
   of parameters object values casted to string. 
+- The SqlFirewallManager APIs have been refactored to limit the 
+  parameters. The new SQLEvent is used forthis. 
 - Tomcat base libraries have been upgraded to 9.0.56.
   
 - The new ServerQueryExecutor interface allows to create server classes

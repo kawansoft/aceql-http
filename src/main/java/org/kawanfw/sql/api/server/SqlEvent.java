@@ -70,36 +70,36 @@ public class SqlEvent {
     }
 
     /**
-     * Returns the client username that asked for the SQL request
+     * Returns the client username that asked for the SQL request.
      * 
-     * @return the client username that asked for the SQL request.
+     * @return the client username that asked for the SQL request
      */
     public String getUsername() {
 	return username;
     }
 
     /**
-     * Returns the database name
+     * Returns the database name.
      * 
-     * @return the database name.
+     * @return the database name
      */
     public String getDatabase() {
 	return database;
     }
 
     /**
-     * Returns the ipAddress of the client user
+     * Returns the  IP address of the client user.
      * 
-     * @return the ipAddress of the client user.
+     * @return the IP address of the client user
      */
     public String getIpAddress() {
 	return ipAddress;
     }
 
     /**
-     * Returns the sql statement to execute.
+     * Returns the SQL statement to execute.
      * 
-     * @return the sql statement to execute.
+     * @return the SQL statement to execute
      */
     public String getSql() {
 	return sql;
@@ -110,7 +110,7 @@ public class SqlEvent {
      * {@code false}.
      * 
      * @return {@code true} if the statement is a {@code PreparedStatement}, else
-     *         {@code false}.
+     *         {@code false}
      */
     public boolean isPreparedStatement() {
 	return isPreparedStatement;
@@ -118,7 +118,7 @@ public class SqlEvent {
 
     /**
      * Returns the parameter values of a prepared statement in the natural order,
-     * empty list for a (non prepared) statement
+     * empty list for a (non prepared) statement.
      * 
      * @return the parameter values of a prepared statement in the natural order,
      *         empty list for a (non prepared) statement
@@ -129,7 +129,7 @@ public class SqlEvent {
 
     /**
      * Returns the parameter String values of a prepared statement in the natural
-     * order, empty list for a (non prepared) statement
+     * order, empty list for a (non prepared) statement.
      * 
      * @return the parameter String values of a prepared statement in the natural
      *         order, empty list for a (non prepared) statement
@@ -140,7 +140,7 @@ public class SqlEvent {
 
     
     /**
-     * Says if the SQL event is a special Metadata query
+     * Says if the SQL event is a special Metadata query.
      * @return {@code true} if the SQL event is a special Metadata query, else {@code false}
      */
     public boolean isMetadataQuery() {
@@ -155,7 +155,7 @@ public class SqlEvent {
     }
 
     /**
-     * Transforms the Object parameters values into strings
+     * Transforms the Object parameters values into strings.
      * 
      * @param parameterValues the Object parameter values
      * @return the converted String parameter values

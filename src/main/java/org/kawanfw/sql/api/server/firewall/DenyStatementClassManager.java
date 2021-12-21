@@ -53,7 +53,7 @@ public class DenyStatementClassManager extends DefaultSqlFirewallManager impleme
     }
 
     /**
-     * Logs the info using {@link DefaultDatabaseConfigurator#getLogger()} {@code Logger}.
+     * Logs the info using {@code DefaultDatabaseConfigurator#getLogger()} {@code Logger}.
      */
     @Override
     public void runIfStatementRefused(SqlEvent sqlEvent, Connection connection) throws IOException, SQLException {

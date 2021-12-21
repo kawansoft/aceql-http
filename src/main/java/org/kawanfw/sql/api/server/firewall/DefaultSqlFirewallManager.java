@@ -96,7 +96,7 @@ public class DefaultSqlFirewallManager implements SqlFirewallManager {
     }
 
     /**
-     * Logs the info using {@link DefaultDatabaseConfigurator#getLogger()}
+     * Logs the info using {@code DefaultDatabaseConfigurator#getLogger()}
      * {@code Logger}.
      */
     @Override

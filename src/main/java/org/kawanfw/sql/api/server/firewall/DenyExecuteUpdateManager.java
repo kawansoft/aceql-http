@@ -52,7 +52,7 @@ public class DenyExecuteUpdateManager extends DefaultSqlFirewallManager implemen
     }
 
     /**
-     * Logs the info using {@link DefaultDatabaseConfigurator#getLogger()}
+     * Logs the info using {@code DefaultDatabaseConfigurator#getLogger()}
      * {@code Logger}.
      */
     @Override

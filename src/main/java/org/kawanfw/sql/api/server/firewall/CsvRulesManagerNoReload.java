@@ -25,7 +25,7 @@
 package org.kawanfw.sql.api.server.firewall;
 
 /**
- * {@code SQLFirewallManager} that extends CsvRulesManager. The only change is
+ * Firewall manager that extends {@code CsvRulesManager}, the only change is
  * to prohibit reloading rules when the CSV file is updated.
  * 
  * @author Nicolas de Pomereu

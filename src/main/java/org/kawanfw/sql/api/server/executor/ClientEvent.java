@@ -68,25 +68,25 @@ public class ClientEvent {
     /**
      * Returns the database name
      * 
-     * @return the database name.
+     * @return the database name
      */
     public String getDatabase() {
 	return database;
     }
 
     /**
-     * Returns the ipAddress of the client user
+     * Returns the IP addresse of the client user
      * 
-     * @return the ipAddress of the client user.
+     * @return the ipAddress of the client user
      */
     public String getIpAddress() {
 	return ipAddress;
     }
 
      /**
-     * Returns the parameter values to pass to the server query.
+     * Returns the parameter values to pass to the server query
      * 
-     * @return the parameter values to pass to the server query.
+     * @return the parameter values to pass to the server query
      */
     public List<Object> getParameterValues() {
 	return parameterValues;

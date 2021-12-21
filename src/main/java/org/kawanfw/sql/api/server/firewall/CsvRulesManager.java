@@ -138,7 +138,7 @@ public class CsvRulesManager extends DefaultSqlFirewallManager implements SqlFir
     }
 
     /**
-     * Logs the info using {@link DefaultDatabaseConfigurator#getLogger()}
+     * Logs the info using {@code DefaultDatabaseConfigurator#getLogger()}
      * {@code Logger}.
      */
     @Override
@@ -154,7 +154,7 @@ public class CsvRulesManager extends DefaultSqlFirewallManager implements SqlFir
     }
 
     /**
-     * Will say id there is a rule that allows for the usename the sql statement
+     * Will say id there is a rule that allows for the usename the SQL statement.
      *
      * @param username
      * @param database

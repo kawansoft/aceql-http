@@ -42,7 +42,7 @@ import java.sql.SQLException;
 public interface ServerQueryExecutor {
 
     /**
-     * Executes a query and returns {@code ResultSet} for the client-side
+     * Executes a query and returns {@code ResultSet} for the client-side.
      * 
      * @param clientEvent contains all info about the request asked by the client
      *                    side
