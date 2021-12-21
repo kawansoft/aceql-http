@@ -258,7 +258,7 @@ Call the `aceql-server` script to display the AceQL version:
 It will display a line with all version info, like:
 
 ```
-AceQL HTTP Community v10.0 - 20-Dec-2021
+AceQL HTTP Community v10.0 - 21-Dec-2021
 ```
 
 
@@ -401,6 +401,7 @@ AceQL provides several built-in (and ready to use without any coding)  SQL Firew
 | SQL Firewall Manager Name   | Details                                                      |
 | --------------------------- | ------------------------------------------------------------ |
 | `CsvRulesManager`           | Manager that applies rules written in a CSV file. (See below). |
+| `CsvRulesManagerNoReload`   | Firewall manager that extends  `CsvRulesManager`, the only change is to prohibit reloading rules when the CSV file is updated. |
 | `DenyDclManager`            | Manager that denies any DCL (Data Control Language) call.    |
 | `DenyDdlManager`            | Manager that denies any DDL (Data Definition Language) call. |
 | `DenyExecuteUpdateManager`  | Manager that denies any update of the database. (The database will be accessed in read only mode). |
@@ -968,7 +969,7 @@ It will display a JSON string and should display a status of `"OK"` and the curr
 ```json
 {
     "status": "OK",
-    "version": "AceQL HTTP v10.0 - 20-Dec-2021"
+    "version": "AceQL HTTP v10.0 - 21-Dec-2021"
 }         
 ```
 
