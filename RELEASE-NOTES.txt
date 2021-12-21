@@ -31,7 +31,7 @@ AceQL HTTP Version 10.0 - 21-Dec-2021
 What's New: 
 - The CsvRulesManager now reload all rules if the CSV is updated.
 - The new CsvRulesManagerNoReload SqlFirewallManager implementation
-  works the same as CsvRulesManager, but prohibit the reloading of
+  works the same as CsvRulesManager, but prohibits the reloading of
   the rules if the CSV file is updated. 
 - SqlActionEvent has been renamed to SqlEvent and moved to
   org.kawanfw.sql.api.server package. 
@@ -39,11 +39,9 @@ What's New:
 - SqlEvent.getParameterStringValues() allows to get the list
   of parameters object values casted to string. 
 - The SqlFirewallManager APIs have been refactored to limit the 
-  parameters. The new SQLEvent is used forthis. 
+  number of parameters to some methods. The new SqlEvent class is used 
+  for this. 
 - Tomcat base libraries have been upgraded to 9.0.56.
-  
-- The new ServerQueryExecutor interface allows to create server classes
-  that return directly ResultSet to the client side.
 
 Bugs fixed:
 - org.kawanfw.sql.api.server.StatementAnalyzerUtil was public instead
