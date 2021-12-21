@@ -37,7 +37,7 @@ public class CsvRulesManagerNoReload extends CsvRulesManager {
      * Constructor.
      */
     public CsvRulesManagerNoReload() {
-	super.allowReload = true;
+	super.allowReload = false;
     }
 
 }
