@@ -59,14 +59,14 @@ public class ClientEvent {
     /**
      * Returns the client username that asked to execute the server query.
      * 
-     * @return the client username that asked to execute the server query.
+     * @return the client username that asked to execute the server query
      */
     public String getUsername() {
 	return username;
     }
 
     /**
-     * Returns the database name
+     * Returns the database name.
      * 
      * @return the database name
      */
@@ -75,7 +75,7 @@ public class ClientEvent {
     }
 
     /**
-     * Returns the IP addresse of the client user
+     * Returns the IP address of the client user.
      * 
      * @return the ipAddress of the client user
      */
@@ -84,7 +84,7 @@ public class ClientEvent {
     }
 
      /**
-     * Returns the parameter values to pass to the server query
+     * Returns the parameter values to pass to the server query.
      * 
      * @return the parameter values to pass to the server query
      */
@@ -93,7 +93,7 @@ public class ClientEvent {
     }
 
     /**
-     * Returns the parameter String values
+     * Returns the parameter String values.
      * 
      * @return the parameter String values
      */
@@ -109,7 +109,7 @@ public class ClientEvent {
     }
 
     /**
-     * Transforms the Object parameters values into strings
+     * Transforms the Object parameters values into strings.
      * 
      * @param parameterValues the Object parameter values
      * @return the converted String parameter values

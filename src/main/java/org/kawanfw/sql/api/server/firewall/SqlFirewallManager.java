@@ -128,10 +128,10 @@ public interface SqlFirewallManager {
      * 
      * @param sqlEvent   the SQL event asked by the client side. Contains all info
      *                   about the SQL call (client username, database name, IP
-     *                   Address of the client, and SQL statement details).
+     *                   Address of the client, and SQL statement details)
      * @param connection The current SQL/JDBC <code>Connection</code>
      * @return <code>true</code> if the analyzed statement or prepared statement is
-     *         validated and authorized to run, else <code>false</code>.
+     *         validated and authorized to run, else <code>false</code>
      *         <p>
      * @throws IOException  if an IOException occurs
      * @throws SQLException if a SQLException occurs
@@ -146,7 +146,7 @@ public interface SqlFirewallManager {
      * @param database   the database name as defined in the JDBC URL field
      * @param connection The current SQL/JDBC <code>Connection</code>
      * @return <code>true</code> if the user has the right call a database update
-     *         statement.
+     *         statement
      *
      * @throws IOException  if an IOException occurs
      * @throws SQLException if a SQLException occurs
@@ -162,7 +162,7 @@ public interface SqlFirewallManager {
      * @param database   the database name as defined in the JDBC URL field
      * @param connection The current SQL/JDBC <code>Connection</code>
      * @return <code>true</code> if the user has the right call a database update
-     *         statement.
+     *         statement
      *
      * @throws IOException  if an IOException occurs
      * @throws SQLException if a SQLException occurs
