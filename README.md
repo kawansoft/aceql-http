@@ -6,7 +6,7 @@
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/d14142d5d6f04ba891d505e2e47b417d)](https://www.codacy.com/gh/kawansoft/aceql-http?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=kawansoft/aceql-http&amp;utm_campaign=Badge_Grade)
 ![GitHub contributors](https://img.shields.io/github/contributors/kawansoft/aceql-http)
 
-# AceQL HTTP v10.0   - December 20,  2021
+# AceQL HTTP v10.0   - December 21,  2021
 # Server Installation and Configuration Guide  
 
 <img src="https://docs.aceql.com/favicon.png" alt="AceQL HTTP Icon"/> 

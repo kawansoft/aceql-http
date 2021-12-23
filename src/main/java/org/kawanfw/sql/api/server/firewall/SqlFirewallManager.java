@@ -95,7 +95,7 @@ public interface SqlFirewallManager {
      * @param username   the client username to check the rule for
      * @param database   the database name as defined in the JDBC URL field
      * @param connection The current SQL/JDBC <code>Connection</code>
-     * @return <code>true</code> if the user has the right to call the Metada Query
+     * @return <code>true</code> if the user has the right to call the Metadata Query
      *         API, else <code>false</code>
      * @throws IOException  if an IOException occurs
      * @throws SQLException if a SQLException occurs
