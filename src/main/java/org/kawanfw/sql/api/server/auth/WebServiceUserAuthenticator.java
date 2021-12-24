@@ -53,7 +53,7 @@ import org.kawanfw.sql.util.Tag;
  * A concrete {@link UserAuthenticator} that allows zero-code remote client
  * {@code (username, password)} authentication against a Web service. <br>
  * <br>
- * The URL of the Web service is define in
+ * The URL of the Web service is defined in
  * {@code the webServiceUserAuthenticator.url} in the
  * {@code aceql-server.properties} file. <br>
  * <br>
