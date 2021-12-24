@@ -401,7 +401,7 @@ AceQL provides several built-in (and ready to use without any coding)  SQL Firew
 | SQL Firewall Manager Name   | Details                                                      |
 | --------------------------- | ------------------------------------------------------------ |
 | `CsvRulesManager`           | Manager that applies rules written in a CSV file. (See below). |
-| `CsvRulesManagerNoReload`   | Firewall manager that extends  `CsvRulesManager`, the only change is to prohibit reloading rules when the CSV file is updated. |
+| `CsvRulesManagerNoReload`   | Manager that extends  `CsvRulesManager`, the only change is to prohibit reloading rules when the CSV file is updated. |
 | `DenyDclManager`            | Manager that denies any DCL (Data Control Language) call.    |
 | `DenyDdlManager`            | Manager that denies any DDL (Data Definition Language) call. |
 | `DenyExecuteUpdateManager`  | Manager that denies any update of the database. (The database will be accessed in read only mode). |
