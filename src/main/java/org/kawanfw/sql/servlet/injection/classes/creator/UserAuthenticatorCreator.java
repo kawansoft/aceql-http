@@ -69,9 +69,9 @@ public class UserAuthenticatorCreator {
 
 	    String theUserAuthenticatorClassNameNew = getNameWithPackage(theUserAuthenticatorClassName);
 
-	    Class<?> c = Class.forName(theUserAuthenticatorClassNameNew);
-	    Constructor<?> constructor = c.getConstructor();
-	    userAuthenticator = (UserAuthenticator) constructor.newInstance();
+	    Class<?> clazz = Class.forName(theUserAuthenticatorClassNameNew);
+	    Constructor<?> ctr = clazz.getConstructor();
+	    userAuthenticator = (UserAuthenticator) ctr.newInstance();
 	    userAuthenticatorClassName = theUserAuthenticatorClassNameNew;
 	} else {
 	    userAuthenticator = new DefaultUserAuthenticator();

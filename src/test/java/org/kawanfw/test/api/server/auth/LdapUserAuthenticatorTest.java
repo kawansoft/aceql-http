@@ -52,7 +52,7 @@ public class LdapUserAuthenticatorTest {
 	LdapUserAuthenticator ldapUserAuthenticator = new LdapUserAuthenticator();
 
 	boolean logged = ldapUserAuthenticator.login(user, password.toCharArray(), "database", "10.0.0.10");
-	System.out.println(new Date() + " LdapUserAuthenticator logged: " + logged);
+	System.out.println(new Date() + " MyLdapUserAuthenticator logged: " + logged);
     }
 
     /**

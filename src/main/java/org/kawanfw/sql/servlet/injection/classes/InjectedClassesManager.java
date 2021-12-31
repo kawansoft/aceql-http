@@ -300,7 +300,7 @@ public class InjectedClassesManager {
     /**
      * loads requestHeadersAuthenticator.
      * 
-     * @param injectedClassesBuilder TODO
+     * @param injectedClassesBuilder 
      *
      * @throws ClassNotFoundException
      * @throws NoSuchMethodException

@@ -29,9 +29,9 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 /**
- * A concrete and unsafe {@link UserAuthenticator} that always grant access to
+ * A concrete and unsafe {@code UserAuthenticator} that always grant access to
  * remote client users. <br>
- * This class will be automatically loaded if no {@code UserAuthenticator} has
+ * This class will be automatically loaded if no {@link UserAuthenticator} has
  * been declared in the {@code aceql-server.properties} file.
  *
  * @author Nicolas de Pomereu
@@ -41,7 +41,7 @@ import java.sql.SQLException;
 public class DefaultUserAuthenticator implements UserAuthenticator {
 
     /**
-     * @return <code>true</code>. (Client is always granted access).
+     * @return true. (Client is always granted access).
      */
     @Override
     public boolean login(String username, char[] password, String database, String ipAddress)
