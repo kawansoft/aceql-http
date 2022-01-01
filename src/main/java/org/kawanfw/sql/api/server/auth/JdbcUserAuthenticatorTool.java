@@ -36,7 +36,7 @@ import org.kawanfw.sql.api.util.auth.JdbcUserAuthenticatorUtil;
 import org.kawanfw.sql.servlet.injection.properties.PropertiesFileUtil;
 
 /**
- * Utility class that allows to generate to hashed/encrypted passwords.
+ * Tooling class that allows to generate to hashed/encrypted passwords.
  * 
  * @author Nicolas de Pomereu
  *
