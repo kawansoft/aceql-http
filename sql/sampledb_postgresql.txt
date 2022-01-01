@@ -3,10 +3,10 @@
 -- Sampledb SQL database for AceQL usage tested with:
 --  PostgreSQL 8.4.1+,
 
-CREATE TABLE user_login
+CREATE TABLE users
 (               
-  username              varchar(255)    not null,     
-  hash_password         varchar(40)     not null,
+  username              varchar(300)    not null,     
+  encrypted_password    varchar(300)    not null,
         PRIMARY KEY (username)
 );
 
@@ -85,10 +85,4 @@ CREATE TABLE documentation
          PRIMARY KEY(item_id)
 );
 
---
--- Init the user_login table with a (login, hashed password)
---
-
-insert into user_login values ('username', '5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8');
-insert into user_login values ('MyUsername', 'eabbec6f31804eb968e2faeaaef150546a595fc3');
  

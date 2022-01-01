@@ -50,7 +50,7 @@ import org.kawanfw.sql.servlet.injection.properties.PropertiesFileUtil;
 import org.kawanfw.sql.util.Tag;
 
 /**
- * A concrete {@link UserAuthenticator} that allows zero-code remote client
+ * A concrete {@code UserAuthenticator} that allows zero-code remote client
  * {@code (username, password)} authentication against a Web service. <br>
  * <br>
  * The URL of the Web service is defined in
@@ -69,6 +69,7 @@ import org.kawanfw.sql.util.Tag;
  * </ul></li>
  * </ul>
  *
+ * @see UserAuthenticator
  * @author Nicolas de Pomereu
  * @since 5.0
  */

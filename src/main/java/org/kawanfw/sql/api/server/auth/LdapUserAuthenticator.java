@@ -45,13 +45,14 @@ import org.kawanfw.sql.servlet.injection.properties.PropertiesFileUtil;
 import org.kawanfw.sql.util.Tag;
 
 /**
- * A concrete {@link UserAuthenticator} that allows zero-code remote client
+ * A concrete {@code UserAuthenticator} that allows zero-code remote client
  * {@code (username, password)} authentication against a LDAP server. <br>
  * <br>
  * The LDAP server that authenticates the users is defined in the
  * {@code ldapUserAuthenticator.url} property in the
  * {@code aceql-server.properties} file.
  *
+ * @see UserAuthenticator
  * @author Nicolas de Pomereu
  * @since 5.0
  */

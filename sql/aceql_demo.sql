@@ -5,10 +5,10 @@
 -- Change the type of the following columns according to your database:
 -- ==> product_image.image      
 
-CREATE TABLE user_login
+CREATE TABLE users
 (               
-  username              varchar(255)    not null,     
-  hash_password         varchar(40)     not null,
+  username              varchar(300)    not null,     
+  encrypted_password    varchar(300)    not null,
         PRIMARY KEY (username)
 );
 

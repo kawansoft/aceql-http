@@ -40,7 +40,7 @@ import org.kawanfw.sql.util.SqlTag;
 import org.kawanfw.sql.version.Version;
 
 /**
- * Extract and build the parameters for the Web Serer start/stop.
+ * Extract and build the parameters for the Web Server start/stop.
  * @author Nicolas de Pomereu
  *
  */
