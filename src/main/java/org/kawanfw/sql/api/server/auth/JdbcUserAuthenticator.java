@@ -52,7 +52,8 @@ import org.kawanfw.sql.util.SqlTag;
  * The request that is executed is defined in the
  * {@code jdbcUserAuthenticator.authenticationQuery} property in the
  * {@code aceql-server.properties} file. <br>
- * <br>The default SQL table to create and populate is defined by the
+ * <br>
+ * The default SQL table to create and populate is defined by the
  * {@code jdbcUserAuthenticator.authenticationQuery} value:
  * <code>SELECT encrypted_password FROM users WHERE username = ?</code> ans is
  * thus in the format :
