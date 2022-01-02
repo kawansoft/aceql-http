@@ -82,9 +82,14 @@ CREATE TABLE users
  * </ul>
  * Per default, if theses 3 previous properties are not set, password contained
  * in users table must be encrypted with SHA-256 (with no supplemental
- * iterations and no salt).
+ * iterations and no salt). <br>
+ * <br>
+ * The {@link JdbcPasswordEncryptor} tooling class is provided for generating
+ * encrypted passwords from their clear value. <br>
+ * <br>
  * 
  * @see UserAuthenticator
+ * @see JdbcPasswordEncryptor
  * @author Nicolas de Pomereu
  * @since 10.1
  */
@@ -130,6 +135,11 @@ public class JdbcUserAuthenticator implements UserAuthenticator {
 
 	    try {
 		String encryptedPassword = getEncryptedPassword(authenticationQuery, username, connection);
+
+		if (encryptedPassword == null) {
+		    return false;
+		}
+
 		return passwordEncryptor.checkPassword(new String(password), encryptedPassword.toLowerCase());
 	    } catch (SQLException exception) {
 		throw new SQLException(SqlTag.USER_CONFIGURATION

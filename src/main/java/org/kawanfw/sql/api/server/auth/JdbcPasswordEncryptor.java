@@ -67,8 +67,8 @@ import org.kawanfw.sql.version.Version;
  * <ul>
  * <li>Open a command line on Windows or Linux/Bash.</li>
  * <li>{@code cd <installation-directory>/AceQL/bin}</li>
- * <li>Windows: run {@code jdbc_password_encryptor.bat -help}.</li>
- * <li>Linux: run {@code jdbc_password_encryptor -help}.</li>
+ * <li>Windows: run {@code jdbc_password_encryptor.bat -help}</li>
+ * <li>Linux: run {@code jdbc_password_encryptor -help}</li>
  * </ul>
  * 
  * @author Nicolas de Pomereu
