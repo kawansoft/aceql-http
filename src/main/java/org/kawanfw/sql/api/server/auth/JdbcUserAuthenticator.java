@@ -37,7 +37,7 @@ import java.util.Set;
 
 import org.jasypt.util.password.ConfigurablePasswordEncryptor;
 import org.kawanfw.sql.api.server.DatabaseConfigurator;
-import org.kawanfw.sql.api.util.auth.JdbcUserAuthenticatorUtil;
+import org.kawanfw.sql.api.util.auth.ConfigurablePasswordEncryptorUtil;
 import org.kawanfw.sql.servlet.injection.classes.InjectedClasses;
 import org.kawanfw.sql.servlet.injection.classes.InjectedClassesStore;
 import org.kawanfw.sql.servlet.injection.properties.PropertiesFileStore;
@@ -55,7 +55,7 @@ import org.kawanfw.sql.util.SqlTag;
  * <br>
  * The default SQL table to create and populate is defined by the
  * {@code jdbcUserAuthenticator.authenticationQuery} value:
- * <code>SELECT encrypted_password FROM users WHERE username = ?</code> ans is
+ * <code>SELECT encrypted_password FROM users WHERE username = ?</code> and is
  * thus in the format :
  * 
  * <pre>
@@ -69,6 +69,10 @@ CREATE TABLE users
  * </code>
  * </pre>
  * 
+ * The database that contains the users table should be defined in the
+ * {@code aceql-server.properties} file with the property: <br>
+ * {@code jdbcUserAuthenticator.database} <br>
+ * <br>
  * The hash encryption algorithm, iterations & salt may be set using the
  * following properties:
  * <ul>
@@ -76,6 +80,9 @@ CREATE TABLE users
  * <li>{@code jdbcUserAuthenticator.hashIterations}
  * <li>{@code jdbcUserAuthenticator.salt}
  * </ul>
+ * Per default, if theses 3 previous properties are not set, password contained
+ * in users table must be encrypted with SHA-256 (with no supplemental
+ * iterations and no salt).
  * 
  * @see UserAuthenticator
  * @author Nicolas de Pomereu
@@ -84,6 +91,7 @@ CREATE TABLE users
 public class JdbcUserAuthenticator implements UserAuthenticator {
 
     private Properties properties = null;
+    private ConfigurablePasswordEncryptor passwordEncryptor;
 
     /*
      * (non-Javadoc)
@@ -104,7 +112,7 @@ public class JdbcUserAuthenticator implements UserAuthenticator {
 
 	String authenticationQuery = properties.getProperty("jdbcUserAuthenticator.authenticationQuery");
 	if (authenticationQuery == null || authenticationQuery.isEmpty()) {
-	    authenticationQuery = JdbcUserAuthenticatorUtil.DEFAULT_AUTHENTICATION_QUERY;
+	    authenticationQuery = ConfigurablePasswordEncryptorUtil.DEFAULT_AUTHENTICATION_QUERY;
 	}
 
 	String authenticationDatabase = properties.getProperty("jdbcUserAuthenticator.database");
@@ -116,19 +124,17 @@ public class JdbcUserAuthenticator implements UserAuthenticator {
 		.get(authenticationDatabase);
 	try (Connection connection = databaseConfigurator.getConnection(database);) {
 
-	    ConfigurablePasswordEncryptor passwordEncryptor = JdbcUserAuthenticatorUtil
-		    .getConfigurablePasswordEncryptor(properties);
-
-	    String encryptedPassword = null;
+	    if (passwordEncryptor == null) {
+		passwordEncryptor = ConfigurablePasswordEncryptorUtil.getConfigurablePasswordEncryptor(properties);
+	    }
 
 	    try {
-		encryptedPassword = getEncryptedPassword(authenticationQuery, username, connection);
+		String encryptedPassword = getEncryptedPassword(authenticationQuery, username, connection);
+		return passwordEncryptor.checkPassword(new String(password), encryptedPassword.toLowerCase());
 	    } catch (SQLException exception) {
 		throw new SQLException(SqlTag.USER_CONFIGURATION
 			+ " The dbcUserAuthenticator.authenticationQuery triggers an SQLException: " + exception);
 	    }
-
-	    return passwordEncryptor.checkPassword(new String(password), encryptedPassword.toLowerCase());
 	}
 
     }

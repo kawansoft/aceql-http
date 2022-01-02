@@ -35,7 +35,7 @@ import org.jasypt.salt.StringFixedSaltGenerator;
 import org.jasypt.util.password.ConfigurablePasswordEncryptor;
 import org.kawanfw.sql.util.SqlTag;
 
-public class JdbcUserAuthenticatorUtil {
+public class ConfigurablePasswordEncryptorUtil {
 
     public static final String DEFAULT_AUTHENTICATION_QUERY = "SELECT encrypted_password FROM users WHERE username = ?";
     public static final int DEFAULT_HASH_ITERATIONS = 1;
@@ -65,15 +65,15 @@ public class JdbcUserAuthenticatorUtil {
 	 */
 
 	Objects.requireNonNull(properties, "properties cannot be null!");
-	
+
 	String hashAlgorithm = properties.getProperty("jdbcUserAuthenticator.hashAlgorithm");
 	if (hashAlgorithm == null || hashAlgorithm.isEmpty()) {
-	    hashAlgorithm = JdbcUserAuthenticatorUtil.DEFAULT_HASH_ALGORITHM;
+	    hashAlgorithm = ConfigurablePasswordEncryptorUtil.DEFAULT_HASH_ALGORITHM;
 	}
 
 	String hashIterationsStr = properties.getProperty("jdbcUserAuthenticator.hashIterations");
 	if (hashIterationsStr == null || hashIterationsStr.isEmpty()) {
-	    hashIterationsStr = "" + JdbcUserAuthenticatorUtil.DEFAULT_HASH_ITERATIONS;
+	    hashIterationsStr = "" + ConfigurablePasswordEncryptorUtil.DEFAULT_HASH_ITERATIONS;
 	}
 
 	if (!StringUtils.isNumeric(hashIterationsStr)) {
@@ -83,7 +83,7 @@ public class JdbcUserAuthenticatorUtil {
 
 	String salt = properties.getProperty("jdbcUserAuthenticator.salt");
 	if (salt == null || salt.isEmpty()) {
-	    salt = JdbcUserAuthenticatorUtil.DEFAULT_SAULT;
+	    salt = ConfigurablePasswordEncryptorUtil.DEFAULT_SAULT;
 	}
 
 	ConfigurablePasswordEncryptor passwordEncryptor = new ConfigurablePasswordEncryptor();

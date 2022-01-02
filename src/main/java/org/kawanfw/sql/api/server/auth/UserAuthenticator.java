@@ -34,8 +34,10 @@ import java.sql.SQLException;
  * Following built-in and ready to use classes are provided. No coding is
  * required. See each Javadoc for more details: <br>
  * <ul>
- * <li>{@link MyLdapUserAuthenticator}: authenticates the remote client
- * (username, password) against a LDAP server.</li>
+ * <li>{@link JdbcUserAuthenticator}: authenticates the remote client (username,
+ * password) against a SQL table using a JDBC query.</li>
+ * <li>{@link LdapUserAuthenticator}: authenticates the remote client (username,
+ * password) against a LDAP server.</li>
  * <li>{@link SshUserAuthenticator}: authenticates the remote client (username,
  * password) against a SSH server.</li>
  * <li>{@link WebServiceUserAuthenticator}: authenticates the remote client
@@ -43,8 +45,6 @@ import java.sql.SQLException;
  * <li>{@link WindowsUserAuthenticator}: authenticates the remote client
  * (username, password) against the Windows server on which the AceQL server is
  * running.</li>
- *
- *
  * </ul>
  *
  * @author Nicolas de Pomereu
