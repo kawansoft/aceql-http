@@ -28,9 +28,8 @@ import java.io.File;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.GnuParser;
+import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Option;
-import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.UnrecognizedOptionException;
@@ -44,7 +43,6 @@ import org.kawanfw.sql.version.Version;
  * @author Nicolas de Pomereu
  *
  */
-@SuppressWarnings("deprecation")
 public class ParametersExtractor {
 
     String[] args;
@@ -75,7 +73,7 @@ public class ParametersExtractor {
     private void treat() throws ParseException {
 	Options options = createOptions();
 
-	CommandLineParser parser = new GnuParser();
+	CommandLineParser parser = new DefaultParser();
 
 	CommandLine cmd = null;
 	cmd = chekParameters(options, parser);
@@ -196,10 +194,11 @@ public class ParametersExtractor {
 
 	String propertiesOptionMesssage = getPropertiesOptionMessage();
 
+	/*
 	@SuppressWarnings("static-access")
 	Option propertiesOption = OptionBuilder.withArgName("file").hasArg().withDescription(propertiesOptionMesssage)
 		.create("properties");
-
+		
 	@SuppressWarnings("static-access")
 	Option hostOption = OptionBuilder.withArgName("hostname").hasArg().withDescription("hostname of the Web server")
 		.create("host");
@@ -207,7 +206,26 @@ public class ParametersExtractor {
 	@SuppressWarnings("static-access")
 	Option portOption = OptionBuilder.withArgName("port number").hasArg()
 		.withDescription("port number of the Web server. Defaults to " + WebServerApi.DEFAULT_PORT)
-		.create("port");
+		.create("port");	
+	*/
+	
+	Option propertiesOption  = Option.builder("properties")
+                .argName("file")
+                .hasArg()
+                .desc(propertiesOptionMesssage)
+                .build();
+	
+	Option hostOption  = Option.builder("host")
+                .argName("hostname")
+                .hasArg()
+                .desc("hostname of the Web server")
+                .build();
+	
+	Option portOption  = Option.builder("port")
+                .argName("port number")
+                .hasArg()
+                .desc("port number of the Web server. Defaults to " + WebServerApi.DEFAULT_PORT)
+                .build();
 
 	options.addOption(propertiesOption);
 	options.addOption(hostOption);

@@ -36,12 +36,12 @@ import org.kawanfw.sql.api.util.auth.JdbcUserAuthenticatorUtil;
 import org.kawanfw.sql.servlet.injection.properties.PropertiesFileUtil;
 
 /**
- * Tooling class that allows to generate to hashed/encrypted passwords.
+ * Tooling class that allows to generate to hashed/encrypted passwords for {@code JdbcUserAuthenticator}.
  * 
  * @author Nicolas de Pomereu
  *
  */
-public class JdbcUserAuthenticatorTool {
+public class JdbcUserAuthPasswordEncryptor {
 
     private ConfigurablePasswordEncryptor passwordEncryptor;
 
@@ -52,7 +52,7 @@ public class JdbcUserAuthenticatorTool {
      * @throws IOException	if an I/O Exception occurs
      * @throws DatabaseConfigurationException if a configuration Exception occurs
      */
-    public JdbcUserAuthenticatorTool(File propertiesFile) throws DatabaseConfigurationException, IOException {
+    public JdbcUserAuthPasswordEncryptor(File propertiesFile) throws DatabaseConfigurationException, IOException {
 	Objects.requireNonNull(propertiesFile, "propertiesFile cannot be null!");
 	if (!propertiesFile.exists()) {
 	    throw new FileNotFoundException("The file does not exist: " + propertiesFile);
