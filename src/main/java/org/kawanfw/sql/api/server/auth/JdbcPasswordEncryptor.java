@@ -135,6 +135,17 @@ public class JdbcPasswordEncryptor {
 	    System.exit(1);
 	}
 
+	if (cmd.hasOption("help")) {
+	    PasswordEncryptorUtil.printUsage(options);
+	    System.exit(1);
+	}
+
+	if (cmd.hasOption("version")) {
+	    System.out.println(Version.getVersion());
+	    System.out.println();
+	    System.exit(1);
+	}
+	
 	String fileStr = null;
 	if (cmd.hasOption("properties")) {
 	    fileStr = cmd.getOptionValue("properties");
@@ -153,16 +164,7 @@ public class JdbcPasswordEncryptor {
 	    System.exit(1);
 	}
 
-	if (cmd.hasOption("help")) {
-	    PasswordEncryptorUtil.printUsage(options);
-	    System.exit(1);
-	}
 
-	if (cmd.hasOption("version")) {
-	    System.out.println(Version.getVersion());
-	    System.out.println();
-	    System.exit(1);
-	}
 
 	File file = new File(fileStr);
 	JdbcPasswordEncryptor jdbcPasswordEncryptor = new JdbcPasswordEncryptor(file);
