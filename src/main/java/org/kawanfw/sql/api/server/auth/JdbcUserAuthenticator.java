@@ -53,10 +53,10 @@ import org.kawanfw.sql.util.SqlTag;
  * {@code jdbcUserAuthenticator.authenticationQuery} property in the
  * {@code aceql-server.properties} file. <br>
  * <br>
- * The default SQL table to create and populate is defined by the
+ * The default SQL table to create and populate is thus defined by the
  * {@code jdbcUserAuthenticator.authenticationQuery} value:
  * <code>SELECT encrypted_password FROM users WHERE username = ?</code> and is
- * thus in the format :
+ * thus in the format:
  * 
  * <pre>
  * <code>
@@ -73,14 +73,14 @@ CREATE TABLE users
  * {@code aceql-server.properties} file with the property: <br>
  * {@code jdbcUserAuthenticator.database} <br>
  * <br>
- * The hash encryption algorithm, iterations & salt may be set using the
+ * The hash encryption algorithm, iterations and salt may be set using the
  * following properties:
  * <ul>
  * <li>{@code jdbcUserAuthenticator.hashAlgorithm}
  * <li>{@code jdbcUserAuthenticator.hashIterations}
  * <li>{@code jdbcUserAuthenticator.salt}
  * </ul>
- * Per default, if theses 3 previous properties are not set, password contained
+ * Per default, if these 3 previous properties are not set: passwords contained
  * in users table must be encrypted with SHA-256 (with no supplemental
  * iterations and no salt). <br>
  * <br>

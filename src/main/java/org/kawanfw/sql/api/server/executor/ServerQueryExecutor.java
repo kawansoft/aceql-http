@@ -36,7 +36,7 @@ import java.sql.SQLException;
  * This is a a kind of <i>AceQL stored procedure</i> written in Java. <br>
  * 
  * @author Nicolas de Pomereu
- * @since 9.1
+ * @since 10.1
  *
  */
 public interface ServerQueryExecutor {
