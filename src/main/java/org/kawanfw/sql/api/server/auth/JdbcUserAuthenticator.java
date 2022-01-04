@@ -53,7 +53,7 @@ import org.kawanfw.sql.util.SqlTag;
  * {@code jdbcUserAuthenticator.authenticationQuery} property in the
  * {@code aceql-server.properties} file. <br>
  * <br>
- * The default SQL table to create and populate is thus defined by the
+ * The default SQL table to create and populate is defined by the
  * {@code jdbcUserAuthenticator.authenticationQuery} value:
  * <code>SELECT encrypted_password FROM users WHERE username = ?</code> and is
  * thus in the format:

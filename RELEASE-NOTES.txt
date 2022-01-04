@@ -35,7 +35,7 @@ What's New:
 - The new ServerQueryExecutor allows future versions of C#, Python, 
   and Java JDBC Driver client versions to call a server Java program 
   that returns a ResultSet. See ServerQueryExecutor Javadoc for more info.
-  This will be documented later in the future client versions 
+  This will be fully documented later in the future client versions 
   to be released in January 2022.
   
 
