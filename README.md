@@ -356,14 +356,15 @@ Authentication is defined through the injection of  an "User Authenticator", a J
 
 The `login` method of the class is called when a remote client first connects to the AceQL and pass it's credentials (username and password). If the `login` method returns `true`, user access is granted, otherwise the user access is denied.
 
-AceQL provides four built-in (and ready to use without any coding) User Authenticators:
+AceQL provides five built-in (and ready to use without any coding) User Authenticators:
 
-| User Authenticator Name       | Role                                                         | Parameters                                    |
-| ----------------------------- | ------------------------------------------------------------ | --------------------------------------------- |
-| `LdapUserAuthenticator`       | Authenticates the remote client (username, password) against a LDAP server. | URL of the LDAP server                        |
-| `SshUserAuthenticator`        | Authenticates the remote client (username, password) against a SSH server. | IP or host & port of the SSH server           |
-| `WebServiceUserAuthenticator` | Authenticates the remote client (username, password) against a Web service. (See below). | URL of the Web service  & connection timeout. |
-| `WindowsUserAuthenticator`    | Authenticates the remote client (username, password) against the Windows server on which the AceQL server is running. | The Windows domain (optional).                |
+| User Authenticator Name       | Role                                                         | Parameters                                                   |
+| ----------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| `JdbcUserAuthenticator`       | Authenticates the remote client (username, password) with a JDBC query against a SQL table. | database name, authentication query, hash algorithm, iterations and salt. |
+| `LdapUserAuthenticator`       | Authenticates the remote client (username, password) against a LDAP server. | URL of the LDAP server                                       |
+| `SshUserAuthenticator`        | Authenticates the remote client (username, password) against a SSH server. | IP or host & port of the SSH server                          |
+| `WebServiceUserAuthenticator` | Authenticates the remote client (username, password) against a Web service. (See below). | URL of the Web service  & connection timeout.                |
+| `WindowsUserAuthenticator`    | Authenticates the remote client (username, password) against the Windows server on which the AceQL server is running. | The Windows domain (optional).                               |
 
 Just select in the `aceql-server.properties` section the  `userAuthenticatorClassName` to use, and fill the required parameters.
 
