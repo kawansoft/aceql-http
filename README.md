@@ -180,7 +180,7 @@ The following environments are supported by KawanSoft in this version:
 
 | **Databases** - KawanSoft Free Support |
 | -------------------------------------- |
-| MariaDB  10.1+                         |
+| MariaDB  10.0+                         |
 | MySQL 5.5+                             |
 | PostgreSQL  9.0+                       |
 | Microsoft  SQL Server 2008 R2+         |
