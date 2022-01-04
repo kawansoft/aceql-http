@@ -28,6 +28,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
 import org.kawanfw.sql.api.server.auth.DefaultUserAuthenticator;
+import org.kawanfw.sql.api.server.auth.JdbcUserAuthenticator;
 import org.kawanfw.sql.api.server.auth.LdapUserAuthenticator;
 import org.kawanfw.sql.api.server.auth.SshUserAuthenticator;
 import org.kawanfw.sql.api.server.auth.UserAuthenticator;
@@ -42,8 +43,9 @@ public class UserAuthenticatorCreator {
 
     private static String[] PREDEFINED_CLASS_NAMES = {
 	    DefaultUserAuthenticator.class.getSimpleName(),
-	    SshUserAuthenticator.class.getSimpleName(),
+	    JdbcUserAuthenticator.class.getSimpleName(),
 	    LdapUserAuthenticator.class.getSimpleName(),
+	    SshUserAuthenticator.class.getSimpleName(),
 	    WebServiceUserAuthenticator.class.getSimpleName(),
 	    WindowsUserAuthenticator.class.getSimpleName() };
 
@@ -69,9 +71,9 @@ public class UserAuthenticatorCreator {
 
 	    String theUserAuthenticatorClassNameNew = getNameWithPackage(theUserAuthenticatorClassName);
 
-	    Class<?> c = Class.forName(theUserAuthenticatorClassNameNew);
-	    Constructor<?> constructor = c.getConstructor();
-	    userAuthenticator = (UserAuthenticator) constructor.newInstance();
+	    Class<?> clazz = Class.forName(theUserAuthenticatorClassNameNew);
+	    Constructor<?> ctr = clazz.getConstructor();
+	    userAuthenticator = (UserAuthenticator) ctr.newInstance();
 	    userAuthenticatorClassName = theUserAuthenticatorClassNameNew;
 	} else {
 	    userAuthenticator = new DefaultUserAuthenticator();

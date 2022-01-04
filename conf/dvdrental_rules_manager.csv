@@ -1,4 +1,4 @@
 username;table;delete;insert;select;update;optional comments
-public;all;false;false;true;false;SELECTonly is allowed on all tables for all users
+public;all;false;false;true;false;SELECT only is allowed on all tables for all users
 user1;actor;true;true;true;true;actor table can be updated/deleted
 user1;film_actor;true;true;true;true;film_actor table can be updated/deleted

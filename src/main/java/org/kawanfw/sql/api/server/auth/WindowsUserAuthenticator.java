@@ -40,12 +40,13 @@ import org.kawanfw.sql.util.Tag;
 import waffle.windows.auth.impl.WindowsAuthProviderImpl;
 
 /**
- * A concrete {@link UserAuthenticator} that allows zero-code remote client
+ * A concrete {@code UserAuthenticator} that allows zero-code remote client
  * {@code (username, password)} authentication against the Windows machine on
  * which the AceQL instance is running. <br>
  * (There a no mandatory properties to define in the
  * {@code aceql-server.properties} file.)
  *
+ * @see UserAuthenticator
  * @author Nicolas de Pomereu
  * @since 5.0
  *

@@ -1,9 +1,10 @@
-CREATE TABLE user_login
+CREATE TABLE users
 (               
-  username              varchar(255)    not null,     
-  hash_password         varchar(40)     not null,
+  username              varchar(300)    not null,     
+  encrypted_password    varchar(300)    not null,
         PRIMARY KEY (username)
-)
+);
+
 
 
 CREATE TABLE banned_usernames
@@ -63,4 +64,8 @@ CREATE TABLE documentation
          PRIMARY KEY(item_id)
 );
 
-insert into user_login values ('login', '5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8')
+--
+-- Init the users table with a (username, encrypted_password)
+--
+
+insert into users values ('username', '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8');

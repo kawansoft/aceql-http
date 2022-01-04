@@ -144,6 +144,7 @@ public class TomcatStarter {
 	Properties properties = PropertiesFileUtil.getProperties(propertiesFile);
 
 	String tomcatLoggingLevel = properties.getProperty("tomcatLoggingLevel");
+	
 	String level = "SEVERE";
 	if (tomcatLoggingLevel != null && !tomcatLoggingLevel.isEmpty()) {
 	    level = tomcatLoggingLevel;
@@ -185,6 +186,7 @@ public class TomcatStarter {
 
 	tomcatAfterStart(tomcat, properties);
     }
+
 
     /**
      * @param tomcat

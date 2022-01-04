@@ -101,7 +101,7 @@ import org.kawanfw.sql.util.TimestampUtil;
  * disallow dynamic reloading, use a {@link CsvRulesManagerNoReload} implementation.
  * <br><br>
  * See an example of CSV file: <a href=
- * "https://docs.aceql.com/rest/soft/10.0/src/sampledb_rules_manager.csv">sampledb_rules_manager.csv</a>
+ * "https://docs.aceql.com/rest/soft/10.1/src/sampledb_rules_manager.csv">sampledb_rules_manager.csv</a>
  * <br>
  * <br>
  *

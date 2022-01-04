@@ -5,10 +5,10 @@
 -- Change the type of the following columns according to your database:
 -- ==> product_image.image      
 
-CREATE TABLE user_login
+CREATE TABLE users
 (               
-  username              varchar(255)    not null,     
-  hash_password         varchar(40)     not null,
+  username              varchar(300)    not null,     
+  encrypted_password    varchar(300)    not null,
         PRIMARY KEY (username)
 );
 
@@ -38,3 +38,9 @@ CREATE TABLE product_image
 
         PRIMARY KEY(product_id)
 );
+
+--
+-- Init the users table with a (username, encrypted_password)
+--
+
+insert into users values ('username', '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8');

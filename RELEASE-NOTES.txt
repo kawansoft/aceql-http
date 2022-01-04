@@ -25,6 +25,20 @@ AceQL HTTP is licensed through the GNU Lesser General Public License
 (LGPL v2.1).
 
 
+AceQL HTTP Version 10.1 - 04-Jan-2022
+-------------------------------------
+
+What's New: 
+- The new JdbcUserAuthenticator allows the client-side to authenticate
+  using a JDBC query against a SQL table. See JdbcUserAuthenticator
+  Javadoc and User Guide.
+- The new ServerQueryExecutor allows future versions of C#, Python, 
+  and Java JDBC Driver client versions to call a server Java program 
+  that returns a ResultSet. See ServerQueryExecutor Javadoc for more info.
+  This will be fully documented later in the future client versions 
+  to be released in January 2022.
+  
+
 AceQL HTTP Version 10.0 - 21-Dec-2021
 -------------------------------------
 
