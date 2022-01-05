@@ -40,7 +40,7 @@ $ curl --data-urlencode \
  https://www.acme.com:9443/aceql/session/mn7andp2tt049iaeaskr28j9ch/execute_query
 ```
 
-AceQL HTTP is authorized through an Open Source license: [AceQL Open Source License (LGPL v2.1)](http://www.aceql.com/rest/soft/licensing/AceQLOpenSourceLicense.txt).
+AceQL HTTP is authorized through an Open Source license: [AceQL Open Source License (LGPL v2.1)](https://docs.aceql.com/rest/soft/licensing/AceQLOpenSourceLicense.txt).
 
  The AceQL HTTP framework consists of:
 
@@ -48,7 +48,7 @@ AceQL HTTP is authorized through an Open Source license: [AceQL Open Source Lice
 
 - User configuration classes injected at runtime, these are server classes that ensure both security and configuration. Many built-in classes are provided and standard configuration may be done without any coding.
 
-- The AceQL Client SDKs for [C#](https://github.com/kawansoft/AceQL.Client2) ,  [Java](https://github.com/kawansoft/aceql-http-client-sdk) and [Python](https://github.com/kawansoft/aceql-http-client-python) that allow you to wrap AceQL HTTP API calls using fluent code: 
+- The AceQL Client SDKs for [C#](https://github.com/kawansoft/AceQL.Client2) ,  [Java](https://github.com/kawansoft/aceql-http-client-jdbc-driver) and [Python](https://github.com/kawansoft/aceql-http-client-python) that allow you to wrap AceQL HTTP API calls using fluent code: 
 
   - ```C#
     // C# AceQL Client Calls Sample 
@@ -657,10 +657,10 @@ From now on, you can read the [C# Client SDK User Guide](https://github.com/kawa
    <version>8.1</version>
    ```
 
-2. If you don’t use Maven: the [aceql-http-client-jdbc-driver-all-8.0.jar](https://docs.aceql.com/rest/soft_java_client/8.0/download/aceql-http-client-jdbc-driver-all-8.0.jar) file contains the SDK with all dependencies.
+2. If you don’t use Maven: the [aceql-http-client-jdbc-driver-all-8.1.jar](https://docs.aceql.com/rest/soft_java_client/8.1/download/aceql-http-client-jdbc-driver-all-8.1.jar) file contains the SDK with all dependencies.
 3. Create an `com.aceql.jdbc.commons.examples` package in your IDE.
 
-4. Download this Java source file: [MyRemoteConnection.java](https://docs.aceql.com/rest/soft_java_client/8.0/src/MyRemoteConnection.java). Then insert it in the package. 
+4. Download this Java source file: [MyRemoteConnection.java](https://docs.aceql.com/rest/soft_java_client/8.1/src/MyRemoteConnection.java). Then insert it in the package. 
 
 5. The  connection to the remote database is  created  using loading the `AceQLDriver` class  and passing the URL of the AceQL Servlet Manager of your configuration:
 
@@ -776,9 +776,9 @@ From now on, you can read the [C# Client SDK User Guide](https://github.com/kawa
    }
    ```
 
-The `selectCustomerAndOrderLog` method of [MyRemoteConnection.java](https://docs.aceql.com/rest/soft_java_client/8.0/src/MyRemoteConnection.java) displays back the inserted values.
+The `selectCustomerAndOrderLog` method of [MyRemoteConnection.java](https://docs.aceql.com/rest/soft_java_client/8.1/src/MyRemoteConnection.java) displays back the inserted values.
 
-From now on, you can read the AceQL Client JDBC Driver [User Guide](https://github.com/kawansoft/aceql-http-client-sdk/blob/master/README.md) or run through the [Javadoc](https://docs.aceql.com/rest/soft_java_client/8.0/javadoc).
+From now on, you can read the AceQL Client JDBC Driver [User Guide](https://github.com/kawansoft/aceql-http-client-sdk/blob/master/README.md) or run through the [Javadoc](https://docs.aceql.com/rest/soft_java_client/8.1/javadoc).
 
 ## Python Client SDK
 
