@@ -90,7 +90,7 @@ $ curl --data-urlencode \
  https://www.acme.com:9443/aceql/session/mn7andp2tt049iaeaskr28j9ch/execute_query
 ```
 
-AceQL HTTP is authorized through an Open Source license: [AceQL Open Source License (LGPL v2.1)](http://www.aceql.com/rest/soft/licensing/AceQLOpenSourceLicense.txt).
+AceQL HTTP is authorized through an Open Source license: [AceQL Open Source License (LGPL v2.1)](https://docs.aceql.com/rest/soft/licensing/AceQLOpenSourceLicense.txt).
 
  The AceQL HTTP framework consists of:
 
@@ -98,7 +98,7 @@ AceQL HTTP is authorized through an Open Source license: [AceQL Open Source Lice
 
 - Configuration Java classes injected at runtime. These are server classes that ensure both security and configuration. Many built-in classes are provided and standard configuration may be done without any coding.
 
-- The AceQL Client SDKs for [C#](https://github.com/kawansoft/AceQL.Client2) ,  [Java](https://github.com/kawansoft/aceql-http-client-sdk) and [Python](https://github.com/kawansoft/aceql-http-client-python) that allow you to wrap AceQL HTTP API calls using fluent code: 
+- The AceQL Client SDKs for [C#](https://github.com/kawansoft/AceQL.Client2) ,  [Java](https://github.com/kawansoft/aceql-http-client-jdbc-driver) and [Python](https://github.com/kawansoft/aceql-http-client-python) that allow you to wrap AceQL HTTP API calls using fluent code: 
 
   - ```C#
     // C# AceQL Client Calls Sample 
@@ -186,7 +186,7 @@ The following environments are supported by KawanSoft in this version:
 | Microsoft  SQL Server 2008 R2+         |
 | Oracle Database  11g Release 2+        |
 
-These databases are supported by KawanSoft only through [commercial support](https://www.aceql.com/jdbc-and-csharp-remote-sql-database-support.html):
+These databases are supported by KawanSoft only through [commercial support](https://www.aceql.com/jdbc-and-csharp-remote-sql-database-support/):
 
 | **Databases** - KawanSoft Commercial Support |
 | -------------------------------------------- |
@@ -463,7 +463,7 @@ The CSV file contains the rules for accessing the tables, with semicolon for sep
 - `all` value is allowed for `table` column and means any table. At execution time: If a rule with `all` returns true for a CSV column, the rule supersedes other specific rules declared for specific tables for the same CSV column. 
 
 
-Here is an example of a documented CSV File: [sampledb_rules_manager.csv](http://www.aceql.com/rest/soft/10.1/src/sampledb_rules_manager.csv).
+Here is an example of a documented CSV File: [sampledb_rules_manager.csv](https://docs.aceql.com/rest/soft/10.1/src/sampledb_rules_manager.csv).
 
 ### SSL Configuration Section
 
@@ -645,7 +645,7 @@ aceQLManagerServletCallName=aceql
 
 You may define your own preferred connection pool implementation, instead of using the default Tomcat JDBC Connection Pool.
 
-This is done through your own implementation of the [DatabaseConfigurator](http://www.aceql.com/rest/soft/10.1/javadoc/org/kawanfw/sql/api/server/DatabaseConfigurator.html) interface: overload the `DatabaseConfigurator.getConnection()` method in your concrete class implementation.
+This is done through your own implementation of the [DatabaseConfigurator](https://docs.aceql.com/rest/soft/10.1/javadoc/org/kawanfw/sql/api/server/DatabaseConfigurator.html) interface: overload the `DatabaseConfigurator.getConnection()` method in your concrete class implementation.
 
 Your concrete implementations is passed to the AceQL as properties of the **Database Configurators Section** in the `aceql-server.properties` file, as described in the section:
 
@@ -725,7 +725,7 @@ The default mechanism that builds an authentication session id is coded in the c
 
 [DefaultSessionConfigurator](https://docs.aceql.com/rest/soft/10.1/javadoc/org/kawanfw/sql/api/server/session/DefaultSessionConfigurator.html): 
 
-- Session ids are generated using a `SecureRandom` with the [SessionIdentifierGenerator](http://www.aceql.com/rest/soft/10.1/javadoc/org/kawanfw/sql/api/server/session/SessionIdentifierGenerator.html) class.
+- Session ids are generated using a `SecureRandom` with the [SessionIdentifierGenerator](https://docs.aceql.com/rest/soft/10.1/javadoc/org/kawanfw/sql/api/server/session/SessionIdentifierGenerator.html) class.
 - Session info (username, database) and session date/time creation are stored in a `HashMap`, whose key is the session id.
 - Session id is sent by client side at each  API call.  AceQL verifies that the `HashMap`  contains the username and that the session is not expired to grant access to the API execution.
 
@@ -812,7 +812,7 @@ Note that in this 9.0 version SQL transactions are not supported in stateless mo
 
 AceQL provides several built-in and ready to use SQL Firewall Managers, as described earlier in the  [SQL Firewall Managers Section](#sql-firewall-managers-section) chapter. You also may plug-in your own implementation or third party SQL firewalling tools. 
 
-The [SqlFirewallManager](http://www.aceql.com/rest/soft/10.1/javadoc/org/kawanfw/sql/api/server/firewall/SqlFirewallManager.html) interface allows you to code your own firewall rulesets or plug a third party software.
+The [SqlFirewallManager](https://docs.aceql.com/rest/soft/10.1/javadoc/org/kawanfw/sql/api/server/firewall/SqlFirewallManager.html) interface allows you to code your own firewall rulesets or plug a third party software.
 
 After coding you own `SqlFirewallManager` implementation, just declare the full class name in the `sqlFirewallManagerClassNames` property. Remember that SQL Firewall Managers may be chained: you may declare several classes.
 
