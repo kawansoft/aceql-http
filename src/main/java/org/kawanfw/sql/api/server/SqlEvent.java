@@ -24,9 +24,10 @@
  */
 package org.kawanfw.sql.api.server;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import org.kawanfw.sql.util.SqlEventUtil;
 
 /**
  * Allows to get all details of a SQL event asked by the client side.
@@ -135,7 +136,7 @@ public class SqlEvent {
      *         order, empty list for a (non prepared) statement
      */
     public List<String> getParameterStringValues() {
-	return toString(parameterValues);
+	return SqlEventUtil.toString(parameterValues);
     }
 
     
@@ -150,22 +151,8 @@ public class SqlEvent {
     @Override
     public String toString() {
 	return "ClientEvent [username=" + username + ", database=" + database + ", ipAddress=" + ipAddress + ", sql=" + sql
-		+ ", isPreparedStatement=" + isPreparedStatement + ", parameterValues=" + parameterValues
+		+ ", isPreparedStatement=" + isPreparedStatement + ", parameterValues=" + SqlEventUtil.toString(parameterValues) 
 		+ ", isMetadataQuery=" + isMetadataQuery + "]";
-    }
-
-    /**
-     * Transforms the Object parameters values into strings.
-     * 
-     * @param parameterValues the Object parameter values
-     * @return the converted String parameter values
-     */
-    private List<String> toString(List<Object> parameterValues) {
-	List<String> list = new ArrayList<>();
-	for (Object object : parameterValues) {
-	    list.add(String.valueOf(object));
-	}
-	return list;
     }
 
 }

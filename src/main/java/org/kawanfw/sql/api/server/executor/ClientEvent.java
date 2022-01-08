@@ -24,9 +24,10 @@
  */
 package org.kawanfw.sql.api.server.executor;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import org.kawanfw.sql.util.SqlEventUtil;
 
 /**
  * Allows to get all details of a {@link ServerQueryExecutor} call asked by the client side.
@@ -98,28 +99,14 @@ public class ClientEvent {
      * @return the parameter String values
      */
     public List<String> getParameterStringValues() {
-	return toString(parameterValues);
+	return SqlEventUtil.toString(parameterValues);
     }
 
     
     @Override
     public String toString() {
 	return "ClientEvent [username=" + username + ", database=" + database + ", ipAddress=" + ipAddress
-		+ ", parameterValues=" + parameterValues + "]";
-    }
-
-    /**
-     * Transforms the Object parameters values into strings.
-     * 
-     * @param parameterValues the Object parameter values
-     * @return the converted String parameter values
-     */
-    private List<String> toString(List<Object> parameterValues) {
-	List<String> list = new ArrayList<>();
-	for (Object object : parameterValues) {
-	    list.add(String.valueOf(object));
-	}
-	return list;
+		+ ", parameterValues=" + SqlEventUtil.toString(parameterValues) + "]";
     }
 
 }
