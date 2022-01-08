@@ -79,14 +79,23 @@ public class LdapUserAuthenticator implements UserAuthenticator {
 
 	String url = properties.getProperty("ldapUserAuthenticator.url");
 	Objects.requireNonNull(url, getInitTag() + "The ldapUserAuthenticator.url property cannot be null!");
-
+	
+	String securityAuth = properties.getProperty("ldapUserAuthenticator.securityAuthentication");
+	String securityProtocol = properties.getProperty("ldapUserAuthenticator.securityProtocol");
+	
 	// Set up the environment for creating the initial context
 	Hashtable<String, String> env = new Hashtable<>();
 	env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
 	env.put(Context.PROVIDER_URL, url);
 
+	if (securityAuth != null && ! securityAuth.isEmpty()) {
+	    env.put(Context.SECURITY_AUTHENTICATION, securityAuth);
+	}
+	if (securityProtocol != null && ! securityProtocol.isEmpty()) {
+	    env.put(Context.SECURITY_PROTOCOL, securityProtocol);
+	}
+
 	// Authenticate
-	// env.put(Context.SECURITY_AUTHENTICATION, "simple");
 	env.put(Context.SECURITY_PRINCIPAL, username);
 	env.put(Context.SECURITY_CREDENTIALS, new String(password));
 		
