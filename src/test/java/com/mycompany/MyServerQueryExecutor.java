@@ -35,7 +35,7 @@ import org.kawanfw.sql.api.server.executor.ClientEvent;
 import org.kawanfw.sql.api.server.executor.ServerQueryExecutor;
 
 /**
- * A query on sampledb database
+ * A query on sampledb database.
  * @author Nicolas de Pomereu
  *
  */
@@ -55,7 +55,7 @@ public class MyServerQueryExecutor implements ServerQueryExecutor {
 	preparedStatement.setInt(1, customerIdParam.intValue());
 	preparedStatement.execute();
 
-	ResultSet rs = preparedStatement.getResultSet();
+	ResultSet rs = preparedStatement.getResultSet(); // Do not close ResultSet
 	return rs;
     }
 
