@@ -85,11 +85,12 @@
 			<version>4.2</version>
 		</dependency>
 
-		<dependency>
-			<groupId>com.github.waffle</groupId>
-			<artifactId>waffle-jna</artifactId>
-			<version>3.0.0</version>
-		</dependency>
+        <dependency>
+            <groupId>com.github.waffle</groupId>
+            <artifactId>waffle-jna</artifactId>
+            <version>3.1.1</version>
+        </dependency>
+
 
 		<dependency>
 			<groupId>com.oracle.database.jdbc</groupId>

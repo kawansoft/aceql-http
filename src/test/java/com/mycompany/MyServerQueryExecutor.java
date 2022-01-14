@@ -22,7 +22,7 @@
  * Any modifications to this file must keep this entire header
  * intact.
  */
-package org.kawanfw.test.api.server.executor;
+package com.mycompany;
 
 import java.io.IOException;
 import java.sql.Connection;

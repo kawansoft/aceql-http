@@ -33,6 +33,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -180,7 +182,7 @@ public class TomcatStarter {
 	// Create the dataSources if necessary
 	TomcatStarterUtil.createAndStoreDataSources(properties);
 	TomcatStarterUtil.addServlets(properties, rootCtx);
-
+	
 	// ..and we are good to go
 	tomcat.start();
 
@@ -197,12 +199,12 @@ public class TomcatStarter {
     private void tomcatAfterStart(Tomcat tomcat, Properties properties) throws MalformedURLException, IOException {
 	// System.out.println(SqlTag.SQL_PRODUCT_START);
 	Connector defaultConnector = tomcat.getConnector();
-
+	
 	boolean result = testServlet(properties, defaultConnector.getScheme());
 	if (!result) {
 	    throw new IOException(SqlTag.SQL_PRODUCT_START_FAILURE + " " + "Can not call the AceQL ManagerServlet");
 	}
-
+		
 	String StateModeMessage = ConfPropertiesUtil.isStatelessMode() ? "(Stateless Mode)": "";
 	
 	String runningMessage = SqlTag.SQL_PRODUCT_START + " " + Version.PRODUCT.NAME
@@ -250,6 +252,20 @@ public class TomcatStarter {
 		return;
 	    }
 	}
+    }
+
+    /**
+     * Future usage.
+     */
+    @SuppressWarnings("unused")
+    private static void queryExecutorHook() {
+
+	List<String> classNames = new ArrayList<>();
+	System.out.println(SqlTag.SQL_PRODUCT_START + " Allowed ServerQueryExecutor: ");  
+	for (String className: classNames) {
+	    System.out.println(SqlTag.SQL_PRODUCT_START + "   -> " +  className);  
+	}
+	
     }
 
     /**
