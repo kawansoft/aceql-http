@@ -5,25 +5,38 @@
 
 	<groupId>com.aceql</groupId>
 	<artifactId>aceql-http</artifactId>
-	<version>10.1</version>
+	<version>10.2</version>
 	<packaging>jar</packaging>
 
 	<name>AceQL HTTP</name>
 	<url>http://www.aceql.com</url>
 
-	<properties>
-		<project.build.sourceEncoding>ISO-8859-1</project.build.sourceEncoding>
-		<maven.compiler.source>1.8</maven.compiler.source>
-		<maven.compiler.target>1.8</maven.compiler.target>
-	</properties>
+    <build>
+        <finalName>${project.artifactId}</finalName>
+        <sourceDirectory>src</sourceDirectory>
+        <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.9.0</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+
+        </plugins>
+    </build>
+
 
 	<dependencies>
-		<dependency>
-			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter-engine</artifactId>
-			<version>5.7.0</version>
-			<scope>test</scope>
-		</dependency>
+
+    <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-api</artifactId>
+        <version>5.8.2</version>
+        <scope>test</scope>
+    </dependency>
+
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>

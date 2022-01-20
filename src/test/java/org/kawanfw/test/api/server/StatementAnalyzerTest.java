@@ -24,11 +24,12 @@
  */
 package org.kawanfw.test.api.server;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Vector;
 
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.kawanfw.sql.api.server.StatementAnalyzer;
 
@@ -59,17 +60,17 @@ public class StatementAnalyzerTest {
 
 	System.out.println(stAnalyzer.getTables());
 	List<String> tables = stAnalyzer.getTables();
-	Assert.assertEquals(false, tables.isEmpty());
+	assertEquals(false, tables.isEmpty());
 
-	Assert.assertEquals("orderlog",
+	assertEquals("orderlog",
 		tables.get(0).toLowerCase());
 
 	System.out.println("stAnalyzer.isInsert(): " + stAnalyzer.isInsert());
-	Assert.assertEquals(true, stAnalyzer.isInsert());
+	assertEquals(true, stAnalyzer.isInsert());
 
 	System.out.println("stAnalyzer.getStatementType(): "
 		+ stAnalyzer.getStatementName());
-	Assert.assertEquals("insert",
+	assertEquals("insert",
 		stAnalyzer.getStatementName().toLowerCase());
 
     }
@@ -87,17 +88,17 @@ public class StatementAnalyzerTest {
 
 	System.out.println(stAnalyzer.getTables());
 	List<String> tables = stAnalyzer.getTables();
-	Assert.assertEquals(false, tables.isEmpty());
+	assertEquals(false, tables.isEmpty());
 
-	Assert.assertEquals("customer",
+	assertEquals("customer",
 		tables.get(0).toLowerCase());
 
 	System.out.println("stAnalyzer.isSelect(): " + stAnalyzer.isSelect());
-	Assert.assertEquals(true, stAnalyzer.isSelect());
+	assertEquals(true, stAnalyzer.isSelect());
 
 	System.out.println("stAnalyzer.getStatementType(): "
 		+ stAnalyzer.getStatementName());
-	Assert.assertEquals("select",
+	assertEquals("select",
 		stAnalyzer.getStatementName().toLowerCase());
 
     }
@@ -118,17 +119,17 @@ public class StatementAnalyzerTest {
 
 	System.out.println(stAnalyzer.getTables());
 	List<String> tables = stAnalyzer.getTables();
-	Assert.assertEquals(false, tables.isEmpty());
+	assertEquals(false, tables.isEmpty());
 
-	Assert.assertEquals("orderlog",
+	assertEquals("orderlog",
 		tables.get(0).toLowerCase());
 
 	System.out.println("stAnalyzer.isUpdate(): " + stAnalyzer.isUpdate());
-	Assert.assertEquals(true, stAnalyzer.isUpdate());
+	assertEquals(true, stAnalyzer.isUpdate());
 
 	System.out.println("stAnalyzer.getStatementType(): "
 		+ stAnalyzer.getStatementName());
-	Assert.assertEquals("update",
+	assertEquals("update",
 		stAnalyzer.getStatementName().toLowerCase());
     }
 
@@ -146,18 +147,18 @@ public class StatementAnalyzerTest {
 	System.out.println(stAnalyzer.getTables());
 
 	List<String> tables = stAnalyzer.getTables();
-	Assert.assertEquals(false, tables.isEmpty());
+	assertEquals(false, tables.isEmpty());
 	String table = tables.get(0);
 
-	Assert.assertEquals("orderlog",
+	assertEquals("orderlog",
 		table.toLowerCase());
 
 	System.out.println("stAnalyzer.isDelete(): " + stAnalyzer.isDelete());
-	Assert.assertEquals(true, stAnalyzer.isDelete());
+	assertEquals(true, stAnalyzer.isDelete());
 
 	System.out.println("stAnalyzer.getStatementType(): "
 		+ stAnalyzer.getStatementName());
-	Assert.assertEquals("delete",
+	assertEquals("delete",
 		stAnalyzer.getStatementName().toLowerCase());
 
     }
@@ -176,20 +177,20 @@ public class StatementAnalyzerTest {
 
 	System.out.println("stAnalyzer.isWithSemicolons(): "
 		+ stAnalyzer.isWithSemicolons());
-	Assert.assertEquals(false, stAnalyzer.isWithSemicolons());
+	assertEquals(false, stAnalyzer.isWithSemicolons());
 
 	System.out.println(
 		"stAnalyzer.isWithComments(): " + stAnalyzer.isWithComments());
-	Assert.assertEquals(false, stAnalyzer.isWithComments());
+	assertEquals(false, stAnalyzer.isWithComments());
 
 	System.out.println("stAnalyzer.isDdl(): " + stAnalyzer.isDdl());
-	Assert.assertEquals(false, stAnalyzer.isDdl());
+	assertEquals(false, stAnalyzer.isDdl());
 
 	System.out.println("stAnalyzer.isDcl(): " + stAnalyzer.isDcl());
-	Assert.assertEquals(false, stAnalyzer.isDcl());
+	assertEquals(false, stAnalyzer.isDcl());
 
 	System.out.println("stAnalyzer.isDml(): " + stAnalyzer.isDml());
-	Assert.assertEquals(true, stAnalyzer.isDml());
+	assertEquals(true, stAnalyzer.isDml());
     }
 
     /**
@@ -211,21 +212,21 @@ public class StatementAnalyzerTest {
 
 	System.out.println("stAnalyzer.isWithSemicolons(): "
 		+ stAnalyzer.isWithSemicolons());
-	Assert.assertEquals(true, stAnalyzer.isWithSemicolons());
+	assertEquals(true, stAnalyzer.isWithSemicolons());
 
 	System.out.println(
 		"stAnalyzer.isWithComments(): " + stAnalyzer.isWithComments());
-	Assert.assertEquals(true, stAnalyzer.isWithComments());
+	assertEquals(true, stAnalyzer.isWithComments());
 
 	/*
 	System.out.println("stAnalyzer.isDdl(): " + stAnalyzer.isDdl());
-	Assert.assertEquals(false, stAnalyzer.isDdl());
+	assertEquals(false, stAnalyzer.isDdl());
 
 	System.out.println("stAnalyzer.isDcl(): " + stAnalyzer.isDcl());
-	Assert.assertEquals(false, stAnalyzer.isDcl());
+	assertEquals(false, stAnalyzer.isDcl());
 
 	System.out.println("stAnalyzer.isDml(): " + stAnalyzer.isDml());
-	Assert.assertEquals(true, stAnalyzer.isDml());
+	assertEquals(true, stAnalyzer.isDml());
 	*/
     }
 
@@ -248,20 +249,20 @@ public class StatementAnalyzerTest {
 
 	System.out.println("stAnalyzer.isWithSemicolons(): "
 		+ stAnalyzer.isWithSemicolons());
-	Assert.assertEquals(true, stAnalyzer.isWithSemicolons());
+	assertEquals(false, stAnalyzer.isWithSemicolons());
 
 	System.out.println(
 		"stAnalyzer.isWithComments(): " + stAnalyzer.isWithComments());
-	Assert.assertEquals(false, stAnalyzer.isWithComments());
+	assertEquals(false, stAnalyzer.isWithComments());
 
 	System.out.println("stAnalyzer.isDdl(): " + stAnalyzer.isDdl());
-	Assert.assertEquals(true, stAnalyzer.isDdl());
+	assertEquals(true, stAnalyzer.isDdl());
 
 	System.out.println("stAnalyzer.isDcl(): " + stAnalyzer.isDcl());
-	Assert.assertEquals(false, stAnalyzer.isDcl());
+	assertEquals(false, stAnalyzer.isDcl());
 
 	System.out.println("stAnalyzer.isDml(): " + stAnalyzer.isDml());
-	Assert.assertEquals(false, stAnalyzer.isDml());
+	assertEquals(false, stAnalyzer.isDml());
     }
 
 }
