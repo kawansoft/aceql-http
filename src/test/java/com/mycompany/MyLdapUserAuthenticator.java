@@ -46,10 +46,12 @@ public class MyLdapUserAuthenticator implements UserAuthenticator {
     public boolean login(String username, char[] password, String database, String ipAddress)
 	    throws IOException, SQLException {
 
+	String contextFactory = "com.sun.jndi.ldap.LdapCtxFactory";
 	String url = "ldap://ldap.forumsys.com:389";
+
 	// Set up the environment for creating the initial context
 	Hashtable<String, String> env = new Hashtable<>();
-	env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
+	env.put(Context.INITIAL_CONTEXT_FACTORY, contextFactory);
 	env.put(Context.PROVIDER_URL, url);
 
 	// The client-side user credentials:
@@ -58,16 +60,17 @@ public class MyLdapUserAuthenticator implements UserAuthenticator {
 
 	DirContext ctx = null;
 	try {
-	    // If we successfully  pass this line, user is authenticated:
+	    // If we successfully pass this line, user is authenticated:
 	    ctx = new InitialDirContext(env);
 	    return true;
 	} catch (CommunicationException e) {
-	    throw new IOException("Impossible to connect to LDAP server: " + url);
+	    throw new IOException("Unable to connect to server: " + url);
 	} catch (NamingException e) {
 	    System.err.println("Unable to authenticate user: " + username);
 	    return false;
 	} finally {
-	    MyLdapUserAuthenticatorUtil.closeDirContext(ctx); // Safely closes the DirContext
+	    // Safely closes the DirContext
+	    MyLdapUserAuthenticatorUtil.closeDirContext(ctx); 
 	}
     }
 

@@ -3,8 +3,11 @@
  */
 package org.kawanfw.test.util;
 
+import java.awt.Rectangle;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
 import java.util.List;
 
@@ -30,10 +33,43 @@ public class Test {
      * @param args
      */
 
-    // DatabaseConfigurator databaseConfigurator =
-    // InjectedClassesStore.get().getDatabaseConfigurators().get(database);
     public static void main(String[] args) throws Exception {
-	passwordEncryptor();
+
+	Rectangle rectangle;
+	Class<?> rectangleDefinition;
+	Class<?>[] intArgsClass = new Class[] { int.class, int.class };
+	Integer height = new Integer(12);
+	Integer width = new Integer(34);
+	Object[] intArgs = new Object[] { height, width };
+	Constructor<?> constructor;
+
+	rectangleDefinition = Class.forName("java.awt.Rectangle");
+	constructor = rectangleDefinition.getConstructor(intArgsClass);
+	Object object = constructor.newInstance(intArgs);
+
+	rectangle = (Rectangle) object;
+	System.out.println(rectangle.height + ", " + rectangle.width);
+    }
+
+    public static Object createObject(Constructor<?> constructor, Object[] arguments) {
+
+	System.out.println("Constructor: " + constructor.toString());
+	Object object = null;
+
+	try {
+	    object = constructor.newInstance(arguments);
+	    System.out.println("Object: " + object.toString());
+	    return object;
+	} catch (InstantiationException e) {
+	    System.out.println(e);
+	} catch (IllegalAccessException e) {
+	    System.out.println(e);
+	} catch (IllegalArgumentException e) {
+	    System.out.println(e);
+	} catch (InvocationTargetException e) {
+	    System.out.println(e);
+	}
+	return object;
     }
 
     /**
@@ -43,7 +79,7 @@ public class Test {
     public static void passwordEncryptor() throws DatabaseConfigurationException, IOException {
 	File file = new File("I:\\_dev_awake\\aceql-http-main\\aceql-http\\conf\\aceql-server.properties");
 	String password = "MyPassword";
-	
+
 	JdbcPasswordEncryptor jdbcPasswordEncryptor = new JdbcPasswordEncryptor(file);
 	String encryptedPassword = jdbcPasswordEncryptor.encryptPassword(password);
 	System.out.println(encryptedPassword);
