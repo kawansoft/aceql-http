@@ -22,7 +22,7 @@
  * Any modifications to this file must keep this entire header
  * intact.
  */
-package org.kawanfw.sql.servlet.sql.callable;
+package org.kawanfw.sql.z.pro.sql.callable;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -35,6 +35,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
+import org.kawanfw.sql.servlet.sql.callable.ServerCallableStatementWrapper;
 
 /**
  * A wrapper for ServerCallableStatementProEdition that allows a no args constructor

@@ -33,6 +33,8 @@ import java.lang.reflect.InvocationTargetException;
  */
 public class ServerCallableStatementWrapperCreator {
 
+    private static ServerCallableStatementWrapper serverCallableStatementWrapper = null;
+
     /**
      * @return
      * @throws ClassNotFoundException
@@ -44,12 +46,16 @@ public class ServerCallableStatementWrapperCreator {
      * @throws InvocationTargetException
      */
     public static ServerCallableStatementWrapper createServerCallableStatementInterfaceInstance()
-            throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException,
-            IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-        Class<?> c = Class.forName("org.kawanfw.sql.servlet.sql.callable.DefaultServerCallableStatementWrapper");
-        Constructor<?> constructor = c.getConstructor();
-        ServerCallableStatementWrapper serverCallableStatementWrapper = (ServerCallableStatementWrapper)constructor.newInstance();
-        return serverCallableStatementWrapper;
+	    throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException,
+	    IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+
+	if (serverCallableStatementWrapper == null) {
+	    Class<?> c = Class.forName("org.kawanfw.sql.z.pro.sql.callable.DefaultServerCallableStatementWrapper");
+	    Constructor<?> constructor = c.getConstructor();
+	    serverCallableStatementWrapper = (ServerCallableStatementWrapper) constructor.newInstance();
+	}
+
+	return serverCallableStatementWrapper;
     }
 
 }

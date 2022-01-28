@@ -42,7 +42,7 @@ import org.kawanfw.sql.util.FrameworkDebug;
  *
  * @author Nicolas de Pomereu
  */
-public class DatabaseMetaDataSpecialExecutor {
+class DatabaseMetaDataSpecialExecutor {
     /** Set to true to display/log debug info */
     private static boolean DEBUG = FrameworkDebug
 	    .isSet(DatabaseMetaDataSpecialExecutor.class);

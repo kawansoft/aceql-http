@@ -325,18 +325,19 @@ public class ServerSqlDispatch {
 		    response, sqlFirewallManagers, connection, databaseConfigurator);
 	    serverPreparedStatementBatch.executeBatch(out);
 	} else if (ServerSqlDispatchUtil.isStoredProcedure(request)) {
-	    
+
 	    try {
-		ServerCallableStatementWrapper serverCallableStatementWrapper = ServerCallableStatementWrapperCreator.createServerCallableStatementInterfaceInstance();
-		serverCallableStatementWrapper.executeOrExecuteQuery(request, response, sqlFirewallManagers, connection, out);
+		ServerCallableStatementWrapper serverCallableStatementWrapper = ServerCallableStatementWrapperCreator
+			.createServerCallableStatementInterfaceInstance();
+		serverCallableStatementWrapper.executeOrExecuteQuery(request, response, sqlFirewallManagers, connection,
+			out);
 	    } catch (ClassNotFoundException e) {
-		    throw new UnsupportedOperationException(Tag.PRODUCT + " " + "Stored procedure call "
-			    + Tag.REQUIRES_ACEQL_PROFESSIONAL_EDITION);
+		throw new UnsupportedOperationException(
+			Tag.PRODUCT + " " + "Stored procedure call " + Tag.REQUIRES_ACEQL_PROFESSIONAL_EDITION);
 	    } catch (Exception exception) {
 		throw new SQLException(exception);
-	    } 
-	    
-	    
+	    }
+
 	} else if (ServerSqlDispatchUtil.isConnectionModifier(action)) {
 	    TransactionUtil.setConnectionModifierAction(request, response, out, action, connection);
 	} else if (ServerSqlDispatchUtil.isSavepointModifier(action)) {

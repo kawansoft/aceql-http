@@ -22,7 +22,7 @@
  * Any modifications to this file must keep this entire header
  * intact.
  */
-package org.kawanfw.sql.servlet.sql.callable;
+package org.kawanfw.sql.z.pro.sql.callable;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -68,7 +68,7 @@ import org.kawanfw.sql.util.FrameworkDebug;
  *          Allows to execute the Statement or Prepared Statement on the Server
  *          as executeQuery() or executeUpdate()
  */
-class ServerCallableStatementProEdition {
+public class ServerCallableStatementProEdition {
     private static boolean DEBUG = FrameworkDebug.isSet(ServerCallableStatementProEdition.class);
 
     public static String CR_LF = System.getProperty("line.separator");
