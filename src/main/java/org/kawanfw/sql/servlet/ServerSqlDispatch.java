@@ -57,10 +57,12 @@ import org.kawanfw.sql.servlet.sql.ServerStatement;
 import org.kawanfw.sql.servlet.sql.ServerStatementRawExecute;
 import org.kawanfw.sql.servlet.sql.batch.ServerPreparedStatementBatch;
 import org.kawanfw.sql.servlet.sql.batch.ServerStatementBatch;
-import org.kawanfw.sql.servlet.sql.callable.ServerCallableStatement;
+import org.kawanfw.sql.servlet.sql.callable.ServerCallableStatementWrapper;
+import org.kawanfw.sql.servlet.sql.callable.ServerCallableStatementWrapperCreator;
 import org.kawanfw.sql.servlet.sql.json_return.JsonErrorReturn;
 import org.kawanfw.sql.servlet.sql.json_return.JsonOkReturn;
 import org.kawanfw.sql.util.FrameworkDebug;
+import org.kawanfw.sql.util.Tag;
 
 /**
  * @author Nicolas de Pomereu
@@ -323,9 +325,18 @@ public class ServerSqlDispatch {
 		    response, sqlFirewallManagers, connection, databaseConfigurator);
 	    serverPreparedStatementBatch.executeBatch(out);
 	} else if (ServerSqlDispatchUtil.isStoredProcedure(request)) {
-	    ServerCallableStatement serverCallableStatement = new ServerCallableStatement(request, response,
-		    sqlFirewallManagers, connection);
-	    serverCallableStatement.executeOrExecuteQuery(out);
+	    
+	    try {
+		ServerCallableStatementWrapper serverCallableStatementWrapper = ServerCallableStatementWrapperCreator.createServerCallableStatementInterfaceInstance();
+		serverCallableStatementWrapper.executeOrExecuteQuery(request, response, sqlFirewallManagers, connection, out);
+	    } catch (ClassNotFoundException e) {
+		    throw new UnsupportedOperationException(Tag.PRODUCT + " " + "Stored procedure call "
+			    + Tag.REQUIRES_ACEQL_PROFESSIONAL_EDITION);
+	    } catch (Exception exception) {
+		throw new SQLException(exception);
+	    } 
+	    
+	    
 	} else if (ServerSqlDispatchUtil.isConnectionModifier(action)) {
 	    TransactionUtil.setConnectionModifierAction(request, response, out, action, connection);
 	} else if (ServerSqlDispatchUtil.isSavepointModifier(action)) {

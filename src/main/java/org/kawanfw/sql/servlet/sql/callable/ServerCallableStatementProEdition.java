@@ -68,8 +68,8 @@ import org.kawanfw.sql.util.FrameworkDebug;
  *          Allows to execute the Statement or Prepared Statement on the Server
  *          as executeQuery() or executeUpdate()
  */
-public class ServerCallableStatement {
-    private static boolean DEBUG = FrameworkDebug.isSet(ServerCallableStatement.class);
+class ServerCallableStatementProEdition {
+    private static boolean DEBUG = FrameworkDebug.isSet(ServerCallableStatementProEdition.class);
 
     public static String CR_LF = System.getProperty("line.separator");
 
@@ -92,7 +92,7 @@ public class ServerCallableStatement {
      * @param sqlOrderAndParmsStore the Sql order and parms
      */
 
-    public ServerCallableStatement(HttpServletRequest request, HttpServletResponse response,
+    public ServerCallableStatementProEdition(HttpServletRequest request, HttpServletResponse response,
 	    List<SqlFirewallManager> sqlFirewallManagers, Connection connection) throws SQLException {
 	this.request = request;
 	this.response = response;
