@@ -55,7 +55,7 @@ import org.kawanfw.sql.servlet.sql.json_return.ExceptionReturner;
 import org.kawanfw.sql.servlet.sql.json_return.JsonErrorReturn;
 import org.kawanfw.sql.servlet.sql.json_return.JsonOkReturn;
 import org.kawanfw.sql.util.FrameworkDebug;
-import org.kawanfw.sql.version.DefaultVersion;
+import org.kawanfw.sql.version.VersionWrapper;
 
 /**
  * Http JDBC Server
@@ -406,7 +406,7 @@ public class ServerSqlManager extends HttpServlet {
     private boolean getVersion(OutputStream out, String requestUri, String servletName) throws IOException {
 	// Display version if we just call the servlet
 	if (requestUri.endsWith("/" + servletName) || requestUri.endsWith("/" + servletName + "/")) {
-	    String version = new DefaultVersion().getServerVersion();
+	    String version = VersionWrapper.getServerVersion();
 	    writeLine(out, JsonOkReturn.build("version", version));
 	    return true;
 	}

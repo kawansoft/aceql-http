@@ -36,7 +36,7 @@ import org.apache.commons.cli.UnrecognizedOptionException;
 import org.apache.commons.lang3.StringUtils;
 import org.kawanfw.sql.api.server.web.WebServerApi;
 import org.kawanfw.sql.util.SqlTag;
-import org.kawanfw.sql.version.DefaultVersion;
+import org.kawanfw.sql.version.VersionWrapper;
 
 /**
  * Extract and build the parameters for the Web Server start/stop.
@@ -144,7 +144,7 @@ public class ParametersExtractor {
 	}
 
 	if (cmd.hasOption("version")) {
-	    System.out.println(new DefaultVersion().getServerVersion());
+	    System.out.println(VersionWrapper.getServerVersion());
 	    System.out.println();
 	    WebServerUtil.systemExitWrapper(0);
 	}

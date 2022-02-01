@@ -53,7 +53,6 @@ import org.kawanfw.sql.servlet.injection.properties.PropertiesFileUtil;
 import org.kawanfw.sql.tomcat.util.PortSemaphoreFile;
 import org.kawanfw.sql.util.FrameworkDebug;
 import org.kawanfw.sql.util.SqlTag;
-import org.kawanfw.sql.version.DefaultVersion;
 import org.kawanfw.sql.version.VersionWrapper;
 
 /**
@@ -138,7 +137,7 @@ public class TomcatStarter {
     private void startTomcat(Tomcat tomcat) throws IOException, ConnectException, LifecycleException,
 	    MalformedURLException, DatabaseConfigurationException, SQLException {
 	System.out.println(SqlTag.SQL_PRODUCT_START + " Starting " + VersionWrapper.getName() + " Web Server...");
-	System.out.println(SqlTag.SQL_PRODUCT_START + " " + new DefaultVersion().getServerVersion());
+	System.out.println(SqlTag.SQL_PRODUCT_START + " " + VersionWrapper.getServerVersion());
 	System.out.println(TomcatStarterUtil.getJavaInfo());
 	System.out.println(SqlTag.SQL_PRODUCT_START + " " + "Using properties file: ");
 	System.out.println(SqlTag.SQL_PRODUCT_START + "  -> " + propertiesFile);

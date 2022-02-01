@@ -34,4 +34,8 @@ public class VersionWrapper {
 	return VersionCreator.createInstance().getName();
     }
 
+    public static String getServerVersion() {
+	return VersionCreator.createInstance().getServerVersion();
+    }
+    
 }

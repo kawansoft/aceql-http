@@ -39,7 +39,7 @@ import org.kawanfw.sql.api.server.DefaultDatabaseConfigurator;
 import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesStore;
 import org.kawanfw.sql.tomcat.TomcatSqlModeStore;
 import org.kawanfw.sql.util.FrameworkDebug;
-import org.kawanfw.sql.version.DefaultVersion;
+import org.kawanfw.sql.version.VersionWrapper;
 
 /**
  * @author Nicolas de Pomereu Test ServerSqlManager doGet method
@@ -126,7 +126,7 @@ public class ServerSqlManagerDoGetTester {
 	out.println("<br>");
 	out.println("<font face=\"Arial\">");
 	out.println("<b>");
-	out.println("<font color=\"#" + KAWANSOFT_COLOR + "\">" + new DefaultVersion().getServerVersion() + "</font>");
+	out.println("<font color=\"#" + KAWANSOFT_COLOR + "\">" + VersionWrapper.getServerVersion() + "</font>");
 	out.println("<br>");
 	out.println("<br>");
 	out.println(servletName + " Servlet Configuration");

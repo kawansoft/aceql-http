@@ -65,7 +65,7 @@ import org.kawanfw.sql.servlet.util.operation_type.OperationType;
 import org.kawanfw.sql.servlet.util.operation_type.OperationTypeCreator;
 import org.kawanfw.sql.util.FrameworkDebug;
 import org.kawanfw.sql.util.Tag;
-import org.kawanfw.sql.version.DefaultVersion;
+import org.kawanfw.sql.version.VersionWrapper;
 
 /**
  * @author Nicolas de Pomereu
@@ -285,7 +285,7 @@ public class ServerSqlDispatch {
     private boolean isGetVersion(OutputStream out, String action) throws IOException {
 	if (action.equals(HttpParameter.GET_VERSION)) {
 	    //String version = new org.kawanfw.sql.version.DefaultVersion.PRODUCT().server();
-	    String version =  new DefaultVersion().getServerVersion();
+	    String version =  VersionWrapper.getServerVersion();
 	    ServerSqlManager.writeLine(out, JsonOkReturn.build("result", version));
 	    return true;
 	} else {
