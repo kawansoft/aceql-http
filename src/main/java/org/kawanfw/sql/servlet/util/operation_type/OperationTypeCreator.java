@@ -22,7 +22,7 @@
  * Any modifications to this file must keep this entire header
  * intact.
  */
-package org.kawanfw.sql.servlet.util;
+package org.kawanfw.sql.servlet.util.operation_type;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;

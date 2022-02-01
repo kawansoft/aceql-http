@@ -41,7 +41,7 @@ import org.kawanfw.sql.api.server.DatabaseConfigurationException;
 import org.kawanfw.sql.api.util.auth.ConfigurablePasswordEncryptorUtil;
 import org.kawanfw.sql.api.util.auth.PasswordEncryptorUtil;
 import org.kawanfw.sql.servlet.injection.properties.PropertiesFileUtil;
-import org.kawanfw.sql.version.Version;
+import org.kawanfw.sql.version.DefaultVersion;
 
 /**
  * Tooling class that allows to generate to hashed/encrypted passwords for
@@ -141,7 +141,7 @@ public class JdbcPasswordEncryptor {
 	}
 
 	if (cmd.hasOption("version")) {
-	    System.out.println(Version.getVersion());
+	    System.out.println(new DefaultVersion().getServerVersion());
 	    System.out.println();
 	    System.exit(1);
 	}

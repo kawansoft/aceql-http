@@ -61,7 +61,7 @@ import org.kawanfw.sql.tomcat.TomcatSqlModeStore;
 import org.kawanfw.sql.util.FrameworkDebug;
 import org.kawanfw.sql.util.SqlTag;
 import org.kawanfw.sql.util.Tag;
-import org.kawanfw.sql.version.Version;
+import org.kawanfw.sql.version.VersionWrapper;
 
 public class InjectedClassesManagerNew {
 
@@ -174,7 +174,7 @@ public class InjectedClassesManagerNew {
 	    System.out.println(SqlTag.SQL_PRODUCT_START + " Loaded classes Status: OK.");
 
 	    if (!TomcatSqlModeStore.isTomcatEmbedded()) {
-		String runningMessage = SqlTag.SQL_PRODUCT_START + " " + Version.PRODUCT.NAME + " Start OK.";
+		String runningMessage = SqlTag.SQL_PRODUCT_START + " " + VersionWrapper.getName() + " Start OK.";
 		System.out.println(runningMessage);
 	    }
 

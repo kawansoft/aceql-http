@@ -22,31 +22,16 @@
  * Any modifications to this file must keep this entire header
  * intact.
  */
-package org.kawanfw.sql.servlet.util;
-
-import org.kawanfw.sql.api.util.JsqlParserWrapper;
-
-import net.sf.jsqlparser.JSQLParserException;
-import net.sf.jsqlparser.parser.CCJSqlParserUtil;
-import net.sf.jsqlparser.statement.Statement;
+package org.kawanfw.sql.version;
 
 /**
  * @author Nicolas de Pomereu
  *
  */
-public class DefaultOperationType implements OperationType {
+public class VersionWrapper {
 
-    @Override
-    public boolean isOperationAuthorized(String sql) {
-
-	try {
-	    Statement parsedStatement = CCJSqlParserUtil.parse(sql);
-	    JsqlParserWrapper jsqlParserWrapper = new JsqlParserWrapper(parsedStatement);
-	    return ! jsqlParserWrapper.isDCL() && ! jsqlParserWrapper.isDDL();
-	} catch (JSQLParserException e) {
-	    e.printStackTrace();
-	    return true;
-	}
+    public static String getName() {
+	return VersionCreator.createInstance().getName();
     }
 
 }

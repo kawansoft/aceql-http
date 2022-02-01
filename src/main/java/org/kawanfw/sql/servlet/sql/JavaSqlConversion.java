@@ -57,7 +57,7 @@ public class JavaSqlConversion {
 	else if (sqlParamType.equals(AceQLTypes.BIT)) {
 	    javaType = Types.BIT;
 	}
-	// HACK Version 3.2.2: add AceQLTypes.DECIMAL
+	// HACK DefaultVersion 3.2.2: add AceQLTypes.DECIMAL
 	else if (sqlParamType.equals(AceQLTypes.DECIMAL)) {
 	    javaType = Types.DECIMAL;
 	}

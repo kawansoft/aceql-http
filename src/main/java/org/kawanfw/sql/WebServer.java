@@ -36,7 +36,7 @@ import org.kawanfw.sql.api.util.webserver.ParametersExtractor;
 import org.kawanfw.sql.api.util.webserver.WebServerUtil;
 import org.kawanfw.sql.util.FrameworkDebug;
 import org.kawanfw.sql.util.SqlTag;
-import org.kawanfw.sql.version.Version;
+import org.kawanfw.sql.version.VersionWrapper;
 
 /**
  *
@@ -147,7 +147,7 @@ public class WebServer {
 	try {
 	    webServerApi.stopServer(port);
 
-	    System.out.println(Version.PRODUCT.NAME + " Web server running on port " + port + " successfully stopped!");
+	    System.out.println(VersionWrapper.getName() + " Web server running on port " + port + " successfully stopped!");
 	    System.out.println();
 	    WebServerUtil.systemExitWrapper(0);
 	} catch (ConnectException e) {

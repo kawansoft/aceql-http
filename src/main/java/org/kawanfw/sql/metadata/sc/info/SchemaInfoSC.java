@@ -43,7 +43,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.kawanfw.sql.api.util.SqlUtil;
 import org.kawanfw.sql.metadata.AceQLMetaData;
 import org.kawanfw.sql.metadata.util.FileWordReplacer;
-import org.kawanfw.sql.version.VersionValues;
 
 import schemacrawler.Version;
 import schemacrawler.schemacrawler.RegularExpressionExclusionRule;
@@ -73,7 +72,7 @@ public class SchemaInfoSC {
     private String SC_VERSION = Version.getVersion();
 
     private String ACEQL_NAME = "AceQL";
-    private String ACEQL_VERSION = VersionValues.VERSION;
+    private String ACEQL_VERSION = Version.getVersion();
     private Set<String> tableSet = new HashSet<>();
 
 

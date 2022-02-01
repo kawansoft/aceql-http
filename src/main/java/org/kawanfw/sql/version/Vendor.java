@@ -25,18 +25,15 @@
 
 package org.kawanfw.sql.version;
 
-public interface Version {
+public class Vendor {
 
-    /**
-     * @return all version info
-     */
-    String getServerVersion();
+    public static final String NAME = "KawanSoft SAS";
+    public static final String WEB = "http://www.kawansoft.com";
+    public static final String COPYRIGHT = "Copyright &copy; 2022";
+    public static final String EMAIL = "contact@kawansoft.com";
 
-    /**
-     * @return the version name
-     */
-    String getName();
-
-    String toString();
-
+    @Override
+    public String toString() {
+	return Vendor.NAME + " - " + Vendor.WEB;
+    }
 }

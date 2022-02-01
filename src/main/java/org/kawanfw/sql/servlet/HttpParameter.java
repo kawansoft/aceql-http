@@ -63,7 +63,7 @@ public class HttpParameter {
     // New action to get a new Connection
     public static final String GET_CONNECTION = "get_connection";
 
-    // Version action
+    // DefaultVersion action
     public static final Object GET_VERSION = "get_version";
 
     // Meta action

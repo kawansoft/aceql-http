@@ -61,10 +61,11 @@ import org.kawanfw.sql.servlet.sql.callable.ServerCallableStatementWrapper;
 import org.kawanfw.sql.servlet.sql.callable.ServerCallableStatementWrapperCreator;
 import org.kawanfw.sql.servlet.sql.json_return.JsonErrorReturn;
 import org.kawanfw.sql.servlet.sql.json_return.JsonOkReturn;
-import org.kawanfw.sql.servlet.util.OperationType;
-import org.kawanfw.sql.servlet.util.OperationTypeCreator;
+import org.kawanfw.sql.servlet.util.operation_type.OperationType;
+import org.kawanfw.sql.servlet.util.operation_type.OperationTypeCreator;
 import org.kawanfw.sql.util.FrameworkDebug;
 import org.kawanfw.sql.util.Tag;
+import org.kawanfw.sql.version.DefaultVersion;
 
 /**
  * @author Nicolas de Pomereu
@@ -283,7 +284,8 @@ public class ServerSqlDispatch {
      */
     private boolean isGetVersion(OutputStream out, String action) throws IOException {
 	if (action.equals(HttpParameter.GET_VERSION)) {
-	    String version = new org.kawanfw.sql.version.Version.PRODUCT().server();
+	    //String version = new org.kawanfw.sql.version.DefaultVersion.PRODUCT().server();
+	    String version =  new DefaultVersion().getServerVersion();
 	    ServerSqlManager.writeLine(out, JsonOkReturn.build("result", version));
 	    return true;
 	} else {

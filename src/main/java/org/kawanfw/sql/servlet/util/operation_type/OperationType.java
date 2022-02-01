@@ -23,7 +23,7 @@
  * intact.
  */
 
-package org.kawanfw.sql.servlet.util;
+package org.kawanfw.sql.servlet.util.operation_type;
 
 public interface OperationType {
 

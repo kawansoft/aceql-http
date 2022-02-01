@@ -40,7 +40,7 @@ public class Version {
      * @return the product name, version and date
      */
     public String getVersion() {
-	return org.kawanfw.sql.version.Version.getVersion();
+	return new Version().getVersion();
     }
 
 }
