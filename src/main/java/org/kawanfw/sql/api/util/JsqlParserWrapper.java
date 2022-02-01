@@ -1,7 +1,7 @@
 /**
  *
  */
-package org.kawanfw.sql.api.server;
+package org.kawanfw.sql.api.util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +43,7 @@ import net.sf.jsqlparser.util.TablesNamesFinder;
  * @author Nicolas de Pomereu
  *
  */
-class JsqlParserWrapper {
+public class JsqlParserWrapper {
 
     private Statement statement = null;
     private List<String> tables = new ArrayList<>();

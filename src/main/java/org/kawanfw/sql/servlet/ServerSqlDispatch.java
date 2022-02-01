@@ -61,6 +61,8 @@ import org.kawanfw.sql.servlet.sql.callable.ServerCallableStatementWrapper;
 import org.kawanfw.sql.servlet.sql.callable.ServerCallableStatementWrapperCreator;
 import org.kawanfw.sql.servlet.sql.json_return.JsonErrorReturn;
 import org.kawanfw.sql.servlet.sql.json_return.JsonOkReturn;
+import org.kawanfw.sql.servlet.util.OperationType;
+import org.kawanfw.sql.servlet.util.OperationTypeCreator;
 import org.kawanfw.sql.util.FrameworkDebug;
 import org.kawanfw.sql.util.Tag;
 
@@ -307,7 +309,14 @@ public class ServerSqlDispatch {
     private void dispatch(HttpServletRequest request, HttpServletResponse response, OutputStream out, String action,
 	    Connection connection, DatabaseConfigurator databaseConfigurator,
 	    List<SqlFirewallManager> sqlFirewallManagers)
-	    throws SQLException, FileNotFoundException, IOException, IllegalArgumentException {
+		    throws SQLException, FileNotFoundException, IOException, IllegalArgumentException {
+
+	OperationType operationType = OperationTypeCreator.createInstance();
+	String sql = request.getParameter(HttpParameter.SQL);
+	if (! operationType.isOperationAuthorized(sql)) {
+	    throw new UnsupportedOperationException(
+		    Tag.PRODUCT + " " + "DCL or DLL Operation " + Tag.REQUIRES_ACEQL_PROFESSIONAL_EDITION);
+	}
 	if (ServerSqlDispatchUtil.isExecute(action) && !ServerSqlDispatchUtil.isStoredProcedure(request)) {
 	    ServerStatementRawExecute serverStatement = new ServerStatementRawExecute(request, response,
 		    sqlFirewallManagers, connection);
@@ -328,7 +337,7 @@ public class ServerSqlDispatch {
 
 	    try {
 		ServerCallableStatementWrapper serverCallableStatementWrapper = ServerCallableStatementWrapperCreator
-			.createServerCallableStatementInterfaceInstance();
+			.createInstance();
 		serverCallableStatementWrapper.executeOrExecuteQuery(request, response, sqlFirewallManagers, connection,
 			out);
 	    } catch (ClassNotFoundException e) {
@@ -362,7 +371,7 @@ public class ServerSqlDispatch {
      */
     private boolean doTreatJdbcDatabaseMetaData(HttpServletRequest request, HttpServletResponse response,
 	    OutputStream out, String action, Connection connection, List<SqlFirewallManager> sqlFirewallManagers)
-	    throws SQLException, IOException {
+		    throws SQLException, IOException {
 	// Redirect if it's a JDBC DatabaseMetaData call
 	if (ActionUtil.isJdbcDatabaseMetaDataQuery(action)) {
 	    JdbcDatabaseMetadataActionManager jdbcDatabaseMetadataActionManager = new JdbcDatabaseMetadataActionManager(
@@ -388,7 +397,7 @@ public class ServerSqlDispatch {
      */
     private boolean doTreatMetadataQuery(HttpServletRequest request, HttpServletResponse response, OutputStream out,
 	    String action, Connection connection, List<SqlFirewallManager> sqlFirewallManagers)
-	    throws SQLException, IOException {
+		    throws SQLException, IOException {
 	// Redirect if it's a metadaquery
 	if (ActionUtil.isMetadataQueryAction(action)) {
 	    MetadataQueryActionManager metadataQueryActionManager = new MetadataQueryActionManager(request, response,
@@ -412,7 +421,7 @@ public class ServerSqlDispatch {
      */
     private void treatCloseAction(HttpServletResponse response, OutputStream out, String username, String sessionId,
 	    final String connectionId, DatabaseConfigurator databaseConfigurator, Connection connection)
-	    throws IOException {
+		    throws IOException {
 	try {
 
 	    // Nothing to do in stateless
