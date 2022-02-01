@@ -22,7 +22,7 @@
  * Any modifications to this file must keep this entire header
  * intact.
  */
-package org.kawanfw.sql.servlet.jdbc.metadata;
+package org.kawanfw.sql.servlet.jdbc.metadata.resultset;
 
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;

@@ -53,6 +53,7 @@ import org.kawanfw.sql.servlet.connection.TransactionUtil;
 import org.kawanfw.sql.servlet.injection.classes.InjectedClassesStore;
 import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesUtil;
 import org.kawanfw.sql.servlet.jdbc.metadata.JdbcDatabaseMetadataActionManager;
+import org.kawanfw.sql.servlet.jdbc.metadata.JdbcDatabaseMetadataActionManagerCreator;
 import org.kawanfw.sql.servlet.sql.ServerStatement;
 import org.kawanfw.sql.servlet.sql.ServerStatementRawExecute;
 import org.kawanfw.sql.servlet.sql.batch.ServerPreparedStatementBatch;
@@ -376,9 +377,21 @@ public class ServerSqlDispatch {
 		    throws SQLException, IOException {
 	// Redirect if it's a JDBC DatabaseMetaData call
 	if (ActionUtil.isJdbcDatabaseMetaDataQuery(action)) {
-	    JdbcDatabaseMetadataActionManager jdbcDatabaseMetadataActionManager = new JdbcDatabaseMetadataActionManager(
-		    request, response, out, sqlFirewallManagers, connection);
-	    jdbcDatabaseMetadataActionManager.execute();
+	    
+	    //JdbcDatabaseMetadataActionManager jdbcDatabaseMetadataActionManager = new DefaultJdbcDatabaseMetadataActionManager();
+	    //jdbcDatabaseMetadataActionManager.execute(request, response, out, sqlFirewallManagers, connection);
+	    
+	    try {
+		JdbcDatabaseMetadataActionManager jdbcDatabaseMetadataActionManager = JdbcDatabaseMetadataActionManagerCreator
+			.createInstance();
+		jdbcDatabaseMetadataActionManager.execute(request, response, out, sqlFirewallManagers, connection);
+	    } catch (ClassNotFoundException e) {
+		throw new UnsupportedOperationException(
+			Tag.PRODUCT + " " + "Connection.getMetaData() call " + Tag.REQUIRES_ACEQL_PROFESSIONAL_EDITION);
+	    } catch (Exception exception) {
+		throw new SQLException(exception);
+	    }
+
 	    return true;
 	} else {
 	    return false;
