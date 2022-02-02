@@ -195,6 +195,7 @@ public class PoolPropertiesCreator {
 
 	PoolPropertiesIntercerptor poolPropertiesIntercerptor = PoolPropertiesIntercerptorCreator.createInstance();
 	propertyValue = poolPropertiesIntercerptor.interceptValue(theMethod, propertyValue);
+	propertyValueToDisplay = propertyValue;
 	
 	Class<?>[] pType = methodNamesAndParms.get(theMethod);
 
