@@ -48,7 +48,6 @@ import org.kawanfw.sql.servlet.injection.classes.InjectedClasses.InjectedClasses
 import org.kawanfw.sql.servlet.injection.classes.creator.BlobDownloadConfiguratorCreator;
 import org.kawanfw.sql.servlet.injection.classes.creator.BlobUploadConfiguratorCreator;
 import org.kawanfw.sql.servlet.injection.classes.creator.DatabaseConfiguratorCreator;
-import org.kawanfw.sql.servlet.injection.classes.creator.RequestHeadersAuthenticatorCreator;
 import org.kawanfw.sql.servlet.injection.classes.creator.SessionConfiguratorCreator;
 import org.kawanfw.sql.servlet.injection.classes.creator.SqlFirewallsCreator;
 import org.kawanfw.sql.servlet.injection.classes.creator.UpdateListenersCreator;
@@ -325,22 +324,20 @@ public class InjectedClassesManagerNew {
      * @throws IllegalAccessException
      * @throws IllegalArgumentException
      * @throws InvocationTargetException
+     * @throws SQLException 
      */
     private void loadRequestHeadersAuthenticator(InjectedClassesBuilder injectedClassesBuilder)
 	    throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException,
-	    IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+	    IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException {
 
 	String requestHeadersAuthenticatorClassName = ConfPropertiesStore.get()
 		.getRequestHeadersAuthenticatorClassName();
 
 	classNameToLoad = requestHeadersAuthenticatorClassName;
-	RequestHeadersAuthenticatorCreator userAuthenticatorCreator = new RequestHeadersAuthenticatorCreator(
-		requestHeadersAuthenticatorClassName);
-	injectedClassesBuilder.requestHeadersAuthenticator(userAuthenticatorCreator.getRequestHeadersAuthenticator());
-	requestHeadersAuthenticatorClassName = userAuthenticatorCreator.getRequestHeadersAuthenticatorClassName();
-
-	System.out.println(SqlTag.SQL_PRODUCT_START + " Loading RequestHeadersAuthenticator class:");
-	System.out.println(SqlTag.SQL_PRODUCT_START + "  -> " + requestHeadersAuthenticatorClassName);
+	
+	RequestHeadersAuthenticatorLoader requestHeadersAuthenticatorLoader = RequestHeadersAuthenticatorLoaderCreator.createInstance();
+	requestHeadersAuthenticatorLoader.loadRequestHeadersAuthenticator(injectedClassesBuilder, requestHeadersAuthenticatorClassName);
+	
     }
 
     /**
