@@ -25,7 +25,7 @@ AceQL HTTP is licensed through the GNU Lesser General Public License
 (LGPL v2.1).
 
 
-AceQL HTTP Version 10.2 - 21-Jan-2022
+AceQL HTTP Version 10.2 - 07-Feb-2022
 -------------------------------------
 
 What's New: 
@@ -33,6 +33,7 @@ What's New:
   in aceql-server.properties: ldapUserAuthenticator.securityAuthentication
   & ldapUserAuthenticator.securityProtocol
 - Tomcat base libraries have been upgraded to 9.0.58.
+- Postgresql base libraries have been upgraded to 42.3.2. 
 
 Bugs fixed:
 - SqlEvent.toString() and ClientEvent.toString() would not display 

@@ -1,7 +1,7 @@
 AceQL
 -----
 
-All majors tests are run using The Client SDK (aceql-http-client-sdk project):
+All majors tests are run using The Client SDK (aceql-http-client-jdbc-driver project):
 
     <dependency>
         <groupId>com.aceql</groupId>
