@@ -45,6 +45,14 @@ public class StatementAnalyzerTest {
 	ddlWithCommentsAndSemiColumns();
 
 	dml();
+	
+	System.out.println();
+	String testMessage = 
+		  "Note: All majors tests are run using The Client SDK (aceql-http-client-jdbc-driver project):\r\n"
+		+ "    	<groupId>com.aceql</groupId>\r\n"
+		+ "    	<artifactId>aceql-http-client-jdbc-driver</artifactId>\r\n"
+		+ "    	<version>x.y</version>";
+	System.out.println(testMessage);
     }
 
     /**
