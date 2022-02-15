@@ -22,33 +22,32 @@
  * Any modifications to this file must keep this entire header
  * intact.
  */
-
 package org.kawanfw.sql.servlet.injection.classes;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.kawanfw.sql.api.server.listener.UpdateListener;
 import org.kawanfw.sql.servlet.injection.classes.InjectedClasses.InjectedClassesBuilder;
 
-public class DefaultRequestHeadersAuthenticatorLoader implements RequestHeadersAuthenticatorLoader {
+public class DefaultUpdateListenersLoader implements UpdateListenersLoader {
 
-    /**
-     *  Loads a RequestHeadersAuthenticator instance.
-     *  
-     * @param injectedClassesBuilder
-     * @param requestHeadersAuthenticatorClassName
-     * @throws ClassNotFoundException
-     * @throws NoSuchMethodException
-     * @throws SecurityException
-     * @throws InstantiationException
-     * @throws IllegalAccessException
-     * @throws IllegalArgumentException
-     * @throws InvocationTargetException
-     */
+    
     @Override
-    public void loadRequestHeadersAuthenticator(InjectedClassesBuilder injectedClassesBuilder,
-	    String requestHeadersAuthenticatorClassName)
+    public List<UpdateListener> loadUpdateListeners(String database, InjectedClassesBuilder injectedClassesBuilder,
+	    List<String> updateListenerClassNames)
 	    throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException,
 	    IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-	// Does nothing
+
+	List<UpdateListener> updateListeners =  new ArrayList<>();
+	return updateListeners;
     }
+
+    @Override
+    public String getClassNameToLoad() {
+	List<String> classNameToLoad =  new ArrayList<>();
+	return classNameToLoad.toString();
+    }
+
 }

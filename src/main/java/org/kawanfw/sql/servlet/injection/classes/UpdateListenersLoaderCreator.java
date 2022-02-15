@@ -22,20 +22,24 @@
  * Any modifications to this file must keep this entire header
  * intact.
  */
-
 package org.kawanfw.sql.servlet.injection.classes;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.sql.SQLException;
 
-import org.kawanfw.sql.servlet.injection.classes.InjectedClasses.InjectedClassesBuilder;
+/**
+ * @author Nicolas de Pomereu
+ *
+ */
+public class UpdateListenersLoaderCreator {
 
-public class DefaultRequestHeadersAuthenticatorLoader implements RequestHeadersAuthenticatorLoader {
+    private static UpdateListenersLoader updateListenersLoader = null;
 
     /**
-     *  Loads a RequestHeadersAuthenticator instance.
-     *  
-     * @param injectedClassesBuilder
-     * @param requestHeadersAuthenticatorClassName
+     * Creates a UpdateListenersLoader instance.
+     * 
+     * @return a RequestHeadersAuthenticatorLoader instance.
      * @throws ClassNotFoundException
      * @throws NoSuchMethodException
      * @throws SecurityException
@@ -43,12 +47,25 @@ public class DefaultRequestHeadersAuthenticatorLoader implements RequestHeadersA
      * @throws IllegalAccessException
      * @throws IllegalArgumentException
      * @throws InvocationTargetException
+     * @throws SQLException
      */
-    @Override
-    public void loadRequestHeadersAuthenticator(InjectedClassesBuilder injectedClassesBuilder,
-	    String requestHeadersAuthenticatorClassName)
-	    throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException,
-	    IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-	// Does nothing
+    public static UpdateListenersLoader createInstance() throws SQLException {
+
+	if (updateListenersLoader == null) {
+	    Class<?> c;
+	    try {
+		c = Class.forName("org.kawanfw.sql.pro.sql.listener.ProEditionUpdateListenersLoader");
+		Constructor<?> constructor = c.getConstructor();
+		updateListenersLoader = (UpdateListenersLoader) constructor.newInstance();
+		return updateListenersLoader;
+	    } catch (ClassNotFoundException e) {
+		return new DefaultUpdateListenersLoader();
+	    } catch (Exception e) {
+		throw new SQLException(e);
+	    }
+	}
+
+	return updateListenersLoader;
     }
+
 }

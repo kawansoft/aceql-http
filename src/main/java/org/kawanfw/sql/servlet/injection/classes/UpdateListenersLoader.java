@@ -25,17 +25,22 @@
 
 package org.kawanfw.sql.servlet.injection.classes;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.sql.SQLException;
+import java.util.List;
 
+import org.kawanfw.sql.api.server.listener.UpdateListener;
 import org.kawanfw.sql.servlet.injection.classes.InjectedClasses.InjectedClassesBuilder;
 
-public class DefaultRequestHeadersAuthenticatorLoader implements RequestHeadersAuthenticatorLoader {
+public interface UpdateListenersLoader {
 
     /**
-     *  Loads a RequestHeadersAuthenticator instance.
-     *  
+     * Loads a UpdateListenersLoader instance.
+     * 
+     * @param database
      * @param injectedClassesBuilder
-     * @param requestHeadersAuthenticatorClassName
+     * @param updateListenerClassNames
      * @throws ClassNotFoundException
      * @throws NoSuchMethodException
      * @throws SecurityException
@@ -44,11 +49,16 @@ public class DefaultRequestHeadersAuthenticatorLoader implements RequestHeadersA
      * @throws IllegalArgumentException
      * @throws InvocationTargetException
      */
-    @Override
-    public void loadRequestHeadersAuthenticator(InjectedClassesBuilder injectedClassesBuilder,
-	    String requestHeadersAuthenticatorClassName)
+    List<UpdateListener> loadUpdateListeners(String database, InjectedClassesBuilder injectedClassesBuilder,
+	    List<String> updateListenerClassNames)
 	    throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException,
-	    IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-	// Does nothing
-    }
+	    IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException, IOException;
+
+    /**
+     * Returns the List of class names to load in .toString() format.
+     * 
+     * @return the List of class names to load in .toString() format.
+     */
+    String getClassNameToLoad();
+
 }

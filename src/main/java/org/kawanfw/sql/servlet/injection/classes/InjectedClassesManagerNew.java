@@ -313,9 +313,9 @@ public class InjectedClassesManagerNew {
     }
 
     /**
-     * loads requestHeadersAuthenticator.
+     * Loads requestHeadersAuthenticator.
      * 
-     * @param injectedClassesBuilder TODO
+     * @param injectedClassesBuilder 
      *
      * @throws ClassNotFoundException
      * @throws NoSuchMethodException
@@ -340,6 +340,83 @@ public class InjectedClassesManagerNew {
 	
     }
 
+    /**
+     * Loads the Update Listeners.
+     * 
+     * @param database
+     * @param injectedClassesBuilder
+     * @return
+     * @throws ClassNotFoundException
+     * @throws NoSuchMethodException
+     * @throws SecurityException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     * @throws IllegalArgumentException
+     * @throws InvocationTargetException
+     * @throws SQLException
+     * @throws IOException
+     */
+    private List<UpdateListener> loadUpdateListeners(String database, InjectedClassesBuilder injectedClassesBuilder)
+	    throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException,
+	    IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException, IOException {
+
+	List<String> updateListenerClassNames = ConfPropertiesStore.get().getUpdateListenerClassNames(database);
+	classNameToLoad = updateListenerClassNames.toString();
+
+	UpdateListenersLoader updateListenersLoader = UpdateListenersLoaderCreator.createInstance();
+	List<UpdateListener>  updateListeners = updateListenersLoader.loadUpdateListeners(database, injectedClassesBuilder, updateListenerClassNames);
+	
+	// Update class name(s) to load
+	classNameToLoad = updateListenersLoader.getClassNameToLoad();
+	
+	return updateListeners;
+    }
+
+    /**
+     * @param database
+     * @param injectedClassesBuilder
+     * @param updateListenerClassNames
+     * @return
+     * @throws ClassNotFoundException
+     * @throws NoSuchMethodException
+     * @throws SecurityException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     * @throws IllegalArgumentException
+     * @throws InvocationTargetException
+     * @throws SQLException
+     * @throws IOException
+     */
+    public List<UpdateListener> loadUpdateListeners(String database, InjectedClassesBuilder injectedClassesBuilder,
+	    List<String> updateListenerClassNames)
+	    throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException,
+	    IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException, IOException {
+	String tagUpdateListener = null;
+	if (updateListenerClassNames.size() < 2)
+	    tagUpdateListener = " UpdateListener class: ";
+	else
+	    tagUpdateListener = " UpdateListener classes: ";
+
+	System.out.println(SqlTag.SQL_PRODUCT_START + " Loading Database " + database + tagUpdateListener);
+
+	Map<String, DatabaseConfigurator> databaseConfigurators = injectedClassesBuilder.getDatabaseConfigurators();
+
+	DatabaseConfigurator databaseConfigurator = databaseConfigurators.get(database);
+	
+	UpdateListenersCreator updateListenersCreator = new UpdateListenersCreator(updateListenerClassNames, database,
+		databaseConfigurator);
+	List<UpdateListener> updateListeners = updateListenersCreator.getUpdateListeners();
+
+	updateListenerClassNames = updateListenersCreator.getUpdateListenerClassNames();
+	classNameToLoad = updateListenerClassNames.toString();
+
+	for (String updateListenerClassName : updateListenerClassNames) {
+	    System.out.println(SqlTag.SQL_PRODUCT_START + "   -> " + updateListenerClassName);
+	}
+
+	return updateListeners;
+    }
+    
     /**
      * loads the Firewall Managers.
      * 
@@ -386,53 +463,7 @@ public class InjectedClassesManagerNew {
 
     }
 
-    /**
-     * Loads the Update Listeners.
-     * @param database
-     * @param injectedClassesBuilder
-     * @return
-     * @throws ClassNotFoundException
-     * @throws NoSuchMethodException
-     * @throws SecurityException
-     * @throws InstantiationException
-     * @throws IllegalAccessException
-     * @throws IllegalArgumentException
-     * @throws InvocationTargetException
-     * @throws SQLException
-     * @throws IOException
-     */
-    private List<UpdateListener> loadUpdateListeners(String database, InjectedClassesBuilder injectedClassesBuilder)
-	    throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException,
-	    IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException, IOException {
 
-
-	List<String> updateListenerClassNames = ConfPropertiesStore.get().getUpdateListenerClassNames(database);
-	classNameToLoad = updateListenerClassNames.toString();
-
-	String tagUpdateListener = null;
-	if (updateListenerClassNames.size() < 2)
-	    tagUpdateListener = " UpdateListener class: ";
-	else
-	    tagUpdateListener = " UpdateListener classes: ";
-
-	System.out.println(SqlTag.SQL_PRODUCT_START + " Loading Database " + database + tagUpdateListener);
-
-	Map<String, DatabaseConfigurator> databaseConfigurators = injectedClassesBuilder.getDatabaseConfigurators();
-
-	DatabaseConfigurator databaseConfigurator = databaseConfigurators.get(database);
-	UpdateListenersCreator updateListenersCreator = new UpdateListenersCreator(updateListenerClassNames, database,
-		databaseConfigurator);
-	List<UpdateListener> updateListeners = updateListenersCreator.getUpdateListeners();
-
-	updateListenerClassNames = updateListenersCreator.getUpdateListenerClassNames();
-	classNameToLoad = updateListenerClassNames.toString();
-
-	for (String updateListenerClassName : updateListenerClassNames) {
-	    System.out.println(SqlTag.SQL_PRODUCT_START + "   -> " + updateListenerClassName);
-	}
-
-	return updateListeners;
-    }
 
     /**
      * Loads the database configurators.
