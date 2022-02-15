@@ -34,7 +34,6 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.UnrecognizedOptionException;
 import org.apache.commons.lang3.StringUtils;
-import org.kawanfw.sql.api.server.web.WebServerApi;
 import org.kawanfw.sql.util.SqlTag;
 import org.kawanfw.sql.version.VersionWrapper;
 
@@ -78,7 +77,7 @@ public class ParametersExtractor {
 	CommandLine cmd = null;
 	cmd = chekParameters(options, parser);
 
-	port = WebServerApi.DEFAULT_PORT;
+	port = WebServerApiWrapper.DEFAULT_PORT;
 
 	if (cmd.hasOption("port")) {
 	    String portStr = cmd.getOptionValue("port");
@@ -205,7 +204,7 @@ public class ParametersExtractor {
 
 	@SuppressWarnings("static-access")
 	Option portOption = OptionBuilder.withArgName("port number").hasArg()
-		.withDescription("port number of the Web server. Defaults to " + WebServerApi.DEFAULT_PORT)
+		.withDescription("port number of the Web server. Defaults to " + WebServerApiWrapper.DEFAULT_PORT)
 		.create("port");	
 	*/
 	
@@ -224,7 +223,7 @@ public class ParametersExtractor {
 	Option portOption  = Option.builder("port")
                 .argName("port number")
                 .hasArg()
-                .desc("port number of the Web server. Defaults to " + WebServerApi.DEFAULT_PORT)
+                .desc("port number of the Web server. Defaults to " + WebServerApiWrapper.DEFAULT_PORT)
                 .build();
 
 	options.addOption(propertiesOption);
