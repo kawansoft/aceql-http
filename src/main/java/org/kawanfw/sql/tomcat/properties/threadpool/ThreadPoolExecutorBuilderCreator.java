@@ -22,7 +22,7 @@
  * Any modifications to this file must keep this entire header
  * intact.
  */
-package org.kawanfw.sql.servlet.injection.classes;
+package org.kawanfw.sql.tomcat.properties.threadpool;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -32,14 +32,14 @@ import java.sql.SQLException;
  * @author Nicolas de Pomereu
  *
  */
-public class UpdateListenersLoaderCreator {
+public class ThreadPoolExecutorBuilderCreator {
 
-    private static UpdateListenersLoader updateListenersLoader = null;
+    private static ThreadPoolExecutorBuilder updateListenersLoader = null;
 
     /**
-     * Creates a UpdateListenersLoader instance.
+     * Creates a ThreadPoolExecutorBuilder instance.
      * 
-     * @return a UpdateListenersLoader instance.
+     * @return a ThreadPoolExecutorBuilder instance.
      * @throws ClassNotFoundException
      * @throws NoSuchMethodException
      * @throws SecurityException
@@ -49,17 +49,17 @@ public class UpdateListenersLoaderCreator {
      * @throws InvocationTargetException
      * @throws SQLException
      */
-    public static UpdateListenersLoader createInstance() throws SQLException {
+    public static ThreadPoolExecutorBuilder createInstance() throws SQLException {
 
 	if (updateListenersLoader == null) {
 	    Class<?> c;
 	    try {
-		c = Class.forName("org.kawanfw.sql.pro.sql.listener.ProEditionUpdateListenersLoader");
+		c = Class.forName("org.kawanfw.sql.pro.sql.properties.threadpool.ProEditionThreadPoolExecutorBuilder");
 		Constructor<?> constructor = c.getConstructor();
-		updateListenersLoader = (UpdateListenersLoader) constructor.newInstance();
+		updateListenersLoader = (ThreadPoolExecutorBuilder) constructor.newInstance();
 		return updateListenersLoader;
 	    } catch (ClassNotFoundException e) {
-		return new DefaultUpdateListenersLoader();
+		return new DefaultThreadPoolExecutorBuilder();
 	    } catch (Exception e) {
 		throw new SQLException(e);
 	    }

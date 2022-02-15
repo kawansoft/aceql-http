@@ -1,4 +1,4 @@
-package org.kawanfw.sql.tomcat;
+package org.kawanfw.sql.tomcat.properties.threadpool;
 
 import java.lang.reflect.Constructor;
 import java.util.Objects;
@@ -16,7 +16,8 @@ public class ThreadPoolProperties {
     public static final int DEFAULT_MAXIMUM_POOL_SIZE = 200;
     public static final int DEFAULT_KEEP_ALIVE_TIME = 10;
     public static final int DEFAULT_BLOCKING_QUEUE_CAPACITY = 50000;
-
+    public static final TimeUnit DEFAULT_UNIT = TimeUnit.SECONDS;
+    
     private String corePoolSizeStr;
     private String maximumPoolSizeStr;
     private String unitStr;
@@ -26,7 +27,7 @@ public class ThreadPoolProperties {
 
     private int corePoolSize= DEFAULT_CORE_POOL_SIZE;
     private int maximumPoolSize= DEFAULT_MAXIMUM_POOL_SIZE;
-    private TimeUnit unit =TimeUnit.SECONDS;
+    private TimeUnit unit = DEFAULT_UNIT;
     private int keepAliveTime= DEFAULT_KEEP_ALIVE_TIME;
     private int capacity= DEFAULT_BLOCKING_QUEUE_CAPACITY;
     private BlockingQueue<Runnable> workQueue;

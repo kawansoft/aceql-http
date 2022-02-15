@@ -55,8 +55,9 @@ import org.kawanfw.sql.servlet.injection.classes.creator.UserAuthenticatorCreato
 import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesStore;
 import org.kawanfw.sql.servlet.injection.properties.PropertiesFileStore;
 import org.kawanfw.sql.servlet.injection.properties.PropertiesFileUtil;
-import org.kawanfw.sql.tomcat.ThreadPoolExecutorCreator;
 import org.kawanfw.sql.tomcat.TomcatSqlModeStore;
+import org.kawanfw.sql.tomcat.properties.threadpool.ThreadPoolExecutorBuilder;
+import org.kawanfw.sql.tomcat.properties.threadpool.ThreadPoolExecutorBuilderCreator;
 import org.kawanfw.sql.util.FrameworkDebug;
 import org.kawanfw.sql.util.SqlTag;
 import org.kawanfw.sql.util.Tag;
@@ -100,9 +101,10 @@ public class InjectedClassesManagerNew {
 
 	    File propertiesFile = PropertiesFileStore.get();
 	    Properties properties = PropertiesFileUtil.getProperties(propertiesFile);
-	    ThreadPoolExecutorCreator threadPoolExecutorCreator = new ThreadPoolExecutorCreator(properties);
-	    ThreadPoolExecutor threadPoolExecutor = threadPoolExecutorCreator.create();
 
+	    ThreadPoolExecutorBuilder threadPoolExecutorBuilder = ThreadPoolExecutorBuilderCreator.createInstance();
+	    ThreadPoolExecutor threadPoolExecutor = threadPoolExecutorBuilder.build(properties);
+	    
 	    Set<String> databases = ConfPropertiesStore.get().getDatabaseNames();
 
 	    // Create out InjectedClasses builder

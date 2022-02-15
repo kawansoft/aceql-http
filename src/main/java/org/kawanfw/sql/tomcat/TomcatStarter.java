@@ -320,7 +320,7 @@ public class TomcatStarter {
 	systemPropUpdater.update();
 
 	//HACK NDP
-	//ThreadPoolExecutorCreator threadPoolExecutorStore = new ThreadPoolExecutorCreator(properties);
+	//ProEditionThreadPoolExecutorBuilder threadPoolExecutorStore = new ProEditionThreadPoolExecutorBuilder(properties);
 	//threadPoolExecutorStore.create();
 
 	// Set & create connectors
