@@ -45,7 +45,7 @@ public class ConfProperties {
     /** The (Database name, databaseConfiguratorClassName) Map */
     private Map<String, String> databaseConfiguratorClassNameMap = new ConcurrentHashMap<>();
 
-    private String servletName = null;
+    private String servletCallName = null;
 
     private String blobDownloadConfiguratorClassName = null;
     private String blobUploadConfiguratorClassName = null;
@@ -67,7 +67,7 @@ public class ConfProperties {
 	this.databaseSet = confPropertiesBuilder.databaseSet;
 	this.databaseConfiguratorClassNameMap = confPropertiesBuilder.databaseConfiguratorClassNameMap;
 
-	this.servletName = confPropertiesBuilder.servletName;
+	this.servletCallName = confPropertiesBuilder.servletCallName;
 
 	this.blobDownloadConfiguratorClassName = confPropertiesBuilder.blobDownloadConfiguratorClassName;
 	this.blobUploadConfiguratorClassName = confPropertiesBuilder.blobUploadConfiguratorClassName;
@@ -111,10 +111,10 @@ public class ConfProperties {
 
  
     /**
-     * @return the servletName
+     * @return the servletCallName
      */
-    public String getServletName() {
-	return servletName;
+    public String getServletCallName() {
+	return servletCallName;
     }
 
 
@@ -206,7 +206,7 @@ public class ConfProperties {
 	/** The (Database name, databaseConfiguratorClassName) Map */
 	private Map<String, String> databaseConfiguratorClassNameMap = new ConcurrentHashMap<>();
 
-	private String servletName = null;
+	private String servletCallName = null;
 
 	private String blobDownloadConfiguratorClassName = null;
 	private String blobUploadConfiguratorClassName = null;
@@ -233,8 +233,8 @@ public class ConfProperties {
 	    return this;
 	}
 
-	public ConfPropertiesBuilder servletName(String servletName) {
-	    this.servletName = servletName;
+	public ConfPropertiesBuilder servletCallName(String servletCallName) {
+	    this.servletCallName = servletCallName;
 	    return this;
 	}
 

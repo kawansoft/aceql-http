@@ -222,17 +222,17 @@ public class ServerSqlManager extends HttpServlet {
 	String servletPath = request.getServletPath();
 	String requestUri = request.getRequestURI();
 
-	String servletName = ConfPropertiesStore.get().getServletName();
-	if (!checkRequestStartsWithAceqlServlet(response, out, servletPath, requestUri, servletName)) {
+	String servletCallName = ConfPropertiesStore.get().getServletCallName();
+	if (!checkRequestStartsWithAceqlServlet(response, out, servletPath, requestUri, servletCallName)) {
 	    return;
 	}
 
-	if (getVersion(out, requestUri, servletName)) {
+	if (getVersion(out, requestUri, servletCallName)) {
 	    return;
 	}
 
 	try {
-	    ServletPathAnalyzer servletPathAnalyzer = new ServletPathAnalyzer(requestUri, servletName);
+	    ServletPathAnalyzer servletPathAnalyzer = new ServletPathAnalyzer(requestUri, servletCallName);
 	    action = servletPathAnalyzer.getAction();
 	    actionValue = servletPathAnalyzer.getActionValue();
 	    database = servletPathAnalyzer.getDatabase();
@@ -400,12 +400,12 @@ public class ServerSqlManager extends HttpServlet {
     /**
      * @param out
      * @param requestUri
-     * @param servletName
+     * @param servletCallName
      * @throws IOException
      */
-    private boolean getVersion(OutputStream out, String requestUri, String servletName) throws IOException {
+    private boolean getVersion(OutputStream out, String requestUri, String servletCallName) throws IOException {
 	// Display version if we just call the servlet
-	if (requestUri.endsWith("/" + servletName) || requestUri.endsWith("/" + servletName + "/")) {
+	if (requestUri.endsWith("/" + servletCallName) || requestUri.endsWith("/" + servletCallName + "/")) {
 	    String version = VersionWrapper.getServerVersion();
 	    writeLine(out, JsonOkReturn.build("version", version));
 	    return true;
@@ -418,12 +418,12 @@ public class ServerSqlManager extends HttpServlet {
      * @param out
      * @param servletPath
      * @param requestUri
-     * @param servletName
+     * @param servletCallName
      * @throws IOException
      */
     private boolean checkRequestStartsWithAceqlServlet(HttpServletResponse response, OutputStream out,
-	    String servletPath, String requestUri, String servletName) throws IOException {
-	if (!requestUri.startsWith("/" + servletName) && !servletPath.startsWith("/" + servletName)) {
+	    String servletPath, String requestUri, String servletCallName) throws IOException {
+	if (!requestUri.startsWith("/" + servletCallName) && !servletPath.startsWith("/" + servletCallName)) {
 
 	    // System.out.println("servletPath:" + servletPath);
 	    // System.out.println("urlContent :" + urlContent);
@@ -431,7 +431,7 @@ public class ServerSqlManager extends HttpServlet {
 	    if (requestUri.equals("/")) {
 		JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_BAD_REQUEST,
 			JsonErrorReturn.ERROR_ACEQL_ERROR,
-			JsonErrorReturn.ACEQL_SERVLET_NOT_FOUND_IN_PATH + servletName);
+			JsonErrorReturn.ACEQL_SERVLET_NOT_FOUND_IN_PATH + servletCallName);
 		// out.println(errorReturn.build());
 		writeLine(out, errorReturn.build());
 		return false;

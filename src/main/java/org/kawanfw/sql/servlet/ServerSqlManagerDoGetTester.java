@@ -57,7 +57,7 @@ public class ServerSqlManagerDoGetTester {
     /** The init error message trapped */
     private String initErrrorMesage = "";
 
-    public void doGetTest(HttpServletResponse response, String servletName, Exception exception
+    public void doGetTest(HttpServletResponse response, String servletCallName, Exception exception
 
     ) throws IOException {
 
@@ -107,7 +107,7 @@ public class ServerSqlManagerDoGetTester {
 		}
 	    }
 
-	    printResult(servletName, out, status);
+	    printResult(servletCallName, out, status);
 	} catch (Exception e) {
 	    e.printStackTrace(out);
 	}
@@ -115,11 +115,11 @@ public class ServerSqlManagerDoGetTester {
     }
 
     /**
-     * @param servletName
+     * @param servletCallName
      * @param out
      * @param status
      */
-    private void printResult(String servletName, PrintWriter out, String status) {
+    private void printResult(String servletCallName, PrintWriter out, String status) {
 	Set<String> databases = ConfPropertiesStore.get().getDatabaseNames();
 
 	out.println("<!--OK-->");
@@ -129,7 +129,7 @@ public class ServerSqlManagerDoGetTester {
 	out.println("<font color=\"#" + KAWANSOFT_COLOR + "\">" + VersionWrapper.getServerVersion() + "</font>");
 	out.println("<br>");
 	out.println("<br>");
-	out.println(servletName + " Servlet Configuration");
+	out.println(servletCallName + " Servlet Configuration");
 	out.println("</b>");
 
 	out.println("<br><br>");

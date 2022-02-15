@@ -66,7 +66,7 @@ public class ConfPropertiesManager {
 	
 	String aceQLManagerServletCallName = TomcatStarterUtil.getAceQLManagerSevletName(properties);
 
-	confPropertiesBuilder.servletName(aceQLManagerServletCallName);
+	confPropertiesBuilder.servletCallName(aceQLManagerServletCallName);
 	
 	boolean statelessMode = Boolean.parseBoolean(properties.getProperty(ServerSqlManager.STATELESS_MODE, "false"));
 	confPropertiesBuilder.statelessMode(statelessMode);
