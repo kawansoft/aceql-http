@@ -272,8 +272,9 @@ public class TomcatStarter {
      * @param tomcat
      * @param properties
      * @return
+     * @throws IOException 
      */
-    private Context tomcatBeforeStartSetContext(Tomcat tomcat, Properties properties) {
+    private Context tomcatBeforeStartSetContext(Tomcat tomcat, Properties properties) throws IOException {
 	// Set up context,
 	// "" indicates the path of the ROOT context
 	Context rootCtx = tomcat.addContext("", getBaseDir().getAbsolutePath());
@@ -348,15 +349,18 @@ public class TomcatStarter {
      * @param properties the properties than contain all servlet & configurators
      *                   info
      * @param rootCtx    the tomcat root context
+     * @throws IOException 
      */
-    public void addAceqlServlet(Properties properties, Context rootCtx) {
+    public void addAceqlServlet(Properties properties, Context rootCtx) throws IOException {
 
 	if (properties == null) {
 	    throw new IllegalArgumentException("properties can not be null");
 	}
 
-	String aceQLManagerServletCallName = TomcatStarterUtil.getAceQLManagerSevletName(properties);
-
+	//String aceQLManagerServletCallName = TomcatStarterUtil.getAceQLManagerSevletName(properties);
+	AceQLServletCallNameGetter aceQLServletCallNameGetter = AceQLServletCallNameGetterCreator.createInstance();
+	String aceQLManagerServletCallName = aceQLServletCallNameGetter.getName();
+	
 	// Add the ServerSqlManager servlet to the context
 	org.apache.catalina.Wrapper wrapper = Tomcat.addServlet(rootCtx, aceQLManagerServletCallName,
 		new ServerSqlManager());
@@ -390,8 +394,10 @@ public class TomcatStarter {
      */
     public boolean testServlet(Properties properties, String scheme) throws MalformedURLException, IOException {
 
-	String aceQLManagerServletCallName = TomcatStarterUtil.getAceQLManagerSevletName(properties);
-
+	//String aceQLManagerServletCallName = TomcatStarterUtil.getAceQLManagerSevletName(properties);
+	AceQLServletCallNameGetter aceQLServletCallNameGetter = AceQLServletCallNameGetterCreator.createInstance();
+	String aceQLManagerServletCallName = aceQLServletCallNameGetter.getName();
+	
 	String serverSqlManagerUrlPattern = aceQLManagerServletCallName;
 	serverSqlManagerUrlPattern = serverSqlManagerUrlPattern.trim();
 

@@ -386,26 +386,4 @@ public class TomcatStarterUtil {
 		+ SystemUtils.JAVA_RUNTIME_NAME + " / " + SystemUtils.JAVA_VERSION;
     }
 
-    public static String getAceQLManagerSevletName(Properties properties) {
-	String aceQLManagerServletCallName = properties.getProperty("aceQLManagerServletCallName");
-
-	// Support old name:
-	if (aceQLManagerServletCallName == null || aceQLManagerServletCallName.isEmpty()) {
-	    aceQLManagerServletCallName = properties.getProperty("serverSqlManagerServletName");
-	}
-
-	if (aceQLManagerServletCallName == null || aceQLManagerServletCallName.isEmpty()) {
-	    throw new DatabaseConfigurationException(
-		    "aceQLManagerServletCallName property is null. " + SqlTag.PLEASE_CORRECT);
-	}
-
-	if (aceQLManagerServletCallName.contains("/")) {
-	    throw new DatabaseConfigurationException(
-		    "aceQLManagerServletCallName property can not contain \"/\" separator. " + SqlTag.PLEASE_CORRECT);
-	}
-
-	aceQLManagerServletCallName = aceQLManagerServletCallName.trim();
-	return aceQLManagerServletCallName;
-    }
-
 }

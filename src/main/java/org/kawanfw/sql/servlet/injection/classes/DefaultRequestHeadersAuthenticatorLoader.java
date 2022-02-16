@@ -27,6 +27,7 @@ package org.kawanfw.sql.servlet.injection.classes;
 
 import java.lang.reflect.InvocationTargetException;
 
+import org.kawanfw.sql.api.server.auth.headers.DefaultRequestHeadersAuthenticator;
 import org.kawanfw.sql.servlet.injection.classes.InjectedClasses.InjectedClassesBuilder;
 
 public class DefaultRequestHeadersAuthenticatorLoader implements RequestHeadersAuthenticatorLoader {
@@ -49,6 +50,6 @@ public class DefaultRequestHeadersAuthenticatorLoader implements RequestHeadersA
 	    String requestHeadersAuthenticatorClassName)
 	    throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException,
 	    IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-	// Does nothing
+	injectedClassesBuilder.requestHeadersAuthenticator(new DefaultRequestHeadersAuthenticator());
     }
 }

@@ -25,6 +25,7 @@
 
 package org.kawanfw.sql.servlet.injection.properties;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -35,6 +36,8 @@ import java.util.Set;
 
 import org.kawanfw.sql.servlet.ServerSqlManager;
 import org.kawanfw.sql.servlet.injection.properties.ConfProperties.ConfPropertiesBuilder;
+import org.kawanfw.sql.tomcat.AceQLServletCallNameGetter;
+import org.kawanfw.sql.tomcat.AceQLServletCallNameGetterCreator;
 import org.kawanfw.sql.tomcat.TomcatStarterUtil;
 import org.kawanfw.sql.tomcat.TomcatStarterUtilProperties;
 
@@ -59,13 +62,16 @@ public class ConfPropertiesManager {
     /**
      * Create the ConfProperties instance created from the Properties.
      * @return the ConfProperties instance created from the Properties.
+     * @throws IOException 
      */
-    public ConfProperties createConfProperties() {
+    public ConfProperties createConfProperties() throws IOException {
 
 	ConfPropertiesBuilder confPropertiesBuilder = new ConfPropertiesBuilder();	
 	
-	String aceQLManagerServletCallName = TomcatStarterUtil.getAceQLManagerSevletName(properties);
-
+	//String aceQLManagerServletCallName = TomcatStarterUtil.getAceQLManagerSevletName(properties);
+	AceQLServletCallNameGetter aceQLServletCallNameGetter = AceQLServletCallNameGetterCreator.createInstance();
+	String aceQLManagerServletCallName = aceQLServletCallNameGetter.getName();
+	
 	confPropertiesBuilder.servletCallName(aceQLManagerServletCallName);
 	
 	boolean statelessMode = Boolean.parseBoolean(properties.getProperty(ServerSqlManager.STATELESS_MODE, "false"));
