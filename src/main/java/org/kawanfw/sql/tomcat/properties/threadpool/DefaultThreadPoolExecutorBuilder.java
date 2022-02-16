@@ -26,8 +26,6 @@
 package org.kawanfw.sql.tomcat.properties.threadpool;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.Objects;
-import java.util.Properties;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -39,8 +37,6 @@ public class DefaultThreadPoolExecutorBuilder implements ThreadPoolExecutorBuild
 
     /**
      * Creates the ThreadPoolExecutor that will be used using properties
-     * @param properties
-     *
      * @throws ClassNotFoundException
      * @throws SecurityException
      * @throws NoSuchMethodException
@@ -50,8 +46,7 @@ public class DefaultThreadPoolExecutorBuilder implements ThreadPoolExecutorBuild
      * @throws InstantiationException
      */
     @Override
-    public ThreadPoolExecutor build(Properties properties) {
-	Objects.requireNonNull(properties, "properties cannot be null!");
+    public ThreadPoolExecutor build() {
 
 	int corePoolSize = ThreadPoolProperties.DEFAULT_CORE_POOL_SIZE;
 	int maximumPoolSize = ThreadPoolProperties.DEFAULT_MAXIMUM_POOL_SIZE;

@@ -48,6 +48,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.kawanfw.sql.api.server.DatabaseConfigurator;
 import org.kawanfw.sql.api.server.SqlEvent;
 import org.kawanfw.sql.api.server.SqlEventWrapper;
+import org.kawanfw.sql.api.server.StatementAnalyzer;
 import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
 import org.kawanfw.sql.api.server.listener.DefaultUpdateListener;
 import org.kawanfw.sql.api.server.listener.UpdateListener;
@@ -60,7 +61,6 @@ import org.kawanfw.sql.servlet.sql.json_return.JsonSecurityMessage;
 import org.kawanfw.sql.servlet.sql.json_return.JsonUtil;
 import org.kawanfw.sql.servlet.sql.parameters.ServerPreparedStatementParameters;
 import org.kawanfw.sql.servlet.sql.parameters.ServerPreparedStatementParametersUtil;
-import org.kawanfw.sql.servlet.util.ReducedStatementAnalyzer;
 import org.kawanfw.sql.util.FrameworkDebug;
 
 /**
@@ -401,7 +401,7 @@ public class ServerStatementRawExecute {
     public void callUpdateListeners(String username, String database, String sqlOrder, List<Object> parameterValues,
 	    String ipAddress, boolean isPreparedStatement) throws SQLException, IOException {
 	if (updateListeners.size() != 1 || !(updateListeners.get(0) instanceof DefaultUpdateListener)) {
-	    ReducedStatementAnalyzer analyzer = new ReducedStatementAnalyzer(sqlOrder, parameterValues);
+	    StatementAnalyzer analyzer = new StatementAnalyzer(sqlOrder, parameterValues);
 	    if (analyzer.isDelete() || analyzer.isUpdate() || analyzer.isInsert()) {
 		SqlEvent sqlEvent = SqlEventWrapper.sqlEventBuild(username, database,
 			ipAddress, sqlOrder, isPreparedStatement, parameterValues, false);

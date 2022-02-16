@@ -25,7 +25,6 @@
 
 package org.kawanfw.sql.servlet.injection.classes;
 
-import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
@@ -33,7 +32,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.ThreadPoolExecutor;
 
@@ -53,8 +51,6 @@ import org.kawanfw.sql.servlet.injection.classes.creator.SqlFirewallsCreator;
 import org.kawanfw.sql.servlet.injection.classes.creator.UpdateListenersCreator;
 import org.kawanfw.sql.servlet.injection.classes.creator.UserAuthenticatorCreator;
 import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesStore;
-import org.kawanfw.sql.servlet.injection.properties.PropertiesFileStore;
-import org.kawanfw.sql.servlet.injection.properties.PropertiesFileUtil;
 import org.kawanfw.sql.tomcat.TomcatSqlModeStore;
 import org.kawanfw.sql.tomcat.properties.threadpool.ThreadPoolExecutorBuilder;
 import org.kawanfw.sql.tomcat.properties.threadpool.ThreadPoolExecutorBuilderCreator;
@@ -99,11 +95,8 @@ public class InjectedClassesManagerNew {
 		nativeTomcatElementsCreator.create();
 	    }
 
-	    File propertiesFile = PropertiesFileStore.get();
-	    Properties properties = PropertiesFileUtil.getProperties(propertiesFile);
-
 	    ThreadPoolExecutorBuilder threadPoolExecutorBuilder = ThreadPoolExecutorBuilderCreator.createInstance();
-	    ThreadPoolExecutor threadPoolExecutor = threadPoolExecutorBuilder.build(properties);
+	    ThreadPoolExecutor threadPoolExecutor = threadPoolExecutorBuilder.build();
 	    
 	    Set<String> databases = ConfPropertiesStore.get().getDatabaseNames();
 

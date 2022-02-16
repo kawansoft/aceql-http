@@ -41,8 +41,8 @@ import java.util.TreeSet;
 import java.util.Vector;
 
 import org.apache.commons.io.IOUtils;
+import org.kawanfw.sql.api.server.StatementAnalyzer;
 import org.kawanfw.sql.api.util.SqlUtil;
-import org.kawanfw.sql.servlet.util.ReducedStatementAnalyzer;
 import org.kawanfw.sql.util.FrameworkDebug;
 import org.postgresql.PGResultSetMetaData;
 import org.postgresql.largeobject.LargeObject;
@@ -101,7 +101,7 @@ public class PostgreSqlUtil {
 	String schema = null;
 	ResultSet rs = null;
 
-	ReducedStatementAnalyzer statementAnalyzer = new ReducedStatementAnalyzer(sql,
+	StatementAnalyzer statementAnalyzer = new StatementAnalyzer(sql,
 		new Vector<Object>());
 	List<String> tables = statementAnalyzer.getTables();
 	if (tables.isEmpty()) {

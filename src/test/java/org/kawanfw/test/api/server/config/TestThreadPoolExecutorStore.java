@@ -50,7 +50,7 @@ public class TestThreadPoolExecutorStore {
 	properties.load(new FileInputStream(file));
 		
 	ThreadPoolExecutorBuilder threadPoolExecutorBuilder = ThreadPoolExecutorBuilderCreator.createInstance();
-	ThreadPoolExecutor threadPoolExecutor = threadPoolExecutorBuilder.build(properties);
+	ThreadPoolExecutor threadPoolExecutor = threadPoolExecutorBuilder.build();
 	    
 	System.out.println();
 	System.out.println("threadPoolExecutor: " + threadPoolExecutor);
