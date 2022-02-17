@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.kawanfw.sql.api.server.SqlEvent;
 import org.kawanfw.sql.api.server.SqlEventWrapper;
 import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
+import org.kawanfw.sql.api.util.firewall.SqlFirewallManagerCallTrigger;
 import org.kawanfw.sql.servlet.sql.ServerStatementUtil;
 import org.kawanfw.sql.servlet.sql.json_return.JsonSecurityMessage;
 
@@ -110,7 +111,8 @@ public class ServerSqlDispatchUtil {
 		SqlEvent sqlEvent = SqlEventWrapper.sqlEventBuild(username, database, ipAddress, sql,
 			ServerStatementUtil.isPreparedStatement(request), parameterValues, true);
 		
-		sqlFirewallManager.runIfStatementRefused(sqlEvent, connection);
+		//sqlFirewallManager.runIfStatementRefused(sqlEvent, connection);
+		SqlFirewallManagerCallTrigger.wrapRunIfStatementRefused(sqlEvent, sqlFirewallManager, connection);
 		break;
 	    }
 	}

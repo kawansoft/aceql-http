@@ -48,7 +48,6 @@ import org.kawanfw.sql.servlet.injection.classes.creator.BlobUploadConfiguratorC
 import org.kawanfw.sql.servlet.injection.classes.creator.DatabaseConfiguratorCreator;
 import org.kawanfw.sql.servlet.injection.classes.creator.SessionConfiguratorCreator;
 import org.kawanfw.sql.servlet.injection.classes.creator.SqlFirewallsCreator;
-import org.kawanfw.sql.servlet.injection.classes.creator.UpdateListenersCreator;
 import org.kawanfw.sql.servlet.injection.classes.creator.UserAuthenticatorCreator;
 import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesStore;
 import org.kawanfw.sql.tomcat.TomcatSqlModeStore;
@@ -366,51 +365,6 @@ public class InjectedClassesManagerNew {
 	
 	return updateListeners;
     }
-
-    /**
-     * @param database
-     * @param injectedClassesBuilder
-     * @param updateListenerClassNames
-     * @return
-     * @throws ClassNotFoundException
-     * @throws NoSuchMethodException
-     * @throws SecurityException
-     * @throws InstantiationException
-     * @throws IllegalAccessException
-     * @throws IllegalArgumentException
-     * @throws InvocationTargetException
-     * @throws SQLException
-     * @throws IOException
-     */
-    public List<UpdateListener> loadUpdateListeners(String database, InjectedClassesBuilder injectedClassesBuilder,
-	    List<String> updateListenerClassNames)
-	    throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException,
-	    IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException, IOException {
-	String tagUpdateListener = null;
-	if (updateListenerClassNames.size() < 2)
-	    tagUpdateListener = " UpdateListener class: ";
-	else
-	    tagUpdateListener = " UpdateListener classes: ";
-
-	System.out.println(SqlTag.SQL_PRODUCT_START + " Loading Database " + database + tagUpdateListener);
-
-	Map<String, DatabaseConfigurator> databaseConfigurators = injectedClassesBuilder.getDatabaseConfigurators();
-
-	DatabaseConfigurator databaseConfigurator = databaseConfigurators.get(database);
-	
-	UpdateListenersCreator updateListenersCreator = new UpdateListenersCreator(updateListenerClassNames, database,
-		databaseConfigurator);
-	List<UpdateListener> updateListeners = updateListenersCreator.getUpdateListeners();
-
-	updateListenerClassNames = updateListenersCreator.getUpdateListenerClassNames();
-	classNameToLoad = updateListenerClassNames.toString();
-
-	for (String updateListenerClassName : updateListenerClassNames) {
-	    System.out.println(SqlTag.SQL_PRODUCT_START + "   -> " + updateListenerClassName);
-	}
-
-	return updateListeners;
-    }
     
     /**
      * loads the Firewall Managers.
@@ -474,14 +428,18 @@ public class InjectedClassesManagerNew {
      */
     private DatabaseConfigurator loadDatabaseConfigurators(String database)
 	    throws ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException,
-	    InvocationTargetException, NoSuchMethodException, SecurityException {
-	String databaseConfiguratorClassName;
+	    InvocationTargetException, NoSuchMethodException, SecurityException, SQLException {
+	
 
 	// WARNING: Database configurator must be loaded prior to firewalls
 	// because a getConnection() is used to test SqlFirewallManager
 
-	databaseConfiguratorClassName = ConfPropertiesStore.get().getDatabaseConfiguratorClassName(database);
+	//String databaseConfiguratorClassName;
+	//databaseConfiguratorClassName = ConfPropertiesStore.get().getDatabaseConfiguratorClassName(database);
 
+	DatabaseConfiguratorClassNameBuilder databaseConfiguratorClassNameBuilder = DatabaseConfiguratorClassNameBuilderCreator.createInstance();
+	String databaseConfiguratorClassName = databaseConfiguratorClassNameBuilder.getClassName(database);
+	
 	debug("databaseConfiguratorClassName    : " + databaseConfiguratorClassName);
 
 	// Check spelling with first letter capitalized

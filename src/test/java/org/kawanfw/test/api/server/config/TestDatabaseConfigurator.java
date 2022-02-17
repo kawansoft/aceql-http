@@ -44,18 +44,6 @@ public class TestDatabaseConfigurator extends DefaultDatabaseConfigurator
     private static boolean DEBUG = FrameworkDebug
 	    .isSet(TestDatabaseConfigurator.class);
 
-    /**
-     * @return <code><b>true</b></code> if all following requirements are met:
-     *         <ul>
-     *         <li>Statement does not contain SQL comments.</li>
-     *         <li>Statement does not contain ";" character.</li>
-     *         <li>Statement is a DML statement: DELETE / INSERT / SELECT /
-     *         UPDATE.</li>
-     *         <li>Table must be: CUSTOMER / ORDERLOG / USER_LOGIN</li>
-     *         </ul>
-     */
-
-
 
     /**
      * @param s
