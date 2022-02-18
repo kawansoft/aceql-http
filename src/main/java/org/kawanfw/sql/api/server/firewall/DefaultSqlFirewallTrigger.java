@@ -13,7 +13,7 @@ import org.kawanfw.sql.api.server.DefaultDatabaseConfigurator;
 import org.kawanfw.sql.api.server.SqlEvent;
 
 /**
- * Default trigger for all SQL databases when a {@code SqlFirewallManager}
+ * Default trigger for a SQL database when a {@code SqlFirewallManager}
  * detects an attack. <br>
  * 
  * @author Nicolas de Pomereu
@@ -30,7 +30,7 @@ public class DefaultSqlFirewallTrigger implements SqlFirewallTrigger {
 	    throws IOException, SQLException {
 	String logInfo = null;
 
-	String sqlFirewallManagerClassName = sqlFirewallManager.getClass().getName();
+	String sqlFirewallManagerClassName = sqlFirewallManager.getClass().getSimpleName();
 
 	if (sqlEvent.isMetadataQuery()) {
 	    logInfo = "Client username " + sqlEvent.getUsername() + " (IP: " + sqlEvent.getIpAddress()

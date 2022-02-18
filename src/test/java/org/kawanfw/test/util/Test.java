@@ -35,6 +35,10 @@ public class Test {
 
     public static void main(String[] args) throws Exception {
 
+	String string = "string";
+	
+	System.out.println(string.getClass().getSimpleName());
+
 	Rectangle rectangle;
 	Class<?> rectangleDefinition;
 	Class<?>[] intArgsClass = new Class[] { int.class, int.class };
