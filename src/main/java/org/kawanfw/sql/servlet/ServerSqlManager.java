@@ -72,15 +72,22 @@ public class ServerSqlManager extends HttpServlet {
 
     public static final String STATELESS_MODE = "statelessMode";
     public static final String DATABASE_CONFIGURATOR_CLASS_NAME = "databaseConfiguratorClassName";
+    
     public static final String USER_AUTHENTICATOR_CLASS_NAME = "userAuthenticatorClassName";
     public static final String REQUEST_HEADERS_AUTHENTICATOR_CLASS_NAME = "requestHeadersAuthenticatorClassName";
+    
     public static final String SQL_FIREWALL_MANAGER_CLASS_NAMES = "sqlFirewallManagerClassNames";
+    public static final String SQL_FIREWALL_TRIGGER_CLASS_NAME ="sqlFirewallTriggerClassName" ;
+    
     public static final String BLOB_DOWNLOAD_CONFIGURATOR_CLASS_NAME = "blobDownloadConfiguratorClassName";
     public static final String BLOB_UPLOAD_CONFIGURATOR_CLASS_NAME = "blobUploadConfiguratorClassName";
+    
     public static final String SESSION_CONFIGURATOR_CLASS_NAME = "sessionConfiguratorClassName";
     public static final String JWT_SESSION_CONFIGURATOR_SECRET = "jwtSessionConfiguratorSecret";
 
     public static final String UPDATE_LISTENER_MANAGER_CLASS_NAMES = "updateListenerClassNames";
+
+
     
     /** The Exception thrown at init */
     private Exception exception = null;

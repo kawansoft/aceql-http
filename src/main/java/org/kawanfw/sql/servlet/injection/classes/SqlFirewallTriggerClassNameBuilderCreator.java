@@ -32,14 +32,14 @@ import java.sql.SQLException;
  * @author Nicolas de Pomereu
  *
  */
-public class DatabaseConfiguratorClassNameBuilderCreator {
+public class SqlFirewallTriggerClassNameBuilderCreator {
 
-    private static DatabaseConfiguratorClassNameBuilder databaseConfiguratorClassNameBuilder = null;
+    private static SqlFirewallTriggerClassNameBuilder sqlFirewallTriggerClassNameBuilder = null;
 
     /**
-     * Creates a DatabaseConfiguratorClassNameBuilder instance.
+     * Creates a SqlFirewallTriggerClassNameBuilder instance.
      * 
-     * @return a DatabaseConfiguratorClassNameBuilder instance.
+     * @return a SqlFirewallTriggerClassNameBuilder instance.
      * @throws ClassNotFoundException
      * @throws NoSuchMethodException
      * @throws SecurityException
@@ -49,23 +49,23 @@ public class DatabaseConfiguratorClassNameBuilderCreator {
      * @throws InvocationTargetException
      * @throws SQLException
      */
-    public static DatabaseConfiguratorClassNameBuilder createInstance() throws SQLException {
+    public static SqlFirewallTriggerClassNameBuilder createInstance() throws SQLException {
 
-	if (databaseConfiguratorClassNameBuilder == null) {
+	if (sqlFirewallTriggerClassNameBuilder == null) {
 	    Class<?> c;
 	    try {
-		c = Class.forName("org.kawanfw.sql.pro.sql.database_configurator.ProEditionDatabaseConfiguratorClassNameBuilder");
+		c = Class.forName("org.kawanfw.sql.pro.sql.sql_firewall_trigger.ProEditionSqlFirewallTriggerClassNameBuilder");
 		Constructor<?> constructor = c.getConstructor();
-		databaseConfiguratorClassNameBuilder = (DatabaseConfiguratorClassNameBuilder) constructor.newInstance();
-		return databaseConfiguratorClassNameBuilder;
+		sqlFirewallTriggerClassNameBuilder = (SqlFirewallTriggerClassNameBuilder) constructor.newInstance();
+		return sqlFirewallTriggerClassNameBuilder;
 	    } catch (ClassNotFoundException e) {
-		return new DefaultDatabaseConfiguratorClassNameBuilder();
+		return new DefaultSqlFirewallTriggerClassNameBuilder();
 	    } catch (Exception e) {
 		throw new SQLException(e);
 	    }
 	}
 
-	return databaseConfiguratorClassNameBuilder;
+	return sqlFirewallTriggerClassNameBuilder;
     }
 
 }

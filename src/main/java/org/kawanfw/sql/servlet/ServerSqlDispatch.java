@@ -148,7 +148,7 @@ public class ServerSqlDispatch {
 		return;
 	    }
 
-	    List<SqlFirewallManager> sqlFirewallManagers = InjectedClassesStore.get().getSqlFirewallMap().get(database);
+	    List<SqlFirewallManager> sqlFirewallManagers = InjectedClassesStore.get().getSqlFirewallManagerMap().get(database);
 
 	    // get_database_info
 	    if (isGetDatabaseInfo(request, out, action, connection, sqlFirewallManagers)) {

@@ -94,13 +94,15 @@ public class ConfPropertiesManager {
 
 	Map<String, String> databaseConfiguratorClassNameMap = new HashMap<>();
 	Map<String, List<String>> sqlFirewallClassNamesMap = new HashMap<>();
+	Map<String, String> sqlFirewallTriggerClassNamesMap  = new HashMap<>();
 	Map<String, List<String>> updateListenerClassNamesMap = new HashMap<>();
 	
 	buildObjectsPerDatabase(databases, databaseConfiguratorClassNameMap, sqlFirewallClassNamesMap,
-		updateListenerClassNamesMap);
+		sqlFirewallTriggerClassNamesMap, updateListenerClassNamesMap);
 	
 	confPropertiesBuilder.databaseConfiguratorClassNameMap(databaseConfiguratorClassNameMap);
-	confPropertiesBuilder.sqlFirewallClassNamesMap(sqlFirewallClassNamesMap);
+	confPropertiesBuilder.sqlFirewallManagerClassNamesMap(sqlFirewallClassNamesMap);
+	confPropertiesBuilder.sqlFirewallTriggerClassNamesMap(sqlFirewallTriggerClassNamesMap);
 	confPropertiesBuilder.updateListenerClassNamesMap(updateListenerClassNamesMap);
 	
 	String blobDownloadConfiguratorClassName = TomcatStarterUtil
@@ -128,11 +130,13 @@ public class ConfPropertiesManager {
      * @param databases
      * @param databaseConfiguratorClassNameMap
      * @param sqlFirewallClassNamesMap
+     * @param sqlFirewallTriggerClassNamesMap 
      * @param updateListenerClassNamesMap
      */
     public void buildObjectsPerDatabase(Set<String> databases, Map<String, String> databaseConfiguratorClassNameMap,
-	    Map<String, List<String>> sqlFirewallClassNamesMap, Map<String, List<String>> updateListenerClassNamesMap) {
+	    Map<String, List<String>> sqlFirewallClassNamesMap, Map<String, String> sqlFirewallTriggerClassNamesMap, Map<String, List<String>> updateListenerClassNamesMap) {
 	for (String database : databases) {
+	    
 	    // Set the configurator to use for this database
 	    String databaseConfiguratorClassName = TomcatStarterUtil.trimSafe(
 		    properties.getProperty(database + "." + ServerSqlManager.DATABASE_CONFIGURATOR_CLASS_NAME));
@@ -140,7 +144,15 @@ public class ConfPropertiesManager {
 	    if (databaseConfiguratorClassName != null && !databaseConfiguratorClassName.isEmpty()) {
 		databaseConfiguratorClassNameMap.put(database, databaseConfiguratorClassName);
 	    }
+	    
+	    String sqlFirewallTriggerClassName = TomcatStarterUtil.trimSafe(
+		    properties.getProperty(database + "." + ServerSqlManager.SQL_FIREWALL_TRIGGER_CLASS_NAME));
 
+	    if (sqlFirewallTriggerClassName != null && !sqlFirewallTriggerClassName.isEmpty()) {
+		sqlFirewallTriggerClassNamesMap.put(database, sqlFirewallTriggerClassName);
+	    }
+	    
+	    // Set the firewall class names to use for this database
 	    String sqlFirewallClassNameArray = TomcatStarterUtil.trimSafe(
 		    properties.getProperty(database + "." + ServerSqlManager.SQL_FIREWALL_MANAGER_CLASS_NAMES));
 

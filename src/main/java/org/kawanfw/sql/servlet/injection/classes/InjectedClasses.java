@@ -35,6 +35,7 @@ import org.kawanfw.sql.api.server.auth.headers.RequestHeadersAuthenticator;
 import org.kawanfw.sql.api.server.blob.BlobDownloadConfigurator;
 import org.kawanfw.sql.api.server.blob.BlobUploadConfigurator;
 import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
+import org.kawanfw.sql.api.server.firewall.SqlFirewallTrigger;
 import org.kawanfw.sql.api.server.listener.UpdateListener;
 import org.kawanfw.sql.api.server.session.SessionConfigurator;
 
@@ -55,8 +56,11 @@ public class InjectedClasses {
     /** The map of (database, DatabaseConfigurator) */
     private Map<String, DatabaseConfigurator> databaseConfigurators = new ConcurrentHashMap<>();
 
+    /** The map of (database, SqlFirewallTrigger) */
+    private Map<String, SqlFirewallTrigger> sqlFirewallTriggers = new ConcurrentHashMap<>();
+	
     /** The map of (database, List<SqlFirewallManager>) */
-    private Map<String, List<SqlFirewallManager>> sqlFirewallMap = new ConcurrentHashMap<>();
+    private Map<String, List<SqlFirewallManager>> sqlFirewallManagerMap = new ConcurrentHashMap<>();
 
     /** The BlobUploadConfigurator instance */
     private BlobUploadConfigurator blobUploadConfigurator = null;
@@ -77,7 +81,9 @@ public class InjectedClasses {
 	this.userAuthenticator = injectedClassesBuilder.userAuthenticator;
 	this.requestHeadersAuthenticator = injectedClassesBuilder.requestHeadersAuthenticator;
 	this.databaseConfigurators = injectedClassesBuilder.databaseConfigurators;
-	this.sqlFirewallMap = injectedClassesBuilder.sqlFirewallMap;
+	this.sqlFirewallTriggers = injectedClassesBuilder.sqlFirewallTriggers;
+	
+	this.sqlFirewallManagerMap = injectedClassesBuilder.sqlFirewallManagerMap;
 
 	this.blobUploadConfigurator = injectedClassesBuilder.blobUploadConfigurator;
 	this.blobDownloadConfigurator = injectedClassesBuilder.blobDownloadConfigurator;
@@ -109,13 +115,22 @@ public class InjectedClasses {
 	return databaseConfigurators;
     }
 
+   
     /**
-     * @return the sqlFirewallMap
+     * @return the sqlFirewallTriggers
      */
-    public Map<String, List<SqlFirewallManager>> getSqlFirewallMap() {
-	return sqlFirewallMap;
+    public Map<String, SqlFirewallTrigger> getSqlFirewallTriggers() {
+        return sqlFirewallTriggers;
     }
 
+    /**
+     * @return the sqlFirewallManagerMap
+     */
+    public Map<String, List<SqlFirewallManager>> getSqlFirewallManagerMap() {
+	return sqlFirewallManagerMap;
+    }
+
+    
     /**
      * @return the blobUploadConfigurator
      */
@@ -164,8 +179,11 @@ public class InjectedClasses {
 	/** The map of (database, DatabaseConfigurator) */
 	private Map<String, DatabaseConfigurator> databaseConfigurators = new ConcurrentHashMap<>();
 
+	/** The map of (database, SqlFirewallTrigger) */
+	private Map<String, SqlFirewallTrigger> sqlFirewallTriggers = new ConcurrentHashMap<>();
+	
 	/** The map of (database, List<SqlFirewallManager>) */
-	private Map<String, List<SqlFirewallManager>> sqlFirewallMap = new ConcurrentHashMap<>();
+	private Map<String, List<SqlFirewallManager>> sqlFirewallManagerMap = new ConcurrentHashMap<>();
 
 	/** The BlobUploadConfigurator instance */
 	private BlobUploadConfigurator blobUploadConfigurator = null;
@@ -181,7 +199,9 @@ public class InjectedClasses {
 
 	/** The map of (database, List<UpdateListener>) */
 	private Map<String, List<UpdateListener>> updateListenerMap = new ConcurrentHashMap<>();
-	    
+
+
+	  
 	public InjectedClassesBuilder userAuthenticator(UserAuthenticator userAuthenticator) {
 	    this.userAuthenticator = userAuthenticator;
 	    return this;
@@ -198,8 +218,13 @@ public class InjectedClasses {
 	    return this;
 	}
 
-	public InjectedClassesBuilder sqlFirewallMap(Map<String, List<SqlFirewallManager>> sqlFirewallMap) {
-	    this.sqlFirewallMap = sqlFirewallMap;
+	public InjectedClassesBuilder sqlFirewallTriggers(Map<String, SqlFirewallTrigger> sqlFirewallTriggers) {
+	    this.sqlFirewallTriggers = sqlFirewallTriggers;
+	    return this;
+	}
+
+	public InjectedClassesBuilder sqlFirewallManagerMap(Map<String, List<SqlFirewallManager>> sqlFirewallManagerMap) {
+	    this.sqlFirewallManagerMap = sqlFirewallManagerMap;
 	    return this;
 	}
 
@@ -250,6 +275,7 @@ public class InjectedClasses {
 	    // Do some basic validations to check
 	    // if user object does not break any assumption of system
 	}
+
 
 
 
