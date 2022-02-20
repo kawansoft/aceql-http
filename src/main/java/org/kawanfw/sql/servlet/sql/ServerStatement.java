@@ -52,7 +52,7 @@ import org.kawanfw.sql.api.server.SqlEventWrapper;
 import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
 import org.kawanfw.sql.api.server.listener.DefaultUpdateListener;
 import org.kawanfw.sql.api.server.listener.UpdateListener;
-import org.kawanfw.sql.api.util.firewall.SqlFirewallManagerCallTrigger;
+import org.kawanfw.sql.api.util.firewall.SqlFirewallTriggerWrapper;
 import org.kawanfw.sql.servlet.HttpParameter;
 import org.kawanfw.sql.servlet.ServerSqlManager;
 import org.kawanfw.sql.servlet.connection.RollbackUtil;
@@ -349,7 +349,7 @@ public class ServerStatement {
 			serverPreparedStatementParameters.getParameterValues(), false);
 		    
 		//sqlFirewallManager.runIfStatementRefused(sqlEvent, connection);
-		SqlFirewallManagerCallTrigger.wrapRunIfStatementRefused(sqlEvent, sqlFirewallManager, connection);
+		SqlFirewallTriggerWrapper.runIfStatementRefused(sqlEvent, sqlFirewallManager, connection);
 		
 		String message = JsonSecurityMessage.prepStatementNotAllowedBuild(sqlOrder,
 			"Prepared Statement not allowed for executeUpdate",
@@ -388,7 +388,7 @@ public class ServerStatement {
 
 	    if (!isAllowedAfterAnalysis) {
 		//sqlFirewallManager.runIfStatementRefused(sqlEvent, connection);
-		SqlFirewallManagerCallTrigger.wrapRunIfStatementRefused(sqlEvent, sqlFirewallManager, connection);
+		SqlFirewallTriggerWrapper.runIfStatementRefused(sqlEvent, sqlFirewallManager, connection);
 		break;
 	    }
 	}
@@ -633,7 +633,7 @@ public class ServerStatement {
 			ServerStatementUtil.isPreparedStatement(request), parameterValues, false);
 		    
 		//sqlFirewallManager.runIfStatementRefused(sqlEvent, connection);
-		SqlFirewallManagerCallTrigger.wrapRunIfStatementRefused(sqlEvent, sqlFirewallManager, connection);
+		SqlFirewallTriggerWrapper.runIfStatementRefused(sqlEvent, sqlFirewallManager, connection);
 		
 		String message = JsonSecurityMessage.statementNotAllowedBuild(sqlOrder,
 			"Statement not allowed for for executeUpdate", doPrettyPrinting);
@@ -682,7 +682,7 @@ public class ServerStatement {
 		    parameterValues, false);
 
 	    //sqlFirewallOnDeny.runIfStatementRefused(sqlEvent, connection);
-	    SqlFirewallManagerCallTrigger.wrapRunIfStatementRefused(sqlEvent, sqlFirewallOnDeny, connection);
+	    SqlFirewallTriggerWrapper.runIfStatementRefused(sqlEvent, sqlFirewallOnDeny, connection);
 	    
 	    String message = JsonSecurityMessage.statementNotAllowedBuild(sqlOrder, "Statement not allowed",
 		    doPrettyPrinting);

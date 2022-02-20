@@ -45,7 +45,7 @@ import org.kawanfw.sql.api.server.DatabaseConfigurator;
 import org.kawanfw.sql.api.server.SqlEvent;
 import org.kawanfw.sql.api.server.SqlEventWrapper;
 import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
-import org.kawanfw.sql.api.util.firewall.SqlFirewallManagerCallTrigger;
+import org.kawanfw.sql.api.util.firewall.SqlFirewallTriggerWrapper;
 import org.kawanfw.sql.metadata.util.GsonWsUtil;
 import org.kawanfw.sql.servlet.HttpParameter;
 import org.kawanfw.sql.servlet.ServerSqlManager;
@@ -275,7 +275,7 @@ public class ServerPreparedStatementBatch {
 			serverPreparedStatementParameters.getParameterValues(), false);
 		    
 		//sqlFirewallManager.runIfStatementRefused(sqlEvent, connection);
-		SqlFirewallManagerCallTrigger.wrapRunIfStatementRefused(sqlEvent, sqlFirewallManager, connection);
+		SqlFirewallTriggerWrapper.runIfStatementRefused(sqlEvent, sqlFirewallManager, connection);
 
 		String message = JsonSecurityMessage.prepStatementNotAllowedBuild(sqlOrder,
 			"Prepared Statement not allowed for executeUpdate",
@@ -317,7 +317,7 @@ public class ServerPreparedStatementBatch {
 	    isAllowedAfterAnalysis = sqlFirewallManager.allowSqlRunAfterAnalysis(sqlEvent, connection);
 	    if (!isAllowedAfterAnalysis) {
 		//sqlFirewallManager.runIfStatementRefused(sqlEvent, connection);
-		SqlFirewallManagerCallTrigger.wrapRunIfStatementRefused(sqlEvent, sqlFirewallManager, connection);
+		SqlFirewallTriggerWrapper.runIfStatementRefused(sqlEvent, sqlFirewallManager, connection);
 
 		break;
 	    }

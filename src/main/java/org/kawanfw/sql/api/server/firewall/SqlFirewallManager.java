@@ -47,8 +47,6 @@ import org.kawanfw.sql.api.server.StatementAnalyzer;
  * <code>Statement</code> that is not a <code>PreparedStatement</code>.</li>
  * <li>Define if a client user has the right to call a the AceQL Metadata
  * API.</li>
- * <li>Define a specific piece of Java code to analyze the source code of the
- * SQL statement before allowing or not it's execution.</li>
  * </ul>
  * <p>
  * Multiple {@code SqlFirewallManager} may be defined and chained.
@@ -171,29 +169,5 @@ public interface SqlFirewallManager {
     public boolean allowExecuteUpdate(String username, String database, Connection connection)
 	    throws IOException, SQLException;
 
-    /**
-     * Allows to implement specific a Java rule immediately after a SQL statement
-     * described by a SqlEvent has been refused because one of the
-     * <code>SqlFirewallManager.allowXxx</code> method returned false. <br>
-     * <br>
-     * Examples:
-     * <ul>
-     * <li>Delete the user from the username SQL table so that he never comes
-     * back.</li>
-     * <li>Log the IP address.</li>
-     * <li>Log the info.</li>
-     * <li>Send an alert message/email to a Security Officer.</li>
-     * <li>Etc.</li>
-     * </ul>
-     * <p>
-     * 
-     * @param sqlEvent   the SQL event asked by the client side. Contains all info
-     *                   about the SQL call (client username, database name, IP
-     *                   Address of the client, and SQL statement details).
-     * @param connection The current SQL/JDBC <code>Connection</code>
-     * @throws IOException  if an IOException occurs
-     * @throws SQLException if a SQLException occurs
-     */
-    public void runIfStatementRefused(SqlEvent sqlEvent, Connection connection) throws IOException, SQLException;
 
 }

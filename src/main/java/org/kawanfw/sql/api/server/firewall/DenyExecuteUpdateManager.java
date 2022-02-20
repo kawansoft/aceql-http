@@ -27,11 +27,6 @@ package org.kawanfw.sql.api.server.firewall;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import org.kawanfw.sql.api.server.DefaultDatabaseConfigurator;
-import org.kawanfw.sql.api.server.SqlEvent;
 
 /**
  * Firewall manager that denies any update of the database. The database is thus
@@ -51,18 +46,4 @@ public class DenyExecuteUpdateManager extends DefaultSqlFirewallManager implemen
 	return false;
     }
 
-    /**
-     * Logs the info using {@code DefaultDatabaseConfigurator#getLogger()}
-     * {@code Logger}.
-     */
-    @Override
-    public void runIfStatementRefused(SqlEvent sqlEvent, Connection connection) throws IOException, SQLException {
-	String logInfo = "Client username " + sqlEvent.getUsername() + " (IP: " + sqlEvent.getIpAddress()
-		+ ") has been denied by DenyExecuteUpdateManager SqlFirewallManager executing the datadase write statement: "
-		+ sqlEvent.getSql() + ".";
-
-	DefaultDatabaseConfigurator defaultDatabaseConfigurator = new DefaultDatabaseConfigurator();
-	Logger logger = defaultDatabaseConfigurator.getLogger();
-	logger.log(Level.WARNING, logInfo);
-    }
 }
