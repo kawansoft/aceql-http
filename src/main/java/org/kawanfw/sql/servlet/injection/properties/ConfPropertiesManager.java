@@ -40,6 +40,7 @@ import org.kawanfw.sql.tomcat.AceQLServletCallNameGetter;
 import org.kawanfw.sql.tomcat.AceQLServletCallNameGetterCreator;
 import org.kawanfw.sql.tomcat.TomcatStarterUtil;
 import org.kawanfw.sql.tomcat.TomcatStarterUtilProperties;
+import org.kawanfw.sql.util.FrameworkDebug;
 
 /**
  * Create a ConfProperties from the passed properties.
@@ -49,6 +50,8 @@ import org.kawanfw.sql.tomcat.TomcatStarterUtilProperties;
 
 public class ConfPropertiesManager {
 
+    private static boolean DEBUG = FrameworkDebug.isSet(ConfPropertiesManager.class);
+    
     private Properties properties;
 
     /**
@@ -103,6 +106,11 @@ public class ConfPropertiesManager {
 	confPropertiesBuilder.databaseConfiguratorClassNameMap(databaseConfiguratorClassNameMap);
 	confPropertiesBuilder.sqlFirewallManagerClassNamesMap(sqlFirewallClassNamesMap);
 	confPropertiesBuilder.sqlFirewallTriggerClassNamesMap(sqlFirewallTriggerClassNamesMap);
+	
+	if (DEBUG) {
+	    System.out.println("sqlFirewallTriggerClassNamesMap: " + sqlFirewallTriggerClassNamesMap);
+	}
+	
 	confPropertiesBuilder.updateListenerClassNamesMap(updateListenerClassNamesMap);
 	
 	String blobDownloadConfiguratorClassName = TomcatStarterUtil

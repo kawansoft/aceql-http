@@ -31,6 +31,8 @@ import java.util.Objects;
 
 import org.kawanfw.sql.api.server.SqlEvent;
 import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
+import org.kawanfw.sql.api.server.firewall.SqlFirewallTrigger;
+import org.kawanfw.sql.servlet.injection.classes.InjectedClassesStore;
 
 /**
  * @author Nicolas de Pomereu
@@ -43,7 +45,15 @@ public class SqlFirewallManagerCallTrigger {
 	Objects.requireNonNull(sqlEvent, "sqlEvent cannot be null!");
 	Objects.requireNonNull(sqlFirewallManager, "sqlFirewallManager cannot be null!");
 	Objects.requireNonNull(connection, "connection cannot be null!");
-	sqlFirewallManager.runIfStatementRefused(sqlEvent, connection);
+	
+	String database = sqlEvent.getDatabase();
+	
+	// OLD CODE:
+	//sqlFirewallManager.runIfStatementRefused(sqlEvent, connection);
+	
+	// NEW CODE:
+	SqlFirewallTrigger sqlFirewallTrigger = InjectedClassesStore.get().getSqlFirewallTriggers().get(database);
+	sqlFirewallTrigger.runIfStatementRefused(sqlEvent, sqlFirewallManager, connection);
     }
 
 }
