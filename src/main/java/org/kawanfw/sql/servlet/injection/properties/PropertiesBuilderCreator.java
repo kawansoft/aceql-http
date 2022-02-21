@@ -24,35 +24,49 @@
  */
 package org.kawanfw.sql.servlet.injection.properties;
 
-import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
-import java.util.Properties;
-
-import org.kawanfw.sql.api.server.DatabaseConfigurationException;
 
 /**
- * Methods for properties and jasypt encrypted properties loading.
- * 
  * @author Nicolas de Pomereu
  *
  */
-public class PropertiesFileUtil {
+public class PropertiesBuilderCreator {
 
+    private static PropertiesBuilder propertiesBuilder = null;
 
     /**
-     * Returns the Properties extracted from a file.
-     *
-     * @param file the file containing the properties
-     * @return the Properties extracted from the file
-     *
-     * @throws IOException
-     * @throws DatabaseConfigurationException
-     * @throws SQLException 
+     * Creates a PropertiesBuilder instance.
+     * 
+     * @return a PropertiesBuilder instance.
+     * @throws ClassNotFoundException
+     * @throws NoSuchMethodException
+     * @throws SecurityException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     * @throws IllegalArgumentException
+     * @throws InvocationTargetException
+     * @throws SQLException
      */
-    public static Properties getProperties(File file) throws IOException {
-	PropertiesBuilder propertiesBuilder =  PropertiesBuilderCreator.createInstance();
-	return propertiesBuilder.getProperties(file);
+    public static PropertiesBuilder createInstance() throws IOException {
+
+	if (propertiesBuilder == null) {
+	    Class<?> c;
+	    try {
+		c = Class.forName("org.kawanfw.sql.pro.sql.properties.ProEditionPropertiesBuilder");
+		Constructor<?> constructor = c.getConstructor();
+		propertiesBuilder = (PropertiesBuilder) constructor.newInstance();
+		return propertiesBuilder;
+	    } catch (ClassNotFoundException e) {
+		return new DefaultPropertiesBuilder();
+	    } catch (Exception e) {
+		throw new IOException(e);
+	    }
+	}
+
+	return propertiesBuilder;
     }
 
 }

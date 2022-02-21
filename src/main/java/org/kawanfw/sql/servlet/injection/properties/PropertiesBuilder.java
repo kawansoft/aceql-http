@@ -22,37 +22,27 @@
  * Any modifications to this file must keep this entire header
  * intact.
  */
+
 package org.kawanfw.sql.servlet.injection.properties;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.Properties;
 
-import org.kawanfw.sql.api.server.DatabaseConfigurationException;
-
 /**
- * Methods for properties and jasypt encrypted properties loading.
  * 
  * @author Nicolas de Pomereu
  *
  */
-public class PropertiesFileUtil {
+public interface PropertiesBuilder {
 
-
+    
     /**
-     * Returns the Properties extracted from a file.
-     *
-     * @param file the file containing the properties
-     * @return the Properties extracted from the file
-     *
+     * Return the properties for the specified file
+     * @param file the properties File
+     * @return the properties
      * @throws IOException
-     * @throws DatabaseConfigurationException
-     * @throws SQLException 
      */
-    public static Properties getProperties(File file) throws IOException {
-	PropertiesBuilder propertiesBuilder =  PropertiesBuilderCreator.createInstance();
-	return propertiesBuilder.getProperties(file);
-    }
-
+    Properties getProperties(File file) throws IOException;
+    
 }
