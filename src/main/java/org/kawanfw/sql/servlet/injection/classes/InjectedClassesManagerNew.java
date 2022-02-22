@@ -92,8 +92,8 @@ public class InjectedClassesManagerNew {
 	try {
 	    // Test if we are in Native Tomcat and do specific stuff.
 	    if (!TomcatSqlModeStore.isTomcatEmbedded()) {
-		NativeTomcatElementsCreator nativeTomcatElementsCreator = new NativeTomcatElementsCreator(config);
-		nativeTomcatElementsCreator.create();
+		NativeTomcatElementsBuilder nativeTomcatElementsBuilder = NativeTomcatElementsBuilderCreator.createInstance();
+		nativeTomcatElementsBuilder.create(config);
 	    }
 
 	    ThreadPoolExecutorBuilder threadPoolExecutorBuilder = ThreadPoolExecutorBuilderCreator.createInstance();
