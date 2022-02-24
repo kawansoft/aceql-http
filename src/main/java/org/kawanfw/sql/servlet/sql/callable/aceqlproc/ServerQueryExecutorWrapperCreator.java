@@ -22,7 +22,7 @@
  * Any modifications to this file must keep this entire header
  * intact.
  */
-package org.kawanfw.sql.servlet.sql.callable;
+package org.kawanfw.sql.servlet.sql.callable.aceqlproc;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -31,13 +31,13 @@ import java.lang.reflect.InvocationTargetException;
  * @author Nicolas de Pomereu
  *
  */
-public class ServerCallableStatementWrapperCreator {
+public class ServerQueryExecutorWrapperCreator {
 
-    private static ServerCallableStatementWrapper serverCallableStatementWrapper = null;
+    private static ServerQueryExecutorWrapper serverCallableStatementWrapper = null;
 
     /**
-     * Creates a ServerCallableStatementWrapper instance.
-     * @return a ServerCallableStatementWrapper instance.
+     * Creates a ServerQueryExecutorWrapper instance.
+     * @return a ServerQueryExecutorWrapper instance.
      * @throws ClassNotFoundException
      * @throws NoSuchMethodException
      * @throws SecurityException
@@ -46,14 +46,14 @@ public class ServerCallableStatementWrapperCreator {
      * @throws IllegalArgumentException
      * @throws InvocationTargetException
      */
-    public static ServerCallableStatementWrapper createInstance()
+    public static ServerQueryExecutorWrapper createInstance()
 	    throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException,
 	    IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 
 	if (serverCallableStatementWrapper == null) {
-	    Class<?> c = Class.forName("org.kawanfw.sql.pro.sql.callable.DefaultServerCallableStatementWrapper");
+	    Class<?> c = Class.forName("org.kawanfw.sql.pro.sql.callable.aceqlproc.DefaultServerQueryExecutorWrapper");
 	    Constructor<?> constructor = c.getConstructor();
-	    serverCallableStatementWrapper = (ServerCallableStatementWrapper) constructor.newInstance();
+	    serverCallableStatementWrapper = (ServerQueryExecutorWrapper) constructor.newInstance();
 	}
 
 	return serverCallableStatementWrapper;
