@@ -22,10 +22,19 @@
  * Any modifications to this file must keep this entire header
  * intact.
  */
+package org.kawanfw.sql.servlet.injection.classes.blob;
 
-package org.kawanfw.sql.servlet.injection.classes;
+import org.kawanfw.sql.api.server.blob.DefaultBlobDownloadConfigurator;
 
-public interface BlobDownloadConfiguratorClassNameBuilder {
+/**
+ * @author Nicolas de Pomereu
+ *
+ */
+public class DefaultBlobDownloadConfiguratorClassNameBuilder implements BlobDownloadConfiguratorClassNameBuilder {
 
-    String getClassName();
+    @Override
+    public String getClassName() {
+	return DefaultBlobDownloadConfigurator.class.getName();
+    }
+
 }

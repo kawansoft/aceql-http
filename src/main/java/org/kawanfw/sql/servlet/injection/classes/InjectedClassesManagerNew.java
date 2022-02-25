@@ -44,6 +44,10 @@ import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
 import org.kawanfw.sql.api.server.firewall.SqlFirewallTrigger;
 import org.kawanfw.sql.api.server.listener.UpdateListener;
 import org.kawanfw.sql.servlet.injection.classes.InjectedClasses.InjectedClassesBuilder;
+import org.kawanfw.sql.servlet.injection.classes.blob.BlobDownloadConfiguratorClassNameBuilder;
+import org.kawanfw.sql.servlet.injection.classes.blob.BlobDownloadConfiguratorClassNameBuilderCreator;
+import org.kawanfw.sql.servlet.injection.classes.blob.BlobUploadConfiguratorClassNameBuilder;
+import org.kawanfw.sql.servlet.injection.classes.blob.BlobUploadConfiguratorClassNameBuilderCreator;
 import org.kawanfw.sql.servlet.injection.classes.creator.BlobDownloadConfiguratorCreator;
 import org.kawanfw.sql.servlet.injection.classes.creator.BlobUploadConfiguratorCreator;
 import org.kawanfw.sql.servlet.injection.classes.creator.DatabaseConfiguratorCreator;
@@ -92,7 +96,8 @@ public class InjectedClassesManagerNew {
 	try {
 	    // Test if we are in Native Tomcat and do specific stuff.
 	    if (!TomcatSqlModeStore.isTomcatEmbedded()) {
-		NativeTomcatElementsBuilder nativeTomcatElementsBuilder = NativeTomcatElementsBuilderCreator.createInstance();
+		NativeTomcatElementsBuilder nativeTomcatElementsBuilder = NativeTomcatElementsBuilderCreator
+			.createInstance();
 		nativeTomcatElementsBuilder.create(config);
 	    }
 
@@ -239,11 +244,16 @@ public class InjectedClassesManagerNew {
      * @throws InvocationTargetException
      * @throws NoSuchMethodException
      * @throws SecurityException
+     * @throws SQLException 
      */
     private void loadBlobUploadConfigurator(InjectedClassesBuilder injectedClassesBuilder)
 	    throws ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException,
-	    InvocationTargetException, NoSuchMethodException, SecurityException {
-	String blobUploadConfiguratorClassName = ConfPropertiesStore.get().getBlobUploadConfiguratorClassName();
+	    InvocationTargetException, NoSuchMethodException, SecurityException, SQLException {
+	
+	BlobUploadConfiguratorClassNameBuilder blobUploadConfiguratorClassNameBuilder = BlobUploadConfiguratorClassNameBuilderCreator
+		.createInstance();
+	String blobUploadConfiguratorClassName = blobUploadConfiguratorClassNameBuilder.getClassName();
+	
 	classNameToLoad = blobUploadConfiguratorClassName;
 	BlobUploadConfiguratorCreator blobUploadConfiguratorCreator = new BlobUploadConfiguratorCreator(
 		blobUploadConfiguratorClassName);
@@ -269,12 +279,17 @@ public class InjectedClassesManagerNew {
      * @throws InvocationTargetException
      * @throws NoSuchMethodException
      * @throws SecurityException
+     * @throws SQLException
      */
     private void loadBlobDownloadConfigurator(InjectedClassesBuilder injectedClassesBuilder)
 	    throws ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException,
-	    InvocationTargetException, NoSuchMethodException, SecurityException {
+	    InvocationTargetException, NoSuchMethodException, SecurityException, SQLException {
 	// Load Configurators for Blobs/Clobs
-	String blobDownloadConfiguratorClassName = ConfPropertiesStore.get().getBlobDownloadConfiguratorClassName();
+
+	BlobDownloadConfiguratorClassNameBuilder blobDownloadConfiguratorClassNameBuilder = BlobDownloadConfiguratorClassNameBuilderCreator
+		.createInstance();
+	String blobDownloadConfiguratorClassName = blobDownloadConfiguratorClassNameBuilder.getClassName();
+
 	classNameToLoad = blobDownloadConfiguratorClassName;
 	BlobDownloadConfiguratorCreator blobDownloadConfiguratorCreator = new BlobDownloadConfiguratorCreator(
 		blobDownloadConfiguratorClassName);

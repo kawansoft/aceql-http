@@ -22,7 +22,7 @@
  * Any modifications to this file must keep this entire header
  * intact.
  */
-package org.kawanfw.sql.servlet.injection.classes;
+package org.kawanfw.sql.servlet.injection.classes.blob;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -32,14 +32,14 @@ import java.sql.SQLException;
  * @author Nicolas de Pomereu
  *
  */
-public class BlobDownloadConfiguratorClassNameBuilderCreator {
+public class BlobUploadConfiguratorClassNameBuilderCreator {
 
-    private static BlobDownloadConfiguratorClassNameBuilder blobDownloadConfiguratorClassNameBuilder = null;
+    private static BlobUploadConfiguratorClassNameBuilder blobUploadConfiguratorClassNameBuilder = null;
 
     /**
-     * Creates a BlobDownloadConfiguratorClassNameBuilder instance.
+     * Creates a BlobUploadConfiguratorClassNameBuilder instance.
      * 
-     * @return a BlobDownloadConfiguratorClassNameBuilder instance.
+     * @return a BlobUploadConfiguratorClassNameBuilder instance.
      * @throws ClassNotFoundException
      * @throws NoSuchMethodException
      * @throws SecurityException
@@ -49,15 +49,15 @@ public class BlobDownloadConfiguratorClassNameBuilderCreator {
      * @throws InvocationTargetException
      * @throws SQLException
      */
-    public static BlobDownloadConfiguratorClassNameBuilder createInstance() throws SQLException {
+    public static BlobUploadConfiguratorClassNameBuilder createInstance() throws SQLException {
 
-	if (blobDownloadConfiguratorClassNameBuilder == null) {
+	if (blobUploadConfiguratorClassNameBuilder == null) {
 	    Class<?> c;
 	    try {
-		c = Class.forName("org.kawanfw.sql.pro.sql.database_configurator.ProEditionDatabaseConfiguratorClassNameBuilder");
+		c = Class.forName("org.kawanfw.sql.pro.sql.auth.blob_configurator.ProEditionBlobUploadConfiguratorClassNameBuilder");
 		Constructor<?> constructor = c.getConstructor();
-		blobDownloadConfiguratorClassNameBuilder = (BlobDownloadConfiguratorClassNameBuilder) constructor.newInstance();
-		return blobDownloadConfiguratorClassNameBuilder;
+		blobUploadConfiguratorClassNameBuilder = (BlobUploadConfiguratorClassNameBuilder) constructor.newInstance();
+		return blobUploadConfiguratorClassNameBuilder;
 	    } catch (ClassNotFoundException e) {
 		//return new DefaultDatabaseConfiguratorClassNameBuilder();
 		return null;
@@ -66,7 +66,7 @@ public class BlobDownloadConfiguratorClassNameBuilderCreator {
 	    }
 	}
 
-	return blobDownloadConfiguratorClassNameBuilder;
+	return blobUploadConfiguratorClassNameBuilder;
     }
 
 }
