@@ -59,8 +59,7 @@ public class BlobDownloadConfiguratorClassNameBuilderCreator {
 		blobDownloadConfiguratorClassNameBuilder = (BlobDownloadConfiguratorClassNameBuilder) constructor.newInstance();
 		return blobDownloadConfiguratorClassNameBuilder;
 	    } catch (ClassNotFoundException e) {
-		//return new DefaultDatabaseConfiguratorClassNameBuilder();
-		return null;
+		return new DefaultBlobDownloadConfiguratorClassNameBuilder();
 	    } catch (Exception e) {
 		throw new SQLException(e);
 	    }

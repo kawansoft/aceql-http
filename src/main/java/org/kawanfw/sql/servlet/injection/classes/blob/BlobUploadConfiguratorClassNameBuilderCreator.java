@@ -59,8 +59,7 @@ public class BlobUploadConfiguratorClassNameBuilderCreator {
 		blobUploadConfiguratorClassNameBuilder = (BlobUploadConfiguratorClassNameBuilder) constructor.newInstance();
 		return blobUploadConfiguratorClassNameBuilder;
 	    } catch (ClassNotFoundException e) {
-		//return new DefaultDatabaseConfiguratorClassNameBuilder();
-		return null;
+		return new DefaultBlobUploadConfiguratorClassNameBuilder();
 	    } catch (Exception e) {
 		throw new SQLException(e);
 	    }
