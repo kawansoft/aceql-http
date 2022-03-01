@@ -142,6 +142,7 @@ public class InjectedClassesManagerNew {
 
 	    loadBlobDownloadConfigurator(injectedClassesBuilder);
 	    loadBlobUploadConfigurator(injectedClassesBuilder);
+	    
 	    loadSessionManagerConfigurator(injectedClassesBuilder);
 
 	    // Create the InjectedClasses instance
@@ -213,12 +214,18 @@ public class InjectedClassesManagerNew {
      * @throws InvocationTargetException
      * @throws NoSuchMethodException
      * @throws SecurityException
+     * @throws SQLException 
      */
     private void loadSessionManagerConfigurator(InjectedClassesBuilder injectedClassesBuilder)
 	    throws ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException,
-	    InvocationTargetException, NoSuchMethodException, SecurityException {
+	    InvocationTargetException, NoSuchMethodException, SecurityException, SQLException {
 	// Load Configurators for SessionManager
-	String sessionManagerConfiguratorClassName = ConfPropertiesStore.get().getSessionConfiguratorClassName();
+	//String sessionManagerConfiguratorClassName = ConfPropertiesStore.get().getSessionConfiguratorClassName();
+	
+	SessionConfiguratorClassNameBuilder sessionConfiguratorClassNameBuilder = SessionConfiguratorClassNameBuilderCreator
+		.createInstance();
+	String sessionManagerConfiguratorClassName = sessionConfiguratorClassNameBuilder.getClassName();
+	
 	classNameToLoad = sessionManagerConfiguratorClassName;
 	SessionConfiguratorCreator sessionConfiguratorCreator = new SessionConfiguratorCreator(
 		sessionManagerConfiguratorClassName);
