@@ -44,7 +44,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.SystemUtils;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.kawanfw.sql.api.server.auth.headers.RequestHeadersAuthenticator;
 import org.kawanfw.sql.api.server.session.SessionConfigurator;
@@ -87,37 +86,30 @@ public class ServerSqlManager extends HttpServlet {
 
     public static final String UPDATE_LISTENER_MANAGER_CLASS_NAMES = "updateListenerClassNames";
 
+    private static boolean INIT_DONE = false;
+
+    private String propertiesFile;
+
 
     
-    /** The Exception thrown at init */
-    private Exception exception = null;
-
-    /** The init error message trapped */
-    private String initErrrorMesage = null;
-
-
-    /**
-     * Init
-     */
     @Override
     public void init(ServletConfig config) throws ServletException {
 	super.init(config);
-	InjectedClassesManagerNew injectedClassesManager = new InjectedClassesManagerNew(config);
-	injectedClassesManager.createClasses();
-
-	exception = injectedClassesManager.getException();
-	initErrrorMesage = injectedClassesManager.getInitErrrorMesage();
+	propertiesFile = config.getInitParameter("properties");
     }
 
     @Override
     public void destroy() {
 	super.destroy();
-	ThreadPoolExecutor threadPoolExecutor = InjectedClassesStore.get().getThreadPoolExecutor();
-	if (threadPoolExecutor != null) {
-	    try {
-		threadPoolExecutor.shutdown();
-	    } catch (Exception e) {
-		e.printStackTrace(); // Should never happen
+	
+	if ( InjectedClassesStore.get() != null && InjectedClassesStore.get().getThreadPoolExecutor() != null) {
+	    ThreadPoolExecutor threadPoolExecutor = InjectedClassesStore.get().getThreadPoolExecutor();
+	    if (threadPoolExecutor != null) {
+		try {
+		    threadPoolExecutor.shutdown();
+		} catch (Exception e) {
+		    e.printStackTrace(); // Should never happen
+		}
 	    }
 	}
 
@@ -130,6 +122,8 @@ public class ServerSqlManager extends HttpServlet {
     protected void service(HttpServletRequest request, HttpServletResponse response)
 	    throws ServletException, IOException {
 
+	createClassesSynchronized(propertiesFile);
+	
 	/* Call in async mode */
 	final AsyncContext asyncContext = request.startAsync();
 	asyncContext.setTimeout(0);
@@ -157,14 +151,29 @@ public class ServerSqlManager extends HttpServlet {
     }
 
     /**
+     * Create all classes 
+     * @throws ServletException
+     * @throws IOException
+     */
+    public static synchronized void createClassesSynchronized(String propertiesFile) throws ServletException, IOException {
+	if (!INIT_DONE) {
+	    INIT_DONE = true;
+	    InjectedClassesManagerNew injectedClassesManager = new InjectedClassesManagerNew();
+	    injectedClassesManager.createClasses(propertiesFile);
+	}
+    }
+
+    /**
      * POST & GET. Handles all servlet calls. Allows to log Exceptions including
      * runtime Exceptions
      *
      * @param request
      * @param response
+     * @throws ServletException 
      * @throws UnsupportedEncodingException
      */
-    private void handleRequestWrapper(HttpServletRequest request, HttpServletResponse response) {
+    private void handleRequestWrapper(HttpServletRequest request, HttpServletResponse response)  {
+		
 	OutputStream out = null;
 	try {
 	    out = response.getOutputStream();
@@ -197,10 +206,6 @@ public class ServerSqlManager extends HttpServlet {
     private void handleRequest(HttpServletRequest request, HttpServletResponse response, OutputStream out)
 	    throws UnsupportedEncodingException, IOException, SQLException, FileUploadException {
 	request.setCharacterEncoding("UTF-8");
-
-	if (isExceptionSet(response, out)) {
-	    return;
-	}
 
 	debug("after RequestInfoStore.init(request);");
 	debug(request.getRemoteAddr());
@@ -386,23 +391,23 @@ public class ServerSqlManager extends HttpServlet {
 	return isVerified;
     }
 
-    /**
-     * @param response
-     * @param out
-     * @throws IOException
-     */
-    private boolean isExceptionSet(HttpServletResponse response, OutputStream out) throws IOException {
-	// If Init fail, say it cleanly to client, instead of bad 500 Servlet
-	if (exception != null) {
-	    JsonErrorReturn jsonErrorReturn = new JsonErrorReturn(response,
-		    HttpServletResponse.SC_INTERNAL_SERVER_ERROR, JsonErrorReturn.ERROR_ACEQL_ERROR,
-		    initErrrorMesage + " Reason: " + exception.getMessage(), ExceptionUtils.getStackTrace(exception));
-
-	    writeLine(out, jsonErrorReturn.build());
-	    return true;
-	}
-	return false;
-    }
+//    /**
+//     * @param response
+//     * @param out
+//     * @throws IOException
+//     */
+//    private boolean isExceptionSet(HttpServletResponse response, OutputStream out) throws IOException {
+//	// If Init fail, say it cleanly to client, instead of bad 500 Servlet
+//	if (exception != null) {
+//	    JsonErrorReturn jsonErrorReturn = new JsonErrorReturn(response,
+//		    HttpServletResponse.SC_INTERNAL_SERVER_ERROR, JsonErrorReturn.ERROR_ACEQL_ERROR,
+//		    initErrrorMesage + " Reason: " + exception.getMessage(), ExceptionUtils.getStackTrace(exception));
+//
+//	    writeLine(out, jsonErrorReturn.build());
+//	    return true;
+//	}
+//	return false;
+//    }
 
     /**
      * @param out

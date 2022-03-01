@@ -28,8 +28,6 @@ package org.kawanfw.sql.servlet.injection.classes;
 import java.io.IOException;
 import java.sql.SQLException;
 
-import javax.servlet.ServletConfig;
-
 import org.kawanfw.sql.api.server.DatabaseConfigurationException;
 import org.kawanfw.sql.util.Tag;
 
@@ -44,13 +42,13 @@ public class DefaultNativeTomcatElementsBuilder implements NativeTomcatElementsB
     /**
      * Creates the the datasources and the ConfProperties.
      * 
-     * @param config servlet configuration elements (native Tomcat only);
+     * @param the properties file (native Tomcat only);
      * @throws DatabaseConfigurationException
      * @throws IOException
      * @throws SQLException
      */
     @Override
-    public void create(ServletConfig config) throws DatabaseConfigurationException, IOException, SQLException {
+    public void create(String propertiesFile) throws DatabaseConfigurationException, IOException, SQLException {
 	throw new UnsupportedOperationException(Tag.PRODUCT + " " + "Using Tomcat or other servlet containers "
 		+ Tag.REQUIRES_ACEQL_PROFESSIONAL_EDITION);
     }

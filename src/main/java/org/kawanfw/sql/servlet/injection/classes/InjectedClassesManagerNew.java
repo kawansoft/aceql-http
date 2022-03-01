@@ -35,14 +35,14 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ThreadPoolExecutor;
 
-import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
 
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.kawanfw.sql.api.server.DatabaseConfigurationException;
 import org.kawanfw.sql.api.server.DatabaseConfigurator;
 import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
 import org.kawanfw.sql.api.server.firewall.SqlFirewallTrigger;
 import org.kawanfw.sql.api.server.listener.UpdateListener;
+import org.kawanfw.sql.api.server.session.JwtSessionConfigurator;
 import org.kawanfw.sql.servlet.injection.classes.InjectedClasses.InjectedClassesBuilder;
 import org.kawanfw.sql.servlet.injection.classes.blob.BlobDownloadConfiguratorClassNameBuilder;
 import org.kawanfw.sql.servlet.injection.classes.blob.BlobDownloadConfiguratorClassNameBuilderCreator;
@@ -56,49 +56,36 @@ import org.kawanfw.sql.servlet.injection.classes.creator.SqlFirewallTriggerCreat
 import org.kawanfw.sql.servlet.injection.classes.creator.SqlFirewallsCreator;
 import org.kawanfw.sql.servlet.injection.classes.creator.UserAuthenticatorCreator;
 import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesStore;
+import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesUtil;
 import org.kawanfw.sql.tomcat.TomcatSqlModeStore;
 import org.kawanfw.sql.tomcat.properties.threadpool.ThreadPoolExecutorBuilder;
 import org.kawanfw.sql.tomcat.properties.threadpool.ThreadPoolExecutorBuilderCreator;
 import org.kawanfw.sql.util.FrameworkDebug;
 import org.kawanfw.sql.util.SqlTag;
 import org.kawanfw.sql.util.Tag;
-import org.kawanfw.sql.version.VersionWrapper;
 
 public class InjectedClassesManagerNew {
 
     private static boolean DEBUG = FrameworkDebug.isSet(InjectedClassesManagerNew.class);
     public static String CR_LF = System.getProperty("line.separator");
 
-    /** The Exception thrown at init */
-    private Exception exception = null;
-
-    /** The init error message trapped */
-    private String initErrrorMesage = null;
-
     private String classNameToLoad;
 
-    private ServletConfig config;
-
-    /**
-     * Constructor.
-     *
-     * @param config
-     */
-    public InjectedClassesManagerNew(ServletConfig config) {
-	this.config = config;
-    }
 
     /**
      * Created all injected classes instances.
+     * @throws ServletException 
+     * @throws ClassNotFoundException 
+     * @throws IOException 
      */
-    public void createClasses() {
+    public void createClasses(String propertiesFile) throws ServletException, IOException {
 	classNameToLoad = null;
 	try {
 	    // Test if we are in Native Tomcat and do specific stuff.
 	    if (!TomcatSqlModeStore.isTomcatEmbedded()) {
 		NativeTomcatElementsBuilder nativeTomcatElementsBuilder = NativeTomcatElementsBuilderCreator
 			.createInstance();
-		nativeTomcatElementsBuilder.create(config);
+		nativeTomcatElementsBuilder.create(propertiesFile);
 	    }
 
 	    ThreadPoolExecutorBuilder threadPoolExecutorBuilder = ThreadPoolExecutorBuilderCreator.createInstance();
@@ -151,33 +138,40 @@ public class InjectedClassesManagerNew {
 	    // Store the InjectedClasses instance statically
 	    InjectedClassesStore.set(injectedClasses);
 
-	} catch (ClassNotFoundException e) {
-	    initErrrorMesage = Tag.PRODUCT_USER_CONFIG_FAIL
+	} 
+	catch (ClassNotFoundException exception) {
+	    String initErrrorMesage = Tag.PRODUCT_USER_CONFIG_FAIL
 		    + " Impossible to load (ClassNotFoundException) Configurator class: " + classNameToLoad;
-	    exception = e;
-	} catch (InstantiationException e) {
-	    initErrrorMesage = Tag.PRODUCT_USER_CONFIG_FAIL
+	    throw new IOException(initErrrorMesage, exception);
+
+	} catch (InstantiationException exception) {
+	    String initErrrorMesage = Tag.PRODUCT_USER_CONFIG_FAIL
 		    + " Impossible to load (InstantiationException) Configurator class: " + classNameToLoad;
-	    exception = e;
-	} catch (IllegalAccessException e) {
-	    initErrrorMesage = Tag.PRODUCT_USER_CONFIG_FAIL
+	    throw new IOException(initErrrorMesage, exception);
+	} 
+	catch (IllegalAccessException exception) {
+	    String initErrrorMesage = Tag.PRODUCT_USER_CONFIG_FAIL
 		    + " Impossible to load (IllegalAccessException) Configurator class: " + classNameToLoad;
-	    exception = e;
-	} catch (DatabaseConfigurationException e) {
-	    initErrrorMesage = e.getMessage();
-	    exception = e;
-	} catch (Exception e) {
-	    initErrrorMesage = Tag.PRODUCT_PRODUCT_FAIL + " Please contact support at: support@kawansoft.com";
-	    exception = e;
+	    throw new IOException(initErrrorMesage, exception);
+	} catch (DatabaseConfigurationException exception) {
+	    String initErrrorMesage = exception.getMessage();
+	    throw new IOException(initErrrorMesage, exception);
+	} 
+	catch (Exception exception) {
+	    String initErrrorMesage = Tag.RUNNING_PRODUCT  + " " + exception.getMessage();
+	    throw new IOException(initErrrorMesage);
+
 	}
 
-	treatException();
+	//treatException();
     }
 
     /**
      *
      */
+    @SuppressWarnings("unused")
     private void treatException() {
+	/*
 	if (exception == null) {
 	    System.out.println(SqlTag.SQL_PRODUCT_START + " Loaded classes Status: OK.");
 
@@ -200,6 +194,7 @@ public class InjectedClassesManagerNew {
 		System.out.println();
 	    }
 	}
+	*/
     }
 
     /**
@@ -214,28 +209,36 @@ public class InjectedClassesManagerNew {
      * @throws InvocationTargetException
      * @throws NoSuchMethodException
      * @throws SecurityException
-     * @throws SQLException 
+     * @throws SQLException
      */
     private void loadSessionManagerConfigurator(InjectedClassesBuilder injectedClassesBuilder)
 	    throws ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException,
 	    InvocationTargetException, NoSuchMethodException, SecurityException, SQLException {
 	// Load Configurators for SessionManager
-	//String sessionManagerConfiguratorClassName = ConfPropertiesStore.get().getSessionConfiguratorClassName();
-	
+	// String sessionManagerConfiguratorClassName =
+	// ConfPropertiesStore.get().getSessionConfiguratorClassName();
+
 	SessionConfiguratorClassNameBuilder sessionConfiguratorClassNameBuilder = SessionConfiguratorClassNameBuilderCreator
 		.createInstance();
-	String sessionManagerConfiguratorClassName = sessionConfiguratorClassNameBuilder.getClassName();
-	
-	classNameToLoad = sessionManagerConfiguratorClassName;
-	SessionConfiguratorCreator sessionConfiguratorCreator = new SessionConfiguratorCreator(
-		sessionManagerConfiguratorClassName);
-	injectedClassesBuilder.sessionConfigurator(sessionConfiguratorCreator.getSessionConfigurator());
-	sessionManagerConfiguratorClassName = sessionConfiguratorCreator.getSessionConfiguratorClassName();
+	String sessionConfiguratorClassName = sessionConfiguratorClassNameBuilder.getClassName();
 
-	if (!sessionManagerConfiguratorClassName
+	if (ConfPropertiesUtil.isStatelessMode()
+		&& !sessionConfiguratorClassName.endsWith(JwtSessionConfigurator.class.getSimpleName())) {
+	    throw new SQLException(SqlTag.USER_CONFIGURATION
+		    + " Stateless mode is incompatible with DefaultSessionConfigurator implementation. "
+		    + "Please use a JwtSessionConfigurator or equivalent in stateless mode.");
+	}
+
+	classNameToLoad = sessionConfiguratorClassName;
+	SessionConfiguratorCreator sessionConfiguratorCreator = new SessionConfiguratorCreator(
+		sessionConfiguratorClassName);
+	injectedClassesBuilder.sessionConfigurator(sessionConfiguratorCreator.getSessionConfigurator());
+	sessionConfiguratorClassName = sessionConfiguratorCreator.getSessionConfiguratorClassName();
+
+	if (!sessionConfiguratorClassName
 		.equals(org.kawanfw.sql.api.server.session.DefaultSessionConfigurator.class.getName())) {
 	    System.out.println(SqlTag.SQL_PRODUCT_START + " Loading sessionManagerConfiguratorClassName: ");
-	    System.out.println(SqlTag.SQL_PRODUCT_START + "  -> " + sessionManagerConfiguratorClassName);
+	    System.out.println(SqlTag.SQL_PRODUCT_START + "  -> " + sessionConfiguratorClassName);
 	}
     }
 
@@ -527,13 +530,13 @@ public class InjectedClassesManagerNew {
 
     }
 
-    public Exception getException() {
-	return exception;
-    }
-
-    public String getInitErrrorMesage() {
-	return initErrrorMesage;
-    }
+//    public Exception getException() {
+//	return exception;
+//    }
+//
+//    public String getInitErrrorMesage() {
+//	return initErrrorMesage;
+//    }
 
     /**
      * Method called by children Servlet for debug purpose Println is done only if
@@ -544,5 +547,7 @@ public class InjectedClassesManagerNew {
 	    System.out.println(new Date() + " " + s);
 	}
     }
+
+
 
 }

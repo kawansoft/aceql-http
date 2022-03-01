@@ -28,8 +28,6 @@ package org.kawanfw.sql.servlet.injection.classes;
 import java.io.IOException;
 import java.sql.SQLException;
 
-import javax.servlet.ServletConfig;
-
 import org.kawanfw.sql.api.server.DatabaseConfigurationException;
 
 public interface NativeTomcatElementsBuilder {
@@ -41,6 +39,6 @@ public interface NativeTomcatElementsBuilder {
      * @throws IOException
      * @throws SQLException 
      */
-    void create(ServletConfig config) throws DatabaseConfigurationException, IOException, SQLException;
+    void create(String propertiesFile) throws DatabaseConfigurationException, IOException, SQLException;
 
 }
