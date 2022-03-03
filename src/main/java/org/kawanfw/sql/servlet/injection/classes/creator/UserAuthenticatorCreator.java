@@ -29,7 +29,6 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.kawanfw.sql.api.server.auth.DefaultUserAuthenticator;
 import org.kawanfw.sql.api.server.auth.JdbcUserAuthenticator;
-import org.kawanfw.sql.api.server.auth.LdapUserAuthenticator;
 import org.kawanfw.sql.api.server.auth.SshUserAuthenticator;
 import org.kawanfw.sql.api.server.auth.UserAuthenticator;
 import org.kawanfw.sql.api.server.auth.WebServiceUserAuthenticator;
@@ -44,7 +43,7 @@ public class UserAuthenticatorCreator {
     private static String[] PREDEFINED_CLASS_NAMES = {
 	    DefaultUserAuthenticator.class.getSimpleName(),
 	    JdbcUserAuthenticator.class.getSimpleName(),
-	    LdapUserAuthenticator.class.getSimpleName(),
+	    "LdapUserAuthenticator",
 	    SshUserAuthenticator.class.getSimpleName(),
 	    WebServiceUserAuthenticator.class.getSimpleName(),
 	    WindowsUserAuthenticator.class.getSimpleName() };
