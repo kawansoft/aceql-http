@@ -33,7 +33,7 @@ import java.lang.reflect.InvocationTargetException;
  */
 public class ServerQueryExecutorWrapperCreator {
 
-    private static ServerQueryExecutorWrapper serverCallableStatementWrapper = null;
+    private static ServerQueryExecutorWrapper serverQueryExecutorWrapper = null;
 
     /**
      * Creates a ServerQueryExecutorWrapper instance.
@@ -50,13 +50,13 @@ public class ServerQueryExecutorWrapperCreator {
 	    throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException,
 	    IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 
-	if (serverCallableStatementWrapper == null) {
+	if (serverQueryExecutorWrapper == null) {
 	    Class<?> c = Class.forName("org.kawanfw.sql.pro.sql.callable.aceqlproc.DefaultServerQueryExecutorWrapper");
 	    Constructor<?> constructor = c.getConstructor();
-	    serverCallableStatementWrapper = (ServerQueryExecutorWrapper) constructor.newInstance();
+	    serverQueryExecutorWrapper = (ServerQueryExecutorWrapper) constructor.newInstance();
 	}
 
-	return serverCallableStatementWrapper;
+	return serverQueryExecutorWrapper;
     }
 
 }

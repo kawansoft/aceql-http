@@ -507,9 +507,6 @@ public class InjectedClassesManagerNew {
 	    throws ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException,
 	    InvocationTargetException, NoSuchMethodException, SecurityException, SQLException {
 
-	// String sqlFirewallTriggerClassName =
-	// ConfPropertiesStore.get().getSqlFirewallTriggerClassName(database);
-
 	SqlFirewallTriggerClassNameBuilder sqlFirewallTriggerClassNameBuilder = SqlFirewallTriggerClassNameBuilderCreator
 		.createInstance();
 	String sqlFirewallTriggerClassName = sqlFirewallTriggerClassNameBuilder.getClassName(database);
