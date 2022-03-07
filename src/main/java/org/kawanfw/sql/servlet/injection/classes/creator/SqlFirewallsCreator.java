@@ -27,14 +27,10 @@ package org.kawanfw.sql.servlet.injection.classes.creator;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.kawanfw.sql.api.server.DatabaseConfigurator;
-import org.kawanfw.sql.api.server.SqlEvent;
-import org.kawanfw.sql.api.server.SqlEventWrapper;
 import org.kawanfw.sql.api.server.firewall.CsvRulesManager;
 import org.kawanfw.sql.api.server.firewall.CsvRulesManagerNoReload;
 import org.kawanfw.sql.api.server.firewall.DefaultSqlFirewallManager;
@@ -71,7 +67,7 @@ import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
  */
 public class SqlFirewallsCreator {
 
-    private static final boolean TEST_FIREWALLS = false;
+    //private static final boolean TEST_FIREWALLS = false;
 
     private static String[] PREDEFINED_CLASS_NAMES = { CsvRulesManager.class.getSimpleName(),
 	    CsvRulesManagerNoReload.class.getSimpleName(), DefaultSqlFirewallManager.class.getSimpleName(),
@@ -82,8 +78,7 @@ public class SqlFirewallsCreator {
     private List<String> sqlFirewallClassNames = new ArrayList<>();
     private List<SqlFirewallManager> sqlFirewallManagers = new ArrayList<>();
 
-    public SqlFirewallsCreator(List<String> sqlFirewallClassNames, String database,
-	    DatabaseConfigurator databaseConfigurator)
+    public SqlFirewallsCreator(String database)
 	    throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException,
 	    IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException, IOException {
 
@@ -98,6 +93,9 @@ public class SqlFirewallsCreator {
 		Constructor<?> constructor = c.getConstructor();
 		SqlFirewallManager sqlFirewallManager = (SqlFirewallManager) constructor.newInstance();
 
+		/**
+		 * <pre>
+		 * <code>
 		if (TEST_FIREWALLS) {
 		    try (Connection connection = databaseConfigurator.getConnection(database);) {
 			List<Object> parameterValues = new ArrayList<>();
@@ -107,6 +105,9 @@ public class SqlFirewallsCreator {
 			sqlFirewallManager.allowSqlRunAfterAnalysis(sqlEvent, connection);
 		    }
 		}
+		</code>
+		 * </pre>
+		 */
 
 		sqlFirewallClassName = sqlFirewallManager.getClass().getName();
 

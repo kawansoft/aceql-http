@@ -71,7 +71,6 @@ public class ConfPropertiesManager {
 
 	ConfPropertiesBuilder confPropertiesBuilder = new ConfPropertiesBuilder();	
 	
-	//String aceQLManagerServletCallName = TomcatStarterUtil.getAceQLManagerSevletName(properties);
 	AceQLServletCallNameGetter aceQLServletCallNameGetter = AceQLServletCallNameGetterCreator.createInstance();
 	String aceQLManagerServletCallName = aceQLServletCallNameGetter.getName();
 	

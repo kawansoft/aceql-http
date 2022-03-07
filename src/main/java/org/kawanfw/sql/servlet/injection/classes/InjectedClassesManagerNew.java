@@ -88,50 +88,58 @@ public class InjectedClassesManagerNew {
 		nativeTomcatElementsBuilder.create(propertiesFile);
 	    }
 
-	    ThreadPoolExecutorBuilder threadPoolExecutorBuilder = ThreadPoolExecutorBuilderCreator.createInstance();
-	    ThreadPoolExecutor threadPoolExecutor = threadPoolExecutorBuilder.build();
-
 	    Set<String> databases = ConfPropertiesStore.get().getDatabaseNames();
 
 	    // Create out InjectedClasses builder
 	    InjectedClassesBuilder injectedClassesBuilder = new InjectedClassesBuilder();
 
-	    // Load all the classes and set our InjectedClassesBuilder instance
-	    injectedClassesBuilder.threadPoolExecutor(threadPoolExecutor);
-
+	    // Commons/Free loaders
+	    
 	    loadUserAuthenticator(injectedClassesBuilder);
-	    loadRequestHeadersAuthenticator(injectedClassesBuilder);
 
-	    Map<String, DatabaseConfigurator> databaseConfigurators = new HashMap<>();
-	    Map<String, SqlFirewallTrigger> sqlFirewallTriggers = new HashMap<>();
 	    Map<String, List<SqlFirewallManager>> sqlFirewallManagerMap = new HashMap<>();
 	    Map<String, List<UpdateListener>> updateListenerMap = new HashMap<>();
 
+	    for (String database : databases) {		
+		List<SqlFirewallManager> sqlFirewalManagers = loadSqlFirewallManagers(database);
+		sqlFirewallManagerMap.put(database, sqlFirewalManagers);
+	    }
+	    
+	    injectedClassesBuilder.sqlFirewallManagerMap(sqlFirewallManagerMap);
+	    
+	    // Pro loaders
+	    
+	    // Load all the classes and set our InjectedClassesBuilder instance
+	    
+	    Map<String, SqlFirewallTrigger> sqlFirewallTriggers = new HashMap<>();
+	    Map<String, DatabaseConfigurator> databaseConfigurators = new HashMap<>();
 	    for (String database : databases) {
 		DatabaseConfigurator databaseConfigurator = loadDatabaseConfigurator(database);
-		SqlFirewallTrigger sqlFirewallTrigger = loadSqlFirewallTrigger(database);
-
-		List<SqlFirewallManager> sqlFirewalManagers = loadSqlFirewallManagers(database, databaseConfigurator);
-		List<UpdateListener> updateListeners = loadUpdateListeners(database, injectedClassesBuilder);
-
 		databaseConfigurators.put(database, databaseConfigurator);
-		sqlFirewallTriggers.put(database, sqlFirewallTrigger);
-
-		sqlFirewallManagerMap.put(database, sqlFirewalManagers);
+		
+		List<UpdateListener> updateListeners = loadUpdateListeners(database, injectedClassesBuilder);
 		updateListenerMap.put(database, updateListeners);
+		
+		SqlFirewallTrigger sqlFirewallTrigger = loadSqlFirewallTrigger(database);
+		sqlFirewallTriggers.put(database, sqlFirewallTrigger);
 	    }
+	    
+	    loadRequestHeadersAuthenticator(injectedClassesBuilder);
 
+	    ThreadPoolExecutorBuilder threadPoolExecutorBuilder = ThreadPoolExecutorBuilderCreator.createInstance();
+	    ThreadPoolExecutor threadPoolExecutor = threadPoolExecutorBuilder.build();
+	    injectedClassesBuilder.threadPoolExecutor(threadPoolExecutor);
+	    
+	    // Final injection
 	    injectedClassesBuilder.databaseConfigurators(databaseConfigurators);
-	    injectedClassesBuilder.sqlFirewallTriggers(sqlFirewallTriggers);
-
-	    injectedClassesBuilder.sqlFirewallManagerMap(sqlFirewallManagerMap);
 	    injectedClassesBuilder.updateListenerMap(updateListenerMap);
+	    injectedClassesBuilder.sqlFirewallTriggers(sqlFirewallTriggers);
 
 	    loadBlobDownloadConfigurator(injectedClassesBuilder);
 	    loadBlobUploadConfigurator(injectedClassesBuilder);
 	    
 	    loadSessionManagerConfigurator(injectedClassesBuilder);
-
+	    
 	    // Create the InjectedClasses instance
 	    InjectedClasses injectedClasses = injectedClassesBuilder.build();
 
@@ -407,7 +415,6 @@ public class InjectedClassesManagerNew {
      * loads the Firewall Managers.
      * 
      * @param database
-     * @param databaseConfigurator
      * @return
      * @throws ClassNotFoundException
      * @throws NoSuchMethodException
@@ -419,7 +426,7 @@ public class InjectedClassesManagerNew {
      * @throws SQLException
      * @throws IOException
      */
-    private List<SqlFirewallManager> loadSqlFirewallManagers(String database, DatabaseConfigurator databaseConfigurator)
+    private List<SqlFirewallManager> loadSqlFirewallManagers(String database)
 	    throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException,
 	    IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException, IOException {
 
@@ -434,8 +441,7 @@ public class InjectedClassesManagerNew {
 
 	System.out.println(SqlTag.SQL_PRODUCT_START + " Loading Database " + database + tagSQLFirewallManager);
 
-	SqlFirewallsCreator sqlFirewallsCreator = new SqlFirewallsCreator(sqlFirewallClassNames, database,
-		databaseConfigurator);
+	SqlFirewallsCreator sqlFirewallsCreator = new SqlFirewallsCreator(database);
 	List<SqlFirewallManager> sqlFirewallManagers = sqlFirewallsCreator.getSqlFirewalls();
 
 	sqlFirewallClassNames = sqlFirewallsCreator.getSqlFirewallClassNames();

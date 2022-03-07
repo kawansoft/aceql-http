@@ -90,14 +90,17 @@ public class TomcatStarterUtil {
 	
     }
 
-    public static void addServlets(Properties properties, Context rootCtx) {
+    public static void addServlets(Properties properties, Context rootCtx) throws IOException {
 
 	if (properties == null) {
 	    throw new IllegalArgumentException("properties is null");
 	}
 
-	Set<String> servlets = getServlets(properties);
-
+	//Set<String> servlets = getServlets(properties);
+	
+	ServletNamesGetter servletNamesGetter = ServletsNamesGetterCreator.createInstance();
+	Set<String> servlets= servletNamesGetter.getServlets(properties);
+	
 	if (servlets.isEmpty()) {
 	    return;
 	}

@@ -24,49 +24,20 @@
  */
 package org.kawanfw.sql.tomcat;
 
-import java.io.IOException;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.sql.SQLException;
+import java.util.HashSet;
+import java.util.Properties;
+import java.util.Set;
 
 /**
  * @author Nicolas de Pomereu
  *
  */
-public class AceQLServletCallNameGetterCreator {
+public class DefaultServletNamesGetter implements ServletNamesGetter {
 
-    private static AceQLServletCallNameGetter aceQLServletCallNameGetter = null;
-    
-    /**
-     * Creates a AceQLServletCallNameGetter instance.
-     * 
-     * @return a AceQLServletCallNameGetter instance.
-     * @throws ClassNotFoundException
-     * @throws NoSuchMethodException
-     * @throws SecurityException
-     * @throws InstantiationException
-     * @throws IllegalAccessException
-     * @throws IllegalArgumentException
-     * @throws InvocationTargetException
-     * @throws SQLException
-     */
-    public static AceQLServletCallNameGetter createInstance() throws IOException {
-
-	if (aceQLServletCallNameGetter == null) {
-	    Class<?> c;
-	    try {
-		c = Class.forName("org.kawanfw.sql.pro.sql.properties.servlet.ProEditionAceQLServletCallNameGetter");
-		Constructor<?> constructor = c.getConstructor();
-		aceQLServletCallNameGetter = (AceQLServletCallNameGetter) constructor.newInstance();
-		return aceQLServletCallNameGetter;
-	    } catch (ClassNotFoundException e) {
-		return new DefaultAceQLServletCallNameGetter();
-	    } catch (Exception e) {
-		throw new IOException(e);
-	    }
-	}
-
-	return aceQLServletCallNameGetter;
+    @Override
+    public Set<String> getServlets(Properties properties) {
+	Set<String> servletNames = new HashSet<>(); 
+	return servletNames;
     }
 
 }
