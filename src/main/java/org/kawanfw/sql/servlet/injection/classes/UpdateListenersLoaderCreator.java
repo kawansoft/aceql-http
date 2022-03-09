@@ -32,7 +32,7 @@ import java.sql.SQLException;
  * @author Nicolas de Pomereu
  *
  */
-public class UpdateListenersLoaderCreator {
+public class UpdateListenersLoaderCreator  {
 
     private static UpdateListenersLoader updateListenersLoader = null;
 
@@ -52,6 +52,7 @@ public class UpdateListenersLoaderCreator {
     public static UpdateListenersLoader createInstance() throws SQLException {
 
 	if (updateListenersLoader == null) {
+	    
 	    Class<?> c;
 	    try {
 		c = Class.forName("org.kawanfw.sql.pro.sql.listener.ProEditionUpdateListenersLoader");

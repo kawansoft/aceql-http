@@ -98,7 +98,6 @@ public class InjectedClassesManagerNew {
 	    loadUserAuthenticator(injectedClassesBuilder);
 
 	    Map<String, List<SqlFirewallManager>> sqlFirewallManagerMap = new HashMap<>();
-	    Map<String, List<UpdateListener>> updateListenerMap = new HashMap<>();
 
 	    for (String database : databases) {		
 		List<SqlFirewallManager> sqlFirewalManagers = loadSqlFirewallManagers(database);
@@ -113,6 +112,8 @@ public class InjectedClassesManagerNew {
 	    
 	    Map<String, SqlFirewallTrigger> sqlFirewallTriggers = new HashMap<>();
 	    Map<String, DatabaseConfigurator> databaseConfigurators = new HashMap<>();
+	    Map<String, List<UpdateListener>> updateListenerMap = new HashMap<>();
+	    
 	    for (String database : databases) {
 		DatabaseConfigurator databaseConfigurator = loadDatabaseConfigurator(database);
 		databaseConfigurators.put(database, databaseConfigurator);
@@ -433,6 +434,8 @@ public class InjectedClassesManagerNew {
 	List<String> sqlFirewallClassNames = ConfPropertiesStore.get().getSqlFirewallManagerClassNames(database);
 	classNameToLoad = sqlFirewallClassNames.toString();
 
+	debug("==> sqlFirewallClassNames: " + sqlFirewallClassNames);
+	
 	String tagSQLFirewallManager = null;
 	if (sqlFirewallClassNames.size() < 2)
 	    tagSQLFirewallManager = " SQLFirewallManager class: ";
@@ -441,8 +444,12 @@ public class InjectedClassesManagerNew {
 
 	System.out.println(SqlTag.SQL_PRODUCT_START + " Loading Database " + database + tagSQLFirewallManager);
 
-	SqlFirewallsCreator sqlFirewallsCreator = new SqlFirewallsCreator(database);
+	SqlFirewallsCreator sqlFirewallsCreator = new SqlFirewallsCreator(database, sqlFirewallClassNames);
 	List<SqlFirewallManager> sqlFirewallManagers = sqlFirewallsCreator.getSqlFirewalls();
+
+	for (SqlFirewallManager sqlFirewallManager : sqlFirewallManagers) {
+	    debug("==> sqlFirewallManager: " + sqlFirewallManager);
+	}
 
 	sqlFirewallClassNames = sqlFirewallsCreator.getSqlFirewallClassNames();
 	classNameToLoad = sqlFirewallClassNames.toString();
