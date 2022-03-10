@@ -90,7 +90,7 @@ public class TomcatStarterUtil {
 	
     }
 
-    public static void addServlets(Properties properties, Context rootCtx) throws IOException {
+    public static void addServlets(Properties properties, Context rootCtx) throws IOException, SQLException {
 
 	if (properties == null) {
 	    throw new IllegalArgumentException("properties is null");

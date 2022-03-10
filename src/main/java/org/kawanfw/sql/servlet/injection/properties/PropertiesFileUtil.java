@@ -51,7 +51,12 @@ public class PropertiesFileUtil {
      * @throws SQLException 
      */
     public static Properties getProperties(File file) throws IOException {
-	PropertiesBuilder propertiesBuilder =  PropertiesBuilderCreator.createInstance();
+	PropertiesBuilder propertiesBuilder;
+	try {
+	    propertiesBuilder = PropertiesBuilderCreator.createInstance();
+	} catch (SQLException e) {
+	    throw new IOException(e.getMessage());
+	}
 	return propertiesBuilder.getProperties(file);
     }
 

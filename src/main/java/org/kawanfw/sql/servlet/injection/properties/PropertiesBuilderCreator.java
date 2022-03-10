@@ -24,7 +24,6 @@
  */
 package org.kawanfw.sql.servlet.injection.properties;
 
-import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
@@ -50,7 +49,7 @@ public class PropertiesBuilderCreator {
      * @throws InvocationTargetException
      * @throws SQLException
      */
-    public static PropertiesBuilder createInstance() throws IOException {
+    public static PropertiesBuilder createInstance() throws SQLException {
 
 	if (propertiesBuilder == null) {
 	    Class<?> c;
@@ -62,7 +61,7 @@ public class PropertiesBuilderCreator {
 	    } catch (ClassNotFoundException e) {
 		return new DefaultPropertiesBuilder();
 	    } catch (Exception e) {
-		throw new IOException(e);
+		throw new SQLException(e);
 	    }
 	}
 

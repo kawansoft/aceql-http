@@ -49,7 +49,7 @@ class VersionCreator {
      * @throws IllegalArgumentException
      * @throws InvocationTargetException
      */
-    public static Version createInstance() throws IllegalArgumentException {
+    public static Version createInstance() {
 
 	if (version == null) {
 	    Class<?> c;

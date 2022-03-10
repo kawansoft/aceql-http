@@ -24,7 +24,6 @@
  */
 package org.kawanfw.sql.tomcat;
 
-import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
@@ -50,7 +49,7 @@ public class AceQLServletCallNameGetterCreator {
      * @throws InvocationTargetException
      * @throws SQLException
      */
-    public static AceQLServletCallNameGetter createInstance() throws IOException {
+    public static AceQLServletCallNameGetter createInstance() throws SQLException {
 
 	if (aceQLServletCallNameGetter == null) {
 	    Class<?> c;
@@ -62,7 +61,7 @@ public class AceQLServletCallNameGetterCreator {
 	    } catch (ClassNotFoundException e) {
 		return new DefaultAceQLServletCallNameGetter();
 	    } catch (Exception e) {
-		throw new IOException(e);
+		throw new SQLException(e);
 	    }
 	}
 

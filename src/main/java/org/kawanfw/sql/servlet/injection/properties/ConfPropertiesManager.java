@@ -26,6 +26,7 @@
 package org.kawanfw.sql.servlet.injection.properties;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -67,7 +68,7 @@ public class ConfPropertiesManager {
      * @return the ConfProperties instance created from the Properties.
      * @throws IOException 
      */
-    public ConfProperties createConfProperties() throws IOException {
+    public ConfProperties createConfProperties() throws IOException, SQLException {
 
 	ConfPropertiesBuilder confPropertiesBuilder = new ConfPropertiesBuilder();	
 	

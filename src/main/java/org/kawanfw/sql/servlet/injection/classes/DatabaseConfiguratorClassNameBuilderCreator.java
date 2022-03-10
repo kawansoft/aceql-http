@@ -61,7 +61,7 @@ public class DatabaseConfiguratorClassNameBuilderCreator {
 	    } catch (ClassNotFoundException e) {
 		return new DefaultDatabaseConfiguratorClassNameBuilder();
 	    } catch (Exception e) {
-		throw new SQLException(e);
+		throw new SQLException(e);		
 	    }
 	}
 

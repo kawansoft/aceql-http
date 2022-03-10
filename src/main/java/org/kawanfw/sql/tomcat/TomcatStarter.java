@@ -136,13 +136,16 @@ public class TomcatStarter {
 
     private void startTomcat(Tomcat tomcat) throws IOException, ConnectException, LifecycleException,
 	    MalformedURLException, DatabaseConfigurationException, SQLException {
+	
+	// To be done at first, everything depends on ir.
+	PropertiesFileStore.set(propertiesFile);
+	
 	System.out.println(SqlTag.SQL_PRODUCT_START + " Starting " + VersionWrapper.getName() + " Web Server...");
 	System.out.println(SqlTag.SQL_PRODUCT_START + " " + VersionWrapper.getServerVersion());
 	System.out.println(TomcatStarterUtil.getJavaInfo());
 	System.out.println(SqlTag.SQL_PRODUCT_START + " " + "Using properties file: ");
 	System.out.println(SqlTag.SQL_PRODUCT_START + "  -> " + propertiesFile);
 
-	PropertiesFileStore.set(propertiesFile);
 	Properties properties = PropertiesFileUtil.getProperties(propertiesFile);
 
 	String tomcatLoggingLevel = properties.getProperty("tomcatLoggingLevel");
@@ -196,7 +199,7 @@ public class TomcatStarter {
      * @throws MalformedURLException
      * @throws IOException
      */
-    private void tomcatAfterStart(Tomcat tomcat, Properties properties) throws MalformedURLException, IOException {
+    private void tomcatAfterStart(Tomcat tomcat, Properties properties) throws MalformedURLException, IOException, SQLException {
 	// System.out.println(SqlTag.SQL_PRODUCT_START);
 	Connector defaultConnector = tomcat.getConnector();
 	
@@ -274,7 +277,7 @@ public class TomcatStarter {
      * @return
      * @throws IOException 
      */
-    private Context tomcatBeforeStartSetContext(Tomcat tomcat, Properties properties) throws IOException {
+    private Context tomcatBeforeStartSetContext(Tomcat tomcat, Properties properties) throws IOException, SQLException {
 	// Set up context,
 	// "" indicates the path of the ROOT context
 	Context rootCtx = tomcat.addContext("", getBaseDir().getAbsolutePath());
@@ -351,7 +354,7 @@ public class TomcatStarter {
      * @param rootCtx    the tomcat root context
      * @throws IOException 
      */
-    public void addAceqlServlet(Properties properties, Context rootCtx) throws IOException {
+    public void addAceqlServlet(Properties properties, Context rootCtx) throws IOException, SQLException {
 
 	if (properties == null) {
 	    throw new IllegalArgumentException("properties can not be null");
@@ -392,7 +395,7 @@ public class TomcatStarter {
      * @throws MalformedURLException
      * @throws IOException
      */
-    public boolean testServlet(Properties properties, String scheme) throws MalformedURLException, IOException {
+    public boolean testServlet(Properties properties, String scheme) throws MalformedURLException, IOException, SQLException {
 
 	//String aceQLManagerServletCallName = TomcatStarterUtil.getAceQLManagerSevletName(properties);
 	AceQLServletCallNameGetter aceQLServletCallNameGetter = AceQLServletCallNameGetterCreator.createInstance();

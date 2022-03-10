@@ -56,16 +56,10 @@ public class PropertiesFileStore {
     }
 
     /**
-     * @return the propertiesFile
-     * @throws FileNotFoundException 
+     * @return the propertiesFile. No controls are done except initial null.
      */
-    public static File get() throws FileNotFoundException {
-	Objects.requireNonNull(propertiesFile, "propertiesFile was never set and is null!");
-	
-	if (! propertiesFile.exists()) {
-	    throw new FileNotFoundException("propertiesFile does not exist: " + propertiesFile);
-	}	
-	
+    public static File get()  {
+	Objects.requireNonNull(propertiesFile, "propertiesFile was never set and is null!");	
         return propertiesFile;
     }
 
