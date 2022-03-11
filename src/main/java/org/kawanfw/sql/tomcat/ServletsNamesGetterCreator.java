@@ -54,7 +54,7 @@ public class ServletsNamesGetterCreator {
 	if (servletNamesGetter == null) {
 	    Class<?> c;
 	    try {
-		c = Class.forName("org.kawanfw.sql.pro.sql.properties.servlet.ProEditionServletNamesGetter");
+		c = Class.forName("org.kawanfw.sql.pro.edition.builders.ProEditionServletNamesGetter");
 		Constructor<?> constructor = c.getConstructor();
 		servletNamesGetter = (ServletNamesGetter) constructor.newInstance();
 		return servletNamesGetter;

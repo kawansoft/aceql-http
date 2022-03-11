@@ -54,7 +54,7 @@ public class BlobUploadConfiguratorClassNameBuilderCreator {
 	if (blobUploadConfiguratorClassNameBuilder == null) {
 	    Class<?> c;
 	    try {
-		c = Class.forName("org.kawanfw.sql.pro.sql.blob_configurator.ProEditionBlobUploadConfiguratorClassNameBuilder");
+		c = Class.forName("org.kawanfw.sql.pro.edition.builders.ProEditionBlobUploadConfiguratorClassNameBuilder");
 		Constructor<?> constructor = c.getConstructor();
 		blobUploadConfiguratorClassNameBuilder = (BlobUploadConfiguratorClassNameBuilder) constructor.newInstance();
 		return blobUploadConfiguratorClassNameBuilder;

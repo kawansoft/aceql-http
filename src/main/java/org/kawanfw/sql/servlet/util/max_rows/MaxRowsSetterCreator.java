@@ -51,7 +51,7 @@ public class MaxRowsSetterCreator {
 	if (maxRowsSetter == null) {
 	    Class<?> c;
 	    try {
-		c = Class.forName("org.kawanfw.sql.pro.sql.max_rows.ProEditionMaxRowsSetter");
+		c = Class.forName("org.kawanfw.sql.pro.edition.builders.ProEditionMaxRowsSetter");
 		Constructor<?> constructor = c.getConstructor();
 		maxRowsSetter = (MaxRowsSetter) constructor.newInstance();
 		return maxRowsSetter;

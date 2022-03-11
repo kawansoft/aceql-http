@@ -51,7 +51,7 @@ public class ServerQueryExecutorWrapperCreator {
 	    IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 
 	if (serverQueryExecutorWrapper == null) {
-	    Class<?> c = Class.forName("org.kawanfw.sql.pro.sql.callable.aceqlproc.DefaultServerQueryExecutorWrapper");
+	    Class<?> c = Class.forName("org.kawanfw.sql.pro.edition.builders.DefaultServerQueryExecutorWrapper");
 	    Constructor<?> constructor = c.getConstructor();
 	    serverQueryExecutorWrapper = (ServerQueryExecutorWrapper) constructor.newInstance();
 	}

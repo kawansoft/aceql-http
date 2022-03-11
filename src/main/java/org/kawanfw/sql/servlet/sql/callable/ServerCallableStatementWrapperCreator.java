@@ -51,7 +51,7 @@ public class ServerCallableStatementWrapperCreator {
 	    IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 
 	if (serverCallableStatementWrapper == null) {
-	    Class<?> c = Class.forName("org.kawanfw.sql.pro.sql.callable.DefaultServerCallableStatementWrapper");
+	    Class<?> c = Class.forName("org.kawanfw.sql.pro.edition.builders.DefaultServerCallableStatementWrapper");
 	    Constructor<?> constructor = c.getConstructor();
 	    serverCallableStatementWrapper = (ServerCallableStatementWrapper) constructor.newInstance();
 	}

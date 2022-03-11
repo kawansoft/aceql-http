@@ -37,7 +37,7 @@ import java.util.Set;
 
 import org.kawanfw.sql.servlet.ServerSqlManager;
 import org.kawanfw.sql.servlet.injection.properties.ConfProperties.ConfPropertiesBuilder;
-import org.kawanfw.sql.tomcat.AceQLServletCallNameGetter;
+import org.kawanfw.sql.tomcat.ServletAceQLCallNameGetter;
 import org.kawanfw.sql.tomcat.AceQLServletCallNameGetterCreator;
 import org.kawanfw.sql.tomcat.TomcatStarterUtil;
 import org.kawanfw.sql.tomcat.TomcatStarterUtilProperties;
@@ -72,8 +72,8 @@ public class ConfPropertiesManager {
 
 	ConfPropertiesBuilder confPropertiesBuilder = new ConfPropertiesBuilder();	
 	
-	AceQLServletCallNameGetter aceQLServletCallNameGetter = AceQLServletCallNameGetterCreator.createInstance();
-	String aceQLManagerServletCallName = aceQLServletCallNameGetter.getName();
+	ServletAceQLCallNameGetter servletAceQLCallNameGetter = AceQLServletCallNameGetterCreator.createInstance();
+	String aceQLManagerServletCallName = servletAceQLCallNameGetter.getName();
 	
 	confPropertiesBuilder.servletCallName(aceQLManagerServletCallName);
 	

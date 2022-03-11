@@ -40,7 +40,7 @@ public class PoolPropertiesIntercerptorCreator {
 	if (poolPropertiesIntercerptor == null) {
 	    Class<?> c;
 	    try {
-		c = Class.forName("org.kawanfw.sql.pro.sql.properties.pool.ProEditionPoolPropertiesIntercerptor");
+		c = Class.forName("org.kawanfw.sql.pro.edition.builders.ProEditionPoolPropertiesIntercerptor");
 		Constructor<?> constructor = c.getConstructor();
 		poolPropertiesIntercerptor = (PoolPropertiesIntercerptor) constructor.newInstance();
 		return poolPropertiesIntercerptor;

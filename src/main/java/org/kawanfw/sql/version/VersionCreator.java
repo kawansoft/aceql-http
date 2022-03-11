@@ -54,7 +54,7 @@ class VersionCreator {
 	if (version == null) {
 	    Class<?> c;
 	    try {
-		c = Class.forName("org.kawanfw.sql.pro.version.ProEditionVersion");
+		c = Class.forName("org.kawanfw.sql.pro.edition.builders.ProEditionVersion");
 		Constructor<?> constructor = c.getConstructor();
 		version = (Version) constructor.newInstance();
 		return version;

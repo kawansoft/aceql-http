@@ -55,7 +55,7 @@ public class UpdateListenersLoaderCreator  {
 	    
 	    Class<?> c;
 	    try {
-		c = Class.forName("org.kawanfw.sql.pro.sql.listener.ProEditionUpdateListenersLoader");
+		c = Class.forName("org.kawanfw.sql.pro.edition.builders.ProEditionUpdateListenersLoader");
 		Constructor<?> constructor = c.getConstructor();
 		updateListenersLoader = (UpdateListenersLoader) constructor.newInstance();
 		return updateListenersLoader;

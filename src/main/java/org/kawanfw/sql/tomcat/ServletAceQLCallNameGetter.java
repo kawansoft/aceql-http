@@ -30,7 +30,7 @@ import java.io.IOException;
  * @author Nicolas de Pomereu
  *
  */
-public interface AceQLServletCallNameGetter {
+public interface ServletAceQLCallNameGetter {
 
     public String getName() throws IOException;
 }

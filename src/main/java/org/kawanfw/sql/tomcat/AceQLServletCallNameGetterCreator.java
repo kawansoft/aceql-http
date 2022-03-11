@@ -34,12 +34,12 @@ import java.sql.SQLException;
  */
 public class AceQLServletCallNameGetterCreator {
 
-    private static AceQLServletCallNameGetter aceQLServletCallNameGetter = null;
+    private static ServletAceQLCallNameGetter servletAceQLCallNameGetter = null;
     
     /**
-     * Creates a AceQLServletCallNameGetter instance.
+     * Creates a ServletAceQLCallNameGetter instance.
      * 
-     * @return a AceQLServletCallNameGetter instance.
+     * @return a ServletAceQLCallNameGetter instance.
      * @throws ClassNotFoundException
      * @throws NoSuchMethodException
      * @throws SecurityException
@@ -49,23 +49,23 @@ public class AceQLServletCallNameGetterCreator {
      * @throws InvocationTargetException
      * @throws SQLException
      */
-    public static AceQLServletCallNameGetter createInstance() throws SQLException {
+    public static ServletAceQLCallNameGetter createInstance() throws SQLException {
 
-	if (aceQLServletCallNameGetter == null) {
+	if (servletAceQLCallNameGetter == null) {
 	    Class<?> c;
 	    try {
-		c = Class.forName("org.kawanfw.sql.pro.sql.properties.servlet.ProEditionAceQLServletCallNameGetter");
+		c = Class.forName("org.kawanfw.sql.pro.edition.builders.ProEditionAceQLServletCallNameGetter");
 		Constructor<?> constructor = c.getConstructor();
-		aceQLServletCallNameGetter = (AceQLServletCallNameGetter) constructor.newInstance();
-		return aceQLServletCallNameGetter;
+		servletAceQLCallNameGetter = (ServletAceQLCallNameGetter) constructor.newInstance();
+		return servletAceQLCallNameGetter;
 	    } catch (ClassNotFoundException e) {
-		return new DefaultAceQLServletCallNameGetter();
+		return new DefaultServletAceQLCallNameGetter();
 	    } catch (Exception e) {
 		throw new SQLException(e);
 	    }
 	}
 
-	return aceQLServletCallNameGetter;
+	return servletAceQLCallNameGetter;
     }
 
 }

@@ -361,8 +361,8 @@ public class TomcatStarter {
 	}
 
 	//String aceQLManagerServletCallName = TomcatStarterUtil.getAceQLManagerSevletName(properties);
-	AceQLServletCallNameGetter aceQLServletCallNameGetter = AceQLServletCallNameGetterCreator.createInstance();
-	String aceQLManagerServletCallName = aceQLServletCallNameGetter.getName();
+	ServletAceQLCallNameGetter servletAceQLCallNameGetter = AceQLServletCallNameGetterCreator.createInstance();
+	String aceQLManagerServletCallName = servletAceQLCallNameGetter.getName();
 	
 	// Add the ServerSqlManager servlet to the context
 	org.apache.catalina.Wrapper wrapper = Tomcat.addServlet(rootCtx, aceQLManagerServletCallName,
@@ -398,8 +398,8 @@ public class TomcatStarter {
     public boolean testServlet(Properties properties, String scheme) throws MalformedURLException, IOException, SQLException {
 
 	//String aceQLManagerServletCallName = TomcatStarterUtil.getAceQLManagerSevletName(properties);
-	AceQLServletCallNameGetter aceQLServletCallNameGetter = AceQLServletCallNameGetterCreator.createInstance();
-	String aceQLManagerServletCallName = aceQLServletCallNameGetter.getName();
+	ServletAceQLCallNameGetter servletAceQLCallNameGetter = AceQLServletCallNameGetterCreator.createInstance();
+	String aceQLManagerServletCallName = servletAceQLCallNameGetter.getName();
 	
 	String serverSqlManagerUrlPattern = aceQLManagerServletCallName;
 	serverSqlManagerUrlPattern = serverSqlManagerUrlPattern.trim();
