@@ -25,10 +25,13 @@
 
 package org.kawanfw.sql.version;
 
+import java.sql.SQLException;
+
 public interface Version {
 
     /**
      * @return all version info
+     * @throws SQLException 
      */
     String getServerVersion();
 
@@ -36,7 +39,5 @@ public interface Version {
      * @return the version name
      */
     String getName();
-
-    String toString();
 
 }

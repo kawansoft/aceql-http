@@ -28,7 +28,7 @@ package org.kawanfw.sql.version;
  * Displays the product DefaultVersion
  */
 
-class DefaultVersion implements Version {
+public class DefaultVersion implements Version {
 
     private String NAME = "AceQL HTTP";
     private String TYPE = "Community";
