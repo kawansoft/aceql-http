@@ -25,7 +25,9 @@
 
 package org.kawanfw.sql.servlet.injection.classes.blob;
 
+import java.sql.SQLException;
+
 public interface BlobDownloadConfiguratorClassNameBuilder {
 
-    String getClassName();
+    String getClassName() throws SQLException;
 }

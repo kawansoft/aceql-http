@@ -25,8 +25,10 @@
 
 package org.kawanfw.sql.servlet.util.operation_type;
 
+import java.sql.SQLException;
+
 public interface OperationType {
 
-    boolean isOperationAuthorized(String sql);
+    boolean isOperationAuthorized(String sql) throws SQLException;
 
 }

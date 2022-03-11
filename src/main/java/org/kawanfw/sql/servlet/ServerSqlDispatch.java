@@ -346,6 +346,8 @@ public class ServerSqlDispatch {
 	    } catch (ClassNotFoundException e) {
 		throw new UnsupportedOperationException(
 			Tag.PRODUCT + " " + "Stored procedure call " + Tag.REQUIRES_ACEQL_PROFESSIONAL_EDITION);
+	    } catch (SQLException exception) {
+		throw exception;
 	    } catch (Exception exception) {
 		throw new SQLException(exception);
 	    }

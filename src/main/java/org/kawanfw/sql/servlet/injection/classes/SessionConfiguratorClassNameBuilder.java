@@ -25,7 +25,9 @@
 
 package org.kawanfw.sql.servlet.injection.classes;
 
+import java.sql.SQLException;
+
 public interface SessionConfiguratorClassNameBuilder {
 
-    String getClassName();
+    String getClassName() throws SQLException;
 }

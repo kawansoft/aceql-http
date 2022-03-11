@@ -65,7 +65,10 @@ public class ServerQueryExecutorUtil {
 	    } catch (ClassNotFoundException e) {
 		throw new UnsupportedOperationException(
 			Tag.PRODUCT + " " + "Java AceQL stored procedure call " + Tag.REQUIRES_ACEQL_PROFESSIONAL_EDITION);
-	    } catch (Exception exception) {
+	    } catch (SQLException exception) {
+		throw exception;
+	    }
+	    catch (Exception exception) {
 		throw new SQLException(exception);
 	    }
 

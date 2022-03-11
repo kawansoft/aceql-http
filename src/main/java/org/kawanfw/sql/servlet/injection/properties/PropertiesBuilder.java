@@ -27,6 +27,7 @@ package org.kawanfw.sql.servlet.injection.properties;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.Properties;
 
 /**
@@ -42,6 +43,7 @@ public interface PropertiesBuilder {
      * @param file the properties File
      * @return the properties
      * @throws IOException
+     * @throws SQLException 
      */
     Properties getProperties(File file) throws IOException;
     

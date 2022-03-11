@@ -25,10 +25,11 @@
 
 package org.kawanfw.sql.tomcat;
 
+import java.sql.SQLException;
 import java.util.Properties;
 import java.util.Set;
 
 public interface ServletNamesGetter {
 
-    public Set<String> getServlets(Properties properties);
+    public Set<String> getServlets(Properties properties) throws SQLException;
 }

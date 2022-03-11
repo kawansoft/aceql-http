@@ -25,6 +25,7 @@
 package org.kawanfw.sql.tomcat;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 /**
  * @author Nicolas de Pomereu
@@ -32,5 +33,5 @@ import java.io.IOException;
  */
 public interface ServletAceQLCallNameGetter {
 
-    public String getName() throws IOException;
+    public String getName() throws IOException, SQLException;
 }

@@ -25,7 +25,9 @@
 
 package org.kawanfw.sql.servlet.injection.classes;
 
+import java.sql.SQLException;
+
 public interface SqlFirewallTriggerClassNameBuilder {
 
-    String getClassName(String database);
+    String getClassName(String database) throws SQLException;
 }

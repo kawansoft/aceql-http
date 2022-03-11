@@ -24,12 +24,14 @@
  */
 package org.kawanfw.sql.tomcat.properties.pool;
 
+import java.sql.SQLException;
+
 /**
  * @author Nicolas de Pomereu
  *
  */
 public interface PoolPropertiesIntercerptor {
 
-    public String interceptValue(String theMethod, String propertyValue);
+    public String interceptValue(String theMethod, String propertyValue) throws SQLException;
 
 }
