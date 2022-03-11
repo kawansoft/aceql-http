@@ -343,10 +343,12 @@ public class ServerSqlDispatch {
 			.createInstance();
 		serverCallableStatementWrapper.executeOrExecuteQuery(request, response, sqlFirewallManagers, connection,
 			out);
-	    } catch (ClassNotFoundException e) {
+	    } 
+	    catch (ClassNotFoundException exception) {
 		throw new UnsupportedOperationException(
 			Tag.PRODUCT + " " + "Stored procedure call " + Tag.REQUIRES_ACEQL_PROFESSIONAL_EDITION);
-	    } catch (SQLException exception) {
+	    }
+	    catch (SQLException exception) {
 		throw exception;
 	    } catch (Exception exception) {
 		throw new SQLException(exception);
@@ -387,9 +389,10 @@ public class ServerSqlDispatch {
 		JdbcDatabaseMetadataActionManager jdbcDatabaseMetadataActionManager = JdbcDatabaseMetadataActionManagerCreator
 			.createInstance();
 		jdbcDatabaseMetadataActionManager.execute(request, response, out, sqlFirewallManagers, connection);
-	    } catch (ClassNotFoundException e) {
+	    } catch (ClassNotFoundException exception) {
 		throw new UnsupportedOperationException(
-			Tag.PRODUCT + " " + "Connection.getMetaData() call " + Tag.REQUIRES_ACEQL_PROFESSIONAL_EDITION);
+			Tag.PRODUCT + " " + "MetaData call " + Tag.REQUIRES_ACEQL_PROFESSIONAL_EDITION);
+
 	    } catch (Exception exception) {
 		throw new SQLException(exception);
 	    }

@@ -36,7 +36,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.kawanfw.sql.servlet.sql.callable.aceqlproc.ServerQueryExecutorWrapper;
 import org.kawanfw.sql.servlet.sql.callable.aceqlproc.ServerQueryExecutorWrapperCreator;
 import org.kawanfw.sql.util.FrameworkDebug;
-import org.kawanfw.sql.util.Tag;
 
 /**
  * @author Nicolas de Pomereu
@@ -62,9 +61,6 @@ public class ServerQueryExecutorUtil {
 		ServerQueryExecutorWrapper serverQueryExecutorWrapper = ServerQueryExecutorWrapperCreator
 			.createInstance();
 		serverQueryExecutorWrapper.executeQuery(request, out, action, connection);
-	    } catch (ClassNotFoundException e) {
-		throw new UnsupportedOperationException(
-			Tag.PRODUCT + " " + "Java AceQL stored procedure call " + Tag.REQUIRES_ACEQL_PROFESSIONAL_EDITION);
 	    } catch (SQLException exception) {
 		throw exception;
 	    }
