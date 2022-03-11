@@ -39,7 +39,6 @@ public class TestAll {
     public static void main(String[] args) throws Exception {
 	System.out.println(new Date() + " Begin...");
 	SshUserAuthenticatorTest.test();
-	WebServiceUserAuthenticatorTest.test();
 	WindowsUserAuthenticatorTest.test();
 	System.out.println(new Date() + " End...");
     }

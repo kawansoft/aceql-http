@@ -31,11 +31,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.kawanfw.sql.api.server.firewall.CsvRulesManager;
-import org.kawanfw.sql.api.server.firewall.CsvRulesManagerNoReload;
 import org.kawanfw.sql.api.server.firewall.DefaultSqlFirewallManager;
-import org.kawanfw.sql.api.server.firewall.DenyDclManager;
-import org.kawanfw.sql.api.server.firewall.DenyDdlManager;
 import org.kawanfw.sql.api.server.firewall.DenyExecuteUpdateManager;
 import org.kawanfw.sql.api.server.firewall.DenyMetadataQueryManager;
 import org.kawanfw.sql.api.server.firewall.DenyStatementClassManager;
@@ -69,9 +65,9 @@ public class SqlFirewallsCreator {
 
     //private static final boolean TEST_FIREWALLS = false;
 
-    private static String[] PREDEFINED_CLASS_NAMES = { CsvRulesManager.class.getSimpleName(),
-	    CsvRulesManagerNoReload.class.getSimpleName(), DefaultSqlFirewallManager.class.getSimpleName(),
-	    DenyDclManager.class.getSimpleName(), DenyDdlManager.class.getSimpleName(),
+    private static String[] PREDEFINED_CLASS_NAMES = {"CsvRulesManager" ,
+	    "CsvRulesManagerNoReload", DefaultSqlFirewallManager.class.getSimpleName(),
+	    "DenyDclManager", "DenyDdlManager",
 	    DenyExecuteUpdateManager.class.getSimpleName(), DenyMetadataQueryManager.class.getSimpleName(),
 	    DenyStatementClassManager.class.getSimpleName(), };
 

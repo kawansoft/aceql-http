@@ -31,7 +31,6 @@ import org.kawanfw.sql.api.server.auth.DefaultUserAuthenticator;
 import org.kawanfw.sql.api.server.auth.JdbcUserAuthenticator;
 import org.kawanfw.sql.api.server.auth.SshUserAuthenticator;
 import org.kawanfw.sql.api.server.auth.UserAuthenticator;
-import org.kawanfw.sql.api.server.auth.WebServiceUserAuthenticator;
 import org.kawanfw.sql.api.server.auth.WindowsUserAuthenticator;
 
 /**
@@ -45,7 +44,7 @@ public class UserAuthenticatorCreator {
 	    JdbcUserAuthenticator.class.getSimpleName(),
 	    "LdapUserAuthenticator",
 	    SshUserAuthenticator.class.getSimpleName(),
-	    WebServiceUserAuthenticator.class.getSimpleName(),
+	    "WebServiceUserAuthenticator",
 	    WindowsUserAuthenticator.class.getSimpleName() };
 
     private UserAuthenticator userAuthenticator = null;

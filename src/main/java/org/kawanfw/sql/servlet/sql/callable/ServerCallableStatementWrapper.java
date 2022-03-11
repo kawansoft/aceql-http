@@ -40,6 +40,6 @@ public interface ServerCallableStatementWrapper {
 
     void executeOrExecuteQuery(HttpServletRequest request, HttpServletResponse response,
 	    List<SqlFirewallManager> sqlFirewallManagers, Connection connection, OutputStream out)
-	    throws SQLException, FileNotFoundException, IOException;
+	    throws SQLException, FileNotFoundException, IOException, ClassNotFoundException;
 
 }

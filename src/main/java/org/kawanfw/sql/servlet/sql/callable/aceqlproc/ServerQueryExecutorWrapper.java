@@ -38,5 +38,5 @@ import javax.servlet.http.HttpServletRequest;
 public interface ServerQueryExecutorWrapper {
 
     public void executeQuery(HttpServletRequest request, OutputStream out, String action,
-	    Connection connection) throws SQLException, IOException;
+	    Connection connection) throws SQLException, IOException, ClassNotFoundException;
 }
