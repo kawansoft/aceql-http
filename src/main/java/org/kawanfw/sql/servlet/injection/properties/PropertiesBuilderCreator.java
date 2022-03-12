@@ -54,7 +54,7 @@ public class PropertiesBuilderCreator {
 	if (propertiesBuilder == null) {
 	    Class<?> c;
 	    try {
-		c = Class.forName("org.kawanfw.sql.pro.edition.builders.ProEditionPropertiesBuilder");
+		c = Class.forName("org.kawanfw.sql.pro.reflection.builders.ProEditionPropertiesBuilder");
 		Constructor<?> constructor = c.getConstructor();
 		propertiesBuilder = (PropertiesBuilder) constructor.newInstance();
 		return propertiesBuilder;

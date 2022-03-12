@@ -54,7 +54,7 @@ public class SqlFirewallTriggerClassNameBuilderCreator {
 	if (sqlFirewallTriggerClassNameBuilder == null) {
 	    Class<?> c;
 	    try {
-		c = Class.forName("org.kawanfw.sql.pro.edition.builders.ProEditionSqlFirewallTriggerClassNameBuilder");
+		c = Class.forName("org.kawanfw.sql.pro.reflection.builders.ProEditionSqlFirewallTriggerClassNameBuilder");
 		Constructor<?> constructor = c.getConstructor();
 		sqlFirewallTriggerClassNameBuilder = (SqlFirewallTriggerClassNameBuilder) constructor.newInstance();
 		return sqlFirewallTriggerClassNameBuilder;

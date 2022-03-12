@@ -55,7 +55,7 @@ public class SessionConfiguratorClassNameBuilderCreator {
 	    Class<?> c;
 	    try {
 		c = Class.forName(
-			"org.kawanfw.sql.pro.edition.builders.ProEditionSessionConfiguratorClassNameBuilder");
+			"org.kawanfw.sql.pro.reflection.builders.ProEditionSessionConfiguratorClassNameBuilder");
 		Constructor<?> constructor = c.getConstructor();
 		sessionConfiguratorClassNameBuilder = (SessionConfiguratorClassNameBuilder) constructor.newInstance();
 		return sessionConfiguratorClassNameBuilder;

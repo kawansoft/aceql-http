@@ -53,7 +53,7 @@ public class OperationTypeCreator {
 	if (operationType == null) {
 	    Class<?> c;
 	    try {
-		c = Class.forName("org.kawanfw.sql.pro.edition.builders.ProEditionOperationType");
+		c = Class.forName("org.kawanfw.sql.pro.reflection.builders.ProEditionOperationType");
 		Constructor<?> constructor = c.getConstructor();
 		operationType = (OperationType) constructor.newInstance();
 		return operationType;

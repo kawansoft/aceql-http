@@ -54,7 +54,7 @@ public class RequestHeadersAuthenticatorLoaderCreator {
 	if (requestHeadersAuthenticatorLoader == null) {
 	    Class<?> c;
 	    try {
-		c = Class.forName("org.kawanfw.sql.pro.edition.builders.ProEditionRequestHeadersAuthenticatorLoader");
+		c = Class.forName("org.kawanfw.sql.pro.reflection.builders.ProEditionRequestHeadersAuthenticatorLoader");
 		Constructor<?> constructor = c.getConstructor();
 		requestHeadersAuthenticatorLoader = (RequestHeadersAuthenticatorLoader) constructor.newInstance();
 		return requestHeadersAuthenticatorLoader;

@@ -54,7 +54,7 @@ public class NativeTomcatElementsBuilderCreator {
 	if (nativeTomcatElementsBuilder == null) {
 	    Class<?> c;
 	    try {
-		c = Class.forName("org.kawanfw.sql.pro.edition.builders.ProEditionNativeTomcatElementsBuilder");
+		c = Class.forName("org.kawanfw.sql.pro.reflection.builders.ProEditionNativeTomcatElementsBuilder");
 		Constructor<?> constructor = c.getConstructor();
 		nativeTomcatElementsBuilder = (NativeTomcatElementsBuilder) constructor.newInstance();
 		return nativeTomcatElementsBuilder;

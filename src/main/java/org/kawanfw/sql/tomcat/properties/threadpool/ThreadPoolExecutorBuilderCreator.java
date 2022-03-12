@@ -54,7 +54,7 @@ public class ThreadPoolExecutorBuilderCreator {
 	if (updateListenersLoader == null) {
 	    Class<?> c;
 	    try {
-		c = Class.forName("org.kawanfw.sql.pro.edition.builders.ProEditionThreadPoolExecutorBuilder");
+		c = Class.forName("org.kawanfw.sql.pro.reflection.builders.ProEditionThreadPoolExecutorBuilder");
 		Constructor<?> constructor = c.getConstructor();
 		updateListenersLoader = (ThreadPoolExecutorBuilder) constructor.newInstance();
 		return updateListenersLoader;

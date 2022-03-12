@@ -54,7 +54,7 @@ public class DatabaseConfiguratorClassNameBuilderCreator {
 	if (databaseConfiguratorClassNameBuilder == null) {
 	    Class<?> c;
 	    try {
-		c = Class.forName("org.kawanfw.sql.pro.edition.builders.ProEditionDatabaseConfiguratorClassNameBuilder");
+		c = Class.forName("org.kawanfw.sql.pro.reflection.builders.ProEditionDatabaseConfiguratorClassNameBuilder");
 		Constructor<?> constructor = c.getConstructor();
 		databaseConfiguratorClassNameBuilder = (DatabaseConfiguratorClassNameBuilder) constructor.newInstance();
 		return databaseConfiguratorClassNameBuilder;
