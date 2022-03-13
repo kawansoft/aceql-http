@@ -51,7 +51,7 @@ public class JdbcDatabaseMetadataActionManagerCreator {
 	    IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 
 	if (jdbcDatabaseMetadataActionManager == null) {
-	    Class<?> c = Class.forName("org.kawanfw.sql.pro.jdbc.metadata.DefaultJdbcDatabaseMetadataActionManager");
+	    Class<?> c = Class.forName("org.kawanfw.sql.pro.reflection.jdbc.metadata.DefaultJdbcDatabaseMetadataActionManager");
 	    Constructor<?> constructor = c.getConstructor();
 	    jdbcDatabaseMetadataActionManager = (JdbcDatabaseMetadataActionManager) constructor.newInstance();
 	}

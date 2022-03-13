@@ -36,5 +36,6 @@
 	<classpathentry kind="lib" path="lib/sqljdbc41.jar"/>
 	<classpathentry kind="lib" path="lib/mysql-connector-java-8.0.13.jar"/>
 	<classpathentry kind="lib" path="lib/mssql-jdbc-9.2.1.jre8.jar"/>
+	<classpathentry kind="lib" path="dist/aceql-http-pro-11.0.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
