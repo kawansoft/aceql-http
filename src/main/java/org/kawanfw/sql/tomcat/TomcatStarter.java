@@ -308,9 +308,10 @@ public class TomcatStarter {
      * @param properties
      * @throws DatabaseConfigurationException
      * @throws ConnectException
+     * @throws SQLException 
      */
     private void tomcatBeforeStartSetConnectors(Tomcat tomcat, Properties properties)
-	    throws DatabaseConfigurationException, ConnectException {
+	    throws DatabaseConfigurationException, ConnectException, SQLException {
 	// NO: do in the Creators in org.kawanfw.sql.servlet.injection.classes.creator package
 	// TomcatStarterUtil.testConfigurators(properties);
 
