@@ -30,7 +30,7 @@ import java.sql.SQLException;
  * @author Nicolas de Pomereu
  *
  */
-public interface PoolPropertiesIntercerptor {
+public interface PoolPropertiesInterceptor {
 
     public String interceptValue(String theMethod, String propertyValue) throws SQLException;
 

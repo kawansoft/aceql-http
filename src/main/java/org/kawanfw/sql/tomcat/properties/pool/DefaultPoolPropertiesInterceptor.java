@@ -24,34 +24,46 @@
  */
 package org.kawanfw.sql.tomcat.properties.pool;
 
-import java.lang.reflect.Constructor;
-import java.sql.SQLException;
-
 /**
- * 
  * @author Nicolas de Pomereu
  *
  */
-public class PoolPropertiesIntercerptorCreator {
+public class DefaultPoolPropertiesInterceptor implements PoolPropertiesInterceptor {
 
-    private static PoolPropertiesIntercerptor poolPropertiesIntercerptor = null;
-    
-    public static PoolPropertiesIntercerptor createInstance() throws SQLException {
-	if (poolPropertiesIntercerptor == null) {
-	    Class<?> c;
-	    try {
-		c = Class.forName("org.kawanfw.sql.pro.reflection.builders.ProEditionPoolPropertiesIntercerptor");
-		Constructor<?> constructor = c.getConstructor();
-		poolPropertiesIntercerptor = (PoolPropertiesIntercerptor) constructor.newInstance();
-		return poolPropertiesIntercerptor;
-	    } catch (ClassNotFoundException e) {
-		return new DefaultPoolPropertiesIntercerptor();
-	    } catch (Exception e) {
-		throw new SQLException(e);
-	    } 
+    @Override
+    public String interceptValue(String theMethod, String propertyValue) {
+	if (theMethod == null || propertyValue == null) {
+	    return propertyValue;
 	}
 
-	return poolPropertiesIntercerptor;
+	if (theMethod.equals("setMaxIdle")) {
+	    int maxAllowedValue = 125;
+	    propertyValue = getMaxAllowedValue(propertyValue, maxAllowedValue);
+	}
+	else if (theMethod.equals("setMaxActive")) {
+	    int maxAllowedValue = 125;
+	    propertyValue = getMaxAllowedValue(propertyValue, maxAllowedValue);
+	}
+	return propertyValue;
+
+    }
+
+    /**
+     * Gets the new allowed value
+     * @param propertyValue
+     * @param maxAllowedValue
+     */
+    public String getMaxAllowedValue(String propertyValue, int maxAllowedValue) {
+	int value;
+	try {
+	    value = Integer.parseInt(propertyValue);
+	    if (value > maxAllowedValue) {
+		return "" + maxAllowedValue;
+	    }
+	    return propertyValue;
+	} catch (NumberFormatException e) {
+	    return propertyValue;
+	}
     }
 
 }

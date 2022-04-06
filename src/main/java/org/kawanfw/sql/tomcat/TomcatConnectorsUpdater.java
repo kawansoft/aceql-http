@@ -70,6 +70,9 @@ public class TomcatConnectorsUpdater {
 
 	if (updateToHttp2Protocol != null
 		&& Boolean.parseBoolean(updateToHttp2Protocol)) {
+	    
+	    
+	    
 	    System.out.println(
 		    SqlTag.SQL_PRODUCT_START + " Protocol updated to HTTP/2");
 	    tomcat.getConnector().addUpgradeProtocol(new Http2Protocol());

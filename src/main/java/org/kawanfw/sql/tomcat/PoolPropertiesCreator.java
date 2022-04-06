@@ -39,8 +39,8 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tomcat.jdbc.pool.PoolProperties;
 import org.kawanfw.sql.api.server.DatabaseConfigurationException;
-import org.kawanfw.sql.tomcat.properties.pool.PoolPropertiesIntercerptor;
-import org.kawanfw.sql.tomcat.properties.pool.PoolPropertiesIntercerptorCreator;
+import org.kawanfw.sql.tomcat.properties.pool.PoolPropertiesInterceptor;
+import org.kawanfw.sql.tomcat.properties.pool.PoolPropertiesInterceptorCreator;
 import org.kawanfw.sql.util.FrameworkDebug;
 import org.kawanfw.sql.util.SqlTag;
 
@@ -193,8 +193,8 @@ public class PoolPropertiesCreator {
 	    propertyValueToDisplay = TomcatStarter.MASKED_PASSWORD;
 	}
 
-	PoolPropertiesIntercerptor poolPropertiesIntercerptor = PoolPropertiesIntercerptorCreator.createInstance();
-	propertyValue = poolPropertiesIntercerptor.interceptValue(theMethod, propertyValue);
+	PoolPropertiesInterceptor poolPropertiesInterceptor = PoolPropertiesInterceptorCreator.createInstance();
+	propertyValue = poolPropertiesInterceptor.interceptValue(theMethod, propertyValue);
 	propertyValueToDisplay = propertyValue;
 	
 	Class<?>[] pType = methodNamesAndParms.get(theMethod);
