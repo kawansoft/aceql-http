@@ -22,7 +22,7 @@ import org.kawanfw.sql.api.server.SqlEvent;
 public class DefaultSqlFirewallTrigger implements SqlFirewallTrigger {
 
     /**
-     * Logs the info using {@code DefaultDatabaseConfigurator#getLogger()}
+     * Logs the info using {@link DefaultDatabaseConfigurator#getLogger()}
      * {@code Logger}.
      */
     @Override
