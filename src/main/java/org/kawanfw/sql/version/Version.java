@@ -39,5 +39,10 @@ public interface Version {
      * @return the version name
      */
     String getName();
+    
+    /**
+     * @return the edition type
+     */
+    String getType();
 
 }

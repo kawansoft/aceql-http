@@ -38,4 +38,8 @@ public class VersionWrapper {
 	return VersionCreator.createInstance().getServerVersion();
     }
     
+    public static String getType() {
+	return VersionCreator.createInstance().getType();
+    }
+    
 }

@@ -55,6 +55,11 @@ public class DefaultVersion implements Version {
     }
 
     @Override
+    public String getType() {
+	return TYPE;
+    }
+    
+    @Override
     public String toString() {
 	return getServerVersion();
     }
@@ -82,4 +87,6 @@ public class DefaultVersion implements Version {
 	System.out.println(getFullVersion());
 
     }
+
+
 }
