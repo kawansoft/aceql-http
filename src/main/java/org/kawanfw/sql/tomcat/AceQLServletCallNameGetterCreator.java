@@ -54,7 +54,7 @@ public class AceQLServletCallNameGetterCreator {
 	if (servletAceQLCallNameGetter == null) {
 	    Class<?> c;
 	    try {
-		c = Class.forName("org.kawanfw.sql.pro.reflection.builders.ProEditionAceQLServletCallNameGetter");
+		c = Class.forName("org.kawanfw.sql.pro.reflection.builders.ProEditionServletAceQLCallNameGetter");
 		Constructor<?> constructor = c.getConstructor();
 		servletAceQLCallNameGetter = (ServletAceQLCallNameGetter) constructor.newInstance();
 		return servletAceQLCallNameGetter;

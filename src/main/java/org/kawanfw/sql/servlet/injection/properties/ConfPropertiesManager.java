@@ -75,6 +75,8 @@ public class ConfPropertiesManager {
 	ServletAceQLCallNameGetter servletAceQLCallNameGetter = AceQLServletCallNameGetterCreator.createInstance();
 	String aceQLManagerServletCallName = servletAceQLCallNameGetter.getName();
 	
+	System.out.println("aceQLManagerServletCallName: " + aceQLManagerServletCallName);
+	
 	confPropertiesBuilder.servletCallName(aceQLManagerServletCallName);
 	
 	boolean statelessMode = Boolean.parseBoolean(properties.getProperty(ServerSqlManager.STATELESS_MODE, "false"));
