@@ -12,8 +12,8 @@ import org.kawanfw.sql.util.SqlTag;
 
 public class ThreadPoolProperties {
 
-    public static final int DEFAULT_CORE_POOL_SIZE = 100;
-    public static final int DEFAULT_MAXIMUM_POOL_SIZE = 200;
+    public static final int DEFAULT_CORE_POOL_SIZE = 10;
+    public static final int DEFAULT_MAXIMUM_POOL_SIZE = 125;
     public static final int DEFAULT_KEEP_ALIVE_TIME = 10;
     public static final int DEFAULT_BLOCKING_QUEUE_CAPACITY = 50000;
     public static final TimeUnit DEFAULT_UNIT = TimeUnit.SECONDS;

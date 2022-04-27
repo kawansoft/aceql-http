@@ -44,6 +44,9 @@ public class SqlFirewallTriggerCreator {
 	    InvocationTargetException, NoSuchMethodException, SecurityException {
 
 	if (theSqlFirewallTriggerClassName != null && !theSqlFirewallTriggerClassName.isEmpty()) {
+
+	    theSqlFirewallTriggerClassName = getNameWithPackage(theSqlFirewallTriggerClassName);
+
 	    Class<?> c = Class.forName(theSqlFirewallTriggerClassName);
 	    Constructor<?> constructor = c.getConstructor();
 	    sqlFirewallTrigger = (SqlFirewallTrigger) constructor.newInstance();
@@ -55,13 +58,24 @@ public class SqlFirewallTriggerCreator {
 
     }
 
+    private String getNameWithPackage(String theSqlFirewallTriggerClassName) {
+	if (theSqlFirewallTriggerClassName.equals(DefaultSqlFirewallTrigger.class.getSimpleName())) {
+	    // Add prefix package
+	    String theClassNameNew = DefaultSqlFirewallTrigger.class.getPackage().getName() + "."
+		    + theSqlFirewallTriggerClassName;
+	    return theClassNameNew;
+	} else {
+	    return theSqlFirewallTriggerClassName;
+	}
+
+    }
+
     public String getSqlFirewallTriggerClassName() {
-        return sqlFirewallTriggerClassName;
+	return sqlFirewallTriggerClassName;
     }
 
     public SqlFirewallTrigger getSqlFirewallTrigger() {
-        return sqlFirewallTrigger;
+	return sqlFirewallTrigger;
     }
-
 
 }

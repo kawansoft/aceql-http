@@ -28,6 +28,7 @@ package org.kawanfw.sql.servlet.injection.properties;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -75,7 +76,7 @@ public class ConfPropertiesManager {
 	ServletAceQLCallNameGetter servletAceQLCallNameGetter = AceQLServletCallNameGetterCreator.createInstance();
 	String aceQLManagerServletCallName = servletAceQLCallNameGetter.getName();
 	
-	System.out.println("aceQLManagerServletCallName: " + aceQLManagerServletCallName);
+	debug("aceQLManagerServletCallName: " + aceQLManagerServletCallName);
 	
 	confPropertiesBuilder.servletCallName(aceQLManagerServletCallName);
 	
@@ -134,6 +135,11 @@ public class ConfPropertiesManager {
 	ConfProperties confProperties = confPropertiesBuilder.build();
 	return confProperties;
 	
+    }
+
+    private void debug(String s) {
+	if (DEBUG)
+	    System.out.println(this.getClass().getSimpleName() +  " "  +  new Date() + " " + s);
     }
 
     /**
