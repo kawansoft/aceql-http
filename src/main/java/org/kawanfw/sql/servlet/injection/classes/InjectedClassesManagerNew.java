@@ -63,6 +63,7 @@ import org.kawanfw.sql.tomcat.properties.threadpool.ThreadPoolExecutorBuilderCre
 import org.kawanfw.sql.util.FrameworkDebug;
 import org.kawanfw.sql.util.SqlTag;
 import org.kawanfw.sql.util.Tag;
+import org.kawanfw.sql.version.VersionWrapper;
 
 public class InjectedClassesManagerNew {
 
@@ -90,6 +91,11 @@ public class InjectedClassesManagerNew {
 
 	    Set<String> databases = ConfPropertiesStore.get().getDatabaseNames();
 
+	    if (databases.size() > 2 & VersionWrapper.getType().equals("Community")) {
+		throw new UnsupportedOperationException(Tag.PRODUCT + " " + "Loading more than 2 SQL databases "
+			+ Tag.REQUIRES_ACEQL_PROFESSIONAL_EDITION);
+	    }
+		
 	    // Create out InjectedClasses builder
 	    InjectedClassesBuilder injectedClassesBuilder = new InjectedClassesBuilder();
 

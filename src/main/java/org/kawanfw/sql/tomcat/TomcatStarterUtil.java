@@ -44,6 +44,8 @@ import org.kawanfw.sql.api.server.DatabaseConfigurationException;
 import org.kawanfw.sql.servlet.connection.RollbackUtil;
 import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesUtil;
 import org.kawanfw.sql.util.SqlTag;
+import org.kawanfw.sql.util.Tag;
+import org.kawanfw.sql.version.VersionWrapper;
 
 /**
  * @author Nicolas de Pomereu
@@ -84,6 +86,11 @@ public class TomcatStarterUtil {
 
 	Set<String> databases = getDatabaseNames(properties);
 
+	if (databases.size() > 2 & VersionWrapper.getType().equals("Community")) {
+	    throw new UnsupportedOperationException(
+		    Tag.PRODUCT + " " + "Loading more than 2 SQL databases " + Tag.REQUIRES_ACEQL_PROFESSIONAL_EDITION);
+	}
+	
 	for (String database : databases) {
 	    createAndStoreDataSource(properties, database.trim());
 	}
@@ -186,6 +193,11 @@ public class TomcatStarterUtil {
 	Set<String> databaseSet = new HashSet<>();
 	for (int i = 0; i < databaseArray.length; i++) {
 	    databaseSet.add(databaseArray[i].trim());
+	}
+
+	if (databaseSet.size() > 2 & VersionWrapper.getType().equals("Community")) {
+	    throw new UnsupportedOperationException(
+		    Tag.PRODUCT + " " + "Loading more than 2 SQL databases " + Tag.REQUIRES_ACEQL_PROFESSIONAL_EDITION);
 	}
 	return databaseSet;
     }
