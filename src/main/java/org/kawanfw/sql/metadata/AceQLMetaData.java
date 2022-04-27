@@ -221,7 +221,7 @@ public class AceQLMetaData {
     }
 
     /**
-     * Check if continue must be called on maain loop
+     * Check if continue must be called on main loop
      * @param databaseMetaData
      * @param schema
      * @param sqlUtil
