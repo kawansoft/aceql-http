@@ -50,6 +50,7 @@ import org.kawanfw.sql.api.server.session.SessionConfigurator;
 import org.kawanfw.sql.servlet.injection.classes.InjectedClassesManagerNew;
 import org.kawanfw.sql.servlet.injection.classes.InjectedClassesStore;
 import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesStore;
+import org.kawanfw.sql.servlet.injection.properties.PropertiesFileStore;
 import org.kawanfw.sql.servlet.sql.json_return.ExceptionReturner;
 import org.kawanfw.sql.servlet.sql.json_return.JsonErrorReturn;
 import org.kawanfw.sql.servlet.sql.json_return.JsonOkReturn;
@@ -96,6 +97,11 @@ public class ServerSqlManager extends HttpServlet {
     public void init(ServletConfig config) throws ServletException {
 	super.init(config);
 	propertiesFile = config.getInitParameter("properties");
+	
+	// To be done if we are not in Tomcat
+	if (propertiesFile == null) {
+	    propertiesFile = PropertiesFileStore.get().toString();
+	}
     }
 
     @Override

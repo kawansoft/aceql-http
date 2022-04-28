@@ -89,6 +89,9 @@ public class InjectedClassesManagerNew {
 		nativeTomcatElementsBuilder.create(propertiesFile);
 	    }
 
+	    CommunityValidator communityValidator = new CommunityValidator(propertiesFile);
+	    communityValidator.validate();
+	    
 	    Set<String> databases = ConfPropertiesStore.get().getDatabaseNames();
 
 	    TomcatStarterUtil.testDatabasesLimit(databases);
