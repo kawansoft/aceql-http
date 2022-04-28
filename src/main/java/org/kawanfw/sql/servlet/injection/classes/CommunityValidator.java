@@ -117,7 +117,7 @@ public class CommunityValidator {
 	checkProperty(properties, "corePoolSize", ThreadPoolProperties.DEFAULT_CORE_POOL_SIZE  +"");
 	checkProperty(properties, "maximumPoolSize", ThreadPoolProperties.DEFAULT_MAXIMUM_POOL_SIZE + "");
 	checkProperty(properties, "unit", ThreadPoolProperties.DEFAULT_UNIT.toString());
-	checkProperty(properties, "keepAliveTime", ThreadPoolProperties.DEFAULT_MAXIMUM_POOL_SIZE + "");
+	checkProperty(properties, "keepAliveTime", ThreadPoolProperties.DEFAULT_KEEP_ALIVE_TIME + "");
 	checkProperty(properties, "capacity", ThreadPoolProperties.DEFAULT_BLOCKING_QUEUE_CAPACITY + "");
 	
 	checkProperty(properties, "updateToHttp2Protocol", false + "");
