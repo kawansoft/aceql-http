@@ -41,6 +41,7 @@ import org.apache.commons.lang3.SystemUtils;
 import org.apache.tomcat.jdbc.pool.DataSource;
 import org.apache.tomcat.jdbc.pool.PoolProperties;
 import org.kawanfw.sql.api.server.DatabaseConfigurationException;
+import org.kawanfw.sql.api.util.SqlUtil;
 import org.kawanfw.sql.servlet.connection.RollbackUtil;
 import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesUtil;
 import org.kawanfw.sql.util.SqlTag;
@@ -266,6 +267,11 @@ public class TomcatStarterUtil {
 	    
 	    if( ConfPropertiesUtil.isStatelessMode() && ! connection.getAutoCommit()) {
 		throw new DatabaseConfigurationException("Server is in Stateless Mode: Connection pool must be in default auto commit. Please fix configuration.");
+	    }
+	    
+	    if (new SqlUtil(connection).isDB2()) {
+		throw new UnsupportedOperationException(Tag.PRODUCT + " " + "DB2 is not supported and "
+			+ Tag.REQUIRES_ACEQL_PROFESSIONAL_EDITION);
 	    }
 
 	    System.out.println(SqlTag.SQL_PRODUCT_START + "  -> Connection OK!");

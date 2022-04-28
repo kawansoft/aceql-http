@@ -381,10 +381,7 @@ public class ServerSqlDispatch {
 		    throws SQLException, IOException {
 	// Redirect if it's a JDBC DatabaseMetaData call
 	if (ActionUtil.isJdbcDatabaseMetaDataQuery(action)) {
-	    
-	    //JdbcDatabaseMetadataActionManager jdbcDatabaseMetadataActionManager = new DefaultJdbcDatabaseMetadataActionManager();
-	    //jdbcDatabaseMetadataActionManager.execute(request, response, out, sqlFirewallManagers, connection);
-	    
+	    	    
 	    try {
 		JdbcDatabaseMetadataActionManager jdbcDatabaseMetadataActionManager = JdbcDatabaseMetadataActionManagerCreator
 			.createInstance();
