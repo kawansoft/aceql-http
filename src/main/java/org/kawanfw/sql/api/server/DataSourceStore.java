@@ -32,8 +32,7 @@ import javax.sql.DataSource;
 
 import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesStore;
 import org.kawanfw.sql.tomcat.TomcatSqlModeStore;
-import org.kawanfw.sql.util.Tag;
-import org.kawanfw.sql.version.VersionWrapper;
+import org.kawanfw.sql.tomcat.TomcatStarterUtil;
 
 /**
  * 
@@ -69,10 +68,7 @@ public class DataSourceStore {
     public static Map<String, DataSource> getDataSources() {
 	Set<String> databases = ConfPropertiesStore.get().getDatabaseNames();
 
-	if (databases.size() > 2 & VersionWrapper.getType().equals("Community")) {
-	    throw new UnsupportedOperationException(
-		    Tag.PRODUCT + " " + "Loading more than 2 SQL databases " + Tag.REQUIRES_ACEQL_PROFESSIONAL_EDITION);
-	}
+	TomcatStarterUtil.testDatabasesLimit(databases);
 	
 	Map<String, DataSource> dataSourceSet = new ConcurrentHashMap<>();
 

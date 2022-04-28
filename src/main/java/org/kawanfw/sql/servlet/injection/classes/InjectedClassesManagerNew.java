@@ -58,12 +58,12 @@ import org.kawanfw.sql.servlet.injection.classes.creator.UserAuthenticatorCreato
 import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesStore;
 import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesUtil;
 import org.kawanfw.sql.tomcat.TomcatSqlModeStore;
+import org.kawanfw.sql.tomcat.TomcatStarterUtil;
 import org.kawanfw.sql.tomcat.properties.threadpool.ThreadPoolExecutorBuilder;
 import org.kawanfw.sql.tomcat.properties.threadpool.ThreadPoolExecutorBuilderCreator;
 import org.kawanfw.sql.util.FrameworkDebug;
 import org.kawanfw.sql.util.SqlTag;
 import org.kawanfw.sql.util.Tag;
-import org.kawanfw.sql.version.VersionWrapper;
 
 public class InjectedClassesManagerNew {
 
@@ -91,10 +91,7 @@ public class InjectedClassesManagerNew {
 
 	    Set<String> databases = ConfPropertiesStore.get().getDatabaseNames();
 
-	    if (databases.size() > 2 & VersionWrapper.getType().equals("Community")) {
-		throw new UnsupportedOperationException(Tag.PRODUCT + " " + "Loading more than 2 SQL databases "
-			+ Tag.REQUIRES_ACEQL_PROFESSIONAL_EDITION);
-	    }
+	    TomcatStarterUtil.testDatabasesLimit(databases);
 		
 	    // Create out InjectedClasses builder
 	    InjectedClassesBuilder injectedClassesBuilder = new InjectedClassesBuilder();

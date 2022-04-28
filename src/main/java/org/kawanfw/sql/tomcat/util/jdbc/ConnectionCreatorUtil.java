@@ -32,8 +32,6 @@ import java.util.Set;
 import org.kawanfw.sql.api.server.DatabaseConfigurationException;
 import org.kawanfw.sql.tomcat.TomcatStarterUtil;
 import org.kawanfw.sql.util.SqlTag;
-import org.kawanfw.sql.util.Tag;
-import org.kawanfw.sql.version.VersionWrapper;
 
 /**
  * Utility methods to create Connections.
@@ -57,10 +55,7 @@ public class ConnectionCreatorUtil {
 
 	Set<String> databases = TomcatStarterUtil.getDatabaseNames(properties);
 	
-	if (databases.size() > 2 & VersionWrapper.getType().equals("Community")) {
-	    throw new UnsupportedOperationException(
-		    Tag.PRODUCT + " " + "Loading more than 2 SQL databases " + Tag.REQUIRES_ACEQL_PROFESSIONAL_EDITION);
-	}
+	TomcatStarterUtil.testDatabasesLimit(databases);
 	
 	for (String database : databases) {
 	    String driverClassName = properties.getProperty(database + "." + "driverClassName");

@@ -86,16 +86,34 @@ public class TomcatStarterUtil {
 
 	Set<String> databases = getDatabaseNames(properties);
 
-	if (databases.size() > 2 & VersionWrapper.getType().equals("Community")) {
-	    throw new UnsupportedOperationException(
-		    Tag.PRODUCT + " " + "Loading more than 2 SQL databases " + Tag.REQUIRES_ACEQL_PROFESSIONAL_EDITION);
-	}
+	testDatabasesLimit(databases);
 	
 	for (String database : databases) {
 	    createAndStoreDataSource(properties, database.trim());
 	}
 	
     }
+
+    /**
+     * Says is edition is Community or Professional.
+     */
+    public static boolean isCommunityEdition() {
+	return VersionWrapper.getType().equals("Community");
+    }
+
+    
+    /**
+     * Do not accept more than 2 databases in Community editions
+     * @param databases
+     * @throws UnsupportedOperationException
+     */
+    public static void testDatabasesLimit(Set<String> databases) throws UnsupportedOperationException {
+	if (databases.size() > 2 & isCommunityEdition()) {
+	    throw new UnsupportedOperationException(
+		    Tag.PRODUCT + " " + "Loading more than 2 SQL databases " + Tag.REQUIRES_ACEQL_PROFESSIONAL_EDITION);
+	}
+    }
+
 
     public static void addServlets(Properties properties, Context rootCtx) throws IOException, SQLException {
 
@@ -195,10 +213,7 @@ public class TomcatStarterUtil {
 	    databaseSet.add(databaseArray[i].trim());
 	}
 
-	if (databaseSet.size() > 2 & VersionWrapper.getType().equals("Community")) {
-	    throw new UnsupportedOperationException(
-		    Tag.PRODUCT + " " + "Loading more than 2 SQL databases " + Tag.REQUIRES_ACEQL_PROFESSIONAL_EDITION);
-	}
+	testDatabasesLimit(databaseSet);
 	return databaseSet;
     }
 
