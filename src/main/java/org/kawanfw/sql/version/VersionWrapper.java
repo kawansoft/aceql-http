@@ -30,8 +30,10 @@ package org.kawanfw.sql.version;
  */
 public class VersionWrapper {
 
+    private static String NAME = "AceQL HTTP";
+    
     public static String getName() {
-	return VersionCreator.createInstance().getName();
+	return NAME;
     }
 
     public static String getServerVersion() {

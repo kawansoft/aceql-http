@@ -37,7 +37,6 @@ import org.kawanfw.sql.tomcat.TomcatStarterUtil;
 import org.kawanfw.sql.tomcat.util.PortSemaphoreFile;
 import org.kawanfw.sql.util.FrameworkDebug;
 import org.kawanfw.sql.util.SqlTag;
-import org.kawanfw.sql.version.VersionWrapper;
 
 /**
  *
@@ -182,7 +181,7 @@ public class WebServerApiWrapper {
 
 	if (!portSemaphoreFile.exists()) {
 	    throw new ConnectException(
-		    "WARNING! There is no " + VersionWrapper.getName() + " Web server running on port " + port);
+		    "WARNING! There is no AceQL HTTP Web server running on port " + port);
 	}
 
 	// Always Force the deletion of the semaphore file:
