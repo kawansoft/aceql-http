@@ -80,7 +80,7 @@ public class SqlFirewallsCreator {
     private List<String> sqlFirewallClassNames = new ArrayList<>();
     private List<SqlFirewallManager> sqlFirewallManagers = new ArrayList<>();
 
-    public SqlFirewallsCreator(String database, List<String> sqlFirewallClassNames)
+    public SqlFirewallsCreator(List<String> sqlFirewallClassNames)
 	    throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException,
 	    IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException, IOException {
 

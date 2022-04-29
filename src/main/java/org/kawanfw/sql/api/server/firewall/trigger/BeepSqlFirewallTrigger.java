@@ -36,6 +36,7 @@ import org.kawanfw.sql.servlet.util.BeepUtil;
 
 /**
  * Simply beeps on terminal if an attack is detected by a {@code SqlFirewallManager}.
+ * Uses a <a href="https://gist.github.com/jbzdak/61398b8ad795d22724dd">GitHub Gist</a> created by Jacek Bzdak.
  * @author Nicolas de Pomereu
  * @since 11.0
  */

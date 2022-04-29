@@ -37,8 +37,6 @@ import org.kawanfw.sql.servlet.injection.classes.WebServerStarter;
 public class WebServerStarterCreator {
 
 
-    private WebServerStarter webServerStarter = null;
-
     public WebServerStarter createInstance()
 	    throws SQLException {
 
@@ -46,7 +44,7 @@ public class WebServerStarterCreator {
 	    try {
 		c = Class.forName("org.kawanfw.sql.pro.reflection.builders.ProEditionWebServerStarter");
 		Constructor<?> constructor = c.getConstructor();
-		webServerStarter = (WebServerStarter) constructor.newInstance();
+		WebServerStarter webServerStarter = (WebServerStarter) constructor.newInstance();
 		return webServerStarter;
 	    } catch (ClassNotFoundException e) {
 		return new DefaultWebServerStarter();

@@ -114,7 +114,6 @@ public class InjectedClassesManagerNew {
 	    injectedClassesBuilder.sqlFirewallManagerMap(sqlFirewallManagerMap);
 	    
 	    // Pro loaders
-	    
 	    // Load all the classes and set our InjectedClassesBuilder instance
 	    
 	    Map<String, SqlFirewallTrigger> sqlFirewallTriggers = new HashMap<>();
@@ -451,7 +450,7 @@ public class InjectedClassesManagerNew {
 
 	System.out.println(SqlTag.SQL_PRODUCT_START + " Loading Database " + database + tagSQLFirewallManager);
 
-	SqlFirewallsCreator sqlFirewallsCreator = new SqlFirewallsCreator(database, sqlFirewallClassNames);
+	SqlFirewallsCreator sqlFirewallsCreator = new SqlFirewallsCreator(sqlFirewallClassNames);
 	List<SqlFirewallManager> sqlFirewallManagers = sqlFirewallsCreator.getSqlFirewalls();
 
 	for (SqlFirewallManager sqlFirewallManager : sqlFirewallManagers) {
