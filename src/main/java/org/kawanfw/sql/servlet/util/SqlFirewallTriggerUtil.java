@@ -57,7 +57,7 @@ public class SqlFirewallTriggerUtil {
         gen.write("database", evt.getDatabase());
         gen.write("ipAddress", evt.getIpAddress());
         
-        gen.write("ipAddress", sqlFirewallManager.getClass().getSimpleName());
+        gen.write("sqlFirewallManager", sqlFirewallManager.getClass().getSimpleName());
     
         gen.write("sql", evt.getSql());
         gen.write("isPreparedStatement", evt.isPreparedStatement());

@@ -22,33 +22,33 @@
  * Any modifications to this file must keep this entire header
  * intact.
  */
-package org.kawanfw.sql.api.server.firewall.trigger;
+package org.kawanfw.test.api.server.config;
 
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.kawanfw.sql.api.server.DefaultDatabaseConfigurator;
 import org.kawanfw.sql.api.server.SqlEvent;
+import org.kawanfw.sql.api.server.SqlEventWrapper;
+import org.kawanfw.sql.api.server.firewall.DefaultSqlFirewallManager;
 import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
+import org.kawanfw.sql.servlet.util.SqlFirewallTriggerUtil;
 
 /**
- * Default trigger for a SQL database when a {@code SqlFirewallManager} detects
- * an attack. <br>
- * 
  * @author Nicolas de Pomereu
- * @since 11.0
+ *
  */
-public class DefaultSqlFirewallTrigger implements SqlFirewallTrigger {
+public class SqlFirewallTriggerUtilTest {
 
-    /**
-     * Logs the info using {@link DefaultDatabaseConfigurator#getLogger()}
-     * {@code Logger}.
-     */
-    @Override
-    public void runIfStatementRefused(SqlEvent sqlEvent, SqlFirewallManager sqlFirewallManager, Connection connection)
-	    throws IOException, SQLException {
-	// Default implementation does nothing for the sake of speed execution
+    public static void main(String[] args) throws Exception {
+	List<Object> list = new ArrayList<>();
+	list.add("value1");
+	list.add("value2");
+	list.add("value3");
+	
+	SqlFirewallManager sqlFirewallManager = new DefaultSqlFirewallManager();
+	SqlEvent evt = SqlEventWrapper.sqlEventBuild("user1", "db1", "10.0.0.0", "select * from table", false, list, false);
+	
+	String jsonString = SqlFirewallTriggerUtil.toJsonString(evt, sqlFirewallManager);
+	System.out.println(jsonString);
     }
-
 }
