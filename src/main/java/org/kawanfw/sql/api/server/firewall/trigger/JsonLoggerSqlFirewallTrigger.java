@@ -23,7 +23,7 @@
  * intact.
  */
 
-package org.kawanfw.sql.api.server.listener;
+package org.kawanfw.sql.api.server.firewall.trigger;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,26 +36,27 @@ import java.util.logging.Logger;
 
 import org.apache.commons.lang3.SystemUtils;
 import org.kawanfw.sql.api.server.SqlEvent;
+import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
 import org.kawanfw.sql.api.server.util.NoFormatter;
-import org.kawanfw.sql.servlet.util.UpdateListenerUtil;
+import org.kawanfw.sql.servlet.util.SqlFirewallTriggerUtil;
 import org.kawanfw.sql.util.log.FlattenLogger;
 
 /**
- * Concrete implementation of {@code UpdateListener}. The
- * {@code updateActionPerformed(ClientEvent, Connection)} logs using JSON format
- * the {@code SqlEvent}.
+ * Concrete implementation of {@code SqlFirewallTrigger}. The
+ * {@code runIfStatementRefused} method logs using JSON format the {@code SqlEvent}
+ * and the {@code sqlFirewallManager} class name.
  * 
  * @author Nicolas de Pomereu
- * @since 9.0
+ * @since 11.0
  */
 
-public class JsonLoggerUpdateListener implements UpdateListener {
+public class JsonLoggerSqlFirewallTrigger implements SqlFirewallTrigger {
 
     private static Logger ACEQL_LOGGER = null;
 
     /**
-     * Logs using JSON format the {@code ClientEvent} into a {@code Logger} with
-     * parameters:
+     * Logs using JSON format the {@code ClientEvent} and the
+     * {@code SqlFirewallManager} class name into a {@code Logger} with parameters:
      * <ul>
      * <li>Output file pattern:
      * {@code user.home/.kawansoft/log/JsonLoggerSqlFirewallTrigger.log}.</li>
@@ -64,8 +65,9 @@ public class JsonLoggerUpdateListener implements UpdateListener {
      * </ul>
      */
     @Override
-    public void updateActionPerformed(SqlEvent evt, Connection connection) throws IOException, SQLException {
-	String jsonString = UpdateListenerUtil.toJsonString(evt);
+    public void runIfStatementRefused(SqlEvent sqlEvent, SqlFirewallManager sqlFirewallManager, Connection connection)
+	    throws IOException, SQLException {
+	String jsonString = SqlFirewallTriggerUtil.toJsonString(sqlEvent, sqlFirewallManager);
 	getLogger().log(Level.WARNING, jsonString);
     }
 
@@ -77,16 +79,15 @@ public class JsonLoggerUpdateListener implements UpdateListener {
 	File logDir = new File(SystemUtils.USER_HOME + File.separator + ".kawansoft" + File.separator + "log");
 	logDir.mkdirs();
 
-	String pattern = logDir.toString() + File.separator + "JsonLoggerUpdateListener.log";
+	String pattern = logDir.toString() + File.separator + "JsonLoggerSqlFirewallTrigger.log";
 
-	Logger logger = Logger.getLogger(JsonLoggerUpdateListener.class.getName());
+	Logger logger = Logger.getLogger(JsonLoggerSqlFirewallTrigger.class.getName());
 	ACEQL_LOGGER = new FlattenLogger(logger.getName(), logger.getResourceBundleName());
 
 	Handler fh = new FileHandler(pattern, 1000 * 1024 * 1024, 3, true);
 	fh.setFormatter(new NoFormatter());
 	ACEQL_LOGGER.addHandler(fh);
 	return ACEQL_LOGGER;
-
     }
 
 }
