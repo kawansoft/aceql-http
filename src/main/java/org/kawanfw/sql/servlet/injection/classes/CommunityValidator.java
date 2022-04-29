@@ -67,12 +67,6 @@ public class CommunityValidator {
 	Set<String> databases = ConfPropertiesStore.get().getDatabaseNames();
 	TomcatStarterUtil.testDatabasesLimit(databases);
 
-	// Special test for CvsRulesManager
-	for (String database : databases) {
-	    String propertyName = database + ".sqlFirewallManagerClassNames";
-	    checkPropertyMustNotContainCsvRulesManager(properties, propertyName);
-	}
-
 	for (String database : databases) {
 	    String propertyName = database + ".databaseConfiguratorClassName";
 	    checkPropertyMustBeNull(properties, propertyName);
@@ -138,27 +132,6 @@ public class CommunityValidator {
 
 	checkPropertyMustBeNull(properties, "propertiesPasswordManagerClassName");
 
-    }
-
-    private void checkPropertyMustNotContainCsvRulesManager(Properties properties, String propertyName) {
-	if (properties.getProperty(propertyName) == null) {
-	    return;
-	}
-
-	String valueInFile = properties.getProperty(propertyName);
-
-	String[] classNameValues = valueInFile.split(",");
-	for (String className : classNameValues) {
-	    
-	    className = className.trim();
-	    debug("checkPropertyMustNotContainCsvRulesManager className: " + className);
-	    
-	    if (className.endsWith(".CsvRulesManager") || className.equals("CsvRulesManager")
-		    || className.endsWith(".CsvRulesManagerNoReload") || className.equals("CsvRulesManagerNoReload")) {
-		throw new UnsupportedOperationException(Tag.PRODUCT + " " 
-		    + "Server cannot start. In Community Edition, the CsvRulesManager &  CsvRulesManagerNoReload classes cannot be used.");
-	    }
-	}
     }
 
     private void checkPropertyMustBeNull(Properties properties, String propertyName) {
