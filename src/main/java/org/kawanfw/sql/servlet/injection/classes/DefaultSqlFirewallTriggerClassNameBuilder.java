@@ -24,7 +24,7 @@
  */
 package org.kawanfw.sql.servlet.injection.classes;
 
-import org.kawanfw.sql.api.server.firewall.DefaultSqlFirewallTrigger;
+import org.kawanfw.sql.api.server.firewall.trigger.DefaultSqlFirewallTrigger;
 
 /**
  * @author Nicolas de Pomereu

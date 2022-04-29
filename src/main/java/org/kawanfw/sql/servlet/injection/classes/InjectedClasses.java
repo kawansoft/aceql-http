@@ -35,7 +35,7 @@ import org.kawanfw.sql.api.server.auth.headers.RequestHeadersAuthenticator;
 import org.kawanfw.sql.api.server.blob.BlobDownloadConfigurator;
 import org.kawanfw.sql.api.server.blob.BlobUploadConfigurator;
 import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
-import org.kawanfw.sql.api.server.firewall.SqlFirewallTrigger;
+import org.kawanfw.sql.api.server.firewall.trigger.SqlFirewallTrigger;
 import org.kawanfw.sql.api.server.listener.UpdateListener;
 import org.kawanfw.sql.api.server.session.SessionConfigurator;
 

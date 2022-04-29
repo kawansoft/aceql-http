@@ -31,7 +31,7 @@ import java.util.Objects;
 
 import org.kawanfw.sql.api.server.SqlEvent;
 import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
-import org.kawanfw.sql.api.server.firewall.SqlFirewallTrigger;
+import org.kawanfw.sql.api.server.firewall.trigger.SqlFirewallTrigger;
 import org.kawanfw.sql.servlet.injection.classes.InjectedClassesStore;
 
 /**

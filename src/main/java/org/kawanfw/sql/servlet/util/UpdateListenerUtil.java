@@ -57,7 +57,8 @@ public class UpdateListenerUtil {
     
         gen.write("sql", evt.getSql());
         gen.write("isPreparedStatement", evt.isPreparedStatement());
-    
+        gen.write("isMetadataQuery", evt.isMetadataQuery());
+        
         gen.writeStartArray("parameterValues");
         List<String> values = UpdateListenerUtil.paramValuesAsList(evt.getParameterValues());
         for (String value : values) {

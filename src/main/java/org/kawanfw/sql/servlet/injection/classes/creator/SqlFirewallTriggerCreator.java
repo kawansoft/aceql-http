@@ -27,8 +27,8 @@ package org.kawanfw.sql.servlet.injection.classes.creator;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
-import org.kawanfw.sql.api.server.firewall.DefaultSqlFirewallTrigger;
-import org.kawanfw.sql.api.server.firewall.SqlFirewallTrigger;
+import org.kawanfw.sql.api.server.firewall.trigger.DefaultSqlFirewallTrigger;
+import org.kawanfw.sql.api.server.firewall.trigger.SqlFirewallTrigger;
 
 /**
  * @author Nicolas de Pomereu

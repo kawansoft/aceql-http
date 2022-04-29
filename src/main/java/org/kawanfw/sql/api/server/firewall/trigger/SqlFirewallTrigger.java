@@ -22,13 +22,14 @@
  * Any modifications to this file must keep this entire header
  * intact.
  */
-package org.kawanfw.sql.api.server.firewall;
+package org.kawanfw.sql.api.server.firewall.trigger;
 
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 
 import org.kawanfw.sql.api.server.SqlEvent;
+import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
 
 /**
  * Interface that allows to define a trigger if a

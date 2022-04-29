@@ -40,7 +40,7 @@ import javax.servlet.ServletException;
 import org.kawanfw.sql.api.server.DatabaseConfigurationException;
 import org.kawanfw.sql.api.server.DatabaseConfigurator;
 import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
-import org.kawanfw.sql.api.server.firewall.SqlFirewallTrigger;
+import org.kawanfw.sql.api.server.firewall.trigger.SqlFirewallTrigger;
 import org.kawanfw.sql.api.server.listener.UpdateListener;
 import org.kawanfw.sql.api.server.session.JwtSessionConfigurator;
 import org.kawanfw.sql.servlet.injection.classes.InjectedClasses.InjectedClassesBuilder;

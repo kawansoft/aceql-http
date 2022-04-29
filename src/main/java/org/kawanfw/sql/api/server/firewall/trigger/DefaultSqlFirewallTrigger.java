@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.kawanfw.sql.api.server.firewall;
+package org.kawanfw.sql.api.server.firewall.trigger;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -11,10 +11,11 @@ import java.util.logging.Logger;
 
 import org.kawanfw.sql.api.server.DefaultDatabaseConfigurator;
 import org.kawanfw.sql.api.server.SqlEvent;
+import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
 
 /**
- * Default trigger for a SQL database when a {@code SqlFirewallManager}
- * detects an attack. <br>
+ * Default trigger for a SQL database when a {@code SqlFirewallManager} detects
+ * an attack. <br>
  * 
  * @author Nicolas de Pomereu
  * @since 11.0
