@@ -33,6 +33,8 @@ import java.sql.SQLException;
 import org.apache.catalina.LifecycleException;
 import org.kawanfw.sql.api.server.DatabaseConfigurationException;
 import org.kawanfw.sql.api.util.webserver.WebServerApiWrapper;
+import org.kawanfw.sql.servlet.injection.classes.WebServerStarter;
+import org.kawanfw.sql.servlet.injection.classes.creator.WebServerStarterCreator;
 
 /**
 *
@@ -57,19 +59,22 @@ public class WebServerApi {
      * @param propertiesFile properties file to use for configuration of the Web
      *                       Server
      *
-     * @throws ConnectException               if the port is not available
+     * @throws ConnectException               if the default port is not available
      * @throws IOException                    if an IOException occurs
      * @throws DatabaseConfigurationException if there is a configuration error,
      *                                        either in Configurators or in the
      *                                        <code>server-sql.properties</code>
      *                                        file
-     * @throws LifecycleException             thrown by the embedded Tomcat engine
-     *                                        for any lifecycle related problem
-     * @throws SQLException if any SQL error occurs
+     * @throws LifecycleException             thrown by embedded Tomcat for any
+     *                                        lifecycle related problem
+     * @throws SQLException 		      thrown by embedded Tomcat for any SQL Error
      */
     public void startServer(String host, int port, File propertiesFile)
-	    throws ConnectException, IOException, DatabaseConfigurationException, LifecycleException, SQLException {
-	webServerApiWrapper.startServer(host, port, propertiesFile);
+	    throws ConnectException, IOException, SQLException, DatabaseConfigurationException, LifecycleException {
+	
+	WebServerStarterCreator webServerStarterCreator = new WebServerStarterCreator();
+	WebServerStarter webServerStarter = webServerStarterCreator.createInstance(webServerApiWrapper);
+	webServerStarter.startServer(webServerApiWrapper, host, port, propertiesFile);;
     }
 
     /**
@@ -92,7 +97,7 @@ public class WebServerApi {
      */
     public void startServer(String host, File propertiesFile)
 	    throws ConnectException, IOException, DatabaseConfigurationException, LifecycleException, SQLException {
-	webServerApiWrapper.startServer(host, propertiesFile);
+	startServer(host, WebServerApi.DEFAULT_PORT, propertiesFile);
     }
 
     /**
