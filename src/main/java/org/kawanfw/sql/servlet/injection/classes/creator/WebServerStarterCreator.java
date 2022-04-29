@@ -27,7 +27,6 @@ package org.kawanfw.sql.servlet.injection.classes.creator;
 import java.lang.reflect.Constructor;
 import java.sql.SQLException;
 
-import org.kawanfw.sql.api.util.webserver.WebServerApiWrapper;
 import org.kawanfw.sql.servlet.injection.classes.DefaultWebServerStarter;
 import org.kawanfw.sql.servlet.injection.classes.WebServerStarter;
 
@@ -40,7 +39,7 @@ public class WebServerStarterCreator {
 
     private WebServerStarter webServerStarter = null;
 
-    public WebServerStarter createInstance(WebServerApiWrapper webServerApiWrapper)
+    public WebServerStarter createInstance()
 	    throws SQLException {
 
 	    Class<?> c;

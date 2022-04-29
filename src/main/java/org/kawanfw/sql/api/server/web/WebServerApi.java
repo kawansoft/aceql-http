@@ -73,8 +73,8 @@ public class WebServerApi {
 	    throws ConnectException, IOException, SQLException, DatabaseConfigurationException, LifecycleException {
 	
 	WebServerStarterCreator webServerStarterCreator = new WebServerStarterCreator();
-	WebServerStarter webServerStarter = webServerStarterCreator.createInstance(webServerApiWrapper);
-	webServerStarter.startServer(webServerApiWrapper, host, port, propertiesFile);;
+	WebServerStarter webServerStarter = webServerStarterCreator.createInstance();
+	webServerStarter.startServer(webServerApiWrapper, host, port, propertiesFile);
     }
 
     /**
