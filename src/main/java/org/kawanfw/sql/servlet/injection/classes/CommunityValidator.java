@@ -125,6 +125,8 @@ public class CommunityValidator {
 	checkPropertyMustBeNull(properties, "blobDownloadConfiguratorClassName");
 	checkPropertyMustBeNull(properties, "blobUploadConfiguratorClassName");
 	
+	checkPropertyMustBeNull(properties, "propertiesPasswordManagerClassName");
+	
     }
 
     private void checkPropertyMustBeNull(Properties properties, String propertyName) {
