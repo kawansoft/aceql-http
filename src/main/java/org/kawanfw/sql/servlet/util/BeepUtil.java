@@ -47,7 +47,8 @@ public class BeepUtil {
          * We assume that encoding uses signed shorts. Probably we could
          * make this code more generic but who cares.
          */
-        if (af.getEncoding() != AudioFormat.Encoding.PCM_SIGNED){
+        //if (af.getEncoding() != AudioFormat.Encoding.PCM_SIGNED){
+        if (! af.getEncoding().equals(AudioFormat.Encoding.PCM_SIGNED)) {
             throw new UnsupportedOperationException("Unknown encoding");
         }
 
@@ -96,7 +97,8 @@ public class BeepUtil {
         clip.addLineListener(new LineListener() {
             @Override
             public void update(LineEvent event) {
-                if (event.getType() == LineEvent.Type.START) {
+                //if (event.getType() == LineEvent.Type.START) {
+        	if (event.getType().equals(LineEvent.Type.START)) {
                     Timer t = new Timer((int)millis + 1, new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
