@@ -104,12 +104,13 @@ public class InjectedClassesManagerNew {
 	    loadUserAuthenticator(injectedClassesBuilder);
 
 	    Map<String, List<SqlFirewallManager>> sqlFirewallManagerMap = new HashMap<>();
-
+	    
 	    for (String database : databases) {		
 		List<SqlFirewallManager> sqlFirewalManagers = loadSqlFirewallManagers(database);
 		sqlFirewallManagerMap.put(database, sqlFirewalManagers);
 	    }
 	    
+	    debug("sqlFirewallManagerMap: " + sqlFirewallManagerMap);
 	    injectedClassesBuilder.sqlFirewallManagerMap(sqlFirewallManagerMap);
 	    
 	    // Pro loaders

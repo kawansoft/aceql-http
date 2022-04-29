@@ -26,6 +26,7 @@ package org.kawanfw.sql.servlet.injection.classes;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 import java.util.Properties;
 import java.util.Set;
 
@@ -33,6 +34,7 @@ import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesStore;
 import org.kawanfw.sql.servlet.injection.properties.DefaultPropertiesBuilder;
 import org.kawanfw.sql.tomcat.TomcatStarterUtil;
 import org.kawanfw.sql.tomcat.properties.threadpool.ThreadPoolProperties;
+import org.kawanfw.sql.util.FrameworkDebug;
 import org.kawanfw.sql.util.Tag;
 
 /**
@@ -43,6 +45,8 @@ import org.kawanfw.sql.util.Tag;
  */
 public class CommunityValidator {
 
+    private static boolean DEBUG = FrameworkDebug.isSet(InjectedClassesManagerNew.class);
+    
     private String propertiesFile;
 
     public CommunityValidator(String propertiesFile) {
@@ -50,17 +54,24 @@ public class CommunityValidator {
     }
 
     public void validate() throws IOException {
-	
+
 	// Nothing todo if Pro Edition
 	if (!TomcatStarterUtil.isCommunityEdition()) {
 	    return;
 	}
-	
-	File file = new File(propertiesFile);		
+
+	File file = new File(propertiesFile);
 	Properties properties = DefaultPropertiesBuilder.commonsGetProperties(file);
 	checkProperty(properties, "aceQLManagerServletCallName", "aceql");
 
 	Set<String> databases = ConfPropertiesStore.get().getDatabaseNames();
+	TomcatStarterUtil.testDatabasesLimit(databases);
+
+	// Special test for CvsRulesManager
+	for (String database : databases) {
+	    String propertyName = database + ".sqlFirewallManagerClassNames";
+	    checkPropertyMustNotContainCsvRulesManager(properties, propertyName);
+	}
 
 	for (String database : databases) {
 	    String propertyName = database + ".databaseConfiguratorClassName";
@@ -113,20 +124,41 @@ public class CommunityValidator {
 	</code>
 	 * </pre>
 	 */
-	
-	checkProperty(properties, "corePoolSize", ThreadPoolProperties.DEFAULT_CORE_POOL_SIZE  +"");
+
+	checkProperty(properties, "corePoolSize", ThreadPoolProperties.DEFAULT_CORE_POOL_SIZE + "");
 	checkProperty(properties, "maximumPoolSize", ThreadPoolProperties.DEFAULT_MAXIMUM_POOL_SIZE + "");
 	checkProperty(properties, "unit", ThreadPoolProperties.DEFAULT_UNIT.toString());
 	checkProperty(properties, "keepAliveTime", ThreadPoolProperties.DEFAULT_KEEP_ALIVE_TIME + "");
 	checkProperty(properties, "capacity", ThreadPoolProperties.DEFAULT_BLOCKING_QUEUE_CAPACITY + "");
-	
+
 	checkProperty(properties, "updateToHttp2Protocol", false + "");
-	
+
 	checkPropertyMustBeNull(properties, "blobDownloadConfiguratorClassName");
 	checkPropertyMustBeNull(properties, "blobUploadConfiguratorClassName");
-	
+
 	checkPropertyMustBeNull(properties, "propertiesPasswordManagerClassName");
-	
+
+    }
+
+    private void checkPropertyMustNotContainCsvRulesManager(Properties properties, String propertyName) {
+	if (properties.getProperty(propertyName) == null) {
+	    return;
+	}
+
+	String valueInFile = properties.getProperty(propertyName);
+
+	String[] classNameValues = valueInFile.split(",");
+	for (String className : classNameValues) {
+	    
+	    className = className.trim();
+	    debug("checkPropertyMustNotContainCsvRulesManager className: " + className);
+	    
+	    if (className.endsWith(".CsvRulesManager") || className.equals("CsvRulesManager")
+		    || className.endsWith(".CsvRulesManagerNoReload") || className.equals("CsvRulesManagerNoReload")) {
+		throw new UnsupportedOperationException(Tag.PRODUCT + " " 
+		    + "Server cannot start. In Community Edition, the CsvRulesManager &  CsvRulesManagerNoReload classes cannot be used.");
+	    }
+	}
     }
 
     private void checkPropertyMustBeNull(Properties properties, String propertyName) {
@@ -153,4 +185,15 @@ public class CommunityValidator {
 
     }
 
+    /**
+     * Method called by children Servlet for debug purpose Println is done only if
+     * class name name is in kawansoft-debug.ini
+     */
+    public static void debug(String s) {
+	if (DEBUG) {
+	    System.out.println(new Date() + " " + s);
+	}
+    }
+
+    
 }
