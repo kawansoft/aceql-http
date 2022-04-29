@@ -32,6 +32,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.kawanfw.sql.api.server.firewall.CsvRulesManager;
+import org.kawanfw.sql.api.server.firewall.CsvRulesManagerNoReload;
 import org.kawanfw.sql.api.server.firewall.DefaultSqlFirewallManager;
 import org.kawanfw.sql.api.server.firewall.DenyDclManager;
 import org.kawanfw.sql.api.server.firewall.DenyDdlManager;
@@ -68,11 +70,9 @@ import org.kawanfw.sql.util.FrameworkDebug;
 public class SqlFirewallsCreator {
 
     private static boolean DEBUG = FrameworkDebug.isSet(SqlFirewallsCreator.class);
-    
-    //private static final boolean TEST_FIREWALLS = false;
 
-    private static String[] PREDEFINED_CLASS_NAMES = {"CsvRulesManager" ,
-	    "CsvRulesManagerNoReload", DefaultSqlFirewallManager.class.getSimpleName(),
+    private static String[] PREDEFINED_CLASS_NAMES = { CsvRulesManager.class.getSimpleName(),
+	    CsvRulesManagerNoReload.class.getSimpleName(), DefaultSqlFirewallManager.class.getSimpleName(),
 	    DenyDclManager.class.getSimpleName(), DenyDdlManager.class.getSimpleName(),
 	    DenyExecuteUpdateManager.class.getSimpleName(), DenyMetadataQueryManager.class.getSimpleName(),
 	    DenyStatementClassManager.class.getSimpleName(), };
@@ -87,7 +87,7 @@ public class SqlFirewallsCreator {
 	if (sqlFirewallClassNames != null && !sqlFirewallClassNames.isEmpty()) {
 
 	    debug("sqlFirewallClassNames: " + sqlFirewallClassNames);
-	    
+
 	    for (String sqlFirewallClassName : sqlFirewallClassNames) {
 
 		sqlFirewallClassName = sqlFirewallClassName.trim();
@@ -95,13 +95,13 @@ public class SqlFirewallsCreator {
 
 		debug("");
 		debug("sqlFirewallClassName with Package to load: " + sqlFirewallClassName + ":");
-		
+
 		Class<?> c = Class.forName(sqlFirewallClassName);
 		Constructor<?> constructor = c.getConstructor();
 		SqlFirewallManager sqlFirewallManager = (SqlFirewallManager) constructor.newInstance();
 
 		debug("sqlFirewallManager implementation loaded: " + sqlFirewallClassName);
-		
+
 		/**
 		 * <pre>
 		 * <code>
@@ -125,7 +125,7 @@ public class SqlFirewallsCreator {
 	    }
 
 	    debug("End loop on sqlFirewallClassNames");
-	    
+
 	} else {
 	    SqlFirewallManager sqlFirewallManager = new DefaultSqlFirewallManager();
 	    String sqlFirewallClassName = sqlFirewallManager.getClass().getName();
@@ -167,5 +167,5 @@ public class SqlFirewallsCreator {
 	    System.out.println(new Date() + " " + s);
 	}
     }
-    
+
 }
