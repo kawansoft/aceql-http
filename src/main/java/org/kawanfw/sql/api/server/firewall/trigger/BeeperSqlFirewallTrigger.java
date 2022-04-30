@@ -40,7 +40,7 @@ import org.kawanfw.sql.servlet.util.BeepUtil;
  * @author Nicolas de Pomereu
  * @since 11.0
  */
-public class BeepSqlFirewallTrigger implements SqlFirewallTrigger {
+public class BeeperSqlFirewallTrigger implements SqlFirewallTrigger {
 
     /**
      * Beeps on terminal if an attack is detected by a {@code SqlFirewallManager}
