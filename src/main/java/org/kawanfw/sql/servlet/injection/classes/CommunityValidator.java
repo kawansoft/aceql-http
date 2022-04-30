@@ -45,7 +45,7 @@ import org.kawanfw.sql.util.Tag;
  */
 public class CommunityValidator {
 
-    private static boolean DEBUG = FrameworkDebug.isSet(InjectedClassesManagerNew.class);
+    private static boolean DEBUG = FrameworkDebug.isSet(CommunityValidator.class);
     
     private String propertiesFile;
 

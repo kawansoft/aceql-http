@@ -77,7 +77,7 @@ public class ServerSqlManager extends HttpServlet {
     public static final String REQUEST_HEADERS_AUTHENTICATOR_CLASS_NAME = "requestHeadersAuthenticatorClassName";
     
     public static final String SQL_FIREWALL_MANAGER_CLASS_NAMES = "sqlFirewallManagerClassNames";
-    public static final String SQL_FIREWALL_TRIGGER_CLASS_NAME ="sqlFirewallTriggerClassName" ;
+    public static final String SQL_FIREWALL_TRIGGER_CLASS_NAMES ="sqlFirewallTriggerClassNames" ;
     
     public static final String BLOB_DOWNLOAD_CONFIGURATOR_CLASS_NAME = "blobDownloadConfiguratorClassName";
     public static final String BLOB_UPLOAD_CONFIGURATOR_CLASS_NAME = "blobUploadConfiguratorClassName";

@@ -56,8 +56,8 @@ public class InjectedClasses {
     /** The map of (database, DatabaseConfigurator) */
     private Map<String, DatabaseConfigurator> databaseConfigurators = new ConcurrentHashMap<>();
 
-    /** The map of (database, SqlFirewallTrigger) */
-    private Map<String, SqlFirewallTrigger> sqlFirewallTriggers = new ConcurrentHashMap<>();
+    /** The map of (database, List<SqlFirewallTrigger>) */
+    private Map<String, List<SqlFirewallTrigger>> sqlFirewallTriggerMap = new ConcurrentHashMap<>();
 	
     /** The map of (database, List<SqlFirewallManager>) */
     private Map<String, List<SqlFirewallManager>> sqlFirewallManagerMap = new ConcurrentHashMap<>();
@@ -81,7 +81,7 @@ public class InjectedClasses {
 	this.userAuthenticator = injectedClassesBuilder.userAuthenticator;
 	this.requestHeadersAuthenticator = injectedClassesBuilder.requestHeadersAuthenticator;
 	this.databaseConfigurators = injectedClassesBuilder.databaseConfigurators;
-	this.sqlFirewallTriggers = injectedClassesBuilder.sqlFirewallTriggers;
+	this.sqlFirewallTriggerMap = injectedClassesBuilder.sqlFirewallTriggerMap;
 	
 	this.sqlFirewallManagerMap = injectedClassesBuilder.sqlFirewallManagerMap;
 
@@ -119,8 +119,8 @@ public class InjectedClasses {
     /**
      * @return the sqlFirewallTriggers
      */
-    public Map<String, SqlFirewallTrigger> getSqlFirewallTriggers() {
-        return sqlFirewallTriggers;
+    public Map<String, List<SqlFirewallTrigger>> getSqlFirewallTriggerMap() {
+        return sqlFirewallTriggerMap;
     }
 
     /**
@@ -179,8 +179,8 @@ public class InjectedClasses {
 	/** The map of (database, DatabaseConfigurator) */
 	private Map<String, DatabaseConfigurator> databaseConfigurators = new ConcurrentHashMap<>();
 
-	/** The map of (database, SqlFirewallTrigger) */
-	private Map<String, SqlFirewallTrigger> sqlFirewallTriggers = new ConcurrentHashMap<>();
+	/** The map of (database, list<SqlFirewallTrigger>) */
+	private Map<String, List<SqlFirewallTrigger>> sqlFirewallTriggerMap = new ConcurrentHashMap<>();
 	
 	/** The map of (database, List<SqlFirewallManager>) */
 	private Map<String, List<SqlFirewallManager>> sqlFirewallManagerMap = new ConcurrentHashMap<>();
@@ -201,7 +201,6 @@ public class InjectedClasses {
 	private Map<String, List<UpdateListener>> updateListenerMap = new ConcurrentHashMap<>();
 
 
-	  
 	public InjectedClassesBuilder userAuthenticator(UserAuthenticator userAuthenticator) {
 	    this.userAuthenticator = userAuthenticator;
 	    return this;
@@ -218,8 +217,8 @@ public class InjectedClasses {
 	    return this;
 	}
 
-	public InjectedClassesBuilder sqlFirewallTriggers(Map<String, SqlFirewallTrigger> sqlFirewallTriggers) {
-	    this.sqlFirewallTriggers = sqlFirewallTriggers;
+	public InjectedClassesBuilder sqlFirewallTriggerMap(Map<String, List<SqlFirewallTrigger>> sqlFirewallTriggerMap) {
+	    this.sqlFirewallTriggerMap = sqlFirewallTriggerMap;
 	    return this;
 	}
 

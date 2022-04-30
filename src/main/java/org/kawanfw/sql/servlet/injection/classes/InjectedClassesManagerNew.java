@@ -52,7 +52,6 @@ import org.kawanfw.sql.servlet.injection.classes.creator.BlobDownloadConfigurato
 import org.kawanfw.sql.servlet.injection.classes.creator.BlobUploadConfiguratorCreator;
 import org.kawanfw.sql.servlet.injection.classes.creator.DatabaseConfiguratorCreator;
 import org.kawanfw.sql.servlet.injection.classes.creator.SessionConfiguratorCreator;
-import org.kawanfw.sql.servlet.injection.classes.creator.SqlFirewallTriggerCreator;
 import org.kawanfw.sql.servlet.injection.classes.creator.SqlFirewallsCreator;
 import org.kawanfw.sql.servlet.injection.classes.creator.UserAuthenticatorCreator;
 import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesStore;
@@ -116,19 +115,20 @@ public class InjectedClassesManagerNew {
 	    // Pro loaders
 	    // Load all the classes and set our InjectedClassesBuilder instance
 	    
-	    Map<String, SqlFirewallTrigger> sqlFirewallTriggers = new HashMap<>();
 	    Map<String, DatabaseConfigurator> databaseConfigurators = new HashMap<>();
+	    
+	    Map<String, List<SqlFirewallTrigger>> sqlFirewallTriggerMap = new HashMap<>();
 	    Map<String, List<UpdateListener>> updateListenerMap = new HashMap<>();
 	    
 	    for (String database : databases) {
 		DatabaseConfigurator databaseConfigurator = loadDatabaseConfigurator(database);
 		databaseConfigurators.put(database, databaseConfigurator);
 		
+		List<SqlFirewallTrigger> sqlFirewallTriggers = loadSqlFirewallTriggers(database, injectedClassesBuilder);
+		sqlFirewallTriggerMap.put(database, sqlFirewallTriggers);
+		
 		List<UpdateListener> updateListeners = loadUpdateListeners(database, injectedClassesBuilder);
 		updateListenerMap.put(database, updateListeners);
-		
-		SqlFirewallTrigger sqlFirewallTrigger = loadSqlFirewallTrigger(database);
-		sqlFirewallTriggers.put(database, sqlFirewallTrigger);
 	    }
 	    
 	    loadRequestHeadersAuthenticator(injectedClassesBuilder);
@@ -140,7 +140,7 @@ public class InjectedClassesManagerNew {
 	    // Final injection
 	    injectedClassesBuilder.databaseConfigurators(databaseConfigurators);
 	    injectedClassesBuilder.updateListenerMap(updateListenerMap);
-	    injectedClassesBuilder.sqlFirewallTriggers(sqlFirewallTriggers);
+	    injectedClassesBuilder.sqlFirewallTriggerMap(sqlFirewallTriggerMap);
 
 	    loadBlobDownloadConfigurator(injectedClassesBuilder);
 	    loadBlobUploadConfigurator(injectedClassesBuilder);
@@ -419,6 +419,39 @@ public class InjectedClassesManagerNew {
     }
 
     /**
+     * Loads the SQL Firewall Triggers
+     * 
+     * @param database
+     * @param injectedClassesBuilder
+     * @return
+     * @throws ClassNotFoundException
+     * @throws NoSuchMethodException
+     * @throws SecurityException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     * @throws IllegalArgumentException
+     * @throws InvocationTargetException
+     * @throws SQLException
+     * @throws IOException
+     */
+    private List<SqlFirewallTrigger> loadSqlFirewallTriggers(String database, InjectedClassesBuilder injectedClassesBuilder)
+	    throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException,
+	    IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException, IOException {
+
+	List<String> sqlFirewallTriggerClassNames = ConfPropertiesStore.get().getSqlFirewallTriggerClassNames(database);
+	classNameToLoad = sqlFirewallTriggerClassNames.toString();
+
+	SqlFirewallTriggersLoader sqlFirewallTriggersLoader = SqlFirewallTriggersLoaderCreator.createInstance();
+	List<SqlFirewallTrigger> sqlFirewallTriggers = sqlFirewallTriggersLoader.loadSqlFirewallTriggers(database,
+		injectedClassesBuilder, sqlFirewallTriggerClassNames);
+
+	// Update class name(s) to load
+	classNameToLoad = sqlFirewallTriggersLoader.getClassNameToLoad();
+
+	return sqlFirewallTriggers;
+    }
+    
+    /**
      * loads the Firewall Managers.
      * 
      * @param database
@@ -522,29 +555,6 @@ public class InjectedClassesManagerNew {
 	return databaseConfigurator;
     }
 
-    private SqlFirewallTrigger loadSqlFirewallTrigger(String database)
-	    throws ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException,
-	    InvocationTargetException, NoSuchMethodException, SecurityException, SQLException {
-
-	SqlFirewallTriggerClassNameBuilder sqlFirewallTriggerClassNameBuilder = SqlFirewallTriggerClassNameBuilderCreator
-		.createInstance();
-	String sqlFirewallTriggerClassName = sqlFirewallTriggerClassNameBuilder.getClassName(database);
-
-	debug("sqlFirewallTriggerClassName    : " + sqlFirewallTriggerClassName);
-
-	// Call the specific SqlFirewallTrigger class to use
-	classNameToLoad = sqlFirewallTriggerClassName;
-	SqlFirewallTriggerCreator sqlFirewallTriggerCreator = new SqlFirewallTriggerCreator(
-		sqlFirewallTriggerClassName);
-	SqlFirewallTrigger sqlFirewallTrigger = sqlFirewallTriggerCreator.getSqlFirewallTrigger();
-	sqlFirewallTriggerClassName = sqlFirewallTriggerCreator.getSqlFirewallTriggerClassName();
-
-	System.out.println(SqlTag.SQL_PRODUCT_START + " Loading Database " + database + " SqlFirewallTrigger class:");
-	System.out.println(SqlTag.SQL_PRODUCT_START + "  -> " + sqlFirewallTriggerClassName);
-
-	return sqlFirewallTrigger;
-
-    }
 
 //    public Exception getException() {
 //	return exception;

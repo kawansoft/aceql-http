@@ -60,8 +60,7 @@ public class ConfProperties {
     private Map<String, List<String>> sqlFirewallManagerClassNamesMap = new ConcurrentHashMap<>();
     private boolean statelessMode;
     
-    private Map<String, String> sqlFirewallTriggerClassNamesMap = new ConcurrentHashMap<>(); 
-	
+    private Map<String, List<String>> sqlFirewallTriggerClassNamesMap = new ConcurrentHashMap<>(); 
     private Map<String, List<String>> updateListenerClassNamesMap = new ConcurrentHashMap<>();
 
     
@@ -183,7 +182,8 @@ public class ConfProperties {
 	return sqlFirewallManagerClassNamesMap.get(database);
     }
     
-    public String getSqlFirewallTriggerClassName(String database) {
+    
+    public List<String> getSqlFirewallTriggerClassNames(String database) {
 	return sqlFirewallTriggerClassNamesMap.get(database);
     }
     
@@ -199,7 +199,7 @@ public class ConfProperties {
      * @return the sqlFirewallTriggerClassNamesMap
      */
     @SuppressWarnings("unused")
-    private Map<String, String> getSqlFirewallTriggerClassNamesMap() {
+    private Map<String, List<String>> getSqlFirewallTriggerClassNamesMap() {
         return sqlFirewallTriggerClassNamesMap;
     }
 
@@ -236,9 +236,9 @@ public class ConfProperties {
 
 	private Map<String, List<String>> sqlFirewallManagerClassNamesMap = new ConcurrentHashMap<>();
 	private boolean statelessMode;
+	
+	private Map<String, List<String>> sqlFirewallTriggerClassNamesMap = new ConcurrentHashMap<>(); 
 	private Map<String, List<String>> updateListenerClassNamesMap = new ConcurrentHashMap<>();
-
-	private Map<String, String> sqlFirewallTriggerClassNamesMap = new ConcurrentHashMap<>(); 
 	    
 	public ConfPropertiesBuilder databaseSet(Set<String> databaseSet) {
 	    this.databaseSet = databaseSet;
@@ -297,13 +297,8 @@ public class ConfProperties {
 	}
 	
 
-	public ConfPropertiesBuilder sqlFirewallTriggerClassNamesMap(Map<String, String> sqlFirewallTriggerClassNamesMap) {
+	public ConfPropertiesBuilder sqlFirewallTriggerClassNamesMap(Map<String, List<String>> sqlFirewallTriggerClassNamesMap) {
 	    this.sqlFirewallTriggerClassNamesMap = sqlFirewallTriggerClassNamesMap;
-	    return this;
-	}
-
-	public ConfPropertiesBuilder statelessMode(boolean statelessMode) {
-	    this.statelessMode = statelessMode;
 	    return this;
 	}
 
@@ -311,6 +306,12 @@ public class ConfProperties {
 	    this.updateListenerClassNamesMap = updateListenerClassNamesMap;
 	    return this;
 	}
+	
+	public ConfPropertiesBuilder statelessMode(boolean statelessMode) {
+	    this.statelessMode = statelessMode;
+	    return this;
+	}
+
 	
 	// Return the finally constructed User object
 	public ConfProperties build() {

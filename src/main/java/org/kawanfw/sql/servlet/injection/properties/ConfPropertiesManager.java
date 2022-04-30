@@ -46,6 +46,7 @@ import org.kawanfw.sql.util.FrameworkDebug;
 
 /**
  * Create a ConfProperties from the passed properties.
+ * 
  * @author Nicolas de Pomereu
  *
  */
@@ -53,36 +54,38 @@ import org.kawanfw.sql.util.FrameworkDebug;
 public class ConfPropertiesManager {
 
     private static boolean DEBUG = FrameworkDebug.isSet(ConfPropertiesManager.class);
-    
+
     private Properties properties;
 
     /**
-     * Constructor 
+     * Constructor
+     * 
      * @param properties
      */
     public ConfPropertiesManager(Properties properties) {
-	this.properties = Objects.requireNonNull(properties, "properties cannot be null!");	
+	this.properties = Objects.requireNonNull(properties, "properties cannot be null!");
     }
 
     /**
      * Create the ConfProperties instance created from the Properties.
+     * 
      * @return the ConfProperties instance created from the Properties.
-     * @throws IOException 
+     * @throws IOException
      */
     public ConfProperties createConfProperties() throws IOException, SQLException {
 
-	ConfPropertiesBuilder confPropertiesBuilder = new ConfPropertiesBuilder();	
-	
+	ConfPropertiesBuilder confPropertiesBuilder = new ConfPropertiesBuilder();
+
 	ServletAceQLCallNameGetter servletAceQLCallNameGetter = AceQLServletCallNameGetterCreator.createInstance();
 	String aceQLManagerServletCallName = servletAceQLCallNameGetter.getName();
-	
+
 	debug("aceQLManagerServletCallName: " + aceQLManagerServletCallName);
-	
+
 	confPropertiesBuilder.servletCallName(aceQLManagerServletCallName);
-	
+
 	boolean statelessMode = Boolean.parseBoolean(properties.getProperty(ServerSqlManager.STATELESS_MODE, "false"));
 	confPropertiesBuilder.statelessMode(statelessMode);
-	
+
 	Set<String> databases = TomcatStarterUtil.getDatabaseNames(properties);
 	confPropertiesBuilder.databaseSet(databases);
 
@@ -100,59 +103,61 @@ public class ConfPropertiesManager {
 
 	Map<String, String> databaseConfiguratorClassNameMap = new HashMap<>();
 	Map<String, List<String>> sqlFirewallClassNamesMap = new HashMap<>();
-	Map<String, String> sqlFirewallTriggerClassNamesMap  = new HashMap<>();
+	Map<String, List<String>> sqlFirewallTriggerClassNamesMap = new HashMap<>();
 	Map<String, List<String>> updateListenerClassNamesMap = new HashMap<>();
-	
+
 	buildObjectsPerDatabase(databases, databaseConfiguratorClassNameMap, sqlFirewallClassNamesMap,
 		sqlFirewallTriggerClassNamesMap, updateListenerClassNamesMap);
-	
+
 	confPropertiesBuilder.databaseConfiguratorClassNameMap(databaseConfiguratorClassNameMap);
 	confPropertiesBuilder.sqlFirewallManagerClassNamesMap(sqlFirewallClassNamesMap);
 	confPropertiesBuilder.sqlFirewallTriggerClassNamesMap(sqlFirewallTriggerClassNamesMap);
-	
+
 	if (DEBUG) {
 	    System.out.println("sqlFirewallTriggerClassNamesMap: " + sqlFirewallTriggerClassNamesMap);
 	}
-	
+
 	confPropertiesBuilder.updateListenerClassNamesMap(updateListenerClassNamesMap);
-	
+
 	String blobDownloadConfiguratorClassName = TomcatStarterUtil
 		.trimSafe(properties.getProperty(ServerSqlManager.BLOB_DOWNLOAD_CONFIGURATOR_CLASS_NAME));
 	confPropertiesBuilder.blobDownloadConfiguratorClassName(blobDownloadConfiguratorClassName);
-	
+
 	String blobUploadConfiguratorClassName = TomcatStarterUtil
 		.trimSafe(properties.getProperty(ServerSqlManager.BLOB_UPLOAD_CONFIGURATOR_CLASS_NAME));
 	confPropertiesBuilder.blobUploadConfiguratorClassName(blobUploadConfiguratorClassName);
-	
+
 	String sessionConfiguratorClassName = TomcatStarterUtil
 		.trimSafe(properties.getProperty(ServerSqlManager.SESSION_CONFIGURATOR_CLASS_NAME));
 	confPropertiesBuilder.sessionConfiguratorClassName(sessionConfiguratorClassName);
 
 	String jwtSessionConfiguratorSecretValue = TomcatStarterUtil
-		.trimSafe(properties.getProperty(ServerSqlManager.JWT_SESSION_CONFIGURATOR_SECRET));	
+		.trimSafe(properties.getProperty(ServerSqlManager.JWT_SESSION_CONFIGURATOR_SECRET));
 	confPropertiesBuilder.jwtSessionConfiguratorSecretValue(jwtSessionConfiguratorSecretValue);
-	
+
 	ConfProperties confProperties = confPropertiesBuilder.build();
 	return confProperties;
-	
+
     }
 
     private void debug(String s) {
 	if (DEBUG)
-	    System.out.println(this.getClass().getSimpleName() +  " "  +  new Date() + " " + s);
+	    System.out.println(this.getClass().getSimpleName() + " " + new Date() + " " + s);
     }
 
     /**
      * @param databases
      * @param databaseConfiguratorClassNameMap
      * @param sqlFirewallClassNamesMap
-     * @param sqlFirewallTriggerClassNamesMap 
+     * @param sqlFirewallTriggerClassNamesMap
      * @param updateListenerClassNamesMap
      */
     public void buildObjectsPerDatabase(Set<String> databases, Map<String, String> databaseConfiguratorClassNameMap,
-	    Map<String, List<String>> sqlFirewallClassNamesMap, Map<String, String> sqlFirewallTriggerClassNamesMap, Map<String, List<String>> updateListenerClassNamesMap) {
+	    Map<String, List<String>> sqlFirewallClassNamesMap,
+	    Map<String, List<String>> sqlFirewallTriggerClassNamesMap,
+	    Map<String, List<String>> updateListenerClassNamesMap) {
 	for (String database : databases) {
-	    
+
 	    // Set the configurator to use for this database
 	    String databaseConfiguratorClassName = TomcatStarterUtil.trimSafe(
 		    properties.getProperty(database + "." + ServerSqlManager.DATABASE_CONFIGURATOR_CLASS_NAME));
@@ -160,36 +165,40 @@ public class ConfPropertiesManager {
 	    if (databaseConfiguratorClassName != null && !databaseConfiguratorClassName.isEmpty()) {
 		databaseConfiguratorClassNameMap.put(database, databaseConfiguratorClassName);
 	    }
-	    
-	    String sqlFirewallTriggerClassName = TomcatStarterUtil.trimSafe(
-		    properties.getProperty(database + "." + ServerSqlManager.SQL_FIREWALL_TRIGGER_CLASS_NAME));
 
-	    if (sqlFirewallTriggerClassName != null && !sqlFirewallTriggerClassName.isEmpty()) {
-		sqlFirewallTriggerClassNamesMap.put(database, sqlFirewallTriggerClassName);
-	    }
-	    
 	    // Set the firewall class names to use for this database
 	    String sqlFirewallClassNameArray = TomcatStarterUtil.trimSafe(
 		    properties.getProperty(database + "." + ServerSqlManager.SQL_FIREWALL_MANAGER_CLASS_NAMES));
 
 	    if (sqlFirewallClassNameArray != null && !sqlFirewallClassNameArray.isEmpty()) {
 		List<String> sqlFirewallClassNames = TomcatStarterUtilProperties.getList(sqlFirewallClassNameArray);
-		sqlFirewallClassNamesMap.put(database, sqlFirewallClassNames );
+		sqlFirewallClassNamesMap.put(database, sqlFirewallClassNames);
 	    } else {
-		sqlFirewallClassNamesMap.put(database, new ArrayList<String>() );
+		sqlFirewallClassNamesMap.put(database, new ArrayList<String>());
 	    }
-	  
+	    
+	    String sqlFirewallTriggerClassNameArray = TomcatStarterUtil.trimSafe(
+		    properties.getProperty(database + "." + ServerSqlManager.SQL_FIREWALL_TRIGGER_CLASS_NAMES));
+
+	    if (sqlFirewallTriggerClassNameArray != null && !sqlFirewallTriggerClassNameArray.isEmpty()) {
+		List<String> sqlFirewallTriggerClassNames = TomcatStarterUtilProperties
+			.getList(sqlFirewallTriggerClassNameArray);
+		sqlFirewallTriggerClassNamesMap.put(database, sqlFirewallTriggerClassNames);
+	    } else {
+		sqlFirewallTriggerClassNamesMap.put(database, new ArrayList<String>());
+	    }
+	    
 	    String updateListenerClassNameArray = TomcatStarterUtil.trimSafe(
 		    properties.getProperty(database + "." + ServerSqlManager.UPDATE_LISTENER_MANAGER_CLASS_NAMES));
 
 	    if (updateListenerClassNameArray != null && !updateListenerClassNameArray.isEmpty()) {
-		List<String> updateListenerClassNames = TomcatStarterUtilProperties.getList(updateListenerClassNameArray);
-		updateListenerClassNamesMap.put(database, updateListenerClassNames );
+		List<String> updateListenerClassNames = TomcatStarterUtilProperties
+			.getList(updateListenerClassNameArray);
+		updateListenerClassNamesMap.put(database, updateListenerClassNames);
 	    } else {
-		updateListenerClassNamesMap.put(database, new ArrayList<String>() );
+		updateListenerClassNamesMap.put(database, new ArrayList<String>());
 	    }
 	}
     }
-    
 
 }

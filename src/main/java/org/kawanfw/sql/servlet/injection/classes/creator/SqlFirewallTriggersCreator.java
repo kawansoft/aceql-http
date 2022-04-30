@@ -36,35 +36,37 @@ import java.util.List;
 import org.kawanfw.sql.api.server.DatabaseConfigurator;
 import org.kawanfw.sql.api.server.SqlEvent;
 import org.kawanfw.sql.api.server.SqlEventWrapper;
-import org.kawanfw.sql.api.server.listener.DefaultUpdateListener;
-import org.kawanfw.sql.api.server.listener.JsonLoggerUpdateListener;
-import org.kawanfw.sql.api.server.listener.UpdateListener;
+import org.kawanfw.sql.api.server.firewall.DefaultSqlFirewallManager;
+import org.kawanfw.sql.api.server.firewall.trigger.BeeperSqlFirewallTrigger;
+import org.kawanfw.sql.api.server.firewall.trigger.DefaultSqlFirewallTrigger;
+import org.kawanfw.sql.api.server.firewall.trigger.JsonLoggerSqlFirewallTrigger;
+import org.kawanfw.sql.api.server.firewall.trigger.SqlFirewallTrigger;
 
-public class UpdateListenersCreator {
+public class SqlFirewallTriggersCreator {
 
     private static final boolean TRACE_ON_START = false;
 
-    private static String[] PREDEFINED_CLASS_NAMES = { DefaultUpdateListener.class.getSimpleName(),
-	    JsonLoggerUpdateListener.class.getSimpleName() };
+    private static String[] PREDEFINED_CLASS_NAMES = { DefaultSqlFirewallTrigger.class.getSimpleName(),
+	    BeeperSqlFirewallTrigger.class.getSimpleName(), JsonLoggerSqlFirewallTrigger.class.getSimpleName() };
 
-    private List<String> updateListenerClassNames = new ArrayList<>();
-    private List<UpdateListener> updateListenerManagers = new ArrayList<>();
+    private List<String> sqlFirewallTriggerClassNames = new ArrayList<>();
+    private List<SqlFirewallTrigger> sqlFirewallTriggerManagers = new ArrayList<>();
 
-    public UpdateListenersCreator(List<String> updateListenerClassNames, String database,
+    public SqlFirewallTriggersCreator(List<String> sqlFirewallTriggerClassNames, String database,
 	    DatabaseConfigurator databaseConfigurator)
 	    throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException,
 	    IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException, IOException {
 
-	if (updateListenerClassNames != null && !updateListenerClassNames.isEmpty()) {
+	if (sqlFirewallTriggerClassNames != null && !sqlFirewallTriggerClassNames.isEmpty()) {
 
-	    for (String updateListenerClassName : updateListenerClassNames) {
+	    for (String sqlFirewallTriggerClassName : sqlFirewallTriggerClassNames) {
 
-		updateListenerClassName = updateListenerClassName.trim();
-		updateListenerClassName = getNameWithPackage(updateListenerClassName);
+		sqlFirewallTriggerClassName = sqlFirewallTriggerClassName.trim();
+		sqlFirewallTriggerClassName = getNameWithPackage(sqlFirewallTriggerClassName);
 
-		Class<?> c = Class.forName(updateListenerClassName);
+		Class<?> c = Class.forName(sqlFirewallTriggerClassName);
 		Constructor<?> constructor = c.getConstructor();
-		UpdateListener updateListenerManager = (UpdateListener) constructor.newInstance();
+		SqlFirewallTrigger sqlFirewallTriggerManager = (SqlFirewallTrigger) constructor.newInstance();
 
 		if (TRACE_ON_START) {
 		    try (Connection connection = databaseConfigurator.getConnection(database);) {
@@ -75,22 +77,24 @@ public class UpdateListenersCreator {
 			// We call code just to verify it's OK:
 			SqlEvent sqlEvent = SqlEventWrapper.sqlEventBuild("username", database, "127.0.0.1",
 				"select * from table", false, parameterValues, false);
-			updateListenerManager.updateActionPerformed(sqlEvent, connection);
+			DefaultSqlFirewallManager defaultSqlFirewallManager = new DefaultSqlFirewallManager();
+			sqlFirewallTriggerManager.runIfStatementRefused(sqlEvent, defaultSqlFirewallManager,
+				connection);
 		    }
 		}
 
-		updateListenerClassName = updateListenerManager.getClass().getName();
+		sqlFirewallTriggerClassName = sqlFirewallTriggerManager.getClass().getName();
 
-		this.updateListenerManagers.add(updateListenerManager);
-		this.updateListenerClassNames.add(updateListenerClassName);
+		this.sqlFirewallTriggerManagers.add(sqlFirewallTriggerManager);
+		this.sqlFirewallTriggerClassNames.add(sqlFirewallTriggerClassName);
 	    }
 
 	} else {
-	    UpdateListener updateListenerManager = new DefaultUpdateListener();
-	    String updateListenerClassName = updateListenerManager.getClass().getName();
+	    SqlFirewallTrigger sqlFirewallTriggerManager = new DefaultSqlFirewallTrigger();
+	    String sqlFirewallTriggerClassName = sqlFirewallTriggerManager.getClass().getName();
 
-	    this.updateListenerManagers.add(updateListenerManager);
-	    this.updateListenerClassNames.add(updateListenerClassName);
+	    this.sqlFirewallTriggerManagers.add(sqlFirewallTriggerManager);
+	    this.sqlFirewallTriggerClassNames.add(sqlFirewallTriggerClassName);
 	}
     }
 
@@ -105,7 +109,7 @@ public class UpdateListenersCreator {
 	for (int i = 0; i < PREDEFINED_CLASS_NAMES.length; i++) {
 	    if (PREDEFINED_CLASS_NAMES[i].equals(theClassName)) {
 		// Add prefix package
-		String theClassNameNew = UpdateListener.class.getPackage().getName() + "." + theClassName;
+		String theClassNameNew = SqlFirewallTrigger.class.getPackage().getName() + "." + theClassName;
 		return theClassNameNew;
 	    }
 	}
@@ -113,12 +117,12 @@ public class UpdateListenersCreator {
 	return theClassName;
     }
 
-    public List<UpdateListener> getUpdateListeners() {
-	return updateListenerManagers;
+    public List<SqlFirewallTrigger> getSqlFirewallTriggers() {
+	return sqlFirewallTriggerManagers;
     }
 
-    public List<String> getUpdateListenerClassNames() {
-	return updateListenerClassNames;
+    public List<String> getSqlFirewallTriggerClassNames() {
+	return sqlFirewallTriggerClassNames;
     }
 
 }
