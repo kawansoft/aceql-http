@@ -37,6 +37,7 @@ import java.util.logging.Logger;
 import org.apache.commons.lang3.SystemUtils;
 import org.kawanfw.sql.api.server.SqlEvent;
 import org.kawanfw.sql.api.server.util.NoFormatter;
+import org.kawanfw.sql.servlet.util.JsonLoggerUtil;
 import org.kawanfw.sql.servlet.util.UpdateListenerUtil;
 import org.kawanfw.sql.util.log.FlattenLogger;
 
@@ -77,7 +78,7 @@ public class JsonLoggerUpdateListener implements UpdateListener {
 	File logDir = new File(SystemUtils.USER_HOME + File.separator + ".kawansoft" + File.separator + "log");
 	logDir.mkdirs();
 
-	String pattern = logDir.toString() + File.separator + "JsonLoggerUpdateListener.log";
+	String pattern = logDir.toString() + File.separator + JsonLoggerUtil.getSimpleName(this.getClass());
 
 	Logger logger = Logger.getLogger(JsonLoggerUpdateListener.class.getName());
 	ACEQL_LOGGER = new FlattenLogger(logger.getName(), logger.getResourceBundleName());
