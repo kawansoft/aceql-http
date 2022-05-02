@@ -38,14 +38,14 @@ import org.kawanfw.sql.api.server.StatementAnalyzer;
  * <br>
  * A concrete implementation should be developed on the server side in order to:
  * <ul>
+ * <li>Define a specific piece of Java code to analyze the source code of the
+ * SQL statement before allowing or not it's execution.</li>
  * <li>Define if a client user has the right to call a
  * <code>Statement.execute</code> (i.e. call a raw execute).</li>
  * <li>Define if a client user has the right to call a raw
  * <code>Statement</code> that is not a <code>PreparedStatement</code>.</li>
  * <li>Define if a client user has the right to call a the AceQL Metadata
  * API.</li>
- * <li>Define a specific piece of Java code to analyze the source code of the
- * SQL statement before allowing or not it's execution.</li>
  * </ul>
  * <p>
  * Multiple {@code SqlFirewallManager} may be defined and chained.
@@ -86,19 +86,22 @@ import org.kawanfw.sql.api.server.StatementAnalyzer;
 public interface SqlFirewallManager {
 
     /**
-     * Says if the username is allowed call the Metadata Query API for the passed
-     * database.
-     *
-     * @param username   the client username to check the rule for
-     * @param database   the database name as defined in the JDBC URL field
+     * Allows to analyze the SQL call event asked by the client side and thus allow
+     * or forbid the SQL execution on the server.<br>
+     * If the analysis defined by the method returns false, the SQL statement won't
+     * be executed.
+     * 
+     * @param sqlEvent   the SQL event asked by the client side. Contains all info
+     *                   about the SQL call (client username, database name, IP
+     *                   Address of the client, and SQL statement details)
      * @param connection The current SQL/JDBC <code>Connection</code>
-     * @return <code>true</code> if the user has the right to call the Metadata
-     *         Query API, else <code>false</code>
+     * @return <code>true</code> if the analyzed statement or prepared statement is
+     *         validated and authorized to run, else <code>false</code>
+     *         <p>
      * @throws IOException  if an IOException occurs
      * @throws SQLException if a SQLException occurs
      */
-    public boolean allowMetadataQuery(String username, String database, Connection connection)
-	    throws IOException, SQLException;
+    public boolean allowSqlRunAfterAnalysis(SqlEvent sqlEvent, Connection connection) throws IOException, SQLException;
 
     /**
      * Allows to define if the passed username is allowed to create and use a
@@ -118,24 +121,6 @@ public interface SqlFirewallManager {
 	    throws IOException, SQLException;
 
     /**
-     * Allows to analyze the SQL call event asked by the client side and thus allow
-     * or forbid the SQL execution on the server.<br>
-     * If the analysis defined by the method returns false, the SQL statement won't
-     * be executed.
-     * 
-     * @param sqlEvent   the SQL event asked by the client side. Contains all info
-     *                   about the SQL call (client username, database name, IP
-     *                   Address of the client, and SQL statement details)
-     * @param connection The current SQL/JDBC <code>Connection</code>
-     * @return <code>true</code> if the analyzed statement or prepared statement is
-     *         validated and authorized to run, else <code>false</code>
-     *         <p>
-     * @throws IOException  if an IOException occurs
-     * @throws SQLException if a SQLException occurs
-     */
-    public boolean allowSqlRunAfterAnalysis(SqlEvent sqlEvent, Connection connection) throws IOException, SQLException;
-
-    /**
      * Allows to define if the passed username is allowed to call a raw JDBC
      * {@code Statement.execute}.
      *
@@ -151,4 +136,18 @@ public interface SqlFirewallManager {
      */
     boolean allowExecute(String username, String database, Connection connection) throws IOException, SQLException;
 
+    /**
+     * Says if the username is allowed call the Metadata Query API for the passed
+     * database.
+     *
+     * @param username   the client username to check the rule for
+     * @param database   the database name as defined in the JDBC URL field
+     * @param connection The current SQL/JDBC <code>Connection</code>
+     * @return <code>true</code> if the user has the right to call the Metadata
+     *         Query API, else <code>false</code>
+     * @throws IOException  if an IOException occurs
+     * @throws SQLException if a SQLException occurs
+     */
+    public boolean allowMetadataQuery(String username, String database, Connection connection)
+	    throws IOException, SQLException;
 }
