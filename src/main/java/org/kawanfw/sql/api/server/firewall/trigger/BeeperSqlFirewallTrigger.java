@@ -52,7 +52,7 @@ public class BeeperSqlFirewallTrigger implements SqlFirewallTrigger {
     public void runIfStatementRefused(SqlEvent sqlEvent, SqlFirewallManager sqlFirewallManager, Connection connection)
 	    throws IOException, SQLException {
 	try {
-	    BeepUtil.beep(750, 2000);
+	    BeepUtil.beep(750, 1000);
 	} catch (InterruptedException | LineUnavailableException e) {
 	    e.printStackTrace();
 	}
