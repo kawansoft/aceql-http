@@ -28,22 +28,23 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import org.kawanfw.sql.api.server.SqlEvent;
+import org.kawanfw.sql.api.server.StatementAnalyzer;
+
 /**
  * Firewall manager that denies any update of the database for the passed user. 
  * The database is thus guaranteed to be accessed in read only from client side.
  *
  * @author Nicolas de Pomereu
- * @since 4.0
+ * @since 11.0
  */
 public class DenyDatabaseWriteManager extends DefaultSqlFirewallManager implements SqlFirewallManager {
 
-    /**
-     * @return <code>false</code>. (Nobody is allowed to update the database.).
-     */
+    
     @Override
-    public boolean allowDatabaseWrite(String username, String database, Connection connection)
-	    throws IOException, SQLException {
-	return false;
+    public boolean allowSqlRunAfterAnalysis(SqlEvent sqlEvent, Connection connection) throws IOException, SQLException {
+        StatementAnalyzer analyzer = new StatementAnalyzer(sqlEvent.getSql(), sqlEvent.getParameterValues());
+        return ! (analyzer.isDelete() || analyzer.isInsert() || analyzer.isUpdate() || analyzer.isDcl() || analyzer.isDdl()
+        	|| analyzer.isTcl());
     }
-
 }

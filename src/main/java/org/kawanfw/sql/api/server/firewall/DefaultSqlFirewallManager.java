@@ -73,16 +73,6 @@ public class DefaultSqlFirewallManager implements SqlFirewallManager {
     }
 
     /**
-     * @return <code><b>true</b></code>. (Client programs will be allowed to call a
-     *         database update statement.)
-     */
-    @Override
-    public boolean allowDatabaseWrite(String username, String database, Connection connection)
-	    throws IOException, SQLException {
-	return true;
-    }
-
-    /**
      * @return <code><b>true</b></code>. (Client programs will be allowed to call
      *         the Metadata Query API).
      */

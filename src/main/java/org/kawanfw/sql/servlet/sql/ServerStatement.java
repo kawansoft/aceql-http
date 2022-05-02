@@ -301,7 +301,7 @@ public class ServerStatement {
 	    PreparedStatement preparedStatement, ServerPreparedStatementParameters serverPreparedStatementParameters,
 	    String ipAddress) throws IOException, SQLException, SecurityException {
 
-	checkFirewallForExecuteUpdate(username, database, sqlOrder, serverPreparedStatementParameters, ipAddress);
+	//checkFirewallForExecuteUpdate(username, database, sqlOrder, serverPreparedStatementParameters, ipAddress);
 
 	if (DEBUG) {
 	    debug("BEGIN doExecuteUpdate:");
@@ -322,42 +322,6 @@ public class ServerStatement {
 		ipAddress, false);
 
 	ServerSqlManager.write(out, sw.toString());
-    }
-
-    /**
-     * Checks the firewall rules for an ExecuteUpdate for a prepared statement.
-     * 
-     * @param username
-     * @param database
-     * @param sqlOrder
-     * @param serverPreparedStatementParameters
-     * @param ipAddress
-     * @throws IOException
-     * @throws SQLException
-     * @throws SecurityException
-     */
-    private void checkFirewallForExecuteUpdate(String username, String database, String sqlOrder,
-	    ServerPreparedStatementParameters serverPreparedStatementParameters, String ipAddress)
-	    throws IOException, SQLException, SecurityException {
-	boolean isAllowedAfterAnalysis;
-	for (SqlFirewallManager sqlFirewallManager : sqlFirewallManagers) {
-	    isAllowedAfterAnalysis = sqlFirewallManager.allowDatabaseWrite(username, database, connection);
-	    if (!isAllowedAfterAnalysis) {
-		
-		SqlEvent sqlEvent = SqlEventWrapper.sqlEventBuild(username, database, ipAddress, sqlOrder,
-			ServerStatementUtil.isPreparedStatement(request),
-			serverPreparedStatementParameters.getParameterValues(), false);
-		    
-		SqlFirewallTriggerWrapper.runIfStatementRefused(sqlEvent, sqlFirewallManager, connection);
-		
-		String message = JsonSecurityMessage.prepStatementNotAllowedBuild(sqlOrder,
-			"Prepared Statement not allowed for executeUpdate",
-			serverPreparedStatementParameters.getParameterTypes(),
-			serverPreparedStatementParameters.getParameterValues(), doPrettyPrinting);
-
-		throw new SecurityException(message);
-	    }
-	}
     }
 
     /**
@@ -386,7 +350,6 @@ public class ServerStatement {
 	    isAllowedAfterAnalysis = sqlFirewallManager.allowSqlRunAfterAnalysis(sqlEvent, connection);
 
 	    if (!isAllowedAfterAnalysis) {
-		//sqlFirewallManager.runIfStatementRefused(sqlEvent, connection);
 		SqlFirewallTriggerWrapper.runIfStatementRefused(sqlEvent, sqlFirewallManager, connection);
 		break;
 	    }
@@ -566,7 +529,6 @@ public class ServerStatement {
      */
     private void doExecuteUpdate(OutputStream out, String username, String database, String sqlOrder,
 	    Statement statement, String ipAddress) throws IOException, SQLException, SecurityException {
-	checkFirewallExecuteUpdate(username, database, sqlOrder, ipAddress);
 
 	int rc = -1;
 
@@ -610,38 +572,6 @@ public class ServerStatement {
     }
 
     /**
-     * Checks the firewall rules for an ExecuteUpdate for a statement.
-     * 
-     * @param username
-     * @param database
-     * @param sqlOrder
-     * @param ipAddress
-     * @throws IOException
-     * @throws SQLException
-     * @throws SecurityException
-     */
-    private void checkFirewallExecuteUpdate(String username, String database, String sqlOrder, String ipAddress)
-	    throws IOException, SQLException, SecurityException {
-	boolean isAllowed;
-	for (SqlFirewallManager sqlFirewallManager : sqlFirewallManagers) {
-	    isAllowed = sqlFirewallManager.allowDatabaseWrite(username, database, connection);
-	    if (!isAllowed) {
-		List<Object> parameterValues = new ArrayList<>();
-		
-		SqlEvent sqlEvent = SqlEventWrapper.sqlEventBuild(username, database, ipAddress, sqlOrder,
-			ServerStatementUtil.isPreparedStatement(request), parameterValues, false);
-		    
-		SqlFirewallTriggerWrapper.runIfStatementRefused(sqlEvent, sqlFirewallManager, connection);
-		
-		String message = JsonSecurityMessage.statementNotAllowedBuild(sqlOrder,
-			"Statement not allowed for for executeUpdate", doPrettyPrinting);
-		throw new SecurityException(message);
-
-	    }
-	}
-    }
-
-    /**
      * Check general firewall rules
      * 
      * @param username
@@ -679,7 +609,6 @@ public class ServerStatement {
 		    ServerStatementUtil.isPreparedStatement(request),
 		    parameterValues, false);
 
-	    //sqlFirewallOnDeny.runIfStatementRefused(sqlEvent, connection);
 	    SqlFirewallTriggerWrapper.runIfStatementRefused(sqlEvent, sqlFirewallOnDeny, connection);
 	    
 	    String message = JsonSecurityMessage.statementNotAllowedBuild(sqlOrder, "Statement not allowed",

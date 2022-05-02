@@ -62,7 +62,6 @@ import org.kawanfw.sql.servlet.sql.json_return.JsonSecurityMessage;
 import org.kawanfw.sql.servlet.sql.json_return.JsonUtil;
 import org.kawanfw.sql.servlet.sql.parameters.ServerPreparedStatementParameters;
 import org.kawanfw.sql.servlet.sql.parameters.ServerPreparedStatementParametersUtil;
-import org.kawanfw.sql.servlet.util.SqlFirewalManagerUtil;
 import org.kawanfw.sql.util.FrameworkDebug;
 
 /**
@@ -317,7 +316,7 @@ public class ServerStatementRawExecute {
 	    String database, String sqlOrder, Statement statement, String ipAddress)
 	    throws IOException, SQLException, SecurityException {
 
-	checkFirewallForExecute(username, database, sqlOrder, ipAddress);
+	checkFirewallForAllowExecute(username, database, sqlOrder, ipAddress);
 	ServerSqlUtil.setMaxRowsToReturn(request, username, database, statement, databaseConfigurator);
 
 	boolean executeResult = statement.execute(sqlOrder);
@@ -364,7 +363,7 @@ public class ServerStatementRawExecute {
 	    ServerPreparedStatementParameters serverPreparedStatementParameters, String ipAddress)
 	    throws IOException, SQLException, SecurityException {
 
-	checkFirewallForExecute(username, database, sqlOrder, serverPreparedStatementParameters, ipAddress);
+	checkFirewallForAllowExecute(username, database, sqlOrder, serverPreparedStatementParameters, ipAddress);
 	ServerSqlUtil.setMaxRowsToReturn(request, username, database, preparedStatement, databaseConfigurator);
 
 	@SuppressWarnings("unused")
@@ -428,18 +427,14 @@ public class ServerStatementRawExecute {
      * @throws SQLException
      * @throws SecurityException
      */
-    private void checkFirewallForExecute(String username, String database, String sqlOrder,
+    private void checkFirewallForAllowExecute(String username, String database, String sqlOrder,
 	    ServerPreparedStatementParameters serverPreparedStatementParameters, String ipAddress)
 	    throws IOException, SQLException, SecurityException {
-	boolean isAllowedForDatabaseWrite = true;
 	boolean isAllowedAfterAnalysis;
 	for (SqlFirewallManager sqlFirewallManager : sqlFirewallManagers) {
 	    isAllowedAfterAnalysis = sqlFirewallManager.allowExecute(username, database, connection);
 
-	    isAllowedForDatabaseWrite = SqlFirewalManagerUtil.isWriteDatabaseAllowed(username, database, sqlOrder, isAllowedForDatabaseWrite,
-		    sqlFirewallManager, connection);
-
-	    if (!isAllowedAfterAnalysis || !isAllowedForDatabaseWrite) {
+	    if (!isAllowedAfterAnalysis) {
 
 		SqlEvent sqlEvent = SqlEventWrapper.sqlEventBuild(username, database, ipAddress, sqlOrder,
 			ServerStatementUtil.isPreparedStatement(request),
@@ -546,22 +541,17 @@ public class ServerStatementRawExecute {
      * @throws SQLException
      * @throws SecurityException
      */
-    private void checkFirewallForExecute(String username, String database, String sqlOrder, String ipAddress)
+    private void checkFirewallForAllowExecute(String username, String database, String sqlOrder, String ipAddress)
 	    throws IOException, SQLException, SecurityException {
 	boolean isAllowedExecute;
-	boolean isAllowedForDatabaseWrite = true;
 	for (SqlFirewallManager sqlFirewallManager : sqlFirewallManagers) {
 	    isAllowedExecute = sqlFirewallManager.allowExecute(username, database, connection);
 
-	    isAllowedForDatabaseWrite = SqlFirewalManagerUtil.isWriteDatabaseAllowed(username, database, sqlOrder, isAllowedForDatabaseWrite,
-		    sqlFirewallManager, connection);
-
-	    if (!isAllowedExecute || !isAllowedForDatabaseWrite) {
+	    if (!isAllowedExecute) {
 		List<Object> parameterValues = new ArrayList<>();
 		SqlEvent sqlEvent = SqlEventWrapper.sqlEventBuild(username, database, ipAddress, sqlOrder,
 			ServerStatementUtil.isPreparedStatement(request), parameterValues, false);
 
-		// sqlFirewallManager.runIfStatementRefused(sqlEvent, connection);
 		SqlFirewallTriggerWrapper.runIfStatementRefused(sqlEvent, sqlFirewallManager, connection);
 
 		String message = JsonSecurityMessage.statementNotAllowedBuild(sqlOrder,

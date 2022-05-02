@@ -40,13 +40,12 @@ import org.kawanfw.sql.api.server.StatementAnalyzer;
  * <ul>
  * <li>Define if a client user has the right to call a
  * <code>Statement.execute</code> (i.e. call a raw execute).</li>
- * <li>Define if a client user has the right to call a
- * <code>Statement.executeUpdate</code> (i.e. call a statement that updates the
- * database).</li>
  * <li>Define if a client user has the right to call a raw
  * <code>Statement</code> that is not a <code>PreparedStatement</code>.</li>
  * <li>Define if a client user has the right to call a the AceQL Metadata
  * API.</li>
+ * <li>Define a specific piece of Java code to analyze the source code of the
+ * SQL statement before allowing or not it's execution.</li>
  * </ul>
  * <p>
  * Multiple {@code SqlFirewallManager} may be defined and chained.
@@ -61,15 +60,15 @@ import org.kawanfw.sql.api.server.StatementAnalyzer;
  * <li>{@link CsvRulesManager}: manager that apply rules written in a CSV
  * file.</li>
  * <li>{@link CsvRulesManagerNoReload}: same as {@code CsvRulesManager}, but
- * dynamic reload of rules is prohibited if the CSV file is updated.</li>
+ * dynamic reload of rules is prohibited if the CSV file is updated.</li> *
+ * <li>{@link DenyDatabaseWriteManager}: manager that denies any update of the
+ * database.</li>
  * <li>{@link DenyDclManager}: manager that denies any DCL (Data Control
  * Language) call.</li>
  * <li>{@link DenyDdlManager}: manager that denies any DDL (Data Definition
  * Language) call.</li>
  * <li>{@link DenyTclManager}: manager that denies any TCL (Transaction Control
  * Language) call.</li>
- * <li>{@link DenyDatabaseWriteManager}: manager that denies any update of the
- * database.</li>
  * <li>{@link DenyMetadataQueryManager}: manager that denies the use of the
  * AceQL Metadata Query API.</li>
  * <li>{@link DenyStatementClassManager}: manager that denies any call of the
@@ -93,8 +92,8 @@ public interface SqlFirewallManager {
      * @param username   the client username to check the rule for
      * @param database   the database name as defined in the JDBC URL field
      * @param connection The current SQL/JDBC <code>Connection</code>
-     * @return <code>true</code> if the user has the right to call the Metadata Query
-     *         API, else <code>false</code>
+     * @return <code>true</code> if the user has the right to call the Metadata
+     *         Query API, else <code>false</code>
      * @throws IOException  if an IOException occurs
      * @throws SQLException if a SQLException occurs
      */
@@ -151,23 +150,5 @@ public interface SqlFirewallManager {
      *
      */
     boolean allowExecute(String username, String database, Connection connection) throws IOException, SQLException;
-
-    /**
-     * Allows to define if the passed username is allowed to update the database.
-     * <br>
-     * This includes following calls: DELETE / INSERT / UPDATES calls, and all DCL / DDL / TCL calls.
-     *
-     * @param username   the client username to check the rule for
-     * @param database   the database name as defined in the JDBC URL field
-     * @param connection The current SQL/JDBC <code>Connection</code>
-     * @return <code>true</code> if the user has the right to update the database.
-     *
-     * @throws IOException  if an IOException occurs
-     * @throws SQLException if a SQLException occurs
-     *
-     */
-    public boolean allowDatabaseWrite(String username, String database, Connection connection)
-	    throws IOException, SQLException;
-
 
 }

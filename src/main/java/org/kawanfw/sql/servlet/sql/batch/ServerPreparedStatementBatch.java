@@ -222,10 +222,8 @@ public class ServerPreparedStatementBatch {
 		    }	    
 		    
 		    debug("before new SqlSecurityChecker()");
-			String ipAddress = checkFirewallGeneral(username, database, sqlOrder,
+			checkFirewallGeneral(username, database, sqlOrder,
 				serverPreparedStatementParameters);
-			checkFirewallForExecuteUpdate(username, database, sqlOrder, serverPreparedStatementParameters,
-				ipAddress);
 			preparedStatement.addBatch();
 		}
 	    }
@@ -252,56 +250,16 @@ public class ServerPreparedStatementBatch {
     }
 
     /**
-     * Checks the firewall rules for an ExecuteUpdate for a prepared statement.
-     * @param username
-     * @param database
-     * @param sqlOrder
-     * @param serverPreparedStatementParameters
-     * @param ipAddress
-     * @throws IOException
-     * @throws SQLException
-     * @throws SecurityException
-     */
-    private void checkFirewallForExecuteUpdate(String username, String database, String sqlOrder,
-	    ServerPreparedStatementParameters serverPreparedStatementParameters, String ipAddress)
-	    throws IOException, SQLException, SecurityException {
-	boolean isAllowedAfterAnalysis;
-	for (SqlFirewallManager sqlFirewallManager : sqlFirewallManagers) {
-	    isAllowedAfterAnalysis = sqlFirewallManager.allowDatabaseWrite(username, database, connection);
-	    if (!isAllowedAfterAnalysis) {
-		
-		SqlEvent sqlEvent = SqlEventWrapper.sqlEventBuild(username, database, ipAddress, sqlOrder,
-			ServerStatementUtil.isPreparedStatement(request),
-			serverPreparedStatementParameters.getParameterValues(), false);
-		    
-		SqlFirewallTriggerWrapper.runIfStatementRefused(sqlEvent, sqlFirewallManager, connection);
-
-		String message = JsonSecurityMessage.prepStatementNotAllowedBuild(sqlOrder,
-			"Prepared Statement not allowed for executeUpdate",
-			serverPreparedStatementParameters.getParameterTypes(),
-			serverPreparedStatementParameters.getParameterValues(), doPrettyPrinting);
-
-		throw new SecurityException(message);
-	    }
-	}
-    }
-
-
-
-
-
-    /**
      * Checks the general firewall rules
      * @param username
      * @param database
      * @param sqlOrder
      * @param serverPreparedStatementParameters
-     * @return
      * @throws IOException
      * @throws SQLException
      * @throws SecurityException
      */
-    private String checkFirewallGeneral(String username, String database, String sqlOrder,
+    private void checkFirewallGeneral(String username, String database, String sqlOrder,
 	    ServerPreparedStatementParameters serverPreparedStatementParameters)
 	    throws IOException, SQLException, SecurityException {
 	String ipAddress = request.getRemoteAddr();
@@ -315,9 +273,7 @@ public class ServerPreparedStatementBatch {
 	    
 	    isAllowedAfterAnalysis = sqlFirewallManager.allowSqlRunAfterAnalysis(sqlEvent, connection);
 	    if (!isAllowedAfterAnalysis) {
-		//sqlFirewallManager.runIfStatementRefused(sqlEvent, connection);
 		SqlFirewallTriggerWrapper.runIfStatementRefused(sqlEvent, sqlFirewallManager, connection);
-
 		break;
 	    }
 	}
@@ -328,7 +284,6 @@ public class ServerPreparedStatementBatch {
 		    serverPreparedStatementParameters.getParameterValues(), doPrettyPrinting);
 	    throw new SecurityException(message);
 	}
-	return ipAddress;
     }
 
     /**
