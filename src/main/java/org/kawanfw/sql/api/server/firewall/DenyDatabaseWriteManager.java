@@ -40,7 +40,9 @@ import org.kawanfw.sql.api.server.StatementAnalyzer;
  */
 public class DenyDatabaseWriteManager extends DefaultSqlFirewallManager implements SqlFirewallManager {
 
-    
+    /**
+     * @return <code>false</code> if the SQL statement updates the database, else <code>true<code>
+     */
     @Override
     public boolean allowSqlRunAfterAnalysis(SqlEvent sqlEvent, Connection connection) throws IOException, SQLException {
         StatementAnalyzer analyzer = new StatementAnalyzer(sqlEvent.getSql(), sqlEvent.getParameterValues());
