@@ -58,6 +58,7 @@ import org.kawanfw.sql.servlet.sql.dto.UpdateCountsArrayDto;
 import org.kawanfw.sql.servlet.sql.json_return.JsonErrorReturn;
 import org.kawanfw.sql.servlet.sql.json_return.JsonSecurityMessage;
 import org.kawanfw.sql.servlet.sql.parameters.ServerPreparedStatementParameters;
+import org.kawanfw.sql.servlet.util.SqlFirewalManagerUtil;
 import org.kawanfw.sql.util.FrameworkDebug;
 
 /**
@@ -246,7 +247,7 @@ public class ServerStatementBatch {
 	    throws IOException, SQLException, SecurityException {
 	boolean isAllowedAfterAnalysis;
 	for (SqlFirewallManager sqlFirewallManager : sqlFirewallManagers) {
-	    isAllowedAfterAnalysis = sqlFirewallManager.allowExecuteUpdate(username, database, connection);
+	    isAllowedAfterAnalysis = sqlFirewallManager.allowDatabaseWrite(username, database, connection);
 	    if (!isAllowedAfterAnalysis) {
 		
 		SqlEvent sqlEvent = SqlEventWrapper.sqlEventBuild(username, database, ipAddress, sqlOrder,
@@ -280,9 +281,14 @@ public class ServerStatementBatch {
     private void checkFirewallExecute(String username, String database, String sqlOrder, String ipAddress)
 	    throws IOException, SQLException, SecurityException {
 	boolean isAllowed;
+	boolean isAllowedForDatabaseWrite = true;
 	for (SqlFirewallManager sqlFirewallManager : sqlFirewallManagers) {
-	    isAllowed = sqlFirewallManager.allowExecuteUpdate(username, database, connection);
-	    if (!isAllowed) {
+	    
+	    isAllowedForDatabaseWrite = SqlFirewalManagerUtil.isWriteDatabaseAllowed(username, database, sqlOrder, isAllowedForDatabaseWrite,
+		    sqlFirewallManager, connection);
+	    
+	    isAllowed = sqlFirewallManager.allowExecute(username, database, connection);
+	    if (!isAllowed || ! isAllowedForDatabaseWrite) {
 		List<Object> parameterValues = new ArrayList<>();
 		
 		SqlEvent sqlEvent = SqlEventWrapper.sqlEventBuild(username, database, ipAddress, sqlOrder,
@@ -292,7 +298,7 @@ public class ServerStatementBatch {
 		SqlFirewallTriggerWrapper.runIfStatementRefused(sqlEvent, sqlFirewallManager, connection);
 
 		String message = JsonSecurityMessage.statementNotAllowedBuild(sqlOrder,
-			"Statement not allowed for for executeUpdate", doPrettyPrinting);
+			"Statement not allowed for for execute", doPrettyPrinting);
 		throw new SecurityException(message);
 
 	    }

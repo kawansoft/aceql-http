@@ -68,7 +68,7 @@ import org.kawanfw.sql.api.server.StatementAnalyzer;
  * Language) call.</li>
  * <li>{@link DenyTclManager}: manager that denies any TCL (Transaction Control
  * Language) call.</li>
- * <li>{@link DenyExecuteUpdateManager}: manager that denies any update of the
+ * <li>{@link DenyDatabaseWriteManager}: manager that denies any update of the
  * database.</li>
  * <li>{@link DenyMetadataQueryManager}: manager that denies the use of the
  * AceQL Metadata Query API.</li>
@@ -153,20 +153,20 @@ public interface SqlFirewallManager {
     boolean allowExecute(String username, String database, Connection connection) throws IOException, SQLException;
 
     /**
-     * Allows to define if the passed username is allowed to call a statement that
-     * updates the database.
+     * Allows to define if the passed username is allowed to update the database.
+     * <br>
+     * This includes following calls: DELETE / INSERT / UPDATES calls, and all DCL / DDL / TCL calls.
      *
      * @param username   the client username to check the rule for
      * @param database   the database name as defined in the JDBC URL field
      * @param connection The current SQL/JDBC <code>Connection</code>
-     * @return <code>true</code> if the user has the right call a database update
-     *         statement
+     * @return <code>true</code> if the user has the right to update the database.
      *
      * @throws IOException  if an IOException occurs
      * @throws SQLException if a SQLException occurs
      *
      */
-    public boolean allowExecuteUpdate(String username, String database, Connection connection)
+    public boolean allowDatabaseWrite(String username, String database, Connection connection)
 	    throws IOException, SQLException;
 
 

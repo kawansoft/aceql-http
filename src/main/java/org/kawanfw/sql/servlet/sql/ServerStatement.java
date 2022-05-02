@@ -341,14 +341,13 @@ public class ServerStatement {
 	    throws IOException, SQLException, SecurityException {
 	boolean isAllowedAfterAnalysis;
 	for (SqlFirewallManager sqlFirewallManager : sqlFirewallManagers) {
-	    isAllowedAfterAnalysis = sqlFirewallManager.allowExecuteUpdate(username, database, connection);
+	    isAllowedAfterAnalysis = sqlFirewallManager.allowDatabaseWrite(username, database, connection);
 	    if (!isAllowedAfterAnalysis) {
 		
 		SqlEvent sqlEvent = SqlEventWrapper.sqlEventBuild(username, database, ipAddress, sqlOrder,
 			ServerStatementUtil.isPreparedStatement(request),
 			serverPreparedStatementParameters.getParameterValues(), false);
 		    
-		//sqlFirewallManager.runIfStatementRefused(sqlEvent, connection);
 		SqlFirewallTriggerWrapper.runIfStatementRefused(sqlEvent, sqlFirewallManager, connection);
 		
 		String message = JsonSecurityMessage.prepStatementNotAllowedBuild(sqlOrder,
@@ -625,14 +624,13 @@ public class ServerStatement {
 	    throws IOException, SQLException, SecurityException {
 	boolean isAllowed;
 	for (SqlFirewallManager sqlFirewallManager : sqlFirewallManagers) {
-	    isAllowed = sqlFirewallManager.allowExecuteUpdate(username, database, connection);
+	    isAllowed = sqlFirewallManager.allowDatabaseWrite(username, database, connection);
 	    if (!isAllowed) {
 		List<Object> parameterValues = new ArrayList<>();
 		
 		SqlEvent sqlEvent = SqlEventWrapper.sqlEventBuild(username, database, ipAddress, sqlOrder,
 			ServerStatementUtil.isPreparedStatement(request), parameterValues, false);
 		    
-		//sqlFirewallManager.runIfStatementRefused(sqlEvent, connection);
 		SqlFirewallTriggerWrapper.runIfStatementRefused(sqlEvent, sqlFirewallManager, connection);
 		
 		String message = JsonSecurityMessage.statementNotAllowedBuild(sqlOrder,

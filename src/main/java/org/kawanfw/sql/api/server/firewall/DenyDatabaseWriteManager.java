@@ -29,19 +29,19 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 /**
- * Firewall manager that denies any update of the database. The database is thus
- * guaranteed to be accessed in read only from client side.
+ * Firewall manager that denies any update of the database for the passed user. 
+ * The database is thus guaranteed to be accessed in read only from client side.
  *
  * @author Nicolas de Pomereu
  * @since 4.0
  */
-public class DenyExecuteUpdateManager extends DefaultSqlFirewallManager implements SqlFirewallManager {
+public class DenyDatabaseWriteManager extends DefaultSqlFirewallManager implements SqlFirewallManager {
 
     /**
      * @return <code>false</code>. (Nobody is allowed to update the database.).
      */
     @Override
-    public boolean allowExecuteUpdate(String username, String database, Connection connection)
+    public boolean allowDatabaseWrite(String username, String database, Connection connection)
 	    throws IOException, SQLException {
 	return false;
     }

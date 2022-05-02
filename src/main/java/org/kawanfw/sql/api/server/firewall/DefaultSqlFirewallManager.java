@@ -77,7 +77,7 @@ public class DefaultSqlFirewallManager implements SqlFirewallManager {
      *         database update statement.)
      */
     @Override
-    public boolean allowExecuteUpdate(String username, String database, Connection connection)
+    public boolean allowDatabaseWrite(String username, String database, Connection connection)
 	    throws IOException, SQLException {
 	return true;
     }
