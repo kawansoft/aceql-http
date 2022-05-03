@@ -79,7 +79,7 @@ public class BanUserSqlFirewallTrigger implements SqlFirewallTrigger {
 
 	int isMetadataQueryInt = sqlEvent.isMetadataQuery() ? 1:0;
 	
-	String sql = "insert into banned_users values (?, ?, ?, ?)";
+	String sql = "insert into banned_users values (?, ?, ?, ?, ?, ?)";
 	try (PreparedStatement preparedStatement = connection.prepareStatement(sql);) {
 	    int i = 1;
 	    preparedStatement.setString(i++, sqlEvent.getUsername());
