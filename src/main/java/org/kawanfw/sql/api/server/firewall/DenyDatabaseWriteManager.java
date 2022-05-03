@@ -32,8 +32,16 @@ import org.kawanfw.sql.api.server.SqlEvent;
 import org.kawanfw.sql.api.server.StatementAnalyzer;
 
 /**
- * Firewall manager that denies any update of the database for the passed user. 
+ * Firewall manager that denies any update of the database for the passed user.
  * The database is thus guaranteed to be accessed in read only from client side.
+ * <br>
+ * {@code DenyDatabaseWriteManager} should be used only in order to monitor
+ * users who try to force writes on database. <br>
+ * If you don't need to monitor users and detect hackers, it's better to set the
+ * property {@code database.defaultReadOnly=true} in the
+ * {@code aceql-server.properties} file: it will launch a
+ * {@link Connection#setReadOnly(boolean)} JDBC call at server startup that will
+ *  write-protect efficiently the SQL database.
  *
  * @author Nicolas de Pomereu
  * @since 11.0
@@ -41,12 +49,13 @@ import org.kawanfw.sql.api.server.StatementAnalyzer;
 public class DenyDatabaseWriteManager extends DefaultSqlFirewallManager implements SqlFirewallManager {
 
     /**
-     * @return <code>false</code> if the SQL statement updates the database, else <code>true<code>
+     * @return <code>false</code> if the passed SQL statement tries to update the
+     *         database, else <code>true<code>
      */
     @Override
     public boolean allowSqlRunAfterAnalysis(SqlEvent sqlEvent, Connection connection) throws IOException, SQLException {
-        StatementAnalyzer analyzer = new StatementAnalyzer(sqlEvent.getSql(), sqlEvent.getParameterValues());
-        return ! (analyzer.isDelete() || analyzer.isInsert() || analyzer.isUpdate() || analyzer.isDcl() || analyzer.isDdl()
-        	|| analyzer.isTcl());
+	StatementAnalyzer analyzer = new StatementAnalyzer(sqlEvent.getSql(), sqlEvent.getParameterValues());
+	return !(analyzer.isDelete() || analyzer.isInsert() || analyzer.isUpdate() || analyzer.isDcl()
+		|| analyzer.isDdl() || analyzer.isTcl());
     }
 }
