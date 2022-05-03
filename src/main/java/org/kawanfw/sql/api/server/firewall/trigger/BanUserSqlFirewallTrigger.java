@@ -42,9 +42,10 @@ import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
  * <code>
     CREATE TABLE banned_users
     (               
-      username		varchar(300)	not null,     
-      database		varchar(300)    not null,	
-      ip_address	varchar(50) 	not null,
+      username		varchar(254)	not null,    
+      ip_address	varchar(254) 	not null, 
+      database		varchar(254)    not null,	
+      sql_statement	varchar(4000)	not null,
       dt_creation       timestamp	not null		
     );
  * </code>
@@ -79,8 +80,10 @@ public class BanUserSqlFirewallTrigger implements SqlFirewallTrigger {
 	try (PreparedStatement preparedStatement = connection.prepareStatement(sql);) {
 	    int i = 1;
 	    preparedStatement.setString(i++, sqlEvent.getUsername());
-	    preparedStatement.setString(i++, sqlEvent.getDatabase());
 	    preparedStatement.setString(i++, sqlEvent.getIpAddress());
+	    preparedStatement.setString(i++, sqlEvent.getDatabase());
+	    preparedStatement.setString(i++, sqlEvent.getSql());   
+	    preparedStatement.setBoolean(i++, sqlEvent.isMetadataQuery());   
 	    preparedStatement.setTimestamp(i++, new Timestamp(System.currentTimeMillis()));
 	    preparedStatement.executeUpdate();
 	}

@@ -62,8 +62,8 @@ import org.kawanfw.sql.util.SqlTag;
  * <code>
 CREATE TABLE users
 (               
-  username              varchar(300)    not null,     
-  encrypted_password    varchar(300)    not null,
+  username              varchar(254)    not null,     
+  encrypted_password    varchar(4000)   not null,
         PRIMARY KEY (username)
 );
  * </code>
