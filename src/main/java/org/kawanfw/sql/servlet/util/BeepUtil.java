@@ -18,6 +18,7 @@ import javax.swing.Timer;
 
 /**
  * Stolen from https://gist.github.com/jbzdak/61398b8ad795d22724dd.
+ * Slightly modified.
  * Allows to beep on terminal.
  * @author Jacek Bzdak
  *
