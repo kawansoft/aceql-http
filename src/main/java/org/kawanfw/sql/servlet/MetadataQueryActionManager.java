@@ -133,7 +133,6 @@ public class MetadataQueryActionManager {
 		SqlEvent sqlEvent = SqlEventWrapper.sqlEventBuild(username, database, ipAddress, sql,
 			ServerStatementUtil.isPreparedStatement(request), parameterValues, true);
 
-		//sqlFirewallManager.runIfStatementRefused(sqlEvent, connection);
 		SqlFirewallTriggerWrapper.runIfStatementRefused(sqlEvent, sqlFirewallManager, connection);
 		break;
 	    }

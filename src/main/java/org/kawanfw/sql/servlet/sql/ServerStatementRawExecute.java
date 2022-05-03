@@ -440,11 +440,10 @@ public class ServerStatementRawExecute {
 			ServerStatementUtil.isPreparedStatement(request),
 			serverPreparedStatementParameters.getParameterValues(), false);
 
-		// sqlFirewallManager.runIfStatementRefused(sqlEvent, connection);
 		SqlFirewallTriggerWrapper.runIfStatementRefused(sqlEvent, sqlFirewallManager, connection);
 
 		String message = JsonSecurityMessage.prepStatementNotAllowedBuild(sqlOrder,
-			"Prepared Statement not allowed for executeUpdate",
+			"Statement not allowed for raw execute call ",
 			serverPreparedStatementParameters.getParameterTypes(),
 			serverPreparedStatementParameters.getParameterValues(), doPrettyPrinting);
 
