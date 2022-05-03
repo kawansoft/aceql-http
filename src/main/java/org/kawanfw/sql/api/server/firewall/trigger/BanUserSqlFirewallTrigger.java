@@ -45,7 +45,7 @@ import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
       username		varchar(254)	not null,    
       ip_address	varchar(254) 	not null, 
       database		varchar(254)    not null,	
-      sql_statement	varchar(4000)	not null,
+      sql_statement	varchar(4000)		,
       is_metadata	integer			,			, 
       dt_creation       timestamp	not null		
     );
@@ -77,7 +77,7 @@ public class BanUserSqlFirewallTrigger implements SqlFirewallTrigger {
     public void runIfStatementRefused(SqlEvent sqlEvent, SqlFirewallManager sqlFirewallManager, Connection connection)
 	    throws IOException, SQLException {
 
-	int isMetadataQuery = sqlEvent.isMetadataQuery() ? 1:0;
+	int isMetadataQueryInt = sqlEvent.isMetadataQuery() ? 1:0;
 	
 	String sql = "insert into banned_users values (?, ?, ?, ?)";
 	try (PreparedStatement preparedStatement = connection.prepareStatement(sql);) {
@@ -86,7 +86,7 @@ public class BanUserSqlFirewallTrigger implements SqlFirewallTrigger {
 	    preparedStatement.setString(i++, sqlEvent.getIpAddress());
 	    preparedStatement.setString(i++, sqlEvent.getDatabase());
 	    preparedStatement.setString(i++, sqlEvent.getSql());   
-	    preparedStatement.setInt(i++, isMetadataQuery);   // We don't use other type, not compatible with all db vendors
+	    preparedStatement.setInt(i++, isMetadataQueryInt);   // We don't use other type, not compatible with all db vendors
 	    preparedStatement.setTimestamp(i++, new Timestamp(System.currentTimeMillis()));
 	    preparedStatement.executeUpdate();
 	}
