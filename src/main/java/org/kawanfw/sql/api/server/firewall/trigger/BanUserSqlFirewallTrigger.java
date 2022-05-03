@@ -51,7 +51,7 @@ import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
     );
  * </code>
  * </pre>
- * 
+ * {@code banned_users} has voluntary no indexes.
  * Users inserted in the SQL table will not be allowed further access to the SQL
  * database after the ban action. <br>
  * <br>
