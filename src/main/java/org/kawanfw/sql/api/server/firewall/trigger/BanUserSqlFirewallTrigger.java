@@ -42,12 +42,13 @@ import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
  * <code>
     CREATE TABLE banned_users
     (               
-      username		varchar(254)	not null,    
-      ip_address	varchar(254) 	not null, 
-      database		varchar(254)    not null,	
-      sql_statement	varchar(4000)		,
-      is_metadata	integer			, 
-      dt_creation       timestamp	not null		
+      username			varchar(254)	not null,    
+      ip_address		varchar(254) 	not null, 
+      sql_database		varchar(254)    not null,	
+      sql_firewall_trigger	varchar(254)    not null,
+      sql_statement		varchar(4000)		,
+      is_metadata		integer			, 
+      dt_creation       	timestamp	not null		
     );
     CREATE INDEX idx_address_username ON banned_users(username);
  * </code>
@@ -80,12 +81,13 @@ public class BanUserSqlFirewallTrigger implements SqlFirewallTrigger {
     public void runIfStatementRefused(SqlEvent sqlEvent, SqlFirewallManager sqlFirewallManager, Connection connection)
 	    throws IOException, SQLException {
 	
-	String sql = "insert into banned_users values (?, ?, ?, ?, ?, ?)";
+	String sql = "insert into banned_users values (?, ?, ?, ?, ?, ?, ?)";
 	try (PreparedStatement preparedStatement = connection.prepareStatement(sql);) {
 	    int i = 1;
 	    preparedStatement.setString(i++, sqlEvent.getUsername());
 	    preparedStatement.setString(i++, sqlEvent.getIpAddress());
 	    preparedStatement.setString(i++, sqlEvent.getDatabase());
+	    preparedStatement.setString(i++, sqlFirewallManager.getClass().getName());
 	    preparedStatement.setString(i++, sqlEvent.getSql());   
 	    preparedStatement.setInt(i++, sqlEvent.isMetadataQuery() ? 1:0);   // We don't use other type, not compatible with all db vendors
 	    preparedStatement.setTimestamp(i++, new Timestamp(System.currentTimeMillis()));
