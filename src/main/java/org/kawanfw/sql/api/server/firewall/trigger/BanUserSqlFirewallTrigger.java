@@ -54,7 +54,6 @@ import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
  * </code>
  * </pre>
  * 
- * <br>
  * Users inserted in the SQL table will not be allowed - by the AceQL Server -
  * to further access to the SQL database after the ban action. Any new access
  * attempt of a banned user will be blocked by returning the ambiguous error
@@ -66,8 +65,7 @@ import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
  * {@code aceql-server.properties} file. <br>
  * <br>
  * Example:<br>
- * {@code my_database.sqlFirewallTriggerClassNames=BanUserSqlFirewallTrigger, \ 
- *   com.mycompany.MyOtherSqlFirewallTrigger1, com.mycomapny.MyOtherSqlFirewallTrigger2}
+ * {@code my_database.sqlFirewallTriggerClassNames=BanUserSqlFirewallTrigger, com.mycompany.MyOtherSqlFirewallTrigger1, com.mycomapny.MyOtherSqlFirewallTrigger2}
  * <p>
  * 
  * @author Nicolas de Pomereu
