@@ -49,13 +49,13 @@ import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
       is_metadata	integer			, 
       dt_creation       timestamp	not null		
     );
+    CREATE INDEX idx_address_username ON banned_users(username);
  * </code>
  * </pre>
- * {@code banned_users} has voluntary no indexes.
  * <br>
  * Users inserted in the SQL table will not be allowed - by the AceQL Server - to further access to the SQL
  * database after the ban action. 
- * Any new access will be blocked by throwing {@code SQLException("Access Forbidden")}.
+ * Any new access attempt of a banned user will be blocked by throwing an ambiguous {@code SQLException("Access Forbidden")}.
  * <br>
  * Activation of this trigger requires to define the {@code BanUserSqlFirewallTrigger} as a
  * value in the {@code database.sqlFirewallTriggerClassNames} property of the
