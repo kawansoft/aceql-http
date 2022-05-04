@@ -58,7 +58,8 @@ import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
  * Users inserted in the SQL table will not be allowed - by the AceQL Server -
  * to further access to the SQL database after the ban action. Any new access
  * attempt of a banned user will be blocked by throwing an ambiguous
- * {@code SQLException("Access Forbidden")}. <br>
+ * {@code SQLException("Access Forbidden")}. 
+ * <br><br>
  * Activation of this trigger requires to define the
  * {@code BanUserSqlFirewallTrigger} as a value in the
  * {@code database.sqlFirewallTriggerClassNames} property of the
