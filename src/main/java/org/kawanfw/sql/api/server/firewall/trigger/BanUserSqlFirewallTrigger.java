@@ -40,7 +40,7 @@ import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
  * 
  * <pre>
  * <code>
-    CREATE TABLE banned_users
+    create table banned_users
     (               
       username			varchar(254)	not null,    
       ip_address		varchar(254) 	not null, 
@@ -50,7 +50,7 @@ import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
       is_metadata		integer			, 
       dt_creation       	timestamp	not null		
     );
-    CREATE INDEX idx_address_username ON banned_users(username);
+    create index idx_address_username on banned_users(username);
  * </code>
  * </pre>
  * 

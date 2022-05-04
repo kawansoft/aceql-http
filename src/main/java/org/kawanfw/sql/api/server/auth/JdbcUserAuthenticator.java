@@ -60,11 +60,11 @@ import org.kawanfw.sql.util.SqlTag;
  * 
  * <pre>
  * <code>
-CREATE TABLE users
+create table users
 (               
   username              varchar(254)    not null,     
   encrypted_password    varchar(4000)   not null,
-        PRIMARY KEY (username)
+        primary key (username)
 );
  * </code>
  * </pre>
