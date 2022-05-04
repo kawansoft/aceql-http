@@ -2,6 +2,8 @@ package org.kawanfw.sql.servlet;
 
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -110,7 +112,7 @@ public class ServerSqlDispatchUtil {
 
 		SqlEvent sqlEvent = SqlEventWrapper.sqlEventBuild(username, database, ipAddress, sql,
 			ServerStatementUtil.isPreparedStatement(request), parameterValues, true);
-		
+
 		SqlFirewallTriggerWrapper.runIfStatementRefused(sqlEvent, sqlFirewallManager, connection);
 		break;
 	    }
@@ -125,6 +127,36 @@ public class ServerSqlDispatchUtil {
 	    throw new SecurityException(message);
 	}
 
+    }
+
+    /**
+     * Says if a username is banned, aka it exists in banned_users table/
+     * This is checked only if the {@code SqlFirewallTrigger} {@code BanUserSqlFirewallTrigger} 
+     * has been added in the {@code aceql-properties file}
+     * 
+     * @param username   the client username
+     * @param database   the database name
+     * @param connection the JDBC Connection
+     * @return trur if the user is banned.
+     * @throws SQLException
+     */
+    public static boolean isUsernameBanned(String username, String database, Connection connection) throws SQLException {
+
+	// First test if the BanUserSqlFirewallTrigger has been activated in the aceql-properties file.
+	// If not, user cannot be banned, of course.
+	if (! BannerOnTester.isBanUserSqlFirewallTriggerActivated(database)) {
+	    return false;
+	}
+	
+	String sql = "SELECT username FROM banned_users WHERE username = ?";
+
+	try (PreparedStatement prepStatement = connection.prepareStatement(sql);) {
+	    prepStatement.setString(1, username);
+
+	    try (ResultSet rs = prepStatement.executeQuery();) {
+		return rs.next();
+	    }
+	}
     }
 
 }

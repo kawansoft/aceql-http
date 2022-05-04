@@ -57,11 +57,14 @@ public class JsonErrorReturn {
     public static final String INVALID_OUTPUT_FORMAT = "The output format is invalid. Should be \"html\" or \"text\".";
     public static final String INVALID_TABLE_NAME = "SQL table not found in database.";
 
+    public static final String ACCESS_FORBIDDEN_FOR_USERNAME = "Access Forbidden for Username";
 
     public static final int ERROR_JDBC_ERROR = 1;
     public static final int ERROR_ACEQL_ERROR = 2;
     public static final int ERROR_ACEQL_UNAUTHORIZED = 3;
     public static final int ERROR_ACEQL_FAILURE = 4;
+
+
 
 
 
