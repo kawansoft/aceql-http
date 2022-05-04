@@ -46,16 +46,18 @@ import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
       ip_address	varchar(254) 	not null, 
       database		varchar(254)    not null,	
       sql_statement	varchar(4000)		,
-      is_metadata	integer			,			, 
+      is_metadata	integer			, 
       dt_creation       timestamp	not null		
     );
  * </code>
  * </pre>
  * {@code banned_users} has voluntary no indexes.
- * Users inserted in the SQL table will not be allowed further access to the SQL
- * database after the ban action. <br>
  * <br>
- * Activation requires to define the {@code BanUserSqlFirewallTrigger} as a
+ * Users inserted in the SQL table will not be allowed - by the AceQL Server - to further access to the SQL
+ * database after the ban action. 
+ * Any new access will be blocked by throwing {@code SQLException("Access Forbidden")}.
+ * <br>
+ * Activation of this trigger requires to define the {@code BanUserSqlFirewallTrigger} as a
  * value in the {@code database.sqlFirewallTriggerClassNames} property of the
  * {@code aceql-server.properties} file. <br>
  * <br>
