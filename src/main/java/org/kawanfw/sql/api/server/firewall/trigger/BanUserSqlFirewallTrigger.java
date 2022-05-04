@@ -79,8 +79,6 @@ public class BanUserSqlFirewallTrigger implements SqlFirewallTrigger {
     @Override
     public void runIfStatementRefused(SqlEvent sqlEvent, SqlFirewallManager sqlFirewallManager, Connection connection)
 	    throws IOException, SQLException {
-
-	int isMetadataQueryInt = sqlEvent.isMetadataQuery() ? 1:0;
 	
 	String sql = "insert into banned_users values (?, ?, ?, ?, ?, ?)";
 	try (PreparedStatement preparedStatement = connection.prepareStatement(sql);) {
@@ -89,7 +87,7 @@ public class BanUserSqlFirewallTrigger implements SqlFirewallTrigger {
 	    preparedStatement.setString(i++, sqlEvent.getIpAddress());
 	    preparedStatement.setString(i++, sqlEvent.getDatabase());
 	    preparedStatement.setString(i++, sqlEvent.getSql());   
-	    preparedStatement.setInt(i++, isMetadataQueryInt);   // We don't use other type, not compatible with all db vendors
+	    preparedStatement.setInt(i++, sqlEvent.isMetadataQuery() ? 1:0);   // We don't use other type, not compatible with all db vendors
 	    preparedStatement.setTimestamp(i++, new Timestamp(System.currentTimeMillis()));
 	    preparedStatement.executeUpdate();
 	}
