@@ -36,19 +36,19 @@ import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
 
 /**
  * A trigger that will INSERT THE {@code SqlEvent} info and the
- * {@code sqlFirewallManager} class name into a {@code jdbc_logger} SQL table.
+ * {@code sqlFirewallManager} class name into a {@code refused_requests_by_firewall} SQL table.
  * <br>
  * Table structure is:
  * 
  * <pre>
  * <code>
-create table jdbc_logger
+create table refused_requests_by_firewall
 (               
   date_event		timestamp	not null,  
   username		varchar(254)	not null,  	  
   ip_address		varchar(254) 	not null, 
   sql_database		varchar(254)    not null,	
-  sql_firewall_trigger	varchar(254)    not null,
+  sql_firewall_manager	varchar(254)    not null,
   sql_statement		varchar(4000)	not null,
   is_metadata		integer			, 
   is_prepared_statement	integer			,
@@ -64,13 +64,13 @@ create table jdbc_logger
 public class JdbcLoggerSqlFirewallTrigger implements SqlFirewallTrigger {
 
     /**
-     * LInsert into the jdbc_logger SQL table {@code ClientEvent} and the
+     * LInsert into the refused_requests_by_firewall SQL table {@code ClientEvent} and the
      * {@code SqlFirewallManager} class name
      */
     @Override
     public void runIfStatementRefused(SqlEvent sqlEvent, SqlFirewallManager sqlFirewallManager, Connection connection)
 	    throws IOException, SQLException {
-	String sql = "insert into jdbc_logger values (?, ?, ?, ?, ?, ?, ?, ?)";
+	String sql = "insert into refused_requests_by_firewall values (?, ?, ?, ?, ?, ?, ?, ?)";
 	try (PreparedStatement preparedStatement = connection.prepareStatement(sql);) {
 	    int i = 1;
 	    preparedStatement.setTimestamp(i++, new Timestamp(System.currentTimeMillis()));

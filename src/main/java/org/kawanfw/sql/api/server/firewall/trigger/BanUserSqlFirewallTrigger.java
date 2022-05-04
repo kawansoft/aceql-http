@@ -45,7 +45,7 @@ import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
       username			varchar(254)	not null,    
       ip_address		varchar(254) 	not null, 
       sql_database		varchar(254)    not null,	
-      sql_firewall_trigger	varchar(254)    not null,
+      sql_firewall_manager	varchar(254)    not null,
       sql_statement		varchar(4000)		,
       is_metadata		integer			, 
       dt_creation       	timestamp	not null		
