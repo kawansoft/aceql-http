@@ -50,7 +50,7 @@ public class DenyDatabaseWriteManager extends DefaultSqlFirewallManager implemen
 
     /**
      * @return <code>false</code> if the passed SQL statement tries to update the
-     *         database, else <code>true<code>
+     *         database, else <code>true</code>
      */
     @Override
     public boolean allowSqlRunAfterAnalysis(SqlEvent sqlEvent, Connection connection) throws IOException, SQLException {

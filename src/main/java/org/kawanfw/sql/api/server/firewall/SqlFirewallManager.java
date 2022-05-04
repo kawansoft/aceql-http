@@ -60,7 +60,7 @@ import org.kawanfw.sql.api.server.StatementAnalyzer;
  * <li>{@link CsvRulesManager}: manager that apply rules written in a CSV
  * file.</li>
  * <li>{@link CsvRulesManagerNoReload}: same as {@code CsvRulesManager}, but
- * dynamic reload of rules is prohibited if the CSV file is updated.</li> *
+ * dynamic reload of rules is prohibited if the CSV file is updated.</li>
  * <li>{@link DenyDatabaseWriteManager}: manager that denies any update of the
  * database.</li>
  * <li>{@link DenyDclManager}: manager that denies any DCL (Data Control

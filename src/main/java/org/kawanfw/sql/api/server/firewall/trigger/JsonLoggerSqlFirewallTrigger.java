@@ -43,7 +43,7 @@ import org.kawanfw.sql.servlet.util.SqlFirewallTriggerUtil;
 import org.kawanfw.sql.util.log.FlattenLogger;
 
 /**
- * A trigger that will log using JSON format the {@code SqlEvent}
+ * A trigger that will log using JSON format the {@code SqlEvent} info
  * and the {@code sqlFirewallManager} class name.
  * 
  * @author Nicolas de Pomereu
