@@ -55,7 +55,8 @@ import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
  * </pre>
  * 
  * Users inserted in the SQL table will not be allowed - by the AceQL Server -
- * to further access to the SQL database after the ban action. Any new access
+ * to further access to the SQL database after the ban action.
+ * <br>Any new access
  * attempt of a banned user will be blocked by returning the ambiguous error
  * message "Access Forbidden for Username". <br>
  * <br>
