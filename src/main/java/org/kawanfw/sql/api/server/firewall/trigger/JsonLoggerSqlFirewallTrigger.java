@@ -43,8 +43,7 @@ import org.kawanfw.sql.servlet.util.SqlFirewallTriggerUtil;
 import org.kawanfw.sql.util.log.FlattenLogger;
 
 /**
- * Concrete implementation of {@code SqlFirewallTrigger}. The
- * {@code runIfStatementRefused} method logs using JSON format the {@code SqlEvent}
+ * A trigger that will log using JSON format the {@code SqlEvent}
  * and the {@code sqlFirewallManager} class name.
  * 
  * @author Nicolas de Pomereu

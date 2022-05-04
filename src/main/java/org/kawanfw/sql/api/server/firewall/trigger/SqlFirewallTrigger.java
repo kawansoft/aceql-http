@@ -32,8 +32,8 @@ import org.kawanfw.sql.api.server.SqlEvent;
 import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
 
 /**
- * Interface that allows to define a trigger if a
- * {@code SqlFirewallManager.allowSqlRunAfterAnalysis()} call returns false.
+ * Interface that allows to define a trigger if for the specified {@code SqlFirewallManager} 
+ * the {@code allowSqlRunAfterAnalysis()} method call returns false.
  * 
  * @author Nicolas de Pomereu
  * @since 11.0

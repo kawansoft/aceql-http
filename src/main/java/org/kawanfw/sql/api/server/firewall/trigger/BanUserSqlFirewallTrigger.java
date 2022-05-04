@@ -53,13 +53,15 @@ import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
     CREATE INDEX idx_address_username ON banned_users(username);
  * </code>
  * </pre>
+ * 
  * <br>
- * Users inserted in the SQL table will not be allowed - by the AceQL Server - to further access to the SQL
- * database after the ban action. 
- * Any new access attempt of a banned user will be blocked by throwing an ambiguous {@code SQLException("Access Forbidden")}.
- * <br>
- * Activation of this trigger requires to define the {@code BanUserSqlFirewallTrigger} as a
- * value in the {@code database.sqlFirewallTriggerClassNames} property of the
+ * Users inserted in the SQL table will not be allowed - by the AceQL Server -
+ * to further access to the SQL database after the ban action. Any new access
+ * attempt of a banned user will be blocked by throwing an ambiguous
+ * {@code SQLException("Access Forbidden")}. <br>
+ * Activation of this trigger requires to define the
+ * {@code BanUserSqlFirewallTrigger} as a value in the
+ * {@code database.sqlFirewallTriggerClassNames} property of the
  * {@code aceql-server.properties} file. <br>
  * <br>
  * Example:<br>
@@ -67,8 +69,7 @@ import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
  *   com.mycomapny.MyOtherSqlFirewallTrigger1, com.mycomapny.MyOtherSqlFirewallTrigger2}
  * <p>
  * 
- * @author   de Pomereu
- * 
+ * @author Nicolas de Pomereu
  * @since 11.0
  */
 
@@ -80,7 +81,7 @@ public class BanUserSqlFirewallTrigger implements SqlFirewallTrigger {
     @Override
     public void runIfStatementRefused(SqlEvent sqlEvent, SqlFirewallManager sqlFirewallManager, Connection connection)
 	    throws IOException, SQLException {
-	
+
 	String sql = "insert into banned_users values (?, ?, ?, ?, ?, ?, ?)";
 	try (PreparedStatement preparedStatement = connection.prepareStatement(sql);) {
 	    int i = 1;
@@ -88,8 +89,9 @@ public class BanUserSqlFirewallTrigger implements SqlFirewallTrigger {
 	    preparedStatement.setString(i++, sqlEvent.getIpAddress());
 	    preparedStatement.setString(i++, sqlEvent.getDatabase());
 	    preparedStatement.setString(i++, sqlFirewallManager.getClass().getName());
-	    preparedStatement.setString(i++, sqlEvent.getSql());   
-	    preparedStatement.setInt(i++, sqlEvent.isMetadataQuery() ? 1:0);   // We don't use other type, not compatible with all db vendors
+	    preparedStatement.setString(i++, sqlEvent.getSql());
+	    preparedStatement.setInt(i++, sqlEvent.isMetadataQuery() ? 1 : 0); // We don't use other type, not
+									       // compatible with all db vendors
 	    preparedStatement.setTimestamp(i++, new Timestamp(System.currentTimeMillis()));
 	    preparedStatement.executeUpdate();
 	}

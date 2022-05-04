@@ -35,8 +35,9 @@ import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
 import org.kawanfw.sql.servlet.util.BeepUtil;
 
 /**
- * Simply beeps on the terminal if an attack is detected by a
- * {@code SqlFirewallManager}. Uses a slightly modified
+ * A trigger that simply beeps on the terminal if an attack is detected by a
+ * {@code SqlFirewallManager}. <br>
+ * Uses a slightly modified
  * <a href="https://gist.github.com/jbzdak/61398b8ad795d22724dd">GitHub Gist</a>
  * created by Jacek Bzdak.
  * 
