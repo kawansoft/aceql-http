@@ -88,5 +88,5 @@ public class SqlFirewallTriggerUtil {
         }
         return list;
     }
-
+    
 }

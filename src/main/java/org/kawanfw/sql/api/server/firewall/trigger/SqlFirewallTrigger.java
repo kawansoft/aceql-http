@@ -32,8 +32,28 @@ import org.kawanfw.sql.api.server.SqlEvent;
 import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
 
 /**
- * Interface that allows to define a trigger if for the specified {@code SqlFirewallManager} 
- * the {@code allowSqlRunAfterAnalysis()} method call returns false.
+ * Interface that allows to define a trigger if for the specified
+ * {@code SqlFirewallManager} the {@code allowSqlRunAfterAnalysis()} method call
+ * returns false. <br>
+ * Multiple {@code SqlFirewallTrigger} may be defined and chained.
+ * <p>
+ * Note that the framework comes with a default <code>SqlFirewallTrigger</code>
+ * implementation that does nothing.
+ * <p>
+ * Built in and ready to use classes that don't require any coding are included.
+ * The classes may be chained. See each Javadoc for more details:
+ * <ul>
+ * <li>{@link BanUserSqlFirewallTrigger}: a trigger that inserts the username
+ * and other info into a SQL table. The SQL table is scanned/controlled at each
+ * request, so the banned user cannot access any more the AceQL server.</li>
+ * <li>{@link BeeperSqlFirewallTrigger}: a trigger that simply beeps on the
+ * terminal if an attack is detected by a {@code SqlFirewallManager}.</li>
+ * <li>{@link JdbcLoggerSqlFirewallTrigger}: a trigger that logs into a SQL table
+ * all info about the denied SQL request.</li>
+ * <li>{@link JsonLoggerSqlFirewallTrigger}: a trigger that logs in JSON format
+ * all info about the denied SQL request.</li>
+ * </ul>
+ * <p>
  * 
  * @author Nicolas de Pomereu
  * @since 11.0
