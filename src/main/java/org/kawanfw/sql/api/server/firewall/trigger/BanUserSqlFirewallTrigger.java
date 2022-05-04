@@ -62,7 +62,8 @@ import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
  * {@code aceql-server.properties} file. <br>
  * <br>
  * Example:<br>
- * {@code my_database.sqlFirewallTriggerClassNames=BanUserSqlFirewallTrigger, MyOtherSqlFirewallTrigger}
+ * {@code my_database.sqlFirewallTriggerClassNames=BanUserSqlFirewallTrigger, \ 
+ *   com.mycomapny.MyOtherSqlFirewallTrigger1, com.mycomapny.MyOtherSqlFirewallTrigger2}
  * <p>
  * 
  * @author   de Pomereu

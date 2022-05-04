@@ -37,6 +37,7 @@ import org.kawanfw.sql.api.server.DatabaseConfigurator;
 import org.kawanfw.sql.api.server.SqlEvent;
 import org.kawanfw.sql.api.server.SqlEventWrapper;
 import org.kawanfw.sql.api.server.firewall.DefaultSqlFirewallManager;
+import org.kawanfw.sql.api.server.firewall.trigger.BanUserSqlFirewallTrigger;
 import org.kawanfw.sql.api.server.firewall.trigger.BeeperSqlFirewallTrigger;
 import org.kawanfw.sql.api.server.firewall.trigger.DefaultSqlFirewallTrigger;
 import org.kawanfw.sql.api.server.firewall.trigger.JsonLoggerSqlFirewallTrigger;
@@ -46,8 +47,9 @@ public class SqlFirewallTriggersCreator {
 
     private static final boolean TRACE_ON_START = false;
 
-    private static String[] PREDEFINED_CLASS_NAMES = { DefaultSqlFirewallTrigger.class.getSimpleName(),
-	    BeeperSqlFirewallTrigger.class.getSimpleName(), JsonLoggerSqlFirewallTrigger.class.getSimpleName() };
+    private static String[] PREDEFINED_CLASS_NAMES = { BanUserSqlFirewallTrigger.class.getSimpleName(),
+	    DefaultSqlFirewallTrigger.class.getSimpleName(), BeeperSqlFirewallTrigger.class.getSimpleName(),
+	    JsonLoggerSqlFirewallTrigger.class.getSimpleName() };
 
     private List<String> sqlFirewallTriggerClassNames = new ArrayList<>();
     private List<SqlFirewallTrigger> sqlFirewallTriggerManagers = new ArrayList<>();
