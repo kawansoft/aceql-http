@@ -82,6 +82,8 @@ public class BanUserSqlFirewallTrigger implements SqlFirewallTrigger {
     public void runIfStatementRefused(SqlEvent sqlEvent, SqlFirewallManager sqlFirewallManager, Connection connection)
 	    throws IOException, SQLException {
 
+	// We use SQL int type for SQLEvent boolean values to be compatible with all db vendors
+	
 	String sql = "insert into aceql_banned_user values (?, ?, ?, ?, ?, ?, ?)";
 	try (PreparedStatement preparedStatement = connection.prepareStatement(sql);) {
 	    int i = 1;

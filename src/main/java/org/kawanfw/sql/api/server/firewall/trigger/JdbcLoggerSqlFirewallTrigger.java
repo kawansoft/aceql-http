@@ -70,7 +70,10 @@ public class JdbcLoggerSqlFirewallTrigger implements SqlFirewallTrigger {
     @Override
     public void runIfStatementRefused(SqlEvent sqlEvent, SqlFirewallManager sqlFirewallManager, Connection connection)
 	    throws IOException, SQLException {
-	String sql = "insert into aceql_denied_request values (?, ?, ?, ?, ?, ?, ?, ?)";
+	
+	// We use SQL int type for SQLEvent boolean values to be compatible with all db vendors
+	
+	String sql = "insert into aceql_denied_request values (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 	try (PreparedStatement preparedStatement = connection.prepareStatement(sql);) {
 	    int i = 1;
 	    preparedStatement.setTimestamp(i++, new Timestamp(System.currentTimeMillis()));
