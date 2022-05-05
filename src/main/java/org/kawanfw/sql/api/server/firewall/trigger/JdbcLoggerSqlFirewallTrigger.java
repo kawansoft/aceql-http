@@ -36,13 +36,13 @@ import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
 
 /**
  * A trigger that will INSERT THE {@code SqlEvent} info and the
- * {@code sqlFirewallManager} class name into a {@code denied_requests} SQL table.
+ * {@code sqlFirewallManager} class name into a {@code aceql_denied_request} SQL table.
  * <br>
  * Table structure is:
  * 
  * <pre>
  * <code>
-create table denied_requests
+create table aceql_denied_request
 (               
   date_event		timestamp	not null,  
   username		varchar(254)	not null,  	  
@@ -64,13 +64,13 @@ create table denied_requests
 public class JdbcLoggerSqlFirewallTrigger implements SqlFirewallTrigger {
 
     /**
-     * LInsert into the denied_requests SQL table {@code ClientEvent} and the
+     * LInsert into the aceql_denied_request SQL table {@code ClientEvent} and the
      * {@code SqlFirewallManager} class name
      */
     @Override
     public void runIfStatementRefused(SqlEvent sqlEvent, SqlFirewallManager sqlFirewallManager, Connection connection)
 	    throws IOException, SQLException {
-	String sql = "insert into denied_requests values (?, ?, ?, ?, ?, ?, ?, ?)";
+	String sql = "insert into aceql_denied_request values (?, ?, ?, ?, ?, ?, ?, ?)";
 	try (PreparedStatement preparedStatement = connection.prepareStatement(sql);) {
 	    int i = 1;
 	    preparedStatement.setTimestamp(i++, new Timestamp(System.currentTimeMillis()));

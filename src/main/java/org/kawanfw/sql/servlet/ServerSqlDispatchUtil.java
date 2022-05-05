@@ -130,7 +130,7 @@ public class ServerSqlDispatchUtil {
     }
 
     /**
-     * Says if a username is banned, aka it exists in banned_users table/
+     * Says if a username is banned, aka it exists in aceql_banned_user table/
      * This is checked only if the {@code SqlFirewallTrigger} {@code BanUserSqlFirewallTrigger} 
      * has been added in the {@code aceql-properties file}
      * 
@@ -148,7 +148,7 @@ public class ServerSqlDispatchUtil {
 	    return false;
 	}
 	
-	String sql = "SELECT username FROM banned_users WHERE username = ?";
+	String sql = "SELECT username FROM aceql_banned_user WHERE username = ?";
 
 	try (PreparedStatement prepStatement = connection.prepareStatement(sql);) {
 	    prepStatement.setString(1, username);

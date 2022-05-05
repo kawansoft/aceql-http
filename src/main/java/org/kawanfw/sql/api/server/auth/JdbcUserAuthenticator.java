@@ -55,12 +55,12 @@ import org.kawanfw.sql.util.SqlTag;
  * <br>
  * The default SQL table to create and populate is defined by the
  * {@code jdbcUserAuthenticator.authenticationQuery} value:
- * <code>SELECT encrypted_password FROM users WHERE username = ?</code> and is
+ * <code>SELECT encrypted_password FROM aceql_user WHERE username = ?</code> and is
  * thus in the format:
  * 
  * <pre>
  * <code>
-create table users
+create table aceql_user
 (               
   username              varchar(254)    not null,     
   encrypted_password    varchar(4000)   not null,

@@ -40,7 +40,7 @@ import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
  * 
  * <pre>
  * <code>
-    create table banned_users
+    create table aceql_banned_user
     (               
       username			varchar(254)	not null,    
       ip_address		varchar(254) 	not null, 
@@ -50,7 +50,7 @@ import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
       is_metadata		integer			, 
       dt_creation       	timestamp	not null		
     );
-    create index idx_address_username on banned_users(username);
+    create index idx_address_username on aceql_banned_user(username);
  * </code>
  * </pre>
  * 
@@ -76,13 +76,13 @@ import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
 public class BanUserSqlFirewallTrigger implements SqlFirewallTrigger {
 
     /**
-     * Inserts the {@code SqlEvent} info into the {@code banned_users} SQL table.
+     * Inserts the {@code SqlEvent} info into the {@code aceql_banned_user} SQL table.
      */
     @Override
     public void runIfStatementRefused(SqlEvent sqlEvent, SqlFirewallManager sqlFirewallManager, Connection connection)
 	    throws IOException, SQLException {
 
-	String sql = "insert into banned_users values (?, ?, ?, ?, ?, ?, ?)";
+	String sql = "insert into aceql_banned_user values (?, ?, ?, ?, ?, ?, ?)";
 	try (PreparedStatement preparedStatement = connection.prepareStatement(sql);) {
 	    int i = 1;
 	    preparedStatement.setString(i++, sqlEvent.getUsername());
