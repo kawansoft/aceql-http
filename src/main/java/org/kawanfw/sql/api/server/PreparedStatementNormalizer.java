@@ -28,8 +28,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.StringTokenizer;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Allows to "normalize" the text of a {@code PreparedStatement}. This will
@@ -105,46 +103,6 @@ public class PreparedStatementNormalizer {
 	}
 	String str=  stringBuffer.toString();
 	return str.trim();
-    }
-
-    
-    /**
-     * Split string on spaces in java, except if between quotes.
-     * Future usage. See https://code-examples.net/en/q/5967a.
-     * @param str  the string to split
-     * @return the split string
-     */
-    @SuppressWarnings("unused")
-    private static List<String> splitOnSpaces(String str) {
-	//String str = "This is a string that \"will be\" highlighted when your 'regular expression' matches something.";
-	str = str + " "; // add trailing space
-	int len = str.length();
-	Matcher m = Pattern.compile("((\"[^\"]+?\")|('[^']+?')|([^\\s]+?))\\s++").matcher(str);
-
-	List<String> tokens = new ArrayList<>();
-	
-	for (int i = 0; i < len; i++)
-	{
-	    m.region(i, len);
-
-	    if (m.lookingAt())
-	    {
-	        String s = m.group(1);
-
-	        if ((s.startsWith("\"") && s.endsWith("\"")) ||
-	            (s.startsWith("'") && s.endsWith("'")))
-	        {
-	            s = s.substring(1, s.length() - 1);
-	        }
-
-	        //System.out.println(i + ": \"" + s + "\"");
-	        tokens.add(s);
-	        i += (m.group(0).length() - 1);
-	    }
-	}
-	
-	return tokens;
-	
     }
 
     
