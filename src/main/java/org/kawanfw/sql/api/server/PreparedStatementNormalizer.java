@@ -114,7 +114,8 @@ public class PreparedStatementNormalizer {
      * @param str  the string to split
      * @return the split string
      */
-    public static List<String> splitOnSpaces(String str) {
+    @SuppressWarnings("unused")
+    private static List<String> splitOnSpaces(String str) {
 	//String str = "This is a string that \"will be\" highlighted when your 'regular expression' matches something.";
 	str = str + " "; // add trailing space
 	int len = str.length();
