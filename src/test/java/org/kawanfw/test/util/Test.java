@@ -31,26 +31,34 @@ import net.sf.jsqlparser.util.TablesNamesFinder;
 public class Test {
 
     public static String CR_LF = System.getProperty("line.separator");
-    
+
     /**
      * @param args
      */
 
     public static void main(String[] args) throws Exception {
+	PreparedStatementNormalizerTest();
+	System.out.println();
 
-	 testSqlParse();
+	String str = "This is   a    string that \"will be\" highlighted when    your 'regular expression' matches something.";
+	System.out.println("str: " + str);
+	
+	List<String> list = PreparedStatementNormalizer.splitOnSpaces(str);
+	for (String string : list) {
+	    System.out.println(string);
+	}
 
     }
 
     /**
      * 
      */
-    public static void testSqlParse() {
+    public static void PreparedStatementNormalizerTest() {
 	String sql = "    SELECT 	*         " + CR_LF + " from     my_table 	where      my_colum   =   ? ";
 	System.out.println("sql           : " + sql);
 	System.out.println("normalized sql: " + PreparedStatementNormalizer.getNormalizedText(sql));
     }
-    
+
     /**
      * @throws ClassNotFoundException
      * @throws NoSuchMethodException
@@ -63,7 +71,7 @@ public class Test {
     public static void reflectionTest() throws ClassNotFoundException, NoSuchMethodException, SecurityException,
 	    InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 	String string = "string";
-	
+
 	System.out.println(string.getClass().getSimpleName());
 
 	Rectangle rectangle;
