@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.StringTokenizer;
 
+import org.apache.commons.lang3.StringUtils;
 import org.kawanfw.sql.util.FrameworkDebug;
 
 /**
@@ -81,6 +82,15 @@ public class StatementNormalizer {
      * @return the normalized text of the SQL statement.
      */
     public static String getNormalizedStatement(String sql) {
+	Objects.requireNonNull(sql, "sql cannot be null!");
+
+	// Number of single quotes must be even
+	int singleQuoteQuantity = StringUtils.countMatches(sql, "'");
+	
+	if (singleQuoteQuantity % 2 != 0) {
+	    throw new IllegalArgumentException("Cannot normalized a statement with a odd number of single quotes: " + singleQuoteQuantity);
+	}
+	
 	List<String> tokens = splitOnSinglesQuotes(sql);
 
 	if (tokens.size() == 1) {
