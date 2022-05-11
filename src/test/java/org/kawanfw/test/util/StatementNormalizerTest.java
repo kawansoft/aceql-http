@@ -49,7 +49,7 @@ public class StatementNormalizerTest {
 	System.out.println(sql);
 	System.out.println();
 	
-	System.out.println(StatementNormalizer.getNormalizedStatement(sql));
+	System.out.println(StatementNormalizer.getNormalized(sql));
 
     }
 

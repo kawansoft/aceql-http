@@ -34,12 +34,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.kawanfw.sql.util.FrameworkDebug;
 
 /**
- * Allows to "normalize" the text of a SQL order. This will remove all spaces,
- * tabs or line feeds in excess. This allows to make sure that two SQL order
+ * Allows to "normalize" the text of a SQL statement. This will remove all spaces,
+ * tabs or line feeds in excess. This allows to make sure that two SQL statements
  * that will give identical results but have a different text representations are
  * in fact equals. <br>
  * <br>
- * For example the following text that represents a SQL order
+ * For example the following text that represents a SQL statement:
  * 
  * <pre>
  * <code>
@@ -56,7 +56,7 @@ import org.kawanfw.sql.util.FrameworkDebug;
 </code>
  * </pre>
  * 
- * Note that text between quotes won't be modified:<br>
+ * Note that text between single quotes won't be modified:<br>
  * 
  * <pre>
  * <code>
@@ -72,8 +72,8 @@ import org.kawanfw.sql.util.FrameworkDebug;
  */
 public class StatementNormalizer {
 
-    private static final String ACEQL_QUOTES = "**aceql_quotes**";
     private static boolean DEBUG = FrameworkDebug.isSet(StatementNormalizer.class);
+    private static final String ACEQL_SINGLE_QUOTE = "**aceql_single_quote**";
 
     /**
      * Returns the normalized text of the SQL statement.
@@ -81,7 +81,7 @@ public class StatementNormalizer {
      * @param sql the SQL statement to normalize
      * @return the normalized text of the SQL statement.
      */
-    public static String getNormalizedStatement(String sql) {
+    public static String getNormalized(String sql) {
 	Objects.requireNonNull(sql, "sql cannot be null!");
 
 	// Number of single quotes must be even
@@ -112,16 +112,16 @@ public class StatementNormalizer {
 	    }
 	}
 
-	System.out.println();
-	// Build final concatenation
+	debug("");
 	for (int i = 0; i < finalTokens.size(); i++) {
 	    debug(i + ": " + finalTokens.get(i));
 	}
 
+	// Build final concatenation
 	String normalized = StatementNormalizer.tokensTrimAndConcatenate(finalTokens);
 
 	// Put bat double quotes
-	normalized = normalized.replace(ACEQL_QUOTES, "''");
+	normalized = normalized.replace(ACEQL_SINGLE_QUOTE, "''");
 
 	return normalized;
     }
@@ -142,7 +142,7 @@ public class StatementNormalizer {
 
     private static List<String> splitOnSinglesQuotes(String sql) {
 	Objects.requireNonNull(sql, "sql cannot be null!");
-	sql = sql.replace("''", ACEQL_QUOTES);
+	sql = sql.replace("''", ACEQL_SINGLE_QUOTE);
 
 	List<String> tokens = new ArrayList<>();
 	StringTokenizer stringTokenizer = new StringTokenizer(sql, "'", false);
@@ -181,7 +181,8 @@ public class StatementNormalizer {
 	    if (token.isEmpty()) {
 		continue;
 	    }
-	    stringBuffer.append(token.trim() + " ");
+	    stringBuffer.append(token.trim());
+	    stringBuffer.append(" ");
 	}
 	String str = stringBuffer.toString();
 	return str.trim();
