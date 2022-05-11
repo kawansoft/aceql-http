@@ -24,16 +24,13 @@
  */
 package org.kawanfw.test.util;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.StringTokenizer;
+import org.kawanfw.sql.api.server.StatementNormalizer;
 
 /**
  * @author Nicolas de Pomereu
  *
  */
-public class PreparedStatementNormalizerTest {
+public class StatementNormalizerTest {
 
     public static String CR_LF = System.getProperty("line.separator");
     
@@ -43,34 +40,21 @@ public class PreparedStatementNormalizerTest {
     public static void main(String[] args) {
 //	String sql = "    SELECT 	*         " + CR_LF + " from     my_table 	where      my_colum   =   ? ";
 //	System.out.println("sql           : " + sql);
-//	System.out.println("normalized sql: " + PreparedStatementNormalizer.getNormalizedText(sql));
+//	System.out.println("normalized sql: " + StatementNormalizer.getNormalizedText(sql));
 //	System.out.println();
 //	System.out.println();
 	
-	String str = "This is a string that will be highlighted when your '.  1 regular  2 expression  3 .'  text '.  4 regular  5 expression  6 .'   matches something.";
-	System.out.println(str);
+	//String str = "This is a      " + CR_LF + "    string that         will be highlighted when your '   1 regular  2 expression  3 .'  text '.  4 regular  5 expression  6 .'   matches something.";
+	String sql = "    SELECT 	*         " + CR_LF + " from     my_table 	where      my_colum   =   ? and name = 'John Doe' ";
+	System.out.println(sql);
 	System.out.println();
-	enhancedStringTokenizer(str);
+	
+	System.out.println(StatementNormalizer.getNormalizedStatement(sql));
+
     }
 
-    private static String enhancedStringTokenizer(String sql) {
-	Objects.requireNonNull(sql, "sql cannot be null!");
-	sql = sql.replace("''", "**aceql_quotes**");
-	
-	List <String> tokens = new ArrayList<>();
-	StringTokenizer stringTokenizer = new StringTokenizer(sql, "'", false);
 
-	while (stringTokenizer.hasMoreElements()) {
-	    tokens.add(stringTokenizer.nextToken().trim());
-	}
-	
-	for (int i = 0; i < tokens.size(); i++) {
-	    System.out.println(i + ": " + tokens.get(i));
-	}
-	
-	return null;
-    }
-    
+
     
 
 }
