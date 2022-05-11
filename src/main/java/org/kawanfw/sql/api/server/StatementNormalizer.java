@@ -36,7 +36,7 @@ import org.kawanfw.sql.util.FrameworkDebug;
 /**
  * Allows to "normalize" the text of a SQL order. This will remove all spaces,
  * tabs or line feeds in excess. This allows to make sure that two SQL order
- * that will give identical results but have a different text representation are
+ * that will give identical results but have a different text representations are
  * in fact equals. <br>
  * <br>
  * For example the following text that represents a SQL order
@@ -64,9 +64,9 @@ import org.kawanfw.sql.util.FrameworkDebug;
 </code>
  * </pre>
  * 
- * will be normalized to: <br>
+ * will be normalized to: <br><br>
  * {@code SELECT * from customer where name = 'John Doe'}
- * 
+ * <br><br>
  * @author Nicolas de Pomereu
  * @since 11.0
  */
