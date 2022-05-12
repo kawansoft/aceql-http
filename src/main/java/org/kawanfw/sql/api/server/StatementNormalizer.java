@@ -137,12 +137,12 @@ public class StatementNormalizer {
 	return normalizedString;
     }
 
-    private static List<String> splitOnSinglesQuotes(String sql) {
+    private static List<String> splitOnSinglesQuotes(final String sql) {
 	Objects.requireNonNull(sql, "sql cannot be null!");
-	sql = sql.replace("''", ACEQL_SINGLE_QUOTE);
+	final String sqlToSplit = sql.replace("''", ACEQL_SINGLE_QUOTE);
 
 	List<String> tokens = new ArrayList<>();
-	StringTokenizer stringTokenizer = new StringTokenizer(sql, "'", false);
+	StringTokenizer stringTokenizer = new StringTokenizer(sqlToSplit, "'", false);
 
 	while (stringTokenizer.hasMoreElements()) {
 	    tokens.add(stringTokenizer.nextToken());
