@@ -41,7 +41,7 @@ public class StatementNormalizerTest {
     public static void main(String[] args) {
 	
 	//String str = "This is a      " + CR_LF + "    string that         will be highlighted when your '   1 regular  2 expression  3 .'  text '.  4 regular  5 expression  6 .'   matches something.";
-	final String sql1 = "    SELECT 	*         " + CR_LF + " from     my_table 	where      my_colum   =   ? and name = 'John Doe' ";
+	final String sql1 = "    SELECT 	*         " + CR_LF + " from     my_table 	where   1 >= 2  and  my_colum   =   ? and name = 'John Doe' ";
 	System.out.println("sql1: " + sql1);
 	
 	final String sql1Normalized = StatementNormalizer.getNormalized(sql1);
@@ -50,7 +50,7 @@ public class StatementNormalizerTest {
 	System.out.println();
 	System.out.println();
 	
-	final String sql2 = "SELECT 	 * from " + CR_LF + "    my_table  where      my_colum=? and name = 'John Doe' ";
+	final String sql2 = "SELECT 	 * from " + CR_LF + "    my_table  where        1>=2  and  my_colum=? and name = 'John Doe' ";
 	System.out.println("sql2: " + sql2);
 	final String sql2Normalized = StatementNormalizer.getNormalized(sql2);
 	System.out.println(sql2Normalized);
