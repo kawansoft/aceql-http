@@ -136,6 +136,10 @@ public class DenyStatementsOnBlackList extends DefaultSqlFirewallManager impleme
 		deniedStatementMap = new HashMap<>();
 	    }
 	    
+	    if (!textFile.exists()) {
+		throw new FileNotFoundException("The file that contains the statement to blacklist does not exist: " + textFile);
+	    }
+	    
 	    TextStatementsListLoader textStatementsListLoader = new TextStatementsListLoader(textFile);
 	    textStatementsListLoader.load();
 	    
