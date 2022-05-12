@@ -39,16 +39,16 @@ import org.kawanfw.sql.util.FrameworkDebug;
  * that will give identical results but have a different text representations are
  * in fact equals. <br>
  * <br>
- * For example the following text that represents a SQL statement:
+ * For example the two following statements:
  * 
  * <pre>
  * <code>
- "SELECT 	*         
-     from     my_table where my_colum   =   ?" 
+ "SELECT *     from     my_table   where my_colum   =   ?" 
+ "SELECT 	*         from     my_table      where     my_colum   =   ?"     
  </code>
  * </pre>
  * 
- * will be normalized to the String:
+ * will be normalized to the same String with extra spaces removed:
  * 
  * <pre>
  * <code>
@@ -72,8 +72,13 @@ import org.kawanfw.sql.util.FrameworkDebug;
  */
 public class StatementNormalizer {
 
+
     private static boolean DEBUG = FrameworkDebug.isSet(StatementNormalizer.class);
+    
     private static final String ACEQL_SINGLE_QUOTE = "**aceql_single_quote**";
+    private static final String ACEQL_LT = "**aceql_lt**";
+    private static final String ACEQL_GT = "**aceql_gt**";
+    private static final String ACEQL_NE = "**aceql_ne**";
 
     /**
      * Returns the normalized text of the SQL statement.
@@ -158,6 +163,16 @@ public class StatementNormalizer {
      * @return array of elements
      */
     private static List<String> getTokens(String str) {
+	
+	str = str.replace(",", " , ");
+	str = str.replace("!=", ACEQL_NE);
+	str = str.replace(">=", ACEQL_GT);
+	str = str.replace("<=", ACEQL_LT);
+	str = str.replace("=", " = ");
+	str = str.replace(ACEQL_GT, " >= " );
+	str = str.replace(ACEQL_LT, " <= " );
+	str = str.replace(ACEQL_NE, " != " );
+	
 	List<String> tokens = new ArrayList<>();
 	StringTokenizer tokenizer = new StringTokenizer(str, " ");
 	while (tokenizer.hasMoreElements()) {

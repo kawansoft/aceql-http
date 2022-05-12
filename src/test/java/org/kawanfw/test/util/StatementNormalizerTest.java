@@ -50,7 +50,7 @@ public class StatementNormalizerTest {
 	System.out.println();
 	System.out.println();
 	
-	final String sql2 = "SELECT 	 * from " + CR_LF + "    my_table  where      my_colum   = ? and name = 'John Doe' ";
+	final String sql2 = "SELECT 	 * from " + CR_LF + "    my_table  where      my_colum=? and name = 'John Doe' ";
 	System.out.println("sql2: " + sql2);
 	final String sql2Normalized = StatementNormalizer.getNormalized(sql2);
 	System.out.println(sql2Normalized);
@@ -60,7 +60,7 @@ public class StatementNormalizerTest {
 	System.out.println("sql1Normalized equals sql2Normalized!");
 	
 	System.out.println();
-	final String sql3 = "SELECT 	 * from " + CR_LF + "    my_table  where      my_colum   = ? ";
+	final String sql3 = "SELECT 	 col1  , col2 from " + CR_LF + "    my_table  where      my_colum != ? ";
 	System.out.println("sql3: " + sql3);
 	final String sql3Normalized = StatementNormalizer.getNormalized(sql3);
 	System.out.println(sql3Normalized);
@@ -69,6 +69,5 @@ public class StatementNormalizerTest {
 
 
 
-    
 
 }
