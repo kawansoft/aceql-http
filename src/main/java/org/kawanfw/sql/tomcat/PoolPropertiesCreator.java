@@ -182,20 +182,19 @@ public class PoolPropertiesCreator {
      * @throws SQLException 
      * @throws Exception
      */
-    private void callMethod(String propertyName, String propertyValue) throws SecurityException, NoSuchMethodException,
+    private void callMethod(String propertyName, final String propertyValue) throws SecurityException, NoSuchMethodException,
 	    NumberFormatException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, SQLException {
 
 	String theMethod = "set" + StringUtils.capitalize(propertyName);
 	debug("theMethod: " + theMethod);
 	
-	String propertyValueToDisplay = propertyValue;
+	PoolPropertiesInterceptor poolPropertiesInterceptor = PoolPropertiesInterceptorCreator.createInstance();
+	String propertyValueUpdated = poolPropertiesInterceptor.interceptValue(theMethod, propertyValue);
+	String propertyValueToDisplay = propertyValueUpdated;
+	
 	if (propertyName.equals("password")) {
 	    propertyValueToDisplay = TomcatStarter.MASKED_PASSWORD;
 	}
-
-	PoolPropertiesInterceptor poolPropertiesInterceptor = PoolPropertiesInterceptorCreator.createInstance();
-	propertyValue = poolPropertiesInterceptor.interceptValue(theMethod, propertyValue);
-	propertyValueToDisplay = propertyValue;
 	
 	Class<?>[] pType = methodNamesAndParms.get(theMethod);
 
@@ -216,17 +215,17 @@ public class PoolPropertiesCreator {
 
 	// if (argTypes[i] == Connection.class) {
 	if (pType[0] == long.class) {
-	    main.invoke(theObject, Long.parseLong(propertyValue));
+	    main.invoke(theObject, Long.parseLong(propertyValueUpdated));
 	} else if (pType[0] == String.class) {
-	    main.invoke(theObject, propertyValue);
+	    main.invoke(theObject, propertyValueUpdated);
 	} else if (pType[0] == boolean.class) {
-	    main.invoke(theObject, Boolean.parseBoolean(propertyValue));
+	    main.invoke(theObject, Boolean.parseBoolean(propertyValueUpdated));
 	}
 	else if (pType[0] == Boolean.class) {
-	    main.invoke(theObject, Boolean.valueOf(propertyValue));
+	    main.invoke(theObject, Boolean.valueOf(propertyValueUpdated));
 	}
 	else if (pType[0] == int.class) {
-	    main.invoke(theObject, Integer.parseInt(propertyValue));
+	    main.invoke(theObject, Integer.parseInt(propertyValueUpdated));
 	} else {
 	    throw new DatabaseConfigurationException("Invalid Connection Pool property: " + propertyName);
 	}

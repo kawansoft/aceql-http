@@ -31,20 +31,23 @@ package org.kawanfw.sql.tomcat.properties.pool;
 public class DefaultPoolPropertiesInterceptor implements PoolPropertiesInterceptor {
 
     @Override
-    public String interceptValue(String theMethod, String propertyValue) {
+    public String interceptValue(String theMethod, final String propertyValue) {
 	if (theMethod == null || propertyValue == null) {
 	    return propertyValue;
 	}
-
+	
+	// Not clean to update passed parameter
+	String propertyValueUpdated = propertyValue;
+	
 	if (theMethod.equals("setMaxIdle")) {
 	    int maxAllowedValue = 125;
-	    propertyValue = getMaxAllowedValue(propertyValue, maxAllowedValue);
+	    propertyValueUpdated = getMaxAllowedValue(propertyValueUpdated, maxAllowedValue);
 	}
 	else if (theMethod.equals("setMaxActive")) {
 	    int maxAllowedValue = 125;
-	    propertyValue = getMaxAllowedValue(propertyValue, maxAllowedValue);
+	    propertyValueUpdated = getMaxAllowedValue(propertyValueUpdated, maxAllowedValue);
 	}
-	return propertyValue;
+	return propertyValueUpdated;
 
     }
 

@@ -71,12 +71,12 @@ public class InjectedClassesManagerNew {
 
     private String classNameToLoad;
 
-
     /**
      * Created all injected classes instances.
-     * @throws ServletException 
-     * @throws ClassNotFoundException 
-     * @throws IOException 
+     * 
+     * @throws ServletException
+     * @throws ClassNotFoundException
+     * @throws IOException
      */
     public void createClasses(String propertiesFile) throws ServletException, IOException {
 	classNameToLoad = null;
@@ -90,71 +90,38 @@ public class InjectedClassesManagerNew {
 
 	    CommunityValidator communityValidator = new CommunityValidator(propertiesFile);
 	    communityValidator.validate();
-	    
+
 	    Set<String> databases = ConfPropertiesStore.get().getDatabaseNames();
 
 	    TomcatStarterUtil.testDatabasesLimit(databases);
-		
+
 	    // Create out InjectedClasses builder
 	    InjectedClassesBuilder injectedClassesBuilder = new InjectedClassesBuilder();
 
-	    // Commons/Free loaders
-	    
+	    // Ouf first loader is for authentication
 	    loadUserAuthenticator(injectedClassesBuilder);
 
-	    Map<String, List<SqlFirewallManager>> sqlFirewallManagerMap = new HashMap<>();
-	    
-	    for (String database : databases) {		
-		List<SqlFirewallManager> sqlFirewalManagers = loadSqlFirewallManagers(database);
-		sqlFirewallManagerMap.put(database, sqlFirewalManagers);
-	    }
-	    
-	    debug("sqlFirewallManagerMap: " + sqlFirewallManagerMap);
-	    injectedClassesBuilder.sqlFirewallManagerMap(sqlFirewallManagerMap);
-	    
-	    // Pro loaders
-	    // Load all the classes and set our InjectedClassesBuilder instance
-	    
-	    Map<String, DatabaseConfigurator> databaseConfigurators = new HashMap<>();
-	    
-	    Map<String, List<SqlFirewallTrigger>> sqlFirewallTriggerMap = new HashMap<>();
-	    Map<String, List<UpdateListener>> updateListenerMap = new HashMap<>();
-	    
-	    for (String database : databases) {
-		DatabaseConfigurator databaseConfigurator = loadDatabaseConfigurator(database);
-		databaseConfigurators.put(database, databaseConfigurator);
-		
-		List<SqlFirewallTrigger> sqlFirewallTriggers = loadSqlFirewallTriggers(database, injectedClassesBuilder);
-		sqlFirewallTriggerMap.put(database, sqlFirewallTriggers);
-		
-		List<UpdateListener> updateListeners = loadUpdateListeners(database, injectedClassesBuilder);
-		updateListenerMap.put(database, updateListeners);
-	    }
-	    
+	    // All elements that depend on database
+	    loadPerDatabase(databases, injectedClassesBuilder);
+
 	    loadRequestHeadersAuthenticator(injectedClassesBuilder);
 
 	    ThreadPoolExecutorBuilder threadPoolExecutorBuilder = ThreadPoolExecutorBuilderCreator.createInstance();
 	    ThreadPoolExecutor threadPoolExecutor = threadPoolExecutorBuilder.build();
 	    injectedClassesBuilder.threadPoolExecutor(threadPoolExecutor);
-	    
-	    // Final injection
-	    injectedClassesBuilder.databaseConfigurators(databaseConfigurators);
-	    injectedClassesBuilder.updateListenerMap(updateListenerMap);
-	    injectedClassesBuilder.sqlFirewallTriggerMap(sqlFirewallTriggerMap);
 
 	    loadBlobDownloadConfigurator(injectedClassesBuilder);
 	    loadBlobUploadConfigurator(injectedClassesBuilder);
-	    
+
 	    loadSessionManagerConfigurator(injectedClassesBuilder);
-	    
+
 	    // Create the InjectedClasses instance
 	    InjectedClasses injectedClasses = injectedClassesBuilder.build();
 
 	    // Store the InjectedClasses instance statically
 	    InjectedClassesStore.set(injectedClasses);
 
-	} 
-	catch (ClassNotFoundException exception) {
+	} catch (ClassNotFoundException exception) {
 	    String initErrrorMesage = Tag.PRODUCT_USER_CONFIG_FAIL
 		    + " Impossible to load (ClassNotFoundException) Configurator class: " + classNameToLoad;
 	    throw new IOException(initErrrorMesage, exception);
@@ -163,22 +130,64 @@ public class InjectedClassesManagerNew {
 	    String initErrrorMesage = Tag.PRODUCT_USER_CONFIG_FAIL
 		    + " Impossible to load (InstantiationException) Configurator class: " + classNameToLoad;
 	    throw new IOException(initErrrorMesage, exception);
-	} 
-	catch (IllegalAccessException exception) {
+	} catch (IllegalAccessException exception) {
 	    String initErrrorMesage = Tag.PRODUCT_USER_CONFIG_FAIL
 		    + " Impossible to load (IllegalAccessException) Configurator class: " + classNameToLoad;
 	    throw new IOException(initErrrorMesage, exception);
 	} catch (DatabaseConfigurationException exception) {
 	    String initErrrorMesage = exception.getMessage();
 	    throw new IOException(initErrrorMesage, exception);
-	} 
-	catch (Exception exception) {
-	    String initErrrorMesage = Tag.RUNNING_PRODUCT  + " " + exception.getMessage();
+	} catch (Exception exception) {
+	    String initErrrorMesage = Tag.RUNNING_PRODUCT + " " + exception.getMessage();
 	    throw new IOException(initErrrorMesage);
 
 	}
 
-	//treatException();
+	// treatException();
+    }
+
+    /**
+     * Loads elements that depend on databases.
+     * @param databases
+     * @param injectedClassesBuilder
+     * @throws ClassNotFoundException
+     * @throws NoSuchMethodException
+     * @throws SecurityException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     * @throws IllegalArgumentException
+     * @throws InvocationTargetException
+     * @throws SQLException
+     * @throws IOException
+     */
+    public void loadPerDatabase(Set<String> databases, InjectedClassesBuilder injectedClassesBuilder)
+	    throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException,
+	    IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException, IOException {
+	// Load all the classes and set our InjectedClassesBuilder instance
+	Map<String, List<SqlFirewallManager>> sqlFirewallManagerMap = new HashMap<>();
+	Map<String, DatabaseConfigurator> databaseConfigurators = new HashMap<>();
+	Map<String, List<SqlFirewallTrigger>> sqlFirewallTriggerMap = new HashMap<>();
+	Map<String, List<UpdateListener>> updateListenerMap = new HashMap<>();
+
+	for (String database : databases) {
+	    List<SqlFirewallManager> sqlFirewalManagers = loadSqlFirewallManagers(database);
+	    sqlFirewallManagerMap.put(database, sqlFirewalManagers);
+
+	    DatabaseConfigurator databaseConfigurator = loadDatabaseConfigurator(database);
+	    databaseConfigurators.put(database, databaseConfigurator);
+
+	    List<SqlFirewallTrigger> sqlFirewallTriggers = loadSqlFirewallTriggers(database, injectedClassesBuilder);
+	    sqlFirewallTriggerMap.put(database, sqlFirewallTriggers);
+
+	    List<UpdateListener> updateListeners = loadUpdateListeners(database, injectedClassesBuilder);
+	    updateListenerMap.put(database, updateListeners);
+	}
+
+	// Final injection for databases
+	injectedClassesBuilder.sqlFirewallManagerMap(sqlFirewallManagerMap);
+	injectedClassesBuilder.databaseConfigurators(databaseConfigurators);
+	injectedClassesBuilder.updateListenerMap(updateListenerMap);
+	injectedClassesBuilder.sqlFirewallTriggerMap(sqlFirewallTriggerMap);
     }
 
     /**
@@ -187,29 +196,24 @@ public class InjectedClassesManagerNew {
     @SuppressWarnings("unused")
     private void treatException() {
 	/*
-	if (exception == null) {
-	    System.out.println(SqlTag.SQL_PRODUCT_START + " Loaded classes Status: OK.");
-
-	    if (!TomcatSqlModeStore.isTomcatEmbedded()) {
-		String runningMessage = SqlTag.SQL_PRODUCT_START + " " + VersionWrapper.getName() + " Start OK.";
-		System.out.println(runningMessage);
-	    }
-
-	} else {
-	    exception.printStackTrace();
-	    if (!TomcatSqlModeStore.isTomcatEmbedded()) {
-		String errorMessage1 = SqlTag.SQL_PRODUCT_START + "  -> Loaded classes Status: KO.";
-		String errorMessage2 = initErrrorMesage;
-		String errorMessage3 = ExceptionUtils.getStackTrace(exception);
-
-		System.out.println(errorMessage1);
-		System.out.println(errorMessage2);
-		System.out.println(errorMessage3);
-
-		System.out.println();
-	    }
-	}
-	*/
+	 * if (exception == null) { System.out.println(SqlTag.SQL_PRODUCT_START +
+	 * " Loaded classes Status: OK.");
+	 * 
+	 * if (!TomcatSqlModeStore.isTomcatEmbedded()) { String runningMessage =
+	 * SqlTag.SQL_PRODUCT_START + " " + VersionWrapper.getName() + " Start OK.";
+	 * System.out.println(runningMessage); }
+	 * 
+	 * } else { exception.printStackTrace(); if
+	 * (!TomcatSqlModeStore.isTomcatEmbedded()) { String errorMessage1 =
+	 * SqlTag.SQL_PRODUCT_START + "  -> Loaded classes Status: KO."; String
+	 * errorMessage2 = initErrrorMesage; String errorMessage3 =
+	 * ExceptionUtils.getStackTrace(exception);
+	 * 
+	 * System.out.println(errorMessage1); System.out.println(errorMessage2);
+	 * System.out.println(errorMessage3);
+	 * 
+	 * System.out.println(); } }
+	 */
     }
 
     /**
@@ -269,16 +273,16 @@ public class InjectedClassesManagerNew {
      * @throws InvocationTargetException
      * @throws NoSuchMethodException
      * @throws SecurityException
-     * @throws SQLException 
+     * @throws SQLException
      */
     private void loadBlobUploadConfigurator(InjectedClassesBuilder injectedClassesBuilder)
 	    throws ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException,
 	    InvocationTargetException, NoSuchMethodException, SecurityException, SQLException {
-	
+
 	BlobUploadConfiguratorClassNameBuilder blobUploadConfiguratorClassNameBuilder = BlobUploadConfiguratorClassNameBuilderCreator
 		.createInstance();
 	String blobUploadConfiguratorClassName = blobUploadConfiguratorClassNameBuilder.getClassName();
-	
+
 	classNameToLoad = blobUploadConfiguratorClassName;
 	BlobUploadConfiguratorCreator blobUploadConfiguratorCreator = new BlobUploadConfiguratorCreator(
 		blobUploadConfiguratorClassName);
@@ -434,7 +438,8 @@ public class InjectedClassesManagerNew {
      * @throws SQLException
      * @throws IOException
      */
-    private List<SqlFirewallTrigger> loadSqlFirewallTriggers(String database, InjectedClassesBuilder injectedClassesBuilder)
+    private List<SqlFirewallTrigger> loadSqlFirewallTriggers(String database,
+	    InjectedClassesBuilder injectedClassesBuilder)
 	    throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException,
 	    IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException, IOException {
 
@@ -450,7 +455,7 @@ public class InjectedClassesManagerNew {
 
 	return sqlFirewallTriggers;
     }
-    
+
     /**
      * loads the Firewall Managers.
      * 
@@ -474,7 +479,7 @@ public class InjectedClassesManagerNew {
 	classNameToLoad = sqlFirewallClassNames.toString();
 
 	debug("==> sqlFirewallClassNames: " + sqlFirewallClassNames);
-	
+
 	String tagSQLFirewallManager = null;
 	if (sqlFirewallClassNames.size() < 2)
 	    tagSQLFirewallManager = " SQLFirewallManager class: ";
@@ -555,7 +560,6 @@ public class InjectedClassesManagerNew {
 	return databaseConfigurator;
     }
 
-
 //    public Exception getException() {
 //	return exception;
 //    }
@@ -573,7 +577,5 @@ public class InjectedClassesManagerNew {
 	    System.out.println(new Date() + " " + s);
 	}
     }
-
-
 
 }
