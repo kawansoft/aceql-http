@@ -107,9 +107,11 @@ public class StatementNormalizer {
 	    }
 	}
 
-	debug("");
-	for (int i = 0; i < finalTokens.size(); i++) {
-	    debug(i + ": " + finalTokens.get(i));
+	if (DEBUG) {
+	    debug("");
+	    for (int i = 0; i < finalTokens.size(); i++) {
+		debug(i + ": " + finalTokens.get(i));
+	    }
 	}
 
 	// Build final concatenation
