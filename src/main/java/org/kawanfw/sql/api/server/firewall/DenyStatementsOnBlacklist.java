@@ -68,9 +68,9 @@ import org.kawanfw.sql.util.TimestampUtil;
  * @author Nicolas de Pomereu
  * @since 11
  */
-public class DenyStatementsOnBlackList extends DefaultSqlFirewallManager implements SqlFirewallManager {
+public class DenyStatementsOnBlacklist extends DefaultSqlFirewallManager implements SqlFirewallManager {
 
-    private static boolean DEBUG = FrameworkDebug.isSet(DenyStatementsOnBlackList.class);
+    private static boolean DEBUG = FrameworkDebug.isSet(DenyStatementsOnBlacklist.class);
 
     /** The denied statements Set per database */
     private Map<String, Set<String>> deniedStatementMap = new HashMap<>();
@@ -122,7 +122,7 @@ public class DenyStatementsOnBlackList extends DefaultSqlFirewallManager impleme
 	if (storedFileTime != null && !currentFileTime.equals(storedFileTime) && allowReload) {
 	    deniedStatementMap = null;
 	    String logInfo = TimestampUtil.getHumanTimestampNow() + " " + SqlTag.USER_CONFIGURATION
-		    + " Reloading CsvRulesManager configuration file: " + textFile;
+		    + " Reloading DenyStatementsOnBlacklist configuration file: " + textFile;
 	    System.err.println(logInfo);
 	    DefaultDatabaseConfigurator defaultDatabaseConfigurator = new DefaultDatabaseConfigurator();
 	    Logger logger = defaultDatabaseConfigurator.getLogger();
