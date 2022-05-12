@@ -58,6 +58,13 @@ public class StatementNormalizerTest {
 	System.out.println();
 	Assert.assertEquals("sql1Normalized equals sql2Normalized", sql1Normalized, sql2Normalized);
 	System.out.println("sql1Normalized equals sql2Normalized!");
+	
+	System.out.println();
+	final String sql3 = "SELECT 	 * from " + CR_LF + "    my_table  where      my_colum   = ? ";
+	System.out.println("sql3: " + sql3);
+	final String sql3Normalized = StatementNormalizer.getNormalized(sql3);
+	System.out.println(sql3Normalized);
+	
     }
 
 

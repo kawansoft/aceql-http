@@ -92,12 +92,7 @@ public class StatementNormalizer {
 	}
 	
 	List<String> tokens = splitOnSinglesQuotes(sql);
-
-	if (tokens.size() == 1) {
-	    String normalized = getNormalizedSubtring(sql);
-	    return normalized;
-	}
-
+	
 	List<String> finalTokens = new ArrayList<>();
 
 	for (int i = 0; i < tokens.size(); i++) {
