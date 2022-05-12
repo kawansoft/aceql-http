@@ -119,7 +119,7 @@ public class CsvRulesManager extends DefaultSqlFirewallManager implements SqlFir
 
     private FileTime storedFileTime = null;
 
-    /** Default dehavior is to allow reload of rules if CSV file is updated */
+    /** Default behavior is to allow reload of rules if CSV file is updated */
     protected boolean allowReload = true;
 
     /**
@@ -289,7 +289,7 @@ public class CsvRulesManager extends DefaultSqlFirewallManager implements SqlFir
     }
 
     /**
-     * Returns the user.home/.aceql-http{database}sql_firewal_manager_rules.csv for
+     * Returns the &lt;database&gt;_rules_manager.csv for
      * the passed database
      *
      * @param database
