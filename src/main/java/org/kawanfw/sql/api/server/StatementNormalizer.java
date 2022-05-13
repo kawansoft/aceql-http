@@ -146,11 +146,11 @@ public class StatementNormalizer {
 	}
 
 	if (substring.contains("\"")) {
-	    throw new IllegalArgumentException("A Statement to normalize cannot contain double-quotes.");  
+	    throw new IllegalArgumentException("A Statement to normalize cannot contain double-quotes outside of a string enclosed in single quotes: " + substring);  
 	}
 	
 	if (substring.contains(";")) {
-	    throw new IllegalArgumentException("A Statement to normalize cannot contain semicolon.");  
+	    throw new IllegalArgumentException("A Statement to normalize cannot contain semicolons outside of a string enclosed in single quotes: " + substring);  
 	}
 	
 	// 1) Get tokens:
