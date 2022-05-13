@@ -24,6 +24,7 @@
  */
 package org.kawanfw.sql.api.server;
 
+import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -34,10 +35,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.kawanfw.sql.util.FrameworkDebug;
 
 /**
- * Allows to "normalize" the text of a SQL statement. This will remove all spaces,
- * tabs or line feeds in excess. This allows to make sure that two SQL statements
- * that will give identical results but have a different text representations are
- * in fact equals. <br>
+ * Allows to "normalize" the text of a SQL statement. This will remove all
+ * spaces, tabs or line feeds in excess. This allows to make sure that two SQL
+ * statements that will give identical results but have a different text
+ * representations are in fact equals. <br>
  * <br>
  * For example the two following statements:
  * 
@@ -64,17 +65,27 @@ import org.kawanfw.sql.util.FrameworkDebug;
 </code>
  * </pre>
  * 
- * will be normalized to: <br><br>
- * {@code SELECT * from customer where name = 'John Doe'}
- * <br><br>
+ * will be normalized to: <br>
+ * <br>
+ * {@code SELECT * from customer where name = 'John Doe'} <br>
+ * <br>
+ * Note that in this version the normalization is straightforward and applied
+ * only on text format, and not on parameters (?) replacement for
+ * {@code PreparedStatement}. <br>
+ * This means that the two statements: <br>
+ * {@code select * from my_table where my_column = ?} and <br>
+ * {@code select * from my_table where my_column = 9} <br>
+ * will not change after applying normalization and thus still be considered different when
+ * comparing with {@code String.equals(Object)}. 
+ * <br>
+ * &nbsp;
  * @author Nicolas de Pomereu
  * @since 11.0
  */
 public class StatementNormalizer {
 
-
     private static boolean DEBUG = FrameworkDebug.isSet(StatementNormalizer.class);
-    
+
     private static final String ACEQL_SINGLE_QUOTE = "**aceql_single_quote**";
     private static final String ACEQL_LT = "**aceql_lt**";
     private static final String ACEQL_GT = "**aceql_gt**";
@@ -91,13 +102,14 @@ public class StatementNormalizer {
 
 	// Number of single quotes must be even
 	int singleQuoteQuantity = StringUtils.countMatches(sql, "'");
-	
+
 	if (singleQuoteQuantity % 2 != 0) {
-	    throw new IllegalArgumentException("Cannot normalize a statement with an odd number of single quotes: " + singleQuoteQuantity);
+	    throw new IllegalArgumentException(
+		    "Cannot normalize a statement with an odd number of single quotes: " + singleQuoteQuantity);
 	}
-	
+
 	List<String> tokens = splitOnSinglesQuotes(sql);
-	
+
 	List<String> finalTokens = new ArrayList<>();
 
 	for (int i = 0; i < tokens.size(); i++) {
@@ -163,16 +175,16 @@ public class StatementNormalizer {
      * @return array of elements
      */
     private static List<String> getTokens(String str) {
-	
+
 	str = str.replace(",", " , ");
 	str = str.replace("!=", ACEQL_NE);
 	str = str.replace(">=", ACEQL_GT);
 	str = str.replace("<=", ACEQL_LT);
 	str = str.replace("=", " = ");
-	str = str.replace(ACEQL_GT, " >= " );
-	str = str.replace(ACEQL_LT, " <= " );
-	str = str.replace(ACEQL_NE, " != " );
-	
+	str = str.replace(ACEQL_GT, " >= ");
+	str = str.replace(ACEQL_LT, " <= ");
+	str = str.replace(ACEQL_NE, " != ");
+
 	List<String> tokens = new ArrayList<>();
 	StringTokenizer tokenizer = new StringTokenizer(str, " ");
 	while (tokenizer.hasMoreElements()) {
