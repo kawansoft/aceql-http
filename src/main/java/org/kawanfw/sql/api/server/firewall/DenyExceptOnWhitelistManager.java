@@ -54,17 +54,19 @@ import org.kawanfw.sql.util.TimestampUtil;
  * sequentially stored in a text file.
  * 
  * The name of the text file that will be used by a database is: &nbsp;
- * <code>&lt;database&gt;_deny_except_whitelist.txt</code>, where database is
- * the name of the database declared in the {@code aceql.properties} files.<br>
+ * <code>&lt;database&gt;_deny_except_whitelist.txt</code>, where
+ * {@code database} is the name of the database declared in the
+ * {@code aceql.properties} files.<br>
  * The file must be located in the same directory as the
  * {@code aceql.properties} file used when starting the AceQL server.<br>
  * <br>
  * Each line of the text file must contain one statement, without quotes (") or
  * ending semicolon (;). <br>
  * 
- * <br>Note that all statements will be
- * "normalized" using {@link StatementNormalizer} before comparison between the
- * statement in the text file and the incoming one from client side.
+ * <br>
+ * Note that all statements will be "normalized" using
+ * {@link StatementNormalizer} before comparison between the statement in the
+ * text file and the incoming one from client side.
  *
  * @author Nicolas de Pomereu
  * @since 11

@@ -58,8 +58,8 @@ import org.kawanfw.sql.util.TimestampUtil;
  * File. The CSV file is loaded in memory at AceQL server startup. <br>
  * <br>
  * The name of the CSV file that will be used by a database is:&nbsp;
- * <code>&lt;database&gt;_rules_manager.csv</code>, where database is the name
- * of the database declared in the {@code aceql.properties} files.<br>
+ * <code>&lt;database&gt;_rules_manager.csv</code>, where {@code database} is
+ * the name of the database declared in the {@code aceql.properties} files.<br>
  * The file must be located in the same directory as the
  * {@code aceql.properties} file used when starting the AceQL server.<br>
  * <br>
@@ -97,9 +97,10 @@ import org.kawanfw.sql.util.TimestampUtil;
  * for the same CSV column.
  * </ul>
  * <br>
- * <b>Note that updating the CSV file will reload the rules.</b> If you prefer to
- * disallow dynamic reloading, use a {@link CsvRulesManagerNoReload} implementation.
- * <br><br>
+ * <b>Note that updating the CSV file will reload the rules.</b> If you prefer
+ * to disallow dynamic reloading, use a {@link CsvRulesManagerNoReload}
+ * implementation. <br>
+ * <br>
  * See an example of CSV file: <a href=
  * "https://docs.aceql.com/rest/soft/11/src/sampledb_rules_manager.csv">sampledb_rules_manager.csv</a>
  * <br>
@@ -127,7 +128,7 @@ public class CsvRulesManager extends DefaultSqlFirewallManager implements SqlFir
      * the:&nbsp; <code>&lt;database&gt;_rules_manager.csv</code> file.
      */
     @Override
-    public boolean allowSqlRunAfterAnalysis(SqlEvent sqlEvent, Connection connection) throws IOException, SQLException {	
+    public boolean allowSqlRunAfterAnalysis(SqlEvent sqlEvent, Connection connection) throws IOException, SQLException {
 	// Load all rules if not already done:
 	loadRules(sqlEvent.getDatabase(), connection);
 
@@ -244,14 +245,14 @@ public class CsvRulesManager extends DefaultSqlFirewallManager implements SqlFir
     private void loadRules(String database, Connection connection)
 	    throws FileNotFoundException, SQLException, IOException {
 
-	File csvFile = getCsvFile(database);		
+	File csvFile = getCsvFile(database);
 	BasicFileAttributes basicFileAttributes = Files.readAttributes(csvFile.toPath(), BasicFileAttributes.class);
 	FileTime currentFileTime = basicFileAttributes.lastModifiedTime();
 
-	debug("storedFileTime : "  + storedFileTime);
+	debug("storedFileTime : " + storedFileTime);
 	debug("currentFileTime: " + currentFileTime);
-	
-	if (storedFileTime != null && ! currentFileTime.equals(storedFileTime) && allowReload) {
+
+	if (storedFileTime != null && !currentFileTime.equals(storedFileTime) && allowReload) {
 	    mapTableAllowStatementsSet = null;
 	    String logInfo = TimestampUtil.getHumanTimestampNow() + " " + SqlTag.USER_CONFIGURATION
 		    + " Reloading CsvRulesManager configuration file: " + csvFile;
@@ -283,14 +284,13 @@ public class CsvRulesManager extends DefaultSqlFirewallManager implements SqlFir
 	    for (TableAllowStatements tableAllowStatements : tableAllowStatementsSet) {
 		debug("" + tableAllowStatements.toString());
 	    }
-	    
+
 	    storedFileTime = currentFileTime;
 	}
     }
 
     /**
-     * Returns the &lt;database&gt;_rules_manager.csv for
-     * the passed database
+     * Returns the &lt;database&gt;_rules_manager.csv for the passed database
      *
      * @param database
      * @throws FileNotFoundException

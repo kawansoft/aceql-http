@@ -24,7 +24,6 @@
  */
 package org.kawanfw.sql.api.server;
 
-import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -146,6 +145,14 @@ public class StatementNormalizer {
 	    throw new IllegalArgumentException("substring to normalize cannot contains quotes (\').");
 	}
 
+	if (substring.contains("\"")) {
+	    throw new IllegalArgumentException("A Statement to normalize cannot contain double-quotes.");  
+	}
+	
+	if (substring.contains(";")) {
+	    throw new IllegalArgumentException("A Statement to normalize cannot contain semicolon.");  
+	}
+	
 	// 1) Get tokens:
 	List<String> tokens = getTokens(substring);
 
