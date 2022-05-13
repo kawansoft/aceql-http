@@ -48,7 +48,13 @@ import org.kawanfw.sql.api.server.StatementAnalyzer;
  * API.</li>
  * </ul>
  * <p>
- * Multiple {@code SqlFirewallManager} may be defined and chained.
+ * Multiple {@code SqlFirewallManager} may be defined and chained. <br>
+ * When {@code SqlFirewallManager} classes are chained, an {@code AND} condition
+ * is applied to all the SqlFirewallManager execution conditions in order to
+ * compute final allow. <br>
+ * For example, the {@code allowExecuteUpdate()} of each chained
+ * {@code SqlFirewallManager} instance must return true in order to allow
+ * updates of the database.
  * <p>
  * Note that the framework comes with a default <code>SqlFirewallManager</code>
  * implementation that is *not* secured and should be extended:
@@ -68,7 +74,7 @@ import org.kawanfw.sql.api.server.StatementAnalyzer;
  * <li>{@link DenyDdlManager}: manager that denies any DDL (Data Definition
  * Language) call.</li>
  * <li>{@link DenyExceptOnWhitelistManager}: manager that allows only statements
- * that are listed in a whitelist text file.</li> 
+ * that are listed in a whitelist text file.</li>
  * <li>{@link DenyMetadataQueryManager}: manager that denies the use of the
  * AceQL Metadata Query API.</li>
  * <li>{@link DenyOnBlacklistManager}: manager that denies statements that are

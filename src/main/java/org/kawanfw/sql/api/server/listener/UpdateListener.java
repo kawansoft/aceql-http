@@ -33,6 +33,11 @@ import org.kawanfw.sql.api.server.SqlEvent;
 /**
  * The listener interface for receiving SQL update events.
  * 
+ * Multiple {@code UpdateListener} may be defined and chained in property
+ * value by separating class names by a comma. <br>
+ * When {@code UpdateListener} classes are chained, all of them are
+ * successively executed in the declared order. 
+ * 
  * @author Nicolas de Pomereu
  * @since 9.0
  *
