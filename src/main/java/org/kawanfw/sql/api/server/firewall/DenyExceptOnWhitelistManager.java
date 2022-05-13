@@ -50,28 +50,28 @@ import org.kawanfw.sql.util.SqlTag;
 import org.kawanfw.sql.util.TimestampUtil;
 
 /**
- * Firewall manager that denies incoming SQL statements which are also
+ * Firewall manager that only allows incoming SQL statements which are also
  * sequentially stored in a text file.
  * 
  * The name of the text file that will be used by a database is: &nbsp;
- * <code>&lt;database&gt;_deny_blacklist.txt</code>, where database is the name
- * of the database declared in the {@code aceql.properties} files.<br>
+ * <code>&lt;database&gt;_deny_except_whitelist.txt</code>, where database is
+ * the name of the database declared in the {@code aceql.properties} files.<br>
  * The file must be located in the same directory as the
  * {@code aceql.properties} file used when starting the AceQL server.<br>
  * <br>
  * Each line of the text file must contain one statement, without quotes (") or
  * ending semicolon (;). <br>
- * <br>
- * Note that all statements will be "normalized" using
- * {@link StatementNormalizer} before comparison between the statement in the
- * text file and the incoming one from client side.
+ * 
+ * <br>Note that all statements will be
+ * "normalized" using {@link StatementNormalizer} before comparison between the
+ * statement in the text file and the incoming one from client side.
  *
  * @author Nicolas de Pomereu
  * @since 11
  */
-public class DenyOnBlacklistManager extends DefaultSqlFirewallManager implements SqlFirewallManager {
+public class DenyExceptOnWhitelistManager extends DefaultSqlFirewallManager implements SqlFirewallManager {
 
-    private static boolean DEBUG = FrameworkDebug.isSet(DenyOnBlacklistManager.class);
+    private static boolean DEBUG = FrameworkDebug.isSet(DenyExceptOnWhitelistManager.class);
 
     /** The denied statements Set per database */
     private Map<String, Set<String>> statementMap = new HashMap<>();
@@ -86,7 +86,7 @@ public class DenyOnBlacklistManager extends DefaultSqlFirewallManager implements
 
     /**
      * Allows the execution of the statement if it does *not* exist in the:&nbsp;
-     * <code>&lt;database&gt;_deny_blacklist.txt</code> file. <br>
+     * <code>&lt;database&gt;_deny_except_whitelist.txt</code> file. <br>
      * The {@code database} prefix is the value of {@link SqlEvent#getDatabase()}.
      */
     @Override
@@ -99,13 +99,13 @@ public class DenyOnBlacklistManager extends DefaultSqlFirewallManager implements
 	sql = StatementNormalizer.getNormalized(sql);
 
 	// Load all statements for database, if not already done:
-	loadStatements(database, "_deny_blacklist.txt");
+	loadStatements(database, "_deny_except_whitelist.txt");
 
-	Set<String> deniedStatementsForDb = statementMap.get(database);
-	if (deniedStatementsForDb == null || deniedStatementsForDb.isEmpty()) {
-	    return true;
+	Set<String> allowedStatementsForDb = statementMap.get(database);
+	if (allowedStatementsForDb == null || allowedStatementsForDb.isEmpty()) {
+	    return false;
 	}
-	return !deniedStatementsForDb.contains(sql);
+	return allowedStatementsForDb.contains(sql);
     }
 
     /**
