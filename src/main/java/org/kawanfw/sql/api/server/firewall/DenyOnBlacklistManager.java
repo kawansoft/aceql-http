@@ -125,7 +125,7 @@ public class DenyOnBlacklistManager extends DefaultSqlFirewallManager implements
 	if (storedFileTime != null && !currentFileTime.equals(storedFileTime) && allowReload) {
 	    statementMap = null;
 	    String logInfo = TimestampUtil.getHumanTimestampNow() + " " + SqlTag.USER_CONFIGURATION
-		    + " Reloading DenyOnBlacklistManager configuration file: " + textFile;
+		    + " Reloading " + this.getClass().getSimpleName() + " configuration file: " + textFile;
 	    System.err.println(logInfo);
 	    DefaultDatabaseConfigurator defaultDatabaseConfigurator = new DefaultDatabaseConfigurator();
 	    Logger logger = defaultDatabaseConfigurator.getLogger();
