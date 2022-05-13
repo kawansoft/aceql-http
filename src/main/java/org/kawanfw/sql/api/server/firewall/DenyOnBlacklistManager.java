@@ -180,7 +180,7 @@ public class DenyOnBlacklistManager extends DefaultSqlFirewallManager implements
 
     private void debug(String string) {
 	if (DEBUG) {
-	    System.out.println(new Date() + " " + DenyOnBlacklistManager.class.getSimpleName() + " " + string);
+	    System.out.println(new Date() + " " + this.getClass().getSimpleName() + " " + string);
 	}
     }
 }
