@@ -34,7 +34,9 @@ import org.kawanfw.sql.api.server.StatementAnalyzer;
 
 /**
  * Interface that allows to define firewall rules for AceQL HTTP SQL calls. <br>
- * Concrete implementations are defined in aceql-server.properties. <br>
+ * <br>
+ * Concrete implementations are defined in the {@code aceql-server.properties}
+ * file. <br>
  * <br>
  * A concrete implementation should be developed on the server side in order to:
  * <ul>

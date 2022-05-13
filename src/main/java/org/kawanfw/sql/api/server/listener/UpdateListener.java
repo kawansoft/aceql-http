@@ -32,6 +32,9 @@ import org.kawanfw.sql.api.server.SqlEvent;
 
 /**
  * The listener interface for receiving SQL update events.
+ * <br><br>
+ * Concrete implementations are defined in the {@code aceql-server.properties}
+ * file. <br><br>
  * 
  * Multiple {@code UpdateListener} may be defined and chained in property
  * value by separating class names by a comma. <br>

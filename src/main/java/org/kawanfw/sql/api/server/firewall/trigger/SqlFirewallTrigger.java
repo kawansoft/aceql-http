@@ -34,7 +34,10 @@ import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
 /**
  * Interface that allows to define a trigger if for the specified
  * {@code SqlFirewallManager} the {@code allowSqlRunAfterAnalysis()} method call
- * returns false. <br>
+ * returns false. <br><br>
+ * Concrete implementations are defined in the {@code aceql-server.properties}
+ * file. 
+ * <br>
  * <br>
  * Multiple {@code SqlFirewallTrigger} may be defined and chained in property
  * value by separating class names by a comma. <br>
