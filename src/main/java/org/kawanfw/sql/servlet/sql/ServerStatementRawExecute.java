@@ -50,7 +50,6 @@ import org.kawanfw.sql.api.server.SqlEvent;
 import org.kawanfw.sql.api.server.SqlEventWrapper;
 import org.kawanfw.sql.api.server.StatementAnalyzer;
 import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
-import org.kawanfw.sql.api.server.listener.DefaultUpdateListener;
 import org.kawanfw.sql.api.server.listener.UpdateListener;
 import org.kawanfw.sql.api.util.firewall.SqlFirewallTriggerWrapper;
 import org.kawanfw.sql.servlet.HttpParameter;
@@ -270,7 +269,7 @@ public class ServerStatementRawExecute {
 	    String ipAddress = checkFirewallGeneral(username, database, sqlOrder, serverPreparedStatementParameters);
 
 	    debug("before execute()");
-	    doExecute(out, databaseConfigurator, username, database, sqlOrder, preparedStatement,
+	    doExecutePreparedStatement(out, databaseConfigurator, username, database, sqlOrder, preparedStatement,
 		    serverPreparedStatementParameters, ipAddress);
 
 	} catch (SQLException e) {
@@ -332,7 +331,13 @@ public class ServerStatementRawExecute {
 	    gen.close();
 
 	    List<Object> parameterValues = new ArrayList<>();
-	    callUpdateListeners(username, database, sqlOrder, parameterValues, ipAddress, false);
+
+	    StatementAnalyzer analyzer = new StatementAnalyzer(sqlOrder, parameterValues);
+	    if (analyzer.isDelete() || analyzer.isUpdate() || analyzer.isInsert()) {
+		UpdateListenersCaller updateListenersCaller = new UpdateListenersCaller(updateListeners, connection);
+		updateListenersCaller.callUpdateListeners(username, database, sqlOrder, parameterValues, ipAddress,
+			false);
+	    }
 
 	    ServerSqlManager.write(out, sw.toString());
 	} else {
@@ -358,8 +363,8 @@ public class ServerStatementRawExecute {
      * @throws SQLException
      * @throws SecurityException
      */
-    private void doExecute(OutputStream out, DatabaseConfigurator databaseConfigurator, String username,
-	    String database, String sqlOrder, PreparedStatement preparedStatement,
+    private void doExecutePreparedStatement(OutputStream out, DatabaseConfigurator databaseConfigurator,
+	    String username, String database, String sqlOrder, PreparedStatement preparedStatement,
 	    ServerPreparedStatementParameters serverPreparedStatementParameters, String ipAddress)
 	    throws IOException, SQLException, SecurityException {
 
@@ -380,7 +385,9 @@ public class ServerStatementRawExecute {
 	    gen.close();
 
 	    List<Object> parameterValues = serverPreparedStatementParameters.getParameterValues();
-	    callUpdateListeners(username, database, sqlOrder, parameterValues, ipAddress, true);
+
+	    UpdateListenersCaller updateListenersCaller = new UpdateListenersCaller(updateListeners, connection);
+	    updateListenersCaller.callUpdateListeners(username, database, sqlOrder, parameterValues, ipAddress, true);
 
 	    ServerSqlManager.write(out, sw.toString());
 	} else {
@@ -391,31 +398,6 @@ public class ServerStatementRawExecute {
 
     }
 
-    /**
-     * Call the UpdateListener updateActionPerformed method
-     * 
-     * @param username
-     * @param database
-     * @param sqlOrder
-     * @param ipAddress
-     * @param isPreparedStatement               TODO
-     * @param serverPreparedStatementParameters
-     * @throws SQLException
-     * @throws IOException
-     */
-    public void callUpdateListeners(String username, String database, String sqlOrder, List<Object> parameterValues,
-	    String ipAddress, boolean isPreparedStatement) throws SQLException, IOException {
-	if (updateListeners.size() != 1 || !(updateListeners.get(0) instanceof DefaultUpdateListener)) {
-	    StatementAnalyzer analyzer = new StatementAnalyzer(sqlOrder, parameterValues);
-	    if (analyzer.isDelete() || analyzer.isUpdate() || analyzer.isInsert()) {
-		SqlEvent sqlEvent = SqlEventWrapper.sqlEventBuild(username, database, ipAddress, sqlOrder,
-			isPreparedStatement, parameterValues, false);
-		for (UpdateListener updateListener : updateListeners) {
-		    updateListener.updateActionPerformed(sqlEvent, connection);
-		}
-	    }
-	}
-    }
 
     /**
      * @param username

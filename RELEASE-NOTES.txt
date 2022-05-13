@@ -30,6 +30,7 @@ AceQL HTTP Version 11 - 13-May-2022
 
 What's New: 
 - DenyTclManager: suppressed.
+- Add UpdateListener calls to batch methods.
 
 
 AceQL HTTP Version 10.2 - 07-Feb-2022

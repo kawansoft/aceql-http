@@ -33,6 +33,7 @@ import java.io.OutputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -45,15 +46,18 @@ import org.kawanfw.sql.api.server.DatabaseConfigurator;
 import org.kawanfw.sql.api.server.SqlEvent;
 import org.kawanfw.sql.api.server.SqlEventWrapper;
 import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
+import org.kawanfw.sql.api.server.listener.UpdateListener;
 import org.kawanfw.sql.api.util.firewall.SqlFirewallTriggerWrapper;
 import org.kawanfw.sql.metadata.util.GsonWsUtil;
 import org.kawanfw.sql.servlet.HttpParameter;
 import org.kawanfw.sql.servlet.ServerSqlManager;
 import org.kawanfw.sql.servlet.connection.RollbackUtil;
+import org.kawanfw.sql.servlet.injection.classes.InjectedClassesStore;
 import org.kawanfw.sql.servlet.sql.AceQLParameter;
 import org.kawanfw.sql.servlet.sql.LoggerUtil;
 import org.kawanfw.sql.servlet.sql.ServerStatementUtil;
 import org.kawanfw.sql.servlet.sql.StatementFailure;
+import org.kawanfw.sql.servlet.sql.UpdateListenersCaller;
 import org.kawanfw.sql.servlet.sql.dto.PrepStatementParamsHolder;
 import org.kawanfw.sql.servlet.sql.dto.UpdateCountsArrayDto;
 import org.kawanfw.sql.servlet.sql.json_return.JsonErrorReturn;
@@ -87,6 +91,8 @@ public class ServerPreparedStatementBatch {
 
     private DatabaseConfigurator databaseConfigurator;
 
+    private List<UpdateListener> updateListeners;
+
     /**
      * Default Constructor
      *
@@ -99,13 +105,17 @@ public class ServerPreparedStatementBatch {
      */
 
     public ServerPreparedStatementBatch(HttpServletRequest request, HttpServletResponse response,
-	    List<SqlFirewallManager> sqlFirewallManagers, Connection connection, DatabaseConfigurator databaseConfigurator) throws SQLException {
+	    List<SqlFirewallManager> sqlFirewallManagers, Connection connection,
+	    DatabaseConfigurator databaseConfigurator) throws SQLException {
 	this.request = request;
 	this.response = response;
 	this.sqlFirewallManagers = sqlFirewallManagers;
 	this.connection = connection;
 	doPrettyPrinting = true; // Always pretty printing
 	this.databaseConfigurator = databaseConfigurator;
+
+	String database = request.getParameter(HttpParameter.DATABASE);
+	updateListeners = InjectedClassesStore.get().getUpdateListenerMap().get(database);
 
     }
 
@@ -124,7 +134,7 @@ public class ServerPreparedStatementBatch {
 	    executeStatement(out);
 	} catch (SecurityException e) {
 	    RollbackUtil.rollback(connection);
-	    
+
 	    JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_FORBIDDEN,
 		    JsonErrorReturn.ERROR_ACEQL_UNAUTHORIZED, e.getMessage());
 	    ServerSqlManager.writeLine(out, errorReturn.build());
@@ -136,7 +146,7 @@ public class ServerPreparedStatementBatch {
 	    ServerSqlManager.writeLine(out, errorReturn.build());
 	} catch (Exception e) {
 	    RollbackUtil.rollback(connection);
-	    
+
 	    JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
 		    JsonErrorReturn.ERROR_ACEQL_FAILURE, e.getMessage(), ExceptionUtils.getStackTrace(e));
 	    ServerSqlManager.writeLine(out, errorReturn.build());
@@ -172,13 +182,13 @@ public class ServerPreparedStatementBatch {
 	String sqlOrder = request.getParameter(HttpParameter.SQL);
 	String blobId = request.getParameter(HttpParameter.BLOB_ID);
 	String htlmEncoding = request.getParameter(HttpParameter.HTML_ENCODING);
-	
+
 	debug("sqlOrder             : " + sqlOrder);
 	debug("blobId: " + blobId);
-	
+
 	PreparedStatement preparedStatement = null;
 	File blobFile = null;
-	
+
 	try {
 
 	    if (blobId == null || blobId.isEmpty()) {
@@ -187,24 +197,29 @@ public class ServerPreparedStatementBatch {
 
 	    File blobsDir = databaseConfigurator.getBlobsDirectory(username);
 	    blobFile = new File(blobsDir.toString() + File.separator + blobId);
-	    
-	    if (! blobFile.exists()) {
-		throw new FileNotFoundException("Cannot find file of batch SQL prepared statement parameters for Id: " + blobId);
+
+	    if (!blobFile.exists()) {
+		throw new FileNotFoundException(
+			"Cannot find file of batch SQL prepared statement parameters for Id: " + blobId);
 	    }
-	    
+
 	    preparedStatement = connection.prepareStatement(sqlOrder);
 	    debug("before PreparedStatement.addBatch() loop & executeBatch() ");
-	    	    
+
+	    // Store in List the SqlOrder & parameterValues
+	    List<List<Object>> parametersList = new ArrayList<>();
+
 	    try (BufferedReader bufferedReader = new BufferedReader(new FileReader(blobFile));) {
 		String line = null;
 
 		while ((line = bufferedReader.readLine()) != null) {
-		    
+
 		    if (DEBUG) {
 			ServerPreparedStatementParametersUtil.dump("line: " + line);
 		    }
-		    
-		    PrepStatementParamsHolder paramsHolder = GsonWsUtil.fromJson(line.trim(), PrepStatementParamsHolder.class);
+
+		    PrepStatementParamsHolder paramsHolder = GsonWsUtil.fromJson(line.trim(),
+			    PrepStatementParamsHolder.class);
 
 		    Map<Integer, AceQLParameter> inOutStatementParameters = ServerPreparedStatementParametersUtil
 			    .buildParametersFromHolder(paramsHolder);
@@ -219,20 +234,25 @@ public class ServerPreparedStatementBatch {
 				JsonErrorReturn.ERROR_ACEQL_ERROR, e.getMessage());
 			ServerSqlManager.writeLine(out, errorReturn.build());
 			return;
-		    }	    
-		    
+		    }
+
 		    debug("before new SqlSecurityChecker()");
-			checkFirewallGeneral(username, database, sqlOrder,
-				serverPreparedStatementParameters);
-			preparedStatement.addBatch();
+		    checkFirewallGeneral(username, database, sqlOrder, serverPreparedStatementParameters);
+		    preparedStatement.addBatch();
+
+		    parametersList.add(serverPreparedStatementParameters.getParameterValues());
 		}
 	    }
-	    
-	    int [] rc = preparedStatement.executeBatch();
+
+	    int[] rc = preparedStatement.executeBatch();
+
+	    String ipAddress = request.getRemoteAddr();
+	    callUpdateListenersInThread(sqlOrder, parametersList, username, database, ipAddress);
+
 	    UpdateCountsArrayDto updateCountsArrayDto = new UpdateCountsArrayDto(rc);
 	    String jsonString = GsonWsUtil.getJSonString(updateCountsArrayDto);
 	    ServerSqlManager.writeLine(out, jsonString);
-	    
+
 	} catch (SQLException e) {
 	    RollbackUtil.rollback(connection);
 	    String message = StatementFailure.statementFailureBuild(sqlOrder, e.toString(), doPrettyPrinting);
@@ -251,6 +271,7 @@ public class ServerPreparedStatementBatch {
 
     /**
      * Checks the general firewall rules
+     * 
      * @param username
      * @param database
      * @param sqlOrder
@@ -266,11 +287,11 @@ public class ServerPreparedStatementBatch {
 
 	boolean isAllowedAfterAnalysis = false;
 	for (SqlFirewallManager sqlFirewallManager : sqlFirewallManagers) {
-	    
+
 	    SqlEvent sqlEvent = SqlEventWrapper.sqlEventBuild(username, database, ipAddress, sqlOrder,
 		    ServerStatementUtil.isPreparedStatement(request),
 		    serverPreparedStatementParameters.getParameterValues(), false);
-	    
+
 	    isAllowedAfterAnalysis = sqlFirewallManager.allowSqlRunAfterAnalysis(sqlEvent, connection);
 	    if (!isAllowedAfterAnalysis) {
 		SqlFirewallTriggerWrapper.runIfStatementRefused(sqlEvent, sqlFirewallManager, connection);
@@ -286,8 +307,34 @@ public class ServerPreparedStatementBatch {
 	}
     }
 
+    private void callUpdateListenersInThread(String sqlOrder, List<List<Object>> parametersList, String username,
+	    String database, String ipAddress) {
+
+	Thread t = new Thread() {
+	    @Override
+	    public void run() {
+		try {
+
+		    for (List<Object> parameterValues : parametersList) {
+
+			UpdateListenersCaller updateListenersCaller = new UpdateListenersCaller(updateListeners,
+				connection);
+
+			updateListenersCaller.callUpdateListeners(username, database, sqlOrder, parameterValues,
+				ipAddress, true);
+
+		    }
+		} catch (Exception e) {
+		    e.printStackTrace();
+		}
+	    }
+	};
+	t.start();
+    }
+
     /**
      * Debug function
+     * 
      * @param s
      */
 
