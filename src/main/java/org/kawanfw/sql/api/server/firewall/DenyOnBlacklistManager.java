@@ -53,7 +53,7 @@ import org.kawanfw.sql.util.TimestampUtil;
  * Firewall manager that denies incoming statements which are also sequentially stored in a text file.
  * 
  * The name of the text file that will be used by a database is: &nbsp;
- * <code>&lt;database&gt;_deny_statements.txt</code>, where database is the name
+ * <code>&lt;database&gt;_deny_blacklist.txt</code>, where database is the name
  * of the database declared in the {@code aceql.properties} files.<br>
  * The file must be located in the same directory as the
  * {@code aceql.properties} file used when starting the AceQL server.<br>
@@ -82,7 +82,7 @@ public class DenyOnBlacklistManager extends DefaultSqlFirewallManager implements
 
     /**
      * Allows the execution of the statement if it exists in
-     * the:&nbsp; <code>&lt;database&gt;_deny_statements.txt</code> file.
+     * the:&nbsp; <code>&lt;database&gt;_deny_blacklist.txt</code> file.
      */
     @Override
     public boolean allowSqlRunAfterAnalysis(SqlEvent sqlEvent, Connection connection) throws IOException, SQLException {
@@ -151,7 +151,7 @@ public class DenyOnBlacklistManager extends DefaultSqlFirewallManager implements
     }
 
     /**
-     * Returns the &lt;database&gt;_deny_statements.txt for
+     * Returns the &lt;database&gt;_deny_blacklist.txt for
      * the passed database
      *
      * @param database
@@ -166,7 +166,7 @@ public class DenyOnBlacklistManager extends DefaultSqlFirewallManager implements
 	    throw new FileNotFoundException("The properties file does not exist: " + file);
 	}
 	File dir = PropertiesFileStore.get().getParentFile();
-	File textFile = new File(dir + File.separator + database + "_deny_statements.txt");
+	File textFile = new File(dir + File.separator + database + "_deny_blacklist.txt");
 
 	if (!textFile.exists()) {
 	    throw new FileNotFoundException("The text files does not exist: " + textFile);
