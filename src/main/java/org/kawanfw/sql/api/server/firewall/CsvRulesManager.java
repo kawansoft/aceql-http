@@ -316,7 +316,7 @@ public class CsvRulesManager extends DefaultSqlFirewallManager implements SqlFir
 
     private void debug(String string) {
 	if (DEBUG) {
-	    System.out.println(new Date() + " " + string);
+	    System.out.println(new Date() + " " + CsvRulesManager.class.getSimpleName() + " " + string);
 	}
     }
 }

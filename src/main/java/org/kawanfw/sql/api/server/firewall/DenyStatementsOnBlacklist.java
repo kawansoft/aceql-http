@@ -86,11 +86,13 @@ public class DenyStatementsOnBlacklist extends DefaultSqlFirewallManager impleme
      */
     @Override
     public boolean allowSqlRunAfterAnalysis(SqlEvent sqlEvent, Connection connection) throws IOException, SQLException {
+	
 	String database = sqlEvent.getDatabase();
 	String sql = sqlEvent.getSql();
+	
 	// Normalize the statement
 	sql = StatementNormalizer.getNormalized(sql);
-	
+		
 	// Load all statements for database,  if not already done:
 	loadStatementsToDeny(database);
 	
@@ -176,7 +178,7 @@ public class DenyStatementsOnBlacklist extends DefaultSqlFirewallManager impleme
 
     private void debug(String string) {
 	if (DEBUG) {
-	    System.out.println(new Date() + " " + string);
+	    System.out.println(new Date() + " " + DenyStatementsOnBlacklist.class.getSimpleName() + " " + string);
 	}
     }
 }
