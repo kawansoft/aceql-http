@@ -62,7 +62,7 @@ import org.kawanfw.sql.util.TimestampUtil;
  * ending semicolon (;). <br>
  * <br>
  * Note that all statements will be "normalized" using
- * {@link StatementNormalizer} before comparison between the text file version and
+ * {@link StatementNormalizer} before comparison between the statement in the text file and
  * the incoming one from client side.
  *
  * @author Nicolas de Pomereu
@@ -94,7 +94,7 @@ public class DenyOnBlacklistManager extends DefaultSqlFirewallManager implements
 	sql = StatementNormalizer.getNormalized(sql);
 		
 	// Load all statements for database,  if not already done:
-	loadStatements(database);
+	loadStatements(database, "_deny_blacklist.txt");
 	
 	Set<String> deniedStatementsForDb = statementMap.get(database);
 	if (deniedStatementsForDb == null || deniedStatementsForDb.isEmpty()) {
@@ -107,14 +107,15 @@ public class DenyOnBlacklistManager extends DefaultSqlFirewallManager implements
     /**
      * Load all statements for a database, once per server life. Can be dynamically reloaded if file is modified.
      * @param database	the database name
+     * @param fileSuffix the part of the file name after database 
      * @throws FileNotFoundException
      * @throws SQLException
      * @throws IOException
      */
-    private void loadStatements(String database)
+    private void loadStatements(String database, String fileSuffix)
 	    throws FileNotFoundException, SQLException, IOException {
 
-	File textFile = getTextFile(database);
+	File textFile = getTextFile(database, fileSuffix);
 	BasicFileAttributes basicFileAttributes = Files.readAttributes(textFile.toPath(), BasicFileAttributes.class);
 	FileTime currentFileTime = basicFileAttributes.lastModifiedTime();
 
@@ -139,7 +140,7 @@ public class DenyOnBlacklistManager extends DefaultSqlFirewallManager implements
 	    }
 	    
 	    if (!textFile.exists()) {
-		throw new FileNotFoundException("The file that contains the statement to blacklist does not exist: " + textFile);
+		throw new FileNotFoundException("The file that contains the statements to blacklist does not exist: " + textFile);
 	    }
 	    
 	    TextStatementsListLoader textStatementsListLoader = new TextStatementsListLoader(textFile);
@@ -151,13 +152,14 @@ public class DenyOnBlacklistManager extends DefaultSqlFirewallManager implements
     }
 
     /**
-     * Returns the &lt;database&gt;_deny_blacklist.txt for
+     * Returns the &lt;database&gt;fileSuffix for
      * the passed database
      *
      * @param database
+     * @param fileSuffix 
      * @throws FileNotFoundException
      */
-    private static File getTextFile(String database) throws FileNotFoundException {
+    static File getTextFile(String database, String fileSuffix) throws FileNotFoundException {
 	File file = PropertiesFileStore.get();
 
 	Objects.requireNonNull(file, "file cannot be null!");
@@ -166,10 +168,10 @@ public class DenyOnBlacklistManager extends DefaultSqlFirewallManager implements
 	    throw new FileNotFoundException("The properties file does not exist: " + file);
 	}
 	File dir = PropertiesFileStore.get().getParentFile();
-	File textFile = new File(dir + File.separator + database + "_deny_blacklist.txt");
+	File textFile = new File(dir + File.separator + database + fileSuffix);
 
 	if (!textFile.exists()) {
-	    throw new FileNotFoundException("The text files does not exist: " + textFile);
+	    throw new FileNotFoundException("The statements text file does not exist: " + textFile);
 	}
 
 	return textFile;
