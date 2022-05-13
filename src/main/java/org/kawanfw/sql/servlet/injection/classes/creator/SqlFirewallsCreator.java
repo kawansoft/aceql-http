@@ -35,11 +35,12 @@ import java.util.List;
 import org.kawanfw.sql.api.server.firewall.CsvRulesManager;
 import org.kawanfw.sql.api.server.firewall.CsvRulesManagerNoReload;
 import org.kawanfw.sql.api.server.firewall.DefaultSqlFirewallManager;
+import org.kawanfw.sql.api.server.firewall.DenyDatabaseWriteManager;
 import org.kawanfw.sql.api.server.firewall.DenyDclManager;
 import org.kawanfw.sql.api.server.firewall.DenyDdlManager;
-import org.kawanfw.sql.api.server.firewall.DenyDatabaseWriteManager;
 import org.kawanfw.sql.api.server.firewall.DenyMetadataQueryManager;
 import org.kawanfw.sql.api.server.firewall.DenyStatementClassManager;
+import org.kawanfw.sql.api.server.firewall.DenyStatementsOnBlacklist;
 import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
 import org.kawanfw.sql.util.FrameworkDebug;
 
@@ -74,8 +75,8 @@ public class SqlFirewallsCreator {
     private static String[] PREDEFINED_CLASS_NAMES = { CsvRulesManager.class.getSimpleName(),
 	    CsvRulesManagerNoReload.class.getSimpleName(), DefaultSqlFirewallManager.class.getSimpleName(),
 	    DenyDclManager.class.getSimpleName(), DenyDdlManager.class.getSimpleName(),
-	    DenyDatabaseWriteManager.class.getSimpleName(), DenyMetadataQueryManager.class.getSimpleName(),
-	    DenyStatementClassManager.class.getSimpleName(), };
+	    DenyDatabaseWriteManager.class.getSimpleName(), DenyStatementsOnBlacklist.class.getSimpleName(),
+	    DenyMetadataQueryManager.class.getSimpleName(), DenyStatementClassManager.class.getSimpleName(), };
 
     private List<String> sqlFirewallClassNames = new ArrayList<>();
     private List<SqlFirewallManager> sqlFirewallManagers = new ArrayList<>();

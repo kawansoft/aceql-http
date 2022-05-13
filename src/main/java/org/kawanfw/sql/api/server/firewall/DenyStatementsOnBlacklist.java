@@ -52,7 +52,7 @@ import org.kawanfw.sql.util.TimestampUtil;
 /**
  * Firewall manager that denies incoming statements which are also sequentially stored in a text file.
  * 
- * The name of the text file that will be used by a database is:
+ * The name of the text file that will be used by a database is: &nbsp;
  * <code>&lt;database&gt;_deny_statements.txt</code>, where database is the name
  * of the database declared in the {@code aceql.properties} files.<br>
  * The file must be located in the same directory as the

@@ -57,7 +57,7 @@ import org.kawanfw.sql.util.TimestampUtil;
  * Firewall manager that checks each SQL request against the content of a CSV
  * File. The CSV file is loaded in memory at AceQL server startup. <br>
  * <br>
- * The name of the CSV file that will be used by a database is:
+ * The name of the CSV file that will be used by a database is:&nbsp;
  * <code>&lt;database&gt;_rules_manager.csv</code>, where database is the name
  * of the database declared in the {@code aceql.properties} files.<br>
  * The file must be located in the same directory as the

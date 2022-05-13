@@ -29,6 +29,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -56,12 +57,12 @@ public class TextStatementsListLoader {
     private File file = null;
 
     /** The set of normalized statements to deny */
-    private Set<String> normalizedStatementSet = null;
+    private Set<String> normalizedStatementSet = new HashSet<>();
 
     /**
      * Constructor.
      *
-     * @param file     the file containing all the statements list, one per line
+     * @param file the file containing all the statements list, one per line
      */
     public TextStatementsListLoader(File file) {
 	this.file = Objects.requireNonNull(file, "file cannot be null!");
@@ -87,10 +88,10 @@ public class TextStatementsListLoader {
 		if (line.isEmpty() || line.startsWith("#")) {
 		    continue;
 		}
-		
-		String normalizedStatement = StatementNormalizer.getNormalized(line) ;
+
+		String normalizedStatement = StatementNormalizer.getNormalized(line);
 		normalizedStatementSet.add(normalizedStatement);
-		
+
 	    }
 	}
     }
@@ -99,7 +100,7 @@ public class TextStatementsListLoader {
      * @return the normalizedStatementSet
      */
     public Set<String> getNormalizedStatementSet() {
-        return normalizedStatementSet;
+	return normalizedStatementSet;
     }
 
 }
