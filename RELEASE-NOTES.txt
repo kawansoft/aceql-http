@@ -25,6 +25,12 @@ AceQL HTTP is licensed through the GNU Lesser General Public License
 (LGPL v2.1).
 
 
+AceQL HTTP Version 11 - 13-May-2022
+-----------------------------------
+
+What's New: 
+- DenyTclManager: suppressed.
+
 
 AceQL HTTP Version 10.2 - 07-Feb-2022
 -------------------------------------

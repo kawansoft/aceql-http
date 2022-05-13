@@ -67,14 +67,14 @@ import org.kawanfw.sql.api.server.StatementAnalyzer;
  * Language) call.</li>
  * <li>{@link DenyDdlManager}: manager that denies any DDL (Data Definition
  * Language) call.</li>
- * <li>{@link DenyTclManager}: manager that denies any TCL (Transaction Control
- * Language) call.</li>
  * <li>{@link DenyMetadataQueryManager}: manager that denies the use of the
  * AceQL Metadata Query API.</li>
  * <li>{@link DenyStatementClassManager}: manager that denies any call of the
  * raw Statement Java class. (Calling Statements without parameters is
  * forbidden).</li>
  * </ul>
+ * <p>
+ * TCL (Transaction Control Language) calls are always authorized.
  * <p>
  * Note that the helper class {@link StatementAnalyzer} allows to do some simple
  * tests on the SQL statement string representation.
