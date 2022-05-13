@@ -81,8 +81,9 @@ public class DenyOnBlacklistManager extends DefaultSqlFirewallManager implements
     protected boolean allowReload = true;
 
     /**
-     * Allows the execution of the statement if it exists in
+     * Allows the execution of the statement if it does *not* exist in
      * the:&nbsp; <code>&lt;database&gt;_deny_blacklist.txt</code> file.
+     * <br>The {@code database} prefix is the value of {@link SqlEvent#getDatabase()}.
      */
     @Override
     public boolean allowSqlRunAfterAnalysis(SqlEvent sqlEvent, Connection connection) throws IOException, SQLException {
