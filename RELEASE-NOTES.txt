@@ -34,7 +34,7 @@ What's New:
   of implementation complexity.
 - The DenyTclManager SqlFirewallManager has been suppressed because
   TCL calls are not any more firewalled.
-- Add DenyStatementsOnBlacklist & AllowOnlyStatementsOnWhitelist.
+- Add DenyOnBlacklistManager & AllowOnlyOnWhitelistManager.
 - DenyExecuteUpdateManager has been renamed to less ambiguous name
   DenyDatabaseWriteManager.
 - runIfStatementRefused() has been moved from SqlFirewallManager interface 

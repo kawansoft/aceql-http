@@ -68,9 +68,9 @@ import org.kawanfw.sql.util.TimestampUtil;
  * @author Nicolas de Pomereu
  * @since 11
  */
-public class DenyStatementsOnBlacklist extends DefaultSqlFirewallManager implements SqlFirewallManager {
+public class DenyOnBlacklistManager extends DefaultSqlFirewallManager implements SqlFirewallManager {
 
-    private static boolean DEBUG = FrameworkDebug.isSet(DenyStatementsOnBlacklist.class);
+    private static boolean DEBUG = FrameworkDebug.isSet(DenyOnBlacklistManager.class);
 
     /** The denied statements Set per database */
     private Map<String, Set<String>> deniedStatementMap = new HashMap<>();
@@ -124,7 +124,7 @@ public class DenyStatementsOnBlacklist extends DefaultSqlFirewallManager impleme
 	if (storedFileTime != null && !currentFileTime.equals(storedFileTime) && allowReload) {
 	    deniedStatementMap = null;
 	    String logInfo = TimestampUtil.getHumanTimestampNow() + " " + SqlTag.USER_CONFIGURATION
-		    + " Reloading DenyStatementsOnBlacklist configuration file: " + textFile;
+		    + " Reloading DenyOnBlacklistManager configuration file: " + textFile;
 	    System.err.println(logInfo);
 	    DefaultDatabaseConfigurator defaultDatabaseConfigurator = new DefaultDatabaseConfigurator();
 	    Logger logger = defaultDatabaseConfigurator.getLogger();
@@ -178,7 +178,7 @@ public class DenyStatementsOnBlacklist extends DefaultSqlFirewallManager impleme
 
     private void debug(String string) {
 	if (DEBUG) {
-	    System.out.println(new Date() + " " + DenyStatementsOnBlacklist.class.getSimpleName() + " " + string);
+	    System.out.println(new Date() + " " + DenyOnBlacklistManager.class.getSimpleName() + " " + string);
 	}
     }
 }
