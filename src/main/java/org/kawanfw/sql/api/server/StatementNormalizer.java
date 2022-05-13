@@ -93,7 +93,7 @@ public class StatementNormalizer {
 	int singleQuoteQuantity = StringUtils.countMatches(sql, "'");
 	
 	if (singleQuoteQuantity % 2 != 0) {
-	    throw new IllegalArgumentException("Cannot normalized a statement with a odd number of single quotes: " + singleQuoteQuantity);
+	    throw new IllegalArgumentException("Cannot normalize a statement with an odd number of single quotes: " + singleQuoteQuantity);
 	}
 	
 	List<String> tokens = splitOnSinglesQuotes(sql);

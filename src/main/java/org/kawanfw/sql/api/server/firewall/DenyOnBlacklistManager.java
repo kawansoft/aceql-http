@@ -73,7 +73,7 @@ public class DenyOnBlacklistManager extends DefaultSqlFirewallManager implements
     private static boolean DEBUG = FrameworkDebug.isSet(DenyOnBlacklistManager.class);
 
     /** The denied statements Set per database */
-    private Map<String, Set<String>> deniedStatementMap = new HashMap<>();
+    private Map<String, Set<String>> statementMap = new HashMap<>();
     
     private FileTime storedFileTime = null;
 
@@ -94,9 +94,9 @@ public class DenyOnBlacklistManager extends DefaultSqlFirewallManager implements
 	sql = StatementNormalizer.getNormalized(sql);
 		
 	// Load all statements for database,  if not already done:
-	loadStatementsToDeny(database);
+	loadStatements(database);
 	
-	Set<String> deniedStatementsForDb = deniedStatementMap.get(database);
+	Set<String> deniedStatementsForDb = statementMap.get(database);
 	if (deniedStatementsForDb == null || deniedStatementsForDb.isEmpty()) {
 	    return true;
 	}
@@ -111,7 +111,7 @@ public class DenyOnBlacklistManager extends DefaultSqlFirewallManager implements
      * @throws SQLException
      * @throws IOException
      */
-    private void loadStatementsToDeny(String database)
+    private void loadStatements(String database)
 	    throws FileNotFoundException, SQLException, IOException {
 
 	File textFile = getTextFile(database);
@@ -122,7 +122,7 @@ public class DenyOnBlacklistManager extends DefaultSqlFirewallManager implements
 	debug("currentFileTime: " + currentFileTime);
 
 	if (storedFileTime != null && !currentFileTime.equals(storedFileTime) && allowReload) {
-	    deniedStatementMap = null;
+	    statementMap = null;
 	    String logInfo = TimestampUtil.getHumanTimestampNow() + " " + SqlTag.USER_CONFIGURATION
 		    + " Reloading DenyOnBlacklistManager configuration file: " + textFile;
 	    System.err.println(logInfo);
@@ -132,10 +132,10 @@ public class DenyOnBlacklistManager extends DefaultSqlFirewallManager implements
 	    storedFileTime = currentFileTime;
 	}
 
-	if (deniedStatementMap == null || ! deniedStatementMap.containsKey(database)) {
+	if (statementMap == null || ! statementMap.containsKey(database)) {
 
-	    if (deniedStatementMap == null) {
-		deniedStatementMap = new HashMap<>();
+	    if (statementMap == null) {
+		statementMap = new HashMap<>();
 	    }
 	    
 	    if (!textFile.exists()) {
@@ -145,7 +145,7 @@ public class DenyOnBlacklistManager extends DefaultSqlFirewallManager implements
 	    TextStatementsListLoader textStatementsListLoader = new TextStatementsListLoader(textFile);
 	    textStatementsListLoader.load();
 	    
-	    deniedStatementMap.put(database, textStatementsListLoader.getNormalizedStatementSet());
+	    statementMap.put(database, textStatementsListLoader.getNormalizedStatementSet());
 	    storedFileTime = currentFileTime;
 	}
     }
