@@ -29,7 +29,7 @@ AceQL HTTP Version 11 - 13-May-2022
 -----------------------------------
 
 What's New: 
-- org.kawanfw.sql.api.server.StatementNormalizer creation. See Javadoc.
+- StatementNormalizer creation. See Javadoc.
 - TCL calls are not any more firewalled because it's useless and because 
   of implementation complexity.
 - The DenyTclManager SqlFirewallManager has been suppressed because
