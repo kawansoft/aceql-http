@@ -53,7 +53,7 @@ public class CloudmersiveApi {
 
     private static boolean DEBUG = FrameworkDebug.isSet(CloudmersiveApi.class);
     
-    private static final int FIVE_MINUNTES_IN_MILLISECONDS = 5 * 60 * 1000;
+    private static final int FIVE_MINUTES_IN_MILLISECONDS = 5 * 60 * 1000;
 
     private TextInputApi apiInstance;
     private String detectionLevel;
@@ -125,8 +125,8 @@ public class CloudmersiveApi {
 	
 	long now = new Date().getTime();
 	
-	if (now - snapshot > FIVE_MINUNTES_IN_MILLISECONDS ) {
-	    debug(new Date() + " " + "Reloading with connect()!");
+	if (now - snapshot > FIVE_MINUTES_IN_MILLISECONDS ) {
+	    debug("Reloading with connect()!");
 	    connect();
 	}
 
