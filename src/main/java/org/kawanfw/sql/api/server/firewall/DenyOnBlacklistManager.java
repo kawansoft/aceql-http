@@ -35,7 +35,6 @@ import java.sql.SQLException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -44,7 +43,6 @@ import org.kawanfw.sql.api.server.DefaultDatabaseConfigurator;
 import org.kawanfw.sql.api.server.SqlEvent;
 import org.kawanfw.sql.api.server.StatementNormalizer;
 import org.kawanfw.sql.api.util.firewall.TextStatementsListLoader;
-import org.kawanfw.sql.servlet.injection.properties.PropertiesFileStore;
 import org.kawanfw.sql.util.FrameworkDebug;
 import org.kawanfw.sql.util.SqlTag;
 import org.kawanfw.sql.util.TimestampUtil;
@@ -121,7 +119,7 @@ public class DenyOnBlacklistManager extends DefaultSqlFirewallManager implements
     private void loadStatements(String database, String fileSuffix)
 	    throws FileNotFoundException, SQLException, IOException {
 
-	File textFile = getTextFile(database, fileSuffix);
+	File textFile = DenyExceptOnWhitelistManager.getTextFile(database, fileSuffix);
 	BasicFileAttributes basicFileAttributes = Files.readAttributes(textFile.toPath(), BasicFileAttributes.class);
 	FileTime currentFileTime = basicFileAttributes.lastModifiedTime();
 
@@ -158,31 +156,6 @@ public class DenyOnBlacklistManager extends DefaultSqlFirewallManager implements
 	}
     }
 
-    /**
-     * Returns the &lt;database&gt;fileSuffix for the passed database
-     *
-     * @param database
-     * @param fileSuffix
-     * @throws FileNotFoundException
-     */
-    static File getTextFile(String database, String fileSuffix) throws FileNotFoundException {
-	File file = PropertiesFileStore.get();
-
-	Objects.requireNonNull(file, "file cannot be null!");
-
-	if (!file.exists()) {
-	    throw new FileNotFoundException("The properties file does not exist: " + file);
-	}
-	File dir = PropertiesFileStore.get().getParentFile();
-	File textFile = new File(dir + File.separator + database + fileSuffix);
-
-	if (!textFile.exists()) {
-	    throw new FileNotFoundException("The statements text file does not exist: " + textFile);
-	}
-
-	return textFile;
-
-    }
 
     private void debug(String string) {
 	if (DEBUG) {

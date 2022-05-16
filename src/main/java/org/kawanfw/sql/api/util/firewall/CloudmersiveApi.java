@@ -49,7 +49,6 @@ import com.cloudmersive.client.model.SqlInjectionDetectionResult;
  */
 public class CloudmersiveApi {
 
-
     private TextInputApi apiInstance;
     private String detectionLevel;
     private SqlInjectionDetectionResult sqlInjectionDetectionResult = null;
