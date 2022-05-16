@@ -98,7 +98,6 @@ public class SqlInjectionDetectionManager extends DefaultSqlFirewallManager impl
 	}
 
 	return cloudmersivePropertiesFile;
-
     }
 
 }

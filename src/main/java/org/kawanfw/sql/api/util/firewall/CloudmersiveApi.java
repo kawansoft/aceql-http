@@ -96,9 +96,7 @@ public class CloudmersiveApi {
 	    Apikey.setApiKeyPrefix(apiKeyPrefix);
 	}
 	
-
 	apiInstance = new TextInputApi();
-	
     }
 
     
