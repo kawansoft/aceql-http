@@ -28,10 +28,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.Objects;
 import java.util.Properties;
 
 import org.kawanfw.sql.servlet.injection.properties.PropertiesFileUtil;
+import org.kawanfw.sql.util.FrameworkDebug;
 
 import com.cloudmersive.client.TextInputApi;
 import com.cloudmersive.client.invoker.ApiClient;
@@ -49,25 +51,36 @@ import com.cloudmersive.client.model.SqlInjectionDetectionResult;
  */
 public class CloudmersiveApi {
 
+    private static boolean DEBUG = FrameworkDebug.isSet(CloudmersiveApi.class);
+    
+    private static final int FIVE_MINUNTES_IN_MILLISECONDS = 5 * 60 * 1000;
+
     private TextInputApi apiInstance;
     private String detectionLevel;
-    private SqlInjectionDetectionResult sqlInjectionDetectionResult = null;
-
+    private SqlInjectionDetectionResult sqlInjectionDetectionResult;
+    private long snapshot;
+  
+    private File file;
+    
     /**
-     * Connect to Cloudmersive using elements stored in a properties file
-     * @param file	the properties file that contain the Cloudmersive elements
-     * @throws IOException if any I/O Exception occurs
+     * Constructor
+     * @param file the cloudmersive.properties files
+     * @throws FileNotFoundException 
      */
-    public void connect(File file ) throws IOException {
-	
-	if (apiInstance != null ) {
-	    return;
-	}
-	
-	Objects.requireNonNull(file, "file cannot be null!");
+    public CloudmersiveApi(File file) throws FileNotFoundException {
+	this.file = Objects.requireNonNull(file, "file cannot be null!");
 	if (!file.exists()) {
 	    throw new FileNotFoundException("The Cloudmersive elements file does not exist: " + file);
 	}
+	this.snapshot = 0;
+    }
+
+
+    /**
+     * Connect to Cloudmersive using elements stored in a properties file
+     * @throws IOException if any I/O Exception occurs
+     */
+    private void connect( ) throws IOException {
 	
 	Properties properties = PropertiesFileUtil.getProperties(file);
 	String apiKey = (String) properties.get("apiKey");
@@ -97,6 +110,7 @@ public class CloudmersiveApi {
 	}
 	
 	apiInstance = new TextInputApi();
+	snapshot = new Date().getTime();
     }
 
     
@@ -105,14 +119,29 @@ public class CloudmersiveApi {
      * @param sql	the SQL statement to analyze
      * @return true if the passed SQL statement contains a SQL injection attack, else false
      * @throws SQLException if any erro occurs. (Wraps the {@link ApiException})
+     * @throws IOException 
      */
-    public boolean sqlInjectionDetect(String sql) throws SQLException {
+    public boolean sqlInjectionDetect(String sql) throws SQLException, IOException {
+	
+	long now = new Date().getTime();
+	
+	if (now - snapshot > FIVE_MINUNTES_IN_MILLISECONDS ) {
+	    debug(new Date() + " " + "Reloading with connect()!");
+	    connect();
+	}
+
 	try {
 	    sqlInjectionDetectionResult = apiInstance.textInputCheckSqlInjection(sql, detectionLevel);
 	    return sqlInjectionDetectionResult.isSuccessful();
 	} catch (ApiException e) {
 	    e.printStackTrace();
 	    throw new SQLException(e);
+	}
+    }
+    
+    private void debug(String string) {
+	if (DEBUG) {
+	    System.out.println(new Date() + " " + this.getClass().getSimpleName() + " " + string);
 	}
     }
 

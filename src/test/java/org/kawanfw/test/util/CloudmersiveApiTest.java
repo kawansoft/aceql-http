@@ -46,9 +46,8 @@ public class CloudmersiveApiTest {
      * @throws SQLException
      */
     public static void main(String[] args) throws IOException, InterruptedException, SQLException {
-	CloudmersiveApi cloudmersiveApi = new CloudmersiveApi();
 	File file = new File("I:\\_dev_awake\\aceql-http-main\\aceql-http\\conf_test\\cloudmersive.properties");
-	cloudmersiveApi.connect(file);
+	CloudmersiveApi cloudmersiveApi = new CloudmersiveApi(file);
 
 	int cpt = 0;
 	while (true) {

@@ -67,8 +67,7 @@ public class DenySqlInjectionManager extends DefaultSqlFirewallManager implement
 
 	// If not loaded, load the APIs & connect to Cloudmersive
 	if (cloudmersiveApi == null) {
-	    cloudmersiveApi = new CloudmersiveApi();
-	    cloudmersiveApi.connect(getCloudmersivePropertiesFile());
+	    cloudmersiveApi = new CloudmersiveApi(getCloudmersivePropertiesFile());
 	}
 
 	return cloudmersiveApi.sqlInjectionDetect(sql);
