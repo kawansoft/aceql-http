@@ -84,6 +84,10 @@ import org.kawanfw.sql.api.server.StatementAnalyzer;
  * <li>{@link DenyStatementClassManager}: manager that denies any call of the
  * raw Statement Java class. (Calling Statements without parameters is
  * forbidden).</li>
+ * <li>{@link SqlInjectionDetectionManager}: firewall manager that allows
+ * detecting SQL injection attacks, using a third-party API:
+ * <a href="https://www.cloudmersive.com">www.cloudmersive.com</a>.</li>
+ * 
  * </ul>
  * <p>
  * TCL (Transaction Control Language) calls are always authorized.
