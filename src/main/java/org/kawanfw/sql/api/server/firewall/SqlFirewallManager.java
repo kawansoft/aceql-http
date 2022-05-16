@@ -80,13 +80,14 @@ import org.kawanfw.sql.api.server.StatementAnalyzer;
  * <li>{@link DenyMetadataQueryManager}: manager that denies the use of the
  * AceQL Metadata Query API.</li>
  * <li>{@link DenyOnBlacklistManager}: manager that denies statements that are
- * listed in a blacklist text file.</li>
+ * listed in a blacklist text file.</li> *
+ * <li>{@link DenySqlInjectionManager}: firewall manager that allows detecting
+ * SQL injection attacks, using a third-party API:
+ * <a href="https://www.cloudmersive.com">www.cloudmersive.com</a>.</li>
  * <li>{@link DenyStatementClassManager}: manager that denies any call of the
  * raw Statement Java class. (Calling Statements without parameters is
  * forbidden).</li>
- * <li>{@link DenySqlInjectionManager}: firewall manager that allows
- * detecting SQL injection attacks, using a third-party API:
- * <a href="https://www.cloudmersive.com">www.cloudmersive.com</a>.</li>
+ * 
  * 
  * </ul>
  * <p>
