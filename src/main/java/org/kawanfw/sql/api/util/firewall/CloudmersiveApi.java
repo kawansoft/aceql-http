@@ -79,6 +79,14 @@ public class CloudmersiveApi {
 	String apiKeyPrefix = (String) properties.get("apiKeyPrefix");
 	detectionLevel = (String) properties.get("detectionLevel");
 	
+	if (detectionLevel == null || detectionLevel.isEmpty()) {
+	    detectionLevel = "Normal";
+	}
+	
+	if (! detectionLevel.equals("High") && ! detectionLevel.equals("Normal")) {
+	    throw new IllegalArgumentException("detectionLevel can be \"Normal\" or \"High\" only. Is: " + detectionLevel);
+	}
+	
 	ApiClient defaultClient = Configuration.getDefaultApiClient();
 	// Configure API key authorization: Apikey
 	ApiKeyAuth Apikey = (ApiKeyAuth) defaultClient.getAuthentication("Apikey");
@@ -88,10 +96,7 @@ public class CloudmersiveApi {
 	    Apikey.setApiKeyPrefix(apiKeyPrefix);
 	}
 	
-	if (detectionLevel == null || detectionLevel.isEmpty()) {
-	    detectionLevel = "Normal";
-	}
-	
+
 	apiInstance = new TextInputApi();
 	
     }

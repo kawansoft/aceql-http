@@ -92,7 +92,7 @@ public class SqlInjectionDetectionManager extends DefaultSqlFirewallManager impl
 	File cloudmersivePropertiesFile = new File(dir + File.separator + "cloudmersive.properties");
 
 	if (!cloudmersivePropertiesFile.exists()) {
-	    throw new FileNotFoundException("The cloudmersive.properties does not exist: " + cloudmersivePropertiesFile);
+	    throw new FileNotFoundException("The cloudmersive.properties file does not exist: " + cloudmersivePropertiesFile);
 	}
 
 	return cloudmersivePropertiesFile;
