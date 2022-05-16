@@ -27,8 +27,21 @@
         </plugins>
     </build>
 
+   <!-- For cloudmersive APIs --> 
+    <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
 
 	<dependencies>
+
+    <dependency>
+        <groupId>com.github.Cloudmersive</groupId>
+        <artifactId>Cloudmersive.APIClient.Java</artifactId>
+        <version>v4.20</version>
+    </dependency>
 
     <dependency>
         <groupId>org.junit.jupiter</groupId>
