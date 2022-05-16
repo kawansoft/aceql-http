@@ -36,10 +36,10 @@ import org.kawanfw.sql.api.util.firewall.CloudmersiveApi;
 import org.kawanfw.sql.servlet.injection.properties.PropertiesFileStore;
 
 /**
- * A firewall manager that allows to detect SQL injection attacks, using a third
- * party API: <a href="https://www.cloudmersive.com">www.cloudmersive.com</a>.
+ * A firewall manager that allows detecting SQL injection attacks, using a third-party
+ * API: <a href="https://www.cloudmersive.com">www.cloudmersive.com</a>.
  * <br>
- * Usage requires getting an API key through a free or paying account creation
+ * Usage requires getting a Cloudmersive API key through a free or paying account creation
  * at <a href="https://www.cloudmersive.com">www.cloudmersive.com/pricing</a>.
  * <br>
  * <br>
@@ -49,7 +49,7 @@ import org.kawanfw.sql.servlet.injection.properties.PropertiesFileStore;
  * {@code aceql.properties} file used when starting the AceQL server.<br>
  * 
  * @author Nicolas de Pomereu
- *
+ * @since 11
  */
 public class SqlInjectionDetectionManager extends DefaultSqlFirewallManager implements SqlFirewallManager {
 
