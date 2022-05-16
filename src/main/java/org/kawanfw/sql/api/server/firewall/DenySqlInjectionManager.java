@@ -51,7 +51,7 @@ import org.kawanfw.sql.servlet.injection.properties.PropertiesFileStore;
  * @author Nicolas de Pomereu
  * @since 11
  */
-public class SqlInjectionDetectionManager extends DefaultSqlFirewallManager implements SqlFirewallManager {
+public class DenySqlInjectionManager extends DefaultSqlFirewallManager implements SqlFirewallManager {
 
     /** The running instance */
     private CloudmersiveApi cloudmersiveApi = null;
