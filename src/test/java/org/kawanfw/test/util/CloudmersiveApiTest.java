@@ -33,6 +33,7 @@ import org.kawanfw.sql.api.util.firewall.CloudmersiveApi;
 
 /**
  * Tests the CloudmersiveApi wrapper class.
+ * 
  * @author Nicolas de Pomereu
  *
  */
@@ -49,11 +50,14 @@ public class CloudmersiveApiTest {
 	File file = new File("I:\\_dev_awake\\aceql-http-main\\aceql-http\\conf_test\\cloudmersive.properties");
 	cloudmersiveApi.connect(file);
 
+	int cpt = 0;
 	while (true) {
+	    cpt++;
 	    String sql = "select * from password where password = 'my_password' and 1 = 1";
 	    System.out.println();
 	    System.out.println("sql: " + sql);
-	    System.out.println(new Date() + " cloudmersiveApi.sqlInjectionDetect(sql): " + cloudmersiveApi.sqlInjectionDetect(sql));
+	    System.out.println(cpt + " " + new Date() + " cloudmersiveApi.sqlInjectionDetect(sql): "
+		    + cloudmersiveApi.sqlInjectionDetect(sql));
 	    Thread.sleep(60000);
 	}
 
