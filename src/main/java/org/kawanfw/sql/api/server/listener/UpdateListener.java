@@ -35,6 +35,14 @@ import org.kawanfw.sql.api.server.SqlEvent;
  * <br><br>
  * Concrete implementations are defined in the {@code aceql-server.properties}
  * file. <br><br>
+ * Note that the framework comes with a default <code>DefaultUpdateListener</code>
+ * implementation that does nothing.
+ * <p>
+ * A built in and ready to use class that doesn't require any coding is included:
+ * <ul>
+ * <li>{@link JsonLoggerUpdateListener}: a listener that insert in logs using JSON format
+ * the {@code SqlEvent}.</li>
+ * </ul>
  * 
  * Multiple {@code UpdateListener} may be defined and chained in property
  * value by separating class names by a comma. <br>
