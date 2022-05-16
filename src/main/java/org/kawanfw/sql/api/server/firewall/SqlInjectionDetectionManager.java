@@ -39,8 +39,8 @@ import org.kawanfw.sql.servlet.injection.properties.PropertiesFileStore;
  * A firewall manager that allows to detect SQL injection attacks, using a third
  * party API: <a href="https://www.cloudmersive.com">www.cloudmersive.com</a>.
  * <br>
- * Usage requires getting an API key through a free or paying account creation at
- * <a href="https://www.cloudmersive.com">www.cloudmersive.com/pricing</a>. 
+ * Usage requires getting an API key through a free or paying account creation
+ * at <a href="https://www.cloudmersive.com">www.cloudmersive.com/pricing</a>.
  * <br>
  * <br>
  * The Cloudmersive parameters (API key, detection level,...) are stored in the
@@ -55,27 +55,28 @@ public class SqlInjectionDetectionManager extends DefaultSqlFirewallManager impl
 
     /** The running instance */
     private CloudmersiveApi cloudmersiveApi = null;
-    
+
     /**
-     * Says if Cloudmersive SQL injection detector accepts the SQL statement
+     * Says if <a href="https://www.cloudmersive.com">Cloudmersive</a> SQL injection
+     * detector accepts the SQL statement.
      */
     @Override
     public boolean allowSqlRunAfterAnalysis(SqlEvent sqlEvent, Connection connection) throws IOException, SQLException {
-	
+
 	String sql = sqlEvent.getSql();
-	
+
 	// If not loaded, load the APIs & connect to Cloudmersive
 	if (cloudmersiveApi == null) {
 	    cloudmersiveApi = new CloudmersiveApi();
 	    cloudmersiveApi.connect(getCloudmersivePropertiesFile());
 	}
-	
+
 	return cloudmersiveApi.sqlInjectionDetect(sql);
     }
-    
-    
+
     /**
      * Returns the {@code cloudmersive.properties} file
+     * 
      * @return {@code cloudmersive.properties} file
      * @throws FileNotFoundException if the file does not exist.
      */
@@ -87,12 +88,13 @@ public class SqlInjectionDetectionManager extends DefaultSqlFirewallManager impl
 	if (!file.exists()) {
 	    throw new FileNotFoundException("The properties file does not exist: " + file);
 	}
-	
+
 	File dir = PropertiesFileStore.get().getParentFile();
 	File cloudmersivePropertiesFile = new File(dir + File.separator + "cloudmersive.properties");
 
 	if (!cloudmersivePropertiesFile.exists()) {
-	    throw new FileNotFoundException("The cloudmersive.properties file does not exist: " + cloudmersivePropertiesFile);
+	    throw new FileNotFoundException(
+		    "The cloudmersive.properties file does not exist: " + cloudmersivePropertiesFile);
 	}
 
 	return cloudmersivePropertiesFile;
