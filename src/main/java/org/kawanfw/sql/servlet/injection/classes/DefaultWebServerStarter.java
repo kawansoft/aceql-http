@@ -39,7 +39,7 @@ public class DefaultWebServerStarter implements WebServerStarter {
     public void startServer(WebServerApiWrapper webServerApiWrapper, String host, int port, File propertiesFile) {
 	    throw new UnsupportedOperationException(Tag.PRODUCT + " "
 		    + "WebServerApi usage "
-		    + Tag.REQUIRES_ACEQL_PROFESSIONAL_EDITION);
+		    + Tag.REQUIRES_ACEQL_ENTERPRISE_EDITION);
     }
 
 

@@ -110,10 +110,10 @@ public class CommunityValidator {
 	# (0 for no or default initial capacity.)
 	capacity=50000
 	
-	# Servlets Section (Professional Edition)    
+	# Servlets Section (Enterprise Edition)    
 	# Error if more than one servlet is active 
 	
-	#HTTP2 Configuration Section (Professional Edition) 
+	#HTTP2 Configuration Section (Enterprise Edition) 
 	updateToHttp2Protocol=false 
 	</code>
 	 * </pre>

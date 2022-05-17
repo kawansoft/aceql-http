@@ -46,7 +46,7 @@ public class Tag {
     public static String PRODUCT_EXCEPTION_RAISED = "[" + RUNNING_PRODUCT
 	    + " - EXCEPTION RAISED]";
 
-    public static final String REQUIRES_ACEQL_PROFESSIONAL_EDITION = "requires on server AceQL HTTP Professional Edition. See www.aceql.com.";
+    public static final String REQUIRES_ACEQL_ENTERPRISE_EDITION = "requires on server AceQL HTTP Enterprise Edition. See www.aceql.com.";
     
     public static final String ClassNotFoundException = "ClassNotFoundException";
     public static final String InstantiationException = "InstantiationException";

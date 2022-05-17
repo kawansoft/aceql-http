@@ -50,7 +50,7 @@ public class DefaultNativeTomcatElementsBuilder implements NativeTomcatElementsB
     @Override
     public void create(String propertiesFile) throws DatabaseConfigurationException, IOException, SQLException {
 	throw new UnsupportedOperationException(Tag.PRODUCT + " " + "Using Tomcat or other servlet containers "
-		+ Tag.REQUIRES_ACEQL_PROFESSIONAL_EDITION);
+		+ Tag.REQUIRES_ACEQL_ENTERPRISE_EDITION);
     }
 
 }

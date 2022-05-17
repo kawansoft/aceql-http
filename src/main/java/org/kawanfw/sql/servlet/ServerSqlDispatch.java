@@ -328,7 +328,7 @@ public class ServerSqlDispatch {
 	String sql = request.getParameter(HttpParameter.SQL);
 	if (!operationType.isOperationAuthorized(sql)) {
 	    throw new UnsupportedOperationException(
-		    Tag.PRODUCT + " " + "DCL or DLL Operation " + Tag.REQUIRES_ACEQL_PROFESSIONAL_EDITION);
+		    Tag.PRODUCT + " " + "DCL or DLL Operation " + Tag.REQUIRES_ACEQL_ENTERPRISE_EDITION);
 	}
 	if (ServerSqlDispatchUtil.isExecute(action) && !ServerSqlDispatchUtil.isStoredProcedure(request)) {
 	    ServerStatementRawExecute serverStatement = new ServerStatementRawExecute(request, response,
@@ -355,7 +355,7 @@ public class ServerSqlDispatch {
 			out);
 	    } catch (ClassNotFoundException exception) {
 		throw new UnsupportedOperationException(
-			Tag.PRODUCT + " " + "Stored procedure call " + Tag.REQUIRES_ACEQL_PROFESSIONAL_EDITION);
+			Tag.PRODUCT + " " + "Stored procedure call " + Tag.REQUIRES_ACEQL_ENTERPRISE_EDITION);
 	    } catch (SQLException exception) {
 		throw exception;
 	    } catch (Exception exception) {
@@ -396,7 +396,7 @@ public class ServerSqlDispatch {
 		jdbcDatabaseMetadataActionManager.execute(request, response, out, sqlFirewallManagers, connection);
 	    } catch (ClassNotFoundException exception) {
 		throw new UnsupportedOperationException(
-			Tag.PRODUCT + " " + "MetaData call " + Tag.REQUIRES_ACEQL_PROFESSIONAL_EDITION);
+			Tag.PRODUCT + " " + "MetaData call " + Tag.REQUIRES_ACEQL_ENTERPRISE_EDITION);
 
 	    } catch (Exception exception) {
 		throw new SQLException(exception);

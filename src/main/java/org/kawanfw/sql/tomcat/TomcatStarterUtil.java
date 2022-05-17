@@ -96,7 +96,7 @@ public class TomcatStarterUtil {
     }
 
     /**
-     * Says is edition is Community or Professional.
+     * Says is edition is Community or Enterprise.
      */
     public static boolean isCommunityEdition() {
 	return VersionWrapper.getType().equals("Community");
@@ -111,7 +111,7 @@ public class TomcatStarterUtil {
     public static void testDatabasesLimit(Set<String> databases) throws UnsupportedOperationException {
 	if (databases.size() > 2 & isCommunityEdition()) {
 	    throw new UnsupportedOperationException(
-		    Tag.PRODUCT + " " + "Loading more than 2 SQL databases " + Tag.REQUIRES_ACEQL_PROFESSIONAL_EDITION);
+		    Tag.PRODUCT + " " + "Loading more than 2 SQL databases " + Tag.REQUIRES_ACEQL_ENTERPRISE_EDITION);
 	}
     }
 
@@ -271,7 +271,7 @@ public class TomcatStarterUtil {
 	    
 	    if (new SqlUtil(connection).isDB2()) {
 		throw new UnsupportedOperationException(Tag.PRODUCT + " " + "DB2 is not supported and "
-			+ Tag.REQUIRES_ACEQL_PROFESSIONAL_EDITION);
+			+ Tag.REQUIRES_ACEQL_ENTERPRISE_EDITION);
 	    }
 
 	    System.out.println(SqlTag.SQL_PRODUCT_START + "  -> Connection OK!");

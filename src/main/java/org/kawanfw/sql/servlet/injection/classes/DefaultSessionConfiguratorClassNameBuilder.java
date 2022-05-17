@@ -43,7 +43,7 @@ public class DefaultSessionConfiguratorClassNameBuilder implements SessionConfig
 		&& SessionConfiguratorClassName.endsWith(JwtSessionConfigurator.class.getSimpleName())) {
 	    throw new UnsupportedOperationException(Tag.PRODUCT + " "
 		    + "Session Configurator other than DefaultSessionConfigurator & JwtSessionConfigurator "
-		    + Tag.REQUIRES_ACEQL_PROFESSIONAL_EDITION);
+		    + Tag.REQUIRES_ACEQL_ENTERPRISE_EDITION);
 	}
 
 	return SessionConfiguratorClassName;
