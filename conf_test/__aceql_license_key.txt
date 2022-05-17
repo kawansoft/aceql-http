@@ -1,0 +1,13 @@
+#---------------------------------------------------
+# AceQL HTTP Professional Edition - License Key File
+#---------------------------------------------------
+
+name = de Pomereu5
+email = ndepomereu@kawansoft.com
+corporate = KawanSoft
+licenseType = TRIAL
+numberOfDatabases = 3
+CreationDate = 2022-04-26
+ExpirationDate = 2022-05-26
+LicenseKey = MDwCHFfVP6MYxuxvGER1pGlLdH2NPm71pkKTupLPTpgCHAEbGXrxUwaMAZFACYySachhut8HcgNKtTuianU=
+
