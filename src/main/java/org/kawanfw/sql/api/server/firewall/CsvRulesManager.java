@@ -33,6 +33,7 @@ import java.nio.file.attribute.FileTime;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -113,6 +114,8 @@ public class CsvRulesManager extends DefaultSqlFirewallManager implements SqlFir
 
     private static boolean DEBUG = FrameworkDebug.isSet(CsvRulesManager.class);
 
+    private Set<String> databaseSetForReset = new HashSet<>();
+    
     /**
      * The map that contains for each database/username the table and their rights
      */
@@ -254,6 +257,7 @@ public class CsvRulesManager extends DefaultSqlFirewallManager implements SqlFir
 
 	if (storedFileTime != null && !currentFileTime.equals(storedFileTime) && allowReload) {
 	    mapTableAllowStatementsSet = null;
+	    databaseSetForReset = new HashSet<>();
 	    String logInfo = TimestampUtil.getHumanTimestampNow() + " " + SqlTag.USER_CONFIGURATION
 		    + " Reloading CsvRulesManager configuration file: " + csvFile;
 	    System.err.println(logInfo);
@@ -263,7 +267,7 @@ public class CsvRulesManager extends DefaultSqlFirewallManager implements SqlFir
 	    storedFileTime = currentFileTime;
 	}
 
-	if (mapTableAllowStatementsSet == null) {
+	if (mapTableAllowStatementsSet == null || ! databaseSetForReset.contains(database)) {
 
 	    AceQLMetaData aceQLMetaData = new AceQLMetaData(connection);
 	    List<String> tables = aceQLMetaData.getTableNames();
@@ -277,6 +281,7 @@ public class CsvRulesManager extends DefaultSqlFirewallManager implements SqlFir
 	    csvRulesManagerLoader.load();
 
 	    mapTableAllowStatementsSet = csvRulesManagerLoader.getMapTableAllowStatementsSet();
+	    databaseSetForReset.add(database);
 
 	    Set<TableAllowStatements> tableAllowStatementsSet = csvRulesManagerLoader.getTableAllowStatementsSet();
 

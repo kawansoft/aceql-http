@@ -131,7 +131,10 @@ public class DenyExceptOnWhitelistManager extends DefaultSqlFirewallManager impl
 	debug("currentFileTime: " + currentFileTime);
 
 	if (storedFileTime != null && !currentFileTime.equals(storedFileTime) && allowReload) {
-	    statementMap = null;
+
+	    // Reset statements Map
+	    statementMap = new HashMap<>();
+	    
 	    String logInfo = TimestampUtil.getHumanTimestampNow() + " " + SqlTag.USER_CONFIGURATION + " Reloading "
 		    + this.getClass().getSimpleName() + " configuration file: " + textFile;
 	    System.err.println(logInfo);
@@ -141,11 +144,7 @@ public class DenyExceptOnWhitelistManager extends DefaultSqlFirewallManager impl
 	    storedFileTime = currentFileTime;
 	}
 
-	if (statementMap == null || !statementMap.containsKey(database)) {
-
-	    if (statementMap == null) {
-		statementMap = new HashMap<>();
-	    }
+	if ( !statementMap.containsKey(database)) {
 
 	    if (!textFile.exists()) {
 		throw new FileNotFoundException(
