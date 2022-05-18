@@ -127,6 +127,9 @@ public class DenyExceptOnWhitelistManager extends DefaultSqlFirewallManager impl
 	BasicFileAttributes basicFileAttributes = Files.readAttributes(textFile.toPath(), BasicFileAttributes.class);
 	FileTime currentFileTime = basicFileAttributes.lastModifiedTime();
 
+	debug("");
+	debug("textFile       : " + textFile);
+	debug("allowReload    : " + allowReload);
 	debug("storedFileTime : " + storedFileTime);
 	debug("currentFileTime: " + currentFileTime);
 

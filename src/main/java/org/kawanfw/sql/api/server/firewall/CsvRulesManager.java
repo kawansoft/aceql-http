@@ -252,6 +252,9 @@ public class CsvRulesManager extends DefaultSqlFirewallManager implements SqlFir
 	BasicFileAttributes basicFileAttributes = Files.readAttributes(csvFile.toPath(), BasicFileAttributes.class);
 	FileTime currentFileTime = basicFileAttributes.lastModifiedTime();
 
+	debug("");
+	debug("csvFile        : " + csvFile);
+	debug("allowReload    : " + allowReload);
 	debug("storedFileTime : " + storedFileTime);
 	debug("currentFileTime: " + currentFileTime);
 
