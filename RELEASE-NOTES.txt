@@ -46,7 +46,8 @@ What's New:
   BanUserSqlFirewallTrigger, BeeperSqlFirewallTrigger, 
   JdbcLoggerSqlFirewallTrigger, JsonLoggerSqlFirewallTrigger.
 - Add UpdateListener calls to batch methods.
-
+- Tomcat base libraries have been upgraded to 9.0.63.
+- Postgresql base libraries have been upgraded to 42.3.3. 
 
 AceQL HTTP Version 10.2 - 07-Feb-2022
 -------------------------------------
