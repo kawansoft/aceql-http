@@ -34,6 +34,7 @@ import java.util.Properties;
 
 import org.kawanfw.sql.servlet.injection.properties.PropertiesFileUtil;
 import org.kawanfw.sql.util.FrameworkDebug;
+import org.kawanfw.sql.util.SqlTag;
 
 import com.cloudmersive.client.TextInputApi;
 import com.cloudmersive.client.invoker.ApiClient;
@@ -86,7 +87,7 @@ public class CloudmersiveApi {
 	String apiKey = (String) properties.get("apiKey");
 	
 	if (apiKey == null || apiKey.isEmpty()) {
-	    throw new IllegalArgumentException("apiKey property not found in file: " + file);
+	    throw new IllegalArgumentException(SqlTag.USER_CONFIGURATION + " apiKey property not found in file: " + file);
 	}
 	
 	String apiKeyPrefix = (String) properties.get("apiKeyPrefix");
@@ -97,7 +98,7 @@ public class CloudmersiveApi {
 	}
 	
 	if (! detectionLevel.equals("High") && ! detectionLevel.equals("Normal")) {
-	    throw new IllegalArgumentException("detectionLevel can be \"Normal\" or \"High\" only. Is: " + detectionLevel);
+	    throw new IllegalArgumentException(SqlTag.USER_CONFIGURATION +  " detectionLevel can be \"Normal\" or \"High\" only. Is: " + detectionLevel);
 	}
 	
 	ApiClient defaultClient = Configuration.getDefaultApiClient();
