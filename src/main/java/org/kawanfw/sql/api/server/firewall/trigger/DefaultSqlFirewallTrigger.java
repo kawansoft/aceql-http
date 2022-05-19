@@ -33,7 +33,7 @@ import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
 
 /**
  * Default trigger for a SQL database when a {@code SqlFirewallManager} detects
- * an attack. <br>
+ * an attack. This default implementation does nothing.<br>
  * 
  * @author Nicolas de Pomereu
  * @since 11.0
