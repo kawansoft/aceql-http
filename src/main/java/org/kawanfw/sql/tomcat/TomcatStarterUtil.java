@@ -46,7 +46,7 @@ import org.kawanfw.sql.servlet.connection.RollbackUtil;
 import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesUtil;
 import org.kawanfw.sql.util.SqlTag;
 import org.kawanfw.sql.util.Tag;
-import org.kawanfw.sql.version.VersionWrapper;
+import org.kawanfw.sql.version.EditionUtil;
 
 /**
  * @author Nicolas de Pomereu
@@ -94,14 +94,6 @@ public class TomcatStarterUtil {
 	}
 	
     }
-
-    /**
-     * Says is edition is Community or Enterprise.
-     */
-    public static boolean isCommunityEdition() {
-	return VersionWrapper.getType().equals("Community");
-    }
-
     
     /**
      * Do not accept more than 2 databases in Community editions
@@ -109,7 +101,7 @@ public class TomcatStarterUtil {
      * @throws UnsupportedOperationException
      */
     public static void testDatabasesLimit(Set<String> databases) throws UnsupportedOperationException {
-	if (databases.size() > 2 & isCommunityEdition()) {
+	if (databases.size() > 2 & EditionUtil.isCommunityEdition()) {
 	    throw new UnsupportedOperationException(
 		    Tag.PRODUCT + " " + "Loading more than 2 SQL databases " + Tag.REQUIRES_ACEQL_ENTERPRISE_EDITION);
 	}

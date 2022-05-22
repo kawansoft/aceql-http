@@ -41,6 +41,7 @@ import org.jasypt.digest.config.EnvironmentStringDigesterConfig;
 import org.jasypt.salt.StringFixedSaltGenerator;
 import org.jasypt.util.password.ConfigurablePasswordEncryptor;
 import org.kawanfw.sql.api.server.DatabaseConfigurationException;
+import org.kawanfw.sql.api.server.StatementAnalyzer;
 import org.kawanfw.sql.api.server.auth.JdbcPasswordEncryptor;
 
 import net.sf.jsqlparser.JSQLParserException;
@@ -62,7 +63,12 @@ public class TestMisc {
 
     public static void main(String[] args) throws Exception {
 
-	 testSqlParse();
+	String sql = "select * from public.customer";
+	List<Object> parameterValues = new ArrayList<>();
+	StatementAnalyzer analyzer = new StatementAnalyzer(sql, parameterValues);
+	List<String> tables = analyzer.getTables();
+	System.out.println(tables);
+	//testSqlParse();
 
     }
 

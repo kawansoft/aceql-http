@@ -36,6 +36,7 @@ import org.kawanfw.sql.tomcat.TomcatStarterUtil;
 import org.kawanfw.sql.tomcat.properties.threadpool.ThreadPoolProperties;
 import org.kawanfw.sql.util.FrameworkDebug;
 import org.kawanfw.sql.util.Tag;
+import org.kawanfw.sql.version.EditionUtil;
 
 /**
  * Test at server startup that the pro properties are not modified
@@ -56,7 +57,7 @@ public class CommunityValidator {
     public void validate() throws IOException {
 
 	// Nothing todo if Pro Edition
-	if (!TomcatStarterUtil.isCommunityEdition()) {
+	if (!EditionUtil.isCommunityEdition()) {
 	    return;
 	}
 

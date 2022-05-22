@@ -22,36 +22,19 @@
  * Any modifications to this file must keep this entire header
  * intact.
  */
-package org.kawanfw.sql.servlet.injection.classes.creator;
-
-import java.lang.reflect.Constructor;
-import java.sql.SQLException;
-
-import org.kawanfw.sql.servlet.injection.classes.DefaultWebServerStarter;
-import org.kawanfw.sql.servlet.injection.classes.WebServerStarter;
+package org.kawanfw.sql.version;
 
 /**
  * @author Nicolas de Pomereu
  *
  */
-public class WebServerStarterCreator {
-
-
-    public WebServerStarter createInstance()
-	    throws SQLException {
-
-	    Class<?> c;
-	    try {
-		c = Class.forName("org.kawanfw.sql.pro.reflection.builders.ProEditionWebServerStarter");
-		Constructor<?> constructor = c.getConstructor();
-		WebServerStarter webServerStarter = (WebServerStarter) constructor.newInstance();
-		return webServerStarter;
-	    } catch (ClassNotFoundException e) {
-		System.err.println(e.toString());
-		return new DefaultWebServerStarter();
-	    } catch (Exception e) {
-		throw new SQLException(e);
-	    }
+public class EditionUtil {
+    
+    /**
+     * Says is edition is Community or Enterprise.
+     */
+    public static boolean isCommunityEdition() {
+	return VersionWrapper.getType().equals(new DefaultVersion().getType());
     }
 
 }
