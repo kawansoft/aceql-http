@@ -25,11 +25,18 @@
 package org.kawanfw.sql.servlet.injection.properties;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Constructor;
 import java.sql.SQLException;
 import java.util.Properties;
+import java.util.Set;
 
 import org.kawanfw.sql.api.server.DatabaseConfigurationException;
+import org.kawanfw.sql.tomcat.util.LinkedProperties;
+import org.kawanfw.sql.version.EditionUtil;
 
 /**
  * Methods for properties and jasypt encrypted properties loading.
@@ -51,13 +58,53 @@ public class PropertiesFileUtil {
      * @throws SQLException 
      */
     public static Properties getProperties(File file) throws IOException {
-	PropertiesBuilder propertiesBuilder;
-	try {
-	    propertiesBuilder = PropertiesBuilderCreator.createInstance();
-	} catch (SQLException e) {
-	    throw new IOException(e.getMessage());
+	
+	Properties properties = commonsGetProperties(file);
+	
+	if (EditionUtil.isCommunityEdition()) {
+	    return properties;
 	}
-	return propertiesBuilder.getProperties(file);
+		
+	try {
+	    Class<?> c = Class.forName("org.kawanfw.sql.pro.reflection.builders.ProEditionPropertiesDecryptor");
+	    Constructor<?> constructor = c.getConstructor();
+	    PropertiesDecryptor propertiesDecryptor = (PropertiesDecryptor) constructor.newInstance();
+	    return propertiesDecryptor.decrypt(properties);
+	} catch (Exception e) {
+	    throw new IOException("Can not load ProEditionPropertiesDecryptor", e);
+	} 
+    }
+    
+    /**
+     * Return the load Properties for the passed file
+     * @param file
+     * @return
+     * @throws IllegalArgumentException
+     * @throws DatabaseConfigurationException
+     * @throws IOException
+     * @throws FileNotFoundException
+     */
+    private static Properties commonsGetProperties(File file)
+	    throws IllegalArgumentException, DatabaseConfigurationException, IOException, FileNotFoundException {
+	if (file == null) {
+	    throw new IllegalArgumentException("file can not be null!");
+	}
+
+	if (!file.exists()) {
+	    throw new DatabaseConfigurationException("properties file not found: " + file);
+	}
+
+	// Get the properties with order of position in file:
+	Set<String> linkedProperties = LinkedProperties.getLinkedPropertiesName(file);
+
+	// Create the ordered properties Properties properties;
+	Properties properties = new Properties();
+	try (InputStream in = new FileInputStream(file);) {
+	    properties = new LinkedProperties(linkedProperties);
+	    properties.load(in);
+	}
+	
+	return properties;
     }
 
 }

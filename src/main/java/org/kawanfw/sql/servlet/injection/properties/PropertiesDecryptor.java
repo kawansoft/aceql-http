@@ -25,26 +25,16 @@
 
 package org.kawanfw.sql.servlet.injection.properties;
 
-import java.io.File;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.Properties;
 
 /**
- * 
+ * Interface for Properties Decryption.
  * @author Nicolas de Pomereu
  *
  */
-public interface PropertiesBuilder {
+public interface PropertiesDecryptor {
 
-    
-    /**
-     * Return the properties for the specified file
-     * @param file the properties File
-     * @return the properties
-     * @throws IOException
-     * @throws SQLException 
-     */
-    Properties getProperties(File file) throws IOException;
-    
+    Properties decrypt(Properties properties) throws IOException;
+
 }

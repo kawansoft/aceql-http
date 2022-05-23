@@ -31,7 +31,7 @@ import java.util.Properties;
 import java.util.Set;
 
 import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesStore;
-import org.kawanfw.sql.servlet.injection.properties.DefaultPropertiesBuilder;
+import org.kawanfw.sql.servlet.injection.properties.PropertiesFileUtil;
 import org.kawanfw.sql.tomcat.TomcatStarterUtil;
 import org.kawanfw.sql.tomcat.properties.threadpool.ThreadPoolProperties;
 import org.kawanfw.sql.util.FrameworkDebug;
@@ -62,8 +62,7 @@ public class CommunityValidator {
 	}
 
 	File file = new File(propertiesFile);
-	DefaultPropertiesBuilder defaultPropertiesBuilder = new DefaultPropertiesBuilder();
-	Properties properties = defaultPropertiesBuilder.getProperties(file);
+	Properties properties = PropertiesFileUtil.getProperties(file);
 	checkProperty(properties, "aceQLManagerServletCallName", "aceql");
 
 	Set<String> databases = ConfPropertiesStore.get().getDatabaseNames();
