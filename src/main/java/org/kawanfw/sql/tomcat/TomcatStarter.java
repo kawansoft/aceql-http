@@ -43,6 +43,7 @@ import org.apache.catalina.LifecycleException;
 import org.apache.catalina.connector.Connector;
 import org.apache.catalina.startup.Tomcat;
 import org.kawanfw.sql.api.server.DatabaseConfigurationException;
+import org.kawanfw.sql.servlet.AceQLLicenseFileLoader;
 import org.kawanfw.sql.servlet.ServerSqlManager;
 import org.kawanfw.sql.servlet.injection.properties.ConfProperties;
 import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesManager;
@@ -139,6 +140,10 @@ public class TomcatStarter {
 	
 	// To be done at first, everything depends on ir.
 	PropertiesFileStore.set(propertiesFile);
+	
+	//Set licenseFile
+	File licenseFile = AceQLLicenseFileLoader.getLicenseFileFromClassPath();
+	AceQLLicenseFileLoader.setAceqlLicenseFile(licenseFile);
 	
 	System.out.println(SqlTag.SQL_PRODUCT_START + " Starting " + VersionWrapper.getName() + " Web Server...");
 	System.out.println(SqlTag.SQL_PRODUCT_START + " " + VersionWrapper.getServerVersion());

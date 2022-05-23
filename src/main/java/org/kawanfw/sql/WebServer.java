@@ -34,6 +34,7 @@ import org.kawanfw.sql.api.server.DatabaseConfigurationException;
 import org.kawanfw.sql.api.util.webserver.ParametersExtractor;
 import org.kawanfw.sql.api.util.webserver.WebServerApiWrapper;
 import org.kawanfw.sql.api.util.webserver.WebServerUtil;
+import org.kawanfw.sql.servlet.AceQLLicenseFileLoader;
 import org.kawanfw.sql.util.FrameworkDebug;
 import org.kawanfw.sql.util.SqlTag;
 import org.kawanfw.sql.version.VersionWrapper;
@@ -98,6 +99,9 @@ public class WebServer {
 	File propertiesFile = parametersExtractor.getPropertiesFile();
 	int port = parametersExtractor.getPort();
 
+	File licenseFile = AceQLLicenseFileLoader.getLicenseFileFromClassPath();
+	AceQLLicenseFileLoader.setAceqlLicenseFile(licenseFile);
+	
 	WebServerApiWrapper webServerApiWrapper = new WebServerApiWrapper();
 	try {
 	    webServerApiWrapper.startServer(host, port, propertiesFile);

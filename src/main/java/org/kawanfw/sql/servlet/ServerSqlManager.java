@@ -89,19 +89,20 @@ public class ServerSqlManager extends HttpServlet {
 
     private static boolean INIT_DONE = false;
 
-    private String propertiesFile;
-
-
+    private String propertiesFileStr;
+    private String licenseFileStr;
     
     @Override
     public void init(ServletConfig config) throws ServletException {
 	super.init(config);
-	propertiesFile = config.getInitParameter("properties");
+	propertiesFileStr = config.getInitParameter("properties");
+	licenseFileStr = config.getInitParameter("licenseFile");
 	
 	// To be done if we are not in Tomcat
-	if (propertiesFile == null) {
-	    propertiesFile = PropertiesFileStore.get().toString();
+	if (propertiesFileStr == null) {
+	    propertiesFileStr = PropertiesFileStore.get().toString();
 	}
+		
     }
 
     @Override
@@ -128,7 +129,7 @@ public class ServerSqlManager extends HttpServlet {
     protected void service(HttpServletRequest request, HttpServletResponse response)
 	    throws ServletException, IOException {
 
-	createClassesSynchronized(propertiesFile);
+	createClassesSynchronized(propertiesFileStr, licenseFileStr);
 	
 	/* Call in async mode */
 	final AsyncContext asyncContext = request.startAsync();
@@ -157,15 +158,17 @@ public class ServerSqlManager extends HttpServlet {
     }
 
     /**
-     * Create all classes 
+     * Create all classes.
+     * @param propertiesFileStr
+     * @param licenseFileStr
      * @throws ServletException
      * @throws IOException
      */
-    public static synchronized void createClassesSynchronized(String propertiesFile) throws ServletException, IOException {
+    public static synchronized void createClassesSynchronized(String propertiesFileStr, String licenseFileStr) throws ServletException, IOException {
 	if (!INIT_DONE) {
 	    INIT_DONE = true;
 	    InjectedClassesManagerNew injectedClassesManager = new InjectedClassesManagerNew();
-	    injectedClassesManager.createClasses(propertiesFile);
+	    injectedClassesManager.createClasses(propertiesFileStr, licenseFileStr);
 	}
     }
 

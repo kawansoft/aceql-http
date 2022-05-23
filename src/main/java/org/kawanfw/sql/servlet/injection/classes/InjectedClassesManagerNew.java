@@ -25,6 +25,8 @@
 
 package org.kawanfw.sql.servlet.injection.classes;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
@@ -43,6 +45,7 @@ import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
 import org.kawanfw.sql.api.server.firewall.trigger.SqlFirewallTrigger;
 import org.kawanfw.sql.api.server.listener.UpdateListener;
 import org.kawanfw.sql.api.server.session.JwtSessionConfigurator;
+import org.kawanfw.sql.servlet.AceQLLicenseFileLoader;
 import org.kawanfw.sql.servlet.injection.classes.InjectedClasses.InjectedClassesBuilder;
 import org.kawanfw.sql.servlet.injection.classes.blob.BlobDownloadConfiguratorClassNameBuilder;
 import org.kawanfw.sql.servlet.injection.classes.blob.BlobDownloadConfiguratorClassNameBuilderCreator;
@@ -74,21 +77,37 @@ public class InjectedClassesManagerNew {
     /**
      * Created all injected classes instances.
      * 
+     * @param propertiesFileStr
+     * @param licenseFileStr
      * @throws ServletException
-     * @throws ClassNotFoundException
      * @throws IOException
      */
-    public void createClasses(String propertiesFile) throws ServletException, IOException {
+    public void createClasses(String propertiesFileStr, String licenseFileStr) throws ServletException, IOException {
 	classNameToLoad = null;
 	try {
 	    // Test if we are in Native Tomcat and do specific stuff.
 	    if (!TomcatSqlModeStore.isTomcatEmbedded()) {
+
+		if (propertiesFileStr == null) {
+		    throw new NullPointerException("The init param \"properties\" has no been defined in web.xml!");
+		}
+
+		if (licenseFileStr != null) {
+		    File licenseFile = new File(licenseFileStr);
+		    if (!licenseFile.exists()) {
+			throw new FileNotFoundException(
+				"The file defined by the  web.xml init param \"licenseFile\" does not exist:"
+					+ licenseFile);
+		    }
+		    AceQLLicenseFileLoader.setAceqlLicenseFile(licenseFile);
+		}
+
 		NativeTomcatElementsBuilder nativeTomcatElementsBuilder = NativeTomcatElementsBuilderCreator
 			.createInstance();
-		nativeTomcatElementsBuilder.create(propertiesFile);
+		nativeTomcatElementsBuilder.create(propertiesFileStr);
 	    }
 
-	    CommunityValidator communityValidator = new CommunityValidator(propertiesFile);
+	    CommunityValidator communityValidator = new CommunityValidator(propertiesFileStr);
 	    communityValidator.validate();
 
 	    Set<String> databases = ConfPropertiesStore.get().getDatabaseNames();
@@ -148,6 +167,7 @@ public class InjectedClassesManagerNew {
 
     /**
      * Loads elements that depend on databases.
+     * 
      * @param databases
      * @param injectedClassesBuilder
      * @throws ClassNotFoundException
