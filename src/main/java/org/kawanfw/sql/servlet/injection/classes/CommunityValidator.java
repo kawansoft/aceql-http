@@ -62,7 +62,8 @@ public class CommunityValidator {
 	}
 
 	File file = new File(propertiesFile);
-	Properties properties = DefaultPropertiesBuilder.commonsGetProperties(file);
+	DefaultPropertiesBuilder defaultPropertiesBuilder = new DefaultPropertiesBuilder();
+	Properties properties = defaultPropertiesBuilder.getProperties(file);
 	checkProperty(properties, "aceQLManagerServletCallName", "aceql");
 
 	Set<String> databases = ConfPropertiesStore.get().getDatabaseNames();

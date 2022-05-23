@@ -56,7 +56,7 @@ public class DefaultPropertiesBuilder implements PropertiesBuilder {
      * @throws IOException
      * @throws FileNotFoundException
      */
-    public static Properties commonsGetProperties(File file)
+    private static Properties commonsGetProperties(File file)
 	    throws IllegalArgumentException, DatabaseConfigurationException, IOException, FileNotFoundException {
 	if (file == null) {
 	    throw new IllegalArgumentException("file can not be null!");
