@@ -60,6 +60,7 @@ import org.kawanfw.sql.servlet.injection.classes.creator.UserAuthenticatorCreato
 import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesStore;
 import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesUtil;
 import org.kawanfw.sql.tomcat.TomcatSqlModeStore;
+import org.kawanfw.sql.tomcat.TomcatStarter;
 import org.kawanfw.sql.tomcat.TomcatStarterUtil;
 import org.kawanfw.sql.tomcat.properties.threadpool.ThreadPoolExecutorBuilder;
 import org.kawanfw.sql.tomcat.properties.threadpool.ThreadPoolExecutorBuilderCreator;
@@ -83,6 +84,10 @@ public class InjectedClassesManagerNew {
      * @throws IOException
      */
     public void createClasses(String propertiesFileStr, String licenseFileStr) throws ServletException, IOException {
+	
+	debug("propertiesFileStr: " + propertiesFileStr);
+	debug("licenseFileStr   : " + licenseFileStr);
+	
 	classNameToLoad = null;
 	try {
 	    // Test if we are in Native Tomcat and do specific stuff.
@@ -139,6 +144,10 @@ public class InjectedClassesManagerNew {
 
 	    // Store the InjectedClasses instance statically
 	    InjectedClassesStore.set(injectedClasses);
+	    
+	    if (!TomcatSqlModeStore.isTomcatEmbedded()) {
+		TomcatStarter.printFinalOkMessage();
+	    }
 
 	} catch (ClassNotFoundException exception) {
 	    String initErrrorMesage = Tag.PRODUCT_USER_CONFIG_FAIL
@@ -157,6 +166,7 @@ public class InjectedClassesManagerNew {
 	    String initErrrorMesage = exception.getMessage();
 	    throw new IOException(initErrrorMesage, exception);
 	} catch (Exception exception) {
+	    exception.printStackTrace(System.out);
 	    String initErrrorMesage = Tag.RUNNING_PRODUCT + " " + exception.getMessage();
 	    throw new IOException(initErrrorMesage);
 
@@ -594,7 +604,7 @@ public class InjectedClassesManagerNew {
      */
     public static void debug(String s) {
 	if (DEBUG) {
-	    System.out.println(new Date() + " " + s);
+	    System.out.println(new Date() + " " + InjectedClassesManagerNew.class.getSimpleName() + " " + s);
 	}
     }
 

@@ -102,6 +102,9 @@ public class ServerSqlManager extends HttpServlet {
 	if (propertiesFileStr == null) {
 	    propertiesFileStr = PropertiesFileStore.get().toString();
 	}
+	
+	debug("propertiesFileStr: " + propertiesFileStr);
+	debug("licenseFileStr   : " + licenseFileStr);
 		
     }
 
@@ -523,7 +526,7 @@ public class ServerSqlManager extends HttpServlet {
      */
     public static void debug(String s) {
 	if (DEBUG) {
-	    System.out.println(new Date() + " " + s);
+	    System.out.println(new Date() + " " + ServerSqlManager.class.getSimpleName() + " " + s);
 	}
     }
 

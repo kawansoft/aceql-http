@@ -137,14 +137,14 @@ public class TomcatStarter {
 
     private void startTomcat(Tomcat tomcat) throws IOException, ConnectException, LifecycleException,
 	    MalformedURLException, DatabaseConfigurationException, SQLException {
-	
+
 	// To be done at first, everything depends on ir.
 	PropertiesFileStore.set(propertiesFile);
-	
-	//Set licenseFile
+
+	// Set licenseFile
 	File licenseFile = AceQLLicenseFileLoader.getLicenseFileFromClassPath();
 	AceQLLicenseFileLoader.setAceqlLicenseFile(licenseFile);
-	
+
 	System.out.println(SqlTag.SQL_PRODUCT_START + " Starting " + VersionWrapper.getName() + " Web Server...");
 	System.out.println(SqlTag.SQL_PRODUCT_START + " " + VersionWrapper.getServerVersion());
 	System.out.println(TomcatStarterUtil.getJavaInfo());
@@ -154,7 +154,7 @@ public class TomcatStarter {
 	Properties properties = PropertiesFileUtil.getProperties(propertiesFile);
 
 	String tomcatLoggingLevel = properties.getProperty("tomcatLoggingLevel");
-	
+
 	String level = "SEVERE";
 	if (tomcatLoggingLevel != null && !tomcatLoggingLevel.isEmpty()) {
 	    level = tomcatLoggingLevel;
@@ -166,11 +166,12 @@ public class TomcatStarter {
 	if (flushEachResultSetRow == null || flushEachResultSetRow.isEmpty()) {
 	    flushEachResultSetRow = "true";
 	}
-	
+
 	System.out.println(SqlTag.SQL_PRODUCT_START + " " + "Setting Internal Properties: ");
 	System.out.println(SqlTag.SQL_PRODUCT_START + "  -> tomcatLoggingLevel = " + level);
-	System.out.println(SqlTag.SQL_PRODUCT_START + "  -> flushEachResultSetRow = " + Boolean.parseBoolean(flushEachResultSetRow));
-	
+	System.out.println(SqlTag.SQL_PRODUCT_START + "  -> flushEachResultSetRow = "
+		+ Boolean.parseBoolean(flushEachResultSetRow));
+
 	// System.out.println("TomcatEmbedUtil.available(" + port + "): " +
 	// TomcatEmbedUtil.available(port));
 
@@ -190,13 +191,12 @@ public class TomcatStarter {
 	// Create the dataSources if necessary
 	TomcatStarterUtil.createAndStoreDataSources(properties);
 	TomcatStarterUtil.addServlets(properties, rootCtx);
-	
+
 	// ..and we are good to go
 	tomcat.start();
 
 	tomcatAfterStart(tomcat, properties);
     }
-
 
     /**
      * @param tomcat
@@ -204,22 +204,17 @@ public class TomcatStarter {
      * @throws MalformedURLException
      * @throws IOException
      */
-    private void tomcatAfterStart(Tomcat tomcat, Properties properties) throws MalformedURLException, IOException, SQLException {
+    private void tomcatAfterStart(Tomcat tomcat, Properties properties)
+	    throws MalformedURLException, IOException, SQLException {
 	// System.out.println(SqlTag.SQL_PRODUCT_START);
 	Connector defaultConnector = tomcat.getConnector();
-	
+
 	boolean result = testServlet(properties, defaultConnector.getScheme());
 	if (!result) {
 	    throw new IOException(SqlTag.SQL_PRODUCT_START_FAILURE + " " + "Can not call the AceQL ManagerServlet");
 	}
-		
-	String StateModeMessage = ConfPropertiesUtil.isStatelessMode() ? "(Stateless Mode)": "";
-	
-	String runningMessage = SqlTag.SQL_PRODUCT_START + " " + VersionWrapper.getName()
-		+ " Web Server OK. Running on port " + port + " " + StateModeMessage;
 
-	System.out.println(runningMessage);
-	System.out.println();
+	printFinalOkMessage(port);
 
 	// System.out
 	// .println(SqlTag.SQL_PRODUCT_START
@@ -263,24 +258,50 @@ public class TomcatStarter {
     }
 
     /**
+     * Print the final message thats says Web Server is started
+     * 
+     * @param port the port in use. if -1, port is not displayed (for Real Tolcat usage)
+     */
+    public static void printFinalOkMessage(int port) {
+	String runningMessage = SqlTag.SQL_PRODUCT_START + " " + VersionWrapper.getName() + " Web Server OK. ";
+
+	if (port > -1) {
+	    runningMessage += "Running on port " + port + " ";
+	}
+
+	String StateModeMessage = ConfPropertiesUtil.isStatelessMode() ? "(Stateless Mode)" : "";
+	runningMessage += StateModeMessage;
+
+	System.out.println(runningMessage);
+	System.out.println();
+    }
+
+    /**
+     * Print the final message thats says Web Server is started, withtout the port
+     */
+    public static void printFinalOkMessage() {
+	printFinalOkMessage(-1);
+    }
+
+    /**
      * Future usage.
      */
     @SuppressWarnings("unused")
     private static void queryExecutorHook() {
 
 	List<String> classNames = new ArrayList<>();
-	System.out.println(SqlTag.SQL_PRODUCT_START + " Allowed ServerQueryExecutor: ");  
-	for (String className: classNames) {
-	    System.out.println(SqlTag.SQL_PRODUCT_START + "   -> " +  className);  
+	System.out.println(SqlTag.SQL_PRODUCT_START + " Allowed ServerQueryExecutor: ");
+	for (String className : classNames) {
+	    System.out.println(SqlTag.SQL_PRODUCT_START + "   -> " + className);
 	}
-	
+
     }
 
     /**
      * @param tomcat
      * @param properties
      * @return
-     * @throws IOException 
+     * @throws IOException
      */
     private Context tomcatBeforeStartSetContext(Tomcat tomcat, Properties properties) throws IOException, SQLException {
 	// Set up context,
@@ -313,11 +334,12 @@ public class TomcatStarter {
      * @param properties
      * @throws DatabaseConfigurationException
      * @throws ConnectException
-     * @throws SQLException 
+     * @throws SQLException
      */
     private void tomcatBeforeStartSetConnectors(Tomcat tomcat, Properties properties)
 	    throws DatabaseConfigurationException, ConnectException, SQLException {
-	// NO: do in the Creators in org.kawanfw.sql.servlet.injection.classes.creator package
+	// NO: do in the Creators in org.kawanfw.sql.servlet.injection.classes.creator
+	// package
 	// TomcatStarterUtil.testConfigurators(properties);
 
 	// Very important to allow port reuse without System.exit()
@@ -329,9 +351,10 @@ public class TomcatStarter {
 	SystemPropUpdater systemPropUpdater = new SystemPropUpdater(properties);
 	systemPropUpdater.update();
 
-	//HACK NDP
-	//ProEditionThreadPoolExecutorBuilder threadPoolExecutorStore = new ProEditionThreadPoolExecutorBuilder(properties);
-	//threadPoolExecutorStore.create();
+	// HACK NDP
+	// ProEditionThreadPoolExecutorBuilder threadPoolExecutorStore = new
+	// ProEditionThreadPoolExecutorBuilder(properties);
+	// threadPoolExecutorStore.create();
 
 	// Set & create connectors
 	TomcatConnectorsUpdater tomcatConnectorsUpdater = new TomcatConnectorsUpdater(tomcat, properties);
@@ -358,7 +381,7 @@ public class TomcatStarter {
      * @param properties the properties than contain all servlet & configurators
      *                   info
      * @param rootCtx    the tomcat root context
-     * @throws IOException 
+     * @throws IOException
      */
     public void addAceqlServlet(Properties properties, Context rootCtx) throws IOException, SQLException {
 
@@ -366,17 +389,17 @@ public class TomcatStarter {
 	    throw new IllegalArgumentException("properties can not be null");
 	}
 
-	//String aceQLManagerServletCallName = TomcatStarterUtil.getAceQLManagerSevletName(properties);
+	// String aceQLManagerServletCallName =
+	// TomcatStarterUtil.getAceQLManagerSevletName(properties);
 	ServletAceQLCallNameGetter servletAceQLCallNameGetter = AceQLServletCallNameGetterCreator.createInstance();
 	String aceQLManagerServletCallName = servletAceQLCallNameGetter.getName();
-	
+
 	// Add the ServerSqlManager servlet to the context
 	org.apache.catalina.Wrapper wrapper = Tomcat.addServlet(rootCtx, aceQLManagerServletCallName,
 		new ServerSqlManager());
 	wrapper.setAsyncSupported(true);
 	rootCtx.addServletMappingDecoded("/*", aceQLManagerServletCallName);
 
-	
 	// Create all configuration properties from the Properties and store
 	ConfPropertiesManager confPropertiesManager = new ConfPropertiesManager(properties);
 	ConfProperties confProperties = confPropertiesManager.createConfProperties();
@@ -401,12 +424,14 @@ public class TomcatStarter {
      * @throws MalformedURLException
      * @throws IOException
      */
-    public boolean testServlet(Properties properties, String scheme) throws MalformedURLException, IOException, SQLException {
+    public boolean testServlet(Properties properties, String scheme)
+	    throws MalformedURLException, IOException, SQLException {
 
-	//String aceQLManagerServletCallName = TomcatStarterUtil.getAceQLManagerSevletName(properties);
+	// String aceQLManagerServletCallName =
+	// TomcatStarterUtil.getAceQLManagerSevletName(properties);
 	ServletAceQLCallNameGetter servletAceQLCallNameGetter = AceQLServletCallNameGetterCreator.createInstance();
 	String aceQLManagerServletCallName = servletAceQLCallNameGetter.getName();
-	
+
 	String serverSqlManagerUrlPattern = aceQLManagerServletCallName;
 	serverSqlManagerUrlPattern = serverSqlManagerUrlPattern.trim();
 

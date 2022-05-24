@@ -71,6 +71,7 @@ public class PropertiesFileUtil {
 	    PropertiesDecryptor propertiesDecryptor = (PropertiesDecryptor) constructor.newInstance();
 	    return propertiesDecryptor.decrypt(properties);
 	} catch (Exception e) {
+	    e.printStackTrace(System.out);
 	    throw new IOException("Can not load ProEditionPropertiesDecryptor", e);
 	} 
     }
