@@ -410,7 +410,8 @@ public class TomcatStarterUtil {
      * @return the Java info
      */
     public static String getJavaInfo() {
-	return SqlTag.SQL_PRODUCT_START + " Java Info: " + SystemUtils.JAVA_VENDOR + " / "
+	return SqlTag.SQL_PRODUCT_START + " Java Info: " +  CR_LF +
+		SqlTag.SQL_PRODUCT_START  + "  -> "+ SystemUtils.JAVA_VENDOR + " / "
 		+ SystemUtils.JAVA_RUNTIME_NAME + " / " + SystemUtils.JAVA_VERSION;
     }
 

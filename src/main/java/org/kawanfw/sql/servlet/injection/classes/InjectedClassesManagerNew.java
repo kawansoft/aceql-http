@@ -126,15 +126,14 @@ public class InjectedClassesManagerNew {
 	    // Ouf first loader is for authentication
 	    loadUserAuthenticator(injectedClassesBuilder);
 
-	    // All elements that depend on database
-	    loadPerDatabase(databases, injectedClassesBuilder);
-
 	    loadRequestHeadersAuthenticator(injectedClassesBuilder);
 
 	    ThreadPoolExecutorBuilder threadPoolExecutorBuilder = ThreadPoolExecutorBuilderCreator.createInstance();
 	    ThreadPoolExecutor threadPoolExecutor = threadPoolExecutorBuilder.build();
 	    injectedClassesBuilder.threadPoolExecutor(threadPoolExecutor);
-
+	    
+	    // All elements that depend on database
+	    loadPerDatabase(databases, injectedClassesBuilder);
 	    loadBlobDownloadConfigurator(injectedClassesBuilder);
 	    loadBlobUploadConfigurator(injectedClassesBuilder);
 
@@ -323,7 +322,7 @@ public class InjectedClassesManagerNew {
 	if (!blobUploadConfiguratorClassName
 		.equals(org.kawanfw.sql.api.server.blob.DefaultBlobUploadConfigurator.class.getName())) {
 	    System.out.println(SqlTag.SQL_PRODUCT_START + " Loading blobUploadConfiguratorClassName: ");
-	    System.out.println(SqlTag.SQL_PRODUCT_START + " " + blobUploadConfiguratorClassName);
+	    System.out.println(SqlTag.SQL_PRODUCT_START + "  -> " + blobUploadConfiguratorClassName);
 	}
     }
 
@@ -359,7 +358,7 @@ public class InjectedClassesManagerNew {
 	if (!blobDownloadConfiguratorClassName
 		.equals(org.kawanfw.sql.api.server.blob.DefaultBlobDownloadConfigurator.class.getName())) {
 	    System.out.println(SqlTag.SQL_PRODUCT_START + " Loading blobDownloadConfiguratorClassName: ");
-	    System.out.println(SqlTag.SQL_PRODUCT_START + " " + blobDownloadConfiguratorClassName);
+	    System.out.println(SqlTag.SQL_PRODUCT_START + "  -> " + blobDownloadConfiguratorClassName);
 	}
     }
 
@@ -517,7 +516,7 @@ public class InjectedClassesManagerNew {
 	else
 	    tagSQLFirewallManager = " SQLFirewallManager classes: ";
 
-	System.out.println(SqlTag.SQL_PRODUCT_START + " Loading Database " + database + tagSQLFirewallManager);
+	System.out.println(SqlTag.SQL_PRODUCT_START + " " + database + " Database - Loading " + tagSQLFirewallManager);
 
 	SqlFirewallsCreator sqlFirewallsCreator = new SqlFirewallsCreator(sqlFirewallClassNames);
 	List<SqlFirewallManager> sqlFirewallManagers = sqlFirewallsCreator.getSqlFirewalls();
@@ -530,7 +529,7 @@ public class InjectedClassesManagerNew {
 	classNameToLoad = sqlFirewallClassNames.toString();
 
 	for (String sqlFirewallClassName : sqlFirewallClassNames) {
-	    System.out.println(SqlTag.SQL_PRODUCT_START + "   -> " + sqlFirewallClassName);
+	    System.out.println(SqlTag.SQL_PRODUCT_START + "  -> " + sqlFirewallClassName);
 	}
 
 	return sqlFirewallManagers;
@@ -585,7 +584,7 @@ public class InjectedClassesManagerNew {
 	DatabaseConfigurator databaseConfigurator = databaseConfiguratorCreator.getDatabaseConfigurator();
 	databaseConfiguratorClassName = databaseConfiguratorCreator.getDatabaseConfiguratorClassName();
 
-	System.out.println(SqlTag.SQL_PRODUCT_START + " Loading Database " + database + " DatabaseConfigurator class:");
+	System.out.println(SqlTag.SQL_PRODUCT_START + " " + database + " Database - Loading DatabaseConfigurator class:");
 	System.out.println(SqlTag.SQL_PRODUCT_START + "  -> " + databaseConfiguratorClassName);
 
 	return databaseConfigurator;
