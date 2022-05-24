@@ -117,15 +117,16 @@ public class LdapUserAuthenticator implements UserAuthenticator {
 
     }
 
-    /**
-     * @param username
-     * @param password
-     * @param url
-     * @param securityAuth
-     * @param securityProtocol
-     * @return
+    /** 
+     * Builds the Hashtable of the elements of the environment
+     * @param username	the LDAP username
+     * @param password	the LDAP password
+     * @param url	the LDAP server URL 
+     * @param securityAuth	the security level to use
+     * @param securityProtocol	the security protocol to use
+     * @return the built Hashtable
      */
-    public Hashtable<String, String> buildHashtable(String username, char[] password, String url, String securityAuth,
+    private Hashtable<String, String> buildHashtable(String username, char[] password, String url, String securityAuth,
 	    String securityProtocol) {
 	// Set up the environment for creating the initial context
 	Hashtable<String, String> env = new Hashtable<>();
