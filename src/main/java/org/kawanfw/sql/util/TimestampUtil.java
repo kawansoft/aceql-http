@@ -31,7 +31,7 @@ import java.util.Date;
 public class TimestampUtil {
     
     private static final String PATTERN = "yyyy-MM-dd HH:mm:ss.SSS";
-    
+    private static final String PATTERN_SHORT = "yyyy-MM-dd HH:mm:ss";
     /**
      * Protected
      */
@@ -43,8 +43,16 @@ public class TimestampUtil {
 	return getHumanTimestamp(System.currentTimeMillis());
     }
 
+    public static String getHumanTimestampNoMillisNow() {
+	return getHumanTimestampNoMillis(System.currentTimeMillis());
+    }
+    
     public static String getHumanTimestamp(long timestamp) {
 	return new SimpleDateFormat(PATTERN).format(new Date(timestamp));
+    }
+    
+    public static String getHumanTimestampNoMillis(long timestamp) {
+	return new SimpleDateFormat(PATTERN_SHORT).format(new Date(timestamp));
     }
 
 }

@@ -60,7 +60,7 @@ import org.kawanfw.sql.servlet.injection.classes.creator.UserAuthenticatorCreato
 import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesStore;
 import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesUtil;
 import org.kawanfw.sql.tomcat.TomcatSqlModeStore;
-import org.kawanfw.sql.tomcat.TomcatStarter;
+import org.kawanfw.sql.tomcat.TomcatStarterMessages;
 import org.kawanfw.sql.tomcat.TomcatStarterUtil;
 import org.kawanfw.sql.tomcat.properties.threadpool.ThreadPoolExecutorBuilder;
 import org.kawanfw.sql.tomcat.properties.threadpool.ThreadPoolExecutorBuilderCreator;
@@ -107,6 +107,7 @@ public class InjectedClassesManagerNew {
 		    AceQLLicenseFileLoader.setAceqlLicenseFile(licenseFile);
 		}
 
+		TomcatStarterMessages.printBeginMessage();
 		NativeTomcatElementsBuilder nativeTomcatElementsBuilder = NativeTomcatElementsBuilderCreator
 			.createInstance();
 		nativeTomcatElementsBuilder.create(propertiesFileStr);
@@ -146,7 +147,7 @@ public class InjectedClassesManagerNew {
 	    InjectedClassesStore.set(injectedClasses);
 	    
 	    if (!TomcatSqlModeStore.isTomcatEmbedded()) {
-		TomcatStarter.printFinalOkMessage();
+		TomcatStarterMessages.printFinalOkMessage();
 	    }
 
 	} catch (ClassNotFoundException exception) {

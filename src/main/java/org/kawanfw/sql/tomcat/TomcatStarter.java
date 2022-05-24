@@ -48,13 +48,11 @@ import org.kawanfw.sql.servlet.ServerSqlManager;
 import org.kawanfw.sql.servlet.injection.properties.ConfProperties;
 import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesManager;
 import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesStore;
-import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesUtil;
 import org.kawanfw.sql.servlet.injection.properties.PropertiesFileStore;
 import org.kawanfw.sql.servlet.injection.properties.PropertiesFileUtil;
 import org.kawanfw.sql.tomcat.util.PortSemaphoreFile;
 import org.kawanfw.sql.util.FrameworkDebug;
 import org.kawanfw.sql.util.SqlTag;
-import org.kawanfw.sql.version.VersionWrapper;
 
 /**
  * Configures Tomcat from the properties file and start it.
@@ -145,8 +143,8 @@ public class TomcatStarter {
 	File licenseFile = AceQLLicenseFileLoader.getLicenseFileFromClassPath();
 	AceQLLicenseFileLoader.setAceqlLicenseFile(licenseFile);
 
-	System.out.println(SqlTag.SQL_PRODUCT_START + " Starting " + VersionWrapper.getName() + " Web Server...");
-	System.out.println(SqlTag.SQL_PRODUCT_START + " " + VersionWrapper.getServerVersion());
+	TomcatStarterMessages.printBeginMessage();
+
 	System.out.println(TomcatStarterUtil.getJavaInfo());
 	System.out.println(SqlTag.SQL_PRODUCT_START + " " + "Using properties file: ");
 	System.out.println(SqlTag.SQL_PRODUCT_START + "  -> " + propertiesFile);
@@ -214,7 +212,7 @@ public class TomcatStarter {
 	    throw new IOException(SqlTag.SQL_PRODUCT_START_FAILURE + " " + "Can not call the AceQL ManagerServlet");
 	}
 
-	printFinalOkMessage(port);
+	TomcatStarterMessages.printFinalOkMessage(port);
 
 	// System.out
 	// .println(SqlTag.SQL_PRODUCT_START
@@ -255,32 +253,6 @@ public class TomcatStarter {
 		return;
 	    }
 	}
-    }
-
-    /**
-     * Print the final message thats says Web Server is started
-     * 
-     * @param port the port in use. if -1, port is not displayed (for Real Tolcat usage)
-     */
-    public static void printFinalOkMessage(int port) {
-	String runningMessage = SqlTag.SQL_PRODUCT_START + " " + VersionWrapper.getName() + " Web Server OK. ";
-
-	if (port > -1) {
-	    runningMessage += "Running on port " + port + " ";
-	}
-
-	String StateModeMessage = ConfPropertiesUtil.isStatelessMode() ? "(Stateless Mode)" : "";
-	runningMessage += StateModeMessage;
-
-	System.out.println(runningMessage);
-	System.out.println();
-    }
-
-    /**
-     * Print the final message thats says Web Server is started, withtout the port
-     */
-    public static void printFinalOkMessage() {
-	printFinalOkMessage(-1);
     }
 
     /**
