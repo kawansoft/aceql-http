@@ -25,7 +25,7 @@ AceQL HTTP is licensed through the GNU Lesser General Public License
 (LGPL v2.1).
 
 
-AceQL HTTP Version 11 - 17-May-2022
+AceQL HTTP Version 11 - 24-May-2022
 -----------------------------------
 
 What's New: 
@@ -46,6 +46,9 @@ What's New:
   BanUserSqlFirewallTrigger, BeeperSqlFirewallTrigger, 
   JdbcLoggerSqlFirewallTrigger, JsonLoggerSqlFirewallTrigger.
 - Add UpdateListener calls to batch methods.
+- DefaultPropertiesPasswordManager: the properties_password_manager.properties
+  file must now be located in the same directory of the aceql-server.properties
+  file.
 - Tomcat base libraries have been upgraded to 9.0.63.
 - Postgresql base libraries have been upgraded to 42.3.3 for 
   security reasons.
