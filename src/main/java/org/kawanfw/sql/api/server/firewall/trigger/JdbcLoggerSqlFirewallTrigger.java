@@ -35,7 +35,7 @@ import org.kawanfw.sql.api.server.SqlEvent;
 import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
 
 /**
- * A trigger that will INSERT THE {@code SqlEvent} info and the
+ * A trigger that will {@code INSERT} the {@code SqlEvent} info and the
  * {@code sqlFirewallManager} class name into a {@code aceql_denied_request} SQL table.
  * <br>
  * Table structure is:
