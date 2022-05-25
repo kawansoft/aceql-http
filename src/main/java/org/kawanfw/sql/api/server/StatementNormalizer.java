@@ -53,18 +53,13 @@ import org.kawanfw.sql.util.FrameworkDebug;
  * <pre>
  * <code>
 "SELECT * from my_table where my_colum = ?" 
-</code>
- * </pre>
+</code></pre>
  * 
- * Note that text between single quotes won't be modified:<br>
- * 
- * <pre>
- * <code>
+ * Note that text between single quotes won't be modified:
+ * <pre><code>
  * SELECT    *   from  customer where name = 'John Doe'
-</code>
- * </pre>
- * 
- * will be normalized to: <br>
+</code></pre>
+ * will be normalized to:<br>
  * <br>
  * {@code SELECT * from customer where name = 'John Doe'} <br>
  * <br>
