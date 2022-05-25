@@ -31,11 +31,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.sql.SQLException;
+import java.util.Date;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
 
 import org.kawanfw.sql.api.server.DatabaseConfigurationException;
+import org.kawanfw.sql.api.server.auth.crypto.PropertiesPasswordManager;
 import org.kawanfw.sql.tomcat.util.LinkedProperties;
+import org.kawanfw.sql.util.FrameworkDebug;
 import org.kawanfw.sql.version.EditionUtil;
 
 /**
@@ -46,7 +50,9 @@ import org.kawanfw.sql.version.EditionUtil;
  */
 public class PropertiesFileUtil {
 
-
+    /** Debug info */
+    private static boolean DEBUG = FrameworkDebug.isSet(PropertiesFileUtil.class);
+    
     /**
      * Returns the Properties extracted from a file.
      *
@@ -64,16 +70,52 @@ public class PropertiesFileUtil {
 	if (EditionUtil.isCommunityEdition()) {
 	    return properties;
 	}
+	
+	debug("Properties file: " + file);
+	
+	char[] password = null;
+	try {
+	    password = PropertiesPasswordManagerLoader.getPassword(properties);
+	} catch (Exception e) {
+	    throw new DatabaseConfigurationException(e.getMessage());
+	}
+	
 		
 	try {
 	    Class<?> c = Class.forName("org.kawanfw.sql.pro.reflection.builders.ProEditionPropertiesDecryptor");
 	    Constructor<?> constructor = c.getConstructor();
 	    PropertiesDecryptor propertiesDecryptor = (PropertiesDecryptor) constructor.newInstance();
-	    return propertiesDecryptor.decrypt(properties);
+	    return propertiesDecryptor.decrypt(properties, password);
 	} catch (Exception e) {
 	    e.printStackTrace(System.out);
 	    throw new IOException("Can not load ProEditionPropertiesDecryptor", e);
 	} 
+    }
+    
+    public static char [] getPassword(Properties properties) throws IOException, SQLException {
+	
+	Objects.requireNonNull(properties, "properties cannot be null!");
+	
+	String propertiesPasswordManagerClassName = properties.getProperty("propertiesPasswordManagerClassName");
+	
+	if (propertiesPasswordManagerClassName == null || propertiesPasswordManagerClassName.isEmpty()) {
+	    return null;
+	}
+	
+	PropertiesPasswordManager propertiesPasswordManager = null;
+	
+	// Load it, and get the password
+	try {
+	    Class<?> c = Class.forName(propertiesPasswordManagerClassName);
+	    Constructor<?> constructor = c.getConstructor();
+	    propertiesPasswordManager = (PropertiesPasswordManager) constructor.newInstance();
+	} catch (Exception e) {
+	    String initErrrorMesage = "Impossible to load PropertiesPasswordManager concrete class: " + propertiesPasswordManagerClassName;
+	    e.printStackTrace();
+	    throw new DatabaseConfigurationException(initErrrorMesage);
+	} 
+	
+	return propertiesPasswordManager.getPassword();
     }
     
     /**
@@ -108,4 +150,14 @@ public class PropertiesFileUtil {
 	return properties;
     }
 
+    /**
+     * Print debug info
+     *
+     * @param s
+     */
+
+    private static void debug(String s) {
+	if (DEBUG)
+	    System.out.println(new Date() + " "  + PropertiesFileUtil.class.getSimpleName() + " " + s);
+    }
 }

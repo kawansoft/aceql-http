@@ -35,6 +35,6 @@ import java.util.Properties;
  */
 public interface PropertiesDecryptor {
 
-    Properties decrypt(Properties properties) throws IOException;
+    Properties decrypt(Properties properties, char[] password) throws IOException;
 
 }
