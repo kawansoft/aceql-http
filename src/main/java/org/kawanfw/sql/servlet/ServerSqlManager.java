@@ -111,6 +111,7 @@ public class ServerSqlManager extends HttpServlet {
     @Override
     public void destroy() {
 	super.destroy();
+	INIT_DONE = false;
 	
 	if ( InjectedClassesStore.get() != null && InjectedClassesStore.get().getThreadPoolExecutor() != null) {
 	    ThreadPoolExecutor threadPoolExecutor = InjectedClassesStore.get().getThreadPoolExecutor();
