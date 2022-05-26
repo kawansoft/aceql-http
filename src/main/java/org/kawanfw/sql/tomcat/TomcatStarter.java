@@ -377,7 +377,7 @@ public class TomcatStarter {
 	ConfProperties confProperties = confPropertiesManager.createConfProperties();
 	ConfPropertiesStore.set(confProperties);
 
-	// Unecessary because we must start at / because of ou Rest API
+	// Unnecessary because we must start at / because of ou Rest API
 	// String serverSqlManagerUrlPattern = serverSqlManagerServletName;
 	// if (!serverSqlManagerUrlPattern.startsWith("/")) {
 	// serverSqlManagerUrlPattern = "/" + serverSqlManagerUrlPattern;

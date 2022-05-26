@@ -54,7 +54,10 @@ import org.kawanfw.sql.servlet.injection.properties.PropertiesFileStore;
 import org.kawanfw.sql.servlet.sql.json_return.ExceptionReturner;
 import org.kawanfw.sql.servlet.sql.json_return.JsonErrorReturn;
 import org.kawanfw.sql.servlet.sql.json_return.JsonOkReturn;
+import org.kawanfw.sql.tomcat.TomcatSqlModeStore;
 import org.kawanfw.sql.util.FrameworkDebug;
+import org.kawanfw.sql.util.SqlTag;
+import org.kawanfw.sql.util.TimestampUtil;
 import org.kawanfw.sql.version.VersionWrapper;
 
 /**
@@ -72,16 +75,16 @@ public class ServerSqlManager extends HttpServlet {
 
     public static final String STATELESS_MODE = "statelessMode";
     public static final String DATABASE_CONFIGURATOR_CLASS_NAME = "databaseConfiguratorClassName";
-    
+
     public static final String USER_AUTHENTICATOR_CLASS_NAME = "userAuthenticatorClassName";
     public static final String REQUEST_HEADERS_AUTHENTICATOR_CLASS_NAME = "requestHeadersAuthenticatorClassName";
-    
+
     public static final String SQL_FIREWALL_MANAGER_CLASS_NAMES = "sqlFirewallManagerClassNames";
-    public static final String SQL_FIREWALL_TRIGGER_CLASS_NAMES ="sqlFirewallTriggerClassNames" ;
-    
+    public static final String SQL_FIREWALL_TRIGGER_CLASS_NAMES = "sqlFirewallTriggerClassNames";
+
     public static final String BLOB_DOWNLOAD_CONFIGURATOR_CLASS_NAME = "blobDownloadConfiguratorClassName";
     public static final String BLOB_UPLOAD_CONFIGURATOR_CLASS_NAME = "blobUploadConfiguratorClassName";
-    
+
     public static final String SESSION_CONFIGURATOR_CLASS_NAME = "sessionConfiguratorClassName";
     public static final String JWT_SESSION_CONFIGURATOR_SECRET = "jwtSessionConfiguratorSecret";
 
@@ -91,29 +94,36 @@ public class ServerSqlManager extends HttpServlet {
 
     private String propertiesFileStr;
     private String licenseFileStr;
-    
+
     @Override
     public void init(ServletConfig config) throws ServletException {
 	super.init(config);
+	INIT_DONE = false;
 	propertiesFileStr = config.getInitParameter("properties");
 	licenseFileStr = config.getInitParameter("licenseFile");
-	
+
+	if (!TomcatSqlModeStore.isTomcatEmbedded()) {
+	    System.out.println(SqlTag.SQL_PRODUCT_INIT + " " + TimestampUtil.getHumanTimestampNoMillisNow()
+		    + " Call the AceQL Servlet from a browser to display full start in Tomcat logs...");
+	    System.out.println();
+	}
+
 	// To be done if we are not in Tomcat
 	if (propertiesFileStr == null) {
 	    propertiesFileStr = PropertiesFileStore.get().toString();
 	}
-	
+
 	debug("propertiesFileStr: " + propertiesFileStr);
 	debug("licenseFileStr   : " + licenseFileStr);
-		
+
     }
 
     @Override
     public void destroy() {
 	super.destroy();
 	INIT_DONE = false;
-	
-	if ( InjectedClassesStore.get() != null && InjectedClassesStore.get().getThreadPoolExecutor() != null) {
+
+	if (InjectedClassesStore.get() != null && InjectedClassesStore.get().getThreadPoolExecutor() != null) {
 	    ThreadPoolExecutor threadPoolExecutor = InjectedClassesStore.get().getThreadPoolExecutor();
 	    if (threadPoolExecutor != null) {
 		try {
@@ -134,14 +144,14 @@ public class ServerSqlManager extends HttpServlet {
 	    throws ServletException, IOException {
 
 	createClassesSynchronized(propertiesFileStr, licenseFileStr);
-	
+
 	/* Call in async mode */
 	final AsyncContext asyncContext = request.startAsync();
 	asyncContext.setTimeout(0);
 	asyncContext.addListener(new ServerAsyncListener());
 
 	ThreadPoolExecutor threadPoolExecutor = InjectedClassesStore.get().getThreadPoolExecutor();
-	
+
 	// Just in case
 	Objects.requireNonNull(threadPoolExecutor, "threadPoolExecutor cannot be null!");
 
@@ -163,12 +173,14 @@ public class ServerSqlManager extends HttpServlet {
 
     /**
      * Create all classes.
+     * 
      * @param propertiesFileStr
      * @param licenseFileStr
      * @throws ServletException
      * @throws IOException
      */
-    public static synchronized void createClassesSynchronized(String propertiesFileStr, String licenseFileStr) throws ServletException, IOException {
+    public static synchronized void createClassesSynchronized(String propertiesFileStr, String licenseFileStr)
+	    throws ServletException, IOException {
 	if (!INIT_DONE) {
 	    INIT_DONE = true;
 	    InjectedClassesManagerNew injectedClassesManager = new InjectedClassesManagerNew();
@@ -182,11 +194,11 @@ public class ServerSqlManager extends HttpServlet {
      *
      * @param request
      * @param response
-     * @throws ServletException 
+     * @throws ServletException
      * @throws UnsupportedEncodingException
      */
-    private void handleRequestWrapper(HttpServletRequest request, HttpServletResponse response)  {
-		
+    private void handleRequestWrapper(HttpServletRequest request, HttpServletResponse response) {
+
 	OutputStream out = null;
 	try {
 	    out = response.getOutputStream();
@@ -288,7 +300,7 @@ public class ServerSqlManager extends HttpServlet {
 	    }
 
 	    SessionConfigurator sessionConfigurator = InjectedClassesStore.get().getSessionConfigurator();
-		
+
 	    username = sessionConfigurator.getUsername(sessionId);
 	    database = sessionConfigurator.getDatabase(sessionId);
 
@@ -332,7 +344,8 @@ public class ServerSqlManager extends HttpServlet {
 	    headers.put(key, value);
 	}
 
-	RequestHeadersAuthenticator requestHeadersAuthenticator = InjectedClassesStore.get().getRequestHeadersAuthenticator();
+	RequestHeadersAuthenticator requestHeadersAuthenticator = InjectedClassesStore.get()
+		.getRequestHeadersAuthenticator();
 	boolean checked = requestHeadersAuthenticator.validate(headers);
 
 	if (!checked) {

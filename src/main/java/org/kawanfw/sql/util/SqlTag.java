@@ -31,7 +31,10 @@ import org.kawanfw.sql.version.VersionWrapper;
  *
  */
 public class SqlTag {
-
+    
+    public static final String SQL_PRODUCT_INIT = "["
+	    + VersionWrapper.getName().toUpperCase() + " INIT]";
+    
     public static final String SQL_PRODUCT_START = "["
 	    + VersionWrapper.getName().toUpperCase() + " START]";
     public static final String SQL_PRODUCT_START_FAILURE = "["
