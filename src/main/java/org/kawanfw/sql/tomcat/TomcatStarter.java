@@ -425,7 +425,7 @@ public class TomcatStarter {
 	String serverSqlManagerstatus = callServerSqlManagerServlet(url);
 
 	if (serverSqlManagerstatus.contains("\"OK\"")) {
-	    System.out.println(SqlTag.SQL_PRODUCT_START + " URL for client side (tested) : " + url);
+	    System.out.println(SqlTag.SQL_PRODUCT_START + " URL for client side (tested): " + url);
 	    return true;
 	}
 
