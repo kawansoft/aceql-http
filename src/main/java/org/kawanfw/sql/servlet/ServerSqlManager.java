@@ -93,7 +93,15 @@ public class ServerSqlManager extends HttpServlet {
     private static boolean INIT_DONE = false;
 
     private String propertiesFileStr;
-    private String licenseFileStr;
+    private static String licenseFileStr = null;
+
+    /**
+     * Returns the name of the license file, null if not exists
+     * @return the name of the license file, null if not exists
+     */
+    public static String getLicenseFileStr() {
+        return licenseFileStr;
+    }
 
     @Override
     public void init(ServletConfig config) throws ServletException {
