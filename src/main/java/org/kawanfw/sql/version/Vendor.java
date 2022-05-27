@@ -25,7 +25,7 @@
 
 package org.kawanfw.sql.version;
 
-public class Vendor {
+class Vendor {
 
     public static final String NAME = "KawanSoft SAS";
     public static final String WEB = "http://www.kawansoft.com";

@@ -24,6 +24,8 @@
  */
 package org.kawanfw.sql.api.server.util;
 
+import org.kawanfw.sql.version.VersionWrapper;
+
 /**
  *
  * Allows to get version info.
@@ -36,11 +38,10 @@ public class Version {
 
     /**
      * Returns the product name, version and date
-     *
      * @return the product name, version and date
      */
     public String getVersion() {
-	return new Version().getVersion();
+	return VersionWrapper.getServerVersion();
     }
 
 }
