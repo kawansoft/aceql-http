@@ -25,6 +25,7 @@
 package org.kawanfw.sql.version;
 
 /**
+ * Gets version and Edition type info.
  * @author Nicolas de Pomereu
  *
  */
@@ -43,8 +44,7 @@ public class VersionWrapper {
     }
 
     public static String getServerVersion() {
-	String edition = EditionUtil.isCommunityEdition() ? EDITION_COMMUNITY:EDITION_ENTERPRISE;
-	return NAME + " " + edition + " " + VERSION + " - " + DATE;
+	return NAME + " " + getEdition() + " " + VERSION + " - " + DATE;
     }
     
     public static String getEdition() {
