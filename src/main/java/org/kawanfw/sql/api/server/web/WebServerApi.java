@@ -33,7 +33,6 @@ import java.sql.SQLException;
 import org.apache.catalina.LifecycleException;
 import org.kawanfw.sql.api.server.DatabaseConfigurationException;
 import org.kawanfw.sql.api.util.webserver.WebServerApiWrapper;
-import org.kawanfw.sql.servlet.AceQLLicenseFileLoader;
 import org.kawanfw.sql.servlet.injection.classes.WebServerStarter;
 import org.kawanfw.sql.servlet.injection.classes.creator.WebServerStarterCreator;
 
@@ -72,10 +71,6 @@ public class WebServerApi {
      */
     public void startServer(String host, int port, File propertiesFile)
 	    throws ConnectException, IOException, SQLException, DatabaseConfigurationException, LifecycleException {
-	
-	//Set licenseFile
-	File licenseFile = AceQLLicenseFileLoader.getLicenseFileFromClassPath();
-	AceQLLicenseFileLoader.setAceqlLicenseFile(licenseFile);
 	
 	WebServerStarterCreator webServerStarterCreator = new WebServerStarterCreator();
 	WebServerStarter webServerStarter = webServerStarterCreator.createInstance();

@@ -35,6 +35,7 @@ import java.net.URLConnection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -43,7 +44,6 @@ import org.apache.catalina.LifecycleException;
 import org.apache.catalina.connector.Connector;
 import org.apache.catalina.startup.Tomcat;
 import org.kawanfw.sql.api.server.DatabaseConfigurationException;
-import org.kawanfw.sql.servlet.AceQLLicenseFileLoader;
 import org.kawanfw.sql.servlet.ServerSqlManager;
 import org.kawanfw.sql.servlet.injection.properties.ConfProperties;
 import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesManager;
@@ -136,21 +136,31 @@ public class TomcatStarter {
     private void startTomcat(Tomcat tomcat) throws IOException, ConnectException, LifecycleException,
 	    MalformedURLException, DatabaseConfigurationException, SQLException {
 
+	TomcatSqlModeStore.setTomcatEmbedded(true);
+	
 	// To be done at first, everything depends on ir.
 	PropertiesFileStore.set(propertiesFile);
-
-	// Set licenseFile
-	File licenseFile = AceQLLicenseFileLoader.getLicenseFileFromClassPath();
-	AceQLLicenseFileLoader.setAceqlLicenseFile(licenseFile);
 
 	TomcatStarterMessages.printBeginMessage();
 
 	System.out.println(TomcatStarterUtil.getJavaInfo());
-	System.out.println(SqlTag.SQL_PRODUCT_START + " " + "Using properties file: ");
+	System.out.println(SqlTag.SQL_PRODUCT_START + " " + "Using Properties File: ");
 	System.out.println(SqlTag.SQL_PRODUCT_START + "  -> " + propertiesFile);
 
 	Properties properties = PropertiesFileUtil.getProperties(propertiesFile);
 
+	debug("");
+	if (DEBUG) {
+	    for (Map.Entry<Object, Object> entry : properties.entrySet()) {
+		String key = (String) entry.getKey();
+		String value = (String) entry.getValue();
+		
+		if (key.contains("password")) {
+		    debug(" In startTomcat --> key / value: " + key + " / " + value);
+		}
+	    }
+	}
+	
 	String tomcatLoggingLevel = properties.getProperty("tomcatLoggingLevel");
 
 	String level = "SEVERE";

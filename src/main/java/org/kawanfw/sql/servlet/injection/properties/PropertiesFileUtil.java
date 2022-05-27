@@ -32,6 +32,7 @@ import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
@@ -67,10 +68,11 @@ public class PropertiesFileUtil {
 	
 	Properties properties = commonsGetProperties(file);
 	
+	debug("Before EditionUtil.isCommunityEdition()");
 	if (EditionUtil.isCommunityEdition()) {
 	    return properties;
 	}
-	
+	debug("After EditionUtil.isCommunityEdition()");
 	debug("Properties file: " + file);
 	
 	char[] password = null;
@@ -80,12 +82,23 @@ public class PropertiesFileUtil {
 	    throw new DatabaseConfigurationException(e.getMessage());
 	}
 	
+	debug("Password: " + new String(password));
 		
 	try {
 	    Class<?> c = Class.forName("org.kawanfw.sql.pro.reflection.builders.ProEditionPropertiesDecryptor");
 	    Constructor<?> constructor = c.getConstructor();
 	    PropertiesDecryptor propertiesDecryptor = (PropertiesDecryptor) constructor.newInstance();
-	    return propertiesDecryptor.decrypt(properties, password);
+	    properties =  propertiesDecryptor.decrypt(properties, password);
+	    
+	    for (Map.Entry<Object, Object> entry : properties.entrySet()) {
+		String key = (String) entry.getKey();
+		String value = (String) entry.getValue();
+		if (key.contains("password")) {
+		    debug(" In getProperties: --> key / value: " + key + " / " + value);
+		}
+	    }
+	    
+	    return properties;
 	} catch (Exception e) {
 	    e.printStackTrace(System.out);
 	    throw new IOException("Can not load ProEditionPropertiesDecryptor", e);

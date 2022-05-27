@@ -80,7 +80,7 @@ public class TomcatStarterUtil {
      */
     public static void createAndStoreDataSources(Properties properties)
 	    throws DatabaseConfigurationException, IOException, SQLException {
-
+	
 	if (properties == null) {
 	    throw new IllegalArgumentException("properties is null");
 	}
@@ -224,12 +224,14 @@ public class TomcatStarterUtil {
 	    throws DatabaseConfigurationException, IOException, SQLException {
 	Objects.requireNonNull(properties, "properties cannot be null!");
 	Objects.requireNonNull(database, "database cannot be null!");
-
+	
 	String driverClassName = properties.getProperty(database + "." + "driverClassName");
 	String url = properties.getProperty(database + "." + "url");
 	String username = properties.getProperty(database + "." + "username");
 	String password = properties.getProperty(database + "." + "password");
-
+	
+	//System.err.println("username / password: " + username + " / " + password);
+	
 	if (driverClassName == null || driverClassName.isEmpty()) {
 	    System.err.println(SqlTag.SQL_PRODUCT_START + " WARNING: driverClassName"
 		    + " property not found for database " + database + "! ");

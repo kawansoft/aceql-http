@@ -31,20 +31,44 @@ import org.apache.commons.lang3.StringUtils;
 import org.kawanfw.sql.util.ClasspathUtil;
 
 /**
+ * Allows to locate the license file. In CLASSPATH if we are embedded mode, else in native Tomcat the value 
  * @author Nicolas de Pomereu
  *
  */
-public class AceQLLicenseFileLoader {
+public class AceQLLicenseFileFinder {
 
     private static final String ACEQL_LICENSE_KEY_TXT = "aceql_license_key.txt";
     
-    private static File aceqlLicenseFile;
-    
+    /**
+     * Returns the file of the existing license file, else null if file can not be found.
+     * @return the file of the existing license file, else null if file can not be found.
+     */
+    public static File getLicenseFile() {
+	
+	// 1) Try in CLASSPATH (Tomcat Embedded)
+	File licenseFile = getLicenseFileFromClassPath();
+	
+	if (licenseFile != null) {
+	    return licenseFile;
+	}
+	
+	// 2) If we are in native Tomcat : Get the web.xml licenseFile initParam 
+	String licenseFileStr = ServerSqlManager.getLicenseFileStr();
+	
+	licenseFile = null;
+	if ( licenseFileStr != null && ! licenseFileStr.isEmpty()) {
+	    licenseFile = new File(licenseFileStr);
+	}
+
+	return licenseFile;
+
+    }
+
     /**
      * Returns the license file that is in the same directory as the aceql-server.properties file 
      * @return the AceQL license file in the same directory
      */
-    public static File getLicenseFileFromClassPath() {
+    private static File getLicenseFileFromClassPath() {
 	
 	List<String> classpathList = ClasspathUtil.getClasspath();
 	
@@ -58,23 +82,4 @@ public class AceQLLicenseFileLoader {
 	}
 	return null;
     }
-
-    /**
-     * Returns the AceQL License file 
-     * @return the  AceQL License file 
-     */
-    public static File getAceqlLicenseFile() {
-        return AceQLLicenseFileLoader.aceqlLicenseFile;
-    }
-
-    /**
-     * Sets the AceQL License file 
-     * @param aceqlLicenseFile the AceQL License file to set
-     */
-    public static void setAceqlLicenseFile(File aceqlLicenseFile) {
-        AceQLLicenseFileLoader.aceqlLicenseFile = aceqlLicenseFile;
-    }
-
-    
-    
 }

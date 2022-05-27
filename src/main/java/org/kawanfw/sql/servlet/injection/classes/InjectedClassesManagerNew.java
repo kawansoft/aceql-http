@@ -45,7 +45,6 @@ import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
 import org.kawanfw.sql.api.server.firewall.trigger.SqlFirewallTrigger;
 import org.kawanfw.sql.api.server.listener.UpdateListener;
 import org.kawanfw.sql.api.server.session.JwtSessionConfigurator;
-import org.kawanfw.sql.servlet.AceQLLicenseFileLoader;
 import org.kawanfw.sql.servlet.injection.classes.InjectedClasses.InjectedClassesBuilder;
 import org.kawanfw.sql.servlet.injection.classes.blob.BlobDownloadConfiguratorClassNameBuilder;
 import org.kawanfw.sql.servlet.injection.classes.blob.BlobDownloadConfiguratorClassNameBuilderCreator;
@@ -104,7 +103,6 @@ public class InjectedClassesManagerNew {
 				"The file defined by the  web.xml init param \"licenseFile\" does not exist:"
 					+ licenseFile);
 		    }
-		    AceQLLicenseFileLoader.setAceqlLicenseFile(licenseFile);
 		}
 
 		TomcatStarterMessages.printBeginMessage();

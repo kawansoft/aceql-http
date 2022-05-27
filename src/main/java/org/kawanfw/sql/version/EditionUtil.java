@@ -24,9 +24,9 @@
  */
 package org.kawanfw.sql.version;
 
-import org.kawanfw.sql.servlet.AceQLLicenseFileLoader;
-import org.kawanfw.sql.servlet.ServerSqlManager;
-import org.kawanfw.sql.tomcat.TomcatSqlModeStore;
+import java.io.File;
+
+import org.kawanfw.sql.servlet.AceQLLicenseFileFinder;
 
 /**
  * @author Nicolas de Pomereu
@@ -38,14 +38,8 @@ public class EditionUtil {
      * Says is edition is Community or Enterprise.
      */
     public static boolean isCommunityEdition() {
-	// return VersionWrapper.getType().equals(new DefaultVersion().getType());
-
-	if (TomcatSqlModeStore.isTomcatEmbedded()) {
-	    return AceQLLicenseFileLoader.getLicenseFileFromClassPath() == null ? true : false;
-	} else {
-	    return ServerSqlManager.getLicenseFileStr() == null ? true : false;
-	}
-
+	File licenseFile = AceQLLicenseFileFinder.getLicenseFile();
+	return licenseFile == null ? true : false;
     }
 
 }

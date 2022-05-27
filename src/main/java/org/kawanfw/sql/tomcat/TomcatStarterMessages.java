@@ -25,9 +25,11 @@
 
 package org.kawanfw.sql.tomcat;
 
+import org.kawanfw.sql.servlet.AceQLLicenseFileFinder;
 import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesUtil;
 import org.kawanfw.sql.util.SqlTag;
 import org.kawanfw.sql.util.TimestampUtil;
+import org.kawanfw.sql.version.EditionUtil;
 import org.kawanfw.sql.version.VersionWrapper;
 
 /**
@@ -44,6 +46,12 @@ public class TomcatStarterMessages {
         System.out.println(SqlTag.SQL_PRODUCT_START + " Starting " + VersionWrapper.getName() + " Web Server at "
         	+ TimestampUtil.getHumanTimestampNoMillisNow() + "...");
         System.out.println(SqlTag.SQL_PRODUCT_START + " " + VersionWrapper.getServerVersion());
+        
+        if (! EditionUtil.isCommunityEdition()) {
+            System.out.println(SqlTag.SQL_PRODUCT_START + " Using License File:");
+            System.out.println(SqlTag.SQL_PRODUCT_START + "  -> " + AceQLLicenseFileFinder.getLicenseFile());
+             
+        }
     }
 
     /**
