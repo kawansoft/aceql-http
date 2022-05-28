@@ -64,11 +64,6 @@ public class PropertiesPasswordManagerLoader {
 	    propertiesPasswordManagerClassName = DefaultPropertiesPasswordManager.class.getName();
 	}
 	
-	if (propertiesPasswordManagerClassName == null || propertiesPasswordManagerClassName.isEmpty()) {
-	    System.err.println("propertiesPasswordManagerClassName is null!");
-	    return null;
-	}
-	
 	debug("Before Class<?> c = Class.forName(propertiesPasswordManagerClassName);");
 	
 	PropertiesPasswordManager propertiesPasswordManager = null;
@@ -78,7 +73,7 @@ public class PropertiesPasswordManagerLoader {
 	    Class<?> c = Class.forName(propertiesPasswordManagerClassName);
 	    Constructor<?> constructor = c.getConstructor();
 	    propertiesPasswordManager = (PropertiesPasswordManager) constructor.newInstance();
-		debug("After (PropertiesPasswordManager) constructor.newInstance()");
+	    debug("After (PropertiesPasswordManager) constructor.newInstance()");
 	} catch (Exception e) {
 	    String initErrrorMesage = "Impossible to load PropertiesPasswordManager concrete class: " + propertiesPasswordManagerClassName;
 	    e.printStackTrace();
@@ -87,8 +82,13 @@ public class PropertiesPasswordManagerLoader {
 	
 	char [] password = propertiesPasswordManager.getPassword();
 	
-	debug("password: " + new String (password));
-	
+	if (password == null) {
+	    debug("password is null!");   	    
+	}
+	else {
+	    debug("password: " + new String (password));    
+	}
+
 	return password;
     }
 

@@ -79,10 +79,15 @@ public class PropertiesFileUtil {
 	try {
 	    password = PropertiesPasswordManagerLoader.getPassword(properties);
 	} catch (Exception e) {
+	    e.printStackTrace();
 	    throw new DatabaseConfigurationException(e.getMessage());
 	}
 	
-	debug("Password: " + new String(password));
+	// Nothing todo if not configured
+	if (password == null) {
+	    debug("Password is null! No Decryption to do.");
+	    return properties;
+	}
 		
 	try {
 	    Class<?> c = Class.forName("org.kawanfw.sql.pro.reflection.builders.ProEditionPropertiesDecryptor");

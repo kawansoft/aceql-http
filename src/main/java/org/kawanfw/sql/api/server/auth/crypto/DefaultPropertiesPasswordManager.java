@@ -80,7 +80,7 @@ public class DefaultPropertiesPasswordManager implements PropertiesPasswordManag
 	}
 
 	String password = properties.getProperty("password");
-	debug("password: " + dir);
+	debug("password: " + password);
 
 	if (password == null || password.isEmpty()) {
 	    throw new IOException("password property not defined in file: " + file);

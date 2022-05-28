@@ -166,8 +166,6 @@ public class JdbcPasswordEncryptor {
 	    System.exit(1);
 	}
 
-
-
 	File file = new File(fileStr);
 	JdbcPasswordEncryptor jdbcPasswordEncryptor = new JdbcPasswordEncryptor(file);
 	String passwordEncrypted = jdbcPasswordEncryptor.encryptPassword(password);
