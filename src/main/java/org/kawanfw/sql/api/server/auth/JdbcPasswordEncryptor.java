@@ -40,6 +40,7 @@ import org.jasypt.util.password.ConfigurablePasswordEncryptor;
 import org.kawanfw.sql.api.server.DatabaseConfigurationException;
 import org.kawanfw.sql.api.util.auth.ConfigurablePasswordEncryptorUtil;
 import org.kawanfw.sql.api.util.auth.PasswordEncryptorUtil;
+import org.kawanfw.sql.servlet.injection.properties.PropertiesFileStore;
 import org.kawanfw.sql.servlet.injection.properties.PropertiesFileUtil;
 import org.kawanfw.sql.version.VersionWrapper;
 
@@ -90,6 +91,7 @@ public class JdbcPasswordEncryptor {
 	if (!propertiesFile.exists()) {
 	    throw new FileNotFoundException("The properties file does not exist: " + propertiesFile);
 	}
+	PropertiesFileStore.set(propertiesFile);
 	Properties properties = PropertiesFileUtil.getProperties(propertiesFile);
 	passwordEncryptor = ConfigurablePasswordEncryptorUtil.getConfigurablePasswordEncryptor(properties);
 
