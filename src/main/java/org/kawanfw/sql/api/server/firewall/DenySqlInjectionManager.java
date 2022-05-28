@@ -48,7 +48,13 @@ import org.kawanfw.sql.util.Tag;
  * startup. <br>
  * The file must be located in the same directory as the
  * {@code aceql.properties} file used when starting the AceQL server.<br>
+ * <br>
+ * Note that SQL injections are detected synchronously, which may slow down the
+ * SQL calls. The {@code DenySqlInjectionManagerAsync} SQLFirewallManager is
+ * provided for asynchronously detection.
  * 
+ * 
+ * @see DenySqlInjectionManagerAsync
  * @author Nicolas de Pomereu
  * @since 11.0
  */
@@ -77,7 +83,7 @@ public class DenySqlInjectionManager extends DefaultSqlFirewallManager implement
 		cloudmersiveApi = new CloudmersiveApi(DenySqlInjectionManagerUtil.getCloudmersivePropertiesFile());
 	    }
 
-	    return ! cloudmersiveApi.sqlInjectionDetect(sql);
+	    return !cloudmersiveApi.sqlInjectionDetect(sql);
 	} catch (Exception exception) {
 	    exception.printStackTrace();
 	    try {

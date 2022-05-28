@@ -54,13 +54,18 @@ import org.kawanfw.sql.util.Tag;
  * The SQL injection detection is asynchronous: this means that
  * {@code allowSqlRunAfterAnalysis} will always immediately return {@code true}
  * and that the result of the analysis will trigger later all
- * {@code SqlFirewallTrigger} defined in the {@code aceql.properties} file.
- * <br><br>
- * Note that because of the asynchronous behavior, a new {@code Connection} will be extracted from the pool
- * in order to process the {@link SqlFirewallTrigger#runIfStatementRefused(SqlEvent, SqlFirewallManager, Connection)} methods.
- * <br>The {@code Connection} will be cleanly released after all calls. 
- * <br>See {@link SqlInjectionApiCallback} source code for more info
+ * {@code SqlFirewallTrigger} defined in the {@code aceql.properties} file. <br>
+ * <br>
+ * Note that because of the asynchronous behavior, a new {@code Connection} will
+ * be extracted from the pool in order to process the
+ * {@link SqlFirewallTrigger#runIfStatementRefused(SqlEvent, SqlFirewallManager, Connection)}
+ * methods. <br>
+ * The {@code Connection} will be cleanly released after all calls. <br>
+ * See {@codeSqlInjectionApiCallback} source code for more info
  * 
+ * @see SqlInjectionApiCallback
+ * @see DenySqlInjectionManager
+
  * @author Nicolas de Pomereu
  * @since 11.0
  */
@@ -71,8 +76,10 @@ public class DenySqlInjectionManagerAsync extends DefaultSqlFirewallManager impl
     private Logger logger;
 
     /**
-     * Allows to detect in background if <a href="https://www.cloudmersive.com">Cloudmersive</a> SQL injection
-     * detector accepts the SQL statement. (The call always thus returns immediately {@code true}).
+     * Allows to detect in background if
+     * <a href="https://www.cloudmersive.com">Cloudmersive</a> SQL injection
+     * detector accepts the SQL statement. (The call always thus returns immediately
+     * {@code true}).
      */
     @Override
     public boolean allowSqlRunAfterAnalysis(SqlEvent sqlEvent, Connection connection) throws IOException, SQLException {
