@@ -150,6 +150,7 @@ public class CloudmersiveApi {
 	    sqlInjectionDetectionResult = apiInstance.textInputCheckSqlInjection(sql, detectionLevel);
 	    return sqlInjectionDetectionResult.isContainedSqlInjectionAttack();
 	} catch (ApiException apiException) {
+	    connect();
 	    throw new SQLException(apiException);
 	}
     }
@@ -174,6 +175,7 @@ public class CloudmersiveApi {
 		    sqlFirewallManager);
 	    apiInstance.textInputCheckSqlInjectionAsync(sqlEvent.getSql(), detectionLevel, sqlInjectionApiCallback);
 	} catch (ApiException apiException) {
+	    connect();
 	    throw new SQLException(apiException);
 	}
 
