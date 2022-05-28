@@ -22,7 +22,7 @@
  * Any modifications to this file must keep this entire header
  * intact.
  */
-package org.kawanfw.sql.api.util.firewall;
+package org.kawanfw.sql.api.util.firewall.cloudmersive;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -32,11 +32,15 @@ import java.util.Date;
 import java.util.Objects;
 import java.util.Properties;
 
+import org.kawanfw.sql.api.server.SqlEvent;
+import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
+import org.kawanfw.sql.api.server.firewall.SqlInjectionApiCallback;
 import org.kawanfw.sql.servlet.injection.properties.PropertiesFileUtil;
 import org.kawanfw.sql.util.FrameworkDebug;
 import org.kawanfw.sql.util.SqlTag;
 
 import com.cloudmersive.client.TextInputApi;
+import com.cloudmersive.client.invoker.ApiCallback;
 import com.cloudmersive.client.invoker.ApiClient;
 import com.cloudmersive.client.invoker.ApiException;
 import com.cloudmersive.client.invoker.Configuration;
@@ -44,29 +48,32 @@ import com.cloudmersive.client.invoker.auth.ApiKeyAuth;
 import com.cloudmersive.client.model.SqlInjectionDetectionResult;
 
 /**
- * Cloudmersive API wrapper for SQL injection detection.
- * <br><br>
- * Usage requires a free creation account at https://account.cloudmersive.com/signup
+ * Cloudmersive API wrapper for SQL injection detection. <br>
+ * <br>
+ * Usage requires a free creation account at
+ * https://account.cloudmersive.com/signup
+ * 
  * @author Nicolas de Pomereu
  *
  */
 public class CloudmersiveApi {
 
     private static boolean DEBUG = FrameworkDebug.isSet(CloudmersiveApi.class);
-    
+
     private static final int FIVE_MINUTES_IN_MILLISECONDS = 5 * 60 * 1000;
 
     private TextInputApi apiInstance;
     private String detectionLevel;
     private SqlInjectionDetectionResult sqlInjectionDetectionResult;
     private long snapshot;
-  
+
     private File file;
-    
+
     /**
      * Constructor
+     * 
      * @param file the cloudmersive.properties files
-     * @throws FileNotFoundException 
+     * @throws FileNotFoundException
      */
     public CloudmersiveApi(File file) throws FileNotFoundException {
 	this.file = Objects.requireNonNull(file, "file cannot be null!");
@@ -76,74 +83,100 @@ public class CloudmersiveApi {
 	this.snapshot = 0;
     }
 
-
     /**
      * Connect to Cloudmersive using elements stored in a properties file
+     * 
      * @throws IOException if any I/O Exception occurs
      */
-    private void connect( ) throws IOException {
+    private void connect() throws IOException {
 	
+	long begin = System.currentTimeMillis();
+	debug("Begin Connect...");
 	Properties properties = PropertiesFileUtil.getProperties(file);
 	String apiKey = (String) properties.get("apiKey");
-	
+
 	if (apiKey == null || apiKey.isEmpty()) {
-	    throw new IllegalArgumentException(SqlTag.USER_CONFIGURATION + " apiKey property not found in file: " + file);
+	    throw new IllegalArgumentException(
+		    SqlTag.USER_CONFIGURATION + " apiKey property not found in file: " + file);
 	}
-	
+
 	String apiKeyPrefix = (String) properties.get("apiKeyPrefix");
 	detectionLevel = (String) properties.get("detectionLevel");
-	
+
 	if (detectionLevel == null || detectionLevel.isEmpty()) {
 	    detectionLevel = "Normal";
 	}
-	
-	if (! detectionLevel.equals("High") && ! detectionLevel.equals("Normal")) {
-	    throw new IllegalArgumentException(SqlTag.USER_CONFIGURATION +  " detectionLevel can be \"Normal\" or \"High\" only. Is: " + detectionLevel);
+
+	if (!detectionLevel.equals("High") && !detectionLevel.equals("Normal")) {
+	    throw new IllegalArgumentException(SqlTag.USER_CONFIGURATION
+		    + " detectionLevel can be \"Normal\" or \"High\" only. Is: " + detectionLevel);
 	}
-	
+
 	ApiClient defaultClient = Configuration.getDefaultApiClient();
 	// Configure API key authorization: Apikey
 	ApiKeyAuth Apikey = (ApiKeyAuth) defaultClient.getAuthentication("Apikey");
 	Apikey.setApiKey(apiKey);
-	
-	if (apiKeyPrefix != null && ! apiKeyPrefix.isEmpty()) {
+
+	if (apiKeyPrefix != null && !apiKeyPrefix.isEmpty()) {
 	    Apikey.setApiKeyPrefix(apiKeyPrefix);
 	}
-	
+
 	apiInstance = new TextInputApi();
 	snapshot = new Date().getTime();
+	
+	long end = System.currentTimeMillis();
+	debug("End Connect. " + (end-begin));
     }
 
-    
     /**
      * Detects if the passed SQL statement contains a SQL injection attack.
-     * @param sql	the SQL statement to analyze
-     * @return true if the passed SQL statement contains a SQL injection attack, else false
+     * 
+     * @param sql the SQL statement to analyze
+     * @return true if the passed SQL statement contains a SQL injection attack,
+     *         else false
      * @throws SQLException if any erro occurs. (Wraps the {@link ApiException})
-     * @throws IOException 
+     * @throws IOException
      */
     public boolean sqlInjectionDetect(String sql) throws SQLException, IOException {
-	
+
 	long now = new Date().getTime();
-	
-	if (now - snapshot > FIVE_MINUTES_IN_MILLISECONDS ) {
+
+	if (now - snapshot > FIVE_MINUTES_IN_MILLISECONDS) {
 	    debug("Reloading with connect()!");
 	    connect();
 	}
 
 	try {
 	    sqlInjectionDetectionResult = apiInstance.textInputCheckSqlInjection(sql, detectionLevel);
-	    return sqlInjectionDetectionResult.isSuccessful();
-	} catch (ApiException e) {
-	    e.printStackTrace();
-	    throw new SQLException(e);
+	    return sqlInjectionDetectionResult.isContainedSqlInjectionAttack();
+	} catch (ApiException apiException) {
+	    throw new SQLException(apiException);
 	}
     }
-    
+
     private void debug(String string) {
 	if (DEBUG) {
 	    System.out.println(new Date() + " " + this.getClass().getSimpleName() + " " + string);
 	}
+    }
+
+    public void sqlInjectionDetectAsync(SqlEvent sqlEvent, SqlFirewallManager sqlFirewallManager)
+	    throws IOException, SQLException {
+	long now = new Date().getTime();
+
+	if (now - snapshot > FIVE_MINUTES_IN_MILLISECONDS) {
+	    debug("Reloading with connect()!");
+	    connect();
+	}
+
+	try {
+	    ApiCallback<SqlInjectionDetectionResult> sqlInjectionApiCallback = new SqlInjectionApiCallback(sqlEvent,
+		    sqlFirewallManager);
+	    apiInstance.textInputCheckSqlInjectionAsync(sqlEvent.getSql(), detectionLevel, sqlInjectionApiCallback);
+	} catch (ApiException apiException) {
+	    throw new SQLException(apiException);
+	}
+
     }
 
 }
