@@ -41,8 +41,9 @@ import com.cloudmersive.client.model.SqlInjectionDetectionResult;
 
 /**
  * Manages callback for {@code DenySqlInjectionManagerAsync}. Will execute all
- * the {@code SqlFirewallTrigger} implementations defined in the {@code aceql-server.properties}
- * file.
+ * the {@code SqlFirewallTrigger} implementations defined in the
+ * {@code aceql-server.properties} file.
+ * 
  * @see DenySqlInjectionManagerAsync
  * @author Nicolas de Pomereu
  * @since 11.0
@@ -99,7 +100,9 @@ public class SqlInjectionApiCallback implements ApiCallback<SqlInjectionDetectio
 	    e.printStackTrace();
 	} finally {
 	    try {
-		databaseConfigurator.close(connection);
+		if (connection != null) {
+		    databaseConfigurator.close(connection);
+		}
 	    } catch (SQLException e) {
 		e.printStackTrace();
 	    }
