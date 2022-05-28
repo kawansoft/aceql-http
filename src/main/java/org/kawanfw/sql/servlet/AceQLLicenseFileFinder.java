@@ -39,16 +39,33 @@ public class AceQLLicenseFileFinder {
 
     private static final String ACEQL_LICENSE_KEY_TXT = "aceql_license_key.txt";
     
+    private static boolean STORED_DONE = false;
+    private static File STORED_ACEQL_LICENCSE_FILE = null;
+    
+    
+    /**
+     * Reset method to be used when starting from a service, for example
+     */
+    public static void reset() {
+	STORED_DONE = false;
+    }
+
     /**
      * Returns the file of the existing license file, else null if file can not be found.
      * @return the file of the existing license file, else null if file can not be found.
      */
     public static File getLicenseFile() {
 	
+	if (STORED_DONE) {
+	    return STORED_ACEQL_LICENCSE_FILE;
+	}
+	
 	// 1) Try in CLASSPATH (Tomcat Embedded)
 	File licenseFile = getLicenseFileFromClassPath();
 	
 	if (licenseFile != null) {
+	    STORED_ACEQL_LICENCSE_FILE = licenseFile;
+	    STORED_DONE = true;
 	    return licenseFile;
 	}
 	
@@ -60,9 +77,12 @@ public class AceQLLicenseFileFinder {
 	    licenseFile = new File(licenseFileStr);
 	}
 
+	STORED_ACEQL_LICENCSE_FILE = licenseFile;
+	STORED_DONE = true;
 	return licenseFile;
 
     }
+
 
     /**
      * Returns the license file that is in the same directory as the aceql-server.properties file 
