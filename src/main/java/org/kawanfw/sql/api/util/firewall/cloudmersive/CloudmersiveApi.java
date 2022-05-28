@@ -138,7 +138,8 @@ public class CloudmersiveApi {
      * @throws IOException
      */
     public boolean sqlInjectionDetect(String sql) throws SQLException, IOException {
-
+	Objects.requireNonNull(sql, "sql cannot ne null!");
+	
 	long now = new Date().getTime();
 
 	if (now - snapshot > FIVE_MINUTES_IN_MILLISECONDS) {
@@ -163,6 +164,10 @@ public class CloudmersiveApi {
 
     public void sqlInjectionDetectAsync(SqlEvent sqlEvent, SqlFirewallManager sqlFirewallManager)
 	    throws IOException, SQLException {
+	
+	Objects.requireNonNull(sqlEvent, "sqlEvent cannot ne null!");
+	Objects.requireNonNull(sqlFirewallManager, "sqlFirewallManager cannot ne null!");
+	
 	long now = new Date().getTime();
 
 	if (now - snapshot > FIVE_MINUTES_IN_MILLISECONDS) {

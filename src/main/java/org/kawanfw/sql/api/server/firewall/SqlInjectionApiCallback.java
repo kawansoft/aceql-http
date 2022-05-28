@@ -28,6 +28,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.kawanfw.sql.api.server.DatabaseConfigurator;
 import org.kawanfw.sql.api.server.SqlEvent;
@@ -53,7 +54,7 @@ public class SqlInjectionApiCallback implements ApiCallback<SqlInjectionDetectio
      * {@code TextInputApi.textInputCheckSqlInjectionAsync} call
      **/
     private SqlEvent sqlEvent;
-    private SqlFirewallManager SqlFirewallManager;
+    private SqlFirewallManager sqlFirewallManager;
 
     /**
      * Constructor
@@ -65,15 +66,15 @@ public class SqlInjectionApiCallback implements ApiCallback<SqlInjectionDetectio
      * @param sqlFirewallManager the instance that that triggers this call.
      */
     public SqlInjectionApiCallback(SqlEvent sqlEvent, SqlFirewallManager sqlFirewallManager) {
-	this.sqlEvent = sqlEvent;
-	this.SqlFirewallManager = sqlFirewallManager;
+	this.sqlEvent = Objects.requireNonNull(sqlEvent, "sqlEvent cannot ne null!");
+	this.sqlFirewallManager = Objects.requireNonNull(sqlFirewallManager, "sqlFirewallManager cannot ne null!");
     }
 
     @Override
     public void onFailure(ApiException e, int statusCode, Map<String, List<String>> responseHeaders) {
 	// We don't really care..
 	System.err.println("Failure on DenySqlInjectionManagerAsync defered execution: ");
-	System.err.println("SqlFirewallManager : " + SqlFirewallManager.getClass().getName());
+	System.err.println("sqlFirewallManager : " + sqlFirewallManager.getClass().getName());
 	e.printStackTrace();
 
     }
@@ -93,7 +94,7 @@ public class SqlInjectionApiCallback implements ApiCallback<SqlInjectionDetectio
 	Connection connection = null;
 	try {
 	    connection = databaseConfigurator.getConnection(database);
-	    SqlFirewallTriggerWrapper.runIfStatementRefused(sqlEvent, SqlFirewallManager, connection);
+	    SqlFirewallTriggerWrapper.runIfStatementRefused(sqlEvent, sqlFirewallManager, connection);
 	} catch (Exception e) {
 	    e.printStackTrace();
 	} finally {
