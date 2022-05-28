@@ -34,6 +34,7 @@ import java.util.Properties;
 
 import org.kawanfw.sql.servlet.injection.properties.PropertiesFileStore;
 import org.kawanfw.sql.util.FrameworkDebug;
+import org.kawanfw.sql.util.SqlTag;
 
 /**
  * This default implementation will extract the password from the "password"
@@ -71,6 +72,7 @@ public class DefaultPropertiesPasswordManager implements PropertiesPasswordManag
 	debug("File of properties_password_manager.properties:" + file);
 	
 	if (!file.exists()) {
+	    debug(file.toString() + " does not exist. No decryption todo.");
 	    return null;
 	}
 
@@ -83,7 +85,7 @@ public class DefaultPropertiesPasswordManager implements PropertiesPasswordManag
 	debug("password: " + password);
 
 	if (password == null || password.isEmpty()) {
-	    throw new IOException("password property not defined in file: " + file);
+	    throw new IOException(SqlTag.USER_CONFIGURATION + " password property not defined in file: " + file);
 	}
 
 	return password.toCharArray();
