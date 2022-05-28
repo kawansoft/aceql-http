@@ -41,7 +41,7 @@ What's New:
 - DenyExecuteUpdateManager has been renamed to less ambiguous name
   DenyDatabaseWriteManager.
 - runIfStatementRefused() has been moved from SqlFirewallManager interface 
-  to new SqlFirewallTrigger.
+  to new SqlFirewallTrigger interface.
 - New SqlFirewallTrigger.runIfStatementRefused() implementations: 
   BanUserSqlFirewallTrigger, BeeperSqlFirewallTrigger, 
   JdbcLoggerSqlFirewallTrigger, JsonLoggerSqlFirewallTrigger.
@@ -54,6 +54,7 @@ What's New:
   security reasons.
 - Gson base libraries have been upgraded to 2.8.9 for 
   security reasons.
+
 
 AceQL HTTP Version 10.2 - 07-Feb-2022
 -------------------------------------

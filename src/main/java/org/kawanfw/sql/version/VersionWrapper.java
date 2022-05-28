@@ -47,10 +47,20 @@ public class VersionWrapper {
 	return NAME + " " + getEdition() + " " + VERSION + " - " + DATE;
     }
     
+    public static String getVersionNumber() {
+	return VERSION;
+    }
+    
+    public static String getVersionDate() {
+	return DATE;
+    }
+
     public static String getEdition() {
 	String edition = EditionUtil.isCommunityEdition() ? EDITION_COMMUNITY:EDITION_ENTERPRISE;
 	return edition;
     }
+    
+    
     
   
     /**
