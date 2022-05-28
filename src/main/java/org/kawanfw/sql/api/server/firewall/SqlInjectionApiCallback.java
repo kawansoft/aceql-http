@@ -39,7 +39,7 @@ import com.cloudmersive.client.invoker.ApiException;
 import com.cloudmersive.client.model.SqlInjectionDetectionResult;
 
 /**
- * Manage callback for {@code DenySqlInjectionManagerAsync}. Will execute all
+ * Manages callback for {@code DenySqlInjectionManagerAsync}. Will execute all
  * the {@code SqlFirewallTrigger} implementations defined in the {@code aceql-server.properties}
  * file.
  * @see DenySqlInjectionManagerAsync
