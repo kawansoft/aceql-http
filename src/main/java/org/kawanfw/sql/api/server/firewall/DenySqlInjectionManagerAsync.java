@@ -62,7 +62,7 @@ import org.kawanfw.sql.util.Tag;
  * <br>See {@link SqlInjectionApiCallback} source code for more info
  * 
  * @author Nicolas de Pomereu
- * @since 11
+ * @since 11.0
  */
 public class DenySqlInjectionManagerAsync extends DefaultSqlFirewallManager implements SqlFirewallManager {
 

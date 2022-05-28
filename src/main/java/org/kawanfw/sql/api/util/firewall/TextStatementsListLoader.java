@@ -48,7 +48,7 @@ select * from my_table_2 where column2 = ?
  * </pre>
  *
  * @author Nicolas de Pomereu
- * @since 11
+ * @since 11.0
  *
  */
 

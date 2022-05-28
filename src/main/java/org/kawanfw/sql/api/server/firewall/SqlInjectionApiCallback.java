@@ -44,7 +44,7 @@ import com.cloudmersive.client.model.SqlInjectionDetectionResult;
  * file.
  * @see DenySqlInjectionManagerAsync
  * @author Nicolas de Pomereu
- *
+ * @since 11.0
  */
 public class SqlInjectionApiCallback implements ApiCallback<SqlInjectionDetectionResult> {
 

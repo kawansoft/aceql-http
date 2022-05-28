@@ -50,7 +50,7 @@ import org.kawanfw.sql.util.Tag;
  * {@code aceql.properties} file used when starting the AceQL server.<br>
  * 
  * @author Nicolas de Pomereu
- * @since 11
+ * @since 11.0
  */
 public class DenySqlInjectionManager extends DefaultSqlFirewallManager implements SqlFirewallManager {
 

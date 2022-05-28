@@ -69,7 +69,7 @@ import org.kawanfw.sql.util.TimestampUtil;
  * text file and the incoming one from client side.
  *
  * @author Nicolas de Pomereu
- * @since 11
+ * @since 11.0
  */
 public class DenyExceptOnWhitelistManager extends DefaultSqlFirewallManager implements SqlFirewallManager {
 
