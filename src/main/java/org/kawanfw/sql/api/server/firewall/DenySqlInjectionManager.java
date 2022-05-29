@@ -49,7 +49,7 @@ import org.kawanfw.sql.util.Tag;
  * The file must be located in the same directory as the
  * {@code aceql.properties} file used when starting the AceQL server.<br>
  * <br>
- * Note that SQL injections are detected synchronously, which may slow down the
+ * Note that SQL injections are detected synchronously, which will slow down the
  * SQL calls. The {@code DenySqlInjectionManagerAsync} SQLFirewallManager is
  * provided for asynchronously detection.
  * 
