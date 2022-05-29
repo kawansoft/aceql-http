@@ -99,6 +99,7 @@ public class SqlInjectionApiCallback implements ApiCallback<SqlInjectionDetectio
     public void onSuccess(SqlInjectionDetectionResult result, int statusCode,
 	    Map<String, List<String>> responseHeaders) {
 
+	long begin = System.currentTimeMillis();
 	debug("onSucces: result.isContainedSqlInjectionAttack():" + result.isContainedSqlInjectionAttack());
 
 	// Exit if not a SQL Injection attack
@@ -117,7 +118,8 @@ public class SqlInjectionApiCallback implements ApiCallback<SqlInjectionDetectio
 	    debug("Running SqlFirewallTriggers runIfStatementRefused: " + sqlEvent + "  "
 		    + sqlFirewallManager.getClass().getSimpleName());
 	    SqlFirewallTriggerWrapper.runIfStatementRefused(sqlEvent, sqlFirewallManager, connection);
-	    debug("Running SqlFirewallTriggers done!");
+	    long end = System.currentTimeMillis();
+	    debug("Running SqlFirewallTriggers done! (" + (end-begin) + "ms.)");
 	} catch (Exception e) {
 	    e.printStackTrace();
 	} finally {
