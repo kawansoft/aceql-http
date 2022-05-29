@@ -65,7 +65,7 @@ import org.kawanfw.sql.util.Tag;
  * 
  * @see SqlInjectionApiCallback
  * @see DenySqlInjectionManager
-
+ * 
  * @author Nicolas de Pomereu
  * @since 11.0
  */

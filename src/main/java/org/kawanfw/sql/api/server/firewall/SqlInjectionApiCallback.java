@@ -53,7 +53,7 @@ import com.cloudmersive.client.model.SqlInjectionDetectionResult;
 public class SqlInjectionApiCallback implements ApiCallback<SqlInjectionDetectionResult> {
 
     private static boolean DEBUG = FrameworkDebug.isSet(SqlInjectionApiCallback.class);
-    
+
     /**
      * The elements that called the Cloudmersive
      * {@code TextInputApi.textInputCheckSqlInjectionAsync} call
@@ -75,21 +75,32 @@ public class SqlInjectionApiCallback implements ApiCallback<SqlInjectionDetectio
 	this.sqlFirewallManager = Objects.requireNonNull(sqlFirewallManager, "sqlFirewallManager cannot ne null!");
     }
 
+    /**
+     * In case of Cloudmersive API failure, we will just display on stderr the
+     * {@code SqlEvent}, the {@code sqlFirewallManager} class name and the
+     * {@code ApiException} stack trace.
+     */
     @Override
     public void onFailure(ApiException e, int statusCode, Map<String, List<String>> responseHeaders) {
-	// We don't really care..
-	System.err.println("Failure on DenySqlInjectionManagerAsync defered execution: ");
+	System.err.println();
+	System.err.println("Cloudmersive failure on DenySqlInjectionManagerAsync defered execution: ");
+	System.err.println("sqlEvent           : " + sqlEvent.toString());
 	System.err.println("sqlFirewallManager : " + sqlFirewallManager.getClass().getName());
 	e.printStackTrace();
 
     }
 
+    /**
+     * Will extract a new {@code Connection} from the database and the process all
+     * {@code SqlFirewallTrigger} defined in the {@code aceql.properties} file. <br>
+     * The {@code Connection} will be cleanly closed in a {@code finally} block.
+     */
     @Override
     public void onSuccess(SqlInjectionDetectionResult result, int statusCode,
 	    Map<String, List<String>> responseHeaders) {
 
 	debug("onSucces: result.isContainedSqlInjectionAttack():" + result.isContainedSqlInjectionAttack());
-	
+
 	// Exit if not a SQL Injection attack
 	if (!result.isContainedSqlInjectionAttack()) {
 	    return;
@@ -103,7 +114,8 @@ public class SqlInjectionApiCallback implements ApiCallback<SqlInjectionDetectio
 	try {
 	    debug("Connection creation...");
 	    connection = databaseConfigurator.getConnection(database);
-	    debug("Running SqlFirewallTriggers runIfStatementRefused: " + sqlEvent + "  " + sqlFirewallManager.getClass().getSimpleName());
+	    debug("Running SqlFirewallTriggers runIfStatementRefused: " + sqlEvent + "  "
+		    + sqlFirewallManager.getClass().getSimpleName());
 	    SqlFirewallTriggerWrapper.runIfStatementRefused(sqlEvent, sqlFirewallManager, connection);
 	    debug("Running SqlFirewallTriggers done!");
 	} catch (Exception e) {
@@ -120,16 +132,22 @@ public class SqlInjectionApiCallback implements ApiCallback<SqlInjectionDetectio
 
     }
 
+    /**
+     * Not used for our SQL injection detection process
+     */
     @Override
     public void onUploadProgress(long bytesWritten, long contentLength, boolean done) {
 	// Ignore. Not related to SqlInjectionDetectionResult
     }
 
+    /**
+     * Not used for our SQL injection detection process
+     */
     @Override
     public void onDownloadProgress(long bytesRead, long contentLength, boolean done) {
 	// Ignore. Not related to SqlInjectionDetectionResult
     }
-    
+
     private void debug(String string) {
 	if (DEBUG) {
 	    System.out.println(new Date() + " " + this.getClass().getSimpleName() + " " + string);
