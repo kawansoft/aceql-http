@@ -61,7 +61,7 @@ import org.kawanfw.sql.util.Tag;
  * {@link SqlFirewallTrigger#runIfStatementRefused(SqlEvent, SqlFirewallManager, Connection)}
  * methods. <br>
  * The {@code Connection} will be cleanly released after all calls. <br>
- * See {@codeSqlInjectionApiCallback} source code for more info
+ * See {@code SqlInjectionApiCallback} for more info.
  * 
  * @see SqlInjectionApiCallback
  * @see DenySqlInjectionManager
@@ -76,9 +76,9 @@ public class DenySqlInjectionManagerAsync extends DefaultSqlFirewallManager impl
     private Logger logger;
 
     /**
-     * Allows to detect in background if
+     * Allows detecting in background / asynchronously if
      * <a href="https://www.cloudmersive.com">Cloudmersive</a> SQL injection
-     * detector accepts the SQL statement. (The call always thus returns immediately
+     * detector accepts the SQL statement. (The {@code allowSqlRunAfterAnalysis} call thus always returns immediately
      * {@code true}).
      */
     @Override
