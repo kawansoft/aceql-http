@@ -134,7 +134,7 @@ public class CloudmersiveApi {
      * @param sql the SQL statement to analyze
      * @return true if the passed SQL statement contains a SQL injection attack,
      *         else false
-     * @throws SQLException if any erro occurs. (Wraps the {@link ApiException})
+     * @throws SQLException if any error occurs. (Wraps the {@link ApiException})
      * @throws IOException
      */
     public boolean sqlInjectionDetect(String sql) throws SQLException, IOException {
@@ -148,20 +148,19 @@ public class CloudmersiveApi {
 	}
 
 	try {
+	    debug("Detecting SQLI in sql: " + sql);
+	    long begin = System.currentTimeMillis();
 	    sqlInjectionDetectionResult = apiInstance.textInputCheckSqlInjection(sql, detectionLevel);
-	    return sqlInjectionDetectionResult.isContainedSqlInjectionAttack();
+	    boolean attack =  sqlInjectionDetectionResult.isContainedSqlInjectionAttack();
+	    debug("attack: " + attack + " Detection time: " + (begin-System.currentTimeMillis()));
+	    return attack;
 	} catch (ApiException apiException) {
 	    connect();
 	    throw new SQLException(apiException);
 	}
     }
 
-    private void debug(String string) {
-	if (DEBUG) {
-	    System.out.println(new Date() + " " + this.getClass().getSimpleName() + " " + string);
-	}
-    }
-
+    
     public void sqlInjectionDetectAsync(SqlEvent sqlEvent, SqlFirewallManager sqlFirewallManager)
 	    throws IOException, SQLException {
 	
@@ -176,6 +175,7 @@ public class CloudmersiveApi {
 	}
 
 	try {
+	    debug("Detecting Async SQLI in sql: " + sqlEvent.getSql());
 	    ApiCallback<SqlInjectionDetectionResult> sqlInjectionApiCallback = new SqlInjectionApiCallback(sqlEvent,
 		    sqlFirewallManager);
 	    apiInstance.textInputCheckSqlInjectionAsync(sqlEvent.getSql(), detectionLevel, sqlInjectionApiCallback);
@@ -186,4 +186,10 @@ public class CloudmersiveApi {
 
     }
 
+    private void debug(String string) {
+	if (DEBUG) {
+	    System.out.println(new Date() + " " + this.getClass().getSimpleName() + " " + string);
+	}
+    }
+    
 }

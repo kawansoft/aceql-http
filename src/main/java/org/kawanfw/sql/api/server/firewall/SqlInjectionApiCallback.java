@@ -26,6 +26,7 @@ package org.kawanfw.sql.api.server.firewall;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -34,6 +35,7 @@ import org.kawanfw.sql.api.server.DatabaseConfigurator;
 import org.kawanfw.sql.api.server.SqlEvent;
 import org.kawanfw.sql.api.util.firewall.SqlFirewallTriggerWrapper;
 import org.kawanfw.sql.servlet.injection.classes.InjectedClassesStore;
+import org.kawanfw.sql.util.FrameworkDebug;
 
 import com.cloudmersive.client.invoker.ApiCallback;
 import com.cloudmersive.client.invoker.ApiException;
@@ -50,6 +52,8 @@ import com.cloudmersive.client.model.SqlInjectionDetectionResult;
  */
 public class SqlInjectionApiCallback implements ApiCallback<SqlInjectionDetectionResult> {
 
+    private static boolean DEBUG = FrameworkDebug.isSet(SqlInjectionApiCallback.class);
+    
     /**
      * The elements that called the Cloudmersive
      * {@code TextInputApi.textInputCheckSqlInjectionAsync} call
@@ -84,18 +88,24 @@ public class SqlInjectionApiCallback implements ApiCallback<SqlInjectionDetectio
     public void onSuccess(SqlInjectionDetectionResult result, int statusCode,
 	    Map<String, List<String>> responseHeaders) {
 
+	debug("onSucces: result.isContainedSqlInjectionAttack():" + result.isContainedSqlInjectionAttack());
+	
 	// Exit if not a SQL Injection attack
 	if (!result.isContainedSqlInjectionAttack()) {
 	    return;
 	}
 
+	debug("Loading DatabaseConfigurator...");
 	String database = sqlEvent.getDatabase();
 	DatabaseConfigurator databaseConfigurator = InjectedClassesStore.get().getDatabaseConfigurators().get(database);
 
 	Connection connection = null;
 	try {
+	    debug("Connection creation...");
 	    connection = databaseConfigurator.getConnection(database);
+	    debug("Running SqlFirewallTriggers runIfStatementRefused: " + sqlEvent + "  " + sqlFirewallManager.getClass().getSimpleName());
 	    SqlFirewallTriggerWrapper.runIfStatementRefused(sqlEvent, sqlFirewallManager, connection);
+	    debug("Running SqlFirewallTriggers done!");
 	} catch (Exception e) {
 	    e.printStackTrace();
 	} finally {
@@ -119,5 +129,10 @@ public class SqlInjectionApiCallback implements ApiCallback<SqlInjectionDetectio
     public void onDownloadProgress(long bytesRead, long contentLength, boolean done) {
 	// Ignore. Not related to SqlInjectionDetectionResult
     }
-
+    
+    private void debug(String string) {
+	if (DEBUG) {
+	    System.out.println(new Date() + " " + this.getClass().getSimpleName() + " " + string);
+	}
+    }
 }
