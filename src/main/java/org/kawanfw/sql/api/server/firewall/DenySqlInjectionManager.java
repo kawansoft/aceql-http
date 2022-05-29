@@ -51,7 +51,7 @@ import org.kawanfw.sql.util.Tag;
  * <br>
  * Note that SQL injections are detected synchronously, which will slow down the
  * SQL calls. The {@code DenySqlInjectionManagerAsync} SQLFirewallManager is
- * provided for asynchronously detection.
+ * provided for asynchronous detection.
  * 
  * 
  * @see DenySqlInjectionManagerAsync
