@@ -11,67 +11,9 @@
 
 <img src="https://docs.aceql.com/favicon.png" alt="AceQL HTTP Icon"/> 
 
-   * [Fundamentals](#fundamentals)
-      * [Overview](#overview)
-      * [Technical operating environment](#technical-operating-environment)
-   * [Download and Installation](#download-and-installation)
-      * [Linux / Unix Installation](#linux--unix-installation)
-         * [Update the PATH (Optional)](#update-the-path-optional)
-         * [Testing server installation](#testing-server-installation)
-      * [Windows Installation](#windows-installation)
-   * [Quickstart](#quickstart)
-      * [The AceQL Manager servlet](#the-aceql-manager-servlet)
-      * [The aceql-server.properties file](#the-aceql-serverproperties-file)
-         * [Tomcat JDBC Connection Pool Section](#tomcat-jdbc-connection-pool-section)
-         * [User Authentication Section](#user-authentication-section)
-            * [The WebServiceUserAuthenticator usage](#the-webserviceuserauthenticator-usage)
-         * [SQL Firewall Managers Section](#sql-firewall-managers-section)
-            * [The CsvRulesManager SQL Firewall Manager](#the-csvrulesmanager-sql-firewall-manager)
-         * [SSL Configuration Section](#ssl-configuration-section)
-         * [Sample aceql-server.properties file](#sample-aceql-serverproperties-file)
-      * [Starting/Stopping the AceQL Web Server from Linux/Unix](#startingstopping-the-aceql-web-server-from-linuxunix)
-         * [Add your JDBC driver to the AceQL installation](#add-your-jdbc-driver-to-the-aceql-installation)
-         * [Starting the AceQL Web Server](#starting-the-aceql-web-server)
-         * [Examples](#examples)
-            * [Starting the AceQL Web Server on port 9090](#starting-the-aceql-web-server-on-port-9090)
-            * [Starting the AceQL Web Server on port 9091](#starting-the-aceql-web-server-on-port-9091)
-         * [Using SSL from the client side](#using-ssl-from-the-client-side)
-         * [Stopping the AceQL Web Server](#stopping-the-aceql-web-server)
-         * [Linux: running the AceQL Web server as a service](#linux-running-the-aceql-web-server-as-a-service)
-      * [Starting/Stopping the AceQL WebServer from Windows](#startingstopping-the-aceql-webserver-from-windows)
-   * [Advanced Usage](#advanced-usage)
-      * [Development Environment](#development-environment)
-      * [AceQL Servlet Name Configuration](#aceql-servlet-name-configuration)
-      * [Advanced Connection Pool Management](#advanced-connection-pool-management)
-      * [Advanced Authentication Configuration](#advanced-authentication-configuration)
-      * [Tomcat HTTP Connector Configuration](#tomcat-http-connector-configuration)
-      * [ThreadPoolExecutor Configuration](#threadpoolexecutor-configuration)
-      * [Session Management](#session-management)
-         * [SessionConfigurator interface](#sessionconfigurator-interface)
-         * [Session management default implementation](#session-management-default-implementation)
-         * [Session management using JWT](#session-management-using-jwt)
-            * [Activating JwtSessionConfigurator](#activating-jwtsessionconfigurator)
-         * [Creating your own session management](#creating-your-own-session-management)
-      * [Stateful and Stateless Modes](#stateful-and-stateless-modes)
-         * [Stateful Mode](#stateful-mode)
-         * [Stateless Mode](#stateless-mode)
-      * [Advanced Firewall Configuration](#advanced-firewall-configuration)
-      * [Update Listeners Configuration](#update-listeners-configuration)
-      * [Encrypting Properties in the aceql-server.properties file](#encrypting-properties-in-the-aceql-serverproperties-file)
-         * [Running the PropertiesEncryptor class](#running-the-propertiesencryptor-class)
-      * [Interacting with the JDBC Pool at runtime](#interacting-with-the-jdbc-pool-at-runtime)
-      * [Running the AceQL Web Server](#running-the-aceql-web-server)
-         * [Running the AceQL Web Server without Windows Desktop](#running-the-aceql-web-server-without-windows-desktop)
-         * [Starting/Stopping the AceQL WebServer from a Java program](#startingstopping-the-aceql-webserver-from-a-java-program)
-         * [Running AceQL HTTP in a Java EE servlet container](#running-aceql-http-in-a-java-ee-servlet-container)
-            * [Installation](#installation)
-            * [AceQL servlet configuration in web.xml](#aceql-servlet-configuration-in-webxml)
-         * [Testing the servlet configuration](#testing-the-servlet-configuration)
-   * [AceQL internals](#aceql-internals)
-      * [Data transport](#data-transport)
-         * [Transport format](#transport-format)
-         * [Content streaming and memory management](#content-streaming-and-memory-management)
-      * [Managing temporary files](#managing-temporary-files)
+[TOC]
+
+
 
 
 # Fundamentals
@@ -258,7 +200,7 @@ Call the `aceql-server` script to display the AceQL version:
 It will display a line with all version info, like:
 
 ```
-AceQL HTTP Community v11.0 - 04-Jan-2022
+AceQL HTTP Community v11.0 - 31-May-2022
 ```
 
 
@@ -665,29 +607,6 @@ Each property must be prefixed by `connector`.
 connector.maxThreads=300  
 ```
 
-## ThreadPoolExecutor Configuration
-
-The AceQL Manager serlvet is executed in [asynchronous  mode](https://docs.oracle.com/javaee/7/tutorial/servlets012.htm). 
-
-The **ThreadPoolExecutor Section** allows to define the parameters of the [java.util.concurrent.ThreadPoolExecutor](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/ThreadPoolExecutor.html) instance used to execute all servlet requests in async mode.
-
-The properties to set in the `aceql-server.properties` file are:
-
-| Property             | Role                                                         | Default Value        |
-| -------------------- | ------------------------------------------------------------ | -------------------- |
-| `corePoolSize`       | The number of threads to keep in the pool, even if they are idle. | 100                  |
-| `maximumPoolSize`    | The maximum number of threads to allow in the pool.          | 200                  |
-| `unit`               | The time unit for the `keepAliveTime` argument.              | `SECONDS`            |
-| `keepAliveTime`      | When the number of threads is greater than the core, this is the maximum time that excess idle threads will wait for new tasks before terminating. | 10                   |
-| `workQueueClassName` | The `BlockingQueue` class to use in `ThreadPoolExecutor` constructor. | `ArrayBlockingQueue` |
-| `capacity`           | The initial capacity of the `BloquingQueue<Runnable>` <br/>(0 for no or default initial capacity.) | 50000                |
-
-The properties are passed to the first  `ThreadPoolExecutor` [constructor](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/ThreadPoolExecutor.html#ThreadPoolExecutor(int,%20int,%20long,%20java.util.concurrent.TimeUnit,%20java.util.concurrent.BlockingQueue)).
-
-See `ThreadPoolExecutor` class [Javadoc](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/ThreadPoolExecutor.html) for more info
-
-Default values should be appropriate for most AceQL configurations. 
-
 ## Session Management 
 
 ### SessionConfigurator interface
@@ -807,39 +726,6 @@ sampledb.sqlFirewallManagerClassNames=\
     com.mycompany.firewall.MySqlFirewallManager2
 ```
 
-## Encrypting Properties in the aceql-server.properties file
-
-In order to protect configuration passwords and other confidential values from eavesdropping, each property value may be replaced by an encrypted value in the `aceql-server.properties` file.
-
-The encrypted values are generated using the [PropertiesEncryptor](https://docs.aceql.com/rest/soft/11.0/javadoc/org/kawanfw/sql/api/server/auth/crypto/PropertiesEncryptor.html)  class which allows both:
-
-1. To choose a secret password that will be used for encrypting each selected property value.
-2. To encrypt each selected value.  
-
-In order for the AceQL Server to decrypt the properties at runtime, the secret password must be returned by the `getPassword()` of a concrete implementation of the [PropertiesPasswordManager](https://docs.aceql.com/rest/soft/11.0/javadoc/org/kawanfw/sql/api/server/auth/crypto/PropertiesPasswordManager.html) interface. A default implementation is provided: [DefaultPropertiesPasswordManager](https://docs.aceql.com/rest/soft/11.0/javadoc/org/kawanfw/sql/api/server/auth/crypto/DefaultPropertiesPasswordManager.html). 
-
-The `PropertiesPasswordManager`  concrete class name must then be defined with the `propertiesPasswordManagerClassName` property.  See the `Properties Password Manager Section` of the `aceql-server.properties` file.
-
-### Running the PropertiesEncryptor class 
-
-In order to run the `PropertiesEncryptor` class:
-
-- Open a command line on Windows or Linux/Bash.
-- `cd <installation-directory>/AceQL/bin>`
-  - Windows: run `properties-encryptor.bat`.
-  - Linux: run `properties-encryptor` Bash.
-- Follow the instructions in order to create the password and to encrypt some property values.
-
-## Interacting with the JDBC Pool at runtime
-
-The Servlets Section in `aceql-server.properties` allow to define you own servlets in order to interact with AceQL Web Server with different actions :
-
-- query info about JDBC pools in use,
-- modify a pool size,
-- etc.
-
-The API  [DataSourceStore](https://docs.aceql.com/rest/soft/11.0/javadoc/org/kawanfw/sql/api/server/DataSourceStore.html) class allows to retrieve for each database the Tomcat [org.apache.tomcat.jdbc.pool.DataSource](https://tomcat.apache.org/tomcat-9.0-doc/api/org/apache/tomcat/jdbc/pool/DataSource.html) corresponding to the Tomcat JDBC Pool created at AceQL Web server startup. 
-
 ## Running the AceQL Web Server
 
 ### Running the AceQL Web Server without Windows Desktop
@@ -849,8 +735,6 @@ If you don't have access to the Windows Desktop interface (running in a cloud in
 - see `<installation-directory>\AceQL\bin\aceql-server.bat` script.
 
 You can also start/top the AceQL Web Server from you java programs, as explained in next section.
-
-
 
 # AceQL internals
 
@@ -892,158 +776,213 @@ If you want to ensure that temporary files will be cleaned, you can access the t
 Where:
 
 - `user.home` =  the `user.home` of the user that started the AceQL Web Server.
-
 - `username` = the username of the client user.
 
-  # Enterprise Edition
 
-  ## AceQL Servlet Name Configuration
+# Enterprise Edition
 
-  The **AceQL Manager servlet Section** in the `aceql-server.proprties` file allows you to modify the default the name of the AceQL SQL Manager Servlet to call from the client side. The default name is `aceql`. It is the name that will be used in the URL by client calls:
+## AceQL Servlet Name Configuration
 
-  ```properties
-  aceQLManagerServletCallName=aceql
-  ```
+The **AceQL Manager servlet Section** in the `aceql-server.proprties` file allows you to modify the default the name of the AceQL SQL Manager Servlet to call from the client side. The default name is `aceql`. It is the name that will be used in the URL by client calls:
 
-  ## Update Listeners Configuration
+```properties
+aceQLManagerServletCallName=aceql
+```
 
-  The Update Listeners Section allows defining Java code to execute after a successful SQL database update is done. 
+## Update Listeners Configuration
 
-  Update Listeners can be viewed as a kind of Java "trigger" executed on the completion  of SQL updates.
+The Update Listeners Section allows defining Java code to execute after a successful SQL database update is done. 
 
-  The actions to trigger are defined through one or more "Update Listeners ",  Java classes that are injected at AceQL Server startup. An Update Listener is a built-in or user-developed Java class that implements the [UpdateListener](https://docs.aceql.com/rest/soft/11.0/javadoc/org/kawanfw/sql/api/server/listener/UpdateListener.html) interface with code to execute defined in the unique `updateActionPerformed` method. Multiple `UpdateListener` may be defined and chained. 
+Update Listeners can be viewed as a kind of Java "trigger" executed on the completion  of SQL updates.
 
-  The `DefaultUpdateListener` default Update Listener does nothing. AceQL provides a built-in (and ready to use without any coding)  Update Listener:
+The actions to trigger are defined through one or more "Update Listeners ",  Java classes that are injected at AceQL Server startup. An Update Listener is a built-in or user-developed Java class that implements the [UpdateListener](https://docs.aceql.com/rest/soft/11.0/javadoc/org/kawanfw/sql/api/server/listener/UpdateListener.html) interface with code to execute defined in the unique `updateActionPerformed` method. Multiple `UpdateListener` may be defined and chained. 
 
-  | Update Listener Name       | Details                                                      |
-  | -------------------------- | ------------------------------------------------------------ |
-  | `JsonLoggerUpdateListener` | Logs all successful & completed SQL update details using JSON format. |
+The `DefaultUpdateListener` default Update Listener does nothing. AceQL provides a built-in (and ready to use without any coding)  Update Listener:
 
-  Only the following property must be defined per database name if you want to add Update Listeners:
+| Update Listener Name       | Details                                                      |
+| -------------------------- | ------------------------------------------------------------ |
+| `JsonLoggerUpdateListener` | Logs all successful & completed SQL update details using JSON format. |
 
-  `updateListenerClassNames`.
+Only the following property must be defined per database name if you want to add Update Listeners:
 
-  `UpdateListener` may be chained in property value by separating class names by a comma.  
+`updateListenerClassNames`.
 
-  The following example defines two Update Listeners to chain for the `sampledb` database:
+`UpdateListener` may be chained in property value by separating class names by a comma.  
 
-  ```properties
-  sampledb.updateListenerClassNames=\
-      com.mycompany.listener.MyUpdateListener1,\
-      com.mycompany.listener.MyUpdateListener2
-  ```
+The following example defines two Update Listeners to chain for the `sampledb` database:
 
-  ## Running the AceQL Web Server 
+```properties
+sampledb.updateListenerClassNames=\
+    com.mycompany.listener.MyUpdateListener1,\
+    com.mycompany.listener.MyUpdateListener2
+```
 
-  ### Starting/Stopping the AceQL WebServer from a Java program
+## Running the AceQL Web Server Advanced Options
 
-  You may start or stop the AceQL Server from a Java program calling the [WebServerApi](https://docs.aceql.com/rest/soft/11.0/javadoc/org/kawanfw/sql/api/server/web/WebServerApi.html) API.
+### Starting/Stopping the AceQL WebServer from a Java program
 
-  ### Running AceQL HTTP in a Java EE servlet container
+You may start or stop the AceQL Server from a Java program calling the [WebServerApi](https://docs.aceql.com/rest/soft/11.0/javadoc/org/kawanfw/sql/api/server/web/WebServerApi.html) API.
 
-  AceQL server side may be run inside a Java EE servlet container such as Tomcat.
+### Running AceQL HTTP in a Java EE servlet container
 
-  This option may be preferred by users who already have a Java EE servlet container configured with all Connectors & SSL options, etc., and do want to recode the options in the `aceql-server.properties` file. 
+AceQL server side may be run inside a Java EE servlet container such as Tomcat.
 
-  #### Installation
+This option may be preferred by users who already have a Java EE servlet container configured with all Connectors & SSL options, etc., and do want to recode the options in the `aceql-server.properties` file. 
 
-  Install the files of installation directory `webapp/WEB-INF/lib` in the lib directory of your webapp.
+#### Installation
 
-  If your JavaEE servlet container is *not* Tomcat >=7, it may not contain the Tomcat JDBC Pool: add `webapp/WEB-INF/lib-tomcat/tomcat-jdbc-9.0.xx.jar` jar in the /lib directory of your webapp.
+Install the files of installation directory `webapp/WEB-INF/lib` in the lib directory of your webapp.
 
-  If you have coded your own Configurators, deploy the classes in the `/classes` directory of your webapp.
+If your JavaEE servlet container is *not* Tomcat >=7, it may not contain the Tomcat JDBC Pool: add `webapp/WEB-INF/lib-tomcat/tomcat-jdbc-9.0.xx.jar` jar in the /lib directory of your webapp.
 
-  #### AceQL servlet configuration in web.xml
+If you have coded your own Configurators, deploy the classes in the `/classes` directory of your webapp.
 
-  Create and configure the `aceql-server.properties` file like normal, as described in [The aceql-server.properties file](#the-aceql-serverproperties-file). Do not configure the **Tomcat Connector sections** that will not be used.
+#### AceQL servlet configuration in web.xml
 
-  Add the license file location in the `licenseFile` param.
+Create and configure the `aceql-server.properties` file like normal, as described in [The aceql-server.properties file](#the-aceql-serverproperties-file). Do not configure the **Tomcat Connector sections** that will not be used.
 
-  In `web.xml`, define the AceQL Manager servlet that is defined in `the aceql-server.properties` file. This dual definition is required. The servlet class is. `org.kawanfw.sql.servlet.ServerSqlManager`. 
+Add the license file location in the `licenseFile` param.
 
-  Example:
+In `web.xml`, define the AceQL Manager servlet that is defined in `the aceql-server.properties` file. This dual definition is required. The servlet class is. `org.kawanfw.sql.servlet.ServerSqlManager`. 
 
-  Assuming the `aceql-server.properties` file is stored in `c:\Users\Mike` and you have defined the following aceQLManagerServletCallName in `aceql-server.properties`**:**
+Example:
 
-  ```properties
-  aceQLManagerServletCallName=aceql
-  ```
+Assuming the `aceql-server.properties` file is stored in `c:\Users\Mike` and you have defined the following aceQLManagerServletCallName in `aceql-server.properties`**:**
 
-  then your `web.xml` should contain the following code:
+```properties
+aceQLManagerServletCallName=aceql
+```
 
-  ```xml
-  <servlet>
-      <servlet-name>aceql</servlet-name>
-      <servlet-class>org.kawanfw.sql.servlet.ServerSqlManager</servlet-class>
-  	<async-supported>true</async-supported>
-      
-      <init-param>
-          <param-name>properties</param-name>
-          <param-value>c:\Users\Mike\aceql-server.properties</param-value>
-      </init-param>
-      
-      <!-- The AceQL Server Properties File -->		
-      <init-param>        
-          <param-name>properties</param-name>
-          <param-value>c:\Users\Mike\aceql-server.properties</param-value>
-      </init-param> 
-  
-      <!-- The License File For Enterprise Edition -->
-      <init-param>        
-          <param-name>licenseFile</param-name>
-          <param-value>c:\Users\Mike\aceql-license-key.txt</param-value>
-      </init-param> 
-  </servlet>
-  
-  <!-- Allows you to see immediately in servet container if servlet is OK or KO --> 
-  <load-on-startup>1</load-on-startup >
-  
-  <servlet-mapping>
-      <!-- Note the trailing /* in url-pattern --> 
-      <servlet-name>aceql</servlet-name>
-      <url-pattern>/aceql/*</url-pattern>
-  </servlet-mapping>
-  ```
+then your `web.xml` should contain the following code:
 
-  Note the trailing `/*` in the URL pattern: this is required by the AceQL Manager that uses both the servlet name and elements in servlet path values to execute actions requested by the client side.
+```xml
+<servlet>
+    <servlet-name>aceql</servlet-name>
+    <servlet-class>org.kawanfw.sql.servlet.ServerSqlManager</servlet-class>
+	<async-supported>true</async-supported>
+    
+    <init-param>
+        <param-name>properties</param-name>
+        <param-value>c:\Users\Mike\aceql-server.properties</param-value>
+    </init-param>
+    
+    <!-- The AceQL Server Properties File -->		
+    <init-param>        
+        <param-name>properties</param-name>
+        <param-value>c:\Users\Mike\aceql-server.properties</param-value>
+    </init-param> 
 
-  ### Testing the servlet configuration 
+    <!-- The License File For Enterprise Edition -->
+    <init-param>        
+        <param-name>licenseFile</param-name>
+        <param-value>c:\Users\Mike\aceql-license-key.txt</param-value>
+    </init-param> 
+    
+    <load-on-startup>1</load-on-startup >
+</servlet>
 
-  After restarting your server, check you web server logs. 
+<servlet-mapping>
+    <!-- Note the trailing /* in url-pattern --> 
+    <servlet-name>aceql</servlet-name>
+    <url-pattern>/aceql/*</url-pattern>
+</servlet-mapping>
+```
 
-  AceQL start statuses are written on standard output stream. 
+Note the trailing `/*` in the URL pattern: this is required by the AceQL Manager that uses both the servlet name and elements in servlet path values to execute actions requested by the client side.
 
-  Type the HTTP address of each of your AceQL Manager servlets into a browser.
+### Testing the servlet configuration 
 
-  Example corresponding to previous web.xml:
+After restarting your server, check you web server logs. 
 
-  `http://www.yourhost.com/path-to-webapp/aceql`
+AceQL start statuses are written on standard output stream. 
 
-  It will display a JSON string and should display a status of `"OK"` and the current AceQL version: 
+Type the HTTP address of each of your AceQL Manager servlets into a browser.
 
-  ```json
-  {
-      "status": "OK",
-      "version": "AceQL HTTP v11.0 - 31-May-2022"
-  }         
-  ```
+Example corresponding to previous web.xml:
 
-  If not, the configuration errors are detailed in your Java EE servlet container log files  for correction. 
+`http://www.yourhost.com/path-to-webapp/aceql`
 
-  ## Advanced Connection Pool Management
+It will display a JSON string and should display a status of `"OK"` and the current AceQL version: 
 
-  You may define your own preferred connection pool implementation, instead of using the default Tomcat JDBC Connection Pool.
+```json
+{
+    "status": "OK",
+    "version": "AceQL HTTP v11.0 - 31-May-2022"
+}         
+```
 
-  This is done through your own implementation of the [DatabaseConfigurator](https://docs.aceql.com/rest/soft/11.0/javadoc/org/kawanfw/sql/api/server/DatabaseConfigurator.html) interface: overload the `DatabaseConfigurator.getConnection()` method in your concrete class implementation.
+If not, the configuration errors are detailed in your Java EE servlet container log files  for correction. 
 
-  Your concrete implementations is passed to the AceQL as properties of the **Database Configurators Section** in the `aceql-server.properties` file, as described in the section:
+## Advanced Connection Pool Management
 
-  - The  `databaseConfiguratorClassName` property lets you define your concrete implementation of `DatabaseConfigurator`.
-  - You `DatabaseConfigurator` classes must be added to the CLASSPATH before the start of the AceQL Server.
+You may define your own preferred connection pool implementation, instead of using the default Tomcat JDBC Connection Pool.
 
-   Instances are loaded using a non-args constructor.
+This is done through your own implementation of the [DatabaseConfigurator](https://docs.aceql.com/rest/soft/11.0/javadoc/org/kawanfw/sql/api/server/DatabaseConfigurator.html) interface: overload the `DatabaseConfigurator.getConnection()` method in your concrete class implementation.
 
-  ## 
+Your concrete implementations is passed to the AceQL as properties of the **Database Configurators Section** in the `aceql-server.properties` file, as described in the section:
+
+- The  `databaseConfiguratorClassName` property lets you define your concrete implementation of `DatabaseConfigurator`.
+- You `DatabaseConfigurator` classes must be added to the CLASSPATH before the start of the AceQL Server.
+
+ Instances are loaded using a non-args constructor.
+
+## Interacting with the JDBC Pool at runtime
+
+The Servlets Section in `aceql-server.properties` allow to define you own servlets in order to interact with AceQL Web Server with different actions :
+
+- query info about JDBC pools in use,
+- modify a pool size,
+- etc.
+
+The API  [DataSourceStore](https://docs.aceql.com/rest/soft/11.0/javadoc/org/kawanfw/sql/api/server/DataSourceStore.html) class allows to retrieve for each database the Tomcat [org.apache.tomcat.jdbc.pool.DataSource](https://tomcat.apache.org/tomcat-9.0-doc/api/org/apache/tomcat/jdbc/pool/DataSource.html) corresponding to the Tomcat JDBC Pool created at AceQL Web server startup. 
+
+## ThreadPoolExecutor Configuration
+
+The AceQL Manager serlvet is executed in [asynchronous  mode](https://docs.oracle.com/javaee/7/tutorial/servlets012.htm). 
+
+The **ThreadPoolExecutor Section** allows to modify the default values of the parameters of the [java.util.concurrent.ThreadPoolExecutor](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/ThreadPoolExecutor.html) instance used to execute all servlet requests in async mode.
+
+The properties to set in the `aceql-server.properties` file are:
+
+| Property             | Role                                                         | Default Value        |
+| -------------------- | ------------------------------------------------------------ | -------------------- |
+| `corePoolSize`       | The number of threads to keep in the pool, even if they are idle. | 100                  |
+| `maximumPoolSize`    | The maximum number of threads to allow in the pool.          | 125                  |
+| `unit`               | The time unit for the `keepAliveTime` argument.              | `SECONDS`            |
+| `keepAliveTime`      | When the number of threads is greater than the core, this is the maximum time that excess idle threads will wait for new tasks before terminating. | 10                   |
+| `workQueueClassName` | The `BlockingQueue` class to use in `ThreadPoolExecutor` constructor. | `ArrayBlockingQueue` |
+| `capacity`           | The initial capacity of the `BloquingQueue<Runnable>` <br/>(0 for no or default initial capacity.) | 50000                |
+
+The properties are passed to the first  `ThreadPoolExecutor` [constructor](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/ThreadPoolExecutor.html#ThreadPoolExecutor(int,%20int,%20long,%20java.util.concurrent.TimeUnit,%20java.util.concurrent.BlockingQueue)).
+
+See `ThreadPoolExecutor` class [Javadoc](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/ThreadPoolExecutor.html) for more info
+
+Default values should be appropriate for most AceQL configurations. 
+
+## Encrypting Properties in the aceql-server.properties file
+
+In order to protect configuration passwords and other confidential values from eavesdropping, each property value may be replaced by an encrypted value in the `aceql-server.properties` file.
+
+The encrypted values are generated using the [PropertiesEncryptor](https://docs.aceql.com/rest/soft/11.0/javadoc/org/kawanfw/sql/api/server/auth/crypto/PropertiesEncryptor.html)  class which allows both:
+
+1. To choose a secret password that will be used for encrypting each selected property value.
+2. To encrypt each selected value.  
+
+In order for the AceQL Server to decrypt the properties at runtime, the secret password must be returned by the `getPassword()` of a concrete implementation of the [PropertiesPasswordManager](https://docs.aceql.com/rest/soft/11.0/javadoc/org/kawanfw/sql/api/server/auth/crypto/PropertiesPasswordManager.html) interface. A default implementation is provided: [DefaultPropertiesPasswordManager](https://docs.aceql.com/rest/soft/11.0/javadoc/org/kawanfw/sql/api/server/auth/crypto/DefaultPropertiesPasswordManager.html). 
+
+The `PropertiesPasswordManager`  concrete class name must then be defined with the `propertiesPasswordManagerClassName` property.  See the `Properties Password Manager Section` of the `aceql-server.properties` file.
+
+### Running the PropertiesEncryptor class 
+
+In order to run the `PropertiesEncryptor` class:
+
+- Open a command line on Windows or Linux/Bash.
+- `cd <installation-directory>/AceQL/bin>`
+  - Windows: run `properties-encryptor.bat`.
+  - Linux: run `properties-encryptor` Bash.
+- Follow the instructions in order to create the password and to encrypt some property values.
+
+
 
 ___________________
 
