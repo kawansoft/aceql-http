@@ -37,7 +37,7 @@ import org.kawanfw.sql.util.ClasspathUtil;
  */
 public class AceQLLicenseFileFinder {
 
-    private static final String ACEQL_LICENSE_KEY_TXT = "aceql_license_key.txt";
+    private static final String ACEQL_LICENSE_KEY_TXT = "aceql-license-key.txt";
     
     private static boolean STORED_DONE = false;
     private static File STORED_ACEQL_LICENCSE_FILE = null;
