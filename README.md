@@ -399,16 +399,20 @@ Multiple `SqlFirewallManager` may be defined and chained.
 
 AceQL provides several built-in (and ready to use without any coding)  SQL Firewall Managers:
 
-| SQL Firewall Manager Name   | Details                                                      |
-| --------------------------- | ------------------------------------------------------------ |
-| `CsvRulesManager`           | Manager that applies rules written in a CSV file. (See below). |
-| `CsvRulesManagerNoReload`   | Manager that extends  `CsvRulesManager`, the only change is to prohibit reloading rules when the CSV file is updated. |
-| `DenyDclManager`            | Manager that denies any DCL (Data Control Language) call.    |
-| `DenyDdlManager`            | Manager that denies any DDL (Data Definition Language) call. |
-| `DenyExecuteUpdateManager`  | Manager that denies any update of the database. (The database will be accessed in read only mode). |
-| `DenyMetadataQueryManager`  | Manager that denies the use of the AceQL Metadata Query API. |
-| `DenyStatementClassManager` | Manager that denies any call of he raw `Statement` Java class. (Calling Statements without parameters is forbidden). |
-| `DenyTclManager`            | Manager that denies any TCL (Transaction Control Language) call. |
+| SQL Firewall Manager Name      | Details                                                      |
+| ------------------------------ | ------------------------------------------------------------ |
+| `CsvRulesManager`              | Manager that applies rules written in a CSV file. (See below). |
+| `CsvRulesManagerNoReload`      | Manager that extends  `CsvRulesManager`, the only change is to prohibit reloading rules when the CSV file is updated. |
+| `DenyDclManager`               | Manager that denies any DCL (Data Control Language) call.    |
+| `DenyDdlManager`               | Manager that denies any DDL (Data Definition Language) call. |
+| `DenyExceptOnWhitelistManager` | Manager that allows only statementsthat are listed in a whitelist text file. |
+| `DenyExecuteUpdateManager`     | Manager that denies any update of the database. (The database will be accessed in read only mode). |
+| `DenyMetadataQueryManager`     | Manager that denies the use of the AceQL Metadata Query API. |
+| `DenyOnBlacklistManager`       | Manager that denies statements that arelisted in a blacklist text file. |
+| `DenySqlInjectionManager`      | Manager that allows detectingSQL injection attacks, using Cloudmersive third-party API. |
+| `DenySqlInjectionManagerAsync` | Manager that denies any call of theraw Statement Java class. (Calling Statements without parameters isforbidden). |
+| `DenyStatementClassManager`    | Manager that denies any call of he raw `Statement` Java class. (Calling Statements without parameters is forbidden). |
+| `DenyTclManager`               | Manager that denies any TCL (Transaction Control Language) call. |
 
 Only the following property must be defined per database name if you want to add SQL Firewall Managers:
 

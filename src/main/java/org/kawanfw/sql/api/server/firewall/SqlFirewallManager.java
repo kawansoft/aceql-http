@@ -81,7 +81,7 @@ import org.kawanfw.sql.api.server.StatementAnalyzer;
  * AceQL Metadata Query API.</li>
  * <li>{@link DenyOnBlacklistManager}: manager that denies statements that are
  * listed in a blacklist text file.</li>
- * <li>{@link DenySqlInjectionManager}: firewall manager that allows detecting
+ * <li>{@link DenySqlInjectionManager}: manager that allows detecting
  * SQL injection attacks, using
  * <a href="https://www.cloudmersive.com">Cloudmersive</a> third-party API.</li>
  * <li>{@link DenySqlInjectionManagerAsync}: version of
