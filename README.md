@@ -987,7 +987,7 @@ Where:
       <!-- The License File For Enterprise Edition -->
       <init-param>        
           <param-name>licenseFile</param-name>
-          <param-value>C:\.aceql-http\conf\aceql_license_key.txt</param-value>
+          <param-value>c:\Users\Mike\aceql-license-key.txt</param-value>
       </init-param> 
   </servlet>
   
