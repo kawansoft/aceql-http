@@ -34,6 +34,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import org.kawanfw.sql.api.server.StatementNormalizer;
+import org.kawanfw.sql.util.Tag;
 
 /**
  * Loads all the sql statements contained in a text file structured like:
@@ -78,7 +79,7 @@ public class TextStatementsListLoader {
     public void load() throws IOException, FileNotFoundException {
 
 	if (!file.exists()) {
-	    throw new FileNotFoundException("The file does not exist: " + file);
+	    throw new FileNotFoundException(Tag.PRODUCT_USER_CONFIG_FAIL +  " The file does not exist: " + file);
 	}
 
 	try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file));) {
