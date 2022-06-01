@@ -14,8 +14,6 @@
 [TOC]
 
 
-
-
 # Fundamentals
 
 ## Overview
