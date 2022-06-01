@@ -152,7 +152,7 @@ Transitioning from default Community Edition to Enterprise Edition just requires
 
 1. Get a Trial License File at www.aceql.com/aceql-trial or buy one on our [Online Shop](https://download.aceql.com/shop).
 2. You will receive per email the license file.
-3. Install the license file in the the `<Installation Directory>/lib-server/` subdirectory.
+3. Install the received `aceql-license-key.txt` license file in the the `<Installation Directory>/lib-server/` subdirectory.
 4. Restart the AceQL Server.
 
 # Download and Installation
