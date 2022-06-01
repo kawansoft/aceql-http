@@ -747,8 +747,6 @@ sampledb.sqlFirewallManagerClassNames=\
     com.mycompany.firewall.MySqlFirewallManager2
 ```
 
-## 
-
 ## Running the AceQL Web Server without Windows Desktop
 
 If you don't have access to the Windows Desktop interface (running in a cloud instance, etc.)  you can still run the AceQL HTTP Web Server from the command line.
@@ -856,7 +854,7 @@ AceQL provides several built-in (and ready to use without any coding)  SQL Firew
 
 The Update Listeners Section allows defining Java code to execute after a successful SQL database update is done. 
 
-Update Listeners can be viewed as a kind of Java "trigger" executed on the completion  of SQL updates.
+Update Listeners can be viewed as a kind of Java "trigger" executed on the completion of SQL updates.
 
 The actions to trigger are defined through one or more "Update Listeners ",  Java classes that are injected at AceQL Server startup. An Update Listener is a built-in or user-developed Java class that implements the [UpdateListener](https://docs.aceql.com/rest/soft/11.0/javadoc/org/kawanfw/sql/api/server/listener/UpdateListener.html) interface with code to execute defined in the unique `updateActionPerformed` method. Multiple `UpdateListener` may be defined and chained. 
 
@@ -880,7 +878,17 @@ sampledb.updateListenerClassNames=\
     com.mycompany.listener.MyUpdateListener2
 ```
 
-## Running the AceQL Web Server Advanced Options
+## Calling SQL Stored Procedures from client side
+
+The Enterprise Edition supports calling SQL stored procedures from C# and Java client side. See the [C# Client SDK](https://github.com/kawansoft/AceQL.Client2/blob/master/README.md) and the [AceQL Client JDBC Driver](https://github.com/kawansoft/aceql-http-client-jdbc-driver#readme) documentation for more information.
+
+## Calling ServerQueryExecutor classes from client side
+
+The Enterprise Edition supports calling implementations of the `ServerQueryExecutor` implementation. This is a a kind of  server "AceQL stored procedure" written in Java. The `executeQuery` method returns to the client side a `ResultSet` that is appropriately converted by the client side SDK (`DataReader` in C#,  `ResultSet` in Java and a `list` in `Python` ).
+
+See the [ServerQueryExecutor Javadoc](https://docs.aceql.com/rest/soft/11.0/javadoc/org/kawanfw/sql/api/server/executor/ServerQueryExecutor.html) for server side usage and each [C#, Java or Python documentation](https://www.aceql.com/http-access-remote-sql-database-documentation/) for client side usage.
+
+## Running the AceQL Web Server - Enterprise Edition Options
 
 ### Starting/Stopping the AceQL WebServer from a Java program
 
@@ -1006,8 +1014,6 @@ The properties to set in the `aceql-server.properties` file are:
 The properties are passed to the first  `ThreadPoolExecutor` [constructor](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/ThreadPoolExecutor.html#ThreadPoolExecutor(int,%20int,%20long,%20java.util.concurrent.TimeUnit,%20java.util.concurrent.BlockingQueue)).
 
 See `ThreadPoolExecutor` class [Javadoc](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/ThreadPoolExecutor.html) for more info
-
-Default values should be appropriate for most AceQL configurations. 
 
 ## Encrypting Properties in the aceql-server.properties file
 
