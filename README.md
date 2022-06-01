@@ -14,6 +14,8 @@
 [TOC]
 
 
+
+
 # Fundamentals
 
 ## Overview
@@ -144,26 +146,31 @@ These databases are supported by KawanSoft only through [commercial support](htt
 
 See the www.aceql.com/pricing page for a features matrix that will help you to choose the right Edition. You may also find more detailled info in the [Javadoc](https://docs.aceql.com/rest/soft/11.0/javadoc/) and in the [aceql-server.properties](https://docs.aceql.com/rest/soft/11.0/src/aceql-server.properties) file.
 
-***Note that the Windows and Linux/Unix installers are unique and cover both Editions.***
+***Note that the Windows and Linux/Unix installers cover both the Community Edition and the Enterprise Edition.***
 
 ## Enterprise Edition Licensing
 
-When buying a license, the license is valid for one year for 1 up to 5 SQL database names.
+When buying a license, the license is valid for one year for 1 up to 5 SQL database names. There is no limitation to the number of computers installed. This means you are granted the right to access each 1 to 5 databases from any computer. For example, the `"my_company_sales"` database may be accessed by AceQL from your test server, your pre-production server and your production server.
 
 If your need mass volume, please contact us at sales@kawansoft.com.
 
 ## Activating the Enterprise Edition
 
-Transitioning from default Community Edition to Enterprise Edition just requires a license file *after download and installation* described below: 
+Transitioning from default Community Edition to Enterprise Edition just requires a license file *<u>after download and installation</u>* described below: 
 
 1. Get a Trial License File at www.aceql.com/aceql-trial or buy one on our [Online Shop](https://download.aceql.com/shop).
 2. You will receive per email the license file.
-3. Install the received `aceql-license-key.txt` license file in the the `<Installation Directory>/lib-server/` subdirectory.
+3. Install the received `aceql-license-key.txt` license file in the :
+   1. Windows : `<Installation Directory>/AceQL/lib-server/` subdirectory.
+   2. Linux/Unix : `<Installation Directory>/lib-server/` subdirectory.
+
 4. Restart the AceQL Server.
 
 # Download and Installation
 
 ## Linux / Unix Installation 
+
+The Linux/Unix installer is common for both Community and Enterprise Editions.
 
 Open a terminal and download with Wget.
 
@@ -227,6 +234,8 @@ AceQL HTTP Community v11.0 - 01-June-2022
 
 
 ## Windows Installation
+
+The Windows installer is common for both Community and Enterprise Editions. 
 
 Download [AceQL Windows Installer](https://www.aceql.com/aceql-download-page/).
 
@@ -729,7 +738,7 @@ Stateless mode enables resiliency and elasticity, and easier deployment: one can
 
 Closing a `Connection` from the client-side is unnecessary when running in stateless mode (a call to the `/logout` API will do nothing).
 
-Note that in this 9.0 version SQL transactions are not supported in stateless mode.
+Note that in this 11.0 version SQL transactions are not supported in stateless mode.
 
 ## Advanced Firewall Configuration
 
@@ -798,7 +807,7 @@ Where:
 - `username` = the username of the client user.
 
 
-# Enterprise Edition
+# Enterprise Edition Options
 
 ## AceQL Servlet Name Configuration
 
@@ -982,7 +991,7 @@ It will display a JSON string and should display a status of `"OK"` and the curr
 }         
 ```
 
-If not, the configuration errors are detailed in your Java EE servlet container log files  for correction. 
+If not, the configuration errors are detailed in your Java EE servlet container log files for correction. 
 
 ## Interacting with the JDBC Pool at runtime
 
@@ -1033,9 +1042,14 @@ The `PropertiesPasswordManager`  concrete class name must then be defined with t
 In order to run the `PropertiesEncryptor` class:
 
 - Open a command line on Windows or Linux/Bash.
-- `cd <installation-directory>/AceQL/bin>`
-  - Windows: run `properties-encryptor.bat`.
-  - Linux: run `properties-encryptor` Bash.
+- Windows : 
+  - `cd <installation-directory>/AceQL/bin>`
+  - run `properties-encryptor.bat`.
+
+- Linux/Unix:
+  - `cd <installation-directory>/bin>`
+  - run `properties-encryptor` Bash.
+
 - Follow the instructions in order to create the password and to encrypt some property values.
 
 
