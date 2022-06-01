@@ -148,24 +148,6 @@ See the www.aceql.com/pricing page for a features matrix that will help you to c
 
 ***Note that the Windows and Linux/Unix installers cover both the Community Edition and the Enterprise Edition.***
 
-## Enterprise Edition Licensing
-
-When buying a license, the license is valid for one year for 1 up to 5 SQL database names. There is no limitation to the number of computers installed. This means you are granted the right to access each 1 to 5 databases from any computer. For example, the `"my_company_sales"` database may be accessed by AceQL from your test server, your pre-production server and your production server.
-
-If your need mass volume, please contact us at sales@kawansoft.com.
-
-## Activating the Enterprise Edition
-
-Transitioning from default Community Edition to Enterprise Edition just requires a license file *<u>after download and installation</u>* described below: 
-
-1. Get a Trial License File at www.aceql.com/aceql-trial or buy one on our [Online Shop](https://download.aceql.com/shop).
-2. You will receive per email the license file.
-3. Install the received `aceql-license-key.txt` license file in the :
-   1. Windows : `<Installation Directory>/AceQL/lib-server/` subdirectory.
-   2. Linux/Unix : `<Installation Directory>/lib-server/` subdirectory.
-
-4. Restart the AceQL Server.
-
 # Download and Installation
 
 ## Linux / Unix Installation 
@@ -807,7 +789,31 @@ Where:
 - `username` = the username of the client user.
 
 
-# Enterprise Edition Options
+# Enterprise Edition - Licensing 
+
+## Trying The Enterprise Edition
+
+Transitioning from default Community Edition to Enterprise Edition just requires a license file *<u>after download and installation</u>* described below: 
+
+1. Get a Trial License File at www.aceql.com/aceql-trial.
+2. You will receive per email the license file.
+3. Install the received `aceql-license-key.txt` license file in the :
+   1. Windows : `<Installation Directory>/AceQL/lib-server/` subdirectory.
+   2. Linux/Unix : `<Installation Directory>/lib-server/` subdirectory.
+
+4. Restart the AceQL Server.
+
+## Buying The Enterprise Edition 
+
+When buying a license, the license is valid for one year for 1 up to 5 SQL database names. 
+
+There is no limitation to the number of computers installed. This means you are granted the right to access each 1 to 5 databases from any computer. For example, the `"my_company_sales"` database may be accessed by AceQL from your test server, your pre-production server and your production server.
+
+Licenses are available for sale on our [Online Shop](https://download.aceql.com/shop).
+
+If your need mass volume, please contact us at sales@kawansoft.com.
+
+# Enterprise Edition - Features
 
 ## AceQL Servlet Name Configuration
 
@@ -817,7 +823,7 @@ The **AceQL Manager servlet Section** in the `aceql-server.proprties` file allow
 aceQLManagerServletCallName=aceql
 ```
 
-## Advanced Connection Pool Management
+## DatabaseConfigurator - Advanced Connection Pool Management
 
 You may define your own preferred connection pool implementation, instead of using the default Tomcat JDBC Connection Pool.
 
@@ -826,13 +832,20 @@ This is done through your own implementation of the [DatabaseConfigurator](https
 Your concrete implementations is passed to the AceQL as properties of the **Database Configurators Section** in the `aceql-server.properties` file, as described in the section:
 
 - The  `databaseConfiguratorClassName` property lets you define your concrete implementation of `DatabaseConfigurator`.
-- You `DatabaseConfigurator` classes must be added to the CLASSPATH before the start of the AceQL Server.
+- You `DatabaseConfigurator` classes must be added to the `CLASSPATH` before the start of the AceQL Server.
 
  Instances are loaded using a non-args constructor.
 
+The Development of a `DatabaseConfigurator` implementation also allows to :
+
+- Define the directories where the Blobs/Clobs are located for upload and download.
+- Define some Java code to execute before/after a `Connection.close()`.
+- Define the maximum number of rows that may be returned to the client.
+- Define the `Logger` to use to trap server Exceptions.
+
 ## Headers Authentication Configuration
 
-The Headers Authentication  Section Allows authenticating a client user using the request headers set and sent from the client side. 
+The Headers Authentication Section Allows authenticating a client user using the request headers set and sent from the client side. 
 
 This allows an alternate or supplementary authentication to UserAuthenticator. 
 
@@ -842,10 +855,10 @@ This is done through your own implementation of the [RequestHeadersAuthenticator
 
 ## SQL Firewall Triggers Configuration
 
-The [SqlFirewallTrigger](https://docs.aceql.com/rest/soft/11.0/javadoc/org/kawanfw/sql/api/server/firewall/trigger/SqlFirewallTrigger.html) allows to define per database a trigger if a 
+The [SqlFirewallTrigger](https://docs.aceql.com/rest/soft/11.0/javadoc/org/kawanfw/sql/api/server/firewall/trigger/SqlFirewallTrigger.html) allows to define per database a "trigger" in Java  if a 
 `SqlFirewallManager.allowSqlRunAfterAnalysis()` call returns false, meaning a possible  attack is detected. 
 
-A trigger is the Java code executed in the implementation of the unique
+A trigger is thus the Java code executed in the implementation of the unique
 [SqlFirewallTrigger.runIfStatementRefused()](https://docs.aceql.com/rest/soft/11.0/javadoc/org/kawanfw/sql/api/server/firewall/trigger/SqlFirewallTrigger.html#runIfStatementRefused(org.kawanfw.sql.api.server.SqlEvent,org.kawanfw.sql.api.server.firewall.SqlFirewallManager,java.sql.Connection)) method.
 
 Multiple `SqlFirewallTrigger` may be defined and chained. 
@@ -995,13 +1008,15 @@ If not, the configuration errors are detailed in your Java EE servlet container 
 
 ## Interacting with the JDBC Pool at runtime
 
-The Servlets Section in `aceql-server.properties` allow to define you own servlets in order to interact with AceQL Web Server with different actions :
+The Servlets Section in `aceql-server.properties` allow to define you own servlets in order to interact with the AceQL Web Server.
+
+The  provided [DefaultPoolsInfo](https://docs.aceql.com/rest/soft/11.0/javadoc/org/kawanfw/sql/api/server/DefaultPoolsInfo.html) servlet allows:
 
 - query info about JDBC pools in use,
 - modify a pool size,
 - etc.
 
-The API  [DataSourceStore](https://docs.aceql.com/rest/soft/11.0/javadoc/org/kawanfw/sql/api/server/DataSourceStore.html) class allows to retrieve for each database the Tomcat [org.apache.tomcat.jdbc.pool.DataSource](https://tomcat.apache.org/tomcat-9.0-doc/api/org/apache/tomcat/jdbc/pool/DataSource.html) corresponding to the Tomcat JDBC Pool created at AceQL Web server startup. 
+The API [DataSourceStore](https://docs.aceql.com/rest/soft/11.0/javadoc/org/kawanfw/sql/api/server/DataSourceStore.html) class allows to retrieve for each database the Tomcat [org.apache.tomcat.jdbc.pool.DataSource](https://tomcat.apache.org/tomcat-9.0-doc/api/org/apache/tomcat/jdbc/pool/DataSource.html) corresponding to the Tomcat JDBC Pool created at AceQL Web server startup. 
 
 ## ThreadPoolExecutor Configuration
 
@@ -1021,8 +1036,6 @@ The properties to set in the `aceql-server.properties` file are:
 | `capacity`           | The initial capacity of the `BloquingQueue<Runnable>` <br/>(0 for no or default initial capacity.) | 50000                |
 
 The properties are passed to the first  `ThreadPoolExecutor` [constructor](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/ThreadPoolExecutor.html#ThreadPoolExecutor(int,%20int,%20long,%20java.util.concurrent.TimeUnit,%20java.util.concurrent.BlockingQueue)).
-
-See `ThreadPoolExecutor` class [Javadoc](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/ThreadPoolExecutor.html) for more info
 
 ## Encrypting Properties in the aceql-server.properties file
 
