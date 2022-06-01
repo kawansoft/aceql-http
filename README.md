@@ -144,15 +144,18 @@ These databases are supported by KawanSoft only through [commercial support](htt
 
 ## Comparing Editions
 
-See the www.aceql.com/pricing page for a features matrix that will help you to choose rhe right Edition. You may also find more detailled info in the Javadoc and in the 
+See the www.aceql.com/pricing page for a features matrix that will help you to choose the right Edition. You may also find more detailled info in the [Javadoc](https://docs.aceql.com/rest/soft/11.0/javadoc/) and in the [aceql-server.properties](https://docs.aceql.com/rest/soft/11.0/src/aceql-server.properties) file.
 
 ***Note that the Windows and Linux/Unix installers are unique and cover both Editions.***
 
 ## Activating the Enterprise Edition
 
-Transitioning from default Community Edition to Enterprise Edition just requires a license file.
+Transitioning from default Community Edition to Enterprise Edition just requires a license file *after download and installation* described below: 
 
-
+1. Get a Trial License File at www.aceql.com/aceql-trial or buy one on our [Online Shop](https://download.aceql.com/shop).
+2. You will receive per email the license file.
+3. Install the license file in the the `<Installation Directory>/lib-server/` subdirectory.
+4. Restart the AceQL Server.
 
 # Download and Installation
 
