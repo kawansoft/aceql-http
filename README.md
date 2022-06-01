@@ -146,6 +146,12 @@ See the www.aceql.com/pricing page for a features matrix that will help you to c
 
 ***Note that the Windows and Linux/Unix installers are unique and cover both Editions.***
 
+## Enterprise Edition Licensing
+
+When buying a license, the license is valid for one year for 1 up to 5 SQL database names.
+
+If your need mass volume, please contact us at sales@kawansoft.com.
+
 ## Activating the Enterprise Edition
 
 Transitioning from default Community Edition to Enterprise Edition just requires a license file *after download and installation* described below: 
