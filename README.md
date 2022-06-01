@@ -363,10 +363,9 @@ AceQL provides several built-in (and ready to use without any coding)  SQL Firew
 | `DenyExecuteUpdateManager`     | Manager that denies any update of the database. (The database will be accessed in read only mode). |
 | `DenyMetadataQueryManager`     | Manager that denies the use of the AceQL Metadata Query API. |
 | `DenyOnBlacklistManager`       | Manager that denies statements that arelisted in a blacklist text file. |
-| `DenySqlInjectionManager`      | Manager that allows detectingSQL injection attacks, using Cloudmersive third-party API. |
-| `DenySqlInjectionManagerAsync` | Manager that denies any call of theraw Statement Java class. (Calling Statements without parameters isforbidden). |
+| `DenySqlInjectionManager`      | Manager that allows detecting SQL injection attacks, using [Cloudmersive](https://cloudmersive.com/) third-party API. |
+| `DenySqlInjectionManagerAsync` | Same as `DenySqlInjectionManager`, but detection is done  asynchronously. |
 | `DenyStatementClassManager`    | Manager that denies any call of he raw `Statement` Java class. (Calling Statements without parameters is forbidden). |
-| `DenyTclManager`               | Manager that denies any TCL (Transaction Control Language) call. |
 
 Only the following property must be defined per database name if you want to add SQL Firewall Managers:
 
@@ -598,7 +597,7 @@ In order to give access to remote client users to the AceQL server, you may deve
 Your concrete implementations is passed to the AceQL as properties of the **User Authentication Section**  in the `aceql-server.properties` file, as described in the section
 
 - The  **userAuthenticatorClassName** property lets you define your concrete implementation of `UserAuthentication`.
-- You `UserAuthentication`classes must be added to the CLASSPATH before the start of the AceQL Server.
+- You `UserAuthentication`classes must be added to the `CLASSPATH` before the start of the AceQL Server.
 
  Instances are loaded using a non-args constructor.
 
