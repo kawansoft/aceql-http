@@ -6,7 +6,7 @@
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/d14142d5d6f04ba891d505e2e47b417d)](https://www.codacy.com/gh/kawansoft/aceql-http?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=kawansoft/aceql-http&amp;utm_campaign=Badge_Grade)
 ![GitHub contributors](https://img.shields.io/github/contributors/kawansoft/aceql-http)
 
-# AceQL HTTP v11.0   - May  31,  2022
+# AceQL HTTP v11.0   - June 1,  2022
 # Server Installation and Configuration Guide  
 
 <img src="https://docs.aceql.com/favicon.png" alt="AceQL HTTP Icon"/> 
@@ -140,6 +140,20 @@ These databases are supported by KawanSoft only through [commercial support](htt
 | Sybase  SQL Anywhere 12+                     |
 | Teradata  Database 13+                       |
 
+# Choosing between Community and Enterprise Edition
+
+## Comparing Editions
+
+See the www.aceql.com/pricing page for a features matrix that will help you to choose rhe right Edition. You may also find more detailled info in the Javadoc and in the 
+
+***Note that the Windows and Linux/Unix installers are unique and cover both Editions.***
+
+## Activating the Enterprise Edition
+
+Transitioning from default Community Edition to Enterprise Edition just requires a license file.
+
+
+
 # Download and Installation
 
 ## Linux / Unix Installation 
@@ -200,7 +214,7 @@ Call the `aceql-server` script to display the AceQL version:
 It will display a line with all version info, like:
 
 ```
-AceQL HTTP Community v11.0 - 31-May-2022
+AceQL HTTP Community v11.0 - 01-June-2022
 ```
 
 
@@ -328,7 +342,7 @@ The Web service must just implement these features:
 
 The SQL Firewall Managers Section allows to define SQL firewall rulesets to use for each database.
 
-The rulesets are defines through one or more "SQL Firewall Managers",  Java classes that are injected at AceQL Server startup. A SQL Firewall Manager is a built-in or user-developed Java class that implements the  [SqlFirewallManager](https://docs.aceql.com/rest/soft/11.0/javadoc/org/kawanfw/sql/api/server/firewall/SqlFirewallManager.html) interface.
+The rulesets are defined through one or more "SQL Firewall Managers",  Java classes that are injected at AceQL Server startup. A SQL Firewall Manager is a built-in or user-developed Java class that implements the  [SqlFirewallManager](https://docs.aceql.com/rest/soft/11.0/javadoc/org/kawanfw/sql/api/server/firewall/SqlFirewallManager.html) interface.
 
 A `SqlFirewallManager`concrete implementation allows to: 
 
@@ -726,9 +740,9 @@ sampledb.sqlFirewallManagerClassNames=\
     com.mycompany.firewall.MySqlFirewallManager2
 ```
 
-## Running the AceQL Web Server
+## 
 
-### Running the AceQL Web Server without Windows Desktop
+## Running the AceQL Web Server without Windows Desktop
 
 If you don't have access to the Windows Desktop interface (running in a cloud instance, etc.)  you can still run the AceQL HTTP Web Server from the command line.
 
@@ -788,6 +802,48 @@ The **AceQL Manager servlet Section** in the `aceql-server.proprties` file allow
 ```properties
 aceQLManagerServletCallName=aceql
 ```
+
+## Advanced Connection Pool Management
+
+You may define your own preferred connection pool implementation, instead of using the default Tomcat JDBC Connection Pool.
+
+This is done through your own implementation of the [DatabaseConfigurator](https://docs.aceql.com/rest/soft/11.0/javadoc/org/kawanfw/sql/api/server/DatabaseConfigurator.html) interface: overload the `DatabaseConfigurator.getConnection()` method in your concrete class implementation.
+
+Your concrete implementations is passed to the AceQL as properties of the **Database Configurators Section** in the `aceql-server.properties` file, as described in the section:
+
+- The  `databaseConfiguratorClassName` property lets you define your concrete implementation of `DatabaseConfigurator`.
+- You `DatabaseConfigurator` classes must be added to the CLASSPATH before the start of the AceQL Server.
+
+ Instances are loaded using a non-args constructor.
+
+## Headers Authentication Configuration
+
+The Headers Authentication  Section Allows authenticating a client user using the request headers set and sent from the client side. 
+
+This allows an alternate or supplementary authentication to UserAuthenticator. 
+
+Typical usage would be to send - using HTTP - an authentication token stored in one of the request headers to a remote cloud provider.
+
+This is done through your own implementation of the [RequestHeadersAuthenticator](https://docs.aceql.com/rest/soft/11.0/javadoc/org/kawanfw/sql/api/server/auth/headers/RequestHeadersAuthenticator.html) interface: overload the `public boolean validate(Map<String, String> headers)` method in your concrete class implementation. Your method code will be able to check all headers sent by the client side and decide whether or not to grant access to the client user.
+
+## SQL Firewall Triggers Configuration
+
+The [SqlFirewallTrigger](https://docs.aceql.com/rest/soft/11.0/javadoc/org/kawanfw/sql/api/server/firewall/trigger/SqlFirewallTrigger.html) allows to define per database a trigger if a 
+`SqlFirewallManager.allowSqlRunAfterAnalysis()` call returns false, meaning a possible  attack is detected. 
+
+A trigger is the Java code executed in the implementation of the unique
+[SqlFirewallTrigger.runIfStatementRefused()](https://docs.aceql.com/rest/soft/11.0/javadoc/org/kawanfw/sql/api/server/firewall/trigger/SqlFirewallTrigger.html#runIfStatementRefused(org.kawanfw.sql.api.server.SqlEvent,org.kawanfw.sql.api.server.firewall.SqlFirewallManager,java.sql.Connection)) method.
+
+Multiple `SqlFirewallTrigger` may be defined and chained. 
+
+AceQL provides several built-in (and ready to use without any coding)  SQL Firewall Triggers:
+
+| SQL Firewall Triger Name       | Details                                                      |
+| ------------------------------ | ------------------------------------------------------------ |
+| `BanUserSqlFirewallTrigger`    | Trigger that inserts the username and other info into a SQL table. The SQL table is scanned/controlled at each request, so the banned user cannot access any more the AceQL server. See [Javadoc](https://docs.aceql.com/rest/soft/11.0/javadoc/org/kawanfw/sql/api/server/firewall/trigger/BanUserSqlFirewallTrigger.html) for implementation details. |
+| `BeeperSqlFirewallTrigger`     | Trigger that simply beeps on the terminal if an attack is detected by a `SqlFirewallManager`. |
+| `JdbcLoggerSqlFirewallTrigger` | Trigger that logs into a SQL table all info about the denied SQL request. See [Javadoc](https://docs.aceql.com/rest/soft/11.0/javadoc/org/kawanfw/sql/api/server/firewall/trigger/JdbcLoggerSqlFirewallTrigger.html) for implementation details. |
+| `JsonLoggerSqlFirewallTrigger` | Trigger that logs in JSON format all info about the denied SQL request. |
 
 ## Update Listeners Configuration
 
@@ -907,24 +963,11 @@ It will display a JSON string and should display a status of `"OK"` and the curr
 ```json
 {
     "status": "OK",
-    "version": "AceQL HTTP v11.0 - 31-May-2022"
+    "version": "AceQL HTTP v11.0 - 01-June-2022"
 }         
 ```
 
 If not, the configuration errors are detailed in your Java EE servlet container log files  for correction. 
-
-## Advanced Connection Pool Management
-
-You may define your own preferred connection pool implementation, instead of using the default Tomcat JDBC Connection Pool.
-
-This is done through your own implementation of the [DatabaseConfigurator](https://docs.aceql.com/rest/soft/11.0/javadoc/org/kawanfw/sql/api/server/DatabaseConfigurator.html) interface: overload the `DatabaseConfigurator.getConnection()` method in your concrete class implementation.
-
-Your concrete implementations is passed to the AceQL as properties of the **Database Configurators Section** in the `aceql-server.properties` file, as described in the section:
-
-- The  `databaseConfiguratorClassName` property lets you define your concrete implementation of `DatabaseConfigurator`.
-- You `DatabaseConfigurator` classes must be added to the CLASSPATH before the start of the AceQL Server.
-
- Instances are loaded using a non-args constructor.
 
 ## Interacting with the JDBC Pool at runtime
 
