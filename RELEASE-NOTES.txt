@@ -25,7 +25,7 @@ AceQL HTTP is licensed through the GNU Lesser General Public License
 (LGPL v2.1).
 
 
-AceQL HTTP Version 11 - 24-May-2022
+AceQL HTTP Version 11 - 02-Jun-2022
 -----------------------------------
 
 What's New: 
@@ -33,9 +33,9 @@ What's New:
   an Enterprise version. See www.aceql.com/pricing and user documentation 
   for more info.
 - StatementNormalizer creation. See Javadoc.
-- TCL calls are not any more firewalled because it's useless and because 
-  of implementation complexity.
-- The DenyTclManager SqlFirewallManager has been suppressed because
+- TCL calls are not any more firewalled because 
+  of unnecessary implementation complexity and because it's globally useless.
+- The DenyTclManager SqlFirewallManager has thus been suppressed because
   TCL calls are not any more firewalled.
 - Add DenyOnBlacklistManager & AllowOnlyOnWhitelistManager.
 - DenyExecuteUpdateManager has been renamed to less ambiguous name
