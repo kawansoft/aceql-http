@@ -50,7 +50,7 @@ public class UpdateListenersCaller {
      * @param updateListeners	the list of UpdateListener to call
      * @param connection	the JDBC Connection
      */
-    public UpdateListenersCaller(List<UpdateListener> updateListeners, java.sql.Connection connection) {
+    public UpdateListenersCaller(List<UpdateListener> updateListeners, Connection connection) {
 	this.updateListeners = updateListeners;
 	this.connection = connection;
     }

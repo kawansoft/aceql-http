@@ -176,19 +176,20 @@ public class StatementNormalizer {
      * @param str the input string to split
      * @return array of elements
      */
-    private static List<String> getTokens(String str) {
+    private static List<String> getTokens(final String str) {
 
-	str = str.replace(",", " , ");
-	str = str.replace("!=", ACEQL_NE);
-	str = str.replace(">=", ACEQL_GT);
-	str = str.replace("<=", ACEQL_LT);
-	str = str.replace("=", " = ");
-	str = str.replace(ACEQL_GT, " >= ");
-	str = str.replace(ACEQL_LT, " <= ");
-	str = str.replace(ACEQL_NE, " != ");
+	String strNew = str;
+	strNew = strNew.replace(",", " , ");
+	strNew = strNew.replace("!=", ACEQL_NE);
+	strNew = strNew.replace(">=", ACEQL_GT);
+	strNew = strNew.replace("<=", ACEQL_LT);
+	strNew = strNew.replace("=", " = ");
+	strNew = strNew.replace(ACEQL_GT, " >= ");
+	strNew = strNew.replace(ACEQL_LT, " <= ");
+	strNew = strNew.replace(ACEQL_NE, " != ");
 
 	List<String> tokens = new ArrayList<>();
-	StringTokenizer tokenizer = new StringTokenizer(str, " ");
+	StringTokenizer tokenizer = new StringTokenizer(strNew, " ");
 	while (tokenizer.hasMoreElements()) {
 	    tokens.add(tokenizer.nextToken().trim());
 	}
