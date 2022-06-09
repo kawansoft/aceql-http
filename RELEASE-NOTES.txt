@@ -62,7 +62,7 @@ AceQL HTTP Version 10.2 - 07-Feb-2022
 What's New: 
 - New LdapUserAuthenticator properties are defined 
   in aceql-server.properties: ldapUserAuthenticator.securityAuthentication
-  & ldapUserAuthenticator.securityProtocol
+  & ldapUserAuthenticator.securityProtocol.
 - Tomcat base libraries have been upgraded to 9.0.58.
 - Postgresql base libraries have been upgraded to 42.3.2. 
 
