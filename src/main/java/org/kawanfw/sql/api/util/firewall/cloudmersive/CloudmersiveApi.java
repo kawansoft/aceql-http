@@ -64,7 +64,6 @@ public class CloudmersiveApi {
 
     private TextInputApi apiInstance;
     private String detectionLevel;
-    private SqlInjectionDetectionResult sqlInjectionDetectionResult;
     private long snapshot;
 
     private File file;
@@ -150,7 +149,7 @@ public class CloudmersiveApi {
 	try {
 	    debug("Detecting SQLI in sql: " + sql);
 	    long begin = System.currentTimeMillis();
-	    sqlInjectionDetectionResult = apiInstance.textInputCheckSqlInjection(sql, detectionLevel);
+	    SqlInjectionDetectionResult sqlInjectionDetectionResult = apiInstance.textInputCheckSqlInjection(sql, detectionLevel);
 	    boolean attack =  sqlInjectionDetectionResult.isContainedSqlInjectionAttack();
 	    debug("attack: " + attack + " Detection time: " + (begin-System.currentTimeMillis()));
 	    return attack;

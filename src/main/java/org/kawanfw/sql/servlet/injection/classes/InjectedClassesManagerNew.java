@@ -34,6 +34,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ThreadPoolExecutor;
 
@@ -92,9 +93,7 @@ public class InjectedClassesManagerNew {
 	    // Test if we are in Native Tomcat and do specific stuff.
 	    if (!TomcatSqlModeStore.isTomcatEmbedded()) {
 
-		if (propertiesFileStr == null) {
-		    throw new NullPointerException("The init param \"properties\" has no been defined in web.xml!");
-		}
+		Objects.requireNonNull(licenseFileStr, "The init param \\\"properties\\\" has not been defined in web.xml!");
 
 		if (licenseFileStr != null) {
 		    File licenseFile = new File(licenseFileStr);
