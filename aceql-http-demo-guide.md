@@ -1,4 +1,4 @@
-# AceQL HTTP v11.0 - June 1, 2022
+# AceQL HTTP v11.0 - June 9, 2022
 
 # Demo Guide
 
@@ -172,7 +172,7 @@ $ aceql-server -version
 It will display a line with all version info, like:
 
 ```bash
-AceQL HTTP Community v11.0 - 01-Jun-2022
+AceQL HTTP Community v11.0 - 09-Jun-2022
 ```
 
 ### Configure JDBC parameters in aceql-server.properties file
@@ -220,7 +220,7 @@ The console will display the properties used, test that the Connection is establ
 
 ```bash
 [ACEQL HTTP START] Starting AceQL HTTP Web Server...
-[ACEQL HTTP START] AceQL HTTP Community v11.0 - 01-Jun-2022
+[ACEQL HTTP START] AceQL HTTP Community v11.0 - 09-Jun-2022
 [ACEQL HTTP START] Using properties file: 
 [ACEQL HTTP START]  -> /home/mike/aceql-http/conf/aceql-server.properties
 [ACEQL HTTP START] Setting System Properties:
@@ -339,7 +339,7 @@ The console will display the properties used, test that the `Connection` is esta
 
 ```bash
 [ACEQL HTTP START] Starting AceQL HTTP Web Server...
-[ACEQL HTTP START] AceQL HTTP Community v11.0 - 01-Jun-2022
+[ACEQL HTTP START] AceQL HTTP Community v11.0 - 09-Jun-2022
 [ACEQL HTTP START] Using properties file: 
 [ACEQL HTTP START]  -> c:\aceql-http\conf\aceql-server.properties
 [ACEQL HTTP START] Setting System Properties:
