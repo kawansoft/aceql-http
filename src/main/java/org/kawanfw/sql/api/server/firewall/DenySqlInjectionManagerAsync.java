@@ -60,10 +60,8 @@ import org.kawanfw.sql.util.Tag;
  * be extracted from the pool in order to process the
  * {@link SqlFirewallTrigger#runIfStatementRefused(SqlEvent, SqlFirewallManager, Connection)}
  * methods. <br>
- * The {@code Connection} will be cleanly released after all calls. <br>
- * See {@code SqlInjectionApiCallback} for more info.
+ * The {@code Connection} will be cleanly released after all calls.
  * 
- * @see SqlInjectionApiCallback
  * @see DenySqlInjectionManager
  * 
  * @author Nicolas de Pomereu

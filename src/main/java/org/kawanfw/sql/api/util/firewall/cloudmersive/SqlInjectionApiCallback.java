@@ -22,7 +22,7 @@
  * Any modifications to this file must keep this entire header
  * intact.
  */
-package org.kawanfw.sql.api.server.firewall;
+package org.kawanfw.sql.api.util.firewall.cloudmersive;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -33,6 +33,8 @@ import java.util.Objects;
 
 import org.kawanfw.sql.api.server.DatabaseConfigurator;
 import org.kawanfw.sql.api.server.SqlEvent;
+import org.kawanfw.sql.api.server.firewall.DenySqlInjectionManagerAsync;
+import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
 import org.kawanfw.sql.api.util.firewall.SqlFirewallTriggerWrapper;
 import org.kawanfw.sql.servlet.injection.classes.InjectedClassesStore;
 import org.kawanfw.sql.util.FrameworkDebug;

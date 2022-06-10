@@ -34,7 +34,6 @@ import java.util.Properties;
 
 import org.kawanfw.sql.api.server.SqlEvent;
 import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
-import org.kawanfw.sql.api.server.firewall.SqlInjectionApiCallback;
 import org.kawanfw.sql.servlet.injection.properties.PropertiesFileUtil;
 import org.kawanfw.sql.util.FrameworkDebug;
 import org.kawanfw.sql.util.SqlTag;
