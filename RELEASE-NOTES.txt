@@ -50,7 +50,7 @@ What's New:
   file must now be located in the same directory of the aceql-server.properties
   file.
 - Tomcat base libraries have been upgraded to 9.0.64.
-- Postgresql base libraries have been upgraded to 42.3.3 for 
+- PostgreSQL base libraries have been upgraded to 42.3.3 for 
   security reasons.
 - Gson base libraries have been upgraded to 2.8.9 for 
   security reasons.
