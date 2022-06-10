@@ -21,8 +21,9 @@ AceQL HTTP is provided with three client SDKs:
 Security has been taken into account from the design: it is allowed to specify 
 and code strong security rules in order to protect the databases. 
 
-AceQL HTTP is licensed through the GNU Lesser General Public License 
+The Community Edition is licensed through the GNU Lesser General Public License 
 (LGPL v2.1).
+The Enterprise Edition is licensed through a commercial license.
 
 
 AceQL HTTP Version 11 - 10-Jun-2022
