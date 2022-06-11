@@ -27,7 +27,6 @@
         </plugins>
     </build>
 
-
    <!-- For cloudmersive APIs --> 
 
     <repositories>
@@ -38,7 +37,6 @@
     </repositories>
    
 	<dependencies>
-
 
     <dependency>
         <groupId>com.github.Cloudmersive</groupId>

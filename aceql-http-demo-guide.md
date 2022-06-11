@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-# AceQL HTTP v10.2 - February 7, 2022
-=======
 # AceQL HTTP v11.0 - June 9, 2022
->>>>>>> refs/heads/11.0
 
 # Demo Guide
 
@@ -111,24 +107,13 @@ The execution of each AceQL HTTP API statement is conditioned by optional rules,
 
 Download the database `sampledb` schema corresponding to your database engine: 
 
-<<<<<<< HEAD
-- [sampledb_mysq.txt](https://docs.aceql.com/rest/soft/10.2/src/sampledb_mysql.txt )
-- [sampledb_postgresql.txt](https://docs.aceql.com/rest/soft/10.2/src/sampledb_postgresql.txt)
-- [sampledb_ms_sql_serverl.txt](https://docs.aceql.com/rest/soft/10.2/src/sampledb_ms_sql_server.txt)
-- [sampledb_oracle_database.txt](https://docs.aceql.com/rest/soft/10.2/src/sampledb_oracle_database.txt)
-=======
 - [sampledb_mysq.txt](https://docs.aceql.com/rest/soft/11.0/src/sampledb_mysql.txt )
 - [sampledb_postgresql.txt](https://docs.aceql.com/rest/soft/11.0/src/sampledb_postgresql.txt)
 - [sampledb_ms_sql_serverl.txt](https://docs.aceql.com/rest/soft/11.0/src/sampledb_ms_sql_server.txt)
 - [sampledb_oracle_database.txt](https://docs.aceql.com/rest/soft/11.0/src/sampledb_oracle_database.txt)
->>>>>>> refs/heads/11.0
 
 
-<<<<<<< HEAD
-For other databases engines, just tailor the file as indicated: [sampledb_other_databases.txt](https://docs.aceql.com/rest/soft/10.2/src/sampledb_other_databases.txt)
-=======
 For other databases engines, just tailor the file as indicated: [sampledb_other_databases.txt](https://docs.aceql.com/rest/soft/11.0/src/sampledb_other_databases.txt)
->>>>>>> refs/heads/11.0
 
 Then launch the script that will create the tables in a database
 
@@ -141,11 +126,7 @@ AceQL requires the installation of Java version 8+.
 Open a terminal and download with `Wget` 
 
 ```bash
-<<<<<<< HEAD
-$ wget https://download.aceql.com/rest/soft/10.2/download/aceql-http-10.2.run
-=======
 $ wget https://download.aceql.com/rest/soft/11.0/download/aceql-http-11.0.run
->>>>>>> refs/heads/11.0
 ```
 
 If you get a certificate error message, do one of the following:
@@ -156,38 +137,17 @@ If you get a certificate error message, do one of the following:
 In following lines we will assume that the Open Source edition is chosen. (Operating mode is the same for Pro edition).
 
 ```bash
-<<<<<<< HEAD
-chmod +x aceql-http-10.2.run
-./aceql-http-10.2.run 
-=======
 chmod +x aceql-http-11.0.run
 ./aceql-http-11.0.run 
->>>>>>> refs/heads/11.0
 ```
 
-<<<<<<< HEAD
-This will create the `aceql-http-10.2` folder.
-=======
 This will create the `aceql-http-11.0` folder.
->>>>>>> refs/heads/11.0
 
-<<<<<<< HEAD
-The full path to the `aceql-http-10.2` installation folder will be surnamed `ACEQL_HOME` in following text.
-=======
 The full path to the `aceql-http-11.0` installation folder will be surnamed `ACEQL_HOME` in following text.
->>>>>>> refs/heads/11.0
 
-<<<<<<< HEAD
-Example: if you run `aceql-http-10.2.run` from `/home/mike`, then software is installed in
-=======
 Example: if you run `aceql-http-11.0.run` from `/home/mike`, then software is installed in
->>>>>>> refs/heads/11.0
 
-<<<<<<< HEAD
- `/home/mike/aceql-http-10.2` which is the value of `ACEQL_HOME`.
-=======
  `/home/mike/aceql-http-11.0` which is the value of `ACEQL_HOME`.
->>>>>>> refs/heads/11.0
 
 ### Update the PATH (Optional)
 
@@ -195,18 +155,10 @@ Open a shell session and make sure java binary is in the PATH by typing  `Java â
 
 Add java to your PATH if the command does not display Java version.
 
-<<<<<<< HEAD
-Add to your PATH the path to the bin directory of `aceql-http-10.2` installation:
-=======
 Add to your PATH the path to the bin directory of `aceql-http-11.0` installation:
->>>>>>> refs/heads/11.0
 
 ```bash
-<<<<<<< HEAD
-$ PATH=$PATH:/path/to/aceql-http-10.2/bin/;export PATH
-=======
 $ PATH=$PATH:/path/to/aceql-http-11.0/bin/;export PATH
->>>>>>> refs/heads/11.0
 ```
 
 ### Testing AceQL HTTP Web server installation
@@ -220,11 +172,7 @@ $ aceql-server -version
 It will display a line with all version info, like:
 
 ```bash
-<<<<<<< HEAD
-AceQL HTTP Community v10.2 - 07-Feb-2022
-=======
 AceQL HTTP Community v11.0 - 09-Jun-2022
->>>>>>> refs/heads/11.0
 ```
 
 ### Configure JDBC parameters in aceql-server.properties file
@@ -272,11 +220,7 @@ The console will display the properties used, test that the Connection is establ
 
 ```bash
 [ACEQL HTTP START] Starting AceQL HTTP Web Server...
-<<<<<<< HEAD
-[ACEQL HTTP START] AceQL HTTP Community v10.2 - 07-Feb-2022
-=======
 [ACEQL HTTP START] AceQL HTTP Community v11.0 - 09-Jun-2022
->>>>>>> refs/heads/11.0
 [ACEQL HTTP START] Using properties file: 
 [ACEQL HTTP START]  -> /home/mike/aceql-http/conf/aceql-server.properties
 [ACEQL HTTP START] Setting System Properties:
@@ -340,11 +284,7 @@ Run the installer.
 
 It will run AceQL at end of installation and display the Window:
 
-<<<<<<< HEAD
-<img src="https://docs.aceql.com/rest/soft/10.2/img/aceql_windows_gui_home_flatlaf.png" alt="AceQ HTTP GUI Main Windows"/>
-=======
 <img src="https://docs.aceql.com/rest/soft/11.0/img/aceql_windows_gui_home_flatlaf.png" alt="AceQ HTTP GUI Main Windows"/>
->>>>>>> refs/heads/11.0
 
 **N.B:** Because of a bug in all Java versions > 8 on Windows, the interface will appear "ugly"  or "blurred" on Java version > 8 if you have increased Windows Screen Resolution Options to 125% or 150%.  See [Java Bug Database](https://bugs.java.com/bugdatabase/view_bug.do?bug_id=JDK-8194165) for more info. Set back Windows Screen Resolution to 100% for clean display.
 
@@ -399,11 +339,7 @@ The console will display the properties used, test that the `Connection` is esta
 
 ```bash
 [ACEQL HTTP START] Starting AceQL HTTP Web Server...
-<<<<<<< HEAD
-[ACEQL HTTP START] AceQL HTTP Community v10.2 - 07-Feb-2022
-=======
 [ACEQL HTTP START] AceQL HTTP Community v11.0 - 09-Jun-2022
->>>>>>> refs/heads/11.0
 [ACEQL HTTP START] Using properties file: 
 [ACEQL HTTP START]  -> c:\aceql-http\conf\aceql-server.properties
 [ACEQL HTTP START] Setting System Properties:
@@ -855,11 +791,7 @@ The aceql module supports Python 3.6â€“3.10.
 $ pip install aceql
 ```
 
-<<<<<<< HEAD
-3.    Download this Python class: [my_remote_connection.py](https://docs.aceql.com/rest/soft/10.2/src/my_remote_connection.py)
-=======
 3.    Download this Python class: [my_remote_connection.py](https://docs.aceql.com/rest/soft/11.0/src/my_remote_connection.py)
->>>>>>> refs/heads/11.0
 
 4.    The  connection to the remote database is  created  using a [DB API 2.0](https://www.python.org/dev/peps/pep-0249/)  `Connection` class and passing the URL of the AceQL Servlet Manager of your configuration:
 
@@ -934,11 +866,7 @@ $ pip install aceql
 
 
 
-<<<<<<< HEAD
-The `select_customer_and_orderlog` method of [my_remote_connection.py](https://docs.aceql.com/rest/soft/10.2/src/my_remote_connection.py) displays back the inserted values.
-=======
 The `select_customer_and_orderlog` method of [my_remote_connection.py](https://docs.aceql.com/rest/soft/11.0/src/my_remote_connection.py) displays back the inserted values.
->>>>>>> refs/heads/11.0
 
 From now on, you can read the [Python Client SDK User Guide](https://github.com/kawansoft/aceql-http-client-python/blob/master/README.md).
 

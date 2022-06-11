@@ -6,7 +6,6 @@
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/d14142d5d6f04ba891d505e2e47b417d)](https://www.codacy.com/gh/kawansoft/aceql-http?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=kawansoft/aceql-http&amp;utm_campaign=Badge_Grade)
 ![GitHub contributors](https://img.shields.io/github/contributors/kawansoft/aceql-http)
 
-
 # AceQL HTTP v11.0   - June 10,  2022
 # Server Installation and Configuration Guide  
 
@@ -230,7 +229,6 @@ Open a terminal and download with Wget.
 
 ```bash
 $ wget https://download.aceql.com/rest/soft/11.0/download/aceql-http-11.0.run
-
 ```
 
 If you get a certificate error message, do one of the following:
@@ -243,26 +241,13 @@ Make the file executable and then run:
 ```bash
 chmod+x aceql-http-11.0.run                                       
 ./aceql-http-11.0.run
-
 ```
 
-<<<<<<< HEAD
-This will create the `aceql-http-10.2` folder that you can move where you want.
-=======
 This will create the `aceql-http-11.0` folder, which you can move wherever you want.
->>>>>>> refs/heads/11.0
 
-<<<<<<< HEAD
-The full path to the final `aceql-http-10.2` installation folder will be surnamed **ACEQL_HOME** in following text.
-=======
 The full path to the final `aceql-http-11.0` installation folder will be called **ACEQL_HOME** in following text.
->>>>>>> refs/heads/11.0
 
-<<<<<<< HEAD
-Example: if you run `aceql-http-10.2.run` from `/home/mike`, then software is installed in `/home/mike/aceql-http-10.2` which is the value of **ACEQL_HOME.**
-=======
 Example: If you run `aceql-http-11.0.run` from `/home/mike`, then software is installed in `/home/mike/aceql-http-11.0` which is the value of **ACEQL_HOME.**
->>>>>>> refs/heads/11.0
 
 ### Update the PATH (Optional) 
 
@@ -272,18 +257,10 @@ Open a shell session and make sure `java` binary is in the PATH by typing
 
 Add `java` to your PATH if the command does not display Java version. 
 
-<<<<<<< HEAD
-Add to your PATH the path to the bin directory of aceql-http-10.2 installation:
-=======
 Add the path to the bin directory of aceql-http-11.0 installation to your PATH:
->>>>>>> refs/heads/11.0
 
 ```bash
-<<<<<<< HEAD
-$ PATH=$PATH:/path/to/aceql-http-10.2/bin/
-=======
 $ PATH=$PATH:/path/to/aceql-http-11.0/bin/
->>>>>>> refs/heads/11.0
 export PATH
 ```
 
@@ -304,11 +281,7 @@ Call the `aceql-server` script to display the AceQL version:
 It will display a line with all version info, like:
 
 ```
-<<<<<<< HEAD
-AceQL HTTP Community v10.2 - 07-Feb-2022
-=======
 AceQL HTTP Community v11.0 - 10-Jun-2022
->>>>>>> refs/heads/11.0
 ```
 
 
@@ -325,11 +298,7 @@ Run the installer.
 
 It will run AceQL at end of installation and display the Window:
 
-<<<<<<< HEAD
-<img src="https://docs.aceql.com/rest/soft/10.2/img/aceql_windows_gui_home_flatlaf.png" alt="AceQ HTTP GUI Main Windows"/> 
-=======
 <img src="https://docs.aceql.com/rest/soft/11.0/img/aceql_windows_gui_home_flatlaf.png" alt="AceQ HTTP GUI Main Windows"/> 
->>>>>>> refs/heads/11.0
 
 **N.B:** Because of a bug in all Java versions > 8 on Windows, the interface will appear "ugly"  or "blurred" on Java version > 8 if you have Windows Screen Resolution Options increased to 125% or 150%.  See [Java Bug Database](https://bugs.java.com/bugdatabase/view_bug.do?bug_id=JDK-8194165) for more info. Set Windows Screen Resolution back to 100% for a clean display.
 
@@ -442,11 +411,7 @@ The Web service must implement these features:
 
 The SQL Firewall Managers Section allows users to define SQL firewall rulesets to use for each database.
 
-<<<<<<< HEAD
-The rulesets are defines through one or more "SQL Firewall Managers",  Java classes that are injected at AceQL Server startup. A SQL Firewall Manager is a built-in or user-developed Java class that implements the  [SqlFirewallManager](https://docs.aceql.com/rest/soft/10.2/javadoc/org/kawanfw/sql/api/server/firewall/SqlFirewallManager.html) interface.
-=======
 The rulesets are defined through one or more "SQL Firewall Managers", which are Java classes that are injected at AceQL Server startup. A SQL Firewall Manager is a built-in or user-developed Java class that implements the [SqlFirewallManager](https://docs.aceql.com/rest/soft/11.0/javadoc/org/kawanfw/sql/api/server/firewall/SqlFirewallManager.html) interface.
->>>>>>> refs/heads/11.0
 
 A `SqlFirewallManager` concrete implementation allows users to: 
 
@@ -497,11 +462,7 @@ After an AceQL server restart, remote clients won't be allowed to execute DDL st
 
 #### The CsvRulesManager SQL Firewall Manager
 
-<<<<<<< HEAD
-The [CsvRulesManager](https://docs.aceql.com/rest/soft/10.2/javadoc/org/kawanfw/sql/api/server/firewall/CsvRulesManager.html) manager allows to define detailed rules just using a CSV file.
-=======
 The [CsvRulesManager](https://docs.aceql.com/rest/soft/11.0/javadoc/org/kawanfw/sql/api/server/firewall/CsvRulesManager.html) manager allows users to define detailed rules using only a CSV file.
->>>>>>> refs/heads/11.0
 
 It checks each SQL request against the contents of a CSV file. The CSV file is loaded in memory at the AceQL server startup. 
 
@@ -530,11 +491,7 @@ The CSV file contains the rules for accessing the tables, with a semicolon for s
 - the `all` value is allowed for `table` column and means any table. At execution time: if a rule with `all` returns `true` for a CSV column, the rule supersedes other specific rules declared for specific tables for the same CSV column. 
 
 
-<<<<<<< HEAD
-Here is an example of a documented CSV File: [sampledb_rules_manager.csv](https://docs.aceql.com/rest/soft/10.2/src/sampledb_rules_manager.csv).
-=======
 Here's an example of a documented CSV File: [sampledb_rules_manager.csv](https://docs.aceql.com/rest/soft/11.0/src/sampledb_rules_manager.csv).
->>>>>>> refs/heads/11.0
 
 ### SSL Configuration Section
 
@@ -568,11 +525,7 @@ To create an SSL Certificate, refer to:
 
 Here is a documented example of an aceql-server.properties file:
 
-<<<<<<< HEAD
-[aceql-server.properties](https://docs.aceql.com/rest/soft/10.2/src/aceql-server.properties). 
-=======
 [aceql-server.properties](https://docs.aceql.com/rest/soft/11.0/src/aceql-server.properties). 
->>>>>>> refs/heads/11.0
 
 ## Starting/Stopping the AceQL Web Server from Linux/Unix
 
@@ -665,11 +618,7 @@ where:
 
 The `aceqlhttp` wrapper allows you to run the AceQL program as a Linux service.
 
-<<<<<<< HEAD
-- Click [here](https://docs.aceql.com/rest/soft/10.2/src/aceqlhttp.sh) to download `aceqlhttp.sh`
-=======
 - Click [here](https://docs.aceql.com/rest/soft/11.0/src/aceqlhttp.sh) to download `aceqlhttp.sh`
->>>>>>> refs/heads/11.0
 - Copy aceqlhttp.sh to `/etc/init.d/aceqlhttp` (requires root privilege). 
 - `sudo chmod +x /etc/init.d/aceqlhttp`
 - Then edit `/etc/init.d/aceqlhttp` and:
@@ -710,43 +659,11 @@ Or for Maven users:
 ```xml
 <groupId>com.aceql</groupId>
 <artifactId>aceql-http</artifactId>
-<<<<<<< HEAD
-<version>10.2</version>
-=======
 <version>11.0</version>
->>>>>>> refs/heads/11.0
 ```
-<<<<<<< HEAD
-## AceQL Servlet Name Configuration
-
-The **AceQL Manager servlet Section** in the `aceql-server.proprties` file allows you to define the name of the AceQL SQL Manager Servlet to call from the client side. The default name is `aceql`. It is the name that will be used in the URL by client calls:
-
-```properties
-aceQLManagerServletCallName=aceql
-```
-
-## Advanced Connection Pool Management
-
-You may define your own preferred connection pool implementation, instead of using the default Tomcat JDBC Connection Pool.
-
-This is done through your own implementation of the [DatabaseConfigurator](https://docs.aceql.com/rest/soft/10.2/javadoc/org/kawanfw/sql/api/server/DatabaseConfigurator.html) interface: overload the `DatabaseConfigurator.getConnection()` method in your concrete class implementation.
-
-Your concrete implementations is passed to the AceQL as properties of the **Database Configurators Section** in the `aceql-server.properties` file, as described in the section:
-
-- The  `databaseConfiguratorClassName` property lets you define your concrete implementation of `DatabaseConfigurator`.
-- You `DatabaseConfigurator` classes must be added to the CLASSPATH before the start of the AceQL Server.
-
- Instances are loaded using a non-args constructor.
-
-=======
->>>>>>> refs/heads/11.0
 ## Advanced Authentication Configuration
 
-<<<<<<< HEAD
-In order to give access to remote client users to the AceQL server, you may develop entirely your own authentication mechanism. This is done through your own implementation of the [UserAuthenticator](https://docs.aceql.com/rest/soft/10.2/javadoc/org/kawanfw/sql/api/server/auth/UserAuthenticator.html) interface: overload the login method `UserAuthenticator.login()` in your concrete class implementation.
-=======
 In order to give remote client users access to the AceQL server, you may develop your own authentication mechanism. This is done through your own implementation of the [UserAuthenticator](https://docs.aceql.com/rest/soft/11.0/javadoc/org/kawanfw/sql/api/server/auth/UserAuthenticator.html) interface: overload the login method `UserAuthenticator.login()` in your concrete class implementation.
->>>>>>> refs/heads/11.0
 
 Your concrete implementation is passed to the AceQL as properties of the **User Authentication Section**  in the `aceql-server.properties` file.
 
@@ -776,17 +693,9 @@ connector.maxThreads=300
 
 ### SessionConfigurator interface
 
-<<<<<<< HEAD
-After server authentication succeeds (through the [UserAuthenticator.login()](https://docs.aceql.com/rest/soft/10.2/javadoc/org/kawanfw/sql/api/server/auth/UserAuthenticator.html#login-java.lang.String-char:A-java.lang.String-java.lang.String-) method), the AceQL Manager builds an authentication session id that is sent back to the client and will be used by each succeeding client call in order to authenticate the calls. 
-=======
 After server authentication succeeds (through the [UserAuthenticator.login()](https://docs.aceql.com/rest/soft/11.0/javadoc/org/kawanfw/sql/api/server/auth/UserAuthenticator.html#login-java.lang.String-char:A-java.lang.String-java.lang.String-) method), the AceQL Manager builds an authentication session id that is sent back to the client and will be used by each succeeding client call to authenticate them. 
->>>>>>> refs/heads/11.0
 
-<<<<<<< HEAD
-Session security is managed by implementing the [SessionConfigurator](https://docs.aceql.com/rest/soft/10.2/javadoc/org/kawanfw/sql/api/server/session/SessionConfigurator.html) interface that defines how to generate and verify the session id for (username, database) sessions. 
-=======
 Session security is managed by implementing the [SessionConfigurator](https://docs.aceql.com/rest/soft/11.0/javadoc/org/kawanfw/sql/api/server/session/SessionConfigurator.html) interface that defines how to generate and verify the session id for (username, database) sessions. 
->>>>>>> refs/heads/11.0
 
 Interface implementation allows you to:  
 
@@ -798,17 +707,9 @@ Interface implementation allows you to:
 
 The default mechanism that builds an authentication session id is coded in the class 
 
-<<<<<<< HEAD
-[DefaultSessionConfigurator](https://docs.aceql.com/rest/soft/10.2/javadoc/org/kawanfw/sql/api/server/session/DefaultSessionConfigurator.html): 
-=======
 [DefaultSessionConfigurator](https://docs.aceql.com/rest/soft/11.0/javadoc/org/kawanfw/sql/api/server/session/DefaultSessionConfigurator.html): 
->>>>>>> refs/heads/11.0
 
-<<<<<<< HEAD
-- Session ids are generated using a `SecureRandom` with the [SessionIdentifierGenerator](https://docs.aceql.com/rest/soft/10.2/javadoc/org/kawanfw/sql/api/server/session/SessionIdentifierGenerator.html) class.
-=======
 - Session ids are generated using a `SecureRandom` with the [SessionIdentifierGenerator](https://docs.aceql.com/rest/soft/11.0/javadoc/org/kawanfw/sql/api/server/session/SessionIdentifierGenerator.html) class.
->>>>>>> refs/heads/11.0
 - Session info (username, database) and session date/time creation are stored in a `HashMap`, whose key is the session id.
 - Session id is sent by the client side at each API call. AceQL verifies that the `HashMap` contains the username and that the session is not expired to grant access to the API execution.
 
@@ -821,11 +722,7 @@ The disadvantage is that session information is stored on the server side.
 
 ### Session management using JWT
 
-<<<<<<< HEAD
-Session management using JWT is coded in [JwtSessionConfigurator](https://docs.aceql.com/rest/soft/10.2/javadoc/org/kawanfw/sql/api/server/session/JwtSessionConfigurator.html).
-=======
 Session management using JWT is coded in [JwtSessionConfigurator](https://docs.aceql.com/rest/soft/11.0/javadoc/org/kawanfw/sql/api/server/session/JwtSessionConfigurator.html).
->>>>>>> refs/heads/11.0
 
 Session management is done using self-contained JWT (JSON Web Token). 
 
@@ -850,11 +747,7 @@ Restart the AceQL Web Server for activation.
 
 ### Creating your own session management 
 
-<<<<<<< HEAD
-If you want to create your session management using your own session id generation and security rules, you can implement  the [SessionConfigurator](https://docs.aceql.com/rest/soft/10.2/javadoc/org/kawanfw/sql/api/server/session/SessionConfigurator.html) in your own class, and then: 
-=======
 If you want to create your session management using your own session id generation and security rules, you can implement the [SessionConfigurator](https://docs.aceql.com/rest/soft/11.0/javadoc/org/kawanfw/sql/api/server/session/SessionConfigurator.html) in your own class, and then: 
->>>>>>> refs/heads/11.0
 
 Add your class in the CLASSPATH.
 
@@ -903,11 +796,7 @@ Note that in this 11.0 version, SQL transactions are not supported in stateless 
 
 AceQL provides several built-in and ready-to-use SQL Firewall Managers, as described earlier in the  [SQL Firewall Managers Section](#sql-firewall-managers-section). You also may plug-in your own implementation or third-party SQL firewalling tools. 
 
-<<<<<<< HEAD
-The [SqlFirewallManager](https://docs.aceql.com/rest/soft/10.2/javadoc/org/kawanfw/sql/api/server/firewall/SqlFirewallManager.html) interface allows you to code your own firewall rulesets or plug a third party software.
-=======
 The [SqlFirewallManager](https://docs.aceql.com/rest/soft/11.0/javadoc/org/kawanfw/sql/api/server/firewall/SqlFirewallManager.html) interface allows you to code your own firewall rulesets or plug a third-party software in.
->>>>>>> refs/heads/11.0
 
 After coding you own `SqlFirewallManager` implementation, just declare the full class name in the `sqlFirewallManagerClassNames` property. Remember that SQL Firewall Managers may be chained and you may declare several classes.
 
@@ -1059,11 +948,7 @@ The Update Listeners Section allows you to define Java code to execute after a s
 
 Update Listeners can be viewed as a kind of Java "trigger" executed on the completion of SQL updates.
 
-<<<<<<< HEAD
-The actions to trigger are defined through one or more "Update Listeners ",  Java classes that are injected at AceQL Server startup. An Update Listener is a built-in or user-developed Java class that implements the [UpdateListener](https://docs.aceql.com/rest/soft/10.2/javadoc/org/kawanfw/sql/api/server/listener/UpdateListener.html) interface with code to execute defined in the unique `updateActionPerformed` method. Multiple `UpdateListener` may be defined and chained. 
-=======
 The actions to trigger are defined through one or more "Update Listeners ", which are Java classes injected at AceQL Server startup. An Update Listener is a built-in or user-developed Java class that implements the [UpdateListener](https://docs.aceql.com/rest/soft/11.0/javadoc/org/kawanfw/sql/api/server/listener/UpdateListener.html) interface with code to execute defined in the unique `updateActionPerformed` method. Multiple `UpdateListener` may be defined and chained.
->>>>>>> refs/heads/11.0
 
 The `DefaultUpdateListener` default Update Listener does nothing. AceQL provides a built-in (and ready-to-use without any coding)  Update Listener:
 
@@ -1089,63 +974,17 @@ sampledb.updateListenerClassNames=\
 
 The Enterprise Edition supports calling SQL stored procedures from C# and Java client side. See the [C# Client SDK](https://github.com/kawansoft/AceQL.Client2/blob/master/README.md) and the [AceQL Client JDBC Driver](https://github.com/kawansoft/aceql-http-client-jdbc-driver#readme) documentation for more information.
 
-<<<<<<< HEAD
-The encrypted values are generated using the [PropertiesEncryptor](https://docs.aceql.com/rest/soft/10.2/javadoc/org/kawanfw/sql/api/server/auth/crypto/PropertiesEncryptor.html)  class which allows both:
-=======
 ## Calling ServerQueryExecutor classes from the client side
->>>>>>> refs/heads/11.0
 
 The Enterprise Edition supports calling implementations of the `ServerQueryExecutor` implementation. This is a a kind of server "AceQL stored procedure" written in Java. The `executeQuery` method returns a `ResultSet` to the client side that's appropriately converted by the client side SDK (`DataReader` in C#, `ResultSet` in Java and a `list` in `Python`).
 
-<<<<<<< HEAD
-In order for the AceQL Server to decrypt the properties at runtime, the secret password must be returned by the `getPassword()` of a concrete implementation of the [PropertiesPasswordManager](https://docs.aceql.com/rest/soft/10.2/javadoc/org/kawanfw/sql/api/server/auth/crypto/PropertiesPasswordManager.html) interface. A default implementation is provided: [DefaultPropertiesPasswordManager](https://docs.aceql.com/rest/soft/10.2/javadoc/org/kawanfw/sql/api/server/auth/crypto/DefaultPropertiesPasswordManager.html). 
-=======
 See the [ServerQueryExecutor Javadoc](https://docs.aceql.com/rest/soft/11.0/javadoc/org/kawanfw/sql/api/server/executor/ServerQueryExecutor.html) for server side usage and each [C#, Java or Python documentation](https://www.aceql.com/http-access-remote-sql-database-documentation/) for client side usage.
->>>>>>> refs/heads/11.0
 
-<<<<<<< HEAD
-The `PropertiesPasswordManager`  concrete class name must then be defined with the `propertiesPasswordManagerClassName` property.  See the `Properties Password Manager Section` of the `aceql-server.properties` file.
-
-### Running the PropertiesEncryptor class 
-
-In order to run the `PropertiesEncryptor` class:
-
-- Open a command line on Windows or Linux/Bash.
-- `cd <installation-directory>/AceQL/bin>`
-  - Windows: run `properties-encryptor.bat`.
-  - Linux: run `properties-encryptor` Bash.
-- Follow the instructions in order to create the password and to encrypt some property values.
-
-## Interacting with the JDBC Pool at runtime
-
-The Servlets Section in `aceql-server.properties` allow to define you own servlets in order to interact with AceQL Web Server with different actions :
-
-- query info about JDBC pools in use,
-- modify a pool size,
-- etc.
-
-The API  [DataSourceStore](https://docs.aceql.com/rest/soft/10.2/javadoc/org/kawanfw/sql/api/server/DataSourceStore.html) class allows to retrieve for each database the Tomcat [org.apache.tomcat.jdbc.pool.DataSource](https://tomcat.apache.org/tomcat-9.0-doc/api/org/apache/tomcat/jdbc/pool/DataSource.html) corresponding to the Tomcat JDBC Pool created at AceQL Web server startup. 
-
-## Running the AceQL Web Server
-
-### Running the AceQL Web Server without Windows Desktop
-
-If you don't have access to the Windows Desktop interface (running in a cloud instance, etc.)  you can still run the AceQL HTTP Web Server from the command line.
-
-- see `<installation-directory>\AceQL\bin\aceql-server.bat` script.
-
-You can also start/top the AceQL Web Server from you java programs, as explained in next section.
-=======
 ## Running the AceQL Web Server - Enterprise Edition Options
->>>>>>> refs/heads/11.0
 
 ### Starting/Stopping the AceQL WebServer from a Java program
 
-<<<<<<< HEAD
-You may start or stop the AceQL Server from a Java program calling the [WebServerApi](https://docs.aceql.com/rest/soft/10.2/javadoc/org/kawanfw/sql/api/server/web/WebServerApi.html) API.
-=======
 You may start or stop the AceQL Server from a Java program calling the [WebServerApi](https://docs.aceql.com/rest/soft/11.0/javadoc/org/kawanfw/sql/api/server/web/WebServerApi.html) API.
->>>>>>> refs/heads/11.0
 
 ### Running AceQL HTTP in a Java EE servlet container
 
@@ -1231,11 +1070,7 @@ It will display a JSON string and should display a status of `"OK"` and the curr
 ```json
 {
     "status": "OK",
-<<<<<<< HEAD
-    "version": "AceQL HTTP v10.2 - 07-Feb-2022"
-=======
     "version": "AceQL HTTP v11.0 - 10-Jun-2022"
->>>>>>> refs/heads/11.0
 }         
 ```
 
