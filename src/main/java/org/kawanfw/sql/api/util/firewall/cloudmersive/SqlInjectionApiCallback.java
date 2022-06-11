@@ -70,7 +70,7 @@ public class SqlInjectionApiCallback implements ApiCallback<SqlInjectionDetectio
      *                           all info about the SQL call (client username,
      *                           database name, IP Address of the client, and SQL
      *                           statement details).
-     * @param sqlFirewallManager the instance that that triggers this call.
+     * @param sqlFirewallManager the instance that triggers this call.
      */
     public SqlInjectionApiCallback(SqlEvent sqlEvent, SqlFirewallManager sqlFirewallManager) {
 	this.sqlEvent = Objects.requireNonNull(sqlEvent, "sqlEvent cannot ne null!");

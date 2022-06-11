@@ -87,7 +87,7 @@ public interface SqlFirewallTrigger {
      *                           all info about the SQL call (client username,
      *                           database name, IP Address of the client, and SQL
      *                           statement details).
-     * @param sqlFirewallManager the instance that that triggers this call.
+     * @param sqlFirewallManager the instance that triggers this call.
      * @param connection         The current SQL/JDBC <code>Connection</code>
      * @throws IOException  if an IOException occurs
      * @throws SQLException if a SQLException occurs
