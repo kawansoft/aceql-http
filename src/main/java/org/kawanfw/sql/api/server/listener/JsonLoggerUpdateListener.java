@@ -37,13 +37,14 @@ import java.util.logging.Logger;
 import org.apache.commons.lang3.SystemUtils;
 import org.kawanfw.sql.api.server.SqlEvent;
 import org.kawanfw.sql.api.server.util.NoFormatter;
+import org.kawanfw.sql.servlet.util.JsonLoggerUtil;
 import org.kawanfw.sql.servlet.util.UpdateListenerUtil;
 import org.kawanfw.sql.util.log.FlattenLogger;
 
 /**
  * Concrete implementation of {@code UpdateListener}. The
  * {@code updateActionPerformed(ClientEvent, Connection)} logs using JSON format
- * the {@code ClientEvent}.
+ * the {@code SqlEvent}.
  * 
  * @author Nicolas de Pomereu
  * @since 9.0
@@ -58,7 +59,7 @@ public class JsonLoggerUpdateListener implements UpdateListener {
      * parameters:
      * <ul>
      * <li>Output file pattern:
-     * {@code user.home/.kawansoft/log/JsonLoggerUpdateListener.log}.</li>
+     * {@code user.home/.kawansoft/log/JsonLoggerSqlFirewallTrigger.log}.</li>
      * <li>Limit: 1Gb.</li>
      * <li>Count (number of files to use): 3.</li>
      * </ul>
@@ -77,7 +78,7 @@ public class JsonLoggerUpdateListener implements UpdateListener {
 	File logDir = new File(SystemUtils.USER_HOME + File.separator + ".kawansoft" + File.separator + "log");
 	logDir.mkdirs();
 
-	String pattern = logDir.toString() + File.separator + "MyUpdateListener.log";
+	String pattern = logDir.toString() + File.separator + JsonLoggerUtil.getSimpleName(this.getClass());
 
 	Logger logger = Logger.getLogger(JsonLoggerUpdateListener.class.getName());
 	ACEQL_LOGGER = new FlattenLogger(logger.getName(), logger.getResourceBundleName());

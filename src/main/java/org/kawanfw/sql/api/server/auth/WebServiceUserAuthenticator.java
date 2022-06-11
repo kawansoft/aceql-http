@@ -127,6 +127,7 @@ public class WebServiceUserAuthenticator implements UserAuthenticator {
 	Map<String, String> parametersMap = buildParametersMap(username, password);
 
 	String jsonResult = buildJsonResult(username, url, connectTimeout, readTimeout, parametersMap);
+	
 	if (jsonResult == null) {
 	    return false;
 	}

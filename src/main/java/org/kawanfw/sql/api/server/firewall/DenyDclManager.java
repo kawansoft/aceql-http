@@ -27,10 +27,7 @@ package org.kawanfw.sql.api.server.firewall;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-import org.kawanfw.sql.api.server.DefaultDatabaseConfigurator;
 import org.kawanfw.sql.api.server.SqlEvent;
 import org.kawanfw.sql.api.server.StatementAnalyzer;
 
@@ -50,21 +47,6 @@ public class DenyDclManager extends DefaultSqlFirewallManager implements SqlFire
     public boolean allowSqlRunAfterAnalysis(SqlEvent sqlEvent, Connection connection) throws IOException, SQLException {
 	StatementAnalyzer analyzer = new StatementAnalyzer(sqlEvent.getSql(), sqlEvent.getParameterValues());
 	return !analyzer.isDcl();
-    }
-
-    /**
-     * Logs the info using {@code DefaultDatabaseConfigurator#getLogger()}
-     * {@code Logger}.
-     */
-    @Override
-    public void runIfStatementRefused(SqlEvent sqlEvent, Connection connection) throws IOException, SQLException {
-	String logInfo = "Client username " + sqlEvent.getUsername() + " (IP: " + sqlEvent.getIpAddress()
-		+ ") has been denied by DenyDclManager SqlFirewallManager executing the DCL statement: "
-		+ sqlEvent.getSql() + ".";
-
-	DefaultDatabaseConfigurator defaultDatabaseConfigurator = new DefaultDatabaseConfigurator();
-	Logger logger = defaultDatabaseConfigurator.getLogger();
-	logger.log(Level.WARNING, logInfo);
     }
 
 }

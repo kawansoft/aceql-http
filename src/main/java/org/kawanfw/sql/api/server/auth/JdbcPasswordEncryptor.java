@@ -40,8 +40,9 @@ import org.jasypt.util.password.ConfigurablePasswordEncryptor;
 import org.kawanfw.sql.api.server.DatabaseConfigurationException;
 import org.kawanfw.sql.api.util.auth.ConfigurablePasswordEncryptorUtil;
 import org.kawanfw.sql.api.util.auth.PasswordEncryptorUtil;
+import org.kawanfw.sql.servlet.injection.properties.PropertiesFileStore;
 import org.kawanfw.sql.servlet.injection.properties.PropertiesFileUtil;
-import org.kawanfw.sql.version.Version;
+import org.kawanfw.sql.version.VersionWrapper;
 
 /**
  * Tooling class that allows to generate to hashed/encrypted passwords for
@@ -90,6 +91,7 @@ public class JdbcPasswordEncryptor {
 	if (!propertiesFile.exists()) {
 	    throw new FileNotFoundException("The properties file does not exist: " + propertiesFile);
 	}
+	PropertiesFileStore.set(propertiesFile);
 	Properties properties = PropertiesFileUtil.getProperties(propertiesFile);
 	passwordEncryptor = ConfigurablePasswordEncryptorUtil.getConfigurablePasswordEncryptor(properties);
 
@@ -141,7 +143,7 @@ public class JdbcPasswordEncryptor {
 	}
 
 	if (cmd.hasOption("version")) {
-	    System.out.println(Version.getVersion());
+	    System.out.println(VersionWrapper.getServerVersion());
 	    System.out.println();
 	    System.exit(1);
 	}
@@ -163,8 +165,6 @@ public class JdbcPasswordEncryptor {
 	    PasswordEncryptorUtil.printUsage(options);
 	    System.exit(1);
 	}
-
-
 
 	File file = new File(fileStr);
 	JdbcPasswordEncryptor jdbcPasswordEncryptor = new JdbcPasswordEncryptor(file);

@@ -45,7 +45,7 @@ public class ConfProperties {
     /** The (Database name, databaseConfiguratorClassName) Map */
     private Map<String, String> databaseConfiguratorClassNameMap = new ConcurrentHashMap<>();
 
-    private String servletName = null;
+    private String servletCallName = null;
 
     private String blobDownloadConfiguratorClassName = null;
     private String blobUploadConfiguratorClassName = null;
@@ -57,9 +57,10 @@ public class ConfProperties {
     private String jwtSessionConfiguratorSecretValue = null;
     private Set<String> userServlets = new HashSet<>();
 
-    private Map<String, List<String>> sqlFirewallClassNamesMap = new ConcurrentHashMap<>();
+    private Map<String, List<String>> sqlFirewallManagerClassNamesMap = new ConcurrentHashMap<>();
     private boolean statelessMode;
     
+    private Map<String, List<String>> sqlFirewallTriggerClassNamesMap = new ConcurrentHashMap<>(); 
     private Map<String, List<String>> updateListenerClassNamesMap = new ConcurrentHashMap<>();
 
     
@@ -67,7 +68,7 @@ public class ConfProperties {
 	this.databaseSet = confPropertiesBuilder.databaseSet;
 	this.databaseConfiguratorClassNameMap = confPropertiesBuilder.databaseConfiguratorClassNameMap;
 
-	this.servletName = confPropertiesBuilder.servletName;
+	this.servletCallName = confPropertiesBuilder.servletCallName;
 
 	this.blobDownloadConfiguratorClassName = confPropertiesBuilder.blobDownloadConfiguratorClassName;
 	this.blobUploadConfiguratorClassName = confPropertiesBuilder.blobUploadConfiguratorClassName;
@@ -79,8 +80,10 @@ public class ConfProperties {
 	this.jwtSessionConfiguratorSecretValue = confPropertiesBuilder.jwtSessionConfiguratorSecretValue;
 	this.userServlets = confPropertiesBuilder.userServlets;
 
-	this.sqlFirewallClassNamesMap = confPropertiesBuilder.sqlFirewallClassNamesMap;
+	this.sqlFirewallManagerClassNamesMap = confPropertiesBuilder.sqlFirewallManagerClassNamesMap;
 	this.statelessMode = confPropertiesBuilder.statelessMode;
+	
+	this.sqlFirewallTriggerClassNamesMap = confPropertiesBuilder.sqlFirewallTriggerClassNamesMap;
 	
 	this.updateListenerClassNamesMap = confPropertiesBuilder.updateListenerClassNamesMap;
     }
@@ -111,10 +114,10 @@ public class ConfProperties {
 
  
     /**
-     * @return the servletName
+     * @return the servletCallName
      */
-    public String getServletName() {
-	return servletName;
+    public String getServletCallName() {
+	return servletCallName;
     }
 
 
@@ -168,15 +171,20 @@ public class ConfProperties {
     }
 
     /**
-     * @return the sqlFirewallClassNamesMap
+     * @return the sqlFirewallManagerClassNamesMap
      */
     @SuppressWarnings("unused")
-    private Map<String, List<String>> getSqlFirewallClassNamesMap() {
-	return sqlFirewallClassNamesMap;
+    private Map<String, List<String>> getSqlFirewallManagerClassNamesMap() {
+	return sqlFirewallManagerClassNamesMap;
     }
 
-    public List<String> getSqlFirewallClassNames(String database) {
-	return sqlFirewallClassNamesMap.get(database);
+    public List<String> getSqlFirewallManagerClassNames(String database) {
+	return sqlFirewallManagerClassNamesMap.get(database);
+    }
+    
+    
+    public List<String> getSqlFirewallTriggerClassNames(String database) {
+	return sqlFirewallTriggerClassNamesMap.get(database);
     }
     
     /**
@@ -186,7 +194,15 @@ public class ConfProperties {
 	return statelessMode;
     }
 
-    
+ 
+    /**
+     * @return the sqlFirewallTriggerClassNamesMap
+     */
+    @SuppressWarnings("unused")
+    private Map<String, List<String>> getSqlFirewallTriggerClassNamesMap() {
+        return sqlFirewallTriggerClassNamesMap;
+    }
+
     /**
      * @return the updateListenerClassNamesMap
      */
@@ -206,7 +222,7 @@ public class ConfProperties {
 	/** The (Database name, databaseConfiguratorClassName) Map */
 	private Map<String, String> databaseConfiguratorClassNameMap = new ConcurrentHashMap<>();
 
-	private String servletName = null;
+	private String servletCallName = null;
 
 	private String blobDownloadConfiguratorClassName = null;
 	private String blobUploadConfiguratorClassName = null;
@@ -218,8 +234,10 @@ public class ConfProperties {
 	private String jwtSessionConfiguratorSecretValue = null;
 	private Set<String> userServlets = new HashSet<>();
 
-	private Map<String, List<String>> sqlFirewallClassNamesMap = new ConcurrentHashMap<>();
+	private Map<String, List<String>> sqlFirewallManagerClassNamesMap = new ConcurrentHashMap<>();
 	private boolean statelessMode;
+	
+	private Map<String, List<String>> sqlFirewallTriggerClassNamesMap = new ConcurrentHashMap<>(); 
 	private Map<String, List<String>> updateListenerClassNamesMap = new ConcurrentHashMap<>();
 	    
 	public ConfPropertiesBuilder databaseSet(Set<String> databaseSet) {
@@ -233,8 +251,8 @@ public class ConfProperties {
 	    return this;
 	}
 
-	public ConfPropertiesBuilder servletName(String servletName) {
-	    this.servletName = servletName;
+	public ConfPropertiesBuilder servletCallName(String servletCallName) {
+	    this.servletCallName = servletCallName;
 	    return this;
 	}
 
@@ -273,13 +291,14 @@ public class ConfProperties {
 	    return this;
 	}
 
-	public ConfPropertiesBuilder sqlFirewallClassNamesMap(Map<String, List<String>> sqlFirewallClassNamesMap) {
-	    this.sqlFirewallClassNamesMap = sqlFirewallClassNamesMap;
+	public ConfPropertiesBuilder sqlFirewallManagerClassNamesMap(Map<String, List<String>> sqlFirewallManagerClassNamesMap) {
+	    this.sqlFirewallManagerClassNamesMap = sqlFirewallManagerClassNamesMap;
 	    return this;
 	}
+	
 
-	public ConfPropertiesBuilder statelessMode(boolean statelessMode) {
-	    this.statelessMode = statelessMode;
+	public ConfPropertiesBuilder sqlFirewallTriggerClassNamesMap(Map<String, List<String>> sqlFirewallTriggerClassNamesMap) {
+	    this.sqlFirewallTriggerClassNamesMap = sqlFirewallTriggerClassNamesMap;
 	    return this;
 	}
 
@@ -287,6 +306,12 @@ public class ConfProperties {
 	    this.updateListenerClassNamesMap = updateListenerClassNamesMap;
 	    return this;
 	}
+	
+	public ConfPropertiesBuilder statelessMode(boolean statelessMode) {
+	    this.statelessMode = statelessMode;
+	    return this;
+	}
+
 	
 	// Return the finally constructed User object
 	public ConfProperties build() {
@@ -302,6 +327,7 @@ public class ConfProperties {
 	    // Do some basic validations to check
 	    // if user object does not break any assumption of system
 	}
+
     }
 
 }

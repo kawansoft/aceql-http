@@ -32,7 +32,9 @@ import java.sql.SQLException;
  * Interface that defines how to get the password used to encrypt the
  * {@code Properties} of the {@code aceql-server.properties} file. <br>
  * The password must have been previously created with the
- * {@link PropertiesEncryptor} command line {@code jar}. <br>
+ * {@link PropertiesEncryptor} class called via command line
+ * {@code properties-encryptor.bat} on Windows or {@code properties-encryptor} Bash script
+ * on Unix. <br>
  * <br>
  * Implement the {@code getPassword()} in your own
  * {@code PropertiesPasswordManager} concrete method or use the provided

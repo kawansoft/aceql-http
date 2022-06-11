@@ -24,22 +24,25 @@
  */
 package org.kawanfw.sql.util;
 
-import org.kawanfw.sql.version.Version;
+import org.kawanfw.sql.version.VersionWrapper;
 
 /**
  * @author Nicolas de Pomereu
  *
  */
 public class SqlTag {
-
+    
+    public static final String SQL_PRODUCT_INIT = "["
+	    + VersionWrapper.getName().toUpperCase() + " INIT]";
+    
     public static final String SQL_PRODUCT_START = "["
-	    + Version.PRODUCT.NAME.toUpperCase() + " START]";
+	    + VersionWrapper.getName().toUpperCase() + " START]";
     public static final String SQL_PRODUCT_START_FAILURE = "["
-	    + Version.PRODUCT.NAME.toUpperCase() + " START FAILURE]";
+	    + VersionWrapper.getName().toUpperCase() + " START FAILURE]";
 
     public static final String USER_CONFIGURATION = "[USER CONFIGURATION]";
     public static final String SQL_PRODUCT_LICENSE_FAILURE = "["
-	    + Version.PRODUCT.NAME.toUpperCase() + " - LICENSE FAILURE]";
+	    + VersionWrapper.getName().toUpperCase() + " - LICENSE FAILURE]";
 
     public static final String PLEASE_CORRECT = "Please correct and retry.";
 

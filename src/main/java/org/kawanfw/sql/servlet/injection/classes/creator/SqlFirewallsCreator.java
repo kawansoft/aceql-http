@@ -27,23 +27,25 @@ package org.kawanfw.sql.servlet.injection.classes.creator;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
-import org.kawanfw.sql.api.server.DatabaseConfigurator;
-import org.kawanfw.sql.api.server.SqlEvent;
-import org.kawanfw.sql.api.server.SqlEventWrapper;
 import org.kawanfw.sql.api.server.firewall.CsvRulesManager;
 import org.kawanfw.sql.api.server.firewall.CsvRulesManagerNoReload;
 import org.kawanfw.sql.api.server.firewall.DefaultSqlFirewallManager;
+import org.kawanfw.sql.api.server.firewall.DenyDatabaseWriteManager;
 import org.kawanfw.sql.api.server.firewall.DenyDclManager;
 import org.kawanfw.sql.api.server.firewall.DenyDdlManager;
-import org.kawanfw.sql.api.server.firewall.DenyExecuteUpdateManager;
+import org.kawanfw.sql.api.server.firewall.DenyExceptOnWhitelistManager;
 import org.kawanfw.sql.api.server.firewall.DenyMetadataQueryManager;
+import org.kawanfw.sql.api.server.firewall.DenyOnBlacklistManager;
+import org.kawanfw.sql.api.server.firewall.DenySqlInjectionManager;
+import org.kawanfw.sql.api.server.firewall.DenySqlInjectionManagerAsync;
 import org.kawanfw.sql.api.server.firewall.DenyStatementClassManager;
 import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
+import org.kawanfw.sql.util.FrameworkDebug;
 
 /*
  * This file is part of AceQL HTTP.
@@ -71,33 +73,45 @@ import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
  */
 public class SqlFirewallsCreator {
 
-    private static final boolean TEST_FIREWALLS = false;
+    private static boolean DEBUG = FrameworkDebug.isSet(SqlFirewallsCreator.class);
 
     private static String[] PREDEFINED_CLASS_NAMES = { CsvRulesManager.class.getSimpleName(),
 	    CsvRulesManagerNoReload.class.getSimpleName(), DefaultSqlFirewallManager.class.getSimpleName(),
 	    DenyDclManager.class.getSimpleName(), DenyDdlManager.class.getSimpleName(),
-	    DenyExecuteUpdateManager.class.getSimpleName(), DenyMetadataQueryManager.class.getSimpleName(),
-	    DenyStatementClassManager.class.getSimpleName(), };
+	    DenyDatabaseWriteManager.class.getSimpleName(), DenyExceptOnWhitelistManager.class.getSimpleName(),
+	    DenyOnBlacklistManager.class.getSimpleName(), DenyMetadataQueryManager.class.getSimpleName(),
+	    DenyStatementClassManager.class.getSimpleName(), 
+	    DenySqlInjectionManager.class.getSimpleName(), DenySqlInjectionManagerAsync.class.getSimpleName(), 
+    		};
 
     private List<String> sqlFirewallClassNames = new ArrayList<>();
     private List<SqlFirewallManager> sqlFirewallManagers = new ArrayList<>();
 
-    public SqlFirewallsCreator(List<String> sqlFirewallClassNames, String database,
-	    DatabaseConfigurator databaseConfigurator)
+    public SqlFirewallsCreator(List<String> sqlFirewallClassNames)
 	    throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException,
 	    IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException, IOException {
 
 	if (sqlFirewallClassNames != null && !sqlFirewallClassNames.isEmpty()) {
+
+	    debug("sqlFirewallClassNames: " + sqlFirewallClassNames);
 
 	    for (String sqlFirewallClassName : sqlFirewallClassNames) {
 
 		sqlFirewallClassName = sqlFirewallClassName.trim();
 		sqlFirewallClassName = getNameWithPackage(sqlFirewallClassName);
 
+		debug("");
+		debug("sqlFirewallClassName with Package to load: " + sqlFirewallClassName + ":");
+
 		Class<?> c = Class.forName(sqlFirewallClassName);
 		Constructor<?> constructor = c.getConstructor();
 		SqlFirewallManager sqlFirewallManager = (SqlFirewallManager) constructor.newInstance();
 
+		debug("sqlFirewallManager implementation loaded: " + sqlFirewallClassName);
+
+		/**
+		 * <pre>
+		 * <code>
 		if (TEST_FIREWALLS) {
 		    try (Connection connection = databaseConfigurator.getConnection(database);) {
 			List<Object> parameterValues = new ArrayList<>();
@@ -107,12 +121,17 @@ public class SqlFirewallsCreator {
 			sqlFirewallManager.allowSqlRunAfterAnalysis(sqlEvent, connection);
 		    }
 		}
+		</code>
+		 * </pre>
+		 */
 
 		sqlFirewallClassName = sqlFirewallManager.getClass().getName();
 
 		this.sqlFirewallManagers.add(sqlFirewallManager);
 		this.sqlFirewallClassNames.add(sqlFirewallClassName);
 	    }
+
+	    debug("End loop on sqlFirewallClassNames");
 
 	} else {
 	    SqlFirewallManager sqlFirewallManager = new DefaultSqlFirewallManager();
@@ -148,6 +167,12 @@ public class SqlFirewallsCreator {
 
     public List<String> getSqlFirewallClassNames() {
 	return sqlFirewallClassNames;
+    }
+
+    public void debug(String s) {
+	if (DEBUG) {
+	    System.out.println(new Date() + " " + s);
+	}
     }
 
 }

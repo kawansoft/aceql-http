@@ -54,6 +54,9 @@ public class ConnectionCreatorUtil {
 	List<JdbcInstanceInfo> instances = new ArrayList<>();
 
 	Set<String> databases = TomcatStarterUtil.getDatabaseNames(properties);
+	
+	TomcatStarterUtil.testDatabasesLimit(databases);
+	
 	for (String database : databases) {
 	    String driverClassName = properties.getProperty(database + "." + "driverClassName");
 	    String url = properties.getProperty(database + "." + "url");

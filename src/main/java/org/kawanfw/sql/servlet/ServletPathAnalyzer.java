@@ -50,46 +50,46 @@ public class ServletPathAnalyzer {
     private String username;
 
     private String requestUri;
-    private String servletName;
+    private String servletCallName;
     private String action;
 
-    public ServletPathAnalyzer(String requestUri, String servletName) {
+    public ServletPathAnalyzer(String requestUri, String servletCallName) {
 	this.requestUri = requestUri;
-	this.servletName = servletName;
+	this.servletCallName = servletCallName;
 	treat();
     }
 
     private void treat() {
-	if (isLoginAction(requestUri, servletName)) {
+	if (isLoginAction(requestUri, servletCallName)) {
 	    action = "login";
 	} else if (isVersionAction(requestUri)) {
 	    action = "get_version";
-	    buildElements(servletName, requestUri);
+	    buildElements(servletCallName, requestUri);
 	} else if (isGetDatabaseInfoAction(requestUri)) {
 	    action = "get_database_info";
-	    buildElements(servletName, requestUri);	
+	    buildElements(servletCallName, requestUri);	
 	} else if (isExecuteServerQuery(requestUri)) {
 	    action = "execute_server_query";
-	    buildElements(servletName, requestUri);
+	    buildElements(servletCallName, requestUri);
 	} 
 	else if (isConnectionModifierOrReader(requestUri)) {
 	    action = getConnectionModifierOrReader();
-	    buildElements(servletName, requestUri);
+	    buildElements(servletCallName, requestUri);
 	} else if (isBlobAction(requestUri)) {
 	    action = getBlobAction();
-	    buildElements(servletName, requestUri);
+	    buildElements(servletCallName, requestUri);
 	} else if (isExecuteFamily(requestUri)) {
 	    action = getSqlStatement();
-	    buildElements(servletName, requestUri);
+	    buildElements(servletCallName, requestUri);
 	}
 	else if (isJdbcDatabaseMetaData(requestUri)) {
 	    action = HttpParameter.JDBC_DATABASE_META_DATA;
-	    buildElements(servletName, requestUri);
+	    buildElements(servletCallName, requestUri);
 	}
 	else if (isMetadataQuery(requestUri)) {
 	    ServletMetadataQuery servletMetadataQuery = new ServletMetadataQuery(requestUri);
 	    action = servletMetadataQuery.getAction();
-	    buildElements(servletName, requestUri);
+	    buildElements(servletCallName, requestUri);
 	}
 
 	else {
@@ -266,13 +266,13 @@ public class ServletPathAnalyzer {
         return false;
     }
 
-    public boolean isLoginAction(final String requestUri, String servletName) {
+    public boolean isLoginAction(final String requestUri, String servletCallName) {
 
 	String requestUriNew = requestUri;
 
 	if (isLoginAction(requestUriNew)) {
 
-	    if (!requestUriNew.contains("/" + servletName + "/database/")) {
+	    if (!requestUriNew.contains("/" + servletCallName + "/database/")) {
 		throw new IllegalArgumentException("Request does not contain /database/ subpath in path");
 	    }
 
@@ -395,7 +395,7 @@ public class ServletPathAnalyzer {
         return false;
     }
 
-    public void buildElements(String servletName, String urlContent) {
+    public void buildElements(String servletCallName, String urlContent) {
 
 	Objects.requireNonNull(urlContent, "urlContent cannot be null!");
 

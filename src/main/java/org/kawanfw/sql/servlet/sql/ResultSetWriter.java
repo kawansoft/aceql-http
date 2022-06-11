@@ -38,7 +38,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.kawanfw.sql.jdbc.metadata.ResultSetMetaDataHolder;
 import org.kawanfw.sql.metadata.util.GsonWsUtil;
 import org.kawanfw.sql.servlet.HttpParameter;
-import org.kawanfw.sql.servlet.jdbc.metadata.ResultSetMetaDataBuilder;
+import org.kawanfw.sql.servlet.jdbc.metadata.resultset.ResultSetMetaDataBuilder;
 import org.kawanfw.sql.tomcat.StaticParms;
 import org.kawanfw.sql.util.FrameworkDebug;
 

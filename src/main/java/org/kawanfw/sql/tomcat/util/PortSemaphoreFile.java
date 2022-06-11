@@ -38,7 +38,7 @@ import org.apache.commons.io.FileUtils;
  * kawanfw-web-server-semaphore-port.&lt;port&gt, where port is the port number
  * of the Web server. <br>
  * <br>
- * The Sempahore file is created when the server is stopped with WebServerApi.
+ * The Sempahore file is created when the server is stopped with WebServerApiWrapper.
  * <br>
  * This stops the Web Server.
  * 

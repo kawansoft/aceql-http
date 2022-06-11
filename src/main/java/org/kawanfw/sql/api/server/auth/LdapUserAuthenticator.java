@@ -83,21 +83,7 @@ public class LdapUserAuthenticator implements UserAuthenticator {
 	String securityAuth = properties.getProperty("ldapUserAuthenticator.securityAuthentication");
 	String securityProtocol = properties.getProperty("ldapUserAuthenticator.securityProtocol");
 	
-	// Set up the environment for creating the initial context
-	Hashtable<String, String> env = new Hashtable<>();
-	env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
-	env.put(Context.PROVIDER_URL, url);
-
-	if (securityAuth != null && ! securityAuth.isEmpty()) {
-	    env.put(Context.SECURITY_AUTHENTICATION, securityAuth);
-	}
-	if (securityProtocol != null && ! securityProtocol.isEmpty()) {
-	    env.put(Context.SECURITY_PROTOCOL, securityProtocol);
-	}
-
-	// Authenticate
-	env.put(Context.SECURITY_PRINCIPAL, username);
-	env.put(Context.SECURITY_CREDENTIALS, new String(password));
+	Hashtable<String, String> env = buildHashtable(username, password, url, securityAuth, securityProtocol);
 		
 	// Create the initial context
 	DirContext ctx = null;
@@ -129,6 +115,35 @@ public class LdapUserAuthenticator implements UserAuthenticator {
 
 	return true;
 
+    }
+
+    /** 
+     * Builds the Hashtable of the elements of the environment
+     * @param username	the LDAP username
+     * @param password	the LDAP password
+     * @param url	the LDAP server URL 
+     * @param securityAuth	the security level to use
+     * @param securityProtocol	the security protocol to use
+     * @return the built Hashtable
+     */
+    private Hashtable<String, String> buildHashtable(String username, char[] password, String url, String securityAuth,
+	    String securityProtocol) {
+	// Set up the environment for creating the initial context
+	Hashtable<String, String> env = new Hashtable<>();
+	env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
+	env.put(Context.PROVIDER_URL, url);
+
+	if (securityAuth != null && ! securityAuth.isEmpty()) {
+	    env.put(Context.SECURITY_AUTHENTICATION, securityAuth);
+	}
+	if (securityProtocol != null && ! securityProtocol.isEmpty()) {
+	    env.put(Context.SECURITY_PROTOCOL, securityProtocol);
+	}
+
+	// Authenticate
+	env.put(Context.SECURITY_PRINCIPAL, username);
+	env.put(Context.SECURITY_CREDENTIALS, new String(password));
+	return env;
     }
 
     /**

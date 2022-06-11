@@ -53,14 +53,20 @@ import org.kawanfw.sql.servlet.connection.TransactionUtil;
 import org.kawanfw.sql.servlet.injection.classes.InjectedClassesStore;
 import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesUtil;
 import org.kawanfw.sql.servlet.jdbc.metadata.JdbcDatabaseMetadataActionManager;
+import org.kawanfw.sql.servlet.jdbc.metadata.JdbcDatabaseMetadataActionManagerCreator;
 import org.kawanfw.sql.servlet.sql.ServerStatement;
 import org.kawanfw.sql.servlet.sql.ServerStatementRawExecute;
 import org.kawanfw.sql.servlet.sql.batch.ServerPreparedStatementBatch;
 import org.kawanfw.sql.servlet.sql.batch.ServerStatementBatch;
-import org.kawanfw.sql.servlet.sql.callable.ServerCallableStatement;
+import org.kawanfw.sql.servlet.sql.callable.ServerCallableStatementWrapper;
+import org.kawanfw.sql.servlet.sql.callable.ServerCallableStatementWrapperCreator;
 import org.kawanfw.sql.servlet.sql.json_return.JsonErrorReturn;
 import org.kawanfw.sql.servlet.sql.json_return.JsonOkReturn;
+import org.kawanfw.sql.servlet.util.operation_type.OperationType;
+import org.kawanfw.sql.servlet.util.operation_type.OperationTypeCreator;
 import org.kawanfw.sql.util.FrameworkDebug;
+import org.kawanfw.sql.util.Tag;
+import org.kawanfw.sql.version.VersionWrapper;
 
 /**
  * @author Nicolas de Pomereu
@@ -137,12 +143,21 @@ public class ServerSqlDispatch {
 		}
 	    }
 
+	    // Detect if user is banned
+	    if (ServerSqlDispatchUtil.isUsernameBanned(username, database, connection)) {
+		JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_FORBIDDEN,
+			JsonErrorReturn.ERROR_ACEQL_UNAUTHORIZED, JsonErrorReturn.ACCESS_FORBIDDEN_FOR_USERNAME);
+		ServerSqlManager.writeLine(out, errorReturn.build());
+		return;
+	    }
+
 	    // 9.1: isExecuteServerQuery
 	    if (ServerQueryExecutorUtil.isExecuteServerQuery(request, out, action, connection)) {
 		return;
 	    }
 
-	    List<SqlFirewallManager> sqlFirewallManagers = InjectedClassesStore.get().getSqlFirewallMap().get(database);
+	    List<SqlFirewallManager> sqlFirewallManagers = InjectedClassesStore.get().getSqlFirewallManagerMap()
+		    .get(database);
 
 	    // get_database_info
 	    if (isGetDatabaseInfo(request, out, action, connection, sqlFirewallManagers)) {
@@ -279,7 +294,9 @@ public class ServerSqlDispatch {
      */
     private boolean isGetVersion(OutputStream out, String action) throws IOException {
 	if (action.equals(HttpParameter.GET_VERSION)) {
-	    String version = new org.kawanfw.sql.version.Version.PRODUCT().server();
+	    // String version = new
+	    // org.kawanfw.sql.version.DefaultVersion.PRODUCT().server();
+	    String version = VersionWrapper.getServerVersion();
 	    ServerSqlManager.writeLine(out, JsonOkReturn.build("result", version));
 	    return true;
 	} else {
@@ -306,6 +323,13 @@ public class ServerSqlDispatch {
 	    Connection connection, DatabaseConfigurator databaseConfigurator,
 	    List<SqlFirewallManager> sqlFirewallManagers)
 	    throws SQLException, FileNotFoundException, IOException, IllegalArgumentException {
+
+	OperationType operationType = OperationTypeCreator.createInstance();
+	String sql = request.getParameter(HttpParameter.SQL);
+	if (!operationType.isOperationAuthorized(sql)) {
+	    throw new UnsupportedOperationException(
+		    Tag.PRODUCT + " " + "DCL or DLL Operation " + Tag.REQUIRES_ACEQL_ENTERPRISE_EDITION);
+	}
 	if (ServerSqlDispatchUtil.isExecute(action) && !ServerSqlDispatchUtil.isStoredProcedure(request)) {
 	    ServerStatementRawExecute serverStatement = new ServerStatementRawExecute(request, response,
 		    sqlFirewallManagers, connection);
@@ -323,9 +347,21 @@ public class ServerSqlDispatch {
 		    response, sqlFirewallManagers, connection, databaseConfigurator);
 	    serverPreparedStatementBatch.executeBatch(out);
 	} else if (ServerSqlDispatchUtil.isStoredProcedure(request)) {
-	    ServerCallableStatement serverCallableStatement = new ServerCallableStatement(request, response,
-		    sqlFirewallManagers, connection);
-	    serverCallableStatement.executeOrExecuteQuery(out);
+
+	    try {
+		ServerCallableStatementWrapper serverCallableStatementWrapper = ServerCallableStatementWrapperCreator
+			.createInstance();
+		serverCallableStatementWrapper.executeOrExecuteQuery(request, response, sqlFirewallManagers, connection,
+			out);
+	    } catch (ClassNotFoundException exception) {
+		throw new UnsupportedOperationException(
+			Tag.PRODUCT + " " + "Stored procedure call " + Tag.REQUIRES_ACEQL_ENTERPRISE_EDITION);
+	    } catch (SQLException exception) {
+		throw exception;
+	    } catch (Exception exception) {
+		throw new SQLException(exception);
+	    }
+
 	} else if (ServerSqlDispatchUtil.isConnectionModifier(action)) {
 	    TransactionUtil.setConnectionModifierAction(request, response, out, action, connection);
 	} else if (ServerSqlDispatchUtil.isSavepointModifier(action)) {
@@ -353,9 +389,19 @@ public class ServerSqlDispatch {
 	    throws SQLException, IOException {
 	// Redirect if it's a JDBC DatabaseMetaData call
 	if (ActionUtil.isJdbcDatabaseMetaDataQuery(action)) {
-	    JdbcDatabaseMetadataActionManager jdbcDatabaseMetadataActionManager = new JdbcDatabaseMetadataActionManager(
-		    request, response, out, sqlFirewallManagers, connection);
-	    jdbcDatabaseMetadataActionManager.execute();
+
+	    try {
+		JdbcDatabaseMetadataActionManager jdbcDatabaseMetadataActionManager = JdbcDatabaseMetadataActionManagerCreator
+			.createInstance();
+		jdbcDatabaseMetadataActionManager.execute(request, response, out, sqlFirewallManagers, connection);
+	    } catch (ClassNotFoundException exception) {
+		throw new UnsupportedOperationException(
+			Tag.PRODUCT + " " + "MetaData call " + Tag.REQUIRES_ACEQL_ENTERPRISE_EDITION);
+
+	    } catch (Exception exception) {
+		throw new SQLException(exception);
+	    }
+
 	    return true;
 	} else {
 	    return false;

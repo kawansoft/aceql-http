@@ -44,17 +44,21 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.SystemUtils;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.kawanfw.sql.api.server.auth.headers.RequestHeadersAuthenticator;
 import org.kawanfw.sql.api.server.session.SessionConfigurator;
 import org.kawanfw.sql.servlet.injection.classes.InjectedClassesManagerNew;
 import org.kawanfw.sql.servlet.injection.classes.InjectedClassesStore;
 import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesStore;
+import org.kawanfw.sql.servlet.injection.properties.PropertiesFileStore;
 import org.kawanfw.sql.servlet.sql.json_return.ExceptionReturner;
 import org.kawanfw.sql.servlet.sql.json_return.JsonErrorReturn;
 import org.kawanfw.sql.servlet.sql.json_return.JsonOkReturn;
+import org.kawanfw.sql.tomcat.TomcatSqlModeStore;
 import org.kawanfw.sql.util.FrameworkDebug;
+import org.kawanfw.sql.util.SqlTag;
+import org.kawanfw.sql.util.TimestampUtil;
+import org.kawanfw.sql.version.VersionWrapper;
 
 /**
  * Http JDBC Server
@@ -71,45 +75,70 @@ public class ServerSqlManager extends HttpServlet {
 
     public static final String STATELESS_MODE = "statelessMode";
     public static final String DATABASE_CONFIGURATOR_CLASS_NAME = "databaseConfiguratorClassName";
+
     public static final String USER_AUTHENTICATOR_CLASS_NAME = "userAuthenticatorClassName";
     public static final String REQUEST_HEADERS_AUTHENTICATOR_CLASS_NAME = "requestHeadersAuthenticatorClassName";
+
     public static final String SQL_FIREWALL_MANAGER_CLASS_NAMES = "sqlFirewallManagerClassNames";
+    public static final String SQL_FIREWALL_TRIGGER_CLASS_NAMES = "sqlFirewallTriggerClassNames";
+
     public static final String BLOB_DOWNLOAD_CONFIGURATOR_CLASS_NAME = "blobDownloadConfiguratorClassName";
     public static final String BLOB_UPLOAD_CONFIGURATOR_CLASS_NAME = "blobUploadConfiguratorClassName";
+
     public static final String SESSION_CONFIGURATOR_CLASS_NAME = "sessionConfiguratorClassName";
     public static final String JWT_SESSION_CONFIGURATOR_SECRET = "jwtSessionConfiguratorSecret";
 
     public static final String UPDATE_LISTENER_MANAGER_CLASS_NAMES = "updateListenerClassNames";
-    
-    /** The Exception thrown at init */
-    private Exception exception = null;
 
-    /** The init error message trapped */
-    private String initErrrorMesage = null;
+    private static boolean INIT_DONE = false;
 
+    private String propertiesFileStr;
+    private static String licenseFileStr = null;
 
     /**
-     * Init
+     * Returns the name of the license file, null if not exists
+     * @return the name of the license file, null if not exists
      */
+    public static String getLicenseFileStr() {
+        return licenseFileStr;
+    }
+
     @Override
     public void init(ServletConfig config) throws ServletException {
 	super.init(config);
-	InjectedClassesManagerNew injectedClassesManager = new InjectedClassesManagerNew(config);
-	injectedClassesManager.createClasses();
+	INIT_DONE = false;
+	propertiesFileStr = config.getInitParameter("properties");
+	licenseFileStr = config.getInitParameter("licenseFile");
 
-	exception = injectedClassesManager.getException();
-	initErrrorMesage = injectedClassesManager.getInitErrrorMesage();
+	if (!TomcatSqlModeStore.isTomcatEmbedded()) {
+	    System.out.println(SqlTag.SQL_PRODUCT_INIT + " " + TimestampUtil.getHumanTimestampNoMillisNow()
+		    + " Call the AceQL Servlet from a browser to display full start in Tomcat logs...");
+	    System.out.println();
+	}
+
+	// To be done if we are not in Tomcat
+	if (propertiesFileStr == null) {
+	    propertiesFileStr = PropertiesFileStore.get().toString();
+	}
+
+	debug("propertiesFileStr: " + propertiesFileStr);
+	debug("licenseFileStr   : " + licenseFileStr);
+
     }
 
     @Override
     public void destroy() {
 	super.destroy();
-	ThreadPoolExecutor threadPoolExecutor = InjectedClassesStore.get().getThreadPoolExecutor();
-	if (threadPoolExecutor != null) {
-	    try {
-		threadPoolExecutor.shutdown();
-	    } catch (Exception e) {
-		e.printStackTrace(); // Should never happen
+	INIT_DONE = false;
+
+	if (InjectedClassesStore.get() != null && InjectedClassesStore.get().getThreadPoolExecutor() != null) {
+	    ThreadPoolExecutor threadPoolExecutor = InjectedClassesStore.get().getThreadPoolExecutor();
+	    if (threadPoolExecutor != null) {
+		try {
+		    threadPoolExecutor.shutdown();
+		} catch (Exception e) {
+		    e.printStackTrace(); // Should never happen
+		}
 	    }
 	}
 
@@ -122,13 +151,15 @@ public class ServerSqlManager extends HttpServlet {
     protected void service(HttpServletRequest request, HttpServletResponse response)
 	    throws ServletException, IOException {
 
+	createClassesSynchronized(propertiesFileStr, licenseFileStr);
+
 	/* Call in async mode */
 	final AsyncContext asyncContext = request.startAsync();
 	asyncContext.setTimeout(0);
 	asyncContext.addListener(new ServerAsyncListener());
 
 	ThreadPoolExecutor threadPoolExecutor = InjectedClassesStore.get().getThreadPoolExecutor();
-	
+
 	// Just in case
 	Objects.requireNonNull(threadPoolExecutor, "threadPoolExecutor cannot be null!");
 
@@ -149,14 +180,33 @@ public class ServerSqlManager extends HttpServlet {
     }
 
     /**
+     * Create all classes.
+     * 
+     * @param propertiesFileStr
+     * @param licenseFileStr
+     * @throws ServletException
+     * @throws IOException
+     */
+    public static synchronized void createClassesSynchronized(String propertiesFileStr, String licenseFileStr)
+	    throws ServletException, IOException {
+	if (!INIT_DONE) {
+	    INIT_DONE = true;
+	    InjectedClassesManagerNew injectedClassesManager = new InjectedClassesManagerNew();
+	    injectedClassesManager.createClasses(propertiesFileStr, licenseFileStr);
+	}
+    }
+
+    /**
      * POST & GET. Handles all servlet calls. Allows to log Exceptions including
      * runtime Exceptions
      *
      * @param request
      * @param response
+     * @throws ServletException
      * @throws UnsupportedEncodingException
      */
     private void handleRequestWrapper(HttpServletRequest request, HttpServletResponse response) {
+
 	OutputStream out = null;
 	try {
 	    out = response.getOutputStream();
@@ -190,10 +240,6 @@ public class ServerSqlManager extends HttpServlet {
 	    throws UnsupportedEncodingException, IOException, SQLException, FileUploadException {
 	request.setCharacterEncoding("UTF-8");
 
-	if (isExceptionSet(response, out)) {
-	    return;
-	}
-
 	debug("after RequestInfoStore.init(request);");
 	debug(request.getRemoteAddr());
 
@@ -221,17 +267,17 @@ public class ServerSqlManager extends HttpServlet {
 	String servletPath = request.getServletPath();
 	String requestUri = request.getRequestURI();
 
-	String servletName = ConfPropertiesStore.get().getServletName();
-	if (!checkRequestStartsWithAceqlServlet(response, out, servletPath, requestUri, servletName)) {
+	String servletCallName = ConfPropertiesStore.get().getServletCallName();
+	if (!checkRequestStartsWithAceqlServlet(response, out, servletPath, requestUri, servletCallName)) {
 	    return;
 	}
 
-	if (getVersion(out, requestUri, servletName)) {
+	if (getVersion(out, requestUri, servletCallName)) {
 	    return;
 	}
 
 	try {
-	    ServletPathAnalyzer servletPathAnalyzer = new ServletPathAnalyzer(requestUri, servletName);
+	    ServletPathAnalyzer servletPathAnalyzer = new ServletPathAnalyzer(requestUri, servletCallName);
 	    action = servletPathAnalyzer.getAction();
 	    actionValue = servletPathAnalyzer.getActionValue();
 	    database = servletPathAnalyzer.getDatabase();
@@ -262,7 +308,7 @@ public class ServerSqlManager extends HttpServlet {
 	    }
 
 	    SessionConfigurator sessionConfigurator = InjectedClassesStore.get().getSessionConfigurator();
-		
+
 	    username = sessionConfigurator.getUsername(sessionId);
 	    database = sessionConfigurator.getDatabase(sessionId);
 
@@ -306,7 +352,8 @@ public class ServerSqlManager extends HttpServlet {
 	    headers.put(key, value);
 	}
 
-	RequestHeadersAuthenticator requestHeadersAuthenticator = InjectedClassesStore.get().getRequestHeadersAuthenticator();
+	RequestHeadersAuthenticator requestHeadersAuthenticator = InjectedClassesStore.get()
+		.getRequestHeadersAuthenticator();
 	boolean checked = requestHeadersAuthenticator.validate(headers);
 
 	if (!checked) {
@@ -378,34 +425,34 @@ public class ServerSqlManager extends HttpServlet {
 	return isVerified;
     }
 
-    /**
-     * @param response
-     * @param out
-     * @throws IOException
-     */
-    private boolean isExceptionSet(HttpServletResponse response, OutputStream out) throws IOException {
-	// If Init fail, say it cleanly to client, instead of bad 500 Servlet
-	if (exception != null) {
-	    JsonErrorReturn jsonErrorReturn = new JsonErrorReturn(response,
-		    HttpServletResponse.SC_INTERNAL_SERVER_ERROR, JsonErrorReturn.ERROR_ACEQL_ERROR,
-		    initErrrorMesage + " Reason: " + exception.getMessage(), ExceptionUtils.getStackTrace(exception));
-
-	    writeLine(out, jsonErrorReturn.build());
-	    return true;
-	}
-	return false;
-    }
+//    /**
+//     * @param response
+//     * @param out
+//     * @throws IOException
+//     */
+//    private boolean isExceptionSet(HttpServletResponse response, OutputStream out) throws IOException {
+//	// If Init fail, say it cleanly to client, instead of bad 500 Servlet
+//	if (exception != null) {
+//	    JsonErrorReturn jsonErrorReturn = new JsonErrorReturn(response,
+//		    HttpServletResponse.SC_INTERNAL_SERVER_ERROR, JsonErrorReturn.ERROR_ACEQL_ERROR,
+//		    initErrrorMesage + " Reason: " + exception.getMessage(), ExceptionUtils.getStackTrace(exception));
+//
+//	    writeLine(out, jsonErrorReturn.build());
+//	    return true;
+//	}
+//	return false;
+//    }
 
     /**
      * @param out
      * @param requestUri
-     * @param servletName
+     * @param servletCallName
      * @throws IOException
      */
-    private boolean getVersion(OutputStream out, String requestUri, String servletName) throws IOException {
+    private boolean getVersion(OutputStream out, String requestUri, String servletCallName) throws IOException {
 	// Display version if we just call the servlet
-	if (requestUri.endsWith("/" + servletName) || requestUri.endsWith("/" + servletName + "/")) {
-	    String version = org.kawanfw.sql.version.Version.getVersion();
+	if (requestUri.endsWith("/" + servletCallName) || requestUri.endsWith("/" + servletCallName + "/")) {
+	    String version = VersionWrapper.getServerVersion();
 	    writeLine(out, JsonOkReturn.build("version", version));
 	    return true;
 	}
@@ -417,12 +464,12 @@ public class ServerSqlManager extends HttpServlet {
      * @param out
      * @param servletPath
      * @param requestUri
-     * @param servletName
+     * @param servletCallName
      * @throws IOException
      */
     private boolean checkRequestStartsWithAceqlServlet(HttpServletResponse response, OutputStream out,
-	    String servletPath, String requestUri, String servletName) throws IOException {
-	if (!requestUri.startsWith("/" + servletName) && !servletPath.startsWith("/" + servletName)) {
+	    String servletPath, String requestUri, String servletCallName) throws IOException {
+	if (!requestUri.startsWith("/" + servletCallName) && !servletPath.startsWith("/" + servletCallName)) {
 
 	    // System.out.println("servletPath:" + servletPath);
 	    // System.out.println("urlContent :" + urlContent);
@@ -430,7 +477,7 @@ public class ServerSqlManager extends HttpServlet {
 	    if (requestUri.equals("/")) {
 		JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_BAD_REQUEST,
 			JsonErrorReturn.ERROR_ACEQL_ERROR,
-			JsonErrorReturn.ACEQL_SERVLET_NOT_FOUND_IN_PATH + servletName);
+			JsonErrorReturn.ACEQL_SERVLET_NOT_FOUND_IN_PATH + servletCallName);
 		// out.println(errorReturn.build());
 		writeLine(out, errorReturn.build());
 		return false;
@@ -501,7 +548,7 @@ public class ServerSqlManager extends HttpServlet {
      */
     public static void debug(String s) {
 	if (DEBUG) {
-	    System.out.println(new Date() + " " + s);
+	    System.out.println(new Date() + " " + ServerSqlManager.class.getSimpleName() + " " + s);
 	}
     }
 

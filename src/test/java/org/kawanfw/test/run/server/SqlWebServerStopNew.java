@@ -24,7 +24,7 @@
  */
 package org.kawanfw.test.run.server;
 
-import org.kawanfw.sql.api.server.web.WebServerApi;
+import org.kawanfw.sql.api.util.webserver.WebServerApiWrapper;
 
 /**
  * @author Nicolas de Pomereu
@@ -59,10 +59,10 @@ public class SqlWebServerStopNew {
      * @param port
      */
     private static void stopOnPort(int port) {
-	WebServerApi webServerApi = new WebServerApi();
+	WebServerApiWrapper webServerApiWrapper = new WebServerApiWrapper();
 	try {
 	    System.out.println("Stoping AceQL on port: " + port);
-	    webServerApi.stopServer(port);
+	    webServerApiWrapper.stopServer(port);
 	} catch (Exception e) {
 	    System.err.println(e.getMessage());
 	}

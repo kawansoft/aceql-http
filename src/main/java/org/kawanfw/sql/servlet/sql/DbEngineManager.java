@@ -224,10 +224,10 @@ public class DbEngineManager {
     }
 
     /**
-     * Returns true if Oracle Version is >= 12.1 (12.c)
+     * Returns true if Oracle DefaultVersion is >= 12.1 (12.c)
      *
      * @param connection
-     * @return true if Oracle Version is >= 12.1 (12.c)
+     * @return true if Oracle DefaultVersion is >= 12.1 (12.c)
      * @throws SQLException
      */
     public static boolean isOracleVersionGtOrEq12c(Connection connection)

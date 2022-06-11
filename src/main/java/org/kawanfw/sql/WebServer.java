@@ -31,12 +31,13 @@ import java.net.UnknownHostException;
 
 import org.apache.commons.cli.ParseException;
 import org.kawanfw.sql.api.server.DatabaseConfigurationException;
-import org.kawanfw.sql.api.server.web.WebServerApi;
 import org.kawanfw.sql.api.util.webserver.ParametersExtractor;
+import org.kawanfw.sql.api.util.webserver.WebServerApiWrapper;
 import org.kawanfw.sql.api.util.webserver.WebServerUtil;
 import org.kawanfw.sql.util.FrameworkDebug;
 import org.kawanfw.sql.util.SqlTag;
-import org.kawanfw.sql.version.Version;
+import org.kawanfw.sql.version.VersionWrapper;
+
 
 /**
  *
@@ -97,10 +98,10 @@ public class WebServer {
 	String host = parametersExtractor.getHost();
 	File propertiesFile = parametersExtractor.getPropertiesFile();
 	int port = parametersExtractor.getPort();
-
-	WebServerApi webServerApi = new WebServerApi();
+	
+	WebServerApiWrapper webServerApiWrapper = new WebServerApiWrapper();
 	try {
-	    webServerApi.startServer(host, port, propertiesFile);
+	    webServerApiWrapper.startServer(host, port, propertiesFile);
 	} catch (IllegalArgumentException e) {
 	    System.err.println(
 		    SqlTag.SQL_PRODUCT_START_FAILURE + " " + SqlTag.USER_CONFIGURATION + " " + e.getMessage());
@@ -143,11 +144,11 @@ public class WebServer {
      */
     private static void doStop(ParametersExtractor parametersExtractor) {
 	int port = parametersExtractor.getPort();
-	WebServerApi webServerApi = new WebServerApi();
+	WebServerApiWrapper webServerApiWrapper = new WebServerApiWrapper();
 	try {
-	    webServerApi.stopServer(port);
+	    webServerApiWrapper.stopServer(port);
 
-	    System.out.println(Version.PRODUCT.NAME + " Web server running on port " + port + " successfully stopped!");
+	    System.out.println(VersionWrapper.getName() + " Web server running on port " + port + " successfully stopped!");
 	    System.out.println();
 	    WebServerUtil.systemExitWrapper(0);
 	} catch (ConnectException e) {

@@ -43,6 +43,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.kawanfw.sql.api.server.SqlEvent;
 import org.kawanfw.sql.api.server.SqlEventWrapper;
 import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
+import org.kawanfw.sql.api.util.firewall.SqlFirewallTriggerWrapper;
 import org.kawanfw.sql.metadata.AceQLMetaData;
 import org.kawanfw.sql.metadata.JdbcDatabaseMetaData;
 import org.kawanfw.sql.metadata.Table;
@@ -132,7 +133,7 @@ public class MetadataQueryActionManager {
 		SqlEvent sqlEvent = SqlEventWrapper.sqlEventBuild(username, database, ipAddress, sql,
 			ServerStatementUtil.isPreparedStatement(request), parameterValues, true);
 
-		sqlFirewallManager.runIfStatementRefused(sqlEvent, connection);
+		SqlFirewallTriggerWrapper.runIfStatementRefused(sqlEvent, sqlFirewallManager, connection);
 		break;
 	    }
 	}

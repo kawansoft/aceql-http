@@ -30,6 +30,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
+import org.kawanfw.sql.api.util.JsqlParserWrapper;
 import org.kawanfw.sql.api.util.StatementAnalyzerUtil;
 import org.kawanfw.sql.util.FrameworkDebug;
 import org.kawanfw.sql.util.Tag;

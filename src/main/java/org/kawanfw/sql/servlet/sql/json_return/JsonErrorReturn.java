@@ -31,7 +31,7 @@ import javax.json.stream.JsonGenerator;
 import javax.json.stream.JsonGeneratorFactory;
 import javax.servlet.http.HttpServletResponse;
 
-import org.kawanfw.sql.version.VersionValues;
+import schemacrawler.Version;
 
 public class JsonErrorReturn {
 
@@ -53,15 +53,18 @@ public class JsonErrorReturn {
     public static final String NO_DATASOURCES_DEFINED = "No databases have been defined in \"Tomcat JDBC Connection Pool Section\" in properties file.";
     public static final String UNKNOWN_SERVLET = "This servlet is unknown and has not been declared in properties file: ";
     public static final String PLEASE_UPDATE_CLIENT_SDK = "This HTTP AceQL server version ("
-    + VersionValues.VERSION + ") is not compatible with Client SDK. Please upgrade Client SDK.";
+    + Version.getVersion() + ") is not compatible with Client SDK. Please upgrade Client SDK.";
     public static final String INVALID_OUTPUT_FORMAT = "The output format is invalid. Should be \"html\" or \"text\".";
     public static final String INVALID_TABLE_NAME = "SQL table not found in database.";
 
+    public static final String ACCESS_FORBIDDEN_FOR_USERNAME = "Access Forbidden for Username";
 
     public static final int ERROR_JDBC_ERROR = 1;
     public static final int ERROR_ACEQL_ERROR = 2;
     public static final int ERROR_ACEQL_UNAUTHORIZED = 3;
     public static final int ERROR_ACEQL_FAILURE = 4;
+
+
 
 
 

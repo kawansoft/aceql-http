@@ -27,6 +27,7 @@ package org.kawanfw.sql.tomcat;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -38,6 +39,8 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tomcat.jdbc.pool.PoolProperties;
 import org.kawanfw.sql.api.server.DatabaseConfigurationException;
+import org.kawanfw.sql.tomcat.properties.pool.PoolPropertiesInterceptor;
+import org.kawanfw.sql.tomcat.properties.pool.PoolPropertiesInterceptorCreator;
 import org.kawanfw.sql.util.FrameworkDebug;
 import org.kawanfw.sql.util.SqlTag;
 
@@ -89,12 +92,13 @@ public class PoolPropertiesCreator {
      * @throws NoSuchMethodException
      * @throws IllegalArgumentException
      * @throws SecurityException
+     * @throws SQLException 
      *
      * @throws NumberFormatException     if a numeric property is with letters
      * @throws Exception                 for all others cases
      */
     public PoolProperties create() throws ClassNotFoundException, InstantiationException, IllegalAccessException,
-	    SecurityException, IllegalArgumentException, NoSuchMethodException, InvocationTargetException {
+	    SecurityException, IllegalArgumentException, NoSuchMethodException, InvocationTargetException, SQLException {
 
 	// theClass =
 	// Class.forName("org.apache.tomcat.jdbc.pool.PoolProperties");
@@ -175,19 +179,23 @@ public class PoolPropertiesCreator {
      * @throws IllegalAccessException
      * @throws IllegalArgumentException
      * @throws NumberFormatException
+     * @throws SQLException 
      * @throws Exception
      */
-    private void callMethod(String propertyName, String propertyValue) throws SecurityException, NoSuchMethodException,
-	    NumberFormatException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {
+    private void callMethod(String propertyName, final String propertyValue) throws SecurityException, NoSuchMethodException,
+	    NumberFormatException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, SQLException {
 
 	String theMethod = "set" + StringUtils.capitalize(propertyName);
 	debug("theMethod: " + theMethod);
 	
-	String propertyValueToDisplay = propertyValue;
+	PoolPropertiesInterceptor poolPropertiesInterceptor = PoolPropertiesInterceptorCreator.createInstance();
+	String propertyValueUpdated = poolPropertiesInterceptor.interceptValue(theMethod, propertyValue);
+	String propertyValueToDisplay = propertyValueUpdated;
+	
 	if (propertyName.equals("password")) {
 	    propertyValueToDisplay = TomcatStarter.MASKED_PASSWORD;
 	}
-
+	
 	Class<?>[] pType = methodNamesAndParms.get(theMethod);
 
 	// if (pType[0] == String.class) {
@@ -207,17 +215,17 @@ public class PoolPropertiesCreator {
 
 	// if (argTypes[i] == Connection.class) {
 	if (pType[0] == long.class) {
-	    main.invoke(theObject, Long.parseLong(propertyValue));
+	    main.invoke(theObject, Long.parseLong(propertyValueUpdated));
 	} else if (pType[0] == String.class) {
-	    main.invoke(theObject, propertyValue);
+	    main.invoke(theObject, propertyValueUpdated);
 	} else if (pType[0] == boolean.class) {
-	    main.invoke(theObject, Boolean.parseBoolean(propertyValue));
+	    main.invoke(theObject, Boolean.parseBoolean(propertyValueUpdated));
 	}
 	else if (pType[0] == Boolean.class) {
-	    main.invoke(theObject, Boolean.valueOf(propertyValue));
+	    main.invoke(theObject, Boolean.valueOf(propertyValueUpdated));
 	}
 	else if (pType[0] == int.class) {
-	    main.invoke(theObject, Integer.parseInt(propertyValue));
+	    main.invoke(theObject, Integer.parseInt(propertyValueUpdated));
 	} else {
 	    throw new DatabaseConfigurationException("Invalid Connection Pool property: " + propertyName);
 	}

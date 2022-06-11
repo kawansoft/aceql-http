@@ -28,7 +28,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.kawanfw.sql.WebServer;
-import org.kawanfw.sql.api.server.web.WebServerApi;
+import org.kawanfw.sql.api.util.webserver.WebServerApiWrapper;
 
 /**
  * @author Nicolas de Pomereu
@@ -53,12 +53,12 @@ public class SqlWebServerStartNew {
 
 	int port = 9090;
 
-	map.put(port, "I:\\_dev_awake\\aceql-http-main\\aceql-http\\conf_test\\aceql-server-TEST.properties");
+	map.put(port, "I:\\_dev_awake\\aceql-http-main\\aceql-http\\conf_test\\aceql-server-TEST-COMMUNITY.properties");
 	start(port);
 
 	while(true) {
-	    WebServerApi webServerApi = new WebServerApi();
-	    if (webServerApi.isServerRunning(port)) {
+	    WebServerApiWrapper webServerApiWrapper = new WebServerApiWrapper();
+	    if (webServerApiWrapper.isServerRunning(port)) {
 		System.out.println("Server running on port " + port + "...");
 		break;
 	    }

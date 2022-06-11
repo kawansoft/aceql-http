@@ -50,8 +50,8 @@ import org.kawanfw.sql.api.server.SqlEvent;
 import org.kawanfw.sql.api.server.SqlEventWrapper;
 import org.kawanfw.sql.api.server.StatementAnalyzer;
 import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
-import org.kawanfw.sql.api.server.listener.DefaultUpdateListener;
 import org.kawanfw.sql.api.server.listener.UpdateListener;
+import org.kawanfw.sql.api.util.firewall.SqlFirewallTriggerWrapper;
 import org.kawanfw.sql.servlet.HttpParameter;
 import org.kawanfw.sql.servlet.ServerSqlManager;
 import org.kawanfw.sql.servlet.connection.RollbackUtil;
@@ -87,7 +87,7 @@ public class ServerStatementRawExecute {
 
     private List<SqlFirewallManager> sqlFirewallManagers;
     private List<UpdateListener> updateListeners;
-    
+
     /**
      * Default Constructor
      *
@@ -105,7 +105,7 @@ public class ServerStatementRawExecute {
 	this.sqlFirewallManagers = sqlFirewallManagers;
 	this.connection = connection;
 	doPrettyPrinting = true; // Always pretty printing
-	
+
 	String database = request.getParameter(HttpParameter.DATABASE);
 	updateListeners = InjectedClassesStore.get().getUpdateListenerMap().get(database);
 
@@ -123,7 +123,8 @@ public class ServerStatementRawExecute {
 
 	try {
 
-	    //System.err.println("ServerStatementUtil.isPreparedStatement(request): " + ServerStatementUtil.isPreparedStatement(request));
+	    // System.err.println("ServerStatementUtil.isPreparedStatement(request): " +
+	    // ServerStatementUtil.isPreparedStatement(request));
 
 	    // Execute it
 	    if (ServerStatementUtil.isPreparedStatement(request)) {
@@ -133,7 +134,7 @@ public class ServerStatementRawExecute {
 	    }
 	} catch (SecurityException e) {
 	    RollbackUtil.rollback(connection);
-	    
+
 	    JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_FORBIDDEN,
 		    JsonErrorReturn.ERROR_ACEQL_UNAUTHORIZED, e.getMessage());
 	    ServerSqlManager.writeLine(out, errorReturn.build());
@@ -145,7 +146,7 @@ public class ServerStatementRawExecute {
 	    ServerSqlManager.writeLine(out, errorReturn.build());
 	} catch (Exception e) {
 	    RollbackUtil.rollback(connection);
-	    
+
 	    JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
 		    JsonErrorReturn.ERROR_ACEQL_FAILURE, e.getMessage(), ExceptionUtils.getStackTrace(e));
 	    ServerSqlManager.writeLine(out, errorReturn.build());
@@ -235,7 +236,7 @@ public class ServerStatementRawExecute {
 	String database = request.getParameter(HttpParameter.DATABASE);
 	String sqlOrder = request.getParameter(HttpParameter.SQL);
 	String htlmEncoding = request.getParameter(HttpParameter.HTML_ENCODING);
-	
+
 	PreparedStatement preparedStatement = null;
 	DatabaseConfigurator databaseConfigurator = InjectedClassesStore.get().getDatabaseConfigurators().get(database);
 
@@ -249,8 +250,10 @@ public class ServerStatementRawExecute {
 	    preparedStatement = connection.prepareStatement(sqlOrder);
 
 	    debug("before ServerPreparedStatementParameters");
-	    Map<Integer, AceQLParameter> inOutStatementParameters = ServerPreparedStatementParametersUtil.buildParametersFromRequest(request);
-	    serverPreparedStatementParameters = new ServerPreparedStatementParameters(username, database, sqlOrder, preparedStatement, inOutStatementParameters, htlmEncoding);
+	    Map<Integer, AceQLParameter> inOutStatementParameters = ServerPreparedStatementParametersUtil
+		    .buildParametersFromRequest(request);
+	    serverPreparedStatementParameters = new ServerPreparedStatementParameters(username, database, sqlOrder,
+		    preparedStatement, inOutStatementParameters, htlmEncoding);
 
 	    try {
 		serverPreparedStatementParameters.setParameters();
@@ -266,7 +269,7 @@ public class ServerStatementRawExecute {
 	    String ipAddress = checkFirewallGeneral(username, database, sqlOrder, serverPreparedStatementParameters);
 
 	    debug("before execute()");
-	    doExecute(out, databaseConfigurator, username, database, sqlOrder, preparedStatement,
+	    doExecutePreparedStatement(out, databaseConfigurator, username, database, sqlOrder, preparedStatement,
 		    serverPreparedStatementParameters, ipAddress);
 
 	} catch (SQLException e) {
@@ -296,6 +299,7 @@ public class ServerStatementRawExecute {
 
     /**
      * Calls the Statement.execute() method.
+     * 
      * @param out
      * @param databaseConfigurator
      * @param username
@@ -307,17 +311,17 @@ public class ServerStatementRawExecute {
      * @throws SQLException
      * @throws SecurityException
      */
-    private void doExecute(OutputStream out, DatabaseConfigurator databaseConfigurator, String username, String database,
-	    String sqlOrder, Statement statement, String ipAddress) throws IOException, SQLException, SecurityException {
-	checkFirewallForExecute(username, database, sqlOrder, ipAddress);
+    private void doExecute(OutputStream out, DatabaseConfigurator databaseConfigurator, String username,
+	    String database, String sqlOrder, Statement statement, String ipAddress)
+	    throws IOException, SQLException, SecurityException {
 
-	checkFirewallForExecute(username, database, sqlOrder, ipAddress);
+	checkFirewallForAllowExecute(username, database, sqlOrder, ipAddress);
 	ServerSqlUtil.setMaxRowsToReturn(request, username, database, statement, databaseConfigurator);
 
 	boolean executeResult = statement.execute(sqlOrder);
 
-	if (! executeResult) {
-	//if (statement.getUpdateCount() != -1) {
+	if (!executeResult) {
+	    // if (statement.getUpdateCount() != -1) {
 	    // It is an update statement or prepared statement
 	    StringWriter sw = new StringWriter();
 	    JsonGeneratorFactory jf = JsonUtil.getJsonGeneratorFactory(JsonUtil.DEFAULT_PRETTY_PRINTING);
@@ -327,11 +331,16 @@ public class ServerStatementRawExecute {
 	    gen.close();
 
 	    List<Object> parameterValues = new ArrayList<>();
-	    callUpdateListeners(username, database, sqlOrder, parameterValues, ipAddress, false);
+
+	    StatementAnalyzer analyzer = new StatementAnalyzer(sqlOrder, parameterValues);
+	    if (analyzer.isDelete() || analyzer.isUpdate() || analyzer.isInsert()) {
+		UpdateListenersCaller updateListenersCaller = new UpdateListenersCaller(updateListeners, connection);
+		updateListenersCaller.callUpdateListeners(username, database, sqlOrder, parameterValues, ipAddress,
+			false);
+	    }
 
 	    ServerSqlManager.write(out, sw.toString());
-	}
-	else {
+	} else {
 	    // It is a query
 	    ResultSet rs = statement.getResultSet();
 	    dumpResultSet(rs, out, sqlOrder);
@@ -343,7 +352,7 @@ public class ServerStatementRawExecute {
      * Calls the PreparedStatement.execute() method.
      *
      * @param out
-     * @param databaseConfigurator TODO
+     * @param databaseConfigurator              TODO
      * @param username
      * @param database
      * @param sqlOrder
@@ -354,11 +363,12 @@ public class ServerStatementRawExecute {
      * @throws SQLException
      * @throws SecurityException
      */
-    private void doExecute(OutputStream out, DatabaseConfigurator databaseConfigurator, String username, String database,
-	    String sqlOrder, PreparedStatement preparedStatement,
-	    ServerPreparedStatementParameters serverPreparedStatementParameters, String ipAddress) throws IOException, SQLException, SecurityException {
+    private void doExecutePreparedStatement(OutputStream out, DatabaseConfigurator databaseConfigurator,
+	    String username, String database, String sqlOrder, PreparedStatement preparedStatement,
+	    ServerPreparedStatementParameters serverPreparedStatementParameters, String ipAddress)
+	    throws IOException, SQLException, SecurityException {
 
-	checkFirewallForExecute(username, database, sqlOrder, serverPreparedStatementParameters, ipAddress);
+	checkFirewallForAllowExecute(username, database, sqlOrder, serverPreparedStatementParameters, ipAddress);
 	ServerSqlUtil.setMaxRowsToReturn(request, username, database, preparedStatement, databaseConfigurator);
 
 	@SuppressWarnings("unused")
@@ -370,47 +380,24 @@ public class ServerStatementRawExecute {
 	    JsonGeneratorFactory jf = JsonUtil.getJsonGeneratorFactory(JsonUtil.DEFAULT_PRETTY_PRINTING);
 	    JsonGenerator gen = jf.createGenerator(sw);
 
-	    gen.writeStartObject().write("status", "OK").write("row_count", preparedStatement.getUpdateCount()).writeEnd();
+	    gen.writeStartObject().write("status", "OK").write("row_count", preparedStatement.getUpdateCount())
+		    .writeEnd();
 	    gen.close();
 
 	    List<Object> parameterValues = serverPreparedStatementParameters.getParameterValues();
-	    callUpdateListeners(username, database, sqlOrder, parameterValues, ipAddress, true);
+
+	    UpdateListenersCaller updateListenersCaller = new UpdateListenersCaller(updateListeners, connection);
+	    updateListenersCaller.callUpdateListeners(username, database, sqlOrder, parameterValues, ipAddress, true);
 
 	    ServerSqlManager.write(out, sw.toString());
-	}
-	else {
+	} else {
 	    // It is a query
 	    ResultSet rs = preparedStatement.getResultSet();
 	    dumpResultSet(rs, out, sqlOrder);
 	}
 
-
     }
 
-    /**
-     * Call the UpdateListener updateActionPerformed method
-     * @param username
-     * @param database
-     * @param sqlOrder
-     * @param ipAddress
-     * @param isPreparedStatement TODO
-     * @param serverPreparedStatementParameters
-     * @throws SQLException
-     * @throws IOException
-     */
-    public void callUpdateListeners(String username, String database, String sqlOrder, List<Object> parameterValues,
-	    String ipAddress, boolean isPreparedStatement) throws SQLException, IOException {
-	if (updateListeners.size() != 1 || !(updateListeners.get(0) instanceof DefaultUpdateListener)) {
-	    StatementAnalyzer analyzer = new StatementAnalyzer(sqlOrder, parameterValues);
-	    if (analyzer.isDelete() || analyzer.isUpdate() || analyzer.isInsert()) {
-		SqlEvent sqlEvent = SqlEventWrapper.sqlEventBuild(username, database,
-			ipAddress, sqlOrder, isPreparedStatement, parameterValues, false);
-		for (UpdateListener updateListener : updateListeners) {
-		    updateListener.updateActionPerformed(sqlEvent, connection);
-		}
-	    }
-	}
-    }
 
     /**
      * @param username
@@ -422,22 +409,23 @@ public class ServerStatementRawExecute {
      * @throws SQLException
      * @throws SecurityException
      */
-    private void checkFirewallForExecute(String username, String database, String sqlOrder,
+    private void checkFirewallForAllowExecute(String username, String database, String sqlOrder,
 	    ServerPreparedStatementParameters serverPreparedStatementParameters, String ipAddress)
 	    throws IOException, SQLException, SecurityException {
 	boolean isAllowedAfterAnalysis;
 	for (SqlFirewallManager sqlFirewallManager : sqlFirewallManagers) {
 	    isAllowedAfterAnalysis = sqlFirewallManager.allowExecute(username, database, connection);
+
 	    if (!isAllowedAfterAnalysis) {
-		
+
 		SqlEvent sqlEvent = SqlEventWrapper.sqlEventBuild(username, database, ipAddress, sqlOrder,
 			ServerStatementUtil.isPreparedStatement(request),
 			serverPreparedStatementParameters.getParameterValues(), false);
-		    
-		sqlFirewallManager.runIfStatementRefused(sqlEvent, connection);
+
+		SqlFirewallTriggerWrapper.runIfStatementRefused(sqlEvent, sqlFirewallManager, connection);
 
 		String message = JsonSecurityMessage.prepStatementNotAllowedBuild(sqlOrder,
-			"Prepared Statement not allowed for executeUpdate",
+			"Statement not allowed for raw execute call ",
 			serverPreparedStatementParameters.getParameterTypes(),
 			serverPreparedStatementParameters.getParameterValues(), doPrettyPrinting);
 
@@ -463,15 +451,16 @@ public class ServerStatementRawExecute {
 
 	boolean isAllowedAfterAnalysis = false;
 	for (SqlFirewallManager sqlFirewallManager : sqlFirewallManagers) {
-	    
+
 	    SqlEvent sqlEvent = SqlEventWrapper.sqlEventBuild(username, database, ipAddress, sqlOrder,
 		    ServerStatementUtil.isPreparedStatement(request),
 		    serverPreparedStatementParameters.getParameterValues(), false);
-	    
+
 	    isAllowedAfterAnalysis = sqlFirewallManager.allowSqlRunAfterAnalysis(sqlEvent, connection);
-	    
+
 	    if (!isAllowedAfterAnalysis) {
-		sqlFirewallManager.runIfStatementRefused(sqlEvent, connection);
+		// sqlFirewallManager.runIfStatementRefused(sqlEvent, connection);
+		SqlFirewallTriggerWrapper.runIfStatementRefused(sqlEvent, sqlFirewallManager, connection);
 		break;
 	    }
 	}
@@ -485,9 +474,9 @@ public class ServerStatementRawExecute {
 	return ipAddress;
     }
 
-
     /**
      * Dumps the Result Set on the servlet stream
+     * 
      * @param out
      * @param sqlOrder
      * @throws SQLException
@@ -504,7 +493,8 @@ public class ServerStatementRawExecute {
 	    JsonGenerator gen = jf.createGenerator(out);
 	    gen.writeStartObject().write("status", "OK");
 
-	 // Always force to Get ResultSetMetaData, because client side is probably a DB Visualizer tool
+	    // Always force to Get ResultSetMetaData, because client side is probably a DB
+	    // Visualizer tool
 	    boolean fillResultSetMetaData = true;
 
 	    ResultSetWriter resultSetWriter = new ResultSetWriter(request, sqlOrder, gen, fillResultSetMetaData);
@@ -523,9 +513,6 @@ public class ServerStatementRawExecute {
 	}
     }
 
-
-
-
     /**
      * @param username
      * @param database
@@ -535,20 +522,21 @@ public class ServerStatementRawExecute {
      * @throws SQLException
      * @throws SecurityException
      */
-    private void checkFirewallForExecute(String username, String database, String sqlOrder, String ipAddress)
+    private void checkFirewallForAllowExecute(String username, String database, String sqlOrder, String ipAddress)
 	    throws IOException, SQLException, SecurityException {
-	boolean isAllowed;
+	boolean isAllowedExecute;
 	for (SqlFirewallManager sqlFirewallManager : sqlFirewallManagers) {
-	    isAllowed = sqlFirewallManager.allowExecute(username, database, connection);
-	    if (!isAllowed) {
+	    isAllowedExecute = sqlFirewallManager.allowExecute(username, database, connection);
+
+	    if (!isAllowedExecute) {
 		List<Object> parameterValues = new ArrayList<>();
 		SqlEvent sqlEvent = SqlEventWrapper.sqlEventBuild(username, database, ipAddress, sqlOrder,
 			ServerStatementUtil.isPreparedStatement(request), parameterValues, false);
-		    
-		sqlFirewallManager.runIfStatementRefused(sqlEvent, connection);
+
+		SqlFirewallTriggerWrapper.runIfStatementRefused(sqlEvent, sqlFirewallManager, connection);
 
 		String message = JsonSecurityMessage.statementNotAllowedBuild(sqlOrder,
-			"Statement not allowed for for executeUpdate", doPrettyPrinting);
+			"Statement not allowed for for execute or executeUpdate", doPrettyPrinting);
 		throw new SecurityException(message);
 
 	    }
@@ -576,9 +564,8 @@ public class ServerStatementRawExecute {
 	    }
 
 	    SqlEvent sqlEvent = SqlEventWrapper.sqlEventBuild(username, database, ipAddress, sqlOrder,
-		    ServerStatementUtil.isPreparedStatement(request),
-		    new Vector<Object>(), false);
-	    
+		    ServerStatementUtil.isPreparedStatement(request), new Vector<Object>(), false);
+
 	    isAllowed = sqlFirewallManager.allowSqlRunAfterAnalysis(sqlEvent, connection);
 	    if (!isAllowed) {
 		break;
@@ -589,10 +576,10 @@ public class ServerStatementRawExecute {
 	    List<Object> parameterValues = new ArrayList<>();
 
 	    SqlEvent sqlEvent = SqlEventWrapper.sqlEventBuild(username, database, ipAddress, sqlOrder,
-		    ServerStatementUtil.isPreparedStatement(request),
-		    parameterValues, false);
-	    
-	    sqlFirewallOnDeny.runIfStatementRefused(sqlEvent, connection);
+		    ServerStatementUtil.isPreparedStatement(request), parameterValues, false);
+
+	    // sqlFirewallOnDeny.runIfStatementRefused(sqlEvent, connection);
+	    SqlFirewallTriggerWrapper.runIfStatementRefused(sqlEvent, sqlFirewallOnDeny, connection);
 
 	    String message = JsonSecurityMessage.statementNotAllowedBuild(sqlOrder, "Statement not allowed",
 		    doPrettyPrinting);

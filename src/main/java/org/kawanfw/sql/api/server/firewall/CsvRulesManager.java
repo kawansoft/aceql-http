@@ -1,3 +1,4 @@
+
 /*
  * This file is part of AceQL HTTP.
  * AceQL HTTP: SQL Over HTTP
@@ -33,6 +34,7 @@ import java.nio.file.attribute.FileTime;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -57,9 +59,9 @@ import org.kawanfw.sql.util.TimestampUtil;
  * Firewall manager that checks each SQL request against the content of a CSV
  * File. The CSV file is loaded in memory at AceQL server startup. <br>
  * <br>
- * The name of the CSV file that will be used by a database is:
- * <code>&lt;database&gt;_rules_manager.csv</code>, where database is the name
- * of the database declared in the {@code aceql.properties} files.<br>
+ * The name of the CSV file that will be used by a database is:&nbsp;
+ * <code>&lt;database&gt;_rules_manager.csv</code>, where {@code database} is
+ * the name of the database declared in the {@code aceql.properties} files.<br>
  * The file must be located in the same directory as the
  * {@code aceql.properties} file used when starting the AceQL server.<br>
  * <br>
@@ -97,11 +99,12 @@ import org.kawanfw.sql.util.TimestampUtil;
  * for the same CSV column.
  * </ul>
  * <br>
- * <b>Note that updating the CSV file will reload the rules.</b> If you prefer to
- * disallow dynamic reloading, use a {@link CsvRulesManagerNoReload} implementation.
- * <br><br>
+ * <b>Note that updating the CSV file will reload the rules.</b> If you prefer
+ * to disallow dynamic reloading, use a {@link CsvRulesManagerNoReload}
+ * implementation. <br>
+ * <br>
  * See an example of CSV file: <a href=
- * "https://docs.aceql.com/rest/soft/10.2/src/sampledb_rules_manager.csv">sampledb_rules_manager.csv</a>
+ * "https://docs.aceql.com/rest/soft/11/src/sampledb_rules_manager.csv">sampledb_rules_manager.csv</a>
  * <br>
  * <br>
  *
@@ -112,6 +115,8 @@ public class CsvRulesManager extends DefaultSqlFirewallManager implements SqlFir
 
     private static boolean DEBUG = FrameworkDebug.isSet(CsvRulesManager.class);
 
+    private Set<String> databaseSetForReset = new HashSet<>();
+    
     /**
      * The map that contains for each database/username the table and their rights
      */
@@ -119,7 +124,7 @@ public class CsvRulesManager extends DefaultSqlFirewallManager implements SqlFir
 
     private FileTime storedFileTime = null;
 
-    /** Default dehavior is to allow reload of rules if CSV file is updated */
+    /** Default behavior is to allow reload of rules if CSV file is updated */
     protected boolean allowReload = true;
 
     /**
@@ -134,22 +139,6 @@ public class CsvRulesManager extends DefaultSqlFirewallManager implements SqlFir
 	boolean isAllowed = isAllowed(sqlEvent.getUsername(), sqlEvent.getDatabase(), sqlEvent.getSql(),
 		sqlEvent.getParameterValues());
 	return isAllowed;
-
-    }
-
-    /**
-     * Logs the info using {@code DefaultDatabaseConfigurator#getLogger()}
-     * {@code Logger}.
-     */
-    @Override
-    public void runIfStatementRefused(SqlEvent sqlEvent, Connection connection) throws IOException, SQLException {
-	String logInfo = "Client username " + sqlEvent.getUsername() + " (IP: " + sqlEvent.getIpAddress()
-		+ ") has been denied by CsvRulesManager SqlFirewallManager executing the statement: "
-		+ sqlEvent.getSql() + ".";
-
-	DefaultDatabaseConfigurator defaultDatabaseConfigurator = new DefaultDatabaseConfigurator();
-	Logger logger = defaultDatabaseConfigurator.getLogger();
-	logger.log(Level.WARNING, logInfo);
 
     }
 
@@ -264,11 +253,15 @@ public class CsvRulesManager extends DefaultSqlFirewallManager implements SqlFir
 	BasicFileAttributes basicFileAttributes = Files.readAttributes(csvFile.toPath(), BasicFileAttributes.class);
 	FileTime currentFileTime = basicFileAttributes.lastModifiedTime();
 
-	debug("storedFileTime : "  + storedFileTime);
+	debug("");
+	debug("csvFile        : " + csvFile);
+	debug("allowReload    : " + allowReload);
+	debug("storedFileTime : " + storedFileTime);
 	debug("currentFileTime: " + currentFileTime);
-	
-	if (storedFileTime != null && ! currentFileTime.equals(storedFileTime) && allowReload) {
+
+	if (storedFileTime != null && !currentFileTime.equals(storedFileTime) && allowReload) {
 	    mapTableAllowStatementsSet = null;
+	    databaseSetForReset = new HashSet<>();
 	    String logInfo = TimestampUtil.getHumanTimestampNow() + " " + SqlTag.USER_CONFIGURATION
 		    + " Reloading CsvRulesManager configuration file: " + csvFile;
 	    System.err.println(logInfo);
@@ -278,7 +271,7 @@ public class CsvRulesManager extends DefaultSqlFirewallManager implements SqlFir
 	    storedFileTime = currentFileTime;
 	}
 
-	if (mapTableAllowStatementsSet == null) {
+	if (mapTableAllowStatementsSet == null || ! databaseSetForReset.contains(database)) {
 
 	    AceQLMetaData aceQLMetaData = new AceQLMetaData(connection);
 	    List<String> tables = aceQLMetaData.getTableNames();
@@ -292,6 +285,7 @@ public class CsvRulesManager extends DefaultSqlFirewallManager implements SqlFir
 	    csvRulesManagerLoader.load();
 
 	    mapTableAllowStatementsSet = csvRulesManagerLoader.getMapTableAllowStatementsSet();
+	    databaseSetForReset.add(database);
 
 	    Set<TableAllowStatements> tableAllowStatementsSet = csvRulesManagerLoader.getTableAllowStatementsSet();
 
@@ -299,14 +293,13 @@ public class CsvRulesManager extends DefaultSqlFirewallManager implements SqlFir
 	    for (TableAllowStatements tableAllowStatements : tableAllowStatementsSet) {
 		debug("" + tableAllowStatements.toString());
 	    }
-	    
+
 	    storedFileTime = currentFileTime;
 	}
     }
 
     /**
-     * Returns the user.home/.aceql-http{database}sql_firewal_manager_rules.csv for
-     * the passed database
+     * Returns the &lt;database&gt;_rules_manager.csv for the passed database
      *
      * @param database
      * @throws FileNotFoundException
@@ -332,7 +325,7 @@ public class CsvRulesManager extends DefaultSqlFirewallManager implements SqlFir
 
     private void debug(String string) {
 	if (DEBUG) {
-	    System.out.println(new Date() + " " + string);
+	    System.out.println(new Date() + " " + CsvRulesManager.class.getSimpleName() + " " + string);
 	}
     }
 }

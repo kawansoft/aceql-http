@@ -46,17 +46,20 @@ import org.kawanfw.sql.api.server.DatabaseConfigurator;
 import org.kawanfw.sql.api.server.SqlEvent;
 import org.kawanfw.sql.api.server.SqlEventWrapper;
 import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
+import org.kawanfw.sql.api.server.listener.UpdateListener;
+import org.kawanfw.sql.api.util.firewall.SqlFirewallTriggerWrapper;
 import org.kawanfw.sql.metadata.util.GsonWsUtil;
 import org.kawanfw.sql.servlet.HttpParameter;
 import org.kawanfw.sql.servlet.ServerSqlManager;
 import org.kawanfw.sql.servlet.connection.RollbackUtil;
+import org.kawanfw.sql.servlet.injection.classes.InjectedClassesStore;
 import org.kawanfw.sql.servlet.sql.LoggerUtil;
 import org.kawanfw.sql.servlet.sql.ServerStatementUtil;
 import org.kawanfw.sql.servlet.sql.StatementFailure;
+import org.kawanfw.sql.servlet.sql.UpdateListenersCaller;
 import org.kawanfw.sql.servlet.sql.dto.UpdateCountsArrayDto;
 import org.kawanfw.sql.servlet.sql.json_return.JsonErrorReturn;
 import org.kawanfw.sql.servlet.sql.json_return.JsonSecurityMessage;
-import org.kawanfw.sql.servlet.sql.parameters.ServerPreparedStatementParameters;
 import org.kawanfw.sql.util.FrameworkDebug;
 
 /**
@@ -84,6 +87,8 @@ public class ServerStatementBatch {
 
     private DatabaseConfigurator databaseConfigurator;
 
+    private List<UpdateListener> updateListeners;
+
     /**
      * Default Constructor
      *
@@ -96,13 +101,17 @@ public class ServerStatementBatch {
      */
 
     public ServerStatementBatch(HttpServletRequest request, HttpServletResponse response,
-	    List<SqlFirewallManager> sqlFirewallManagers, Connection connection, DatabaseConfigurator databaseConfigurator) throws SQLException {
+	    List<SqlFirewallManager> sqlFirewallManagers, Connection connection,
+	    DatabaseConfigurator databaseConfigurator) throws SQLException {
 	this.request = request;
 	this.response = response;
 	this.sqlFirewallManagers = sqlFirewallManagers;
 	this.connection = connection;
 	this.databaseConfigurator = databaseConfigurator;
 	doPrettyPrinting = true; // Always pretty printing
+
+	String database = request.getParameter(HttpParameter.DATABASE);
+	updateListeners = InjectedClassesStore.get().getUpdateListenerMap().get(database);
     }
 
     /**
@@ -129,9 +138,9 @@ public class ServerStatementBatch {
 	    JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_BAD_REQUEST,
 		    JsonErrorReturn.ERROR_JDBC_ERROR, e.getMessage());
 	    ServerSqlManager.writeLine(out, errorReturn.build());
-	} catch (Exception e) {   
+	} catch (Exception e) {
 	    RollbackUtil.rollback(connection);
-	    
+
 	    JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
 		    JsonErrorReturn.ERROR_ACEQL_FAILURE, e.getMessage(), ExceptionUtils.getStackTrace(e));
 	    ServerSqlManager.writeLine(out, errorReturn.build());
@@ -169,7 +178,7 @@ public class ServerStatementBatch {
 
 	Statement statement = null;
 	File blobFile = null;
-	
+
 	try {
 
 	    if (blobId == null || blobId.isEmpty()) {
@@ -178,17 +187,16 @@ public class ServerStatementBatch {
 
 	    File blobsDir = databaseConfigurator.getBlobsDirectory(username);
 	    blobFile = new File(blobsDir.toString() + File.separator + blobId);
-	    
-	    if (! blobFile.exists()) {
+
+	    if (!blobFile.exists()) {
 		throw new FileNotFoundException("Cannot find file of batch SQL statement for Id: " + blobId);
 	    }
-	    
+
 	    // Throws a SQL exception if the order is not authorized:
 	    String ipAddress = request.getRemoteAddr();
 
 	    statement = connection.createStatement();
 	    debug("before statement.addBatch() loop");
-	    
 	    
 	    try (BufferedReader bufferedReader = new BufferedReader(new FileReader(blobFile));) {
 		String line = null;
@@ -196,20 +204,23 @@ public class ServerStatementBatch {
 		    String sql = line.trim();
 		    debug("before new SqlSecurityChecker()");
 		    checkFirewallGeneral(username, database, sql, ipAddress);
-		    checkFirewallExecute(username, database, sql, ipAddress);
+		    checkFirewallForAllowExecute(username, database, sql, ipAddress);
 		    statement.addBatch(sql);
 		}
 	    }
-	    
+
 	    debug("before statement.executeBatch()");
-	    int [] rc = statement.executeBatch();
+	    int[] rc = statement.executeBatch();
+
+	    callUpdateListenersInThread(blobFile, username, database, ipAddress);
+
 	    UpdateCountsArrayDto updateCountsArrayDto = new UpdateCountsArrayDto(rc);
 	    String jsonString = GsonWsUtil.getJSonString(updateCountsArrayDto);
 	    ServerSqlManager.writeLine(out, jsonString);
-	    
+
 	} catch (SQLException e) {
 	    RollbackUtil.rollback(connection);
-	    
+
 	    String message = StatementFailure.statementFailureBuild(blobId, e.toString(), doPrettyPrinting);
 
 	    LoggerUtil.log(request, e, message);
@@ -221,52 +232,44 @@ public class ServerStatementBatch {
 	    if (statement != null) {
 		statement.close();
 	    }
-	    
+
 	    if (blobFile != null) {
 		blobFile.delete();
 	    }
 	}
     }
 
-    /**
-     * Checks the firewall rules for an ExecuteUpdate for a prepared statement.
-     * @param username
-     * @param database
-     * @param sqlOrder
-     * @param serverPreparedStatementParameters
-     * @param ipAddress
-     * @throws IOException
-     * @throws SQLException
-     * @throws SecurityException
-     */
-    @SuppressWarnings("unused")
-    private void checkFirewallForExecuteUpdate(String username, String database, String sqlOrder,
-	    ServerPreparedStatementParameters serverPreparedStatementParameters, String ipAddress)
-	    throws IOException, SQLException, SecurityException {
-	boolean isAllowedAfterAnalysis;
-	for (SqlFirewallManager sqlFirewallManager : sqlFirewallManagers) {
-	    isAllowedAfterAnalysis = sqlFirewallManager.allowExecuteUpdate(username, database, connection);
-	    if (!isAllowedAfterAnalysis) {
-		
-		SqlEvent sqlEvent = SqlEventWrapper.sqlEventBuild(username, database, ipAddress, sqlOrder,
-			ServerStatementUtil.isPreparedStatement(request),
-			serverPreparedStatementParameters.getParameterValues(), false);
-		    
-		sqlFirewallManager.runIfStatementRefused(sqlEvent, connection);
+    private void callUpdateListenersInThread(File blobFile, String username, String database, String ipAddress) {
 
-		String message = JsonSecurityMessage.prepStatementNotAllowedBuild(sqlOrder,
-			"Prepared Statement not allowed for executeUpdate",
-			serverPreparedStatementParameters.getParameterTypes(),
-			serverPreparedStatementParameters.getParameterValues(), doPrettyPrinting);
+	Thread t = new Thread() {
+	    @Override
+	    public void run() {
+		try {
 
-		throw new SecurityException(message);
+		    List<Object> parameterValues = new ArrayList<>();
+
+		    try (BufferedReader bufferedReader = new BufferedReader(new FileReader(blobFile));) {
+			String line = null;
+			while ((line = bufferedReader.readLine()) != null) {
+			    String sqlOrder = line.trim();
+
+			    UpdateListenersCaller updateListenersCaller = new UpdateListenersCaller(updateListeners,
+				    connection);
+			    updateListenersCaller.callUpdateListeners(username, database, sqlOrder, parameterValues,
+				    ipAddress, false);
+			}
+		    }
+		} catch (Exception e) {
+		    e.printStackTrace();
+		}
 	    }
-	}
+	};
+	t.start();
     }
-
 
     /**
      * Checks the firewall rules for an ExecuteUpdate for a statement.
+     * 
      * @param username
      * @param database
      * @param sqlOrder
@@ -275,30 +278,31 @@ public class ServerStatementBatch {
      * @throws SQLException
      * @throws SecurityException
      */
-    private void checkFirewallExecute(String username, String database, String sqlOrder, String ipAddress)
+    private void checkFirewallForAllowExecute(String username, String database, String sqlOrder, String ipAddress)
 	    throws IOException, SQLException, SecurityException {
 	boolean isAllowed;
 	for (SqlFirewallManager sqlFirewallManager : sqlFirewallManagers) {
-	    isAllowed = sqlFirewallManager.allowExecuteUpdate(username, database, connection);
+
+	    isAllowed = sqlFirewallManager.allowExecute(username, database, connection);
 	    if (!isAllowed) {
 		List<Object> parameterValues = new ArrayList<>();
-		
+
 		SqlEvent sqlEvent = SqlEventWrapper.sqlEventBuild(username, database, ipAddress, sqlOrder,
 			ServerStatementUtil.isPreparedStatement(request), parameterValues, false);
-		    
-		sqlFirewallManager.runIfStatementRefused(sqlEvent, connection);
+
+		SqlFirewallTriggerWrapper.runIfStatementRefused(sqlEvent, sqlFirewallManager, connection);
 
 		String message = JsonSecurityMessage.statementNotAllowedBuild(sqlOrder,
-			"Statement not allowed for for executeUpdate", doPrettyPrinting);
+			"Statement not allowed for for execute", doPrettyPrinting);
 		throw new SecurityException(message);
 
 	    }
 	}
     }
 
-
     /**
      * Check general firewall rules
+     * 
      * @param username
      * @param database
      * @param sqlOrder
@@ -307,7 +311,8 @@ public class ServerStatementBatch {
      * @throws SQLException
      * @throws SecurityException
      */
-    private void checkFirewallGeneral(String username, String database, String sqlOrder, String ipAddress) throws IOException, SQLException, SecurityException {
+    private void checkFirewallGeneral(String username, String database, String sqlOrder, String ipAddress)
+	    throws IOException, SQLException, SecurityException {
 	SqlFirewallManager sqlFirewallOnDeny = null;
 	boolean isAllowed = true;
 	for (SqlFirewallManager sqlFirewallManager : sqlFirewallManagers) {
@@ -318,11 +323,10 @@ public class ServerStatementBatch {
 	    }
 
 	    SqlEvent sqlEvent = SqlEventWrapper.sqlEventBuild(username, database, ipAddress, sqlOrder,
-		    ServerStatementUtil.isPreparedStatement(request),
-		    new Vector<Object>(), false);
-	    
+		    ServerStatementUtil.isPreparedStatement(request), new Vector<Object>(), false);
+
 	    isAllowed = sqlFirewallManager.allowSqlRunAfterAnalysis(sqlEvent, connection);
-	    
+
 	    if (!isAllowed) {
 		break;
 	    }
@@ -330,12 +334,11 @@ public class ServerStatementBatch {
 
 	if (!isAllowed) {
 	    List<Object> parameterValues = new ArrayList<>();
-	    
+
 	    SqlEvent sqlEvent = SqlEventWrapper.sqlEventBuild(username, database, ipAddress, sqlOrder,
-		    ServerStatementUtil.isPreparedStatement(request),
-		    parameterValues, false);
-	    
-	    sqlFirewallOnDeny.runIfStatementRefused(sqlEvent, connection);
+		    ServerStatementUtil.isPreparedStatement(request), parameterValues, false);
+
+	    SqlFirewallTriggerWrapper.runIfStatementRefused(sqlEvent, sqlFirewallOnDeny, connection);
 
 	    String message = JsonSecurityMessage.statementNotAllowedBuild(sqlOrder, "Statement not allowed",
 		    doPrettyPrinting);
@@ -345,6 +348,7 @@ public class ServerStatementBatch {
 
     /**
      * Debug function
+     * 
      * @param s
      */
 

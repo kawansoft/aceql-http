@@ -27,10 +27,7 @@ package org.kawanfw.sql.api.server.firewall;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-import org.kawanfw.sql.api.server.DefaultDatabaseConfigurator;
 import org.kawanfw.sql.api.server.SqlEvent;
 
 /**
@@ -76,16 +73,6 @@ public class DefaultSqlFirewallManager implements SqlFirewallManager {
     }
 
     /**
-     * @return <code><b>true</b></code>. (Client programs will be allowed to call a
-     *         database update statement.)
-     */
-    @Override
-    public boolean allowExecuteUpdate(String username, String database, Connection connection)
-	    throws IOException, SQLException {
-	return true;
-    }
-
-    /**
      * @return <code><b>true</b></code>. (Client programs will be allowed to call
      *         the Metadata Query API).
      */
@@ -95,26 +82,4 @@ public class DefaultSqlFirewallManager implements SqlFirewallManager {
 	return true;
     }
 
-    /**
-     * Logs the info using {@code DefaultDatabaseConfigurator#getLogger()}
-     * {@code Logger}.
-     */
-    @Override
-    public void runIfStatementRefused(SqlEvent sqlEvent, Connection connection) throws IOException, SQLException {
-	String logInfo = null;
-
-	if (sqlEvent.isMetadataQuery()) {
-	    logInfo = "Client username " + sqlEvent.getUsername() + " (IP: " + sqlEvent.getIpAddress()
-		    + ") has been denied by DefaultSqlFirewallManager SqlFirewallManager executing a Metadata Query API.";
-	} else {
-	    logInfo = "Client username " + sqlEvent.getUsername() + " (IP: " + sqlEvent.getIpAddress()
-		    + ") has been denied by DefaultSqlFirewallManager SqlFirewallManager executing sql statement: "
-		    + sqlEvent.getSql() + " with parameters: " + sqlEvent.getParameterStringValues();
-	}
-
-	DefaultDatabaseConfigurator defaultDatabaseConfigurator = new DefaultDatabaseConfigurator();
-	Logger logger = defaultDatabaseConfigurator.getLogger();
-	logger.log(Level.WARNING, logInfo);
-
-    }
 }

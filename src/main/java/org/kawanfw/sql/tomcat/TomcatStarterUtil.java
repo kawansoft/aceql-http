@@ -41,9 +41,12 @@ import org.apache.commons.lang3.SystemUtils;
 import org.apache.tomcat.jdbc.pool.DataSource;
 import org.apache.tomcat.jdbc.pool.PoolProperties;
 import org.kawanfw.sql.api.server.DatabaseConfigurationException;
+import org.kawanfw.sql.api.util.SqlUtil;
 import org.kawanfw.sql.servlet.connection.RollbackUtil;
 import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesUtil;
 import org.kawanfw.sql.util.SqlTag;
+import org.kawanfw.sql.util.Tag;
+import org.kawanfw.sql.version.EditionUtil;
 
 /**
  * @author Nicolas de Pomereu
@@ -77,27 +80,45 @@ public class TomcatStarterUtil {
      */
     public static void createAndStoreDataSources(Properties properties)
 	    throws DatabaseConfigurationException, IOException, SQLException {
-
+	
 	if (properties == null) {
 	    throw new IllegalArgumentException("properties is null");
 	}
 
 	Set<String> databases = getDatabaseNames(properties);
 
+	testDatabasesLimit(databases);
+	
 	for (String database : databases) {
 	    createAndStoreDataSource(properties, database.trim());
 	}
 	
     }
+    
+    /**
+     * Do not accept more than 2 databases in Community editions
+     * @param databases
+     * @throws UnsupportedOperationException
+     */
+    public static void testDatabasesLimit(Set<String> databases) throws UnsupportedOperationException {
+	if (databases.size() > 2 & EditionUtil.isCommunityEdition()) {
+	    throw new UnsupportedOperationException(
+		    Tag.PRODUCT + " " + "Loading more than 2 SQL databases " + Tag.REQUIRES_ACEQL_ENTERPRISE_EDITION);
+	}
+    }
 
-    public static void addServlets(Properties properties, Context rootCtx) {
+
+    public static void addServlets(Properties properties, Context rootCtx) throws IOException, SQLException {
 
 	if (properties == null) {
 	    throw new IllegalArgumentException("properties is null");
 	}
 
-	Set<String> servlets = getServlets(properties);
-
+	//Set<String> servlets = getServlets(properties);
+	
+	ServletNamesGetter servletNamesGetter = ServletsNamesGetterCreator.createInstance();
+	Set<String> servlets= servletNamesGetter.getServlets(properties);
+	
 	if (servlets.isEmpty()) {
 	    return;
 	}
@@ -184,6 +205,8 @@ public class TomcatStarterUtil {
 	for (int i = 0; i < databaseArray.length; i++) {
 	    databaseSet.add(databaseArray[i].trim());
 	}
+
+	testDatabasesLimit(databaseSet);
 	return databaseSet;
     }
 
@@ -201,12 +224,14 @@ public class TomcatStarterUtil {
 	    throws DatabaseConfigurationException, IOException, SQLException {
 	Objects.requireNonNull(properties, "properties cannot be null!");
 	Objects.requireNonNull(database, "database cannot be null!");
-
+	
 	String driverClassName = properties.getProperty(database + "." + "driverClassName");
 	String url = properties.getProperty(database + "." + "url");
 	String username = properties.getProperty(database + "." + "username");
 	String password = properties.getProperty(database + "." + "password");
-
+	
+	//System.err.println("username / password: " + username + " / " + password);
+	
 	if (driverClassName == null || driverClassName.isEmpty()) {
 	    System.err.println(SqlTag.SQL_PRODUCT_START + " WARNING: driverClassName"
 		    + " property not found for database " + database + "! ");
@@ -236,6 +261,11 @@ public class TomcatStarterUtil {
 	    
 	    if( ConfPropertiesUtil.isStatelessMode() && ! connection.getAutoCommit()) {
 		throw new DatabaseConfigurationException("Server is in Stateless Mode: Connection pool must be in default auto commit. Please fix configuration.");
+	    }
+	    
+	    if (new SqlUtil(connection).isDB2() && EditionUtil.isCommunityEdition()) {
+		throw new UnsupportedOperationException(Tag.PRODUCT + " " + "DB2 is not supported and "
+			+ Tag.REQUIRES_ACEQL_ENTERPRISE_EDITION);
 	    }
 
 	    System.out.println(SqlTag.SQL_PRODUCT_START + "  -> Connection OK!");
@@ -382,30 +412,15 @@ public class TomcatStarterUtil {
      * @return the Java info
      */
     public static String getJavaInfo() {
-	return SqlTag.SQL_PRODUCT_START + " Java Info: " + SystemUtils.JAVA_VENDOR + " / "
-		+ SystemUtils.JAVA_RUNTIME_NAME + " / " + SystemUtils.JAVA_VERSION;
-    }
-
-    public static String getAceQLManagerSevletName(Properties properties) {
-	String aceQLManagerServletCallName = properties.getProperty("aceQLManagerServletCallName");
-
-	// Support old name:
-	if (aceQLManagerServletCallName == null || aceQLManagerServletCallName.isEmpty()) {
-	    aceQLManagerServletCallName = properties.getProperty("serverSqlManagerServletName");
-	}
-
-	if (aceQLManagerServletCallName == null || aceQLManagerServletCallName.isEmpty()) {
-	    throw new DatabaseConfigurationException(
-		    "aceQLManagerServletCallName property is null. " + SqlTag.PLEASE_CORRECT);
-	}
-
-	if (aceQLManagerServletCallName.contains("/")) {
-	    throw new DatabaseConfigurationException(
-		    "aceQLManagerServletCallName property can not contain \"/\" separator. " + SqlTag.PLEASE_CORRECT);
-	}
-
-	aceQLManagerServletCallName = aceQLManagerServletCallName.trim();
-	return aceQLManagerServletCallName;
+	String vendor = SystemUtils.JAVA_VENDOR;
+	
+	return (vendor == null || vendor.trim().isEmpty() || vendor.trim().equals("N/A"))
+		? SqlTag.SQL_PRODUCT_START + " Java Info: " + CR_LF + SqlTag.SQL_PRODUCT_START + "  -> "
+			+ SystemUtils.JAVA_RUNTIME_NAME + " / "
+			+ SystemUtils.JAVA_VERSION
+		: SqlTag.SQL_PRODUCT_START + " Java Info: " + CR_LF + SqlTag.SQL_PRODUCT_START + "  -> "
+			+ vendor + " / " + SystemUtils.JAVA_RUNTIME_NAME + " / "
+			+ SystemUtils.JAVA_VERSION;    
     }
 
 }

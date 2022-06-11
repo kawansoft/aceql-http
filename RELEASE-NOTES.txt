@@ -21,8 +21,40 @@ AceQL HTTP is provided with three client SDKs:
 Security has been taken into account from the design: it is allowed to specify 
 and code strong security rules in order to protect the databases. 
 
-AceQL HTTP is licensed through the GNU Lesser General Public License 
+The Community Edition is licensed through the GNU Lesser General Public License 
 (LGPL v2.1).
+The Enterprise Edition is licensed through a commercial license.
+
+
+AceQL HTTP Version 11 - 10-Jun-2022
+-----------------------------------
+
+What's New: 
+- Software has been divided into a Community (free & open source) and
+  an Enterprise version. See www.aceql.com/pricing and user documentation 
+  for more info.
+- StatementNormalizer creation. See Javadoc.
+- TCL calls are not any more firewalled because 
+  of unnecessary implementation complexity and because it's globally useless.
+- The DenyTclManager SqlFirewallManager has thus been suppressed because
+  TCL calls are not any more firewalled.
+- Add DenyOnBlacklistManager & AllowOnlyOnWhitelistManager.
+- DenyExecuteUpdateManager has been renamed to less ambiguous name
+  DenyDatabaseWriteManager.
+- runIfStatementRefused() has been moved from SqlFirewallManager interface 
+  to new SqlFirewallTrigger interface.
+- New SqlFirewallTrigger.runIfStatementRefused() implementations: 
+  BanUserSqlFirewallTrigger, BeeperSqlFirewallTrigger, 
+  JdbcLoggerSqlFirewallTrigger, JsonLoggerSqlFirewallTrigger.
+- Add UpdateListener calls to batch methods.
+- DefaultPropertiesPasswordManager: the properties_password_manager.properties
+  file must now be located in the same directory of the aceql-server.properties
+  file.
+- Tomcat base libraries have been upgraded to 9.0.64.
+- PostgreSQL base libraries have been upgraded to 42.3.3 for 
+  security reasons.
+- Gson base libraries have been upgraded to 2.8.9 for 
+  security reasons.
 
 
 AceQL HTTP Version 10.2 - 07-Feb-2022
@@ -31,7 +63,7 @@ AceQL HTTP Version 10.2 - 07-Feb-2022
 What's New: 
 - New LdapUserAuthenticator properties are defined 
   in aceql-server.properties: ldapUserAuthenticator.securityAuthentication
-  & ldapUserAuthenticator.securityProtocol
+  & ldapUserAuthenticator.securityProtocol.
 - Tomcat base libraries have been upgraded to 9.0.58.
 - Postgresql base libraries have been upgraded to 42.3.2. 
 

@@ -41,11 +41,12 @@ public class InjectedClassesStore {
     }
 
     public static InjectedClasses get() {
-	Objects.requireNonNull(injectedClasses, "injectedClasses is null and was never set!");
+	//Objects.requireNonNull(injectedClasses, "injectedClasses is null and was never set!");
 	return injectedClasses;
     }
 
     public static void set(InjectedClasses injectedClasses) {
+	Objects.requireNonNull(injectedClasses, "injectedClasses cannot be null!");
 	InjectedClassesStore.injectedClasses = injectedClasses;
     }
 

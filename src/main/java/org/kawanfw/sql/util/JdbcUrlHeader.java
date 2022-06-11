@@ -25,7 +25,7 @@
 package org.kawanfw.sql.util;
 
 import org.apache.commons.lang3.StringUtils;
-import org.kawanfw.sql.version.Version;
+import org.kawanfw.sql.version.VersionWrapper;
 
 /**
  * @author Nicolas de Pomereu
@@ -37,7 +37,7 @@ public class JdbcUrlHeader {
 
     /** The header of AceQL JDBC URL */
     public static final String JDBC_URL_HEADER = "jdbc:"
-	    + Version.PRODUCT.NAME.toLowerCase() + ":";
+	    + VersionWrapper.getName().toLowerCase() + ":";
 
     /**
      * protected constructor

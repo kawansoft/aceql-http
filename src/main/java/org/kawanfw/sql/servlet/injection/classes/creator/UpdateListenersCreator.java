@@ -44,7 +44,8 @@ public class UpdateListenersCreator {
 
     private static final boolean TRACE_ON_START = false;
 
-    private static String[] PREDEFINED_CLASS_NAMES = { JsonLoggerUpdateListener.class.getSimpleName() };
+    private static String[] PREDEFINED_CLASS_NAMES = { DefaultUpdateListener.class.getSimpleName(),
+	    JsonLoggerUpdateListener.class.getSimpleName() };
 
     private List<String> updateListenerClassNames = new ArrayList<>();
     private List<UpdateListener> updateListenerManagers = new ArrayList<>();
@@ -72,8 +73,8 @@ public class UpdateListenersCreator {
 			parameterValues.add("value2");
 
 			// We call code just to verify it's OK:
-			SqlEvent sqlEvent = SqlEventWrapper.sqlEventBuild("username",
-				database, "127.0.0.1", "select * from table", false, parameterValues, false);
+			SqlEvent sqlEvent = SqlEventWrapper.sqlEventBuild("username", database, "127.0.0.1",
+				"select * from table", false, parameterValues, false);
 			updateListenerManager.updateActionPerformed(sqlEvent, connection);
 		    }
 		}

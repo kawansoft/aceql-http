@@ -34,24 +34,29 @@ import org.kawanfw.sql.api.server.StatementAnalyzer;
 
 /**
  * Interface that allows to define firewall rules for AceQL HTTP SQL calls. <br>
- * Concrete implementations are defined in aceql-server.properties. <br>
+ * <br>
+ * Concrete implementations are defined in the {@code aceql-server.properties}
+ * file. <br>
  * <br>
  * A concrete implementation should be developed on the server side in order to:
  * <ul>
+ * <li>Define a specific piece of Java code to analyze the source code of the
+ * SQL statement before allowing or not it's execution.</li>
  * <li>Define if a client user has the right to call a
  * <code>Statement.execute</code> (i.e. call a raw execute).</li>
- * <li>Define if a client user has the right to call a
- * <code>Statement.executeUpdate</code> (i.e. call a statement that updates the
- * database).</li>
  * <li>Define if a client user has the right to call a raw
  * <code>Statement</code> that is not a <code>PreparedStatement</code>.</li>
  * <li>Define if a client user has the right to call a the AceQL Metadata
  * API.</li>
- * <li>Define a specific piece of Java code to analyze the source code of the
- * SQL statement before allowing or not it's execution.</li>
  * </ul>
  * <p>
- * Multiple {@code SqlFirewallManager} may be defined and chained.
+ * Multiple {@code SqlFirewallManager} may be defined and chained. <br>
+ * When {@code SqlFirewallManager} classes are chained, an {@code AND} condition
+ * is applied to all the SqlFirewallManager execution conditions in order to
+ * compute final allow. <br>
+ * For example, the {@code allowExecuteUpdate()} of each chained
+ * {@code SqlFirewallManager} instance must return true in order to allow
+ * updates of the database.
  * <p>
  * Note that the framework comes with a default <code>SqlFirewallManager</code>
  * implementation that is *not* secured and should be extended:
@@ -64,20 +69,30 @@ import org.kawanfw.sql.api.server.StatementAnalyzer;
  * file.</li>
  * <li>{@link CsvRulesManagerNoReload}: same as {@code CsvRulesManager}, but
  * dynamic reload of rules is prohibited if the CSV file is updated.</li>
+ * <li>{@link DenyDatabaseWriteManager}: manager that denies any update of the
+ * database.</li>
  * <li>{@link DenyDclManager}: manager that denies any DCL (Data Control
  * Language) call.</li>
  * <li>{@link DenyDdlManager}: manager that denies any DDL (Data Definition
  * Language) call.</li>
- * <li>{@link DenyTclManager}: manager that denies any TCL (Transaction Control
- * Language) call.</li>
- * <li>{@link DenyExecuteUpdateManager}: manager that denies any update of the
- * database.</li>
+ * <li>{@link DenyExceptOnWhitelistManager}: manager that allows only statements
+ * that are listed in a whitelist text file.</li>
  * <li>{@link DenyMetadataQueryManager}: manager that denies the use of the
  * AceQL Metadata Query API.</li>
+ * <li>{@link DenyOnBlacklistManager}: manager that denies statements that are
+ * listed in a blacklist text file.</li>
+ * <li>{@link DenySqlInjectionManager}: manager that allows detecting
+ * SQL injection attacks, using
+ * <a href="https://www.cloudmersive.com">Cloudmersive</a> third-party API.</li>
+ * <li>{@link DenySqlInjectionManagerAsync}: version of
+ * {@code DenySqlInjectionManager} that detects SQL injections asynchronously
+ * for faster response time.</li>
  * <li>{@link DenyStatementClassManager}: manager that denies any call of the
  * raw Statement Java class. (Calling Statements without parameters is
  * forbidden).</li>
  * </ul>
+ * <p>
+ * TCL (Transaction Control Language) calls are always authorized.
  * <p>
  * Note that the helper class {@link StatementAnalyzer} allows to do some simple
  * tests on the SQL statement string representation.
@@ -87,38 +102,6 @@ import org.kawanfw.sql.api.server.StatementAnalyzer;
  */
 
 public interface SqlFirewallManager {
-
-    /**
-     * Says if the username is allowed call the Metadata Query API for the passed
-     * database.
-     *
-     * @param username   the client username to check the rule for
-     * @param database   the database name as defined in the JDBC URL field
-     * @param connection The current SQL/JDBC <code>Connection</code>
-     * @return <code>true</code> if the user has the right to call the Metadata Query
-     *         API, else <code>false</code>
-     * @throws IOException  if an IOException occurs
-     * @throws SQLException if a SQLException occurs
-     */
-    public boolean allowMetadataQuery(String username, String database, Connection connection)
-	    throws IOException, SQLException;
-
-    /**
-     * Allows to define if the passed username is allowed to create and use a
-     * {@link Statement} instance that is not a <code>PreparedStatement</code>.
-     *
-     * @param username   the client username to check the rule for
-     * @param database   the database name as defined in the JDBC URL field
-     * @param connection The current SQL/JDBC <code>Connection</code>
-     * @return <code>true</code> if the user has the right to call a raw
-     *         <code>execute</code>
-     *         <p>
-     * @throws IOException  if an IOException occurs
-     * @throws SQLException if a SQLException occurs
-     *
-     */
-    public boolean allowStatementClass(String username, String database, Connection connection)
-	    throws IOException, SQLException;
 
     /**
      * Allows to analyze the SQL call event asked by the client side and thus allow
@@ -139,6 +122,23 @@ public interface SqlFirewallManager {
     public boolean allowSqlRunAfterAnalysis(SqlEvent sqlEvent, Connection connection) throws IOException, SQLException;
 
     /**
+     * Allows to define if the passed username is allowed to create and use a
+     * {@link Statement} instance that is not a <code>PreparedStatement</code>.
+     *
+     * @param username   the client username to check the rule for
+     * @param database   the database name as defined in the JDBC URL field
+     * @param connection The current SQL/JDBC <code>Connection</code>
+     * @return <code>true</code> if the user has the right to call a raw
+     *         <code>execute</code>
+     *         <p>
+     * @throws IOException  if an IOException occurs
+     * @throws SQLException if a SQLException occurs
+     *
+     */
+    public boolean allowStatementClass(String username, String database, Connection connection)
+	    throws IOException, SQLException;
+
+    /**
      * Allows to define if the passed username is allowed to call a raw JDBC
      * {@code Statement.execute}.
      *
@@ -155,45 +155,17 @@ public interface SqlFirewallManager {
     boolean allowExecute(String username, String database, Connection connection) throws IOException, SQLException;
 
     /**
-     * Allows to define if the passed username is allowed to call a statement that
-     * updates the database.
+     * Says if the username is allowed call the Metadata Query API for the passed
+     * database.
      *
      * @param username   the client username to check the rule for
      * @param database   the database name as defined in the JDBC URL field
      * @param connection The current SQL/JDBC <code>Connection</code>
-     * @return <code>true</code> if the user has the right call a database update
-     *         statement
-     *
+     * @return <code>true</code> if the user has the right to call the Metadata
+     *         Query API, else <code>false</code>
      * @throws IOException  if an IOException occurs
      * @throws SQLException if a SQLException occurs
-     *
      */
-    public boolean allowExecuteUpdate(String username, String database, Connection connection)
+    public boolean allowMetadataQuery(String username, String database, Connection connection)
 	    throws IOException, SQLException;
-
-    /**
-     * Allows to implement specific a Java rule immediately after a SQL statement
-     * described by a SqlEvent has been refused because one of the
-     * <code>SqlFirewallManager.allowXxx</code> method returned false. <br>
-     * <br>
-     * Examples:
-     * <ul>
-     * <li>Delete the user from the username SQL table so that he never comes
-     * back.</li>
-     * <li>Log the IP address.</li>
-     * <li>Log the info.</li>
-     * <li>Send an alert message/email to a Security Officer.</li>
-     * <li>Etc.</li>
-     * </ul>
-     * <p>
-     * 
-     * @param sqlEvent   the SQL event asked by the client side. Contains all info
-     *                   about the SQL call (client username, database name, IP
-     *                   Address of the client, and SQL statement details).
-     * @param connection The current SQL/JDBC <code>Connection</code>
-     * @throws IOException  if an IOException occurs
-     * @throws SQLException if a SQLException occurs
-     */
-    public void runIfStatementRefused(SqlEvent sqlEvent, Connection connection) throws IOException, SQLException;
-
 }

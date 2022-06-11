@@ -50,8 +50,8 @@ import org.kawanfw.sql.api.server.DatabaseConfigurator;
 import org.kawanfw.sql.api.server.SqlEvent;
 import org.kawanfw.sql.api.server.SqlEventWrapper;
 import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
-import org.kawanfw.sql.api.server.listener.DefaultUpdateListener;
 import org.kawanfw.sql.api.server.listener.UpdateListener;
+import org.kawanfw.sql.api.util.firewall.SqlFirewallTriggerWrapper;
 import org.kawanfw.sql.servlet.HttpParameter;
 import org.kawanfw.sql.servlet.ServerSqlManager;
 import org.kawanfw.sql.servlet.connection.RollbackUtil;
@@ -251,7 +251,7 @@ public class ServerStatement {
 
 	    debug("before executeQuery() / executeUpdate()");
 	    if (isExecuteUpdate()) {
-		doExecuteUpdate(out, username, database, sqlOrder, preparedStatement, serverPreparedStatementParameters,
+		doExecuteUpdatePreparedStatement(out, username, database, sqlOrder, preparedStatement, serverPreparedStatementParameters,
 			ipAddress);
 
 	    } else {
@@ -296,11 +296,11 @@ public class ServerStatement {
      * @throws SQLException
      * @throws SecurityException
      */
-    private void doExecuteUpdate(OutputStream out, String username, String database, String sqlOrder,
+    private void doExecuteUpdatePreparedStatement(OutputStream out, String username, String database, String sqlOrder,
 	    PreparedStatement preparedStatement, ServerPreparedStatementParameters serverPreparedStatementParameters,
 	    String ipAddress) throws IOException, SQLException, SecurityException {
 
-	checkFirewallForExecuteUpdate(username, database, sqlOrder, serverPreparedStatementParameters, ipAddress);
+	//checkFirewallForExecuteUpdate(username, database, sqlOrder, serverPreparedStatementParameters, ipAddress);
 
 	if (DEBUG) {
 	    debug("BEGIN doExecuteUpdate:");
@@ -317,46 +317,11 @@ public class ServerStatement {
 	gen.writeStartObject().write("status", "OK").write("row_count", rc).writeEnd();
 	gen.close();
 
-	callUpdateListeners(username, database, sqlOrder, serverPreparedStatementParameters.getParameterValues(),
-		ipAddress, false);
+	UpdateListenersCaller updateListenersCaller = new UpdateListenersCaller(updateListeners, connection);
+	updateListenersCaller.callUpdateListeners(username, database, sqlOrder, serverPreparedStatementParameters.getParameterValues(),
+		ipAddress, true);
 
 	ServerSqlManager.write(out, sw.toString());
-    }
-
-    /**
-     * Checks the firewall rules for an ExecuteUpdate for a prepared statement.
-     * 
-     * @param username
-     * @param database
-     * @param sqlOrder
-     * @param serverPreparedStatementParameters
-     * @param ipAddress
-     * @throws IOException
-     * @throws SQLException
-     * @throws SecurityException
-     */
-    private void checkFirewallForExecuteUpdate(String username, String database, String sqlOrder,
-	    ServerPreparedStatementParameters serverPreparedStatementParameters, String ipAddress)
-	    throws IOException, SQLException, SecurityException {
-	boolean isAllowedAfterAnalysis;
-	for (SqlFirewallManager sqlFirewallManager : sqlFirewallManagers) {
-	    isAllowedAfterAnalysis = sqlFirewallManager.allowExecuteUpdate(username, database, connection);
-	    if (!isAllowedAfterAnalysis) {
-		
-		SqlEvent sqlEvent = SqlEventWrapper.sqlEventBuild(username, database, ipAddress, sqlOrder,
-			ServerStatementUtil.isPreparedStatement(request),
-			serverPreparedStatementParameters.getParameterValues(), false);
-		    
-		sqlFirewallManager.runIfStatementRefused(sqlEvent, connection);
-
-		String message = JsonSecurityMessage.prepStatementNotAllowedBuild(sqlOrder,
-			"Prepared Statement not allowed for executeUpdate",
-			serverPreparedStatementParameters.getParameterTypes(),
-			serverPreparedStatementParameters.getParameterValues(), doPrettyPrinting);
-
-		throw new SecurityException(message);
-	    }
-	}
     }
 
     /**
@@ -385,7 +350,7 @@ public class ServerStatement {
 	    isAllowedAfterAnalysis = sqlFirewallManager.allowSqlRunAfterAnalysis(sqlEvent, connection);
 
 	    if (!isAllowedAfterAnalysis) {
-		sqlFirewallManager.runIfStatementRefused(sqlEvent, connection);
+		SqlFirewallTriggerWrapper.runIfStatementRefused(sqlEvent, sqlFirewallManager, connection);
 		break;
 	    }
 	}
@@ -564,7 +529,6 @@ public class ServerStatement {
      */
     private void doExecuteUpdate(OutputStream out, String username, String database, String sqlOrder,
 	    Statement statement, String ipAddress) throws IOException, SQLException, SecurityException {
-	checkFirewallExecuteUpdate(username, database, sqlOrder, ipAddress);
 
 	int rc = -1;
 
@@ -579,65 +543,13 @@ public class ServerStatement {
 	gen.close();
 
 	List<Object> parameterValues = new ArrayList<>();
-	callUpdateListeners(username, database, sqlOrder, parameterValues, ipAddress, false);
+	
+	UpdateListenersCaller updateListenersCaller = new UpdateListenersCaller(updateListeners, connection);
+	updateListenersCaller.callUpdateListeners(username, database, sqlOrder, parameterValues, ipAddress, false);
 
 	ServerSqlManager.write(out, sw.toString());
     }
 
-    /**
-     * Call the UpdateListener updateActionPerformed method
-     * 
-     * @param username
-     * @param database
-     * @param sqlOrder
-     * @param ipAddress
-     * @param isPreparedStatement               TODO
-     * @param serverPreparedStatementParameters
-     * @throws SQLException
-     * @throws IOException
-     */
-    public void callUpdateListeners(String username, String database, String sqlOrder, List<Object> parameterValues,
-	    String ipAddress, boolean isPreparedStatement) throws SQLException, IOException {
-	if (updateListeners.size() != 1 || !(updateListeners.get(0) instanceof DefaultUpdateListener)) {
-	    SqlEvent sqlEvent = SqlEventWrapper.sqlEventBuild(username, database, ipAddress, sqlOrder,
-		    isPreparedStatement, parameterValues, false);
-	    for (UpdateListener updateListener : updateListeners) {
-		updateListener.updateActionPerformed(sqlEvent, connection);
-	    }
-	}
-    }
-
-    /**
-     * Checks the firewall rules for an ExecuteUpdate for a statement.
-     * 
-     * @param username
-     * @param database
-     * @param sqlOrder
-     * @param ipAddress
-     * @throws IOException
-     * @throws SQLException
-     * @throws SecurityException
-     */
-    private void checkFirewallExecuteUpdate(String username, String database, String sqlOrder, String ipAddress)
-	    throws IOException, SQLException, SecurityException {
-	boolean isAllowed;
-	for (SqlFirewallManager sqlFirewallManager : sqlFirewallManagers) {
-	    isAllowed = sqlFirewallManager.allowExecuteUpdate(username, database, connection);
-	    if (!isAllowed) {
-		List<Object> parameterValues = new ArrayList<>();
-		
-		SqlEvent sqlEvent = SqlEventWrapper.sqlEventBuild(username, database, ipAddress, sqlOrder,
-			ServerStatementUtil.isPreparedStatement(request), parameterValues, false);
-		    
-		sqlFirewallManager.runIfStatementRefused(sqlEvent, connection);
-
-		String message = JsonSecurityMessage.statementNotAllowedBuild(sqlOrder,
-			"Statement not allowed for for executeUpdate", doPrettyPrinting);
-		throw new SecurityException(message);
-
-	    }
-	}
-    }
 
     /**
      * Check general firewall rules
@@ -677,8 +589,8 @@ public class ServerStatement {
 		    ServerStatementUtil.isPreparedStatement(request),
 		    parameterValues, false);
 
-	    sqlFirewallOnDeny.runIfStatementRefused(sqlEvent, connection);
-
+	    SqlFirewallTriggerWrapper.runIfStatementRefused(sqlEvent, sqlFirewallOnDeny, connection);
+	    
 	    String message = JsonSecurityMessage.statementNotAllowedBuild(sqlOrder, "Statement not allowed",
 		    doPrettyPrinting);
 	    throw new SecurityException(message);

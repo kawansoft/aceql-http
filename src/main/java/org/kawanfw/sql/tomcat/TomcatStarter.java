@@ -35,6 +35,7 @@ import java.net.URLConnection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -47,13 +48,11 @@ import org.kawanfw.sql.servlet.ServerSqlManager;
 import org.kawanfw.sql.servlet.injection.properties.ConfProperties;
 import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesManager;
 import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesStore;
-import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesUtil;
 import org.kawanfw.sql.servlet.injection.properties.PropertiesFileStore;
 import org.kawanfw.sql.servlet.injection.properties.PropertiesFileUtil;
 import org.kawanfw.sql.tomcat.util.PortSemaphoreFile;
 import org.kawanfw.sql.util.FrameworkDebug;
 import org.kawanfw.sql.util.SqlTag;
-import org.kawanfw.sql.version.Version;
 
 /**
  * Configures Tomcat from the properties file and start it.
@@ -136,17 +135,34 @@ public class TomcatStarter {
 
     private void startTomcat(Tomcat tomcat) throws IOException, ConnectException, LifecycleException,
 	    MalformedURLException, DatabaseConfigurationException, SQLException {
-	System.out.println(SqlTag.SQL_PRODUCT_START + " Starting " + Version.PRODUCT.NAME + " Web Server...");
-	System.out.println(SqlTag.SQL_PRODUCT_START + " " + Version.getServerVersion());
+
+	TomcatSqlModeStore.setTomcatEmbedded(true);
+	
+	// To be done at first, everything depends on ir.
+	PropertiesFileStore.set(propertiesFile);
+
+	TomcatStarterMessages.printBeginMessage();
+
 	System.out.println(TomcatStarterUtil.getJavaInfo());
-	System.out.println(SqlTag.SQL_PRODUCT_START + " " + "Using properties file: ");
+	System.out.println(SqlTag.SQL_PRODUCT_START + " " + "Using Properties File: ");
 	System.out.println(SqlTag.SQL_PRODUCT_START + "  -> " + propertiesFile);
 
-	PropertiesFileStore.set(propertiesFile);
 	Properties properties = PropertiesFileUtil.getProperties(propertiesFile);
 
-	String tomcatLoggingLevel = properties.getProperty("tomcatLoggingLevel");
+	debug("");
+	if (DEBUG) {
+	    for (Map.Entry<Object, Object> entry : properties.entrySet()) {
+		String key = (String) entry.getKey();
+		String value = (String) entry.getValue();
+		
+		if (key.contains("password")) {
+		    debug(" In startTomcat --> key / value: " + key + " / " + value);
+		}
+	    }
+	}
 	
+	String tomcatLoggingLevel = properties.getProperty("tomcatLoggingLevel");
+
 	String level = "SEVERE";
 	if (tomcatLoggingLevel != null && !tomcatLoggingLevel.isEmpty()) {
 	    level = tomcatLoggingLevel;
@@ -158,11 +174,12 @@ public class TomcatStarter {
 	if (flushEachResultSetRow == null || flushEachResultSetRow.isEmpty()) {
 	    flushEachResultSetRow = "true";
 	}
-	
+
 	System.out.println(SqlTag.SQL_PRODUCT_START + " " + "Setting Internal Properties: ");
 	System.out.println(SqlTag.SQL_PRODUCT_START + "  -> tomcatLoggingLevel = " + level);
-	System.out.println(SqlTag.SQL_PRODUCT_START + "  -> flushEachResultSetRow = " + Boolean.parseBoolean(flushEachResultSetRow));
-	
+	System.out.println(SqlTag.SQL_PRODUCT_START + "  -> flushEachResultSetRow = "
+		+ Boolean.parseBoolean(flushEachResultSetRow));
+
 	// System.out.println("TomcatEmbedUtil.available(" + port + "): " +
 	// TomcatEmbedUtil.available(port));
 
@@ -182,13 +199,12 @@ public class TomcatStarter {
 	// Create the dataSources if necessary
 	TomcatStarterUtil.createAndStoreDataSources(properties);
 	TomcatStarterUtil.addServlets(properties, rootCtx);
-	
+
 	// ..and we are good to go
 	tomcat.start();
 
 	tomcatAfterStart(tomcat, properties);
     }
-
 
     /**
      * @param tomcat
@@ -196,22 +212,17 @@ public class TomcatStarter {
      * @throws MalformedURLException
      * @throws IOException
      */
-    private void tomcatAfterStart(Tomcat tomcat, Properties properties) throws MalformedURLException, IOException {
+    private void tomcatAfterStart(Tomcat tomcat, Properties properties)
+	    throws MalformedURLException, IOException, SQLException {
 	// System.out.println(SqlTag.SQL_PRODUCT_START);
 	Connector defaultConnector = tomcat.getConnector();
-	
+
 	boolean result = testServlet(properties, defaultConnector.getScheme());
 	if (!result) {
 	    throw new IOException(SqlTag.SQL_PRODUCT_START_FAILURE + " " + "Can not call the AceQL ManagerServlet");
 	}
-		
-	String StateModeMessage = ConfPropertiesUtil.isStatelessMode() ? "(Stateless Mode)": "";
-	
-	String runningMessage = SqlTag.SQL_PRODUCT_START + " " + Version.PRODUCT.NAME
-		+ " Web Server OK. Running on port " + port + " " + StateModeMessage;
 
-	System.out.println(runningMessage);
-	System.out.println();
+	TomcatStarterMessages.printFinalOkMessage(port);
 
 	// System.out
 	// .println(SqlTag.SQL_PRODUCT_START
@@ -261,19 +272,20 @@ public class TomcatStarter {
     private static void queryExecutorHook() {
 
 	List<String> classNames = new ArrayList<>();
-	System.out.println(SqlTag.SQL_PRODUCT_START + " Allowed ServerQueryExecutor: ");  
-	for (String className: classNames) {
-	    System.out.println(SqlTag.SQL_PRODUCT_START + "   -> " +  className);  
+	System.out.println(SqlTag.SQL_PRODUCT_START + " Allowed ServerQueryExecutor: ");
+	for (String className : classNames) {
+	    System.out.println(SqlTag.SQL_PRODUCT_START + "   -> " + className);
 	}
-	
+
     }
 
     /**
      * @param tomcat
      * @param properties
      * @return
+     * @throws IOException
      */
-    private Context tomcatBeforeStartSetContext(Tomcat tomcat, Properties properties) {
+    private Context tomcatBeforeStartSetContext(Tomcat tomcat, Properties properties) throws IOException, SQLException {
 	// Set up context,
 	// "" indicates the path of the ROOT context
 	Context rootCtx = tomcat.addContext("", getBaseDir().getAbsolutePath());
@@ -304,10 +316,12 @@ public class TomcatStarter {
      * @param properties
      * @throws DatabaseConfigurationException
      * @throws ConnectException
+     * @throws SQLException
      */
     private void tomcatBeforeStartSetConnectors(Tomcat tomcat, Properties properties)
-	    throws DatabaseConfigurationException, ConnectException {
-	// NO: do in the Creators in org.kawanfw.sql.servlet.injection.classes.creator package
+	    throws DatabaseConfigurationException, ConnectException, SQLException {
+	// NO: do in the Creators in org.kawanfw.sql.servlet.injection.classes.creator
+	// package
 	// TomcatStarterUtil.testConfigurators(properties);
 
 	// Very important to allow port reuse without System.exit()
@@ -319,9 +333,10 @@ public class TomcatStarter {
 	SystemPropUpdater systemPropUpdater = new SystemPropUpdater(properties);
 	systemPropUpdater.update();
 
-	//HACK NDP
-	//ThreadPoolExecutorCreator threadPoolExecutorStore = new ThreadPoolExecutorCreator(properties);
-	//threadPoolExecutorStore.create();
+	// HACK NDP
+	// ProEditionThreadPoolExecutorBuilder threadPoolExecutorStore = new
+	// ProEditionThreadPoolExecutorBuilder(properties);
+	// threadPoolExecutorStore.create();
 
 	// Set & create connectors
 	TomcatConnectorsUpdater tomcatConnectorsUpdater = new TomcatConnectorsUpdater(tomcat, properties);
@@ -348,14 +363,18 @@ public class TomcatStarter {
      * @param properties the properties than contain all servlet & configurators
      *                   info
      * @param rootCtx    the tomcat root context
+     * @throws IOException
      */
-    public void addAceqlServlet(Properties properties, Context rootCtx) {
+    public void addAceqlServlet(Properties properties, Context rootCtx) throws IOException, SQLException {
 
 	if (properties == null) {
 	    throw new IllegalArgumentException("properties can not be null");
 	}
 
-	String aceQLManagerServletCallName = TomcatStarterUtil.getAceQLManagerSevletName(properties);
+	// String aceQLManagerServletCallName =
+	// TomcatStarterUtil.getAceQLManagerSevletName(properties);
+	ServletAceQLCallNameGetter servletAceQLCallNameGetter = AceQLServletCallNameGetterCreator.createInstance();
+	String aceQLManagerServletCallName = servletAceQLCallNameGetter.getName();
 
 	// Add the ServerSqlManager servlet to the context
 	org.apache.catalina.Wrapper wrapper = Tomcat.addServlet(rootCtx, aceQLManagerServletCallName,
@@ -363,13 +382,12 @@ public class TomcatStarter {
 	wrapper.setAsyncSupported(true);
 	rootCtx.addServletMappingDecoded("/*", aceQLManagerServletCallName);
 
-	
 	// Create all configuration properties from the Properties and store
 	ConfPropertiesManager confPropertiesManager = new ConfPropertiesManager(properties);
 	ConfProperties confProperties = confPropertiesManager.createConfProperties();
 	ConfPropertiesStore.set(confProperties);
 
-	// Unecessary because we must start at / because of ou Rest API
+	// Unnecessary because we must start at / because of ou Rest API
 	// String serverSqlManagerUrlPattern = serverSqlManagerServletName;
 	// if (!serverSqlManagerUrlPattern.startsWith("/")) {
 	// serverSqlManagerUrlPattern = "/" + serverSqlManagerUrlPattern;
@@ -388,9 +406,13 @@ public class TomcatStarter {
      * @throws MalformedURLException
      * @throws IOException
      */
-    public boolean testServlet(Properties properties, String scheme) throws MalformedURLException, IOException {
+    public boolean testServlet(Properties properties, String scheme)
+	    throws MalformedURLException, IOException, SQLException {
 
-	String aceQLManagerServletCallName = TomcatStarterUtil.getAceQLManagerSevletName(properties);
+	// String aceQLManagerServletCallName =
+	// TomcatStarterUtil.getAceQLManagerSevletName(properties);
+	ServletAceQLCallNameGetter servletAceQLCallNameGetter = AceQLServletCallNameGetterCreator.createInstance();
+	String aceQLManagerServletCallName = servletAceQLCallNameGetter.getName();
 
 	String serverSqlManagerUrlPattern = aceQLManagerServletCallName;
 	serverSqlManagerUrlPattern = serverSqlManagerUrlPattern.trim();
@@ -413,7 +435,7 @@ public class TomcatStarter {
 	String serverSqlManagerstatus = callServerSqlManagerServlet(url);
 
 	if (serverSqlManagerstatus.contains("\"OK\"")) {
-	    System.out.println(SqlTag.SQL_PRODUCT_START + " URL for client side (tested) : " + url);
+	    System.out.println(SqlTag.SQL_PRODUCT_START + " URL for client side (tested): " + url);
 	    return true;
 	}
 
