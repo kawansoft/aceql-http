@@ -33,6 +33,15 @@ What's New:
 - Software has been divided into a Community (free & open source) and
   an Enterprise version. See www.aceql.com/pricing and user documentation 
   for more info.
+- Default values of ThreadPoolExecutor creation have been changed.
+  1) The Queue used is now a java.util.concurrent.SynchronousQueue in
+  order to avoid completely to queue SQL orders, as we don't know how 
+  long they will run. Creating a Queue could block waiting users when a 
+  long SQL order is processed. 
+  Now, new Thread is systematically created if a SQL request needs 
+  one for execution.
+  2) keepAliveTime is now 60 seconds, in order to wait some long
+  SQL SELECT to process.
 - StatementNormalizer creation. See Javadoc.
 - TCL calls are not any more firewalled because 
   of unnecessary implementation complexity and because it's globally useless.
@@ -54,7 +63,9 @@ What's New:
 - PostgreSQL base libraries have been upgraded to 42.3.3 for 
   security reasons.
 - Gson base libraries have been upgraded to 2.8.9 for 
-  security reasons.
+  security reasons. 
+- Maven is now used instead of Ant to build the runnable jar 
+  and the sources jar.
 
 
 AceQL HTTP Version 10.2 - 07-Feb-2022
