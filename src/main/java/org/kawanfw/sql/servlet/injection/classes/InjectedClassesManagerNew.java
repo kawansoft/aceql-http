@@ -90,6 +90,10 @@ public class InjectedClassesManagerNew {
 	
 	classNameToLoad = null;
 	try {
+	    
+	    PropertiesFileFormatValidator propertiesFileFormatValidator = new PropertiesFileFormatValidator(propertiesFileStr);
+	    propertiesFileFormatValidator.validate();
+	    
 	    // Test if we are in Native Tomcat and do specific stuff.
 	    if (!TomcatSqlModeStore.isTomcatEmbedded()) {
 
@@ -109,7 +113,7 @@ public class InjectedClassesManagerNew {
 			.createInstance();
 		nativeTomcatElementsBuilder.create(propertiesFileStr);
 	    }
-
+		
 	    CommunityValidator communityValidator = new CommunityValidator(propertiesFileStr);
 	    communityValidator.validate();
 
