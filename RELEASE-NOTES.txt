@@ -29,11 +29,6 @@ The Enterprise Edition is licensed through a commercial license.
 AceQL HTTP Version 11.1 - 13-Jun-2022
 -------------------------------------
 
-- A message error displays at startup if the new format for 
-  aceql-server.properties is no used. 
-  It is required in v11.1 to update your aceql-server.properties
-  to the format of the one located in the 
-  <Installation Directory>/conf/aceql-server.properties subdirectory.
 - Default values of ThreadPoolExecutor creation have been changed:
   1) The Queue used is now an always empty java.util.concurrent.SynchronousQueue 
   in order to completely avoid queuing SQL orders, as we don't know how 
@@ -43,6 +38,14 @@ AceQL HTTP Version 11.1 - 13-Jun-2022
   one for execution.
   2) keepAliveTime is now 60 seconds, in order to wait some long
   SQL SELECT to process.
+- A message error displays at startup if the new format for 
+  aceql-server.properties is no used. 
+  It is required in v11.1 to update your aceql-server.properties
+  to the format of the one located in the 
+  <Installation Directory>/conf/aceql-server.properties subdirectory.
+  This enforcement is done to be sure the new
+  ThreadPoolExecutor parameters default configuration is applied at
+  server startup.
 - Maven is now used - instead of Ant - to build the deployed runnable jar 
   and sources jar.
 
