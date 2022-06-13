@@ -49,7 +49,7 @@ public class PropertiesFileFormatValidator {
     public void validate() throws IOException {
 
 	File file = new File(propertiesFile);
-	Properties properties = PropertiesFileUtil.getProperties(file);
+	Properties properties = PropertiesFileUtil.commonsGetProperties(file);
 	String value = properties.getProperty("propertiesFileFormatVersion");
 	if (value == null || ! value.equals("11")) {
 	    throw new IllegalArgumentException("Invalid properties file format. Please use new template format as in <Installation Directory>/conf/aceql-server.properties subdirectory.");
