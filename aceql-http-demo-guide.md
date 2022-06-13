@@ -1,4 +1,4 @@
-# AceQL HTTP v11.1 - June 13, 2022
+# AceQL HTTP v11.1 - June 14, 2022
 
 # Demo Guide
 
@@ -220,7 +220,7 @@ The console will display the properties used, test that the Connection is establ
 
 ```bash
 [ACEQL HTTP START] Starting AceQL HTTP Web Server...
-[ACEQL HTTP START] AceQL HTTP Community v11.1 - 09-Jun-2022
+[ACEQL HTTP START] AceQL HTTP Community v11.1 - 14-Jun-2022
 [ACEQL HTTP START] Using properties file: 
 [ACEQL HTTP START]  -> /home/mike/aceql-http/conf/aceql-server.properties
 [ACEQL HTTP START] Setting System Properties:
@@ -339,7 +339,7 @@ The console will display the properties used, test that the `Connection` is esta
 
 ```bash
 [ACEQL HTTP START] Starting AceQL HTTP Web Server...
-[ACEQL HTTP START] AceQL HTTP Community v11.1 - 09-Jun-2022
+[ACEQL HTTP START] AceQL HTTP Community v11.1 - 14-Jun-2022
 [ACEQL HTTP START] Using properties file: 
 [ACEQL HTTP START]  -> c:\aceql-http\conf\aceql-server.properties
 [ACEQL HTTP START] Setting System Properties:

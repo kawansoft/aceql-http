@@ -26,7 +26,7 @@ The Community Edition is licensed through the GNU Lesser General Public License
 The Enterprise Edition is licensed through a commercial license.
 
 
-AceQL HTTP Version 11.1 - 13-Jun-2022
+AceQL HTTP Version 11.1 - 14-Jun-2022
 -------------------------------------
 
 - Default values of ThreadPoolExecutor creation have been changed in
@@ -45,10 +45,10 @@ AceQL HTTP Version 11.1 - 13-Jun-2022
     
 - A message warning displays at startup if the new format v11.1 for 
   aceql-server.properties is not used.
-  It is *higly* recommanded in v11.1 to update your aceql-server.properties
+  It is *highly* recommanded in v11.1 to update your aceql-server.properties
   to the format of the one located in the 
   <Installation Directory>/conf/aceql-server.properties subdirectory.
-  This enforcement is done to be sure the new
+  This warning is done to be sure the new
   ThreadPoolExecutor parameters default configuration is applied at
   server startup, because the previous configuration with an
   ArrayBlockingQueue of capacity 50000 would seldom
