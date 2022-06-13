@@ -35,6 +35,7 @@ import org.kawanfw.sql.servlet.injection.properties.PropertiesFileUtil;
 import org.kawanfw.sql.tomcat.TomcatStarterUtil;
 import org.kawanfw.sql.tomcat.properties.threadpool.ThreadPoolProperties;
 import org.kawanfw.sql.util.FrameworkDebug;
+import org.kawanfw.sql.util.SqlTag;
 import org.kawanfw.sql.util.Tag;
 import org.kawanfw.sql.version.EditionUtil;
 
@@ -120,12 +121,12 @@ public class CommunityValidator {
 	 * </pre>
 	 */
 
-	checkProperty(properties, "corePoolSize", ThreadPoolProperties.DEFAULT_CORE_POOL_SIZE + "");
-	checkProperty(properties, "maximumPoolSize", ThreadPoolProperties.DEFAULT_MAXIMUM_POOL_SIZE + "");
-	checkProperty(properties, "unit", ThreadPoolProperties.DEFAULT_UNIT.toString());
-	checkProperty(properties, "keepAliveTime", ThreadPoolProperties.DEFAULT_KEEP_ALIVE_TIME + "");
-	checkProperty(properties, "workQueueClassName", ThreadPoolProperties.DEFAULT_BLOCKING_QUEUE_NAME);
-;	checkProperty(properties, "capacity", ThreadPoolProperties.DEFAULT_BLOCKING_QUEUE_CAPACITY + "");
+	checkPropertyWarningOnly(properties, "corePoolSize", ThreadPoolProperties.DEFAULT_CORE_POOL_SIZE + "");
+	checkPropertyWarningOnly(properties, "maximumPoolSize", ThreadPoolProperties.DEFAULT_MAXIMUM_POOL_SIZE + "");
+	checkPropertyWarningOnly(properties, "unit", ThreadPoolProperties.DEFAULT_UNIT.toString());
+	checkPropertyWarningOnly(properties, "keepAliveTime", ThreadPoolProperties.DEFAULT_KEEP_ALIVE_TIME + "");
+	checkPropertyWarningOnly(properties, "workQueueClassName", ThreadPoolProperties.DEFAULT_BLOCKING_QUEUE_NAME);
+	checkPropertyWarningOnly(properties, "capacity", ThreadPoolProperties.DEFAULT_BLOCKING_QUEUE_CAPACITY + "");
 
 	checkProperty(properties, "updateToHttp2Protocol", false + "");
 
@@ -143,6 +144,19 @@ public class CommunityValidator {
 
 	throw new UnsupportedOperationException(Tag.PRODUCT + " " + "Server cannot start. In Community Edition, the \""
 		+ propertyName + "\" property cannot be set.");
+    }
+    
+    private void checkPropertyWarningOnly(Properties properties, String propertyName, String value) {
+	if (properties.getProperty(propertyName) == null) {
+	    return;
+	}
+
+	String valueInFile = properties.getProperty(propertyName);
+
+	if (!valueInFile.equals(value)) {	
+	    System.err.println(SqlTag.SQL_PRODUCT_START + " " + Tag.PRODUCT_WARNING +  " In Community Edition, the \"" + propertyName
+		    + "\" property cannot be changed from it's default \"" + value + "\" value. Asked changed will not be applied.");
+	}
     }
 
     private void checkProperty(Properties properties, String propertyName, String value) {
