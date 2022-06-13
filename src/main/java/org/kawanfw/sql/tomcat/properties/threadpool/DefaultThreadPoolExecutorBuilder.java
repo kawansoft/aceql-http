@@ -53,16 +53,22 @@ public class DefaultThreadPoolExecutorBuilder implements ThreadPoolExecutorBuild
 	TimeUnit unit = ThreadPoolProperties.DEFAULT_UNIT;
 	long keepAliveTime = ThreadPoolProperties.DEFAULT_KEEP_ALIVE_TIME;
 	BlockingQueue<Runnable> workQueue = new ArrayBlockingQueue<>(ThreadPoolProperties.DEFAULT_BLOCKING_QUEUE_CAPACITY);
-
-	ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue);
-
+	boolean prestartAllCoreThreads = ThreadPoolProperties.PRESTART_ALL_CORE_THREADS;
+	
+	ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(corePoolSize, maximumPoolSize, keepAliveTime,
+		unit, workQueue);
+	
+	if (prestartAllCoreThreads) {
+	    threadPoolExecutor.prestartAllCoreThreads();
+	}
+	
 	System.out.println(SqlTag.SQL_PRODUCT_START + " Loading ThreadPoolExecutor:");
 	System.out.println(SqlTag.SQL_PRODUCT_START + "  -> [corePoolSize: " + threadPoolExecutor.getCorePoolSize()
 		+ ", maximumPoolSize: " + threadPoolExecutor.getMaximumPoolSize() + ", unit: " + unit + ", ");
 	System.out
 		.println(SqlTag.SQL_PRODUCT_START + "  ->  keepAliveTime: " + threadPoolExecutor.getKeepAliveTime(unit)
 			+ ", workQueue: " + threadPoolExecutor.getQueue().getClass().getSimpleName() + "("
-			+ threadPoolExecutor.getQueue().remainingCapacity() + ")]");
+			+ threadPoolExecutor.getQueue().remainingCapacity() + "), " +  "prestartAllCoreThreads: "+ prestartAllCoreThreads + "]");
 	
 	return threadPoolExecutor;
     }

@@ -17,6 +17,7 @@ public class ThreadPoolProperties {
     public static final int DEFAULT_KEEP_ALIVE_TIME = 10;
     public static final int DEFAULT_BLOCKING_QUEUE_CAPACITY = 50000;
     public static final TimeUnit DEFAULT_UNIT = TimeUnit.SECONDS;
+    public static final boolean PRESTART_ALL_CORE_THREADS = true;
     
     private String corePoolSizeStr;
     private String maximumPoolSizeStr;
@@ -24,13 +25,16 @@ public class ThreadPoolProperties {
     private  String keepAliveTimeStr;
     private String workQueueClassName;
     private String capacityStr;
-
+    private String prestartAllCoreThreadsStr;
+    
     private int corePoolSize= DEFAULT_CORE_POOL_SIZE;
     private int maximumPoolSize= DEFAULT_MAXIMUM_POOL_SIZE;
     private TimeUnit unit = DEFAULT_UNIT;
     private int keepAliveTime= DEFAULT_KEEP_ALIVE_TIME;
     private int capacity= DEFAULT_BLOCKING_QUEUE_CAPACITY;
     private BlockingQueue<Runnable> workQueue;
+    private boolean prestartAllCoreThreads;
+
 
     public ThreadPoolProperties(Properties properties) {
 	Objects.requireNonNull(properties, "properties cannot be null!");
@@ -41,7 +45,8 @@ public class ThreadPoolProperties {
 	keepAliveTimeStr = properties.getProperty("keepAliveTime");
 	workQueueClassName = properties.getProperty("workQueueClassName");
 	capacityStr = properties.getProperty("capacity");
-
+	prestartAllCoreThreadsStr = properties.getProperty("prestartAllCoreThreads");
+	
 	checkAndFillParameters();
 	createWorkingQueue();
     }
@@ -114,6 +119,13 @@ public class ThreadPoolProperties {
 	if (capacity < 0) {
 	    throw new DatabaseConfigurationException("capacity must be >= 0. " + SqlTag.PLEASE_CORRECT);
 	}
+	
+	if (prestartAllCoreThreadsStr== null || prestartAllCoreThreadsStr.isEmpty()) {
+	    prestartAllCoreThreads = true;
+	}
+	else {
+	    prestartAllCoreThreads = Boolean.parseBoolean(prestartAllCoreThreadsStr);  
+	}
     }
 
     private void throwExceptionValueIfNotNumeric(String name, String value) {
@@ -150,33 +162,15 @@ public class ThreadPoolProperties {
         return workQueue;
     }
 
-    public void setCapacityStr(String capacityStr) {
-        this.capacityStr = capacityStr;
+    /**
+     * @return the prestartAllCoreThreads
+     */
+    public boolean isPrestartAllCoreThreads() {
+        return prestartAllCoreThreads;
     }
 
-    public void setCorePoolSize(int corePoolSize) {
-        this.corePoolSize = corePoolSize;
-    }
+    
 
-    public void setMaximumPoolSize(int maximumPoolSize) {
-        this.maximumPoolSize = maximumPoolSize;
-    }
-
-    public void setUnit(TimeUnit unit) {
-        this.unit = unit;
-    }
-
-    public void setKeepAliveTime(int keepAliveTime) {
-        this.keepAliveTime = keepAliveTime;
-    }
-
-    public void setCapacity(int capacity) {
-        this.capacity = capacity;
-    }
-
-    public void setWorkQueue(BlockingQueue<Runnable> workQueue) {
-        this.workQueue = workQueue;
-    }
 
 
 }
