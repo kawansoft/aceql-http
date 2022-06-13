@@ -14,8 +14,9 @@ public class ThreadPoolProperties {
 
     public static final int DEFAULT_CORE_POOL_SIZE = 10;
     public static final int DEFAULT_MAXIMUM_POOL_SIZE = 125;
-    public static final int DEFAULT_KEEP_ALIVE_TIME = 10;
-    public static final int DEFAULT_BLOCKING_QUEUE_CAPACITY = 50000;
+    public static final int DEFAULT_KEEP_ALIVE_TIME = 60;
+    public static final String DEFAULT_BLOCKING_QUEUE_NAME = "java.util.concurrent.SynchronousQueue";
+    public static final int DEFAULT_BLOCKING_QUEUE_CAPACITY = 0;
     public static final TimeUnit DEFAULT_UNIT = TimeUnit.SECONDS;
     public static final boolean PRESTART_ALL_CORE_THREADS = true;
     
