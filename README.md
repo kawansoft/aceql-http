@@ -685,8 +685,8 @@ You may define all [attributes](http://tomcat.apache.org/tomcat-9.0-doc/config/h
 Each property must be prefixed by `connector`.
 
 ```properties
-# Example: Change default maxThreads from 200 to 300
-connector.maxThreads=300  
+# Example: Change default connectionTimeout from 60000ms to 80000ms
+connector.connectionTimeout=80000 
 ```
 
 ## Session Management 
