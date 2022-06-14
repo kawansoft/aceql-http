@@ -55,12 +55,9 @@ AceQL HTTP Version 11.1 - 14-Jun-2022
   when their client app calls SQL statements.
   This default behavior may be ignored, see User Documentation.
   
-- Enterprise Edition: At server startup, the remaining days of the current 
-  Trial is displayed.
- 
-- Enterprise Edition: At server startup, the remaining days of the current bought 
-  annual subscription is displayed.
-    
+- Enterprise Edition: At server startup, the remaining days and expiration 
+  date of the current license is displayed/
+   
 - Maven is now used - instead of Ant - to build the deployed runnable   
   jar and sources jar.
 
