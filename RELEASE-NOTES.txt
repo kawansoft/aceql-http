@@ -36,19 +36,16 @@ AceQL HTTP Version 11.1 - 14-Jun-2022
      queuing SQL orders, as we don't know how long they will run.
      Filling a Queue, especially a large one,  
      could block waiting users when a long SQL order is processed. 
-     Now, a new Thread is systematically created if a SQL request needs 
-     one for execution.
-   - 2) keepAliveTime is now 60 seconds, in order to wait some long
-     SQL statements (select...) to process and be rendered to client side.
-     This is the default behavior we recommend should be awaited, but
-     of course, you may supersede it. 
+     Now, per default, a new Thread is systematically created if a 
+     SQL request needs one for execution.
+   - 2) keepAliveTime is now 60 seconds. 
    - 3) For Community Edition: A message warning displays at startup if
         the ThreadPoolExecutor properties in the used aceql-server.proprties
         file are not the same as the new values.
    - 4) For Enterprise Edition: A message warning displays at startup if
         the "workQueueClassName" property value is not 
-        "java.util.concurrent.SynchronousQueue"
-        and if the "capacity" property value is > 100.  
+        "java.util.concurrent.SynchronousQueue" and if the 
+        "capacity" property value is > 100.  
 
 - Core Threads (corePoolSize value) are now all pre-started per default. 
   This ensures that client users feel the lowest latency possible 
