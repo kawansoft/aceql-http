@@ -42,6 +42,8 @@ import org.kawanfw.sql.version.EditionUtil;
 public class EnterpriseWarner {
 
     private static final int MAX_QUEUE_CAPACITY_RECOMMANDED = 100;
+    private static final int MIN_KEEP_ALIVE_TIME_RECOMMANDED = 60;
+    
     private String propertiesFile;
 
     public EnterpriseWarner(String propertiesFile) {
@@ -57,31 +59,62 @@ public class EnterpriseWarner {
 	File file = new File(propertiesFile);
 	Properties properties = PropertiesFileUtil.getProperties(file);
 
+	treatCapacityWarningMessage(properties);
+	treatkeepAliveTimeWarningMessage(properties);
+
+    }
+
+    /**
+     * @param properties
+     * @throws NumberFormatException
+     */
+    public void treatCapacityWarningMessage(Properties properties) throws NumberFormatException {
 	String workQueueClassName = properties.getProperty("workQueueClassName");
 
 	// No problem for an always empty SynchronousQueue
-	if (workQueueClassName == null
-		|| workQueueClassName.equals(java.util.concurrent.SynchronousQueue.class.getName())) {
-	    return;
+	if (workQueueClassName != null
+		&& !workQueueClassName.equals(java.util.concurrent.SynchronousQueue.class.getName())) {
+	    // if capacity > 100, display warning message
+	    String capcacityStr = properties.getProperty("capacity");
+	    if (capcacityStr == null || capcacityStr.isEmpty()) {
+		return;
+	    }
+
+	    // We have checked before format is OK
+	    int capacity = Integer.parseInt(capcacityStr);
+
+	    if (capacity > MAX_QUEUE_CAPACITY_RECOMMANDED) {
+		System.err.println(SqlTag.SQL_PRODUCT_START + " " + Tag.WARNING
+			+ " In Enterprise Edition, the ThreadPoolExecutor Queue \"" + "capacity" + "\" property"
+			+ " should not be > " + MAX_QUEUE_CAPACITY_RECOMMANDED + ValidatorUtil.CR_LF
+			+ SqlTag.SQL_PRODUCT_START + ValidatorUtil.WARNING_SECOND_LINE_SPACES + " "
+			+ " because of a potential SQL run bottleneck. (Set value in .properties file: " + capacity
+			+ ")");
+	    }
 	}
+    }
 
-	// if capacity > 100, display warning message
-	String capcacityStr = properties.getProperty("capacity");
-	if (capcacityStr == null || capcacityStr.isEmpty()) {
-	    return;
+    /**
+     * @param properties
+     * @throws NumberFormatException
+     */
+    public void treatkeepAliveTimeWarningMessage(Properties properties) throws NumberFormatException {
+	String keepAliveTimeStr = properties.getProperty("keepAliveTime");
+
+	if (keepAliveTimeStr != null && ! keepAliveTimeStr.isEmpty()) {
+
+	    // We have checked before format is OK
+	    int keepAliveTime = Integer.parseInt(keepAliveTimeStr);
+
+	    if (keepAliveTime < MIN_KEEP_ALIVE_TIME_RECOMMANDED) {
+		System.err.println(SqlTag.SQL_PRODUCT_START + " " + Tag.WARNING
+			+ " In Enterprise Edition, the ThreadPoolExecutor  \"" + "keepAliveTime" + "\" property"
+			+ " should not be < " + MIN_KEEP_ALIVE_TIME_RECOMMANDED + ValidatorUtil.CR_LF
+			+ SqlTag.SQL_PRODUCT_START + ValidatorUtil.WARNING_SECOND_LINE_SPACES + " "
+			+ " because of a potential SQL run abort. (Set value in .properties file: " + keepAliveTime
+			+ ")");
+	    }
 	}
-
-	// We havec checked before format is OK
-	int capacity = Integer.parseInt(capcacityStr);
-
-	if (capacity > MAX_QUEUE_CAPACITY_RECOMMANDED) {
-	    System.err.println(SqlTag.SQL_PRODUCT_START + " " + Tag.WARNING
-		    + " In Enterprise Edition, the ThreadPoolExecutor Queue \"" + "capacity" + "\" property"
-		    + " should not be > " + MAX_QUEUE_CAPACITY_RECOMMANDED + ValidatorUtil.CR_LF
-		    + SqlTag.SQL_PRODUCT_START + ValidatorUtil.WARNING_SECOND_LINE_SPACES + " "
-		    + " because of a potential SQL run bottleneck. (Set value in .properties file: " + capacity + ")");
-	}
-
     }
 
 }
