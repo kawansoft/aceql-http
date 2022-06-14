@@ -57,6 +57,7 @@ import org.kawanfw.sql.servlet.injection.classes.creator.DatabaseConfiguratorCre
 import org.kawanfw.sql.servlet.injection.classes.creator.SessionConfiguratorCreator;
 import org.kawanfw.sql.servlet.injection.classes.creator.SqlFirewallsCreator;
 import org.kawanfw.sql.servlet.injection.classes.creator.UserAuthenticatorCreator;
+import org.kawanfw.sql.servlet.injection.classes.validator.CommunityValidator;
 import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesStore;
 import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesUtil;
 import org.kawanfw.sql.tomcat.TomcatSqlModeStore;
@@ -91,8 +92,9 @@ public class InjectedClassesManagerNew {
 	classNameToLoad = null;
 	try {
 	    
-	    PropertiesFileFormatValidator propertiesFileFormatValidator = new PropertiesFileFormatValidator(propertiesFileStr);
-	    propertiesFileFormatValidator.validate();
+	    //Future usage...
+	    //PropertiesFileFormatValidator propertiesFileFormatValidator = new PropertiesFileFormatValidator(propertiesFileStr);
+	    //propertiesFileFormatValidator.validate();
 	    
 	    // Test if we are in Native Tomcat and do specific stuff.
 	    if (!TomcatSqlModeStore.isTomcatEmbedded()) {

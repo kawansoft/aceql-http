@@ -22,39 +22,16 @@
  * Any modifications to this file must keep this entire header
  * intact.
  */
-package org.kawanfw.sql.servlet.injection.classes;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.Properties;
-
-import org.kawanfw.sql.servlet.injection.properties.PropertiesFileUtil;
+package org.kawanfw.sql.servlet.injection.classes.validator;
 
 /**
  * @author Nicolas de Pomereu
  *
  */
-public class PropertiesFileFormatValidator {
+public class ValidatorUtil {
 
-    private String propertiesFile;
+    static final String WARNING_SECOND_LINE_SPACES = "         ";
+    public static String CR_LF = System.getProperty("line.separator");
 
-    public PropertiesFileFormatValidator(String propertiesFile) {
-	this.propertiesFile = propertiesFile;
-    }
 
-    /**
-     * Check the propertiesFileFormatVersion=11 property presence
-     * @throws IOException 
-     */
-    public void validate() throws IOException {
-
-	File file = new File(propertiesFile);
-	Properties properties = PropertiesFileUtil.commonsGetProperties(file);
-	String value = properties.getProperty("propertiesFileFormatVersion");
-	if (value == null || ! value.equals("11")) {
-	    throw new IllegalArgumentException("Invalid properties file format. Please use new template format as in <Installation Directory>/conf/aceql-server.properties subdirectory.");
-	}
-    }
-    
-    
 }

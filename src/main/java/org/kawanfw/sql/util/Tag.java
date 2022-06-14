@@ -37,6 +37,7 @@ public class Tag {
     public static final String RUNNING_PRODUCT = "ACEQL HTTP";
     public static String PRODUCT = "[" + RUNNING_PRODUCT + "]";
     public static String PRODUCT_WARNING = "[" + RUNNING_PRODUCT + " WARNING]";
+    public static String WARNING = "[WARNING]";
     public static String PRODUCT_USER_CONFIG_FAIL = "[" + RUNNING_PRODUCT
 	    + " - USER CONFIGURATION FAILURE]";
     public static String PRODUCT_PRODUCT_FAIL = "[" + RUNNING_PRODUCT
