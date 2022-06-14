@@ -58,6 +58,7 @@ import org.kawanfw.sql.servlet.injection.classes.creator.SessionConfiguratorCrea
 import org.kawanfw.sql.servlet.injection.classes.creator.SqlFirewallsCreator;
 import org.kawanfw.sql.servlet.injection.classes.creator.UserAuthenticatorCreator;
 import org.kawanfw.sql.servlet.injection.classes.validator.CommunityValidator;
+import org.kawanfw.sql.servlet.injection.classes.validator.EnterpriseWarner;
 import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesStore;
 import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesUtil;
 import org.kawanfw.sql.tomcat.TomcatSqlModeStore;
@@ -118,7 +119,7 @@ public class InjectedClassesManagerNew {
 		
 	    CommunityValidator communityValidator = new CommunityValidator(propertiesFileStr);
 	    communityValidator.validate();
-
+	    
 	    Set<String> databases = ConfPropertiesStore.get().getDatabaseNames();
 
 	    TomcatStarterUtil.testDatabasesLimit(databases);
@@ -134,6 +135,10 @@ public class InjectedClassesManagerNew {
 	    ThreadPoolExecutorBuilder threadPoolExecutorBuilder = ThreadPoolExecutorBuilderCreator.createInstance();
 	    ThreadPoolExecutor threadPoolExecutor = threadPoolExecutorBuilder.build();
 	    injectedClassesBuilder.threadPoolExecutor(threadPoolExecutor);
+	    
+	    // Check ThreadPoolExecutor parameters
+	    EnterpriseWarner enterpriseWarner = new EnterpriseWarner(propertiesFileStr);
+	    enterpriseWarner.warnOnThreadPoolExecutorParams();
 	    
 	    // All elements that depend on database
 	    loadPerDatabase(databases, injectedClassesBuilder);

@@ -3,7 +3,10 @@ package org.kawanfw.sql.tomcat.properties.threadpool;
 import java.lang.reflect.Constructor;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.StringUtils;
@@ -33,6 +36,7 @@ public class ThreadPoolProperties {
     private TimeUnit unit = DEFAULT_UNIT;
     private int keepAliveTime= DEFAULT_KEEP_ALIVE_TIME;
     private int capacity= DEFAULT_BLOCKING_QUEUE_CAPACITY;
+    
     private BlockingQueue<Runnable> workQueue;
     private boolean prestartAllCoreThreads;
 
@@ -59,7 +63,7 @@ public class ThreadPoolProperties {
 	if (workQueueClassName != null) {
 	    className = workQueueClassName;
 	} else {
-	    className = "java.util.concurrent.ArrayBlockingQueue";
+	    className = DEFAULT_BLOCKING_QUEUE_NAME;
 	}
 
 	Class<?> clazz = null;
@@ -67,7 +71,7 @@ public class ThreadPoolProperties {
 	try {
 	    clazz = Class.forName(className);
 
-	    if (capacity > 0) {
+	    if (capacity > 0 && isConstructorWithCapacity(className)) {
 		Constructor<?> constructor = clazz.getConstructor(int.class);
 		workQueue = (BlockingQueue<Runnable>) constructor.newInstance(capacity);
 	    } else {
@@ -80,6 +84,19 @@ public class ThreadPoolProperties {
 	    throw new DatabaseConfigurationException("blockingQueueClassName instance for name " + className
 		    + " could not be created." + CR_LF + "Reason: " + e.toString() + ". " + SqlTag.PLEASE_CORRECT);
 	}
+    }
+
+
+    /**
+     * To Enhance later
+     * @param className
+     * @return
+     */
+    public boolean isConstructorWithCapacity(String className) {
+	return className.contains(ArrayBlockingQueue.class.getSimpleName()) 
+		|| className.contains(PriorityBlockingQueue.class.getSimpleName())
+			|| className.contains(LinkedBlockingDeque.class.getSimpleName());
+
     }
 
     private void checkAndFillParameters() {

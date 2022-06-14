@@ -133,11 +133,24 @@ public class CommunityValidator {
 
 	checkProperty(properties, "updateToHttp2Protocol", false + "");
 
-	checkPropertyMustBeNull(properties, "blobDownloadConfiguratorClassName");
-	checkPropertyMustBeNull(properties, "blobUploadConfiguratorClassName");
+	checkPropertyMustBeNullOrDefaultValue(properties, "blobDownloadConfiguratorClassName", "DefaultBlobDownloadConfigurator");
+	checkPropertyMustBeNullOrDefaultValue(properties, "blobUploadConfiguratorClassName", "DefaultBlobUploadConfigurator") ;
 
 	checkPropertyMustBeNull(properties, "propertiesPasswordManagerClassName");
 
+    }
+
+    private void checkPropertyMustBeNullOrDefaultValue(Properties properties, String propertyName, String defaultValue) {
+	if (properties.getProperty(propertyName) == null) {
+	    return;
+	}
+	
+	String valueInFile = properties.getProperty(propertyName);
+	if (! valueInFile.endsWith(defaultValue)) {
+		throw new UnsupportedOperationException(Tag.PRODUCT + " " + "Server cannot start. In Community Edition, the \""
+			+ propertyName + "\" property cannot be set from default value.");
+	}
+	
     }
 
     private void checkThradPoolPropertyWarningOnly(Properties properties, String propertyName, String value) {
