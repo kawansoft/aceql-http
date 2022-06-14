@@ -281,7 +281,7 @@ Call the `aceql-server` script to display the AceQL version:
 It will display a line with all version info, like:
 
 ```
-AceQL HTTP Community v11.1 - 10-Jun-2022
+AceQL HTTP Community v11.1 - 14-Jun-2022
 ```
 
 
@@ -1096,14 +1096,14 @@ The **ThreadPoolExecutor Section** allows you to modify the default values of th
 
 The properties to set in the `aceql-server.properties` file are:
 
-| Property             | Role                                                         | Default Value        |
-| -------------------- | ------------------------------------------------------------ | -------------------- |
-| `corePoolSize`       | The number of threads to keep in the pool, even if they're idle. | 10                   |
-| `maximumPoolSize`    | The maximum number of threads to allow in the pool.          | 125                  |
-| `unit`               | The time unit for the `keepAliveTime` argument.              | `SECONDS`            |
-| `keepAliveTime`      | When the number of threads is greater than the core, this is the maximum time that excess idle threads will wait for new tasks before terminating. | 10                   |
-| `workQueueClassName` | The `BlockingQueue` class to use in `ThreadPoolExecutor` constructor. | `ArrayBlockingQueue` |
-| `capacity`           | The initial capacity of the `BloquingQueue<Runnable>` <br/>(0 for no or default initial capacity.) | 50000                |
+| Property             | Role                                                         | Default Value      |
+| -------------------- | ------------------------------------------------------------ | ------------------ |
+| `corePoolSize`       | The number of threads to keep in the pool, even if they're idle. | 10                 |
+| `maximumPoolSize`    | The maximum number of threads to allow in the pool.          | 125                |
+| `unit`               | The time unit for the `keepAliveTime` argument.              | `SECONDS`          |
+| `keepAliveTime`      | When the number of threads is greater than the core, this is the maximum time that excess idle threads will wait for new tasks before terminating. | 60                 |
+| `workQueueClassName` | The `BlockingQueue` class to use in `ThreadPoolExecutor` constructor. | `SynchronousQueue` |
+| `capacity`           | The initial capacity of the `BloquingQueue<Runnable>` <br/>(0 for no or default initial capacity.) | 0                  |
 
 The properties are passed to the first  `ThreadPoolExecutor` [constructor](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/ThreadPoolExecutor.html#ThreadPoolExecutor(int,%20int,%20long,%20java.util.concurrent.TimeUnit,%20java.util.concurrent.BlockingQueue)).
 
