@@ -22,7 +22,7 @@
  * Any modifications to this file must keep this entire header
  * intact.
  */
-package org.kawanfw.sql.servlet.injection.classes;
+package org.kawanfw.sql.servlet.injection.classes.validator;
 
 import java.io.File;
 import java.io.IOException;
@@ -35,6 +35,7 @@ import org.kawanfw.sql.servlet.injection.properties.PropertiesFileUtil;
 import org.kawanfw.sql.tomcat.TomcatStarterUtil;
 import org.kawanfw.sql.tomcat.properties.threadpool.ThreadPoolProperties;
 import org.kawanfw.sql.util.FrameworkDebug;
+import org.kawanfw.sql.util.SqlTag;
 import org.kawanfw.sql.util.Tag;
 import org.kawanfw.sql.version.EditionUtil;
 
@@ -47,7 +48,6 @@ import org.kawanfw.sql.version.EditionUtil;
 public class CommunityValidator {
 
     private static boolean DEBUG = FrameworkDebug.isSet(CommunityValidator.class);
-    
     private String propertiesFile;
 
     public CommunityValidator(String propertiesFile) {
@@ -62,7 +62,7 @@ public class CommunityValidator {
 	}
 
 	File file = new File(propertiesFile);
-	Properties properties = PropertiesFileUtil.getProperties(file);
+	Properties properties = PropertiesFileUtil.commonsGetProperties(file);
 	checkProperty(properties, "aceQLManagerServletCallName", "aceql");
 
 	Set<String> databases = ConfPropertiesStore.get().getDatabaseNames();
@@ -120,19 +120,53 @@ public class CommunityValidator {
 	 * </pre>
 	 */
 
-	checkProperty(properties, "corePoolSize", ThreadPoolProperties.DEFAULT_CORE_POOL_SIZE + "");
-	checkProperty(properties, "maximumPoolSize", ThreadPoolProperties.DEFAULT_MAXIMUM_POOL_SIZE + "");
-	checkProperty(properties, "unit", ThreadPoolProperties.DEFAULT_UNIT.toString());
-	checkProperty(properties, "keepAliveTime", ThreadPoolProperties.DEFAULT_KEEP_ALIVE_TIME + "");
-	checkProperty(properties, "capacity", ThreadPoolProperties.DEFAULT_BLOCKING_QUEUE_CAPACITY + "");
+	checkThradPoolPropertyWarningOnly(properties, "corePoolSize", ThreadPoolProperties.DEFAULT_CORE_POOL_SIZE + "");
+	checkThradPoolPropertyWarningOnly(properties, "maximumPoolSize",
+		ThreadPoolProperties.DEFAULT_MAXIMUM_POOL_SIZE + "");
+	checkThradPoolPropertyWarningOnly(properties, "unit", ThreadPoolProperties.DEFAULT_UNIT.toString());
+	checkThradPoolPropertyWarningOnly(properties, "keepAliveTime",
+		ThreadPoolProperties.DEFAULT_KEEP_ALIVE_TIME + "");
+	checkThradPoolPropertyWarningOnly(properties, "workQueueClassName",
+		ThreadPoolProperties.DEFAULT_BLOCKING_QUEUE_NAME);
+	checkThradPoolPropertyWarningOnly(properties, "capacity",
+		ThreadPoolProperties.DEFAULT_BLOCKING_QUEUE_CAPACITY + "");
 
 	checkProperty(properties, "updateToHttp2Protocol", false + "");
 
-	checkPropertyMustBeNull(properties, "blobDownloadConfiguratorClassName");
-	checkPropertyMustBeNull(properties, "blobUploadConfiguratorClassName");
+	checkPropertyMustBeNullOrDefaultValue(properties, "blobDownloadConfiguratorClassName", "DefaultBlobDownloadConfigurator");
+	checkPropertyMustBeNullOrDefaultValue(properties, "blobUploadConfiguratorClassName", "DefaultBlobUploadConfigurator") ;
 
 	checkPropertyMustBeNull(properties, "propertiesPasswordManagerClassName");
 
+    }
+
+    private void checkPropertyMustBeNullOrDefaultValue(Properties properties, String propertyName, String defaultValue) {
+	if (properties.getProperty(propertyName) == null) {
+	    return;
+	}
+	
+	String valueInFile = properties.getProperty(propertyName);
+	if (! valueInFile.endsWith(defaultValue)) {
+		throw new UnsupportedOperationException(Tag.PRODUCT + " " + "Server cannot start. In Community Edition, the \""
+			+ propertyName + "\" property cannot be set from default value.");
+	}
+	
+    }
+
+    private void checkThradPoolPropertyWarningOnly(Properties properties, String propertyName, String value) {
+	if (properties.getProperty(propertyName) == null) {
+	    return;
+	}
+
+	String valueInFile = properties.getProperty(propertyName);
+
+	if (!valueInFile.equals(value)) {
+	    System.err.println(
+		    SqlTag.SQL_PRODUCT_START + " " + Tag.WARNING + " In Community Edition, the ThreadPoolExecutor \""
+			    + propertyName + "\" property" + ValidatorUtil.CR_LF + SqlTag.SQL_PRODUCT_START + " "
+			    + ValidatorUtil.WARNING_SECOND_LINE_SPACES + " is enforced to the default install value: " + value
+			    + " (Set value in .properties file ignored: " + valueInFile + ")");
+	}
     }
 
     private void checkPropertyMustBeNull(Properties properties, String propertyName) {
@@ -169,5 +203,4 @@ public class CommunityValidator {
 	}
     }
 
-    
 }

@@ -137,7 +137,7 @@ public class PropertiesFileUtil {
     }
     
     /**
-     * Return the load Properties for the passed file
+     * Return the load Properties for the passed file. No decryption will be done.
      * @param file
      * @return
      * @throws IllegalArgumentException
@@ -145,7 +145,7 @@ public class PropertiesFileUtil {
      * @throws IOException
      * @throws FileNotFoundException
      */
-    private static Properties commonsGetProperties(File file)
+     public static Properties commonsGetProperties(File file)
 	    throws IllegalArgumentException, DatabaseConfigurationException, IOException, FileNotFoundException {
 	if (file == null) {
 	    throw new IllegalArgumentException("file can not be null!");

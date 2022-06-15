@@ -24,18 +24,16 @@
  */
 package org.kawanfw.test.api.server;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Vector;
 
-import org.junit.jupiter.api.Test;
 import org.kawanfw.sql.api.server.StatementAnalyzer;
+
+
 
 public class StatementAnalyzerTest {
 
-    @Test
     public void test() throws IllegalArgumentException, SQLException {
 	insertTest();
 	selectTest();
@@ -59,7 +57,7 @@ public class StatementAnalyzerTest {
      * @throws IllegalArgumentException
      * @throws SQLException
      */
-    private void insertTest() throws IllegalArgumentException, SQLException {
+    public void insertTest() throws IllegalArgumentException, SQLException {
 	String sql = "INSERT INTO ORDERLOG VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )";
 
 	StatementAnalyzer stAnalyzer = new StatementAnalyzer(sql,
@@ -68,18 +66,19 @@ public class StatementAnalyzerTest {
 
 	System.out.println(stAnalyzer.getTables());
 	List<String> tables = stAnalyzer.getTables();
-	assertEquals(false, tables.isEmpty());
+	assert(! tables.isEmpty());
 
-	assertEquals("orderlog",
-		tables.get(0).toLowerCase());
+	assert(tables.get(0).toLowerCase().equals("orderlog"));
 
 	System.out.println("stAnalyzer.isInsert(): " + stAnalyzer.isInsert());
-	assertEquals(true, stAnalyzer.isInsert());
-
+	//assertEquals(true, stAnalyzer.isInsert());
+	assert(stAnalyzer.isInsert());
+	
 	System.out.println("stAnalyzer.getStatementType(): "
 		+ stAnalyzer.getStatementName());
-	assertEquals("insert",
-		stAnalyzer.getStatementName().toLowerCase());
+	//assertEquals("insert",
+	//	stAnalyzer.getStatementName().toLowerCase());
+	assert(stAnalyzer.getStatementName().toLowerCase().equals("insert"));
 
     }
 
@@ -87,7 +86,7 @@ public class StatementAnalyzerTest {
      * @throws IllegalArgumentException
      * @throws SQLException
      */
-    private void selectTest() throws IllegalArgumentException, SQLException {
+    public void selectTest() throws IllegalArgumentException, SQLException {
 	String sql = "SELECT * FROM CUSTOMER WHERE CUSTOMER_ID >= ?";
 
 	StatementAnalyzer stAnalyzer = new StatementAnalyzer(sql,
@@ -96,26 +95,26 @@ public class StatementAnalyzerTest {
 
 	System.out.println(stAnalyzer.getTables());
 	List<String> tables = stAnalyzer.getTables();
-	assertEquals(false, tables.isEmpty());
-
-	assertEquals("customer",
-		tables.get(0).toLowerCase());
-
+	//assertEquals(false, tables.isEmpty());
+	assert(! tables.isEmpty());
+	
+	//assertEquals("customer", tables.get(0).toLowerCase());
+	assert(tables.get(0).toLowerCase().equals("customer"));
 	System.out.println("stAnalyzer.isSelect(): " + stAnalyzer.isSelect());
-	assertEquals(true, stAnalyzer.isSelect());
+	//assertEquals(true, stAnalyzer.isSelect());
+	assert(stAnalyzer.isSelect());
 
 	System.out.println("stAnalyzer.getStatementType(): "
 		+ stAnalyzer.getStatementName());
-	assertEquals("select",
-		stAnalyzer.getStatementName().toLowerCase());
-
+	//assertEquals("select", stAnalyzer.getStatementName().toLowerCase());
+	assert(stAnalyzer.getStatementName().toLowerCase().equals("select"));
     }
 
     /**
      * @throws IllegalArgumentException
      * @throws SQLException
      */
-    private void updateTest() throws IllegalArgumentException, SQLException {
+    public void updateTest() throws IllegalArgumentException, SQLException {
 	String sql = "UPDATE ORDERLOG SET " + "   date_placed  = ? "
 		+ " , date_shipped = ? " + " , item_cost   = ? "
 		+ " , is_delivered = ? " + " , quantity     = ? "
@@ -127,25 +126,28 @@ public class StatementAnalyzerTest {
 
 	System.out.println(stAnalyzer.getTables());
 	List<String> tables = stAnalyzer.getTables();
-	assertEquals(false, tables.isEmpty());
+	//assertEquals(false, tables.isEmpty());
+	assert(!tables.isEmpty());
 
-	assertEquals("orderlog",
-		tables.get(0).toLowerCase());
-
+	//assertEquals("orderlog", tables.get(0).toLowerCase());
+	assert(tables.get(0).toLowerCase().equals("orderlog"));
+	
 	System.out.println("stAnalyzer.isUpdate(): " + stAnalyzer.isUpdate());
-	assertEquals(true, stAnalyzer.isUpdate());
+	//assertEquals(true, stAnalyzer.isUpdate());
+	assert(stAnalyzer.isUpdate());
 
 	System.out.println("stAnalyzer.getStatementType(): "
 		+ stAnalyzer.getStatementName());
-	assertEquals("update",
-		stAnalyzer.getStatementName().toLowerCase());
+	//assertEquals("update",
+	//	stAnalyzer.getStatementName().toLowerCase());
+	assert(stAnalyzer.getStatementName().toLowerCase().equals("update"));
     }
 
     /**
      * @throws IllegalArgumentException
      * @throws SQLException
      */
-    private void deleteTest() throws IllegalArgumentException, SQLException {
+    public void deleteTest() throws IllegalArgumentException, SQLException {
 	String sql = "DELETE FROM ORDERLOG WHERE CUSTOMER_ID = ? AND ITEM_ID = ? ";
 
 	StatementAnalyzer stAnalyzer = new StatementAnalyzer(sql,
@@ -155,20 +157,20 @@ public class StatementAnalyzerTest {
 	System.out.println(stAnalyzer.getTables());
 
 	List<String> tables = stAnalyzer.getTables();
-	assertEquals(false, tables.isEmpty());
-	String table = tables.get(0);
-
-	assertEquals("orderlog",
-		table.toLowerCase());
-
+	//assertEquals(false, tables.isEmpty());
+	assert(!tables.isEmpty());
+	
+	//assertEquals("orderlog",table.toLowerCase());
+	assert(tables.get(0).toLowerCase().equals("orderlog"));
+	
 	System.out.println("stAnalyzer.isDelete(): " + stAnalyzer.isDelete());
-	assertEquals(true, stAnalyzer.isDelete());
+	//assertEquals(true, stAnalyzer.isDelete());
+	assert(stAnalyzer.isDelete());
 
 	System.out.println("stAnalyzer.getStatementType(): "
 		+ stAnalyzer.getStatementName());
-	assertEquals("delete",
-		stAnalyzer.getStatementName().toLowerCase());
-
+	//assertEquals("delete", stAnalyzer.getStatementName().toLowerCase());
+	assert(stAnalyzer.getStatementName().toLowerCase().equals("delete"));
     }
 
     /**
@@ -176,7 +178,7 @@ public class StatementAnalyzerTest {
      *
      * @param stAnalyzer
      */
-    private void ddlWithNoCommentsNoSemiColumns(StatementAnalyzer stAnalyzer) {
+    public void ddlWithNoCommentsNoSemiColumns(StatementAnalyzer stAnalyzer) {
 	System.out.println();
 	System.out.println("-------------------------------------");
 	System.out.println();
@@ -185,20 +187,25 @@ public class StatementAnalyzerTest {
 
 	System.out.println("stAnalyzer.isWithSemicolons(): "
 		+ stAnalyzer.isWithSemicolons());
-	assertEquals(false, stAnalyzer.isWithSemicolons());
+	//assertEquals(false, stAnalyzer.isWithSemicolons());
+	assert(!stAnalyzer.isWithSemicolons());
 
 	System.out.println(
 		"stAnalyzer.isWithComments(): " + stAnalyzer.isWithComments());
-	assertEquals(false, stAnalyzer.isWithComments());
+	//assertEquals(false, stAnalyzer.isWithComments());
+	assert(!stAnalyzer.isWithComments());
 
 	System.out.println("stAnalyzer.isDdl(): " + stAnalyzer.isDdl());
-	assertEquals(false, stAnalyzer.isDdl());
+	//assertEquals(false, stAnalyzer.isDdl());
+	assert(!stAnalyzer.isDdl());
 
 	System.out.println("stAnalyzer.isDcl(): " + stAnalyzer.isDcl());
-	assertEquals(false, stAnalyzer.isDcl());
-
+	//assertEquals(false, stAnalyzer.isDcl());
+	assert(!stAnalyzer.isDcl());
+	
 	System.out.println("stAnalyzer.isDml(): " + stAnalyzer.isDml());
-	assertEquals(true, stAnalyzer.isDml());
+	//assertEquals(true, stAnalyzer.isDml());
+	assert(stAnalyzer.isDml());
     }
 
     /**
@@ -207,7 +214,7 @@ public class StatementAnalyzerTest {
      * @param stAnalyzer
      * @throws SQLException
      */
-    private void ddlWithCommentsAndSemiColumns() throws SQLException {
+    public void ddlWithCommentsAndSemiColumns() throws SQLException {
 	String sql = "INSERT INTO /* COMMENTS */ ORDERLOG VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? ); INSERT INTO ORDERLOG VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )";
 	StatementAnalyzer stAnalyzer = new StatementAnalyzer(sql,
 		new Vector<Object>());
@@ -220,12 +227,14 @@ public class StatementAnalyzerTest {
 
 	System.out.println("stAnalyzer.isWithSemicolons(): "
 		+ stAnalyzer.isWithSemicolons());
-	assertEquals(true, stAnalyzer.isWithSemicolons());
+	//assertEquals(true, stAnalyzer.isWithSemicolons());
+	assert(stAnalyzer.isWithSemicolons());
 
 	System.out.println(
 		"stAnalyzer.isWithComments(): " + stAnalyzer.isWithComments());
-	assertEquals(true, stAnalyzer.isWithComments());
-
+	//assertEquals(true, stAnalyzer.isWithComments());
+	assert(stAnalyzer.isWithComments());
+	
 	/*
 	System.out.println("stAnalyzer.isDdl(): " + stAnalyzer.isDdl());
 	assertEquals(false, stAnalyzer.isDdl());
@@ -244,7 +253,7 @@ public class StatementAnalyzerTest {
      * @param stAnalyzer
      * @throws SQLException
      */
-    private void dml() throws SQLException {
+    public void dml() throws SQLException {
 	String sql = "DROP TABLE CUSTOMER;";
 	StatementAnalyzer stAnalyzer = new StatementAnalyzer(sql,
 		new Vector<Object>());
@@ -257,20 +266,20 @@ public class StatementAnalyzerTest {
 
 	System.out.println("stAnalyzer.isWithSemicolons(): "
 		+ stAnalyzer.isWithSemicolons());
-	assertEquals(false, stAnalyzer.isWithSemicolons());
+	//assertEquals(false, stAnalyzer.isWithSemicolons());
 
 	System.out.println(
 		"stAnalyzer.isWithComments(): " + stAnalyzer.isWithComments());
-	assertEquals(false, stAnalyzer.isWithComments());
+	//assertEquals(false, stAnalyzer.isWithComments());
 
 	System.out.println("stAnalyzer.isDdl(): " + stAnalyzer.isDdl());
-	assertEquals(true, stAnalyzer.isDdl());
+	//assertEquals(true, stAnalyzer.isDdl());
 
 	System.out.println("stAnalyzer.isDcl(): " + stAnalyzer.isDcl());
-	assertEquals(false, stAnalyzer.isDcl());
+	//assertEquals(false, stAnalyzer.isDcl());
 
 	System.out.println("stAnalyzer.isDml(): " + stAnalyzer.isDml());
-	assertEquals(false, stAnalyzer.isDml());
+	//assertEquals(false, stAnalyzer.isDml());
     }
 
 }

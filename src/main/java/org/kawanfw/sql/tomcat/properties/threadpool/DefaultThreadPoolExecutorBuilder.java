@@ -26,8 +26,8 @@
 package org.kawanfw.sql.tomcat.properties.threadpool;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -47,22 +47,28 @@ public class DefaultThreadPoolExecutorBuilder implements ThreadPoolExecutorBuild
      */
     @Override
     public ThreadPoolExecutor build() {
-
+	
 	int corePoolSize = ThreadPoolProperties.DEFAULT_CORE_POOL_SIZE;
 	int maximumPoolSize = ThreadPoolProperties.DEFAULT_MAXIMUM_POOL_SIZE;
 	TimeUnit unit = ThreadPoolProperties.DEFAULT_UNIT;
 	long keepAliveTime = ThreadPoolProperties.DEFAULT_KEEP_ALIVE_TIME;
-	BlockingQueue<Runnable> workQueue = new ArrayBlockingQueue<>(ThreadPoolProperties.DEFAULT_BLOCKING_QUEUE_CAPACITY);
-
-	ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue);
-
+	BlockingQueue<Runnable> workQueue = new SynchronousQueue<>();
+	boolean prestartAllCoreThreads = ThreadPoolProperties.PRESTART_ALL_CORE_THREADS;
+	
+	ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(corePoolSize, maximumPoolSize, keepAliveTime,
+		unit, workQueue);
+	
+	if (prestartAllCoreThreads) {
+	    threadPoolExecutor.prestartAllCoreThreads();
+	}
+	
 	System.out.println(SqlTag.SQL_PRODUCT_START + " Loading ThreadPoolExecutor:");
 	System.out.println(SqlTag.SQL_PRODUCT_START + "  -> [corePoolSize: " + threadPoolExecutor.getCorePoolSize()
 		+ ", maximumPoolSize: " + threadPoolExecutor.getMaximumPoolSize() + ", unit: " + unit + ", ");
 	System.out
 		.println(SqlTag.SQL_PRODUCT_START + "  ->  keepAliveTime: " + threadPoolExecutor.getKeepAliveTime(unit)
 			+ ", workQueue: " + threadPoolExecutor.getQueue().getClass().getSimpleName() + "("
-			+ threadPoolExecutor.getQueue().remainingCapacity() + ")]");
+			+ threadPoolExecutor.getQueue().remainingCapacity() + "), " +  "prestartAllCoreThreads: "+ prestartAllCoreThreads + "]");
 	
 	return threadPoolExecutor;
     }

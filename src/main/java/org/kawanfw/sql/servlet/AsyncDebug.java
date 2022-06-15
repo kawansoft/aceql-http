@@ -52,13 +52,15 @@ import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
+import org.kawanfw.sql.util.FrameworkDebug;
+
 /**
  * @author Nicolas de Pomereu
  *
  */
 public class AsyncDebug {
 
-    public static boolean DEBUG =  true; //FrameworkDebug.isSet(AsyncDebug.class);
+    public static boolean DEBUG = FrameworkDebug.isSet(AsyncDebug.class);
 
     public static void debug(String s) {
 	if (DEBUG) {

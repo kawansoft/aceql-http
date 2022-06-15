@@ -57,6 +57,8 @@ import org.kawanfw.sql.servlet.injection.classes.creator.DatabaseConfiguratorCre
 import org.kawanfw.sql.servlet.injection.classes.creator.SessionConfiguratorCreator;
 import org.kawanfw.sql.servlet.injection.classes.creator.SqlFirewallsCreator;
 import org.kawanfw.sql.servlet.injection.classes.creator.UserAuthenticatorCreator;
+import org.kawanfw.sql.servlet.injection.classes.validator.CommunityValidator;
+import org.kawanfw.sql.servlet.injection.classes.validator.EnterpriseWarner;
 import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesStore;
 import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesUtil;
 import org.kawanfw.sql.tomcat.TomcatSqlModeStore;
@@ -90,6 +92,11 @@ public class InjectedClassesManagerNew {
 	
 	classNameToLoad = null;
 	try {
+	    
+	    //Future usage...
+	    //PropertiesFileFormatValidator propertiesFileFormatValidator = new PropertiesFileFormatValidator(propertiesFileStr);
+	    //propertiesFileFormatValidator.validate();
+	    
 	    // Test if we are in Native Tomcat and do specific stuff.
 	    if (!TomcatSqlModeStore.isTomcatEmbedded()) {
 
@@ -109,10 +116,10 @@ public class InjectedClassesManagerNew {
 			.createInstance();
 		nativeTomcatElementsBuilder.create(propertiesFileStr);
 	    }
-
+		
 	    CommunityValidator communityValidator = new CommunityValidator(propertiesFileStr);
 	    communityValidator.validate();
-
+	    
 	    Set<String> databases = ConfPropertiesStore.get().getDatabaseNames();
 
 	    TomcatStarterUtil.testDatabasesLimit(databases);
@@ -128,6 +135,10 @@ public class InjectedClassesManagerNew {
 	    ThreadPoolExecutorBuilder threadPoolExecutorBuilder = ThreadPoolExecutorBuilderCreator.createInstance();
 	    ThreadPoolExecutor threadPoolExecutor = threadPoolExecutorBuilder.build();
 	    injectedClassesBuilder.threadPoolExecutor(threadPoolExecutor);
+	    
+	    // Check ThreadPoolExecutor parameters
+	    EnterpriseWarner enterpriseWarner = new EnterpriseWarner(propertiesFileStr);
+	    enterpriseWarner.warnOnThreadPoolExecutorParams();
 	    
 	    // All elements that depend on database
 	    loadPerDatabase(databases, injectedClassesBuilder);
