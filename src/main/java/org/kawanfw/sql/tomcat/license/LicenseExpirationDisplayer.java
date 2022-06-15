@@ -75,7 +75,8 @@ public class LicenseExpirationDisplayer {
 	}
 	long remainingDays = LicenseExpirationUtil.getDifferenceInDays(date, expireDate);
 	
-	String message = StringUtils.capitalize(licenseType.toLowerCase()) + " License - will expire in " + remainingDays + " days (on " + expireDate + ")";
+	String daysText = remainingDays > 1 ? "days": "day";
+	String message = StringUtils.capitalize(licenseType.toLowerCase()) + " License - will expire in " + remainingDays + " " + daysText + " (on " + expireDate + ")";
 	return message;
 	
     }
