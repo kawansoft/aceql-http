@@ -40,8 +40,8 @@ AceQL HTTP Version 11.1 - 14-Jun-2022
      SQL request needs one for execution.
    - 2) keepAliveTime is now 60 seconds. 
    - 3) For Community Edition: A message warning displays at startup if
-        the ThreadPoolExecutor properties in the used aceql-server.proprties
-        file are not the same as the new values.
+        the ThreadPoolExecutor properties values in the used
+        aceql-server.proprties file are not the same as the new values.
    - 4) For Enterprise Edition: A message warning displays at startup if
         the "workQueueClassName" property value is not 
         "java.util.concurrent.SynchronousQueue" and if the 
@@ -52,7 +52,7 @@ AceQL HTTP Version 11.1 - 14-Jun-2022
   when their client app calls SQL statements.
   This default behavior may be ignored, see User Documentation.
   
-- Enterprise Edition: At server startup, the remaining days and expiration 
+- Enterprise Edition: at server startup, the remaining days and expiration 
   date of the current license is displayed/
    
 - Maven is now used - instead of Ant - to build the deployed runnable   
