@@ -26,7 +26,7 @@ The Community Edition is licensed through the GNU Lesser General Public License
 The Enterprise Edition is licensed through a commercial license.
 
 
-AceQL HTTP Version 11.1 - 14-Jun-2022
+AceQL HTTP Version 11.1 - 15-Jun-2022
 -------------------------------------
 
 - Default values of ThreadPoolExecutor creation have been changed in
