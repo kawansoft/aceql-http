@@ -228,7 +228,7 @@ The Linux/Unix installer is the same for both Community and Enterprise Editions.
 Open a terminal and download with Wget.
 
 ```bash
-$ wget https://download.aceql.com/rest/soft/11.1/download/aceql-http-11.1.run
+$ wget https://download.aceql.com/soft/download/11.1/aceql-http-11.1.run
 ```
 
 If you get a certificate error message, do one of the following:
