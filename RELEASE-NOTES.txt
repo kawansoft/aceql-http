@@ -26,6 +26,16 @@ The Community Edition is licensed through the GNU Lesser General Public License
 The Enterprise Edition is licensed through a commercial license.
 
 
+AceQL HTTP Version 11.1b - 20-Jun-2022 (Linux/Unix only)
+--------------------------------------------------------
+
+Bugs fixed:
+- The new June 20, 2002 Unix/linux installer aceql-http-11.1b.run
+  replaces the previous aceql-http-11.1.run because of a jar
+  generation bug that would sometimes make
+  the software fail when running the Enterprise Edition.
+
+
 AceQL HTTP Version 11.1 - 15-Jun-2022
 -------------------------------------
 

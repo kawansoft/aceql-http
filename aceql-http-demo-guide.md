@@ -1,4 +1,4 @@
-# AceQL HTTP v11.1 - June 15, 2022
+# AceQL HTTP v11.1 - June 20, 2022
 
 # Demo Guide
 
@@ -126,7 +126,7 @@ AceQL requires the installation of Java version 8+.
 Open a terminal and download with `Wget` 
 
 ```bash
-$ wget https://download.aceql.com/soft/download/11.1/aceql-http-11.1.run
+$ wget https://download.aceql.com/soft/download/11.1/aceql-http-11.1b.run
 ```
 
 If you get a certificate error message, do one of the following:
@@ -137,8 +137,8 @@ If you get a certificate error message, do one of the following:
 In following lines we will assume that the Open Source edition is chosen. (Operating mode is the same for Pro edition).
 
 ```bash
-chmod +x aceql-http-11.1.run
-./aceql-http-11.1.run 
+chmod +x aceql-http-11.1b.run
+./aceql-http-11.1b.run 
 ```
 
 This will create the `aceql-http-11.1` folder.

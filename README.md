@@ -6,7 +6,7 @@
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/d14142d5d6f04ba891d505e2e47b417d)](https://www.codacy.com/gh/kawansoft/aceql-http?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=kawansoft/aceql-http&amp;utm_campaign=Badge_Grade)
 ![GitHub contributors](https://img.shields.io/github/contributors/kawansoft/aceql-http)
 
-# AceQL HTTP v11.1   - June 15,  2022
+# AceQL HTTP v11.1   - June 22,  2022
 # Server Installation and Configuration Guide  
 
 <img src="https://docs.aceql.com/favicon.png" alt="AceQL HTTP Icon"/> 
@@ -228,7 +228,7 @@ The Linux/Unix installer is the same for both Community and Enterprise Editions.
 Open a terminal and download with Wget.
 
 ```bash
-$ wget https://download.aceql.com/soft/download/11.1/aceql-http-11.1.run
+$ wget https://download.aceql.com/soft/download/11.1/aceql-http-11.1b.run
 ```
 
 If you get a certificate error message, do one of the following:
@@ -239,8 +239,8 @@ If you get a certificate error message, do one of the following:
 Make the file executable and then run:
 
 ```bash
-chmod+x aceql-http-11.1.run                                       
-./aceql-http-11.1.run
+chmod+x aceql-http-11.1b.run                                       
+./aceql-http-11.1b.run
 ```
 
 This will create the `aceql-http-11.1` folder, which you can move wherever you want.
