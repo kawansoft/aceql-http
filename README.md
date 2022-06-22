@@ -239,7 +239,7 @@ If you get a certificate error message, do one of the following:
 Make the file executable and then run:
 
 ```bash
-chmod+x aceql-http-11.1b.run                                       
+chmod +x aceql-http-11.1b.run                                       
 ./aceql-http-11.1b.run
 ```
 
