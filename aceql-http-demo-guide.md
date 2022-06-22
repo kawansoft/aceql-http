@@ -145,7 +145,7 @@ This will create the `aceql-http-11.1` folder.
 
 The full path to the `aceql-http-11.1` installation folder will be surnamed `ACEQL_HOME` in following text.
 
-Example: if you run `aceql-http-11.1.run` from `/home/mike`, then software is installed in
+Example: if you run `aceql-http-11.1b.run` from `/home/mike`, then software is installed in
 
  `/home/mike/aceql-http-11.1` which is the value of `ACEQL_HOME`.
 
@@ -172,7 +172,7 @@ $ aceql-server -version
 It will display a line with all version info, like:
 
 ```bash
-AceQL HTTP Community v11.1 - 09-Jun-2022
+AceQL HTTP Community v11.1 - 15-Jun-2022
 ```
 
 ### Configure JDBC parameters in aceql-server.properties file
