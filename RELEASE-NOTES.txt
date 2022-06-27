@@ -26,6 +26,16 @@ The Community Edition is licensed through the GNU Lesser General Public License
 The Enterprise Edition is licensed through a commercial license.
 
 
+AceQL HTTP Version 11.2 - 27-Jun-2022 
+-------------------------------------
+
+- Remove dependency:
+      <groupId>com.github.rkpunjal.sqlsafe</groupId>
+      <artifactId>sql-injection-safe</artifactId>
+      <version>1.0.2</version>
+
+        
+
 AceQL HTTP Version 11.1b - 22-Jun-2022 (Linux/Unix only)
 --------------------------------------------------------
 
