@@ -49,12 +49,12 @@ import org.kawanfw.sql.util.Tag;
  * {@code cloudmersive.properties} file that is loaded at the AceQL server
  * startup. <br>
  * The file must be located in the same directory as the
- * {@code aceql.properties} file used when starting the AceQL server.<br>
+ * {@code aceql-server.properties} file used when starting the AceQL server.<br>
  * <br>
  * The SQL injection detection is asynchronous: this means that
  * {@code allowSqlRunAfterAnalysis} will always immediately return {@code true}
  * and that the result of the analysis will trigger later all
- * {@code SqlFirewallTrigger} defined in the {@code aceql.properties} file. <br>
+ * {@code SqlFirewallTrigger} defined in the {@code aceql-server.properties} file. <br>
  * <br>
  * Note that because of the asynchronous behavior, a new {@code Connection} will
  * be extracted from the pool in order to process the

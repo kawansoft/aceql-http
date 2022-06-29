@@ -56,9 +56,9 @@ import org.kawanfw.sql.util.TimestampUtil;
  * The name of the text file that will be used by a database is: &nbsp;
  * <code>&lt;database&gt;_deny_except_whitelist.txt</code>, where
  * {@code database} is the name of the database declared in the
- * {@code aceql.properties} files.<br>
+ * {@code aceql-server.properties} files.<br>
  * The file must be located in the same directory as the
- * {@code aceql.properties} file used when starting the AceQL server.<br>
+ * {@code aceql-server.properties} file used when starting the AceQL server.<br>
  * <br>
  * Each line of the text file must contain one statement, without quotes (") or
  * ending semicolon (;). <br>

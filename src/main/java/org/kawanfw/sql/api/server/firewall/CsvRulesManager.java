@@ -61,9 +61,9 @@ import org.kawanfw.sql.util.TimestampUtil;
  * <br>
  * The name of the CSV file that will be used by a database is:&nbsp;
  * <code>&lt;database&gt;_rules_manager.csv</code>, where {@code database} is
- * the name of the database declared in the {@code aceql.properties} files.<br>
+ * the name of the database declared in the {@code aceql-server.properties} files.<br>
  * The file must be located in the same directory as the
- * {@code aceql.properties} file used when starting the AceQL server.<br>
+ * {@code aceql-server.properties} file used when starting the AceQL server.<br>
  * <br>
  * The CSV file contains the rules for accessing the tables, with semicolon for
  * separator:

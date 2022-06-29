@@ -47,7 +47,7 @@ import org.kawanfw.sql.util.Tag;
  * {@code cloudmersive.properties} file that is loaded at the AceQL server
  * startup. <br>
  * The file must be located in the same directory as the
- * {@code aceql.properties} file used when starting the AceQL server.<br>
+ * {@code aceql-server.properties} file used when starting the AceQL server.<br>
  * <br>
  * Note that SQL injections are detected synchronously, which will slow down the
  * SQL calls. The {@code DenySqlInjectionManagerAsync} SQLFirewallManager is

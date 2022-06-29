@@ -94,7 +94,7 @@ public class SqlInjectionApiCallback implements ApiCallback<SqlInjectionDetectio
 
     /**
      * Will extract a new {@code Connection} from the database and the process all
-     * {@code SqlFirewallTrigger} defined in the {@code aceql.properties} file. <br>
+     * {@code SqlFirewallTrigger} defined in the {@code aceql-server.properties} file. <br>
      * The {@code Connection} will be cleanly closed in a {@code finally} block.
      */
     @Override

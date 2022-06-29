@@ -34,6 +34,7 @@ AceQL HTTP Version 11.2 - 27-Jun-2022
       <artifactId>sql-injection-safe</artifactId>
       <version>1.0.2</version>
 
+- Replace aceql.properties by aceql-server.properties in Javadoc.
         
 
 AceQL HTTP Version 11.1b - 22-Jun-2022 (Linux/Unix only)
