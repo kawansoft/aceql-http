@@ -29,12 +29,17 @@ The Enterprise Edition is licensed through a commercial license.
 AceQL HTTP Version 11.2 - 27-Jun-2022 
 -------------------------------------
 
+- All logging is now done using sl4j in order to allow
+  one to choose it's preferred logging implementation.
+
 - Remove dependency:
       <groupId>com.github.rkpunjal.sqlsafe</groupId>
       <artifactId>sql-injection-safe</artifactId>
       <version>1.0.2</version>
 
 - Replace aceql.properties by aceql-server.properties in Javadoc.
+
+
         
 
 AceQL HTTP Version 11.1b - 22-Jun-2022 (Linux/Unix only)
