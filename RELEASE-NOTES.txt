@@ -29,8 +29,11 @@ The Enterprise Edition is licensed through a commercial license.
 AceQL HTTP Version 11.2 - 27-Jun-2022 
 -------------------------------------
 
+- StatementNormalizer: add getStrongNormalized()
+- SecurityErrorThrower interface.
 - All logging is now done using sl4j in order to allow
   one to choose it's preferred logging implementation.
+- Maybe: Add OperationalMode?
 
 - Remove dependency:
       <groupId>com.github.rkpunjal.sqlsafe</groupId>
