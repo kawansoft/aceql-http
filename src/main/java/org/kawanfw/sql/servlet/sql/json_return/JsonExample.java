@@ -55,8 +55,10 @@ public class JsonExample {
 		.write("postalCode", "12345")
 
 		.writeStartArray("phoneNumbers").writeStartObject()
-		.write("type", "mobile").write("number", "111-111-1111")
-		.writeEnd().writeStartObject().write("type", "home")
+		.write("type", "mobile")
+		.write("number", "111-111-1111")
+		.writeEnd()
+		.writeStartObject().write("type", "home")
 		.write("number", "222-222-2222").writeEnd().writeEnd()
 
 		.writeEnd();

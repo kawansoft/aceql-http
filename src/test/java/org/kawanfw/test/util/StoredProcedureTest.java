@@ -13,7 +13,6 @@ import java.sql.Types;
 
 import javax.json.Json;
 import javax.json.JsonArray;
-import javax.json.JsonObject;
 import javax.json.JsonReader;
 import javax.json.JsonValue;
 
@@ -33,6 +32,8 @@ public class StoredProcedureTest {
      */
     public static void main(String[] args) throws Exception {
 
+	parseJson();
+	
 	// Change it to change test SQL engine
 	ConnectionLoader.sqlEngine = SqlTestParms.SQLSERVER_MS_DRIVER;
 
@@ -152,16 +153,19 @@ public class StoredProcedureTest {
     	],
 	 */
 
-	String jsonContent =
-	"[{\"out_param_two\":\"13\"}, {\"out_param_three\":\"12\"}]";
+	//String jsonContent =
+	//"[{\"out_param_two\":\"13\"}, {\"out_param_three\":\"12\"}]";
 
+	String jsonContent =
+	"[\"3\",\"\"]";
+	
         JsonReader reader = Json.createReader(new StringReader(jsonContent));
         JsonArray jsonArray = reader.readArray();
 
 	for (JsonValue jsonValue : jsonArray) {
 	    System.out.println(jsonValue.toString());
-	    JsonObject jsonObject = (JsonObject)jsonValue;
-	    System.out.println(jsonObject.keySet());
+	    //JsonObject jsonObject = (JsonObject)jsonValue;
+	    //System.out.println(jsonObject.keySet());
 	}
 
     }
