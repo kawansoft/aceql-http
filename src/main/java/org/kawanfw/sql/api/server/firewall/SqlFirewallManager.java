@@ -139,22 +139,6 @@ public interface SqlFirewallManager {
 	    throws IOException, SQLException;
 
     /**
-     * Allows to define if the passed username is allowed to call a raw JDBC
-     * {@code Statement.execute}.
-     *
-     * @param username   the client username to check the rule for
-     * @param database   the database name as defined in the JDBC URL field
-     * @param connection The current SQL/JDBC <code>Connection</code>
-     * @return <code>true</code> if the user has the right call a database update
-     *         statement
-     *
-     * @throws IOException  if an IOException occurs
-     * @throws SQLException if a SQLException occurs
-     *
-     */
-    boolean allowExecute(String username, String database, Connection connection) throws IOException, SQLException;
-
-    /**
      * Says if the username is allowed call the Metadata Query API for the passed
      * database.
      *

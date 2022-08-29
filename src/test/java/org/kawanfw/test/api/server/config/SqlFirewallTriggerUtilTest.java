@@ -29,7 +29,6 @@ import java.util.List;
 
 import org.kawanfw.sql.api.server.SqlEvent;
 import org.kawanfw.sql.api.server.SqlEventWrapper;
-import org.kawanfw.sql.api.server.firewall.DefaultSqlFirewallManager;
 import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
 import org.kawanfw.sql.servlet.util.SqlFirewallTriggerUtil;
 
@@ -45,7 +44,7 @@ public class SqlFirewallTriggerUtilTest {
 	list.add("value2");
 	list.add("value3");
 	
-	SqlFirewallManager sqlFirewallManager = new DefaultSqlFirewallManager();
+	SqlFirewallManager sqlFirewallManager = null;
 	SqlEvent evt = SqlEventWrapper.sqlEventBuild("user1", "db1", "10.0.0.0", "select * from table", false, list, false);
 	
 	String jsonString = SqlFirewallTriggerUtil.toJsonString(evt, sqlFirewallManager);

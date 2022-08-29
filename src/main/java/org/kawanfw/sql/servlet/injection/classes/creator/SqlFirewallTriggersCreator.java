@@ -36,7 +36,7 @@ import java.util.List;
 import org.kawanfw.sql.api.server.DatabaseConfigurator;
 import org.kawanfw.sql.api.server.SqlEvent;
 import org.kawanfw.sql.api.server.SqlEventWrapper;
-import org.kawanfw.sql.api.server.firewall.DefaultSqlFirewallManager;
+import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
 import org.kawanfw.sql.api.server.firewall.trigger.BanUserSqlFirewallTrigger;
 import org.kawanfw.sql.api.server.firewall.trigger.BeeperSqlFirewallTrigger;
 import org.kawanfw.sql.api.server.firewall.trigger.DefaultSqlFirewallTrigger;
@@ -80,8 +80,8 @@ public class SqlFirewallTriggersCreator {
 			// We call code just to verify it's OK:
 			SqlEvent sqlEvent = SqlEventWrapper.sqlEventBuild("username", database, "127.0.0.1",
 				"select * from table", false, parameterValues, false);
-			DefaultSqlFirewallManager defaultSqlFirewallManager = new DefaultSqlFirewallManager();
-			sqlFirewallTriggerManager.runIfStatementRefused(sqlEvent, defaultSqlFirewallManager,
+			SqlFirewallManager sqlFirewallManager = null;
+			sqlFirewallTriggerManager.runIfStatementRefused(sqlEvent, sqlFirewallManager,
 				connection);
 		    }
 		}
