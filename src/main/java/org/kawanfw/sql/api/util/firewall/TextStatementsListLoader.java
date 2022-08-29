@@ -90,7 +90,9 @@ public class TextStatementsListLoader {
 		    continue;
 		}
 
-		String normalizedStatement = StatementNormalizer.getNormalized(line);
+		//String normalizedStatement = StatementNormalizer.getNormalized(line);
+		StatementNormalizer statementNormalizer = new StatementNormalizer(line);
+		String normalizedStatement = statementNormalizer.getNormalized();
 		normalizedStatementSet.add(normalizedStatement);
 
 	    }

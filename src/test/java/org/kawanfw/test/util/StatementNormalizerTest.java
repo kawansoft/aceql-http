@@ -43,7 +43,8 @@ public class StatementNormalizerTest {
 	final String sql1 = "    SELECT 	*         " + CR_LF + " from     my_table 	where   1 >= 2  and  my_colum   =   ? and name = 'John Doe' ";
 	System.out.println("sql1: " + sql1);
 	
-	final String sql1Normalized = StatementNormalizer.getNormalized(sql1);
+	StatementNormalizer statementNormalizer = new StatementNormalizer(sql1);
+	final String sql1Normalized = statementNormalizer.getNormalized();
 	System.out.println(sql1Normalized);
 	
 	System.out.println();
@@ -51,7 +52,9 @@ public class StatementNormalizerTest {
 	
 	final String sql2 = "SELECT 	 * from " + CR_LF + "    my_table  where        1>=2  and  my_colum=? and name = 'John Doe' ";
 	System.out.println("sql2: " + sql2);
-	final String sql2Normalized = StatementNormalizer.getNormalized(sql2);
+	
+	statementNormalizer = new StatementNormalizer(sql2);
+	final String sql2Normalized = statementNormalizer.getNormalized();
 	System.out.println(sql2Normalized);
 	
 	System.out.println();
@@ -61,7 +64,8 @@ public class StatementNormalizerTest {
 	System.out.println();
 	final String sql3 = "SELECT 	 col1  , col2 from " + CR_LF + "    my_table  where      my_colum != ? ";
 	System.out.println("sql3: " + sql3);
-	final String sql3Normalized = StatementNormalizer.getNormalized(sql3);
+	statementNormalizer = new StatementNormalizer(sql3);
+	final String sql3Normalized = statementNormalizer.getNormalized();
 	System.out.println(sql3Normalized);
 	
     }

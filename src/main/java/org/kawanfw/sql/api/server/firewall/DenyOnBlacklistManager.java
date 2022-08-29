@@ -94,7 +94,8 @@ public class DenyOnBlacklistManager implements SqlFirewallManager {
 	String sql = sqlEvent.getSql();
 
 	// Normalize the statement
-	sql = StatementNormalizer.getNormalized(sql);
+	StatementNormalizer statementNormalizer = new StatementNormalizer(sql);
+	sql = statementNormalizer.getNormalized();
 
 	// Load all statements for database, if not already done:
 	loadStatements(database, "_deny_blacklist.txt");
