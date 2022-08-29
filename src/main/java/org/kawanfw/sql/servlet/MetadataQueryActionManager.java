@@ -122,7 +122,7 @@ public class MetadataQueryActionManager {
 	String username = request.getParameter(HttpParameter.USERNAME);
 	String database = request.getParameter(HttpParameter.DATABASE);
 
-	boolean allow = false;
+	boolean allow = true;
 	String sql = "<void>";
 	for (SqlFirewallManager sqlFirewallManager : sqlFirewallManagers) {
 	    allow = sqlFirewallManager.allowMetadataQuery(username, database, connection);
