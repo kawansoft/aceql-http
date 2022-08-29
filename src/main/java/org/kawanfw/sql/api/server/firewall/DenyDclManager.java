@@ -37,7 +37,7 @@ import org.kawanfw.sql.api.server.StatementAnalyzer;
  * @author Nicolas de Pomereu
  * @since 4.0
  */
-public class DenyDclManager extends DefaultSqlFirewallManager implements SqlFirewallManager {
+public class DenyDclManager implements SqlFirewallManager {
 
     /**
      * @return <code><b>false</b></code> if the SQL statement is DCL (Data Control
@@ -47,6 +47,27 @@ public class DenyDclManager extends DefaultSqlFirewallManager implements SqlFire
     public boolean allowSqlRunAfterAnalysis(SqlEvent sqlEvent, Connection connection) throws IOException, SQLException {
 	StatementAnalyzer analyzer = new StatementAnalyzer(sqlEvent.getSql(), sqlEvent.getParameterValues());
 	return !analyzer.isDcl();
+    }
+    
+	/**
+     * @return <code><b>true</b></code>. (Client programs will be allowed to create
+     *         raw <code>Statement</code>, i.e. call statements without parameters.)
+     */
+    @Override
+    public boolean allowStatementClass(String username, String database, Connection connection)
+	    throws IOException, SQLException {
+	return true;
+    }
+
+
+    /**
+     * @return <code><b>true</b></code>. (Client programs will be allowed to call
+     *         the Metadata Query API).
+     */
+    @Override
+    public boolean allowMetadataQuery(String username, String database, Connection connection)
+	    throws IOException, SQLException {
+	return true;
     }
 
 }

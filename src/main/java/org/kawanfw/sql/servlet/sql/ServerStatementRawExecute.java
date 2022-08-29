@@ -414,7 +414,7 @@ public class ServerStatementRawExecute {
 	    throws IOException, SQLException, SecurityException {
 	String ipAddress = request.getRemoteAddr();
 
-	boolean isAllowedAfterAnalysis = false;
+	boolean isAllowedAfterAnalysis = true;
 	for (SqlFirewallManager sqlFirewallManager : sqlFirewallManagers) {
 
 	    SqlEvent sqlEvent = SqlEventWrapper.sqlEventBuild(username, database, ipAddress, sqlOrder,

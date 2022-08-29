@@ -58,10 +58,6 @@ import org.kawanfw.sql.api.server.StatementAnalyzer;
  * {@code SqlFirewallManager} instance must return true in order to allow
  * updates of the database.
  * <p>
- * Note that the framework comes with a default <code>SqlFirewallManager</code>
- * implementation that is *not* secured and should be extended:
- * {@link DefaultSqlFirewallManager}.
- * <p>
  * Built in and ready to use classes that don't require any coding are included.
  * The classes may be chained. See each Javadoc for more details:
  * <ul>

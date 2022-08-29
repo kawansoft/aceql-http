@@ -103,7 +103,7 @@ public class ServerSqlDispatchUtil {
 	String database = request.getParameter(HttpParameter.DATABASE);
 	String ipAddress = request.getRemoteAddr();
 
-	boolean allow = false;
+	boolean allow = true;
 	String sql = "<void>";
 	for (SqlFirewallManager sqlFirewallManager : sqlFirewallManagers) {
 	    allow = sqlFirewallManager.allowMetadataQuery(username, database, connection);

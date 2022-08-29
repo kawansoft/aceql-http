@@ -46,7 +46,7 @@ import org.kawanfw.sql.api.server.StatementAnalyzer;
  * @author Nicolas de Pomereu
  * @since 11.0
  */
-public class DenyDatabaseWriteManager extends DefaultSqlFirewallManager implements SqlFirewallManager {
+public class DenyDatabaseWriteManager implements SqlFirewallManager {
 
     /**
      * @return <code>false</code> if the passed SQL statement tries to update the
@@ -57,5 +57,26 @@ public class DenyDatabaseWriteManager extends DefaultSqlFirewallManager implemen
 	StatementAnalyzer analyzer = new StatementAnalyzer(sqlEvent.getSql(), sqlEvent.getParameterValues());
 	return !(analyzer.isDelete() || analyzer.isInsert() || analyzer.isUpdate() || analyzer.isDcl()
 		|| analyzer.isDdl() || analyzer.isTcl());
+    }
+    
+	/**
+     * @return <code><b>true</b></code>. (Client programs will be allowed to create
+     *         raw <code>Statement</code>, i.e. call statements without parameters.)
+     */
+    @Override
+    public boolean allowStatementClass(String username, String database, Connection connection)
+	    throws IOException, SQLException {
+	return true;
+    }
+
+
+    /**
+     * @return <code><b>true</b></code>. (Client programs will be allowed to call
+     *         the Metadata Query API).
+     */
+    @Override
+    public boolean allowMetadataQuery(String username, String database, Connection connection)
+	    throws IOException, SQLException {
+	return true;
     }
 }

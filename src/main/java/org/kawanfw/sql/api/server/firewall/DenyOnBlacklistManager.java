@@ -67,7 +67,7 @@ import org.kawanfw.sql.util.TimestampUtil;
  * @author Nicolas de Pomereu
  * @since 11.0
  */
-public class DenyOnBlacklistManager extends DefaultSqlFirewallManager implements SqlFirewallManager {
+public class DenyOnBlacklistManager implements SqlFirewallManager {
 
     private static boolean DEBUG = FrameworkDebug.isSet(DenyOnBlacklistManager.class);
 
@@ -104,6 +104,27 @@ public class DenyOnBlacklistManager extends DefaultSqlFirewallManager implements
 	    return true;
 	}
 	return !deniedStatementsForDb.contains(sql);
+    }
+
+	
+    /**
+     * @return <code><b>true</b></code>. (Client programs will be allowed to create
+     *         raw <code>Statement</code>, i.e. call statements without parameters.)
+     */
+    @Override
+    public boolean allowStatementClass(String username, String database, Connection connection)
+	    throws IOException, SQLException {
+	return true;
+    }
+
+    /**
+     * @return <code><b>true</b></code>. (Client programs will be allowed to call
+     *         the Metadata Query API).
+     */
+    @Override
+    public boolean allowMetadataQuery(String username, String database, Connection connection)
+	    throws IOException, SQLException {
+	return true;
     }
 
     /**

@@ -67,7 +67,7 @@ import org.kawanfw.sql.util.Tag;
  * @author Nicolas de Pomereu
  * @since 11.0
  */
-public class DenySqlInjectionManagerAsync extends DefaultSqlFirewallManager implements SqlFirewallManager {
+public class DenySqlInjectionManagerAsync implements SqlFirewallManager {
 
     /** The running instance */
     private CloudmersiveApi cloudmersiveApi = null;
@@ -104,4 +104,25 @@ public class DenySqlInjectionManagerAsync extends DefaultSqlFirewallManager impl
 	    return true;
 	}
     }
+    
+	
+    /**
+     * @return <code><b>true</b></code>. (Client programs will be allowed to create
+     *         raw <code>Statement</code>, i.e. call statements without parameters.)
+     */
+    @Override
+    public boolean allowStatementClass(String username, String database, Connection connection)
+	    throws IOException, SQLException {
+	return true;
+    }
+
+    /**
+     * @return <code><b>true</b></code>. (Client programs will be allowed to call
+     *         the Metadata Query API).
+     */
+    @Override
+    public boolean allowMetadataQuery(String username, String database, Connection connection)
+	    throws IOException, SQLException {
+	return true;
+    }    
 }

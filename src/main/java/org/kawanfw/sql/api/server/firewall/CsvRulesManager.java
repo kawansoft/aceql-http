@@ -111,7 +111,7 @@ import org.kawanfw.sql.util.TimestampUtil;
  * @author Nicolas de Pomereu
  * @since 4.1
  */
-public class CsvRulesManager extends DefaultSqlFirewallManager implements SqlFirewallManager {
+public class CsvRulesManager implements SqlFirewallManager {
 
     private static boolean DEBUG = FrameworkDebug.isSet(CsvRulesManager.class);
 
@@ -142,6 +142,27 @@ public class CsvRulesManager extends DefaultSqlFirewallManager implements SqlFir
 
     }
 
+	/**
+     * @return <code><b>true</b></code>. (Client programs will be allowed to create
+     *         raw <code>Statement</code>, i.e. call statements without parameters.)
+     */
+    @Override
+    public boolean allowStatementClass(String username, String database, Connection connection)
+	    throws IOException, SQLException {
+	return true;
+    }
+
+
+    /**
+     * @return <code><b>true</b></code>. (Client programs will be allowed to call
+     *         the Metadata Query API).
+     */
+    @Override
+    public boolean allowMetadataQuery(String username, String database, Connection connection)
+	    throws IOException, SQLException {
+	return true;
+    }
+    
     /**
      * Will say id there is a rule that allows for the usename the SQL statement.
      *
@@ -328,4 +349,5 @@ public class CsvRulesManager extends DefaultSqlFirewallManager implements SqlFir
 	    System.out.println(new Date() + " " + CsvRulesManager.class.getSimpleName() + " " + string);
 	}
     }
+
 }

@@ -28,6 +28,8 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import org.kawanfw.sql.api.server.SqlEvent;
+
 /**
  * Firewall manager that denies any call of the raw <code>Statement</code>
  * class. (Calling Statements without parameters is forbidden).
@@ -35,7 +37,7 @@ import java.sql.SQLException;
  * @author Nicolas de Pomereu
  * @since 4.0
  */
-public class DenyStatementClassManager extends DefaultSqlFirewallManager implements SqlFirewallManager {
+public class DenyStatementClassManager implements SqlFirewallManager {
 
     /**
      * @return <code>false</code>. (Nobody is allowed to create raw
@@ -45,5 +47,26 @@ public class DenyStatementClassManager extends DefaultSqlFirewallManager impleme
     public boolean allowStatementClass(String username, String database, Connection connection)
 	    throws IOException, SQLException {
 	return false;
+    }
+    
+    
+    /**
+     * @return <code><b>true</b></code>. No analysis is done so all SQL statements
+     *         are authorized.
+     */
+    @Override
+    public boolean allowSqlRunAfterAnalysis(SqlEvent sqlEvent, Connection connection) throws IOException, SQLException {
+	return true;
+    }
+	
+	
+    /**
+     * @return <code><b>true</b></code>. (Client programs will be allowed to call
+     *         the Metadata Query API).
+     */
+    @Override
+    public boolean allowMetadataQuery(String username, String database, Connection connection)
+	    throws IOException, SQLException {
+	return true;
     }
 }
