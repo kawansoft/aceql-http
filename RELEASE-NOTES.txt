@@ -29,10 +29,18 @@ The Enterprise Edition is licensed through a commercial license.
 AceQL HTTP Version 11.2 - 27-Jun-2022 
 -------------------------------------
 
-- StatementNormalizer: add getStrongNormalized()
-- SecurityErrorThrower interface.
+- Rewrite SqlFirewallManager & SqlFirewallTrigger:
+==> remove DefaultSqlFirewallManager
+==> remove allowExecute
+==> remove DefaultSqlFirewallTrigger
+
 - All logging is now done using sl4j in order to allow
   one to choose it's preferred logging implementation.
+==> Use new com.kawanwall.server.api.logging  
+  
+- Use https://mkyong.com/java/how-to-get-client-ip-address-in-java/ for IP Address.
+- StatementNormalizer: use new strong normalizer and update Javadoc.
+
 - Maybe: Add OperationalMode?
 
 - Remove dependency:
@@ -41,7 +49,7 @@ AceQL HTTP Version 11.2 - 27-Jun-2022
       <version>1.0.2</version>
 
 - Replace aceql.properties by aceql-server.properties in Javadoc.
-
+- Future usage: - SecurityErrorThrower interface.
 
         
 
