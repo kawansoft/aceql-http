@@ -56,6 +56,7 @@ import org.kawanfw.sql.servlet.sql.json_return.JsonErrorReturn;
 import org.kawanfw.sql.servlet.sql.json_return.JsonOkReturn;
 import org.kawanfw.sql.tomcat.TomcatSqlModeStore;
 import org.kawanfw.sql.util.FrameworkDebug;
+import org.kawanfw.sql.util.IpUtil;
 import org.kawanfw.sql.util.SqlTag;
 import org.kawanfw.sql.util.TimestampUtil;
 import org.kawanfw.sql.version.VersionWrapper;
@@ -241,7 +242,7 @@ public class ServerSqlManager extends HttpServlet {
 	request.setCharacterEncoding("UTF-8");
 
 	debug("after RequestInfoStore.init(request);");
-	debug(request.getRemoteAddr());
+	debug(IpUtil.getRemoteAddr(request));
 
 	// Wrap the HttpServletRequest in roder to allow to set new parameters
 	HttpServletRequestHolder requestHolder = new HttpServletRequestHolder(request);

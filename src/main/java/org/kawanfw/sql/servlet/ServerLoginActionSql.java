@@ -46,6 +46,7 @@ import org.kawanfw.sql.servlet.sql.json_return.ExceptionReturner;
 import org.kawanfw.sql.servlet.sql.json_return.JsonErrorReturn;
 import org.kawanfw.sql.servlet.sql.json_return.JsonOkReturn;
 import org.kawanfw.sql.util.FrameworkDebug;
+import org.kawanfw.sql.util.IpUtil;
 
 /**
  * Login.
@@ -108,7 +109,7 @@ public class ServerLoginActionSql extends HttpServlet {
 		return;
 	    }
 
-	    String ipAddress = request.getRemoteAddr();
+	    String ipAddress = IpUtil.getRemoteAddr(request);
 	    boolean isOk = userAuthenticator.login(username, password.toCharArray(), database, ipAddress);
 
 	    debug("login isOk: " + isOk + " (login: " + username + ")");

@@ -61,6 +61,7 @@ import org.kawanfw.sql.servlet.sql.dto.UpdateCountsArrayDto;
 import org.kawanfw.sql.servlet.sql.json_return.JsonErrorReturn;
 import org.kawanfw.sql.servlet.sql.json_return.JsonSecurityMessage;
 import org.kawanfw.sql.util.FrameworkDebug;
+import org.kawanfw.sql.util.IpUtil;
 
 /**
  * @author KawanSoft S.A.S
@@ -193,7 +194,7 @@ public class ServerStatementBatch {
 	    }
 
 	    // Throws a SQL exception if the order is not authorized:
-	    String ipAddress = request.getRemoteAddr();
+	    String ipAddress = IpUtil.getRemoteAddr(request);
 
 	    statement = connection.createStatement();
 	    debug("before statement.addBatch() loop");

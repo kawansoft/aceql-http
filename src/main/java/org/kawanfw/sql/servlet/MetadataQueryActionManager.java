@@ -55,6 +55,7 @@ import org.kawanfw.sql.servlet.connection.RollbackUtil;
 import org.kawanfw.sql.servlet.sql.ServerStatementUtil;
 import org.kawanfw.sql.servlet.sql.json_return.JsonErrorReturn;
 import org.kawanfw.sql.servlet.sql.json_return.JsonSecurityMessage;
+import org.kawanfw.sql.util.IpUtil;
 
 /**
  * Execute the metadata query asked by user.
@@ -127,7 +128,7 @@ public class MetadataQueryActionManager {
 	for (SqlFirewallManager sqlFirewallManager : sqlFirewallManagers) {
 	    allow = sqlFirewallManager.allowMetadataQuery(username, database, connection);
 	    if (!allow) {
-		String ipAddress = request.getRemoteAddr();
+		String ipAddress = IpUtil.getRemoteAddr(request);
 		List<Object> parameterValues = new ArrayList<>();
 
 		SqlEvent sqlEvent = SqlEventWrapper.sqlEventBuild(username, database, ipAddress, sql,

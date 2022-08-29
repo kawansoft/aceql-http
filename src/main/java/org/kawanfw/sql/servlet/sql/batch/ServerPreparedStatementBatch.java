@@ -65,6 +65,7 @@ import org.kawanfw.sql.servlet.sql.json_return.JsonSecurityMessage;
 import org.kawanfw.sql.servlet.sql.parameters.ServerPreparedStatementParameters;
 import org.kawanfw.sql.servlet.sql.parameters.ServerPreparedStatementParametersUtil;
 import org.kawanfw.sql.util.FrameworkDebug;
+import org.kawanfw.sql.util.IpUtil;
 
 /**
  * @author KawanSoft S.A.S
@@ -246,7 +247,7 @@ public class ServerPreparedStatementBatch {
 
 	    int[] rc = preparedStatement.executeBatch();
 
-	    String ipAddress = request.getRemoteAddr();
+	    String ipAddress = IpUtil.getRemoteAddr(request);
 	    callUpdateListenersInThread(sqlOrder, parametersList, username, database, ipAddress);
 
 	    UpdateCountsArrayDto updateCountsArrayDto = new UpdateCountsArrayDto(rc);
@@ -283,7 +284,7 @@ public class ServerPreparedStatementBatch {
     private void checkFirewallGeneral(String username, String database, String sqlOrder,
 	    ServerPreparedStatementParameters serverPreparedStatementParameters)
 	    throws IOException, SQLException, SecurityException {
-	String ipAddress = request.getRemoteAddr();
+	String ipAddress = IpUtil.getRemoteAddr(request);
 
 	boolean isAllowedAfterAnalysis = true;
 	for (SqlFirewallManager sqlFirewallManager : sqlFirewallManagers) {

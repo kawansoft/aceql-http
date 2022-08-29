@@ -62,6 +62,7 @@ import org.kawanfw.sql.servlet.sql.json_return.JsonUtil;
 import org.kawanfw.sql.servlet.sql.parameters.ServerPreparedStatementParameters;
 import org.kawanfw.sql.servlet.sql.parameters.ServerPreparedStatementParametersUtil;
 import org.kawanfw.sql.util.FrameworkDebug;
+import org.kawanfw.sql.util.IpUtil;
 
 /**
  * @author KawanSoft S.A.S
@@ -339,7 +340,7 @@ public class ServerStatement {
     private String checkFirewallGeneral(String username, String database, String sqlOrder,
 	    ServerPreparedStatementParameters serverPreparedStatementParameters)
 	    throws IOException, SQLException, SecurityException {
-	String ipAddress = request.getRemoteAddr();
+	String ipAddress = IpUtil.getRemoteAddr(request);
 
 	boolean isAllowedAfterAnalysis = true;
 	for (SqlFirewallManager sqlFirewallManager : sqlFirewallManagers) {
@@ -394,7 +395,7 @@ public class ServerStatement {
 	    // Throws a SQL exception if the order is not authorized:
 	    debug("before new SqlSecurityChecker()");
 
-	    String ipAddress = request.getRemoteAddr();
+	    String ipAddress = IpUtil.getRemoteAddr(request);
 
 	    checkFirewallGeneral(username, database, sqlOrder, ipAddress);
 	    statement = connection.createStatement();

@@ -18,6 +18,7 @@ import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
 import org.kawanfw.sql.api.util.firewall.SqlFirewallTriggerWrapper;
 import org.kawanfw.sql.servlet.sql.ServerStatementUtil;
 import org.kawanfw.sql.servlet.sql.json_return.JsonSecurityMessage;
+import org.kawanfw.sql.util.IpUtil;
 
 public class ServerSqlDispatchUtil {
 
@@ -101,7 +102,7 @@ public class ServerSqlDispatchUtil {
 
 	String username = request.getParameter(HttpParameter.USERNAME);
 	String database = request.getParameter(HttpParameter.DATABASE);
-	String ipAddress = request.getRemoteAddr();
+	String ipAddress = IpUtil.getRemoteAddr(request);
 
 	boolean allow = true;
 	String sql = "<void>";
