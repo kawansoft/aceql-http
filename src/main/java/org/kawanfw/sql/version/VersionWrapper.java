@@ -1,12 +1,10 @@
 /*
- * Copyright (c)2022 KawanSoft S.A.S.
- * This file is part of AceQL HTTP.
- * AceQL HTTP: SQL Over HTTP
+ * Copyright (c)2022 KawanSoft S.A.S. All rights reserved.
  * 
  * Use of this software is governed by the Business Source License included
  * in the LICENSE.TXT file in the project's root directory.
  *
- * Change Date: 2027-08-30
+ * Change Date: 2027-08-31
  *
  * On the date above, in accordance with the Business Source License, use
  * of this software will be governed by version 2.0 of the Apache License.
@@ -21,8 +19,8 @@ package org.kawanfw.sql.version;
 public class VersionWrapper {
 
     private static final String NAME = "AceQL HTTP";
-    private static final String EDITION_COMMUNITY = "Community";
-    private static final String EDITION_ENTERPRISE = "Enterprise";
+    //private static final String EDITION_COMMUNITY = "Community";
+    //private static final String EDITION_ENTERPRISE = "Enterprise";
     private static final String DESCRIPTION = "Remote SQL access over HTTP";
 
     private static String VERSION = VersionValues.VERSION;
@@ -33,7 +31,8 @@ public class VersionWrapper {
     }
 
     public static String getServerVersion() {
-	return NAME + " " + getEdition() + " " + VERSION + " - " + DATE;
+	//return NAME + " " + getEdition() + " " + VERSION + " - " + DATE;
+	return NAME + " " + VERSION + " - " + DATE;
     }
     
     public static String getVersionNumber() {
@@ -44,10 +43,10 @@ public class VersionWrapper {
 	return DATE;
     }
 
-    public static String getEdition() {
-	String edition = EditionUtil.isCommunityEdition() ? EDITION_COMMUNITY:EDITION_ENTERPRISE;
-	return edition;
-    }
+//    public static String getEdition() {
+//	String edition = EditionUtil.isCommunityEdition() ? EDITION_COMMUNITY:EDITION_ENTERPRISE;
+//	return edition;
+//    }
     
     
     
