@@ -456,6 +456,7 @@ public class InjectedClassesManagerNew {
 
 	RequestHeadersAuthenticatorLoader requestHeadersAuthenticatorLoader = RequestHeadersAuthenticatorLoaderCreator
 		.createInstance();
+	
 	requestHeadersAuthenticatorLoader.loadRequestHeadersAuthenticator(injectedClassesBuilder,
 		requestHeadersAuthenticatorClassName);
 
