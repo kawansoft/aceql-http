@@ -24,8 +24,6 @@ import org.apache.catalina.startup.Tomcat;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.coyote.http2.Http2Protocol;
 import org.kawanfw.sql.api.server.DatabaseConfigurationException;
-import org.kawanfw.sql.tomcat.properties.pool.misc.BooleanPropertiesInterceptor;
-import org.kawanfw.sql.tomcat.properties.pool.misc.BooleanPropertiesInterceptorCreator;
 import org.kawanfw.sql.util.SqlTag;
 
 /**
@@ -62,9 +60,10 @@ public class TomcatConnectorsUpdater {
 	
 	boolean updateToHttp2Protocol = Boolean.parseBoolean(updateToHttp2ProtocolStr);
 
-	BooleanPropertiesInterceptor booleanPropertiesInterceptor = BooleanPropertiesInterceptorCreator.createInstance();
-	boolean propertyValue = booleanPropertiesInterceptor.interceptValue(updateToHttp2Protocol);
+	//BooleanPropertiesInterceptor booleanPropertiesInterceptor = BooleanPropertiesInterceptorCreator.createInstance();
+	//boolean propertyValue = booleanPropertiesInterceptor.interceptValue(updateToHttp2Protocol);
 	
+	boolean propertyValue = updateToHttp2Protocol;
 	if (propertyValue) {
 	    System.out.println(
 		    SqlTag.SQL_PRODUCT_START + " Protocol updated to HTTP/2");

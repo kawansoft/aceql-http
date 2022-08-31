@@ -21,8 +21,7 @@ import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 
 import org.kawanfw.sql.api.server.DatabaseConfigurator;
-import org.kawanfw.sql.servlet.util.max_rows.MaxRowsSetter;
-import org.kawanfw.sql.servlet.util.max_rows.MaxRowsSetterCreator;
+import org.kawanfw.sql.servlet.HttpParameter;
 import org.kawanfw.sql.util.FrameworkDebug;
 
 /**
@@ -63,8 +62,22 @@ public class ServerSqlUtil {
     public static void setMaxRowsToReturn(HttpServletRequest request, String username, String database,
 	    Statement statement, DatabaseConfigurator databaseConfigurator) throws SQLException, IOException {
 
-	MaxRowsSetter maxRowsSetter = MaxRowsSetterCreator.createInstance();
-	maxRowsSetter.setMaxRows(request, username, database, statement, databaseConfigurator);
+	//MaxRowsSetter maxRowsSetter = MaxRowsSetterCreator.createInstance();
+	//maxRowsSetter.setMaxRows(request, username, database, statement, databaseConfigurator);
+	
+        String maxRowsStr = request.getParameter(HttpParameter.MAX_ROWS);
+        
+        if (maxRowsStr != null && !maxRowsStr.isEmpty()) {
+            int maxRows = Integer.parseInt(maxRowsStr);
+            statement.setMaxRows(maxRows);
+        }
+    
+        int maxRowsToReturn = databaseConfigurator.getMaxRows(username, database);
+        
+        if (maxRowsToReturn > 0 && (statement.getMaxRows() == 0 || (statement.getMaxRows() > maxRowsToReturn))) {
+            statement.setFetchSize(0); // To avoid any possible conflict
+            statement.setMaxRows(maxRowsToReturn);
+        }
 	
     }
 

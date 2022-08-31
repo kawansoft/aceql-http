@@ -21,8 +21,7 @@ import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.kawanfw.sql.servlet.sql.callable.aceqlproc.ServerQueryExecutorWrapper;
-import org.kawanfw.sql.servlet.sql.callable.aceqlproc.ServerQueryExecutorWrapperCreator;
+import org.kawanfw.sql.servlet.sql.callable.aceqlproc.DefaultServerQueryExecutorWrapper;
 import org.kawanfw.sql.util.FrameworkDebug;
 
 /**
@@ -45,15 +44,22 @@ public class ServerQueryExecutorUtil {
 
 	if (action.equals(HttpParameter.EXECUTE_SERVER_QUERY)) {
 	    
+//	    try {
+//		ServerQueryExecutorWrapper serverQueryExecutorWrapper = ServerQueryExecutorWrapperCreator
+//			.createInstance();
+//		serverQueryExecutorWrapper.executeQuery(request, out, action, connection);
+//	    } catch (SQLException exception) {
+//		throw exception;
+//	    }
+//	    catch (Exception exception) {
+//		throw new SQLException(exception);
+//	    }
+	    
+	    DefaultServerQueryExecutorWrapper defaultServerQueryExecutorWrapper = new DefaultServerQueryExecutorWrapper();
 	    try {
-		ServerQueryExecutorWrapper serverQueryExecutorWrapper = ServerQueryExecutorWrapperCreator
-			.createInstance();
-		serverQueryExecutorWrapper.executeQuery(request, out, action, connection);
-	    } catch (SQLException exception) {
-		throw exception;
-	    }
-	    catch (Exception exception) {
-		throw new SQLException(exception);
+		defaultServerQueryExecutorWrapper.executeQuery(request, out, action, connection);
+	    } catch (ClassNotFoundException e) {
+		throw new SQLException(e);
 	    }
 
 	    return true;

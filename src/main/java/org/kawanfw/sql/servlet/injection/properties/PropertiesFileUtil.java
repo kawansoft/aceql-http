@@ -79,10 +79,14 @@ public class PropertiesFileUtil {
 	}
 		
 	try {
+	    /*
 	    Class<?> c = Class.forName("org.kawanfw.sql.pro.reflection.builders.ProEditionPropertiesDecryptor");
 	    Constructor<?> constructor = c.getConstructor();
 	    PropertiesDecryptor propertiesDecryptor = (PropertiesDecryptor) constructor.newInstance();
 	    properties =  propertiesDecryptor.decrypt(properties, password);
+	    */
+	    
+	    properties = ProEditionPropertiesDecryptorWrap.decrypt(properties, password);
 	    
 	    for (Map.Entry<Object, Object> entry : properties.entrySet()) {
 		String key = (String) entry.getKey();

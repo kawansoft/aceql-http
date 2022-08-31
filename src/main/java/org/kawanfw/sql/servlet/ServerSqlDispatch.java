@@ -47,12 +47,9 @@ import org.kawanfw.sql.servlet.sql.ServerStatement;
 import org.kawanfw.sql.servlet.sql.ServerStatementRawExecute;
 import org.kawanfw.sql.servlet.sql.batch.ServerPreparedStatementBatch;
 import org.kawanfw.sql.servlet.sql.batch.ServerStatementBatch;
-import org.kawanfw.sql.servlet.sql.callable.ServerCallableStatementWrapper;
-import org.kawanfw.sql.servlet.sql.callable.ServerCallableStatementWrapperCreator;
+import org.kawanfw.sql.servlet.sql.callable.ProEditionServerCallableStatement;
 import org.kawanfw.sql.servlet.sql.json_return.JsonErrorReturn;
 import org.kawanfw.sql.servlet.sql.json_return.JsonOkReturn;
-import org.kawanfw.sql.servlet.util.operation_type.OperationType;
-import org.kawanfw.sql.servlet.util.operation_type.OperationTypeCreator;
 import org.kawanfw.sql.util.FrameworkDebug;
 import org.kawanfw.sql.util.Tag;
 import org.kawanfw.sql.version.VersionWrapper;
@@ -313,12 +310,13 @@ public class ServerSqlDispatch {
 	    List<SqlFirewallManager> sqlFirewallManagers)
 	    throws SQLException, FileNotFoundException, IOException, IllegalArgumentException {
 
-	OperationType operationType = OperationTypeCreator.createInstance();
-	String sql = request.getParameter(HttpParameter.SQL);
-	if (!operationType.isOperationAuthorized(sql)) {
-	    throw new UnsupportedOperationException(
-		    Tag.PRODUCT + " " + "DCL or DLL Operation " + Tag.REQUIRES_ACEQL_ENTERPRISE_EDITION);
-	}
+//	OperationType operationType = OperationTypeCreator.createInstance();
+//	String sql = request.getParameter(HttpParameter.SQL);
+//	if (!operationType.isOperationAuthorized(sql)) {
+//	    throw new UnsupportedOperationException(
+//		    Tag.PRODUCT + " " + "DCL or DLL Operation " + Tag.REQUIRES_ACEQL_ENTERPRISE_EDITION);
+//	}
+	
 	if (ServerSqlDispatchUtil.isExecute(action) && !ServerSqlDispatchUtil.isStoredProcedure(request)) {
 	    ServerStatementRawExecute serverStatement = new ServerStatementRawExecute(request, response,
 		    sqlFirewallManagers, connection);
@@ -337,19 +335,25 @@ public class ServerSqlDispatch {
 	    serverPreparedStatementBatch.executeBatch(out);
 	} else if (ServerSqlDispatchUtil.isStoredProcedure(request)) {
 
+	    /*
 	    try {
+		
 		ServerCallableStatementWrapper serverCallableStatementWrapper = ServerCallableStatementWrapperCreator
 			.createInstance();
 		serverCallableStatementWrapper.executeOrExecuteQuery(request, response, sqlFirewallManagers, connection,
 			out);
-	    } catch (ClassNotFoundException exception) {
-		throw new UnsupportedOperationException(
-			Tag.PRODUCT + " " + "Stored procedure call " + Tag.REQUIRES_ACEQL_ENTERPRISE_EDITION);
+		
+		
 	    } catch (SQLException exception) {
 		throw exception;
 	    } catch (Exception exception) {
 		throw new SQLException(exception);
 	    }
+	    */
+	    
+	    ProEditionServerCallableStatement proEditionServerCallableStatement = new ProEditionServerCallableStatement(
+		    request, response, sqlFirewallManagers, connection);
+	    proEditionServerCallableStatement.executeOrExecuteQuery(out);
 
 	} else if (ServerSqlDispatchUtil.isConnectionModifier(action)) {
 	    TransactionUtil.setConnectionModifierAction(request, response, out, action, connection);

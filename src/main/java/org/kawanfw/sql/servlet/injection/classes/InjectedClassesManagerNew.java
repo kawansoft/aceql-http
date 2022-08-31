@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.ThreadPoolExecutor;
 
@@ -35,10 +36,6 @@ import org.kawanfw.sql.api.server.firewall.trigger.SqlFirewallTrigger;
 import org.kawanfw.sql.api.server.listener.UpdateListener;
 import org.kawanfw.sql.api.server.session.JwtSessionConfigurator;
 import org.kawanfw.sql.servlet.injection.classes.InjectedClasses.InjectedClassesBuilder;
-import org.kawanfw.sql.servlet.injection.classes.blob.BlobDownloadConfiguratorClassNameBuilder;
-import org.kawanfw.sql.servlet.injection.classes.blob.BlobDownloadConfiguratorClassNameBuilderCreator;
-import org.kawanfw.sql.servlet.injection.classes.blob.BlobUploadConfiguratorClassNameBuilder;
-import org.kawanfw.sql.servlet.injection.classes.blob.BlobUploadConfiguratorClassNameBuilderCreator;
 import org.kawanfw.sql.servlet.injection.classes.creator.BlobDownloadConfiguratorCreator;
 import org.kawanfw.sql.servlet.injection.classes.creator.BlobUploadConfiguratorCreator;
 import org.kawanfw.sql.servlet.injection.classes.creator.DatabaseConfiguratorCreator;
@@ -47,8 +44,12 @@ import org.kawanfw.sql.servlet.injection.classes.creator.SqlFirewallsCreator;
 import org.kawanfw.sql.servlet.injection.classes.creator.UserAuthenticatorCreator;
 import org.kawanfw.sql.servlet.injection.classes.validator.CommunityValidator;
 import org.kawanfw.sql.servlet.injection.classes.validator.EnterpriseWarner;
+import org.kawanfw.sql.servlet.injection.properties.ConfProperties;
+import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesManager;
 import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesStore;
 import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesUtil;
+import org.kawanfw.sql.servlet.injection.properties.PropertiesFileStore;
+import org.kawanfw.sql.servlet.injection.properties.PropertiesFileUtil;
 import org.kawanfw.sql.tomcat.TomcatSqlModeStore;
 import org.kawanfw.sql.tomcat.TomcatStarterMessages;
 import org.kawanfw.sql.tomcat.TomcatStarterUtil;
@@ -100,9 +101,13 @@ public class InjectedClassesManagerNew {
 		}
 
 		TomcatStarterMessages.printBeginMessage();
-		NativeTomcatElementsBuilder nativeTomcatElementsBuilder = NativeTomcatElementsBuilderCreator
-			.createInstance();
-		nativeTomcatElementsBuilder.create(propertiesFileStr);
+//		
+//		NativeTomcatElementsBuilder nativeTomcatElementsBuilder = NativeTomcatElementsBuilderCreator
+//			.createInstance();
+//		nativeTomcatElementsBuilder.create(propertiesFileStr);
+		
+	        createNativeTomcat(propertiesFileStr);
+		
 	    }
 		
 	    CommunityValidator communityValidator = new CommunityValidator(propertiesFileStr);
@@ -169,6 +174,43 @@ public class InjectedClassesManagerNew {
 	}
 
 	// treatException();
+    }
+
+    /**
+     * Create elements for Nativr Tomcat
+     * @param propertiesFileStr
+     * @throws DatabaseConfigurationException
+     * @throws FileNotFoundException
+     * @throws IOException
+     * @throws SQLException
+     */
+    public void createNativeTomcat(String propertiesFileStr)
+	    throws DatabaseConfigurationException, FileNotFoundException, IOException, SQLException {
+	if (propertiesFileStr == null || propertiesFileStr.isEmpty()) {
+	    throw new DatabaseConfigurationException(Tag.PRODUCT_USER_CONFIG_FAIL
+		    + " AceQL servlet param-name \"properties\" not set. Impossible to load the AceQL Server properties file.");
+	}
+	File file = new File(propertiesFileStr);
+  
+	if (!file.exists()) {
+	    throw new DatabaseConfigurationException(
+		    Tag.PRODUCT_USER_CONFIG_FAIL + " properties file not found: " + propertiesFileStr);
+	}
+	
+	PropertiesFileStore.set(file);
+	Properties properties = PropertiesFileUtil.getProperties(file);
+	
+	System.out.println(TomcatStarterUtil.getJavaInfo());
+	System.out.println(SqlTag.SQL_PRODUCT_START + " " + "Using properties file: ");
+	System.out.println(SqlTag.SQL_PRODUCT_START + "  -> " + PropertiesFileStore.get());
+  
+	// Create all configuration properties from the Properties and store
+	ConfPropertiesManager confPropertiesManager = new ConfPropertiesManager(properties);
+	ConfProperties confProperties = confPropertiesManager.createConfProperties();
+	ConfPropertiesStore.set(confProperties);
+  
+	// Create the default DataSource if necessary
+	TomcatStarterUtil.createAndStoreDataSources(properties);
     }
 
     /**
@@ -305,10 +347,12 @@ public class InjectedClassesManagerNew {
 	    throws ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException,
 	    InvocationTargetException, NoSuchMethodException, SecurityException, SQLException {
 
-	BlobUploadConfiguratorClassNameBuilder blobUploadConfiguratorClassNameBuilder = BlobUploadConfiguratorClassNameBuilderCreator
-		.createInstance();
-	String blobUploadConfiguratorClassName = blobUploadConfiguratorClassNameBuilder.getClassName();
+//	BlobUploadConfiguratorClassNameBuilder blobUploadConfiguratorClassNameBuilder = BlobUploadConfiguratorClassNameBuilderCreator
+//		.createInstance();
+//	String blobUploadConfiguratorClassName = blobUploadConfiguratorClassNameBuilder.getClassName();
 
+        String blobUploadConfiguratorClassName = ConfPropertiesStore.get().getBlobUploadConfiguratorClassName();
+	
 	classNameToLoad = blobUploadConfiguratorClassName;
 	BlobUploadConfiguratorCreator blobUploadConfiguratorCreator = new BlobUploadConfiguratorCreator(
 		blobUploadConfiguratorClassName);
@@ -341,9 +385,11 @@ public class InjectedClassesManagerNew {
 	    InvocationTargetException, NoSuchMethodException, SecurityException, SQLException {
 	// Load Configurators for Blobs/Clobs
 
-	BlobDownloadConfiguratorClassNameBuilder blobDownloadConfiguratorClassNameBuilder = BlobDownloadConfiguratorClassNameBuilderCreator
-		.createInstance();
-	String blobDownloadConfiguratorClassName = blobDownloadConfiguratorClassNameBuilder.getClassName();
+	//BlobDownloadConfiguratorClassNameBuilder blobDownloadConfiguratorClassNameBuilder = BlobDownloadConfiguratorClassNameBuilderCreator
+	//	.createInstance();
+	//String blobDownloadConfiguratorClassName = blobDownloadConfiguratorClassNameBuilder.getClassName();
+	
+        String blobDownloadConfiguratorClassName = ConfPropertiesStore.get().getBlobDownloadConfiguratorClassName();
 
 	classNameToLoad = blobDownloadConfiguratorClassName;
 	BlobDownloadConfiguratorCreator blobDownloadConfiguratorCreator = new BlobDownloadConfiguratorCreator(
@@ -556,10 +602,11 @@ public class InjectedClassesManagerNew {
 	// databaseConfiguratorClassName =
 	// ConfPropertiesStore.get().getDatabaseConfiguratorClassName(database);
 
-	DatabaseConfiguratorClassNameBuilder databaseConfiguratorClassNameBuilder = DatabaseConfiguratorClassNameBuilderCreator
-		.createInstance();
-	String databaseConfiguratorClassName = databaseConfiguratorClassNameBuilder.getClassName(database);
-
+	//DatabaseConfiguratorClassNameBuilder databaseConfiguratorClassNameBuilder = DatabaseConfiguratorClassNameBuilderCreator
+	//	.createInstance();
+	//String databaseConfiguratorClassName = databaseConfiguratorClassNameBuilder.getClassName(database);
+	String databaseConfiguratorClassName = ConfPropertiesStore.get().getDatabaseConfiguratorClassName(database);
+	
 	debug("databaseConfiguratorClassName    : " + databaseConfiguratorClassName);
 
 	// Check spelling with first letter capitalized

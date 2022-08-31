@@ -28,8 +28,6 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tomcat.jdbc.pool.PoolProperties;
 import org.kawanfw.sql.api.server.DatabaseConfigurationException;
-import org.kawanfw.sql.tomcat.properties.pool.PoolPropertiesInterceptor;
-import org.kawanfw.sql.tomcat.properties.pool.PoolPropertiesInterceptorCreator;
 import org.kawanfw.sql.util.FrameworkDebug;
 import org.kawanfw.sql.util.SqlTag;
 
@@ -177,9 +175,12 @@ public class PoolPropertiesCreator {
 	String theMethod = "set" + StringUtils.capitalize(propertyName);
 	debug("theMethod: " + theMethod);
 	
-	PoolPropertiesInterceptor poolPropertiesInterceptor = PoolPropertiesInterceptorCreator.createInstance();
-	String propertyValueUpdated = poolPropertiesInterceptor.interceptValue(theMethod, propertyValue);
-	String propertyValueToDisplay = propertyValueUpdated;
+//	PoolPropertiesInterceptor poolPropertiesInterceptor = PoolPropertiesInterceptorCreator.createInstance();
+//	String propertyValueUpdated = poolPropertiesInterceptor.interceptValue(theMethod, propertyValue);
+//	String propertyValueToDisplay = propertyValueUpdated;
+	
+	String propertyValueUpdated  = propertyValue; // We intercept nothing
+	String propertyValueToDisplay = propertyValue;
 	
 	if (propertyName.equals("password")) {
 	    propertyValueToDisplay = TomcatStarter.MASKED_PASSWORD;
