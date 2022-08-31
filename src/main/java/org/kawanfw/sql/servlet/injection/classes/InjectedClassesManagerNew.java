@@ -454,11 +454,14 @@ public class InjectedClassesManagerNew {
 
 	classNameToLoad = requestHeadersAuthenticatorClassName;
 
-	RequestHeadersAuthenticatorLoader requestHeadersAuthenticatorLoader = RequestHeadersAuthenticatorLoaderCreator
-		.createInstance();
+//	RequestHeadersAuthenticatorLoader requestHeadersAuthenticatorLoader = RequestHeadersAuthenticatorLoaderCreator
+//		.createInstance();
+//	requestHeadersAuthenticatorLoader.loadRequestHeadersAuthenticator(injectedClassesBuilder,
+//		requestHeadersAuthenticatorClassName);
 	
-	requestHeadersAuthenticatorLoader.loadRequestHeadersAuthenticator(injectedClassesBuilder,
-		requestHeadersAuthenticatorClassName);
+	ProEditionRequestHeadersAuthenticatorLoader proEditionRequestHeadersAuthenticatorLoader 
+		=new ProEditionRequestHeadersAuthenticatorLoader();
+	proEditionRequestHeadersAuthenticatorLoader.loadRequestHeadersAuthenticator(injectedClassesBuilder, requestHeadersAuthenticatorClassName);
 
     }
 
