@@ -331,21 +331,21 @@ public class ServerSqlDispatch {
 	    serverPreparedStatementBatch.executeBatch(out);
 	} else if (ServerSqlDispatchUtil.isStoredProcedure(request)) {
 
-	    /*
-	    try {
-		
-		ServerCallableStatementWrapper serverCallableStatementWrapper = ServerCallableStatementWrapperCreator
-			.createInstance();
-		serverCallableStatementWrapper.executeOrExecuteQuery(request, response, sqlFirewallManagers, connection,
-			out);
-		
-		
-	    } catch (SQLException exception) {
-		throw exception;
-	    } catch (Exception exception) {
-		throw new SQLException(exception);
-	    }
-	    */
+	    
+//	    try {
+//		
+//		ServerCallableStatementWrapper serverCallableStatementWrapper = ServerCallableStatementWrapperCreator
+//			.createInstance();
+//		serverCallableStatementWrapper.executeOrExecuteQuery(request, response, sqlFirewallManagers, connection,
+//			out);
+//		
+//		
+//	    } catch (SQLException exception) {
+//		throw exception;
+//	    } catch (Exception exception) {
+//		throw new SQLException(exception);
+//	    }
+	    
 	    
 	    ProEditionServerCallableStatement proEditionServerCallableStatement = new ProEditionServerCallableStatement(
 		    request, response, sqlFirewallManagers, connection);

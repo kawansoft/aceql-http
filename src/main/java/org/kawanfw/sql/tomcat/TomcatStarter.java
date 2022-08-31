@@ -35,6 +35,7 @@ import org.kawanfw.sql.servlet.ServerSqlManager;
 import org.kawanfw.sql.servlet.injection.properties.ConfProperties;
 import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesManager;
 import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesStore;
+import org.kawanfw.sql.servlet.injection.properties.ProEditionServletAceQLCallNameGetter;
 import org.kawanfw.sql.servlet.injection.properties.PropertiesFileStore;
 import org.kawanfw.sql.servlet.injection.properties.PropertiesFileUtil;
 import org.kawanfw.sql.tomcat.util.PortSemaphoreFile;
@@ -360,8 +361,11 @@ public class TomcatStarter {
 
 	// String aceQLManagerServletCallName =
 	// TomcatStarterUtil.getAceQLManagerSevletName(properties);
-	ServletAceQLCallNameGetter servletAceQLCallNameGetter = AceQLServletCallNameGetterCreator.createInstance();
-	String aceQLManagerServletCallName = servletAceQLCallNameGetter.getName();
+//	ServletAceQLCallNameGetter servletAceQLCallNameGetter = AceQLServletCallNameGetterCreator.createInstance();
+//	String aceQLManagerServletCallName = servletAceQLCallNameGetter.getName();
+	
+	ProEditionServletAceQLCallNameGetter proEditionServletAceQLCallNameGetter = new ProEditionServletAceQLCallNameGetter();
+	String aceQLManagerServletCallName = proEditionServletAceQLCallNameGetter.getName();
 
 	// Add the ServerSqlManager servlet to the context
 	org.apache.catalina.Wrapper wrapper = Tomcat.addServlet(rootCtx, aceQLManagerServletCallName,
@@ -398,9 +402,12 @@ public class TomcatStarter {
 
 	// String aceQLManagerServletCallName =
 	// TomcatStarterUtil.getAceQLManagerSevletName(properties);
-	ServletAceQLCallNameGetter servletAceQLCallNameGetter = AceQLServletCallNameGetterCreator.createInstance();
-	String aceQLManagerServletCallName = servletAceQLCallNameGetter.getName();
+//	ServletAceQLCallNameGetter servletAceQLCallNameGetter = AceQLServletCallNameGetterCreator.createInstance();
+//	String aceQLManagerServletCallName = servletAceQLCallNameGetter.getName();
 
+	ProEditionServletAceQLCallNameGetter proEditionServletAceQLCallNameGetter = new ProEditionServletAceQLCallNameGetter();
+	String aceQLManagerServletCallName = proEditionServletAceQLCallNameGetter.getName();
+	
 	String serverSqlManagerUrlPattern = aceQLManagerServletCallName;
 	serverSqlManagerUrlPattern = serverSqlManagerUrlPattern.trim();
 

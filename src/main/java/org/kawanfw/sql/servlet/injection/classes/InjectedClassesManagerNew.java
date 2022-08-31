@@ -40,7 +40,6 @@ import org.kawanfw.sql.servlet.injection.classes.creator.DatabaseConfiguratorCre
 import org.kawanfw.sql.servlet.injection.classes.creator.SessionConfiguratorCreator;
 import org.kawanfw.sql.servlet.injection.classes.creator.SqlFirewallsCreator;
 import org.kawanfw.sql.servlet.injection.classes.creator.UserAuthenticatorCreator;
-import org.kawanfw.sql.servlet.injection.classes.validator.CommunityValidator;
 import org.kawanfw.sql.servlet.injection.classes.validator.EnterpriseWarner;
 import org.kawanfw.sql.servlet.injection.properties.ConfProperties;
 import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesManager;
@@ -51,8 +50,6 @@ import org.kawanfw.sql.servlet.injection.properties.PropertiesFileUtil;
 import org.kawanfw.sql.tomcat.TomcatSqlModeStore;
 import org.kawanfw.sql.tomcat.TomcatStarterMessages;
 import org.kawanfw.sql.tomcat.TomcatStarterUtil;
-import org.kawanfw.sql.tomcat.properties.threadpool.ThreadPoolExecutorBuilder;
-import org.kawanfw.sql.tomcat.properties.threadpool.ThreadPoolExecutorBuilderCreator;
 import org.kawanfw.sql.util.FrameworkDebug;
 import org.kawanfw.sql.util.SqlTag;
 import org.kawanfw.sql.util.Tag;
@@ -108,8 +105,8 @@ public class InjectedClassesManagerNew {
 		
 	    }
 		
-	    CommunityValidator communityValidator = new CommunityValidator(propertiesFileStr);
-	    communityValidator.validate();
+	    //CommunityValidator communityValidator = new CommunityValidator(propertiesFileStr);
+	    //communityValidator.validate();
 	    
 	    Set<String> databases = ConfPropertiesStore.get().getDatabaseNames();
 
@@ -123,7 +120,11 @@ public class InjectedClassesManagerNew {
 
 	    loadRequestHeadersAuthenticator(injectedClassesBuilder);
 
-	    ThreadPoolExecutorBuilder threadPoolExecutorBuilder = ThreadPoolExecutorBuilderCreator.createInstance();
+	    //ThreadPoolExecutorBuilder threadPoolExecutorBuilder = ThreadPoolExecutorBuilderCreator.createInstance();
+	    //ThreadPoolExecutor threadPoolExecutor = threadPoolExecutorBuilder.build();
+	    //injectedClassesBuilder.threadPoolExecutor(threadPoolExecutor);
+	    
+	    ProEditionThreadPoolExecutorBuilder threadPoolExecutorBuilder = new ProEditionThreadPoolExecutorBuilder();
 	    ThreadPoolExecutor threadPoolExecutor = threadPoolExecutorBuilder.build();
 	    injectedClassesBuilder.threadPoolExecutor(threadPoolExecutor);
 	    
@@ -460,7 +461,6 @@ public class InjectedClassesManagerNew {
 	ProEditionRequestHeadersAuthenticatorLoader proEditionRequestHeadersAuthenticatorLoader 
 		=new ProEditionRequestHeadersAuthenticatorLoader();
 	proEditionRequestHeadersAuthenticatorLoader.loadRequestHeadersAuthenticator(injectedClassesBuilder, requestHeadersAuthenticatorClassName);
-
     }
 
     /**
@@ -486,12 +486,11 @@ public class InjectedClassesManagerNew {
 	List<String> updateListenerClassNames = ConfPropertiesStore.get().getUpdateListenerClassNames(database);
 	classNameToLoad = updateListenerClassNames.toString();
 
-	/*
-	UpdateListenersLoader updateListenersLoader = UpdateListenersLoaderCreator.createInstance();
-	List<UpdateListener> updateListeners = updateListenersLoader.loadUpdateListeners(database,
-		injectedClassesBuilder, updateListenerClassNames);
-	*/	
-
+	
+//	UpdateListenersLoader updateListenersLoader = UpdateListenersLoaderCreator.createInstance();
+//	List<UpdateListener> updateListeners = updateListenersLoader.loadUpdateListeners(database,
+//		injectedClassesBuilder, updateListenerClassNames);
+		
 	ProEditionUpdateListenersLoader updateListenersLoader = new ProEditionUpdateListenersLoader();
 	List<UpdateListener> updateListeners = updateListenersLoader.loadUpdateListeners(database,
 		injectedClassesBuilder, updateListenerClassNames);
@@ -526,12 +525,11 @@ public class InjectedClassesManagerNew {
 	List<String> sqlFirewallTriggerClassNames = ConfPropertiesStore.get().getSqlFirewallTriggerClassNames(database);
 	classNameToLoad = sqlFirewallTriggerClassNames.toString();
 
-	/*
-	SqlFirewallTriggersLoader sqlFirewallTriggersLoader = SqlFirewallTriggersLoaderCreator.createInstance();
-	List<SqlFirewallTrigger> sqlFirewallTriggers = sqlFirewallTriggersLoader.loadSqlFirewallTriggers(database,
-		injectedClassesBuilder, sqlFirewallTriggerClassNames);
-	*/
-	
+
+//	SqlFirewallTriggersLoader sqlFirewallTriggersLoader = SqlFirewallTriggersLoaderCreator.createInstance();
+//	List<SqlFirewallTrigger> sqlFirewallTriggers = sqlFirewallTriggersLoader.loadSqlFirewallTriggers(database,
+//		injectedClassesBuilder, sqlFirewallTriggerClassNames);
+
 	ProEditionSqlFirewallTriggersLoader sqlFirewallTriggersLoader = new ProEditionSqlFirewallTriggersLoader();
 	List<SqlFirewallTrigger> sqlFirewallTriggers 
 	= sqlFirewallTriggersLoader.loadSqlFirewallTriggers(database, injectedClassesBuilder, sqlFirewallTriggerClassNames);

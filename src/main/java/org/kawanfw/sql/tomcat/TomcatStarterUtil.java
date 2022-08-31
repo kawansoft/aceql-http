@@ -88,10 +88,10 @@ public class TomcatStarterUtil {
      * @throws UnsupportedOperationException
      */
     public static void testDatabasesLimit(Set<String> databases) throws UnsupportedOperationException {
-	if (databases.size() > 2 & EditionUtil.isCommunityEdition()) {
-	    throw new UnsupportedOperationException(
-		    Tag.PRODUCT + " " + "Loading more than 2 SQL databases " + Tag.REQUIRES_ACEQL_ENTERPRISE_EDITION);
-	}
+//	if (databases.size() > 2 & EditionUtil.isCommunityEdition()) {
+//	    throw new UnsupportedOperationException(
+//		    Tag.PRODUCT + " " + "Loading more than 2 SQL databases " + Tag.REQUIRES_ACEQL_ENTERPRISE_EDITION);
+//	}
     }
 
 
@@ -100,12 +100,12 @@ public class TomcatStarterUtil {
 	if (properties == null) {
 	    throw new IllegalArgumentException("properties is null");
 	}
+	
+//	ServletNamesGetter servletNamesGetter = ServletsNamesGetterCreator.createInstance();
+//	Set<String> servlets= servletNamesGetter.getServlets(properties);
+	
+	Set<String> servlets = ProEditionServletNamesGetterWrap.getServletsWrap(properties);
 
-	//Set<String> servlets = getServlets(properties);
-	
-	ServletNamesGetter servletNamesGetter = ServletsNamesGetterCreator.createInstance();
-	Set<String> servlets= servletNamesGetter.getServlets(properties);
-	
 	if (servlets.isEmpty()) {
 	    return;
 	}

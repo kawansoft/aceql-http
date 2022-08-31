@@ -28,7 +28,6 @@ import org.kawanfw.sql.api.server.DatabaseConfigurationException;
 import org.kawanfw.sql.api.server.auth.crypto.PropertiesPasswordManager;
 import org.kawanfw.sql.tomcat.util.LinkedProperties;
 import org.kawanfw.sql.util.FrameworkDebug;
-import org.kawanfw.sql.version.EditionUtil;
 
 /**
  * Methods for properties and jasypt encrypted properties loading.
@@ -56,9 +55,9 @@ public class PropertiesFileUtil {
 	Properties properties = commonsGetProperties(file);
 	
 	debug("Before EditionUtil.isCommunityEdition()");
-	if (EditionUtil.isCommunityEdition()) {
-	    return properties;
-	}
+//	if (EditionUtil.isCommunityEdition()) {
+//	    return properties;
+//	}
 	debug("After EditionUtil.isCommunityEdition()");
 	debug("Properties file: " + file);
 	

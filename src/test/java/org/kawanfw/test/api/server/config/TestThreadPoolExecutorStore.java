@@ -16,8 +16,7 @@ import java.io.FileInputStream;
 import java.util.Properties;
 import java.util.concurrent.ThreadPoolExecutor;
 
-import org.kawanfw.sql.tomcat.properties.threadpool.ThreadPoolExecutorBuilder;
-import org.kawanfw.sql.tomcat.properties.threadpool.ThreadPoolExecutorBuilderCreator;
+import org.kawanfw.sql.servlet.injection.classes.ProEditionThreadPoolExecutorBuilder;
 
 /**
  * @author Nicolas de Pomereu
@@ -36,7 +35,10 @@ public class TestThreadPoolExecutorStore {
 	Properties properties = new Properties();
 	properties.load(new FileInputStream(file));
 		
-	ThreadPoolExecutorBuilder threadPoolExecutorBuilder = ThreadPoolExecutorBuilderCreator.createInstance();
+	//ThreadPoolExecutorBuilder threadPoolExecutorBuilder = ThreadPoolExecutorBuilderCreator.createInstance();
+	//ThreadPoolExecutor threadPoolExecutor = threadPoolExecutorBuilder.build();
+	
+	ProEditionThreadPoolExecutorBuilder threadPoolExecutorBuilder = new ProEditionThreadPoolExecutorBuilder();
 	ThreadPoolExecutor threadPoolExecutor = threadPoolExecutorBuilder.build();
 	    
 	System.out.println();
