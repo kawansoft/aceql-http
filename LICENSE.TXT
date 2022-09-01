@@ -14,7 +14,7 @@ Licensed Work:        AceQL HTTP v12
                       The Licensed Work is (c)2022 KawanSoft S.A.S.
 Additional Use Grant: None.
 
-Change Date:          2027-08-01
+Change Date:          2026-09-01
 
 Change License:       Apache License version 2.0 as published by the Apache
                       Software Foundation https://www.apache.org/licenses/
