@@ -33,14 +33,13 @@
  * Any modifications to this file must keep this entire header
  * intact.
  */
-package com.kawanwall.server.logging;
+package org.kawanfw.sql.servlet.util.logging;
 
 import java.io.File;
 import java.util.Objects;
 
 import org.apache.commons.lang3.SystemUtils;
-
-import com.kawanwall.server.logging.GenericLoggerCreator.Builder;
+import org.kawanfw.sql.servlet.util.logging.GenericLoggerCreator.Builder;
 
 /**
  * The implementation of the GenericLoggerCreator.Builder with the default

@@ -33,18 +33,17 @@
  * Any modifications to this file must keep this entire header
  * intact.
  */
-package com.kawanwall.server.api.logging;
+package org.kawanfw.sql.api.server.logging;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Date;
 import java.util.Map;
 
+import org.kawanfw.sql.servlet.util.logging.GenericLoggerCreator;
+import org.kawanfw.sql.servlet.util.logging.LoggerCreatorProperties;
 import org.kawanfw.sql.util.FrameworkDebug;
 import org.slf4j.Logger;
-
-import com.kawanwall.server.logging.GenericLoggerCreator;
-import com.kawanwall.server.logging.LoggerCreatorProperties;
 
 /**
  * Creates a default Logback/sl4fj Logger for main KawanWall activity.

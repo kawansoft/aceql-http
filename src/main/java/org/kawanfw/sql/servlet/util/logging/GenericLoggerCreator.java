@@ -33,17 +33,16 @@
  * Any modifications to this file must keep this entire header
  * intact.
  */
-package com.kawanwall.server.logging;
+package org.kawanfw.sql.servlet.util.logging;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.PrintStream;
 import java.util.Map;
 
+import org.kawanfw.sql.api.server.logging.LoggerCreator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.kawanwall.server.api.logging.LoggerCreator;
 
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.encoder.PatternLayoutEncoder;

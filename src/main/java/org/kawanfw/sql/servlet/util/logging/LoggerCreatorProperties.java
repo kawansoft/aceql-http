@@ -33,7 +33,7 @@
  * Any modifications to this file must keep this entire header
  * intact.
  */
-package com.kawanwall.server.logging;
+package org.kawanfw.sql.servlet.util.logging;
 
 import java.io.File;
 import java.io.IOException;

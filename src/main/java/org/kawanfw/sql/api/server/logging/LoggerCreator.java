@@ -33,7 +33,7 @@
  * Any modifications to this file must keep this entire header
  * intact.
  */
-package com.kawanwall.server.api.logging;
+package org.kawanfw.sql.api.server.logging;
 
 import java.util.Map;
 
