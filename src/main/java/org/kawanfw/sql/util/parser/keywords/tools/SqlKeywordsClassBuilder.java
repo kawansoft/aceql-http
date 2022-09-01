@@ -21,7 +21,7 @@ import java.util.Set;
  */
 class SqlKeywordsClassBuilder {
     
-    public static String SQL_KEYWORDS_TXT = "/com/kawanwall/server/util/keywords/tools/sql_keywords.txt";
+    public static String SQL_KEYWORDS_TXT = "/org/kawanfw/sql/util/parser/keywords/tools/sql_keywords.txt";
 	
     public static void main(String[] args) throws IOException {
 	SqlKeywordsFileReader sqlKeywordsFileReader = new SqlKeywordsFileReader(SQL_KEYWORDS_TXT);

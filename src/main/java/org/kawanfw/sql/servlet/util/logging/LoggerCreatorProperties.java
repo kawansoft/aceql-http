@@ -30,7 +30,7 @@ public class LoggerCreatorProperties {
     /** The debug flag */
     private static boolean DEBUG = FrameworkDebug.isSet(LoggerCreatorProperties.class);
     
-    private static final String CONF_DIR = SystemUtils.USER_HOME + File.separator + ".kawanwall" + File.separator + "conf" + File.separator;
+    private static final String CONF_DIR = SystemUtils.USER_HOME + File.separator + ".kawansoft" + File.separator + "conf" + File.separator;
 
     private Properties properties;
 

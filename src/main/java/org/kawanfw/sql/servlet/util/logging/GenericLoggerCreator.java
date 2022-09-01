@@ -74,7 +74,7 @@ public class GenericLoggerCreator implements LoggerCreator {
 
 	// OPTIONAL: Set an active log file (separate from the rollover files).
 	// If rollingPolicy.fileNamePattern already set, you don't need this.
-	// rollingFileAppender.setFile(LOG_DIR + "kawanwall.log");
+	// rollingFileAppender.setFile(LOG_DIR + "aceql.log");
 
 	SizeAndTimeBasedRollingPolicy<ILoggingEvent> rollingPolicy = new SizeAndTimeBasedRollingPolicy<ILoggingEvent>();
 	rollingPolicy.setContext(context);
@@ -169,7 +169,7 @@ public class GenericLoggerCreator implements LoggerCreator {
 	
 	/**
 	 * Sets the file name pattern following Logback naming. Must include date and numbering
-	 * such as in "kawanwall_%d.log.%i".
+	 * such as in "aceql_%d.log.%i".
 	 * @param setFileNamePattern the file name pattern following Logback naming
 	 * @return this Builder
 	 */

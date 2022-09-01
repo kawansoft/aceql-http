@@ -30,7 +30,7 @@ public class LoggerCreatorBuilderImpl implements GenericLoggerCreator.Builder {
     static final long MB = 1024 * KB;
     static final long GB = 1024 * MB;
         
-    public static final File DEFAULT_LOG_DIRECTORY = new File(SystemUtils.USER_HOME + File.separator + ".kawanwall" + File.separator + "log");
+    public static final File DEFAULT_LOG_DIRECTORY = new File(SystemUtils.USER_HOME + File.separator + ".kawansoft" + File.separator + "log");
     public static final String DEFAULT_PATTERN = "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n";
     public static final long DEFAULT_MAX_SIZE = MB * 300;
     public static final long DEFAULT_TOTAL_SIZE_CAP = GB * 30;
