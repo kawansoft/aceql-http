@@ -1,23 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>aceql-http</name>
-	<comment></comment>
-	<projects>
-	</projects>
-	<buildSpec>
-		<buildCommand>
-			<name>org.eclipse.jdt.core.javabuilder</name>
-			<arguments>
-			</arguments>
-		</buildCommand>
-		<buildCommand>
-			<name>org.eclipse.m2e.core.maven2Builder</name>
-			<arguments>
-			</arguments>
-		</buildCommand>
-	</buildSpec>
-	<natures>
-		<nature>org.eclipse.jdt.core.javanature</nature>
-		<nature>org.eclipse.m2e.core.maven2Nature</nature>
-	</natures>
+  <name>aceql-http</name>
+  <comment>AceQL HTTP is a framework of REST like http APIs that allow to access to remote SQL databases over http from any device that supports http. 
+
+AceQL HTTP is provided with three client SDK:
+- The AceQL C# Client SDK allows to wrap the HTTP APIs using Microsoft SQL Server like calls in their code, just like they would for a local database.
+- The AceQL Java Client JDBC Driver allows to wrap the HTTP APIs using JDBC calls in their code, just like they would for a local database.
+- The AceQL Python Client SDK allows SQL calls to be encoded with standard unmodified DB-API 2.0 syntax. NO_M2ECLIPSE_SUPPORT: Project files created with the maven-eclipse-plugin are not supported in M2Eclipse.</comment>
+  <projects/>
+  <buildSpec>
+    <buildCommand>
+      <name>org.eclipse.jdt.core.javabuilder</name>
+    </buildCommand>
+  </buildSpec>
+  <natures>
+    <nature>org.eclipse.jdt.core.javanature</nature>
+  </natures>
 </projectDescription>
