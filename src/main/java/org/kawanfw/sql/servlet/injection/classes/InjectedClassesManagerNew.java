@@ -32,15 +32,17 @@ import org.kawanfw.sql.api.server.DatabaseConfigurator;
 import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
 import org.kawanfw.sql.api.server.firewall.trigger.SqlFirewallTrigger;
 import org.kawanfw.sql.api.server.listener.UpdateListener;
+import org.kawanfw.sql.api.server.logging.LoggerCreator;
 import org.kawanfw.sql.api.server.session.JwtSessionConfigurator;
 import org.kawanfw.sql.servlet.injection.classes.InjectedClasses.InjectedClassesBuilder;
 import org.kawanfw.sql.servlet.injection.classes.creator.BlobDownloadConfiguratorCreator;
 import org.kawanfw.sql.servlet.injection.classes.creator.BlobUploadConfiguratorCreator;
 import org.kawanfw.sql.servlet.injection.classes.creator.DatabaseConfiguratorCreator;
+import org.kawanfw.sql.servlet.injection.classes.creator.LoggerCreatorBuilder;
 import org.kawanfw.sql.servlet.injection.classes.creator.SessionConfiguratorCreator;
 import org.kawanfw.sql.servlet.injection.classes.creator.SqlFirewallsCreator;
 import org.kawanfw.sql.servlet.injection.classes.creator.UserAuthenticatorCreator;
-import org.kawanfw.sql.servlet.injection.classes.validator.EnterpriseWarner;
+import org.kawanfw.sql.servlet.injection.classes.validator.ThreadPoolCapacityWarner;
 import org.kawanfw.sql.servlet.injection.properties.ConfProperties;
 import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesManager;
 import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesStore;
@@ -115,7 +117,10 @@ public class InjectedClassesManagerNew {
 	    // Create out InjectedClasses builder
 	    InjectedClassesBuilder injectedClassesBuilder = new InjectedClassesBuilder();
 
-	    // Ouf first loader is for authentication
+	    LoggerCreator loggerCreator = loadLoggerCreator();
+	    injectedClassesBuilder.loggerCreator(loggerCreator);
+	    
+	    // Ouf second loader is for authentication
 	    loadUserAuthenticator(injectedClassesBuilder);
 
 	    loadRequestHeadersAuthenticator(injectedClassesBuilder);
@@ -129,8 +134,8 @@ public class InjectedClassesManagerNew {
 	    injectedClassesBuilder.threadPoolExecutor(threadPoolExecutor);
 	    
 	    // Check ThreadPoolExecutor parameters
-	    EnterpriseWarner enterpriseWarner = new EnterpriseWarner(propertiesFileStr);
-	    enterpriseWarner.warnOnThreadPoolExecutorParams();
+	    ThreadPoolCapacityWarner threadPoolCapacityWarner = new ThreadPoolCapacityWarner(propertiesFileStr);
+	    threadPoolCapacityWarner.warnOnThreadPoolExecutorParams();
 	    
 	    // All elements that depend on database
 	    loadPerDatabase(databases, injectedClassesBuilder);
@@ -144,6 +149,8 @@ public class InjectedClassesManagerNew {
 
 	    // Store the InjectedClasses instance statically
 	    InjectedClassesStore.set(injectedClasses);
+	    
+	    displayLoggerCreator(injectedClasses);
 	    
 	    if (!TomcatSqlModeStore.isTomcatEmbedded()) {
 		TomcatStarterMessages.printFinalOkMessage();
@@ -175,6 +182,17 @@ public class InjectedClassesManagerNew {
 	// treatException();
     }
 
+    /**
+     * @param injectedClasses
+     */
+    public void displayLoggerCreator(InjectedClasses injectedClasses) {
+	if (ConfPropertiesStore.get().isDisplayLoggerElementsAtStartup()) {
+	    System.out.println(SqlTag.SQL_PRODUCT_START + " Loggers elements: ");
+	    LoggerCreator loggerCreator = injectedClasses.getLoggerCreator();
+	    System.out.println(SqlTag.SQL_PRODUCT_START + "  -> " + loggerCreator.getElements());
+	}
+    }
+    
     /**
      * Create elements for Nativr Tomcat
      * @param propertiesFileStr
@@ -212,6 +230,29 @@ public class InjectedClassesManagerNew {
 	TomcatStarterUtil.createAndStoreDataSources(properties);
     }
 
+    private LoggerCreator loadLoggerCreator() throws ClassNotFoundException, NoSuchMethodException,
+	    InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+	
+	String loggerCreatorClassName = ConfPropertiesStore.get().getLoggerCreatorClassName();
+
+	classNameToLoad = loggerCreatorClassName;
+
+	debug("==> loggerCreatorClassName: " + loggerCreatorClassName);
+
+	System.out.println(SqlTag.SQL_PRODUCT_START + " Loading LoggerCreator class:");
+
+	LoggerCreatorBuilder loggerCreatorBuilder = new LoggerCreatorBuilder(loggerCreatorClassName);
+	LoggerCreator loggerCreator = loggerCreatorBuilder.getLoggerCreator();
+	loggerCreatorClassName = loggerCreatorBuilder.getLoggerCreatorClassName();
+
+	debug("==> loggerCreator: " + loggerCreator);
+	System.out.println(SqlTag.SQL_PRODUCT_START + "  -> " + loggerCreatorClassName);
+
+	classNameToLoad = loggerCreatorClassName;
+
+	return loggerCreator;
+    }
+    
     /**
      * Loads elements that depend on databases.
      * 

@@ -16,21 +16,21 @@ import java.util.Map;
 import org.slf4j.Logger;
 
 /**
- * Allows to create a neutral slf4 Logger that thus will support many implementations.
+ * Allows to create a neutral sl4fj Logger that thus will support many implementations.
  * @author Nicolas de Pomereu
  *
  */
 public interface LoggerCreator {
 
     /**
-     * Returns the Logger as sl4j instance
-     * @return the Logger as sl4j instance
+     * Returns the Logger as sl4fj instance
+     * @return the Logger as sl4fj instance
      */
     public Logger getLogger();
 
     /**
      * Return the elements of the {@code Logger}: name, fileNamePattern, etc. 
-     * This allows to give admin users info about the {@code Logger} when stating the firewall.
+     * This allows to give admin users info about the {@code Logger} when stating the programe.
      * Implementation is free.
      * @return the elements of the Logger
      */

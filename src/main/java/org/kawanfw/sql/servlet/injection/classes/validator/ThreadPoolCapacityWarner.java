@@ -26,17 +26,18 @@ import org.kawanfw.sql.version.EditionUtil;
  * @author Nicolas de Pomereu
  *
  */
-public class EnterpriseWarner {
+public class ThreadPoolCapacityWarner {
 
     private static final int MAX_QUEUE_CAPACITY_RECOMMANDED = 100;
     
     private String propertiesFile;
 
-    public EnterpriseWarner(String propertiesFile) {
+    public ThreadPoolCapacityWarner(String propertiesFile) {
 	this.propertiesFile = propertiesFile;
     }
 
     public void warnOnThreadPoolExecutorParams() throws IOException {
+	
 	// Nothing todo if Community Edition
 	if (EditionUtil.isCommunityEdition()) {
 	    return;
@@ -70,7 +71,7 @@ public class EnterpriseWarner {
 
 	    if (capacity > MAX_QUEUE_CAPACITY_RECOMMANDED) {
 		System.err.println(SqlTag.SQL_PRODUCT_START + " " + Tag.WARNING
-			+ " In Enterprise Edition, the ThreadPoolExecutor Queue \"" + "capacity" + "\" property"
+			+ " The ThreadPoolExecutor Queue \"" + "capacity" + "\" property"
 			+ " should not be > " + MAX_QUEUE_CAPACITY_RECOMMANDED + ValidatorUtil.CR_LF
 			+ SqlTag.SQL_PRODUCT_START + ValidatorUtil.WARNING_SECOND_LINE_SPACES + " "
 			+ " because of a potential SQL run bottleneck. (Set value in .properties file: " + capacity

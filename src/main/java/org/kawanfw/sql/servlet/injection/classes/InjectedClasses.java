@@ -24,6 +24,7 @@ import org.kawanfw.sql.api.server.blob.BlobUploadConfigurator;
 import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
 import org.kawanfw.sql.api.server.firewall.trigger.SqlFirewallTrigger;
 import org.kawanfw.sql.api.server.listener.UpdateListener;
+import org.kawanfw.sql.api.server.logging.LoggerCreator;
 import org.kawanfw.sql.api.server.session.SessionConfigurator;
 
 /**
@@ -63,8 +64,11 @@ public class InjectedClasses {
 
     /** The map of (database, List<UpdateListener>) */
     private Map<String, List<UpdateListener>> updateListenerMap = new ConcurrentHashMap<>();
+
+    private LoggerCreator loggerCreator;
     
     private InjectedClasses(InjectedClassesBuilder injectedClassesBuilder) {
+	
 	this.userAuthenticator = injectedClassesBuilder.userAuthenticator;
 	this.requestHeadersAuthenticator = injectedClassesBuilder.requestHeadersAuthenticator;
 	this.databaseConfigurators = injectedClassesBuilder.databaseConfigurators;
@@ -78,7 +82,16 @@ public class InjectedClasses {
 	this.threadPoolExecutor = injectedClassesBuilder.threadPoolExecutor;
 	
 	this.updateListenerMap = injectedClassesBuilder.updateListenerMap;
+	this.loggerCreator = injectedClassesBuilder.loggerCreator;
 
+    }
+
+    
+    /**
+     * @return the loggerCreator
+     */
+    public LoggerCreator getLoggerCreator() {
+        return loggerCreator;
     }
 
     /**
@@ -187,7 +200,13 @@ public class InjectedClasses {
 	/** The map of (database, List<UpdateListener>) */
 	private Map<String, List<UpdateListener>> updateListenerMap = new ConcurrentHashMap<>();
 
+	private LoggerCreator loggerCreator = null;
 
+	public InjectedClassesBuilder loggerCreator(LoggerCreator loggerCreator) {
+	    this.loggerCreator = loggerCreator;
+	    return this;
+	}
+	
 	public InjectedClassesBuilder userAuthenticator(UserAuthenticator userAuthenticator) {
 	    this.userAuthenticator = userAuthenticator;
 	    return this;
@@ -260,6 +279,8 @@ public class InjectedClasses {
 	    // Do some basic validations to check
 	    // if user object does not break any assumption of system
 	}
+
+
 
 
 

@@ -49,13 +49,18 @@ public class ConfProperties {
     private Map<String, List<String>> sqlFirewallTriggerClassNamesMap = new ConcurrentHashMap<>(); 
     private Map<String, List<String>> updateListenerClassNamesMap = new ConcurrentHashMap<>();
 
+    private String loggerCreatorClassName = null;
+    private boolean displayLoggerElementsAtStartup;
+
     
     private ConfProperties(ConfPropertiesBuilder confPropertiesBuilder) {
 	this.databaseSet = confPropertiesBuilder.databaseSet;
 	this.databaseConfiguratorClassNameMap = confPropertiesBuilder.databaseConfiguratorClassNameMap;
 
 	this.servletCallName = confPropertiesBuilder.servletCallName;
-
+	this.loggerCreatorClassName = confPropertiesBuilder.loggerCreatorClassName;
+	this.displayLoggerElementsAtStartup = confPropertiesBuilder.displayLoggerElementsAtStartup;
+	
 	this.blobDownloadConfiguratorClassName = confPropertiesBuilder.blobDownloadConfiguratorClassName;
 	this.blobUploadConfiguratorClassName = confPropertiesBuilder.blobUploadConfiguratorClassName;
 
@@ -106,6 +111,20 @@ public class ConfProperties {
 	return servletCallName;
     }
 
+    /**
+     * @return the loggerCreatorClassName
+     */
+    public String getLoggerCreatorClassName() {
+        return loggerCreatorClassName;
+    }
+
+    
+    /**
+     * @return the displayLoggerElementsAtStartup
+     */
+    public boolean isDisplayLoggerElementsAtStartup() {
+        return displayLoggerElementsAtStartup;
+    }
 
     /**
      * @return the blobDownloadConfiguratorClassName
@@ -209,7 +228,9 @@ public class ConfProperties {
 	private Map<String, String> databaseConfiguratorClassNameMap = new ConcurrentHashMap<>();
 
 	private String servletCallName = null;
-
+	private String loggerCreatorClassName;
+	private boolean displayLoggerElementsAtStartup;
+	
 	private String blobDownloadConfiguratorClassName = null;
 	private String blobUploadConfiguratorClassName = null;
 
@@ -225,6 +246,8 @@ public class ConfProperties {
 	
 	private Map<String, List<String>> sqlFirewallTriggerClassNamesMap = new ConcurrentHashMap<>(); 
 	private Map<String, List<String>> updateListenerClassNamesMap = new ConcurrentHashMap<>();
+
+
 	    
 	public ConfPropertiesBuilder databaseSet(Set<String> databaseSet) {
 	    this.databaseSet = databaseSet;
@@ -239,6 +262,16 @@ public class ConfProperties {
 
 	public ConfPropertiesBuilder servletCallName(String servletCallName) {
 	    this.servletCallName = servletCallName;
+	    return this;
+	}
+	
+	public ConfPropertiesBuilder loggerCreatorClassName(String loggerCreatorClassName) {
+	    this.loggerCreatorClassName = loggerCreatorClassName;
+	    return this;
+	}
+	
+	public ConfPropertiesBuilder displayLoggerElementsAtStartup(boolean displayLoggerElementsAtStartup) {
+	    this.displayLoggerElementsAtStartup = displayLoggerElementsAtStartup;
 	    return this;
 	}
 
@@ -312,6 +345,10 @@ public class ConfProperties {
 	    // Do some basic validations to check
 	    // if user object does not break any assumption of system
 	}
+
+
+
+
 
     }
 
