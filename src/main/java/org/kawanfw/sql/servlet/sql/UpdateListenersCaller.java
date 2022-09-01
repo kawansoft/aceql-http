@@ -18,11 +18,11 @@ import java.util.List;
 
 import org.kawanfw.sql.api.server.SqlEvent;
 import org.kawanfw.sql.api.server.SqlEventWrapper;
-import org.kawanfw.sql.api.server.listener.DefaultUpdateListener;
 import org.kawanfw.sql.api.server.listener.UpdateListener;
 
 /**
  * Calls all UpdateListener instances.
+ * 
  * @author Nicolas de Pomereu
  *
  */
@@ -31,11 +31,11 @@ public class UpdateListenersCaller {
     private List<UpdateListener> updateListeners;
     private Connection connection;
 
-
     /**
      * Constructor
-     * @param updateListeners	the list of UpdateListener to call
-     * @param connection	the JDBC Connection
+     * 
+     * @param updateListeners the list of UpdateListener to call
+     * @param connection      the JDBC Connection
      */
     public UpdateListenersCaller(List<UpdateListener> updateListeners, Connection connection) {
 	this.updateListeners = updateListeners;
@@ -49,20 +49,19 @@ public class UpdateListenersCaller {
      * @param database
      * @param sqlOrder
      * @param ipAddress
-     * @param isPreparedStatement               
+     * @param isPreparedStatement
      * @param serverPreparedStatementParameters
      * @throws SQLException
      * @throws IOException
      */
     public void callUpdateListeners(String username, String database, String sqlOrder, List<Object> parameterValues,
 	    String ipAddress, boolean isPreparedStatement) throws SQLException, IOException {
-	if (updateListeners.size() != 1 || !(updateListeners.get(0) instanceof DefaultUpdateListener)) {
-	    SqlEvent sqlEvent = SqlEventWrapper.sqlEventBuild(username, database, ipAddress, sqlOrder,
-		    isPreparedStatement, parameterValues, false);
-	    for (UpdateListener updateListener : updateListeners) {
-		updateListener.updateActionPerformed(sqlEvent, connection);
-	    }
+	SqlEvent sqlEvent = SqlEventWrapper.sqlEventBuild(username, database, ipAddress, sqlOrder, isPreparedStatement,
+		parameterValues, false);
+	for (UpdateListener updateListener : updateListeners) {
+	    updateListener.updateActionPerformed(sqlEvent, connection);
 	}
+
     }
 
 }

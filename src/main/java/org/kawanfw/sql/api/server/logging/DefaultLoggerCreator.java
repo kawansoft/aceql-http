@@ -22,14 +22,14 @@ import org.kawanfw.sql.util.FrameworkDebug;
 import org.slf4j.Logger;
 
 /**
- * Creates a default Logback/sl4fj Logger for main KawanWall activity.
+ * Creates a default Logback/sl4fj Logger for main AceQL activity.
  * 
  * Logger has default characteristics:
  * <ul>
  * <li>name: DefaultLoggerCreator</li>
  * <li>Log directory: {@code user.home/.kawansoft/log}</li>
- * <li>File name pattern: {@code "kawanwall_%d.log.%i"} (example of file
- * created: {@code kawanwall_2022-07-01.log.1}.)</li>
+ * <li>File name pattern: {@code "aceql_%d.log.%i"} (example of file
+ * created: {@code aceql_2022-07-01.log.1}.)</li>
  * <li>Pattern of each line of log: <code> "%d{HH:mm:ss.SSS} [%thread] %-5level
  * %logger{36} - %msg%n"}</code></li>
  * <li>Maximum File Size: 300Mb</li>
@@ -40,7 +40,7 @@ import org.slf4j.Logger;
  * {@code user.home/.kawansoft/conf}. <br>
  * <br>
  * See the <a href=
- * "https://docs.kawanwall.com/rest/soft/1.0/src/DefaultLoggerCreator.properties">DefaultLoggerCreator.properties</a>
+ * "https://docs.aceqL.com/rest/soft/12.0/src/DefaultLoggerCreator.properties">DefaultLoggerCreator.properties</a>
  * format.<br><br>
  * 
  * @author Nicolas de Pomereu
@@ -51,7 +51,7 @@ public class DefaultLoggerCreator implements LoggerCreator {
     /** The debug flag */
     private static boolean DEBUG = FrameworkDebug.isSet(DefaultLoggerCreator.class);
 
-    private static final String MAIN_LOG_FILE_PATTERN = "kawanwall_%d.log.%i";
+    private static final String MAIN_LOG_FILE_PATTERN = "aceql_%d.log.%i";
     private Logger logger;
 
     private Map<String, String> elements;

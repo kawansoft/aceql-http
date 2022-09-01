@@ -22,7 +22,6 @@ import java.util.List;
 import org.kawanfw.sql.api.server.DatabaseConfigurator;
 import org.kawanfw.sql.api.server.SqlEvent;
 import org.kawanfw.sql.api.server.SqlEventWrapper;
-import org.kawanfw.sql.api.server.listener.DefaultUpdateListener;
 import org.kawanfw.sql.api.server.listener.JsonLoggerUpdateListener;
 import org.kawanfw.sql.api.server.listener.UpdateListener;
 
@@ -30,8 +29,7 @@ public class UpdateListenersCreator {
 
     private static final boolean TRACE_ON_START = false;
 
-    private static String[] PREDEFINED_CLASS_NAMES = { DefaultUpdateListener.class.getSimpleName(),
-	    JsonLoggerUpdateListener.class.getSimpleName() };
+    private static String[] PREDEFINED_CLASS_NAMES = { JsonLoggerUpdateListener.class.getSimpleName() };
 
     private List<String> updateListenerClassNames = new ArrayList<>();
     private List<UpdateListener> updateListenerManagers = new ArrayList<>();
@@ -71,13 +69,15 @@ public class UpdateListenersCreator {
 		this.updateListenerClassNames.add(updateListenerClassName);
 	    }
 
-	} else {
-	    UpdateListener updateListenerManager = new DefaultUpdateListener();
-	    String updateListenerClassName = updateListenerManager.getClass().getName();
-
-	    this.updateListenerManagers.add(updateListenerManager);
-	    this.updateListenerClassNames.add(updateListenerClassName);
 	}
+//	else 
+//	{
+//	    UpdateListener updateListenerManager = new DefaultUpdateListener();
+//	    String updateListenerClassName = updateListenerManager.getClass().getName();
+//
+//	    this.updateListenerManagers.add(updateListenerManager);
+//	    this.updateListenerClassNames.add(updateListenerClassName);
+//	}
     }
 
     /**
