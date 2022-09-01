@@ -42,7 +42,7 @@ public class ConnectionCreatorUtil {
 
 	Set<String> databases = TomcatStarterUtil.getDatabaseNames(properties);
 	
-	TomcatStarterUtil.testDatabasesLimit(databases);
+	//TomcatStarterUtil.testDatabasesLimit(databases);
 	
 	for (String database : databases) {
 	    String driverClassName = properties.getProperty(database + "." + "driverClassName");

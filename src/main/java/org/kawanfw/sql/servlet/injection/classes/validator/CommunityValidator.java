@@ -19,7 +19,6 @@ import java.util.Set;
 
 import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesStore;
 import org.kawanfw.sql.servlet.injection.properties.PropertiesFileUtil;
-import org.kawanfw.sql.tomcat.TomcatStarterUtil;
 import org.kawanfw.sql.tomcat.properties.threadpool.ThreadPoolProperties;
 import org.kawanfw.sql.util.FrameworkDebug;
 import org.kawanfw.sql.util.SqlTag;
@@ -53,7 +52,7 @@ public class CommunityValidator {
 	checkProperty(properties, "aceQLManagerServletCallName", "aceql");
 
 	Set<String> databases = ConfPropertiesStore.get().getDatabaseNames();
-	TomcatStarterUtil.testDatabasesLimit(databases);
+	//TomcatStarterUtil.testDatabasesLimit(databases);
 
 	for (String database : databases) {
 	    String propertyName = database + ".databaseConfiguratorClassName";

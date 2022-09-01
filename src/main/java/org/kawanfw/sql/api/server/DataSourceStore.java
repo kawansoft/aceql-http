@@ -19,7 +19,6 @@ import javax.sql.DataSource;
 
 import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesStore;
 import org.kawanfw.sql.tomcat.TomcatSqlModeStore;
-import org.kawanfw.sql.tomcat.TomcatStarterUtil;
 
 /**
  * 
@@ -55,7 +54,7 @@ public class DataSourceStore {
     public static Map<String, DataSource> getDataSources() {
 	Set<String> databases = ConfPropertiesStore.get().getDatabaseNames();
 
-	TomcatStarterUtil.testDatabasesLimit(databases);
+	//TomcatStarterUtil.testDatabasesLimit(databases);
 	
 	Map<String, DataSource> dataSourceSet = new ConcurrentHashMap<>();
 

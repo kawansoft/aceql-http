@@ -110,7 +110,7 @@ public class InjectedClassesManagerNew {
 	    
 	    Set<String> databases = ConfPropertiesStore.get().getDatabaseNames();
 
-	    TomcatStarterUtil.testDatabasesLimit(databases);
+	    //TomcatStarterUtil.testDatabasesLimit(databases);
 
 	    // Create out InjectedClasses builder
 	    InjectedClassesBuilder injectedClassesBuilder = new InjectedClassesBuilder();

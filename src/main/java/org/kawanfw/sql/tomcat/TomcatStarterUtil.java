@@ -74,7 +74,7 @@ public class TomcatStarterUtil {
 
 	Set<String> databases = getDatabaseNames(properties);
 
-	testDatabasesLimit(databases);
+	//testDatabasesLimit(databases);
 	
 	for (String database : databases) {
 	    createAndStoreDataSource(properties, database.trim());
@@ -82,17 +82,17 @@ public class TomcatStarterUtil {
 	
     }
     
-    /**
-     * Do not accept more than 2 databases in Community editions
-     * @param databases
-     * @throws UnsupportedOperationException
-     */
-    public static void testDatabasesLimit(Set<String> databases) throws UnsupportedOperationException {
+//    /**
+//     * Do not accept more than 2 databases in Community editions
+//     * @param databases
+//     * @throws UnsupportedOperationException
+//     */
+//    public static void testDatabasesLimit(Set<String> databases) throws UnsupportedOperationException {
 //	if (databases.size() > 2 & EditionUtil.isCommunityEdition()) {
 //	    throw new UnsupportedOperationException(
 //		    Tag.PRODUCT + " " + "Loading more than 2 SQL databases " + Tag.REQUIRES_ACEQL_ENTERPRISE_EDITION);
 //	}
-    }
+//    }
 
 
     public static void addServlets(Properties properties, Context rootCtx) throws IOException, SQLException {
@@ -193,7 +193,7 @@ public class TomcatStarterUtil {
 	    databaseSet.add(databaseArray[i].trim());
 	}
 
-	testDatabasesLimit(databaseSet);
+	//testDatabasesLimit(databaseSet);
 	return databaseSet;
     }
 
