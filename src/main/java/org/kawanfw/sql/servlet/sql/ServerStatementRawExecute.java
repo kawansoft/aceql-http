@@ -340,7 +340,7 @@ public class ServerStatementRawExecute {
      * Calls the PreparedStatement.execute() method.
      *
      * @param out
-     * @param databaseConfigurator              TODO
+     * @param databaseConfigurator
      * @param username
      * @param database
      * @param sqlOrder

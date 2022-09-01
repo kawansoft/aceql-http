@@ -622,8 +622,6 @@ public class InjectedClassesManagerNew {
 	debug("databaseConfiguratorClassName    : " + databaseConfiguratorClassName);
 
 	// Check spelling with first letter capitalized
-	// HACK NDP
-	// TODO LATER
 	// if (databaseConfiguratorClassName == null ||
 	// databaseConfiguratorClassName.isEmpty()) {
 	// String capitalized =

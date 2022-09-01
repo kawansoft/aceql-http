@@ -460,10 +460,10 @@ public class ServerStatement {
     /**
      * @param out
      * @param username
-     * @param database             TODO
+     * @param database             
      * @param sqlOrder
      * @param preparedStatement
-     * @param databaseConfigurator TODO
+     * @param databaseConfigurator
      * @throws SQLException
      * @throws IOException
      */

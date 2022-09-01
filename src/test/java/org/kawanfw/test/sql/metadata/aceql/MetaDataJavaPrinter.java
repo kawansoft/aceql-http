@@ -342,7 +342,7 @@ public class MetaDataJavaPrinter {
 	    System.err.println("tableType is null!");
 	    return false;
 	}
-	// TODO Auto-generated method stub
+
 	return tableType.equalsIgnoreCase("TABLE") ? true: false;
     }
 

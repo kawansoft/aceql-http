@@ -58,7 +58,7 @@ public class UsernameConverter {
      * Protected class
      */
     protected UsernameConverter() {
-	// TODO Auto-generated constructor stub
+
     }
 
     /**

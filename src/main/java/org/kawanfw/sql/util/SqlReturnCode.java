@@ -24,7 +24,7 @@ public class SqlReturnCode {
      * 
      */
     protected SqlReturnCode() {
-	// TODO Auto-generated constructor stub
+
     }
 
 }

@@ -308,8 +308,7 @@ public class ConfProperties {
 
 	@SuppressWarnings("unused")
 	private void validateUserObject(ConfProperties confProperties) {
-	    // HACK NDP 
-	    // TODO LATER
+	    // FUTURE USAGE
 	    // Do some basic validations to check
 	    // if user object does not break any assumption of system
 	}

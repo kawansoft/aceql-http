@@ -204,7 +204,7 @@ public class ResultSetWriterUtil {
 
     /**
      * Format the column as a RowId
-     * @param request TODO
+     * @param request
      * @param resultSet
      * @param columnIndex
      *

@@ -40,12 +40,12 @@ public class SavepointUtil {
     private static boolean DEBUG = FrameworkDebug.isSet(SavepointUtil.class);
 
     /**
-     * Calls a setSavepoint(), setSavepoint(name), rollback(Savepoint
-     * savepoint), releaseSavepoint(Savepoint savepoint)
+     * Calls a setSavepoint(), setSavepoint(name), rollback(Savepoint savepoint),
+     * releaseSavepoint(Savepoint savepoint)
      *
      * @param request
      * @param response
-     *            TODO
+     * 
      * @param out
      * @param action
      * @param connection

@@ -443,7 +443,7 @@ public class ResultSetPrinter {
      *
      * @param size    the size to fill with blanks
      * @param str     the column value
-     * @param colType TODO
+     * @param colType 
      * @return the string filled with blank
      */
     private String fillValueWithBlanks(int size, String str, int colType) {

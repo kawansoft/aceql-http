@@ -139,7 +139,7 @@ public class DefaultPoolsInfo extends HttpServlet {
      *
      * @param request  the http request
      * @param response the http response
-     * @param out      TODO
+     * @param out      
      * @throws IOException         if any IOException occurs
      * @throws SQLException
      * @throws FileUploadException

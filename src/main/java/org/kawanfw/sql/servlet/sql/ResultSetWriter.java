@@ -59,7 +59,7 @@ public class ResultSetWriter {
      * @param request  the http request
      * @param sqlOrder the sql order
      * @param gen      The JSon Generator
-     * @param fillResultSetMetaData TODO
+     * @param fillResultSetMetaData
      */
     public ResultSetWriter(HttpServletRequest request, String sqlOrder, JsonGenerator gen, boolean fillResultSetMetaData) {
 

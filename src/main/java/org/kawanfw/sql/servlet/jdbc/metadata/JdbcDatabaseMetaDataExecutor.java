@@ -52,7 +52,7 @@ public class JdbcDatabaseMetaDataExecutor {
 
     /**
      * Constructor.
-     * @param request TODO
+     * @param request
      * @param databaseMetaDataMethodCallDTO
      * @param out
      * @param connection

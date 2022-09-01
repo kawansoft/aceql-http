@@ -42,7 +42,7 @@ public class TransactionUtil {
      * Calls a setAutocommit, setReadOnly(), setHoldbility, getTransactionIsolation
      *
      * @param request
-     * @param response   TODO
+     * @param response 
      * @param out
      * @param action
      * @param connection
