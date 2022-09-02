@@ -15,13 +15,12 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.kawanfw.sql.api.server.DefaultDatabaseConfigurator;
 import org.kawanfw.sql.servlet.injection.properties.PropertiesFileStore;
 import org.kawanfw.sql.servlet.injection.properties.PropertiesFileUtil;
 import org.kawanfw.sql.util.Tag;
+import org.slf4j.Logger;
 
 import waffle.windows.auth.impl.WindowsAuthProviderImpl;
 
@@ -68,7 +67,7 @@ public class WindowsUserAuthenticator implements UserAuthenticator {
 	    if (logger == null) {
 		logger = new DefaultDatabaseConfigurator().getLogger();
 	    }
-	    logger.log(Level.WARNING, getInitTag() + "WindowsLogin.login refused for " + username);
+	    logger.info(getInitTag() + "WindowsLogin.login refused for " + username);
 
 	    return false;
 
@@ -79,7 +78,7 @@ public class WindowsUserAuthenticator implements UserAuthenticator {
 	    }
 
 	    // Better to trace stack trace in case of Waffle problem...
-	    logger.log(Level.WARNING,
+	    logger.info(
 		    getInitTag() + "AceQL WindowsLogin.login call failure (Waffle Library): " + exception.toString());
 
 	    return false;

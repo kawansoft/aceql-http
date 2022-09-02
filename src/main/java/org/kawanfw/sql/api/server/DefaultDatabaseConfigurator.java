@@ -18,22 +18,17 @@ import java.sql.SQLException;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.FileHandler;
-import java.util.logging.Handler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.sql.DataSource;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.SystemUtils;
+import org.kawanfw.sql.api.server.logging.DefaultLoggerCreator;
 import org.kawanfw.sql.api.server.util.UsernameConverter;
-import org.kawanfw.sql.api.server.util.VerySimpleFormatter;
 import org.kawanfw.sql.servlet.injection.properties.PropertiesFileStore;
 import org.kawanfw.sql.servlet.injection.properties.PropertiesFileUtil;
 import org.kawanfw.sql.tomcat.TomcatSqlModeStore;
 import org.kawanfw.sql.util.Tag;
-import org.kawanfw.sql.util.log.FlattenLogger;
+import org.slf4j.Logger;
 
 /**
  * Default implementation of server side configuration for AceQL.
@@ -128,7 +123,7 @@ public class DefaultDatabaseConfigurator implements DatabaseConfigurator {
 	    }
 	} catch (Exception e) {
 	    try {
-		getLogger().log(Level.WARNING, e.toString());
+		getLogger().info(e.toString());
 	    } catch (Exception io) {
 		// Should never happen
 		io.printStackTrace();
@@ -200,28 +195,37 @@ public class DefaultDatabaseConfigurator implements DatabaseConfigurator {
      */
     @Override
     public Logger getLogger() throws IOException {
+	
+//	if (ACEQL_LOGGER != null) {
+//	    return ACEQL_LOGGER;
+//	}
+//
+//	File logDir = new File(SystemUtils.USER_HOME + File.separator + ".kawansoft" + File.separator + "log");
+//	logDir.mkdirs();
+//
+//	String pattern = logDir.toString() + File.separator + "AceQL.log";
+//
+//	Logger logger = Logger.getLogger(DefaultDatabaseConfigurator.class.getName());
+//
+//	if (flattenLogMessages) {
+//	    ACEQL_LOGGER = new FlattenLogger(logger.getName(), logger.getResourceBundleName());
+//	} else {
+//	    ACEQL_LOGGER = logger;
+//	}
+//
+//	Handler fh = new FileHandler(pattern, 200 * 1024 * 1024, 2, true);
+//	fh.setFormatter(new VerySimpleFormatter());
+//	ACEQL_LOGGER.addHandler(fh);
+//	return ACEQL_LOGGER;
+	
 	if (ACEQL_LOGGER != null) {
 	    return ACEQL_LOGGER;
 	}
-
-	File logDir = new File(SystemUtils.USER_HOME + File.separator + ".kawansoft" + File.separator + "log");
-	logDir.mkdirs();
-
-	String pattern = logDir.toString() + File.separator + "AceQL.log";
-
-	Logger logger = Logger.getLogger(DefaultDatabaseConfigurator.class.getName());
-
-	if (flattenLogMessages) {
-	    ACEQL_LOGGER = new FlattenLogger(logger.getName(), logger.getResourceBundleName());
-	} else {
-	    ACEQL_LOGGER = logger;
-	}
-
-	Handler fh = new FileHandler(pattern, 200 * 1024 * 1024, 2, true);
-	fh.setFormatter(new VerySimpleFormatter());
-	ACEQL_LOGGER.addHandler(fh);
+	
+	DefaultLoggerCreator defaultLoggerCreator = new DefaultLoggerCreator();
+	ACEQL_LOGGER = defaultLoggerCreator.getLogger();
 	return ACEQL_LOGGER;
-
+	
     }
 
     /**

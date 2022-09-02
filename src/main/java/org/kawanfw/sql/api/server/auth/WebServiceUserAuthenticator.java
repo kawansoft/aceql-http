@@ -19,8 +19,6 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.json.Json;
 import javax.json.JsonObject;
@@ -34,6 +32,7 @@ import org.kawanfw.sql.api.server.util.SimpleHttpClient;
 import org.kawanfw.sql.servlet.injection.properties.PropertiesFileStore;
 import org.kawanfw.sql.servlet.injection.properties.PropertiesFileUtil;
 import org.kawanfw.sql.util.Tag;
+import org.slf4j.Logger;
 
 /**
  * A concrete {@code UserAuthenticator} that allows zero-code remote client
@@ -153,7 +152,7 @@ public class WebServiceUserAuthenticator implements UserAuthenticator {
 	    if (logger == null) {
 		logger = new DefaultDatabaseConfigurator().getLogger();
 	    }
-	    logger.log(Level.SEVERE,
+	    logger.error(
 		    getInitTag() + "Error when parsing jsonResult of Authentication Web Service: " + e.getMessage());
 	    return false;
 	}
@@ -178,7 +177,7 @@ public class WebServiceUserAuthenticator implements UserAuthenticator {
 	    if (logger == null) {
 		logger = new DefaultDatabaseConfigurator().getLogger();
 	    }
-	    logger.log(Level.SEVERE, getInitTag() + "Username " + username
+	    logger.error(getInitTag() + "Username " + username
 		    + " can not authenticate. Error when calling SimpleHttpClient: " + e.getMessage());
 	    return null;
 	}

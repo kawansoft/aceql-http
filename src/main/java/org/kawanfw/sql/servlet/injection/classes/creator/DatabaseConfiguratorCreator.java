@@ -13,7 +13,7 @@ package org.kawanfw.sql.servlet.injection.classes.creator;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
 
 import org.kawanfw.sql.api.server.DatabaseConfigurationException;
 import org.kawanfw.sql.api.server.DatabaseConfigurator;

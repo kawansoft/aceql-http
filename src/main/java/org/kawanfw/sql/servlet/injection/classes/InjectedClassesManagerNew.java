@@ -149,7 +149,7 @@ public class InjectedClassesManagerNew {
 	    // Store the InjectedClasses instance statically
 	    InjectedClassesStore.set(injectedClasses);
 	    
-	    displayLoggerCreator(injectedClasses);
+	    displayLoggerCreators(injectedClasses);
 	    
 	    if (!TomcatSqlModeStore.isTomcatEmbedded()) {
 		TomcatStarterMessages.printFinalOkMessage();
@@ -184,11 +184,14 @@ public class InjectedClassesManagerNew {
     /**
      * @param injectedClasses
      */
-    public void displayLoggerCreator(InjectedClasses injectedClasses) {
+    public void displayLoggerCreators(InjectedClasses injectedClasses) {
 	if (ConfPropertiesStore.get().isDisplayLoggerElementsAtStartup()) {
-	    System.out.println(SqlTag.SQL_PRODUCT_START + " Loggers elements: ");
-	    LoggerCreator loggerCreator = injectedClasses.getLoggerCreator();
-	    System.out.println(SqlTag.SQL_PRODUCT_START + "  -> " + loggerCreator.getElements());
+	    System.out.println(Tag.RUNNING_PRODUCT + " Loggers elements: ");
+	    Set<LoggerCreator> loggerCreators = injectedClasses.getLoggerCreatorSet();
+
+	    for (LoggerCreator loggerCreator : loggerCreators) {
+		System.out.println(Tag.RUNNING_PRODUCT + "  -> " + loggerCreator.getElements());
+	    }
 	}
     }
     

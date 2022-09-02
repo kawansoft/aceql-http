@@ -67,6 +67,7 @@ public class InjectedClasses {
     private Map<String, Set<UpdateListener>> updateListenerMap = new ConcurrentHashMap<>();
 
     private LoggerCreator loggerCreator;
+    private Set<LoggerCreator> loggerCreatorSet= new LinkedHashSet<>();
     
     private InjectedClasses(InjectedClassesBuilder injectedClassesBuilder) {
 	
@@ -84,6 +85,7 @@ public class InjectedClasses {
 	
 	this.updateListenerMap = injectedClassesBuilder.updateListenerMap;
 	this.loggerCreator = injectedClassesBuilder.loggerCreator;
+	this.loggerCreatorSet = injectedClassesBuilder.loggerCreatorSet;
 
     }
 
@@ -94,6 +96,15 @@ public class InjectedClasses {
     public LoggerCreator getLoggerCreator() {
         return loggerCreator;
     }
+
+   
+    /**
+     * @return the loggerCreatorSet
+     */
+    public Set<LoggerCreator> getLoggerCreatorSet() {
+        return loggerCreatorSet;
+    }
+
 
     /**
      * @return the userAuthenticator
@@ -206,9 +217,9 @@ public class InjectedClasses {
 	/** Use to publish a end of startup all info about Loggers used */
 	private Set<LoggerCreator> loggerCreatorSet= new LinkedHashSet<>();
 	
-	
 	public InjectedClassesBuilder loggerCreator(LoggerCreator loggerCreator) {
 	    this.loggerCreator = loggerCreator;
+	    addObjectToLoggers(loggerCreator);
 	    return this;
 	}
 	
@@ -228,13 +239,16 @@ public class InjectedClasses {
 	    return this;
 	}
 
-	public InjectedClassesBuilder sqlFirewallTriggerMap(Map<String, Set<SqlFirewallTrigger>> sqlFirewallTriggerMap) {
-	    this.sqlFirewallTriggerMap = sqlFirewallTriggerMap;
-	    return this;
-	}
-
 	public InjectedClassesBuilder sqlFirewallManagerMap(Map<String, Set<SqlFirewallManager>> sqlFirewallManagerMap) {
 	    this.sqlFirewallManagerMap = sqlFirewallManagerMap;
+	    return this;
+	}
+	
+	public InjectedClassesBuilder sqlFirewallTriggerMap(Map<String, Set<SqlFirewallTrigger>> sqlFirewallTriggerMap) {
+	    this.sqlFirewallTriggerMap = sqlFirewallTriggerMap;
+	    for (Map.Entry<String, Set<SqlFirewallTrigger>> entry : sqlFirewallTriggerMap.entrySet()) {
+			addSetToLoggers(entry.getValue());
+	    }
 	    return this;
 	}
 

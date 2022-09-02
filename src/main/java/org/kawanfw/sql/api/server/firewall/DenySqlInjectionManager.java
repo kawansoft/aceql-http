@@ -14,14 +14,13 @@ package org.kawanfw.sql.api.server.firewall;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.kawanfw.sql.api.server.DefaultDatabaseConfigurator;
 import org.kawanfw.sql.api.server.SqlEvent;
 import org.kawanfw.sql.api.util.firewall.cloudmersive.CloudmersiveApi;
 import org.kawanfw.sql.api.util.firewall.cloudmersive.DenySqlInjectionManagerUtil;
 import org.kawanfw.sql.util.Tag;
+import org.slf4j.Logger;
 
 /**
  * A firewall manager that allows detecting SQL injection attacks, using the
@@ -74,7 +73,7 @@ public class DenySqlInjectionManager implements SqlFirewallManager {
 	} catch (Exception exception) {
 	    exception.printStackTrace();
 	    try {
-		logger.log(Level.WARNING, Tag.PRODUCT + ": " + DenySqlInjectionManager.class.getSimpleName()
+		logger.info(Tag.PRODUCT + ": " + DenySqlInjectionManager.class.getSimpleName()
 			+ " Unable to verify SQL injection: " + exception.toString());
 	    } catch (Exception exception2) {
 		exception2.printStackTrace();

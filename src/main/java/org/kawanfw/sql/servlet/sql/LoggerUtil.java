@@ -12,8 +12,6 @@
 package org.kawanfw.sql.servlet.sql;
 
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -21,6 +19,7 @@ import org.kawanfw.sql.api.server.DatabaseConfigurator;
 import org.kawanfw.sql.api.server.DefaultDatabaseConfigurator;
 import org.kawanfw.sql.servlet.HttpParameter;
 import org.kawanfw.sql.servlet.injection.classes.InjectedClassesStore;
+import org.slf4j.Logger;
 
 /**
  * Logs all Exceptions thrown on server side, even user and application
@@ -56,8 +55,8 @@ public class LoggerUtil {
 	DatabaseConfigurator databaseConfigurator = InjectedClassesStore.get().getDatabaseConfigurators().get(database);
 
 	Logger logger = databaseConfigurator.getLogger();
-	logger.log(Level.WARNING, aceQLErrorMessage);
-	logger.log(Level.WARNING, exception.toString());
+	logger.info(aceQLErrorMessage);
+	logger.info(exception.toString());
 
     }
 
@@ -86,7 +85,7 @@ public class LoggerUtil {
 
 	Logger logger = databaseConfigurator.getLogger();
 	if (logger != null) {
-	    logger.log(Level.WARNING, "Exception: " + exception);
+	    logger.info("Exception: " + exception);
 	}
 	else {
 	    System.err.println("Logger is null!");

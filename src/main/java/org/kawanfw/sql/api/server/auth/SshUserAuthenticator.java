@@ -16,14 +16,13 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Objects;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.apache.commons.lang3.StringUtils;
 import org.kawanfw.sql.api.server.DefaultDatabaseConfigurator;
 import org.kawanfw.sql.servlet.injection.properties.PropertiesFileStore;
 import org.kawanfw.sql.servlet.injection.properties.PropertiesFileUtil;
 import org.kawanfw.sql.util.Tag;
+import org.slf4j.Logger;
 
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
@@ -88,7 +87,7 @@ public class SshUserAuthenticator implements UserAuthenticator {
 	    if (logger == null) {
 		logger = new DefaultDatabaseConfigurator().getLogger();
 	    }
-	    logger.log(Level.SEVERE, getInitTag() + "username: " + username + " or host:" + host + " is invalid.");
+	    logger.error( getInitTag() + "username: " + username + " or host:" + host + " is invalid.");
 	}
 
 	session.setPassword(new String(password));
@@ -104,7 +103,7 @@ public class SshUserAuthenticator implements UserAuthenticator {
 	    if (logger == null) {
 		logger = new DefaultDatabaseConfigurator().getLogger();
 	    }
-	    logger.log(Level.WARNING, getInitTag() + "SSH connection impossible for " + username + "@" + host + ":"
+	    logger.info(getInitTag() + "SSH connection impossible for " + username + "@" + host + ":"
 		    + port + ". (" + e.toString() + ")");
 	}
 

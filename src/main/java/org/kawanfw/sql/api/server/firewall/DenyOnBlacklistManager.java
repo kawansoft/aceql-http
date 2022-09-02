@@ -23,8 +23,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.kawanfw.sql.api.server.DefaultDatabaseConfigurator;
 import org.kawanfw.sql.api.server.SqlEvent;
@@ -33,6 +31,7 @@ import org.kawanfw.sql.api.util.firewall.TextStatementsListLoader;
 import org.kawanfw.sql.util.FrameworkDebug;
 import org.kawanfw.sql.util.SqlTag;
 import org.kawanfw.sql.util.TimestampUtil;
+import org.slf4j.Logger;
 
 /**
  * Firewall manager that denies incoming SQL statements which are also
@@ -148,7 +147,7 @@ public class DenyOnBlacklistManager implements SqlFirewallManager {
 	    System.err.println(logInfo);
 	    DefaultDatabaseConfigurator defaultDatabaseConfigurator = new DefaultDatabaseConfigurator();
 	    Logger logger = defaultDatabaseConfigurator.getLogger();
-	    logger.log(Level.WARNING, logInfo);
+	    logger.info(logInfo);
 	    storedFileTime = currentFileTime;
 	}
 
