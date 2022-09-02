@@ -18,7 +18,7 @@ import org.kawanfw.sql.servlet.injection.classes.InjectedClasses.InjectedClasses
 import org.kawanfw.sql.servlet.injection.classes.creator.RequestHeadersAuthenticatorCreator;
 import org.kawanfw.sql.util.SqlTag;
 
-public class ProEditionRequestHeadersAuthenticatorLoader implements RequestHeadersAuthenticatorLoader {
+public class AdvancedRequestHeadersAuthenticatorLoader implements RequestHeadersAuthenticatorLoader {
 
     /**
      * Loads a RequestHeadersAuthenticatorCreator instance.

@@ -27,7 +27,7 @@ import org.kawanfw.sql.tomcat.properties.threadpool.ThreadPoolExecutorBuilder;
 import org.kawanfw.sql.tomcat.properties.threadpool.ThreadPoolProperties;
 import org.kawanfw.sql.util.SqlTag;
 
-public class ProEditionThreadPoolExecutorBuilder implements ThreadPoolExecutorBuilder {
+public class AdvancedThreadPoolExecutorBuilder implements ThreadPoolExecutorBuilder {
 
     /**
      * Creates the ThreadPoolExecutor that will be used using properties

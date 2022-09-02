@@ -19,7 +19,7 @@ import org.kawanfw.sql.api.server.firewall.trigger.SqlFirewallTrigger;
 import org.kawanfw.sql.servlet.injection.classes.InjectedClasses.InjectedClassesBuilder;
 import org.kawanfw.sql.util.SqlTag;
 
-public class ProEditionSqlFirewallTriggersLoaderWrap{
+public class AdvancedSqlFirewallTriggersLoaderWrap{
 
     /**
      * @param database

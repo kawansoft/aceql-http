@@ -16,7 +16,7 @@ import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
 
-public class ProEditionServletNamesGetterWrap{
+public class AdvancedServletNamesGetterWrap{
 
     /**
      * @param properties

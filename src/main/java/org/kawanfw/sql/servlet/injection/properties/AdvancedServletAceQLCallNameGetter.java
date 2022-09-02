@@ -23,7 +23,7 @@ import org.kawanfw.sql.util.SqlTag;
  * @author Nicolas de Pomereu
  *
  */
-public class ProEditionServletAceQLCallNameGetter implements ServletAceQLCallNameGetter {
+public class AdvancedServletAceQLCallNameGetter implements ServletAceQLCallNameGetter {
 
     @Override
     public String getName() throws IOException, SQLException {

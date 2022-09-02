@@ -23,7 +23,7 @@ import org.kawanfw.sql.servlet.injection.classes.InjectedClasses.InjectedClasses
 import org.kawanfw.sql.servlet.injection.classes.creator.UpdateListenersCreator;
 import org.kawanfw.sql.util.SqlTag;
 
-public class ProEditionUpdateListenersLoader implements UpdateListenersLoader {
+public class AdvancedUpdateListenersLoader implements UpdateListenersLoader {
 
    
     private String classNameToLoad;
@@ -70,7 +70,7 @@ public class ProEditionUpdateListenersLoader implements UpdateListenersLoader {
 	updateListenerClassNames = updateListenersCreator.getUpdateListenerClassNames();
 	classNameToLoad = updateListenerClassNames.toString();
 
-	return ProEditionUpdateListenersLoaderWrap.loadUpdateListenersWrap(database, injectedClassesBuilder, updateListenerClassNames, updateListeners);
+	return AdvancedUpdateListenersLoaderWrap.loadUpdateListenersWrap(database, injectedClassesBuilder, updateListenerClassNames, updateListeners);
     }
 
     @Override

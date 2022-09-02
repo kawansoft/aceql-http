@@ -19,7 +19,7 @@ import org.kawanfw.sql.api.server.listener.UpdateListener;
 import org.kawanfw.sql.servlet.injection.classes.InjectedClasses.InjectedClassesBuilder;
 import org.kawanfw.sql.util.SqlTag;
 
-public class ProEditionUpdateListenersLoaderWrap{
+public class AdvancedUpdateListenersLoaderWrap{
 
     /**
      * @param database

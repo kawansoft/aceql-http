@@ -129,7 +129,7 @@ public class InjectedClassesManagerNew {
 	    //ThreadPoolExecutor threadPoolExecutor = threadPoolExecutorBuilder.build();
 	    //injectedClassesBuilder.threadPoolExecutor(threadPoolExecutor);
 	    
-	    ProEditionThreadPoolExecutorBuilder threadPoolExecutorBuilder = new ProEditionThreadPoolExecutorBuilder();
+	    AdvancedThreadPoolExecutorBuilder threadPoolExecutorBuilder = new AdvancedThreadPoolExecutorBuilder();
 	    ThreadPoolExecutor threadPoolExecutor = threadPoolExecutorBuilder.build();
 	    injectedClassesBuilder.threadPoolExecutor(threadPoolExecutor);
 	    
@@ -499,9 +499,9 @@ public class InjectedClassesManagerNew {
 //	requestHeadersAuthenticatorLoader.loadRequestHeadersAuthenticator(injectedClassesBuilder,
 //		requestHeadersAuthenticatorClassName);
 	
-	ProEditionRequestHeadersAuthenticatorLoader proEditionRequestHeadersAuthenticatorLoader 
-		=new ProEditionRequestHeadersAuthenticatorLoader();
-	proEditionRequestHeadersAuthenticatorLoader.loadRequestHeadersAuthenticator(injectedClassesBuilder, requestHeadersAuthenticatorClassName);
+	AdvancedRequestHeadersAuthenticatorLoader advancedRequestHeadersAuthenticatorLoader 
+		=new AdvancedRequestHeadersAuthenticatorLoader();
+	advancedRequestHeadersAuthenticatorLoader.loadRequestHeadersAuthenticator(injectedClassesBuilder, requestHeadersAuthenticatorClassName);
     }
 
     /**
@@ -532,7 +532,7 @@ public class InjectedClassesManagerNew {
 //	List<UpdateListener> updateListeners = updateListenersLoader.loadUpdateListeners(database,
 //		injectedClassesBuilder, updateListenerClassNames);
 		
-	ProEditionUpdateListenersLoader updateListenersLoader = new ProEditionUpdateListenersLoader();
+	AdvancedUpdateListenersLoader updateListenersLoader = new AdvancedUpdateListenersLoader();
 	List<UpdateListener> updateListeners = updateListenersLoader.loadUpdateListeners(database,
 		injectedClassesBuilder, updateListenerClassNames);
 	
@@ -571,7 +571,7 @@ public class InjectedClassesManagerNew {
 //	List<SqlFirewallTrigger> sqlFirewallTriggers = sqlFirewallTriggersLoader.loadSqlFirewallTriggers(database,
 //		injectedClassesBuilder, sqlFirewallTriggerClassNames);
 
-	ProEditionSqlFirewallTriggersLoader sqlFirewallTriggersLoader = new ProEditionSqlFirewallTriggersLoader();
+	AdvancedSqlFirewallTriggersLoader sqlFirewallTriggersLoader = new AdvancedSqlFirewallTriggersLoader();
 	List<SqlFirewallTrigger> sqlFirewallTriggers 
 	= sqlFirewallTriggersLoader.loadSqlFirewallTriggers(database, injectedClassesBuilder, sqlFirewallTriggerClassNames);
 	

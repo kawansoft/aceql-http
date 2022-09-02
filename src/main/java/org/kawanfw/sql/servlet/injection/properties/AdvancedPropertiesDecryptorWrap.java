@@ -22,10 +22,10 @@ import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
 import org.jasypt.iv.RandomIvGenerator;
 import org.kawanfw.sql.util.FrameworkDebug;
 
-public class ProEditionPropertiesDecryptorWrap {
+public class AdvancedPropertiesDecryptorWrap {
 
     /** Debug info */
-    private static boolean DEBUG = FrameworkDebug.isSet(ProEditionPropertiesDecryptorWrap.class);
+    private static boolean DEBUG = FrameworkDebug.isSet(AdvancedPropertiesDecryptorWrap.class);
     
     
     public static Properties decrypt(Properties properties, char[] password) throws IOException {
@@ -74,6 +74,6 @@ public class ProEditionPropertiesDecryptorWrap {
 
     private static void debug(String s) {
 	if (DEBUG)
-	    System.out.println(new Date() + " "  + ProEditionPropertiesDecryptorWrap.class.getSimpleName() + " " + s);
+	    System.out.println(new Date() + " "  + AdvancedPropertiesDecryptorWrap.class.getSimpleName() + " " + s);
     }
 }

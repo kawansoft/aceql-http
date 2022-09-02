@@ -83,7 +83,7 @@ public class PropertiesFileUtil {
 	    properties =  propertiesDecryptor.decrypt(properties, password);
 	    */
 	    
-	    properties = ProEditionPropertiesDecryptorWrap.decrypt(properties, password);
+	    properties = AdvancedPropertiesDecryptorWrap.decrypt(properties, password);
 	    
 	    for (Map.Entry<Object, Object> entry : properties.entrySet()) {
 		String key = (String) entry.getKey();

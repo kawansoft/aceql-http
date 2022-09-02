@@ -63,8 +63,8 @@ public class ConfPropertiesManager {
 	//ServletAceQLCallNameGetter servletAceQLCallNameGetter = AceQLServletCallNameGetterCreator.createInstance();
 	//String aceQLManagerServletCallName = servletAceQLCallNameGetter.getName();
 
-	ProEditionServletAceQLCallNameGetter proEditionServletAceQLCallNameGetter = new ProEditionServletAceQLCallNameGetter();
-	String aceQLManagerServletCallName = proEditionServletAceQLCallNameGetter.getName();
+	AdvancedServletAceQLCallNameGetter advancedServletAceQLCallNameGetter = new AdvancedServletAceQLCallNameGetter();
+	String aceQLManagerServletCallName = advancedServletAceQLCallNameGetter.getName();
 	
 	debug("aceQLManagerServletCallName: " + aceQLManagerServletCallName);
 

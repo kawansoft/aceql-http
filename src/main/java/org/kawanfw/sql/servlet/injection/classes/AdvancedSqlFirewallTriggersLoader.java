@@ -23,7 +23,7 @@ import org.kawanfw.sql.servlet.injection.classes.InjectedClasses.InjectedClasses
 import org.kawanfw.sql.servlet.injection.classes.creator.SqlFirewallTriggersCreator;
 import org.kawanfw.sql.util.SqlTag;
 
-public class ProEditionSqlFirewallTriggersLoader implements SqlFirewallTriggersLoader {
+public class AdvancedSqlFirewallTriggersLoader implements SqlFirewallTriggersLoader {
 
    
     private String classNameToLoad;
@@ -70,7 +70,7 @@ public class ProEditionSqlFirewallTriggersLoader implements SqlFirewallTriggersL
 	sqlFirewallTriggerClassNames = sqlFirewallTriggersCreator.getSqlFirewallTriggerClassNames();
 	classNameToLoad = sqlFirewallTriggerClassNames.toString();
 
-	return ProEditionSqlFirewallTriggersLoaderWrap.loadSqlFirewallTriggersWrap(database, injectedClassesBuilder, sqlFirewallTriggerClassNames, sqlFirewallTriggers);
+	return AdvancedSqlFirewallTriggersLoaderWrap.loadSqlFirewallTriggersWrap(database, injectedClassesBuilder, sqlFirewallTriggerClassNames, sqlFirewallTriggers);
     }
 
     @Override

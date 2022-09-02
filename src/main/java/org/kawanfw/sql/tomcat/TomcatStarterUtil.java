@@ -104,7 +104,7 @@ public class TomcatStarterUtil {
 //	ServletNamesGetter servletNamesGetter = ServletsNamesGetterCreator.createInstance();
 //	Set<String> servlets= servletNamesGetter.getServlets(properties);
 	
-	Set<String> servlets = ProEditionServletNamesGetterWrap.getServletsWrap(properties);
+	Set<String> servlets = AdvancedServletNamesGetterWrap.getServletsWrap(properties);
 
 	if (servlets.isEmpty()) {
 	    return;
