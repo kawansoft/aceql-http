@@ -123,7 +123,8 @@ public class DefaultDatabaseConfigurator implements DatabaseConfigurator {
 	    }
 	} catch (Exception e) {
 	    try {
-		getLogger().info(e.toString());
+		Logger logger = getLogger();
+		logger.info(e.toString());
 	    } catch (Exception io) {
 		// Should never happen
 		io.printStackTrace();

@@ -16,7 +16,8 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Properties;
 
-import org.kawanfw.sql.api.server.DefaultDatabaseConfigurator;
+import org.kawanfw.sql.api.server.DatabaseConfigurator;
+import org.kawanfw.sql.servlet.injection.classes.InjectedClassesStore;
 import org.kawanfw.sql.servlet.injection.properties.PropertiesFileStore;
 import org.kawanfw.sql.servlet.injection.properties.PropertiesFileUtil;
 import org.kawanfw.sql.util.Tag;
@@ -65,7 +66,9 @@ public class WindowsUserAuthenticator implements UserAuthenticator {
 	    return true;
 	} catch (com.sun.jna.platform.win32.Win32Exception Wwn32Exception) {
 	    if (logger == null) {
-		logger = new DefaultDatabaseConfigurator().getLogger();
+		DatabaseConfigurator databaseConfigurator = InjectedClassesStore.get().getDatabaseConfigurators()
+			.get(database);
+		logger = databaseConfigurator.getLogger();
 	    }
 	    logger.info(getInitTag() + "WindowsLogin.login refused for " + username);
 
@@ -74,7 +77,9 @@ public class WindowsUserAuthenticator implements UserAuthenticator {
 	} catch (Exception exception) {
 
 	    if (logger == null) {
-		logger = new DefaultDatabaseConfigurator().getLogger();
+		DatabaseConfigurator databaseConfigurator = InjectedClassesStore.get().getDatabaseConfigurators()
+			.get(database);
+		logger = databaseConfigurator.getLogger();
 	    }
 
 	    // Better to trace stack trace in case of Waffle problem...

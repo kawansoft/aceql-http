@@ -53,8 +53,8 @@ public class LoggerUtil {
 	String database = request.getParameter(HttpParameter.DATABASE);
 
 	DatabaseConfigurator databaseConfigurator = InjectedClassesStore.get().getDatabaseConfigurators().get(database);
-
 	Logger logger = databaseConfigurator.getLogger();
+	
 	logger.info(aceQLErrorMessage);
 	logger.info(exception.toString());
 

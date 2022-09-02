@@ -25,7 +25,7 @@ import org.kawanfw.sql.api.server.SqlEvent;
 import org.kawanfw.sql.api.server.util.NoFormatter;
 import org.kawanfw.sql.servlet.util.JsonLoggerUtil;
 import org.kawanfw.sql.servlet.util.UpdateListenerUtil;
-import org.kawanfw.sql.util.log.FlattenLogger;
+import org.kawanfw.sql.servlet.util.logging.FlattenLogger;
 
 /**
  * Concrete implementation of {@code UpdateListener}. The

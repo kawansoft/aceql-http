@@ -27,13 +27,14 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.kawanfw.sql.api.server.DefaultDatabaseConfigurator;
+import org.kawanfw.sql.api.server.DatabaseConfigurator;
 import org.kawanfw.sql.api.server.SqlEvent;
 import org.kawanfw.sql.api.server.StatementAnalyzer;
 import org.kawanfw.sql.api.util.firewall.CsvRulesManagerLoader;
 import org.kawanfw.sql.api.util.firewall.DatabaseUserTableTriplet;
 import org.kawanfw.sql.api.util.firewall.TableAllowStatements;
 import org.kawanfw.sql.metadata.AceQLMetaData;
+import org.kawanfw.sql.servlet.injection.classes.InjectedClassesStore;
 import org.kawanfw.sql.servlet.injection.properties.PropertiesFileStore;
 import org.kawanfw.sql.util.FrameworkDebug;
 import org.kawanfw.sql.util.SqlTag;
@@ -271,8 +272,9 @@ public class CsvRulesManager implements SqlFirewallManager {
 	    String logInfo = TimestampUtil.getHumanTimestampNow() + " " + SqlTag.USER_CONFIGURATION
 		    + " Reloading CsvRulesManager configuration file: " + csvFile;
 	    System.err.println(logInfo);
-	    DefaultDatabaseConfigurator defaultDatabaseConfigurator = new DefaultDatabaseConfigurator();
-	    Logger logger = defaultDatabaseConfigurator.getLogger();
+	    DatabaseConfigurator databaseConfigurator = InjectedClassesStore.get().getDatabaseConfigurators()
+			.get(database);
+	    Logger logger = databaseConfigurator.getLogger();
 	    logger.info(logInfo);
 	    storedFileTime = currentFileTime;
 	}

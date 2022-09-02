@@ -26,7 +26,7 @@ import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
 import org.kawanfw.sql.api.server.util.NoFormatter;
 import org.kawanfw.sql.servlet.util.JsonLoggerUtil;
 import org.kawanfw.sql.servlet.util.SqlFirewallTriggerUtil;
-import org.kawanfw.sql.util.log.FlattenLogger;
+import org.kawanfw.sql.servlet.util.logging.FlattenLogger;
 
 /**
  * A trigger that will log using JSON format the {@code SqlEvent} info

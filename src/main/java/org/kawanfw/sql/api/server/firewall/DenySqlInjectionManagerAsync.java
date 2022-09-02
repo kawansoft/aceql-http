@@ -15,11 +15,12 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-import org.kawanfw.sql.api.server.DefaultDatabaseConfigurator;
+import org.kawanfw.sql.api.server.DatabaseConfigurator;
 import org.kawanfw.sql.api.server.SqlEvent;
 import org.kawanfw.sql.api.server.firewall.trigger.SqlFirewallTrigger;
 import org.kawanfw.sql.api.util.firewall.cloudmersive.CloudmersiveApi;
 import org.kawanfw.sql.api.util.firewall.cloudmersive.DenySqlInjectionManagerUtil;
+import org.kawanfw.sql.servlet.injection.classes.InjectedClassesStore;
 import org.kawanfw.sql.util.Tag;
 import org.slf4j.Logger;
 
@@ -70,7 +71,9 @@ public class DenySqlInjectionManagerAsync implements SqlFirewallManager {
 
 	try {
 	    if (logger == null) {
-		logger = new DefaultDatabaseConfigurator().getLogger();
+		DatabaseConfigurator databaseConfigurator = InjectedClassesStore.get().getDatabaseConfigurators()
+			.get(sqlEvent.getDatabase());
+		logger = databaseConfigurator.getLogger();
 	    }
 	    // If not loaded, load the APIs & connect to Cloudmersive
 	    if (cloudmersiveApi == null) {

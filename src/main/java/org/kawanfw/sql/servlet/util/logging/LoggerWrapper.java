@@ -11,23 +11,22 @@
  */
 package org.kawanfw.sql.servlet.util.logging;
 
-import org.kawanfw.sql.servlet.injection.classes.InjectedClasses;
-import org.kawanfw.sql.servlet.injection.classes.InjectedClassesStore;
 import org.slf4j.Logger;
 
 /**
- * Allows to retrieve the main activity Logger.
  * @author Nicolas de Pomereu
  *
  */
-public class LoggerUtil {
+public class LoggerWrapper {
 
+    
     /**
-     * @return the main activity Logger
+     * A default logging method 
+     * @param logger	the Logger to use 
+     * @param message	the message to log with Logger.info(à
      */
-    public static Logger getMainActivityLogger() {
-	InjectedClasses injectedClasses =  InjectedClassesStore.get();
-	return injectedClasses.getLoggerCreator().getLogger();
+    public static void log (Logger logger, String message) {
+	logger.info(message);
     }
 
 }

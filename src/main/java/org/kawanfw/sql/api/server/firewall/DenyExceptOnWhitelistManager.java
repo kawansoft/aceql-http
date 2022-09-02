@@ -25,10 +25,11 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-import org.kawanfw.sql.api.server.DefaultDatabaseConfigurator;
+import org.kawanfw.sql.api.server.DatabaseConfigurator;
 import org.kawanfw.sql.api.server.SqlEvent;
 import org.kawanfw.sql.api.server.StatementNormalizer;
 import org.kawanfw.sql.api.util.firewall.TextStatementsListLoader;
+import org.kawanfw.sql.servlet.injection.classes.InjectedClassesStore;
 import org.kawanfw.sql.servlet.injection.properties.PropertiesFileStore;
 import org.kawanfw.sql.util.FrameworkDebug;
 import org.kawanfw.sql.util.SqlTag;
@@ -149,8 +150,11 @@ public class DenyExceptOnWhitelistManager implements SqlFirewallManager {
 	    String logInfo = TimestampUtil.getHumanTimestampNow() + " " + SqlTag.USER_CONFIGURATION + " Reloading "
 		    + this.getClass().getSimpleName() + " configuration file: " + textFile;
 	    System.err.println(logInfo);
-	    DefaultDatabaseConfigurator defaultDatabaseConfigurator = new DefaultDatabaseConfigurator();
-	    Logger logger = defaultDatabaseConfigurator.getLogger();
+	    
+	    DatabaseConfigurator databaseConfigurator = InjectedClassesStore.get().getDatabaseConfigurators()
+		    .get(database);
+	    Logger logger = databaseConfigurator.getLogger();
+	    
 	    logger.info(logInfo);
 	    storedFileTime = currentFileTime;
 	}

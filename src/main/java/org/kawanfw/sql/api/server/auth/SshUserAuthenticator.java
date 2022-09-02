@@ -18,7 +18,8 @@ import java.util.Objects;
 import java.util.Properties;
 
 import org.apache.commons.lang3.StringUtils;
-import org.kawanfw.sql.api.server.DefaultDatabaseConfigurator;
+import org.kawanfw.sql.api.server.DatabaseConfigurator;
+import org.kawanfw.sql.servlet.injection.classes.InjectedClassesStore;
 import org.kawanfw.sql.servlet.injection.properties.PropertiesFileStore;
 import org.kawanfw.sql.servlet.injection.properties.PropertiesFileUtil;
 import org.kawanfw.sql.util.Tag;
@@ -85,7 +86,9 @@ public class SshUserAuthenticator implements UserAuthenticator {
 	    session = jsch.getSession(username, host, port);
 	} catch (JSchException e) {
 	    if (logger == null) {
-		logger = new DefaultDatabaseConfigurator().getLogger();
+		DatabaseConfigurator databaseConfigurator = InjectedClassesStore.get().getDatabaseConfigurators()
+			.get(database);
+		logger = databaseConfigurator.getLogger();
 	    }
 	    logger.error( getInitTag() + "username: " + username + " or host:" + host + " is invalid.");
 	}
@@ -101,7 +104,9 @@ public class SshUserAuthenticator implements UserAuthenticator {
 	    session.disconnect();
 	} catch (JSchException e) {
 	    if (logger == null) {
-		logger = new DefaultDatabaseConfigurator().getLogger();
+		DatabaseConfigurator databaseConfigurator = InjectedClassesStore.get().getDatabaseConfigurators()
+			.get(database);
+		logger = databaseConfigurator.getLogger();
 	    }
 	    logger.info(getInitTag() + "SSH connection impossible for " + username + "@" + host + ":"
 		    + port + ". (" + e.toString() + ")");

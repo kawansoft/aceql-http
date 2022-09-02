@@ -9,7 +9,7 @@
  * On the date above, in accordance with the Business Source License, use
  * of this software will be governed by version 2.0 of the Apache License.
  */
-package org.kawanfw.sql.util.log;
+package org.kawanfw.sql.servlet.util.logging;
 
 import java.io.BufferedReader;
 import java.io.IOException;

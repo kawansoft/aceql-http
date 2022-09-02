@@ -24,7 +24,8 @@ import javax.naming.NamingException;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.InitialDirContext;
 
-import org.kawanfw.sql.api.server.DefaultDatabaseConfigurator;
+import org.kawanfw.sql.api.server.DatabaseConfigurator;
+import org.kawanfw.sql.servlet.injection.classes.InjectedClassesStore;
 import org.kawanfw.sql.servlet.injection.properties.PropertiesFileStore;
 import org.kawanfw.sql.servlet.injection.properties.PropertiesFileUtil;
 import org.kawanfw.sql.util.Tag;
@@ -75,7 +76,9 @@ public class LdapUserAuthenticator implements UserAuthenticator {
 	DirContext ctx = null;
 
 	if (logger == null) {
-	    logger = new DefaultDatabaseConfigurator().getLogger();
+	    DatabaseConfigurator databaseConfigurator = InjectedClassesStore.get().getDatabaseConfigurators()
+		    .get(database);
+	    logger = databaseConfigurator.getLogger();
 	}
 
 	try {
