@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
 import java.util.zip.GZIPOutputStream;
 
@@ -71,9 +72,8 @@ public class ServerStatement {
 
     private Boolean doPrettyPrinting;
 
-    private List<SqlFirewallManager> sqlFirewallManagers;
-
-    private List<UpdateListener> updateListeners;
+    private Set<SqlFirewallManager> sqlFirewallManagers;
+    private Set<UpdateListener> updateListeners;
 
     /**
      * Default Constructor
@@ -86,7 +86,7 @@ public class ServerStatement {
      */
 
     public ServerStatement(HttpServletRequest request, HttpServletResponse response,
-	    List<SqlFirewallManager> sqlFirewallManagers, Connection connection) throws SQLException {
+	    Set<SqlFirewallManager> sqlFirewallManagers, Connection connection) throws SQLException {
 	this.request = request;
 	this.response = response;
 	this.sqlFirewallManagers = sqlFirewallManagers;

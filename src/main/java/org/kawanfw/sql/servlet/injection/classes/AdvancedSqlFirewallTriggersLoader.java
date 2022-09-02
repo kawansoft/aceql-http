@@ -14,8 +14,8 @@ package org.kawanfw.sql.servlet.injection.classes;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.kawanfw.sql.api.server.DatabaseConfigurator;
 import org.kawanfw.sql.api.server.firewall.trigger.SqlFirewallTrigger;
@@ -46,8 +46,8 @@ public class AdvancedSqlFirewallTriggersLoader implements SqlFirewallTriggersLoa
      * @throws IOException
      */
     @Override
-    public List<SqlFirewallTrigger> loadSqlFirewallTriggers(String database, InjectedClassesBuilder injectedClassesBuilder,
-	    List<String> sqlFirewallTriggerClassNames)
+    public Set<SqlFirewallTrigger> loadSqlFirewallTriggers(String database, InjectedClassesBuilder injectedClassesBuilder,
+	    Set<String> sqlFirewallTriggerClassNames)
 	    throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException,
 	    IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException, IOException {
 		
@@ -65,7 +65,7 @@ public class AdvancedSqlFirewallTriggersLoader implements SqlFirewallTriggersLoa
 	
 	SqlFirewallTriggersCreator sqlFirewallTriggersCreator = new SqlFirewallTriggersCreator(sqlFirewallTriggerClassNames, database,
 		databaseConfigurator);
-	List<SqlFirewallTrigger> sqlFirewallTriggers = sqlFirewallTriggersCreator.getSqlFirewallTriggers();
+	Set<SqlFirewallTrigger> sqlFirewallTriggers = sqlFirewallTriggersCreator.getSqlFirewallTriggers();
 
 	sqlFirewallTriggerClassNames = sqlFirewallTriggersCreator.getSqlFirewallTriggerClassNames();
 	classNameToLoad = sqlFirewallTriggerClassNames.toString();

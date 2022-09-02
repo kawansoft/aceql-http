@@ -19,6 +19,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -54,12 +55,12 @@ public class MetadataQueryActionManager {
     private HttpServletRequest request = null;
     private HttpServletResponse response = null;
     private Connection connection = null;
-    List<SqlFirewallManager> sqlFirewallManagers = new ArrayList<>();
+    Set<SqlFirewallManager> sqlFirewallManagers = new LinkedHashSet<>();
 
     private OutputStream out = null;
 
     public MetadataQueryActionManager(HttpServletRequest request, HttpServletResponse response, OutputStream out,
-	    List<SqlFirewallManager> sqlFirewallManagers, Connection connection) {
+	    Set<SqlFirewallManager> sqlFirewallManagers, Connection connection) {
 	super();
 	this.request = request;
 	this.response = response;

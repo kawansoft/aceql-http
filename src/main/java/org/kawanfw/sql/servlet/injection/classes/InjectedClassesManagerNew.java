@@ -18,7 +18,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
@@ -272,22 +271,22 @@ public class InjectedClassesManagerNew {
 	    throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException,
 	    IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException, IOException {
 	// Load all the classes and set our InjectedClassesBuilder instance
-	Map<String, List<SqlFirewallManager>> sqlFirewallManagerMap = new HashMap<>();
+	Map<String, Set<SqlFirewallManager>> sqlFirewallManagerMap = new HashMap<>();
 	Map<String, DatabaseConfigurator> databaseConfigurators = new HashMap<>();
-	Map<String, List<SqlFirewallTrigger>> sqlFirewallTriggerMap = new HashMap<>();
-	Map<String, List<UpdateListener>> updateListenerMap = new HashMap<>();
+	Map<String, Set<SqlFirewallTrigger>> sqlFirewallTriggerMap = new HashMap<>();
+	Map<String, Set<UpdateListener>> updateListenerMap = new HashMap<>();
 
 	for (String database : databases) {
-	    List<SqlFirewallManager> sqlFirewalManagers = loadSqlFirewallManagers(database);
+	    Set<SqlFirewallManager> sqlFirewalManagers = loadSqlFirewallManagers(database);
 	    sqlFirewallManagerMap.put(database, sqlFirewalManagers);
 
 	    DatabaseConfigurator databaseConfigurator = loadDatabaseConfigurator(database);
 	    databaseConfigurators.put(database, databaseConfigurator);
 
-	    List<SqlFirewallTrigger> sqlFirewallTriggers = loadSqlFirewallTriggers(database, injectedClassesBuilder);
+	    Set<SqlFirewallTrigger> sqlFirewallTriggers = loadSqlFirewallTriggers(database, injectedClassesBuilder);
 	    sqlFirewallTriggerMap.put(database, sqlFirewallTriggers);
 
-	    List<UpdateListener> updateListeners = loadUpdateListeners(database, injectedClassesBuilder);
+	    Set<UpdateListener> updateListeners = loadUpdateListeners(database, injectedClassesBuilder);
 	    updateListenerMap.put(database, updateListeners);
 	}
 
@@ -520,11 +519,11 @@ public class InjectedClassesManagerNew {
      * @throws SQLException
      * @throws IOException
      */
-    private List<UpdateListener> loadUpdateListeners(String database, InjectedClassesBuilder injectedClassesBuilder)
+    private Set<UpdateListener> loadUpdateListeners(String database, InjectedClassesBuilder injectedClassesBuilder)
 	    throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException,
 	    IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException, IOException {
 
-	List<String> updateListenerClassNames = ConfPropertiesStore.get().getUpdateListenerClassNames(database);
+	Set<String> updateListenerClassNames = ConfPropertiesStore.get().getUpdateListenerClassNames(database);
 	classNameToLoad = updateListenerClassNames.toString();
 
 	
@@ -533,7 +532,7 @@ public class InjectedClassesManagerNew {
 //		injectedClassesBuilder, updateListenerClassNames);
 		
 	AdvancedUpdateListenersLoader updateListenersLoader = new AdvancedUpdateListenersLoader();
-	List<UpdateListener> updateListeners = updateListenersLoader.loadUpdateListeners(database,
+	Set<UpdateListener> updateListeners = updateListenersLoader.loadUpdateListeners(database,
 		injectedClassesBuilder, updateListenerClassNames);
 	
 	// Update class name(s) to load
@@ -558,12 +557,12 @@ public class InjectedClassesManagerNew {
      * @throws SQLException
      * @throws IOException
      */
-    private List<SqlFirewallTrigger> loadSqlFirewallTriggers(String database,
+    private Set<SqlFirewallTrigger> loadSqlFirewallTriggers(String database,
 	    InjectedClassesBuilder injectedClassesBuilder)
 	    throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException,
 	    IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException, IOException {
 
-	List<String> sqlFirewallTriggerClassNames = ConfPropertiesStore.get().getSqlFirewallTriggerClassNames(database);
+	Set<String> sqlFirewallTriggerClassNames = ConfPropertiesStore.get().getSqlFirewallTriggerClassNames(database);
 	classNameToLoad = sqlFirewallTriggerClassNames.toString();
 
 
@@ -572,7 +571,7 @@ public class InjectedClassesManagerNew {
 //		injectedClassesBuilder, sqlFirewallTriggerClassNames);
 
 	AdvancedSqlFirewallTriggersLoader sqlFirewallTriggersLoader = new AdvancedSqlFirewallTriggersLoader();
-	List<SqlFirewallTrigger> sqlFirewallTriggers 
+	Set<SqlFirewallTrigger> sqlFirewallTriggers 
 	= sqlFirewallTriggersLoader.loadSqlFirewallTriggers(database, injectedClassesBuilder, sqlFirewallTriggerClassNames);
 	
 	// Update class name(s) to load
@@ -596,11 +595,11 @@ public class InjectedClassesManagerNew {
      * @throws SQLException
      * @throws IOException
      */
-    private List<SqlFirewallManager> loadSqlFirewallManagers(String database)
+    private Set<SqlFirewallManager> loadSqlFirewallManagers(String database)
 	    throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException,
 	    IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException, IOException {
 
-	List<String> sqlFirewallClassNames = ConfPropertiesStore.get().getSqlFirewallManagerClassNames(database);
+	Set<String> sqlFirewallClassNames = ConfPropertiesStore.get().getSqlFirewallManagerClassNames(database);
 	classNameToLoad = sqlFirewallClassNames.toString();
 
 	debug("==> sqlFirewallClassNames: " + sqlFirewallClassNames);
@@ -614,7 +613,7 @@ public class InjectedClassesManagerNew {
 	System.out.println(SqlTag.SQL_PRODUCT_START + " " + database + " Database - Loading " + tagSQLFirewallManager);
 
 	SqlFirewallsCreator sqlFirewallsCreator = new SqlFirewallsCreator(sqlFirewallClassNames);
-	List<SqlFirewallManager> sqlFirewallManagers = sqlFirewallsCreator.getSqlFirewalls();
+	Set<SqlFirewallManager> sqlFirewallManagers = sqlFirewallsCreator.getSqlFirewalls();
 
 	for (SqlFirewallManager sqlFirewallManager : sqlFirewallManagers) {
 	    debug("==> sqlFirewallManager: " + sqlFirewallManager);

@@ -14,8 +14,8 @@ package org.kawanfw.sql.api.util.firewall;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import org.kawanfw.sql.api.server.SqlEvent;
 import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
@@ -36,7 +36,7 @@ public class SqlFirewallTriggerWrapper {
 
 	String database = sqlEvent.getDatabase();
 
-	List<SqlFirewallTrigger> sqlFirewallTriggers = InjectedClassesStore.get().getSqlFirewallTriggerMap()
+	Set<SqlFirewallTrigger> sqlFirewallTriggers = InjectedClassesStore.get().getSqlFirewallTriggerMap()
 		.get(database);
 
 	for (SqlFirewallTrigger sqlFirewallTrigger : sqlFirewallTriggers) {

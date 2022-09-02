@@ -20,8 +20,8 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.zip.GZIPOutputStream;
 
 import javax.json.stream.JsonGenerator;
@@ -57,8 +57,8 @@ import org.kawanfw.sql.util.IpUtil;
  *          Allows to execute the Statement or Prepared Statement on the Server
  *          as executeQuery() or executeUpdate()
  */
-public class ProEditionServerCallableStatement {
-    private static boolean DEBUG = FrameworkDebug.isSet(ProEditionServerCallableStatement.class);
+public class AdvancedServerCallableStatement {
+    private static boolean DEBUG = FrameworkDebug.isSet(AdvancedServerCallableStatement.class);
 
     public static String CR_LF = System.getProperty("line.separator");
 
@@ -67,7 +67,7 @@ public class ProEditionServerCallableStatement {
 
     /** The http request */
     private HttpServletRequest request = null;
-    private List<SqlFirewallManager> sqlFirewallManagers;
+    private Set<SqlFirewallManager> sqlFirewallManagers;
     private HttpServletResponse response = null;
     private Boolean doPrettyPrinting = false;
 
@@ -81,8 +81,8 @@ public class ProEditionServerCallableStatement {
      * @param sqlOrderAndParmsStore the Sql order and parms
      */
 
-    public ProEditionServerCallableStatement(HttpServletRequest request, HttpServletResponse response,
-	    List<SqlFirewallManager> sqlFirewallManagers, Connection connection) throws SQLException {
+    public AdvancedServerCallableStatement(HttpServletRequest request, HttpServletResponse response,
+	    Set<SqlFirewallManager> sqlFirewallManagers, Connection connection) throws SQLException {
 	this.request = request;
 	this.response = response;
 	this.sqlFirewallManagers = sqlFirewallManagers;

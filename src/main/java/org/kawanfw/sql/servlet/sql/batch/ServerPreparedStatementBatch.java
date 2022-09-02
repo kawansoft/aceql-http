@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -75,11 +76,11 @@ public class ServerPreparedStatementBatch {
 
     private Boolean doPrettyPrinting;
 
-    private List<SqlFirewallManager> sqlFirewallManagers;
+    private Set<SqlFirewallManager> sqlFirewallManagers;
 
     private DatabaseConfigurator databaseConfigurator;
 
-    private List<UpdateListener> updateListeners;
+    private Set<UpdateListener> updateListeners;
 
     /**
      * Default Constructor
@@ -93,7 +94,7 @@ public class ServerPreparedStatementBatch {
      */
 
     public ServerPreparedStatementBatch(HttpServletRequest request, HttpServletResponse response,
-	    List<SqlFirewallManager> sqlFirewallManagers, Connection connection,
+	    Set<SqlFirewallManager> sqlFirewallManagers, Connection connection,
 	    DatabaseConfigurator databaseConfigurator) throws SQLException {
 	this.request = request;
 	this.response = response;

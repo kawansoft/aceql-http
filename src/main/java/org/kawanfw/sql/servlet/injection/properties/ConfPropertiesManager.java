@@ -13,14 +13,15 @@ package org.kawanfw.sql.servlet.injection.properties;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.kawanfw.sql.servlet.ServerSqlManager;
 import org.kawanfw.sql.servlet.injection.properties.ConfProperties.ConfPropertiesBuilder;
@@ -96,9 +97,9 @@ public class ConfPropertiesManager {
 	}
 
 	Map<String, String> databaseConfiguratorClassNameMap = new HashMap<>();
-	Map<String, List<String>> sqlFirewallClassNamesMap = new HashMap<>();
-	Map<String, List<String>> sqlFirewallTriggerClassNamesMap = new HashMap<>();
-	Map<String, List<String>> updateListenerClassNamesMap = new HashMap<>();
+	Map<String, Set<String>> sqlFirewallClassNamesMap = new ConcurrentHashMap<>();
+	Map<String, Set<String>> sqlFirewallTriggerClassNamesMap = new ConcurrentHashMap<>();
+	Map<String, Set<String>> updateListenerClassNamesMap = new ConcurrentHashMap<>();
 
 	buildObjectsPerDatabase(databases, databaseConfiguratorClassNameMap, sqlFirewallClassNamesMap,
 		sqlFirewallTriggerClassNamesMap, updateListenerClassNamesMap);
@@ -147,9 +148,9 @@ public class ConfPropertiesManager {
      * @param updateListenerClassNamesMap
      */
     public void buildObjectsPerDatabase(Set<String> databases, Map<String, String> databaseConfiguratorClassNameMap,
-	    Map<String, List<String>> sqlFirewallClassNamesMap,
-	    Map<String, List<String>> sqlFirewallTriggerClassNamesMap,
-	    Map<String, List<String>> updateListenerClassNamesMap) {
+	    Map<String, Set<String>> sqlFirewallClassNamesMap,
+	    Map<String, Set<String>> sqlFirewallTriggerClassNamesMap,
+	    Map<String, Set<String>> updateListenerClassNamesMap) {
 	for (String database : databases) {
 
 	    // Set the configurator to use for this database
@@ -165,32 +166,36 @@ public class ConfPropertiesManager {
 		    properties.getProperty(database + "." + ServerSqlManager.SQL_FIREWALL_MANAGER_CLASS_NAMES));
 
 	    if (sqlFirewallClassNameArray != null && !sqlFirewallClassNameArray.isEmpty()) {
-		List<String> sqlFirewallClassNames = TomcatStarterUtilProperties.getList(sqlFirewallClassNameArray);
+		List<String> sqlFirewallClassNamesList = TomcatStarterUtilProperties.getList(sqlFirewallClassNameArray);
+		Set<String> sqlFirewallClassNames = new LinkedHashSet<>(sqlFirewallClassNamesList);
 		sqlFirewallClassNamesMap.put(database, sqlFirewallClassNames);
 	    } else {
-		sqlFirewallClassNamesMap.put(database, new ArrayList<String>());
+		sqlFirewallClassNamesMap.put(database, new LinkedHashSet<String>());
 	    }
 	    
 	    String sqlFirewallTriggerClassNameArray = TomcatStarterUtil.trimSafe(
 		    properties.getProperty(database + "." + ServerSqlManager.SQL_FIREWALL_TRIGGER_CLASS_NAMES));
 
 	    if (sqlFirewallTriggerClassNameArray != null && !sqlFirewallTriggerClassNameArray.isEmpty()) {
-		List<String> sqlFirewallTriggerClassNames = TomcatStarterUtilProperties
+		List<String> sqlFirewallTriggerClassNamesList = TomcatStarterUtilProperties
 			.getList(sqlFirewallTriggerClassNameArray);
+		Set<String> sqlFirewallTriggerClassNames = new LinkedHashSet<>(sqlFirewallTriggerClassNamesList);
 		sqlFirewallTriggerClassNamesMap.put(database, sqlFirewallTriggerClassNames);
 	    } else {
-		sqlFirewallTriggerClassNamesMap.put(database, new ArrayList<String>());
+		sqlFirewallTriggerClassNamesMap.put(database, new LinkedHashSet<String>());
 	    }
 	    
 	    String updateListenerClassNameArray = TomcatStarterUtil.trimSafe(
 		    properties.getProperty(database + "." + ServerSqlManager.UPDATE_LISTENER_MANAGER_CLASS_NAMES));
 
 	    if (updateListenerClassNameArray != null && !updateListenerClassNameArray.isEmpty()) {
-		List<String> updateListenerClassNames = TomcatStarterUtilProperties
+		List<String> updateListenerClassNamesList = TomcatStarterUtilProperties
 			.getList(updateListenerClassNameArray);
+		
+		Set<String> updateListenerClassNames = new LinkedHashSet<>(updateListenerClassNamesList);
 		updateListenerClassNamesMap.put(database, updateListenerClassNames);
 	    } else {
-		updateListenerClassNamesMap.put(database, new ArrayList<String>());
+		updateListenerClassNamesMap.put(database, new LinkedHashSet<String>());
 	    }
 	}
     }

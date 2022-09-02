@@ -19,7 +19,7 @@ import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.Enumeration;
-import java.util.List;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -44,7 +44,7 @@ import org.kawanfw.sql.servlet.sql.ServerStatement;
 import org.kawanfw.sql.servlet.sql.ServerStatementRawExecute;
 import org.kawanfw.sql.servlet.sql.batch.ServerPreparedStatementBatch;
 import org.kawanfw.sql.servlet.sql.batch.ServerStatementBatch;
-import org.kawanfw.sql.servlet.sql.callable.ProEditionServerCallableStatement;
+import org.kawanfw.sql.servlet.sql.callable.AdvancedServerCallableStatement;
 import org.kawanfw.sql.servlet.sql.json_return.JsonErrorReturn;
 import org.kawanfw.sql.servlet.sql.json_return.JsonOkReturn;
 import org.kawanfw.sql.util.FrameworkDebug;
@@ -138,7 +138,7 @@ public class ServerSqlDispatch {
 		return;
 	    }
 
-	    List<SqlFirewallManager> sqlFirewallManagers = InjectedClassesStore.get().getSqlFirewallManagerMap()
+	    Set<SqlFirewallManager> sqlFirewallManagers = InjectedClassesStore.get().getSqlFirewallManagerMap()
 		    .get(database);
 
 	    // get_database_info
@@ -193,7 +193,7 @@ public class ServerSqlDispatch {
      * @throws SQLException
      */
     private boolean isGetDatabaseInfo(HttpServletRequest request, OutputStream out, String action,
-	    Connection connection, List<SqlFirewallManager> sqlFirewallManagers) throws IOException, SQLException {
+	    Connection connection, Set<SqlFirewallManager> sqlFirewallManagers) throws IOException, SQLException {
 	if (action.equals(HttpParameter.GET_DATABASE_INFO)) {
 
 	    // Throws SecurityException if not authorized
@@ -303,7 +303,7 @@ public class ServerSqlDispatch {
      */
     private void dispatch(HttpServletRequest request, HttpServletResponse response, OutputStream out, String action,
 	    Connection connection, DatabaseConfigurator databaseConfigurator,
-	    List<SqlFirewallManager> sqlFirewallManagers)
+	    Set<SqlFirewallManager> sqlFirewallManagers)
 	    throws SQLException, FileNotFoundException, IOException, IllegalArgumentException {
 
 //	OperationType operationType = OperationTypeCreator.createInstance();
@@ -347,9 +347,9 @@ public class ServerSqlDispatch {
 //	    }
 	    
 	    
-	    ProEditionServerCallableStatement proEditionServerCallableStatement = new ProEditionServerCallableStatement(
+	    AdvancedServerCallableStatement advancedServerCallableStatement = new AdvancedServerCallableStatement(
 		    request, response, sqlFirewallManagers, connection);
-	    proEditionServerCallableStatement.executeOrExecuteQuery(out);
+	    advancedServerCallableStatement.executeOrExecuteQuery(out);
 
 	} else if (ServerSqlDispatchUtil.isConnectionModifier(action)) {
 	    TransactionUtil.setConnectionModifierAction(request, response, out, action, connection);
@@ -374,7 +374,7 @@ public class ServerSqlDispatch {
      * @return
      */
     private boolean doTreatJdbcDatabaseMetaData(HttpServletRequest request, HttpServletResponse response,
-	    OutputStream out, String action, Connection connection, List<SqlFirewallManager> sqlFirewallManagers)
+	    OutputStream out, String action, Connection connection, Set<SqlFirewallManager> sqlFirewallManagers)
 	    throws SQLException, IOException {
 	// Redirect if it's a JDBC DatabaseMetaData call
 	if (ActionUtil.isJdbcDatabaseMetaDataQuery(action)) {
@@ -412,7 +412,7 @@ public class ServerSqlDispatch {
      * @throws IOException
      */
     private boolean doTreatMetadataQuery(HttpServletRequest request, HttpServletResponse response, OutputStream out,
-	    String action, Connection connection, List<SqlFirewallManager> sqlFirewallManagers)
+	    String action, Connection connection, Set<SqlFirewallManager> sqlFirewallManagers)
 	    throws SQLException, IOException {
 	// Redirect if it's a metadaquery
 	if (ActionUtil.isMetadataQueryAction(action)) {

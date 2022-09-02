@@ -15,9 +15,9 @@ import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import org.kawanfw.sql.api.server.firewall.CsvRulesManager;
 import org.kawanfw.sql.api.server.firewall.CsvRulesManagerNoReload;
@@ -46,10 +46,10 @@ public class SqlFirewallsCreator {
 	    DenySqlInjectionManager.class.getSimpleName(), DenySqlInjectionManagerAsync.class.getSimpleName(), 
     		};
 
-    private List<String> sqlFirewallClassNames = new ArrayList<>();
-    private List<SqlFirewallManager> sqlFirewallManagers = new ArrayList<>();
+    private Set<String> sqlFirewallClassNames = new LinkedHashSet<>();
+    private Set<SqlFirewallManager> sqlFirewallManagers = new LinkedHashSet<>();
 
-    public SqlFirewallsCreator(List<String> sqlFirewallClassNames)
+    public SqlFirewallsCreator(Set<String> sqlFirewallClassNames)
 	    throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException,
 	    IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException, IOException {
 
@@ -117,11 +117,11 @@ public class SqlFirewallsCreator {
 	return theClassName;
     }
 
-    public List<SqlFirewallManager> getSqlFirewalls() {
+    public Set<SqlFirewallManager> getSqlFirewalls() {
 	return sqlFirewallManagers;
     }
 
-    public List<String> getSqlFirewallClassNames() {
+    public Set<String> getSqlFirewallClassNames() {
 	return sqlFirewallClassNames;
     }
 

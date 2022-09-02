@@ -12,8 +12,8 @@
 package org.kawanfw.sql.servlet.injection.classes;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import org.kawanfw.sql.api.server.firewall.trigger.SqlFirewallTrigger;
 import org.kawanfw.sql.servlet.injection.classes.InjectedClasses.InjectedClassesBuilder;
@@ -22,18 +22,18 @@ public class DefaultSqlFirewallTriggersLoader implements SqlFirewallTriggersLoad
 
     
     @Override
-    public List<SqlFirewallTrigger> loadSqlFirewallTriggers(String database, InjectedClassesBuilder injectedClassesBuilder,
-	    List<String> sqlFirewallTriggerClassNames)
+    public Set<SqlFirewallTrigger> loadSqlFirewallTriggers(String database, InjectedClassesBuilder injectedClassesBuilder,
+	    Set<String> sqlFirewallTriggerClassNames)
 	    throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException,
 	    IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 
-	List<SqlFirewallTrigger> sqlFirewallTriggers =  new ArrayList<>();
+	Set<SqlFirewallTrigger> sqlFirewallTriggers =  new LinkedHashSet<>();
 	return sqlFirewallTriggers;
     }
 
     @Override
     public String getClassNameToLoad() {
-	List<String> classNameToLoad =  new ArrayList<>();
+	Set<String> classNameToLoad =  new LinkedHashSet<>();
 	return classNameToLoad.toString();
     }
 

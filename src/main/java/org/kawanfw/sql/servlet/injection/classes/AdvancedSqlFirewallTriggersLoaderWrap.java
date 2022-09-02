@@ -13,7 +13,7 @@ package org.kawanfw.sql.servlet.injection.classes;
 
 import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
-import java.util.List;
+import java.util.Set;
 
 import org.kawanfw.sql.api.server.firewall.trigger.SqlFirewallTrigger;
 import org.kawanfw.sql.servlet.injection.classes.InjectedClasses.InjectedClassesBuilder;
@@ -36,8 +36,8 @@ public class AdvancedSqlFirewallTriggersLoaderWrap{
      * @throws InvocationTargetException
      * @throws SQLException
      */
-    public static List<SqlFirewallTrigger> loadSqlFirewallTriggersWrap(String database, InjectedClassesBuilder injectedClassesBuilder,
-            List<String> sqlFirewallTriggerClassNames, List<SqlFirewallTrigger> sqlFirewallTriggers)
+    public static Set<SqlFirewallTrigger> loadSqlFirewallTriggersWrap(String database, InjectedClassesBuilder injectedClassesBuilder,
+	    Set<String> sqlFirewallTriggerClassNames, Set<SqlFirewallTrigger> sqlFirewallTriggers)
             throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException,
             IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException {
         

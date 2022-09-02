@@ -13,7 +13,7 @@ package org.kawanfw.sql.servlet.injection.classes;
 
 import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
-import java.util.List;
+import java.util.Set;
 
 import org.kawanfw.sql.api.server.listener.UpdateListener;
 import org.kawanfw.sql.servlet.injection.classes.InjectedClasses.InjectedClassesBuilder;
@@ -36,8 +36,8 @@ public class AdvancedUpdateListenersLoaderWrap{
      * @throws InvocationTargetException
      * @throws SQLException
      */
-    public static List<UpdateListener> loadUpdateListenersWrap(String database, InjectedClassesBuilder injectedClassesBuilder,
-            List<String> updateListenerClassNames, List<UpdateListener> updateListeners)
+    public static Set<UpdateListener> loadUpdateListenersWrap(String database, InjectedClassesBuilder injectedClassesBuilder,
+	    Set<String> updateListenerClassNames, Set<UpdateListener> updateListeners)
             throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException,
             IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException {
         

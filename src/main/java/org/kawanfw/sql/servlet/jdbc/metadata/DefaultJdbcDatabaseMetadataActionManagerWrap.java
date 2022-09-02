@@ -17,7 +17,7 @@ import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.List;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -49,7 +49,7 @@ public class DefaultJdbcDatabaseMetadataActionManagerWrap {
      * @throws IOException
      */
     public static void executeWrap(HttpServletRequest request, HttpServletResponse response, OutputStream out,
-            List<SqlFirewallManager> sqlFirewallManagers, Connection connection) throws SQLException, IOException {
+            Set<SqlFirewallManager> sqlFirewallManagers, Connection connection) throws SQLException, IOException {
         
         try {
             // Throws SecurityException if not authorized

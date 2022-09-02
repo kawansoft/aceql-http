@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Set;
 
 import org.kawanfw.sql.api.server.SqlEvent;
 import org.kawanfw.sql.api.server.SqlEventWrapper;
@@ -28,7 +29,7 @@ import org.kawanfw.sql.api.server.listener.UpdateListener;
  */
 public class UpdateListenersCaller {
 
-    private List<UpdateListener> updateListeners;
+    private Set<UpdateListener> updateListeners;
     private Connection connection;
 
     /**
@@ -37,7 +38,7 @@ public class UpdateListenersCaller {
      * @param updateListeners the list of UpdateListener to call
      * @param connection      the JDBC Connection
      */
-    public UpdateListenersCaller(List<UpdateListener> updateListeners, Connection connection) {
+    public UpdateListenersCaller(Set<UpdateListener> updateListeners, Connection connection) {
 	this.updateListeners = updateListeners;
 	this.connection = connection;
     }

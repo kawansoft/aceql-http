@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -109,7 +110,7 @@ public class ServerSqlDispatchUtil {
     }
 
     public static void checkMetadataAuthorized(HttpServletRequest request, Connection connection,
-	    List<SqlFirewallManager> sqlFirewallManagers) throws IOException, SQLException {
+	    Set<SqlFirewallManager> sqlFirewallManagers) throws IOException, SQLException {
 
 	String username = request.getParameter(HttpParameter.USERNAME);
 	String database = request.getParameter(HttpParameter.DATABASE);

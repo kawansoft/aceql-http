@@ -14,8 +14,8 @@ package org.kawanfw.sql.servlet.injection.classes;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.kawanfw.sql.api.server.DatabaseConfigurator;
 import org.kawanfw.sql.api.server.listener.UpdateListener;
@@ -46,8 +46,8 @@ public class AdvancedUpdateListenersLoader implements UpdateListenersLoader {
      * @throws IOException
      */
     @Override
-    public List<UpdateListener> loadUpdateListeners(String database, InjectedClassesBuilder injectedClassesBuilder,
-	    List<String> updateListenerClassNames)
+    public Set<UpdateListener> loadUpdateListeners(String database, InjectedClassesBuilder injectedClassesBuilder,
+	    Set<String> updateListenerClassNames)
 	    throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException,
 	    IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException, IOException {
 		
@@ -65,7 +65,7 @@ public class AdvancedUpdateListenersLoader implements UpdateListenersLoader {
 	
 	UpdateListenersCreator updateListenersCreator = new UpdateListenersCreator(updateListenerClassNames, database,
 		databaseConfigurator);
-	List<UpdateListener> updateListeners = updateListenersCreator.getUpdateListeners();
+	Set<UpdateListener> updateListeners = updateListenersCreator.getUpdateListeners();
 
 	updateListenerClassNames = updateListenersCreator.getUpdateListenerClassNames();
 	classNameToLoad = updateListenerClassNames.toString();

@@ -14,7 +14,7 @@ package org.kawanfw.sql.servlet.injection.classes;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
-import java.util.List;
+import java.util.Set;
 
 import org.kawanfw.sql.api.server.firewall.trigger.SqlFirewallTrigger;
 import org.kawanfw.sql.servlet.injection.classes.InjectedClasses.InjectedClassesBuilder;
@@ -35,8 +35,8 @@ public interface SqlFirewallTriggersLoader {
      * @throws IllegalArgumentException
      * @throws InvocationTargetException
      */
-    List<SqlFirewallTrigger> loadSqlFirewallTriggers(String database, InjectedClassesBuilder injectedClassesBuilder,
-	    List<String> sqlFirewallTriggerClassNames)
+    Set<SqlFirewallTrigger> loadSqlFirewallTriggers(String database, InjectedClassesBuilder injectedClassesBuilder,
+	    Set<String> sqlFirewallTriggerClassNames)
 	    throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException,
 	    IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException, IOException;
 

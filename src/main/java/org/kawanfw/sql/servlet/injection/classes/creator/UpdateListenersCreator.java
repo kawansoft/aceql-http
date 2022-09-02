@@ -17,7 +17,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.kawanfw.sql.api.server.DatabaseConfigurator;
 import org.kawanfw.sql.api.server.SqlEvent;
@@ -31,10 +33,10 @@ public class UpdateListenersCreator {
 
     private static String[] PREDEFINED_CLASS_NAMES = { JsonLoggerUpdateListener.class.getSimpleName() };
 
-    private List<String> updateListenerClassNames = new ArrayList<>();
-    private List<UpdateListener> updateListenerManagers = new ArrayList<>();
+    private Set<String> updateListenerClassNames = new LinkedHashSet<>();
+    private Set<UpdateListener> updateListenerManagers = new LinkedHashSet<>();
 
-    public UpdateListenersCreator(List<String> updateListenerClassNames, String database,
+    public UpdateListenersCreator(Set<String> updateListenerClassNames, String database,
 	    DatabaseConfigurator databaseConfigurator)
 	    throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException,
 	    IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException, IOException {
@@ -99,11 +101,11 @@ public class UpdateListenersCreator {
 	return theClassName;
     }
 
-    public List<UpdateListener> getUpdateListeners() {
+    public Set<UpdateListener> getUpdateListeners() {
 	return updateListenerManagers;
     }
 
-    public List<String> getUpdateListenerClassNames() {
+    public Set<String> getUpdateListenerClassNames() {
 	return updateListenerClassNames;
     }
 

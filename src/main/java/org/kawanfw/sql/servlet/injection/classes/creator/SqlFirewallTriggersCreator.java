@@ -17,7 +17,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.kawanfw.sql.api.server.DatabaseConfigurator;
 import org.kawanfw.sql.api.server.SqlEvent;
@@ -37,10 +39,10 @@ public class SqlFirewallTriggersCreator {
 	   BeeperSqlFirewallTrigger.class.getSimpleName(),
 	    JdbcLoggerSqlFirewallTrigger.class.getSimpleName(), JsonLoggerSqlFirewallTrigger.class.getSimpleName() };
 
-    private List<String> sqlFirewallTriggerClassNames = new ArrayList<>();
-    private List<SqlFirewallTrigger> sqlFirewallTriggerManagers = new ArrayList<>();
+    private Set<String> sqlFirewallTriggerClassNames = new LinkedHashSet<>();
+    private Set<SqlFirewallTrigger> sqlFirewallTriggerManagers = new LinkedHashSet<>();
 
-    public SqlFirewallTriggersCreator(List<String> sqlFirewallTriggerClassNames, String database,
+    public SqlFirewallTriggersCreator(Set<String> sqlFirewallTriggerClassNames, String database,
 	    DatabaseConfigurator databaseConfigurator)
 	    throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException,
 	    IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException, IOException {
@@ -99,11 +101,11 @@ public class SqlFirewallTriggersCreator {
 	return theClassName;
     }
 
-    public List<SqlFirewallTrigger> getSqlFirewallTriggers() {
+    public Set<SqlFirewallTrigger> getSqlFirewallTriggers() {
 	return sqlFirewallTriggerManagers;
     }
 
-    public List<String> getSqlFirewallTriggerClassNames() {
+    public Set<String> getSqlFirewallTriggerClassNames() {
 	return sqlFirewallTriggerClassNames;
     }
 

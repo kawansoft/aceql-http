@@ -12,8 +12,8 @@
 package org.kawanfw.sql.servlet;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.kawanfw.sql.api.server.firewall.trigger.BanUserSqlFirewallTrigger;
 import org.kawanfw.sql.api.server.firewall.trigger.SqlFirewallTrigger;
@@ -38,7 +38,7 @@ public class BannerOnTester {
     	    return databasesWithBanUserSqlFirewallTrigger.get(database);
     	}
 
-	List<SqlFirewallTrigger> sqlFirewallTriggers = InjectedClassesStore.get().getSqlFirewallTriggerMap()
+    	Set<SqlFirewallTrigger> sqlFirewallTriggers = InjectedClassesStore.get().getSqlFirewallTriggerMap()
 		.get(database);
 
 	for (SqlFirewallTrigger sqlFirewallTrigger : sqlFirewallTriggers) {
