@@ -33,7 +33,7 @@ public class StringFlattener {
      * Flatten the inString by removing all CR/LF.
      * 
      * @return The flattened inString
-     * @throws IOException 
+     * @throws IOException
      */
     public String flatten() throws IOException {
 
@@ -43,14 +43,15 @@ public class StringFlattener {
 
 	StringBuffer buffer = new StringBuffer();
 
-	BufferedReader bufferedReader = new BufferedReader(new StringReader(inString));
+	try (BufferedReader bufferedReader = new BufferedReader(new StringReader(inString));) {
+	    String line = null;
+	    while ((line = bufferedReader.readLine()) != null) {
+		buffer.append(line);
+	    }
 
-	String line = null;
-	while ((line = bufferedReader.readLine()) != null) {
-	    buffer.append(line);
+	    return buffer.toString();
 	}
 
-	return buffer.toString();
     }
 
 }

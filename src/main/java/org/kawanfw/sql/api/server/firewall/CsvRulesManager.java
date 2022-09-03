@@ -36,6 +36,7 @@ import org.kawanfw.sql.api.util.firewall.TableAllowStatements;
 import org.kawanfw.sql.metadata.AceQLMetaData;
 import org.kawanfw.sql.servlet.injection.classes.InjectedClassesStore;
 import org.kawanfw.sql.servlet.injection.properties.PropertiesFileStore;
+import org.kawanfw.sql.servlet.util.logging.LoggerWrapper;
 import org.kawanfw.sql.util.FrameworkDebug;
 import org.kawanfw.sql.util.SqlTag;
 import org.kawanfw.sql.util.TimestampUtil;
@@ -275,7 +276,7 @@ public class CsvRulesManager implements SqlFirewallManager {
 	    DatabaseConfigurator databaseConfigurator = InjectedClassesStore.get().getDatabaseConfigurators()
 			.get(database);
 	    Logger logger = databaseConfigurator.getLogger();
-	    logger.info(logInfo);
+	    LoggerWrapper.log(logger, logInfo);
 	    storedFileTime = currentFileTime;
 	}
 

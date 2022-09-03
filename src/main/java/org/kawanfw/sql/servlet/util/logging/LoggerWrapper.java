@@ -11,6 +11,8 @@
  */
 package org.kawanfw.sql.servlet.util.logging;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.kawanfw.sql.util.Tag;
 import org.slf4j.Logger;
 
 /**
@@ -27,6 +29,32 @@ public class LoggerWrapper {
      */
     public static void log (Logger logger, String message) {
 	logger.info(message);
+    }
+    
+    /**
+     * A default logging method for clean logging off Exceptions
+     * @param logger	the Logger to use 
+     * @param message	the message to log with Logger.error()
+     * @param throwable the Exception/Throwable to log, that will be flattened
+     */
+    public static void log (Logger logger, String message, Throwable throwable) {
+	try {
+	    StringFlattener stringFlattener = new StringFlattener(ExceptionUtils.getStackTrace(throwable));
+	    String flattenException = stringFlattener.flatten();
+	    
+	    if (message == null) {
+		message = "";
+	    }
+	    
+	    if ( ! message.endsWith(" ")) {
+		message += " ";
+	    }
+	    
+	    logger.error(message + flattenException);
+	} catch (Throwable throwable2) {
+	    logger.error(Tag.RUNNING_PRODUCT +  " CAN NOT FLATTEN EXCEPTION IN LOG:");
+	    logger.error(message, throwable2);
+	}
     }
 
 }

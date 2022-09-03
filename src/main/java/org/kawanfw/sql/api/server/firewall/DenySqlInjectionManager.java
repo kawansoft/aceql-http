@@ -20,6 +20,7 @@ import org.kawanfw.sql.api.server.SqlEvent;
 import org.kawanfw.sql.api.util.firewall.cloudmersive.CloudmersiveApi;
 import org.kawanfw.sql.api.util.firewall.cloudmersive.DenySqlInjectionManagerUtil;
 import org.kawanfw.sql.servlet.injection.classes.InjectedClassesStore;
+import org.kawanfw.sql.servlet.util.logging.LoggerWrapper;
 import org.kawanfw.sql.util.Tag;
 import org.slf4j.Logger;
 
@@ -76,8 +77,8 @@ public class DenySqlInjectionManager implements SqlFirewallManager {
 	} catch (Exception exception) {
 	    exception.printStackTrace();
 	    try {
-		logger.info(Tag.PRODUCT + ": " + DenySqlInjectionManager.class.getSimpleName()
-			+ " Unable to verify SQL injection: " + exception.toString());
+		LoggerWrapper.log(logger, Tag.PRODUCT + ": " + DenySqlInjectionManager.class.getSimpleName()
+			+ " Unable to verify SQL injection: ", exception);
 	    } catch (Exception exception2) {
 		exception2.printStackTrace();
 	    }

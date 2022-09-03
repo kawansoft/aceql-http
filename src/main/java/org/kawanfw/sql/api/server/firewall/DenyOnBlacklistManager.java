@@ -29,6 +29,7 @@ import org.kawanfw.sql.api.server.SqlEvent;
 import org.kawanfw.sql.api.server.StatementNormalizer;
 import org.kawanfw.sql.api.util.firewall.TextStatementsListLoader;
 import org.kawanfw.sql.servlet.injection.classes.InjectedClassesStore;
+import org.kawanfw.sql.servlet.util.logging.LoggerWrapper;
 import org.kawanfw.sql.util.FrameworkDebug;
 import org.kawanfw.sql.util.SqlTag;
 import org.kawanfw.sql.util.TimestampUtil;
@@ -151,7 +152,7 @@ public class DenyOnBlacklistManager implements SqlFirewallManager {
 		    .get(database);
 	    Logger logger = databaseConfigurator.getLogger();
 	    
-	    logger.info(logInfo);
+	    LoggerWrapper.log(logger, logInfo);
 	    storedFileTime = currentFileTime;
 	}
 

@@ -19,6 +19,7 @@ import org.kawanfw.sql.api.server.DatabaseConfigurator;
 import org.kawanfw.sql.api.server.DefaultDatabaseConfigurator;
 import org.kawanfw.sql.servlet.HttpParameter;
 import org.kawanfw.sql.servlet.injection.classes.InjectedClassesStore;
+import org.kawanfw.sql.servlet.util.logging.LoggerWrapper;
 import org.slf4j.Logger;
 
 /**
@@ -55,8 +56,7 @@ public class LoggerUtil {
 	DatabaseConfigurator databaseConfigurator = InjectedClassesStore.get().getDatabaseConfigurators().get(database);
 	Logger logger = databaseConfigurator.getLogger();
 	
-	logger.info(aceQLErrorMessage);
-	logger.info(exception.toString());
+	LoggerWrapper.log(logger, aceQLErrorMessage, exception);
 
     }
 
@@ -85,7 +85,7 @@ public class LoggerUtil {
 
 	Logger logger = databaseConfigurator.getLogger();
 	if (logger != null) {
-	    logger.info("Exception: " + exception);
+	    LoggerWrapper.log(logger, "Exception: ",  exception);
 	}
 	else {
 	    System.err.println("Logger is null!");

@@ -22,6 +22,7 @@ import org.kawanfw.sql.api.server.DatabaseConfigurator;
 import org.kawanfw.sql.servlet.injection.classes.InjectedClassesStore;
 import org.kawanfw.sql.servlet.injection.properties.PropertiesFileStore;
 import org.kawanfw.sql.servlet.injection.properties.PropertiesFileUtil;
+import org.kawanfw.sql.servlet.util.logging.LoggerWrapper;
 import org.kawanfw.sql.util.Tag;
 import org.slf4j.Logger;
 
@@ -108,8 +109,8 @@ public class SshUserAuthenticator implements UserAuthenticator {
 			.get(database);
 		logger = databaseConfigurator.getLogger();
 	    }
-	    logger.info(getInitTag() + "SSH connection impossible for " + username + "@" + host + ":"
-		    + port + ". (" + e.toString() + ")");
+	    LoggerWrapper.log(logger, getInitTag() + "SSH connection impossible for " + username + "@" + host + ":"
+		    + port + ".", e);
 	}
 
 	return connected;

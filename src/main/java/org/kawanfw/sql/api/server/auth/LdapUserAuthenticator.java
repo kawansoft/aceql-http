@@ -28,6 +28,7 @@ import org.kawanfw.sql.api.server.DatabaseConfigurator;
 import org.kawanfw.sql.servlet.injection.classes.InjectedClassesStore;
 import org.kawanfw.sql.servlet.injection.properties.PropertiesFileStore;
 import org.kawanfw.sql.servlet.injection.properties.PropertiesFileUtil;
+import org.kawanfw.sql.servlet.util.logging.LoggerWrapper;
 import org.kawanfw.sql.util.Tag;
 import org.slf4j.Logger;
 
@@ -88,7 +89,7 @@ public class LdapUserAuthenticator implements UserAuthenticator {
 	} catch (CommunicationException e) {
 	    throw new IOException(getInitTag() + "Impossible to connect to server: " + url);
 	} catch (NamingException e) {
-	    logger.info(
+	    LoggerWrapper.log(logger, 
 		    getInitTag() + LdapUserAuthenticator.class.getName() + " Unable to authenticate user: " + username);
 	    return false;
 	} finally {
@@ -96,8 +97,8 @@ public class LdapUserAuthenticator implements UserAuthenticator {
 		try {
 		    ctx.close();
 		} catch (NamingException e) {
-		    logger.info(getInitTag() + LdapUserAuthenticator.class.getName()
-			    + " InitialDirContext.close() Exception: " + e);
+		    LoggerWrapper.log(logger, getInitTag() + LdapUserAuthenticator.class.getName()
+			    + " InitialDirContext.close() Exception: ",  e);
 		}
 	    }
 	}
