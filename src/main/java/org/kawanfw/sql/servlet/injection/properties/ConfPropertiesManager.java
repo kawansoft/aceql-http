@@ -70,13 +70,6 @@ public class ConfPropertiesManager {
 	debug("aceQLManagerServletCallName: " + aceQLManagerServletCallName);
 
 	confPropertiesBuilder.servletCallName(aceQLManagerServletCallName);
-
-	PropertiesLoggerCreatorClassNameGetter propertiesLoggerCreatorClassNameGetter = new PropertiesLoggerCreatorClassNameGetter();
-	String loggerCreatorClassName = propertiesLoggerCreatorClassNameGetter.getName();
-	confPropertiesBuilder.loggerCreatorClassName(loggerCreatorClassName);
-	
-	confPropertiesBuilder.displayLoggerElementsAtStartup(
-		Boolean.parseBoolean(properties.getProperty("displayLoggerElementsAtStartup")));
 	
 	boolean statelessMode = Boolean.parseBoolean(properties.getProperty(ServerSqlManager.STATELESS_MODE, "false"));
 	confPropertiesBuilder.statelessMode(statelessMode);

@@ -11,6 +11,7 @@
  */
 package org.kawanfw.sql.servlet.injection.classes;
 
+import java.io.IOException;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
@@ -47,7 +48,7 @@ public class InjectedClasses {
 
     /** The map of (database, List<SqlFirewallTrigger>) */
     private Map<String, Set<SqlFirewallTrigger>> sqlFirewallTriggerMap = new ConcurrentHashMap<>();
-	
+
     /** The map of (database, List<SqlFirewallManager>) */
     private Map<String, Set<SqlFirewallManager>> sqlFirewallManagerMap = new ConcurrentHashMap<>();
 
@@ -66,45 +67,33 @@ public class InjectedClasses {
     /** The map of (database, List<UpdateListener>) */
     private Map<String, Set<UpdateListener>> updateListenerMap = new ConcurrentHashMap<>();
 
-    private LoggerCreator loggerCreator;
-    private Set<LoggerCreator> loggerCreatorSet= new LinkedHashSet<>();
-    
+    private Set<LoggerCreator> loggerCreatorSet = new LinkedHashSet<>();
+
     private InjectedClasses(InjectedClassesBuilder injectedClassesBuilder) {
-	
+
 	this.userAuthenticator = injectedClassesBuilder.userAuthenticator;
 	this.requestHeadersAuthenticator = injectedClassesBuilder.requestHeadersAuthenticator;
 	this.databaseConfigurators = injectedClassesBuilder.databaseConfigurators;
 	this.sqlFirewallTriggerMap = injectedClassesBuilder.sqlFirewallTriggerMap;
-	
+
 	this.sqlFirewallManagerMap = injectedClassesBuilder.sqlFirewallManagerMap;
 
 	this.blobUploadConfigurator = injectedClassesBuilder.blobUploadConfigurator;
 	this.blobDownloadConfigurator = injectedClassesBuilder.blobDownloadConfigurator;
 	this.sessionConfigurator = injectedClassesBuilder.sessionConfigurator;
 	this.threadPoolExecutor = injectedClassesBuilder.threadPoolExecutor;
-	
+
 	this.updateListenerMap = injectedClassesBuilder.updateListenerMap;
-	this.loggerCreator = injectedClassesBuilder.loggerCreator;
 	this.loggerCreatorSet = injectedClassesBuilder.loggerCreatorSet;
 
     }
 
-    
-    /**
-     * @return the loggerCreator
-     */
-    public LoggerCreator getLoggerCreator() {
-        return loggerCreator;
-    }
-
-   
     /**
      * @return the loggerCreatorSet
      */
     public Set<LoggerCreator> getLoggerCreatorSet() {
-        return loggerCreatorSet;
+	return loggerCreatorSet;
     }
-
 
     /**
      * @return the userAuthenticator
@@ -127,12 +116,11 @@ public class InjectedClasses {
 	return databaseConfigurators;
     }
 
-   
     /**
      * @return the sqlFirewallTriggers
      */
     public Map<String, Set<SqlFirewallTrigger>> getSqlFirewallTriggerMap() {
-        return sqlFirewallTriggerMap;
+	return sqlFirewallTriggerMap;
     }
 
     /**
@@ -142,7 +130,6 @@ public class InjectedClasses {
 	return sqlFirewallManagerMap;
     }
 
-    
     /**
      * @return the blobUploadConfigurator
      */
@@ -171,15 +158,12 @@ public class InjectedClasses {
 	return threadPoolExecutor;
     }
 
- 
     /**
      * @return the updateListenerMap
      */
     public Map<String, Set<UpdateListener>> getUpdateListenerMap() {
-        return updateListenerMap;
+	return updateListenerMap;
     }
-
-
 
     public static class InjectedClassesBuilder {
 	/** The UserAuthenticator instance */
@@ -193,7 +177,7 @@ public class InjectedClasses {
 
 	/** The map of (database, list<SqlFirewallTrigger>) */
 	private Map<String, Set<SqlFirewallTrigger>> sqlFirewallTriggerMap = new ConcurrentHashMap<>();
-	
+
 	/** The map of (database, List<SqlFirewallManager>) */
 	private Map<String, Set<SqlFirewallManager>> sqlFirewallManagerMap = new ConcurrentHashMap<>();
 
@@ -212,17 +196,11 @@ public class InjectedClasses {
 	/** The map of (database, List<UpdateListener>) */
 	private Map<String, Set<UpdateListener>> updateListenerMap = new ConcurrentHashMap<>();
 
-	private LoggerCreator loggerCreator = null;
-
 	/** Use to publish a end of startup all info about Loggers used */
-	private Set<LoggerCreator> loggerCreatorSet= new LinkedHashSet<>();
-	
-	public InjectedClassesBuilder loggerCreator(LoggerCreator loggerCreator) {
-	    this.loggerCreator = loggerCreator;
-	    addObjectToLoggers(loggerCreator);
-	    return this;
-	}
-	
+	private Set<LoggerCreator> loggerCreatorSet = new LinkedHashSet<>();
+
+	private Set<String> loggerCreatorNameSet = new LinkedHashSet<>();
+
 	public InjectedClassesBuilder userAuthenticator(UserAuthenticator userAuthenticator) {
 	    this.userAuthenticator = userAuthenticator;
 	    return this;
@@ -236,18 +214,23 @@ public class InjectedClasses {
 
 	public InjectedClassesBuilder databaseConfigurators(Map<String, DatabaseConfigurator> databaseConfigurators) {
 	    this.databaseConfigurators = databaseConfigurators;
+	    for (Map.Entry<String, DatabaseConfigurator> entry : databaseConfigurators.entrySet()) {
+		addObjectToLoggers(entry.getValue());
+	    }
 	    return this;
 	}
 
-	public InjectedClassesBuilder sqlFirewallManagerMap(Map<String, Set<SqlFirewallManager>> sqlFirewallManagerMap) {
+	public InjectedClassesBuilder sqlFirewallManagerMap(
+		Map<String, Set<SqlFirewallManager>> sqlFirewallManagerMap) {
 	    this.sqlFirewallManagerMap = sqlFirewallManagerMap;
 	    return this;
 	}
-	
-	public InjectedClassesBuilder sqlFirewallTriggerMap(Map<String, Set<SqlFirewallTrigger>> sqlFirewallTriggerMap) {
+
+	public InjectedClassesBuilder sqlFirewallTriggerMap(
+		Map<String, Set<SqlFirewallTrigger>> sqlFirewallTriggerMap) {
 	    this.sqlFirewallTriggerMap = sqlFirewallTriggerMap;
 	    for (Map.Entry<String, Set<SqlFirewallTrigger>> entry : sqlFirewallTriggerMap.entrySet()) {
-			addSetToLoggers(entry.getValue());
+		addSetToLoggers(entry.getValue());
 	    }
 	    return this;
 	}
@@ -268,18 +251,20 @@ public class InjectedClasses {
 	}
 
 	/**
-	 * Necessary, because Database Configurators are needed when building firewall...
+	 * Necessary, because Database Configurators are needed when building
+	 * firewall...
+	 * 
 	 * @return
 	 */
 	public Map<String, DatabaseConfigurator> getDatabaseConfigurators() {
 	    return databaseConfigurators;
 	}
-	
+
 	public InjectedClassesBuilder threadPoolExecutor(ThreadPoolExecutor threadPoolExecutor) {
 	    this.threadPoolExecutor = threadPoolExecutor;
 	    return this;
 	}
-	
+
 	public InjectedClassesBuilder updateListenerMap(Map<String, Set<UpdateListener>> updateListenerMap) {
 	    this.updateListenerMap = updateListenerMap;
 	    return this;
@@ -288,32 +273,42 @@ public class InjectedClasses {
 	// Return the finally constructed User object
 	public InjectedClasses build() {
 	    InjectedClasses injectedClasses = new InjectedClasses(this);
-	    //validateUserObject(injectedClasses);
+	    // validateUserObject(injectedClasses);
 	    return injectedClasses;
 	}
 
 	/**
 	 * Add to Loggers if object is a Logger
-	 * @param object 
+	 * 
+	 * @param object
 	 */
 	private void addObjectToLoggers(Object object) {
-	    if (object instanceof LoggerCreator) {
-		loggerCreatorSet.add((LoggerCreator)object);
+	    try {
+		if (object instanceof LoggerCreator) {
+		    LoggerCreator loggerCreator = (LoggerCreator) object;
+		    if (!loggerCreatorNameSet.contains(loggerCreator.getLogger().getName())) {
+			loggerCreatorSet.add(loggerCreator);
+			loggerCreatorNameSet.add(loggerCreator.getLogger().getName());
+		    }
+		}
+	    } catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
 	    }
 	}
-	
+
 	/**
-	 * Add to Loggers if object  of Set is a Logger
-	 * @param object 
+	 * Add to Loggers if object of Set is a Logger
+	 * 
+	 * @param object
 	 */
-	
+
 	@SuppressWarnings("unused")
 	private void addSetToLoggers(Set<?> set) {
 	    for (Object object : set) {
 		addObjectToLoggers(object);
 	    }
 	}
-	
 
 	@SuppressWarnings("unused")
 	private void validateUserObject(InjectedClasses injectedClasses) {
@@ -321,11 +316,6 @@ public class InjectedClasses {
 	    // Do some basic validations to check
 	    // if user object does not break any assumption of system
 	}
-
-
-
-
-
 
     }
 

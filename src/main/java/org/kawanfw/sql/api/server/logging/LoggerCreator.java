@@ -11,6 +11,7 @@
  */
 package org.kawanfw.sql.api.server.logging;
 
+import java.io.IOException;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -25,8 +26,9 @@ public interface LoggerCreator {
     /**
      * Returns the Logger as sl4fj instance
      * @return the Logger as sl4fj instance
+     * @throws IOException if any I/O error occurs at Logger creation
      */
-    public Logger getLogger();
+    public Logger getLogger() throws IOException;
 
     /**
      * Return the elements of the {@code Logger}: name, fileNamePattern, etc. 
@@ -35,5 +37,7 @@ public interface LoggerCreator {
      * @return the elements of the Logger
      */
     public Map<String, String> getElements();
+    
+    
 
 }

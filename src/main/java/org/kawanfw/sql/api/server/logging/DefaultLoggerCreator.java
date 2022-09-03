@@ -104,7 +104,7 @@ public class DefaultLoggerCreator implements LoggerCreator {
     public Map<String, String> getElements() {
         return elements;
     }
-
+    
     /**
      * Debug tool
      *

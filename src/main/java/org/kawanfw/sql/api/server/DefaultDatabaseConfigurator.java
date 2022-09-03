@@ -58,6 +58,8 @@ public class DefaultDatabaseConfigurator implements DatabaseConfigurator {
 
     private static Logger ACEQL_LOGGER = null;
 
+    private static Map<String, String> LOGGER_ELEMENTS = new ConcurrentHashMap<>();
+
     /**
      * Returns a {@code Connection} from
      * <a href="http://tomcat.apache.org/tomcat-9.0-doc/jdbc-pool.html" >Tomcat JDBC
@@ -196,37 +198,25 @@ public class DefaultDatabaseConfigurator implements DatabaseConfigurator {
      */
     @Override
     public Logger getLogger() throws IOException {
-	
-//	if (ACEQL_LOGGER != null) {
-//	    return ACEQL_LOGGER;
-//	}
-//
-//	File logDir = new File(SystemUtils.USER_HOME + File.separator + ".kawansoft" + File.separator + "log");
-//	logDir.mkdirs();
-//
-//	String pattern = logDir.toString() + File.separator + "AceQL.log";
-//
-//	Logger logger = Logger.getLogger(DefaultDatabaseConfigurator.class.getName());
-//
-//	if (flattenLogMessages) {
-//	    ACEQL_LOGGER = new FlattenLogger(logger.getName(), logger.getResourceBundleName());
-//	} else {
-//	    ACEQL_LOGGER = logger;
-//	}
-//
-//	Handler fh = new FileHandler(pattern, 200 * 1024 * 1024, 2, true);
-//	fh.setFormatter(new VerySimpleFormatter());
-//	ACEQL_LOGGER.addHandler(fh);
-//	return ACEQL_LOGGER;
-	
+		
 	if (ACEQL_LOGGER != null) {
 	    return ACEQL_LOGGER;
 	}
 	
 	DefaultLoggerCreator defaultLoggerCreator = new DefaultLoggerCreator();
 	ACEQL_LOGGER = defaultLoggerCreator.getLogger();
+	LOGGER_ELEMENTS = defaultLoggerCreator.getElements();
 	return ACEQL_LOGGER;
-	
+
+    }
+    
+   
+    /**
+     * Returns the Logger elements (for debug purpose)
+     * @return the lOGGER_ELEMENTS
+     */
+    public static Map<String, String> getLoggerElements() {
+        return LOGGER_ELEMENTS;
     }
 
     /**

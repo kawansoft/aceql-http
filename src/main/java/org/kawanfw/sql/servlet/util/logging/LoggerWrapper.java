@@ -23,7 +23,7 @@ public class LoggerWrapper {
     /**
      * A default logging method 
      * @param logger	the Logger to use 
-     * @param message	the message to log with Logger.info(à
+     * @param message	the message to log with Logger.info()
      */
     public static void log (Logger logger, String message) {
 	logger.info(message);
