@@ -89,7 +89,7 @@ public class LdapUserAuthenticator implements UserAuthenticator {
 	} catch (CommunicationException e) {
 	    throw new IOException(getInitTag() + "Impossible to connect to server: " + url);
 	} catch (NamingException e) {
-	    LoggerWrapper.log(logger, 
+	    LoggerWrapper.logError(logger, 
 		    getInitTag() + LdapUserAuthenticator.class.getName() + " Unable to authenticate user: " + username);
 	    return false;
 	} finally {

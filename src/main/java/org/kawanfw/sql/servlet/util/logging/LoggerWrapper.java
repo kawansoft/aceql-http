@@ -32,6 +32,15 @@ public class LoggerWrapper {
     }
     
     /**
+     * An error logging method 
+     * @param logger	the Logger to use 
+     * @param message	the message to log with Logger.info()
+     */
+    public static void logError (Logger logger, String message) {
+	logger.error(message);
+    }
+    
+    /**
      * A default logging method for clean logging off Exceptions
      * @param logger	the Logger to use 
      * @param message	the message to log with Logger.error()

@@ -71,7 +71,7 @@ public class WindowsUserAuthenticator implements UserAuthenticator {
 			.get(database);
 		logger = databaseConfigurator.getLogger();
 	    }
-	    LoggerWrapper.log(logger, getInitTag() + "WindowsLogin.login refused for " + username);
+	    LoggerWrapper.logError(logger, getInitTag() + "WindowsLogin.login refused for " + username);
 
 	    return false;
 

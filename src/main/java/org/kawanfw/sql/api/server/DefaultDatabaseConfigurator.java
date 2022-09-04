@@ -127,7 +127,7 @@ public class DefaultDatabaseConfigurator implements DatabaseConfigurator {
 	} catch (Exception e) {
 	    try {
 		Logger logger = getLogger();
-		LoggerWrapper.log(logger, e.toString());
+		LoggerWrapper.log(logger, "Error on close(): " , e);
 	    } catch (Exception io) {
 		// Should never happen
 		io.printStackTrace();
