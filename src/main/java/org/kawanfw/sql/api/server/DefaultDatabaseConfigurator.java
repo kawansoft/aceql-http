@@ -47,11 +47,12 @@ import org.slf4j.Logger;
 public class DefaultDatabaseConfigurator implements DatabaseConfigurator {
 
     /**
-     * If {@code true}, allows to "flatten" the log messages to make sure each log entry/message has only 
-     * one line (CR/LF of the message will be suppressed). See {@link #getLogger()} code.
+     * If {@code true}, allows to "flatten" the log messages to make sure each log
+     * entry/message has only one line (CR/LF of the message will be suppressed).
+     * See {@link #getLogger()} code.
      */
     protected boolean flattenLogMessages = true;
-    
+
     /** The map of (database, data sources) to use for connection pooling */
     private Map<String, DataSource> dataSourceSet = new ConcurrentHashMap<>();
 
@@ -127,7 +128,7 @@ public class DefaultDatabaseConfigurator implements DatabaseConfigurator {
 	} catch (Exception e) {
 	    try {
 		Logger logger = getLogger();
-		LoggerWrapper.log(logger, "Error on close(): " , e);
+		LoggerWrapper.log(logger, "Error on close(): ", e);
 	    } catch (Exception io) {
 		// Should never happen
 		io.printStackTrace();
@@ -137,9 +138,9 @@ public class DefaultDatabaseConfigurator implements DatabaseConfigurator {
     }
 
     /**
-     * @return the value of the property {@code defaultDatabaseConfigurator.maxRows} defined in the
-     *         {@code aceql-server.properties} file at server startup. If property
-     *         does not exist, returns 0.
+     * @return the value of the property {@code defaultDatabaseConfigurator.maxRows}
+     *         defined in the {@code aceql-server.properties} file at server
+     *         startup. If property does not exist, returns 0.
      */
     @Override
     public int getMaxRows(String username, String database) throws IOException, SQLException {
@@ -185,39 +186,51 @@ public class DefaultDatabaseConfigurator implements DatabaseConfigurator {
     }
 
     /**
-     * Creates a static {@code Logger} instance.
-     *
-     * @return a static {@code Logger} with properties:
-     *         <ul>
-     *         <li>Name: {@code "DefaultDatabaseConfigurator"}.</li>
-     *         <li>Output file pattern:
-     *         {@code user.home/.kawansoft/log/AceQL.log}.</li>
-     *         <li>Formatter: {@code SimpleFormatter}.</li>
-     *         <li>Limit: 200Mb.</li>
-     *         <li>Count (number of files to use): 2.</li>
-     *         </ul>
+     * Creates a static default Logback/sl4fj Logger for main AceQL activity.
+     * 
+     * Logger has default characteristics:
+     * <ul>
+     * <li>name: {@code DefaultLoggerCreator}</li>
+     * <li>Log directory: {@code user.home/.kawansoft/log}</li>
+     * <li>File name pattern: {@code "aceql_%d.log.%i"} (example of file created:
+     * {@code aceql_2022-07-01.log.1}.)</li>
+     * <li>Pattern of each line of log: <code> "%d{HH:mm:ss.SSS} [%thread] %-5level
+     * %logger{36} - %msg%n"}</code></li>
+     * <li>Maximum File Size: 300Mb</li>
+     * <li>Total Size Cap: 30Gb</li>
+     * </ul>
+     * These default values may be superseded by creating a
+     * {@code DefaultLoggerCreator.properties} file in
+     * {@code user.home/.kawansoft/conf}. <br>
+     * <br>
+     * 
+     * See the <a href=
+     * file:../../../../../../resources/DefaultLoggerCreator.properties>DefaultLoggerCreator.properties</a>
+     * format.<br>
+     * <br>
+     * <br>
      */
     @Override
     public Logger getLogger() throws IOException {
-		
+
 	if (ACEQL_LOGGER != null) {
 	    return ACEQL_LOGGER;
 	}
-	
+
 	DefaultLoggerCreator defaultLoggerCreator = new DefaultLoggerCreator();
 	ACEQL_LOGGER = defaultLoggerCreator.getLogger();
 	LOGGER_ELEMENTS = defaultLoggerCreator.getElements();
 	return ACEQL_LOGGER;
 
     }
-    
-   
+
     /**
      * Returns the Logger elements (for debug purpose)
+     * 
      * @return the lOGGER_ELEMENTS
      */
     public static Map<String, String> getLoggerElements() {
-        return LOGGER_ELEMENTS;
+	return LOGGER_ELEMENTS;
     }
 
     /**

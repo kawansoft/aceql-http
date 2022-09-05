@@ -106,10 +106,10 @@ public interface DatabaseConfigurator {
     public File getBlobsDirectory(String username) throws IOException, SQLException;
 
     /**
-     * Returns the {@link Logger} that will be used by AceQL for logging:
+     * Returns the SLF4J {@link Logger} that will be used by AceQL for logging:
      * <ul>
      * <li>All Exceptions thrown by server side will be logged.</li>
-     * <li>Exceptions thrown are logged with <code>Level.WARNING</code>.</li>
+     * <li>Exceptions thrown are flattened when logged for compatible usage with tools like Logstash.</li>
      * </ul>
      * It is not necessary nor recommended to implement this method; do it only if
      * you want take control of the logging to modify the default characteristics of

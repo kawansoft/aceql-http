@@ -28,8 +28,8 @@ import org.slf4j.Logger;
  * <ul>
  * <li>name: DefaultLoggerCreator</li>
  * <li>Log directory: {@code user.home/.kawansoft/log}</li>
- * <li>File name pattern: {@code "aceql_%d.log.%i"} (example of file
- * created: {@code aceql_2022-07-01.log.1}.)</li>
+ * <li>File name pattern: {@code "aceql_%d.log.%i"} (example of file created:
+ * {@code aceql_2022-07-01.log.1}.)</li>
  * <li>Pattern of each line of log: <code> "%d{HH:mm:ss.SSS} [%thread] %-5level
  * %logger{36} - %msg%n"}</code></li>
  * <li>Maximum File Size: 300Mb</li>
@@ -40,8 +40,8 @@ import org.slf4j.Logger;
  * {@code user.home/.kawansoft/conf}. <br>
  * <br>
  * See the <a href=
- * "https://docs.aceqL.com/rest/soft/12.0/src/DefaultLoggerCreator.properties">DefaultLoggerCreator.properties</a>
- * format.<br><br>
+ * file:../../../../../../../resources/DefaultLoggerCreator.properties>DefaultLoggerCreator.properties</a>
+ * format.<br>
  * 
  * @author Nicolas de Pomereu
  *
