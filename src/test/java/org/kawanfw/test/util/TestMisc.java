@@ -16,6 +16,9 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -50,6 +53,8 @@ public class TestMisc {
 
     public static void main(String[] args) throws Exception {
 
+	Files.write(Paths.get("c:\\tmp\\myfile.txt"), "message".getBytes(), StandardOpenOption.APPEND);
+	   
 	String sql = "select * from public.customer";
 	List<Object> parameterValues = new ArrayList<>();
 	StatementAnalyzer analyzer = new StatementAnalyzer(sql, parameterValues);

@@ -41,6 +41,10 @@ public class StringFlattener {
 	    return null;
 	}
 
+	if (! inString.contains("\n")) {
+	    return inString;
+	}
+	
 	StringBuffer buffer = new StringBuffer();
 
 	try (BufferedReader bufferedReader = new BufferedReader(new StringReader(inString));) {
