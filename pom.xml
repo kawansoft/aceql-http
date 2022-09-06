@@ -3,25 +3,18 @@
 
 	<groupId>com.aceql</groupId>
 	<artifactId>aceql-http</artifactId>
-	<version>11.1</version>
+	<version>12.0</version>
 	<packaging>jar</packaging>
 
 	<name>AceQL HTTP</name>
 	<url>http://www.aceql.com</url>
 
+    
     <build>
         <finalName>${project.artifactId}</finalName>
         <sourceDirectory>src/main/java</sourceDirectory>
         <plugins>
-            <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <!-- <version>3.9.0</version> --> 
-                <version>3.9.0</version>
-                <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                </configuration>
-            </plugin>
+
 
         <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -39,7 +32,7 @@
 
         </plugins>
     </build>
-
+    
    <!-- For cloudmersive APIs --> 
 
     <repositories>
@@ -202,6 +195,12 @@
             <version>1.3.0</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.github.oshi</groupId>
+            <artifactId>oshi-core</artifactId>
+            <version>6.2.2</version>
+        </dependency>
+
 	</dependencies>
 
     <dependencyManagement>
@@ -262,4 +261,9 @@ AceQL HTTP is provided with three client SDK:
 - The AceQL C# Client SDK allows to wrap the HTTP APIs using Microsoft SQL Server like calls in their code, just like they would for a local database.
 - The AceQL Java Client JDBC Driver allows to wrap the HTTP APIs using JDBC calls in their code, just like they would for a local database.
 - The AceQL Python Client SDK allows SQL calls to be encoded with standard unmodified DB-API 2.0 syntax</description>
+
+    <properties>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+    </properties>
 </project>
