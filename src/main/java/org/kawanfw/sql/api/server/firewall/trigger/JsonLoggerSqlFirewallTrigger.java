@@ -97,18 +97,17 @@ public class JsonLoggerSqlFirewallTrigger implements SqlFirewallTrigger {
      */
     private LoggerCreator getLoggerCreator() throws IOException {
 
-	// kawanwall_%d.log.%i" as sample
-	String fileNamePattern = JsonLoggerSqlFirewallTrigger.class.getSimpleName() + "_%d.log.%i";
+	String fileNamePattern = this.getClass().getSimpleName() + "_%d.log.%i";
 
 	LoggerCreatorProperties loggerCreatorProperties = LoggerCreatorProperties
-		.getFileBasedProperties(JsonLoggerSqlFirewallTrigger.class.getSimpleName());
+		.getFileBasedProperties(this.getClass().getSimpleName());
 
 	LoggerCreator loggerCreator = null;
 	if (loggerCreatorProperties != null) {
 
 	    debug("loggerCreatorProperties: " + loggerCreatorProperties.toString());
 
-	    loggerCreator = GenericLoggerCreator.newBuilder().name(JsonLoggerSqlFirewallTrigger.class.getSimpleName())
+	    loggerCreator = GenericLoggerCreator.newBuilder().name(this.getClass().getSimpleName())
 		    .fileNamePattern(fileNamePattern).pattern(loggerCreatorProperties.getPattern())
 		    .logDirectory(loggerCreatorProperties.getLogDirectory())
 		    .maxFileSize(loggerCreatorProperties.getMaxFileSize())
@@ -119,7 +118,7 @@ public class JsonLoggerSqlFirewallTrigger implements SqlFirewallTrigger {
 
 	    debug("loggerCreatorProperties is null!");
 
-	    loggerCreator = GenericLoggerCreator.newBuilder().name(JsonLoggerSqlFirewallTrigger.class.getSimpleName())
+	    loggerCreator = GenericLoggerCreator.newBuilder().name(this.getClass().getSimpleName())
 		    .fileNamePattern(fileNamePattern).pattern("%msg%n") // Empty pattern
 		    .build();
 	}

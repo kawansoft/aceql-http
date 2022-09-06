@@ -11,21 +11,22 @@
  */
 package org.kawanfw.sql.api.server.listener;
 
-import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.logging.FileHandler;
-import java.util.logging.Handler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Date;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.commons.lang3.SystemUtils;
 import org.kawanfw.sql.api.server.SqlEvent;
-import org.kawanfw.sql.api.server.util.NoFormatter;
-import org.kawanfw.sql.servlet.util.JsonLoggerUtil;
+import org.kawanfw.sql.api.server.firewall.trigger.JsonLoggerSqlFirewallTrigger;
+import org.kawanfw.sql.api.server.logging.LoggerCreator;
 import org.kawanfw.sql.servlet.util.UpdateListenerUtil;
-import org.kawanfw.sql.servlet.util.logging.FlattenLogger;
+import org.kawanfw.sql.servlet.util.logging.GenericLoggerCreator;
+import org.kawanfw.sql.servlet.util.logging.LoggerCreatorProperties;
+import org.kawanfw.sql.servlet.util.logging.LoggerWrapper;
+import org.kawanfw.sql.util.FrameworkDebug;
+import org.slf4j.Logger;
 
 /**
  * Concrete implementation of {@code UpdateListener}. The
@@ -38,25 +39,31 @@ import org.kawanfw.sql.servlet.util.logging.FlattenLogger;
 
 public class JsonLoggerUpdateListener implements UpdateListener {
 
+    /** The debug flag */
+    private static boolean DEBUG = FrameworkDebug.isSet(JsonLoggerSqlFirewallTrigger.class);
+
     private static Logger ACEQL_LOGGER = null;
+    private static Map<String, String> LOGGER_ELEMENTS = new ConcurrentHashMap<>();
 
     /**
-     * Logs using JSON format the {@code ClientEvent} and the
+     * Logs using JSON format the {@code SqlEvent} and the
      * {@code SqlFirewallManager} class name into a {@code Logger} with parameters:
      * <ul>
-     * <li>Output file pattern:
-     * {@code user.home/.kawansoft/log/JsonLoggerSqlFirewallTrigger_%d.log.%i} (example of file
-     * created: {@code JsonLoggerSqlFirewallTrigger_2022-07-01.log.1}.).</li>
+     * <ul>
+     * <li>Name: {@code JsonLoggerUpdateListener}</li>
+     * <li>File name pattern: {@code user.home/.kawansoft/log/JsonLoggerUpdateListener_%d.log.%i} (example of file
+     * created: {@code JsonLoggerUpdateListener_2022-07-01.log.1}.).</li>
+     * <li>Pattern of each line of log: <code>"%msg%n"</code></li>
      * <li>Maximum File Size: 300Mb</li>
      * <li>Total Size Cap: 30Gb</li>
      * </ul>
      * These default values may be superseded by creating a
-     * {@code JsonLoggerSqlFirewallTrigger.properties} file in
+     * {@code JsonLoggerUpdateListener.properties} file in
      * {@code user.home/.kawansoft/conf}. <br>
      * <br>
      * 
      * See the <a href=
-     * file:../../../../../../../../resources/JsonLoggerSqlFirewallTrigger.properties>JsonLoggerSqlFirewallTrigger.properties</a>
+     * file:../../../../../../../resources/JsonLoggerUpdateListener.properties>JsonLoggerUpdateListener.properties</a>
      * format.<br>
      * <br>
      * <br>
@@ -64,27 +71,72 @@ public class JsonLoggerUpdateListener implements UpdateListener {
     @Override
     public void updateActionPerformed(SqlEvent evt, Connection connection) throws IOException, SQLException {
 	String jsonString = UpdateListenerUtil.toJsonString(evt);
-	getLogger().log(Level.WARNING, jsonString);
+	
+	if (ACEQL_LOGGER == null) {
+	    LoggerCreator loggerCreator = getLoggerCreator();
+	    ACEQL_LOGGER = loggerCreator.getLogger();
+	    LOGGER_ELEMENTS = loggerCreator.getElements();
+	}
+	
+	LoggerWrapper.log(ACEQL_LOGGER, jsonString);
+    }
+    
+    /**
+     * Returns the Logger elements (for debug purpose)
+     * 
+     * @return the lOGGER_ELEMENTS
+     */
+    public static Map<String, String> getLoggerElements() {
+	return LOGGER_ELEMENTS;
+    }
+    
+    /**
+     * Builds a {@code LoggerCreator} for Json logging.
+     * @return	the created {@code LoggerCreator} 
+     * @throws IOException
+     */
+    private LoggerCreator getLoggerCreator() throws IOException {
+
+	String fileNamePattern = this.getClass().getSimpleName() + "_%d.log.%i";
+
+	LoggerCreatorProperties loggerCreatorProperties = LoggerCreatorProperties
+		.getFileBasedProperties(this.getClass().getSimpleName());
+
+	LoggerCreator loggerCreator = null;
+	if (loggerCreatorProperties != null) {
+
+	    debug("loggerCreatorProperties: " + loggerCreatorProperties.toString());
+
+	    loggerCreator = GenericLoggerCreator.newBuilder().name(this.getClass().getSimpleName())
+		    .fileNamePattern(fileNamePattern).pattern(loggerCreatorProperties.getPattern())
+		    .logDirectory(loggerCreatorProperties.getLogDirectory())
+		    .maxFileSize(loggerCreatorProperties.getMaxFileSize())
+		    .totalSizeCap(loggerCreatorProperties.getTotalSizeCap())
+		    .displayOnConsole(loggerCreatorProperties.isDisplayOnConsole())
+		    .displayLogStatusMessages(loggerCreatorProperties.isDisplayLogStatusMessages()).build();
+	} else {
+
+	    debug("loggerCreatorProperties is null!");
+
+	    loggerCreator = GenericLoggerCreator.newBuilder().name(this.getClass().getSimpleName())
+		    .fileNamePattern(fileNamePattern).pattern("%msg%n") // Empty pattern
+		    .build();
+	}
+	
+	return loggerCreator;
+	
     }
 
-    private Logger getLogger() throws IOException {
-	if (ACEQL_LOGGER != null) {
-	    return ACEQL_LOGGER;
+    /**
+     * Debug tool
+     *
+     * @param s
+     */
+
+    private static void debug(String s) {
+	if (DEBUG) {
+	    System.out.println(new Date() + " " + s);
 	}
-
-	File logDir = new File(SystemUtils.USER_HOME + File.separator + ".kawansoft" + File.separator + "log");
-	logDir.mkdirs();
-
-	String pattern = logDir.toString() + File.separator + JsonLoggerUtil.getSimpleName(this.getClass());
-
-	Logger logger = Logger.getLogger(JsonLoggerUpdateListener.class.getName());
-	ACEQL_LOGGER = new FlattenLogger(logger.getName(), logger.getResourceBundleName());
-
-	Handler fh = new FileHandler(pattern, 1000 * 1024 * 1024, 3, true);
-	fh.setFormatter(new NoFormatter());
-	ACEQL_LOGGER.addHandler(fh);
-	return ACEQL_LOGGER;
-
     }
 
 }
