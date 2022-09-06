@@ -190,7 +190,7 @@ public class DefaultDatabaseConfigurator implements DatabaseConfigurator {
      * 
      * Logger has default characteristics:
      * <ul>
-     * <li>name: {@code DefaultLoggerCreator}</li>
+     * <li>Name: {@code DefaultLoggerCreator}</li>
      * <li>Log directory: {@code user.home/.kawansoft/log}</li>
      * <li>File name pattern: {@code "aceql_%d.log.%i"} (example of file created:
      * {@code aceql_2022-07-01.log.1}.)</li>

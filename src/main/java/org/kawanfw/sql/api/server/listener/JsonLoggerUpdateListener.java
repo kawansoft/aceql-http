@@ -41,14 +41,25 @@ public class JsonLoggerUpdateListener implements UpdateListener {
     private static Logger ACEQL_LOGGER = null;
 
     /**
-     * Logs using JSON format the {@code ClientEvent} into a {@code Logger} with
-     * parameters:
+     * Logs using JSON format the {@code ClientEvent} and the
+     * {@code SqlFirewallManager} class name into a {@code Logger} with parameters:
      * <ul>
      * <li>Output file pattern:
-     * {@code user.home/.kawansoft/log/JsonLoggerSqlFirewallTrigger.log}.</li>
-     * <li>Limit: 1Gb.</li>
-     * <li>Count (number of files to use): 3.</li>
+     * {@code user.home/.kawansoft/log/JsonLoggerSqlFirewallTrigger_%d.log.%i} (example of file
+     * created: {@code JsonLoggerSqlFirewallTrigger_2022-07-01.log.1}.).</li>
+     * <li>Maximum File Size: 300Mb</li>
+     * <li>Total Size Cap: 30Gb</li>
      * </ul>
+     * These default values may be superseded by creating a
+     * {@code JsonLoggerSqlFirewallTrigger.properties} file in
+     * {@code user.home/.kawansoft/conf}. <br>
+     * <br>
+     * 
+     * See the <a href=
+     * file:../../../../../../../../resources/JsonLoggerSqlFirewallTrigger.properties>JsonLoggerSqlFirewallTrigger.properties</a>
+     * format.<br>
+     * <br>
+     * <br>
      */
     @Override
     public void updateActionPerformed(SqlEvent evt, Connection connection) throws IOException, SQLException {
