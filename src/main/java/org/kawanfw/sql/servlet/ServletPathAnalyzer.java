@@ -78,10 +78,18 @@ public class ServletPathAnalyzer {
 	    action = servletMetadataQuery.getAction();
 	    buildElements(servletCallName, requestUri);
 	}
-
+	else if (isHealthCheckInfo(requestUri)) {
+	    action = HttpParameter.HEALTH_CHECK_INFO;
+	    buildElements(servletCallName, requestUri);
+	}
 	else {
 	    throw new IllegalArgumentException("Unknown action: " + StringUtils.substringAfterLast(requestUri, "/"));
 	}
+    }
+
+    private boolean isHealthCheckInfo(String urlContent) {
+	Objects.requireNonNull(urlContent, "urlContent cannot be null!");
+	return urlContent.endsWith("/health_check_info");
     }
 
     private boolean isExecuteServerQuery(String urlContent) {

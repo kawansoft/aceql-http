@@ -43,6 +43,7 @@ import org.kawanfw.sql.servlet.connection.RollbackUtil;
 import org.kawanfw.sql.servlet.sql.ServerStatementUtil;
 import org.kawanfw.sql.servlet.sql.json_return.JsonErrorReturn;
 import org.kawanfw.sql.servlet.sql.json_return.JsonSecurityMessage;
+import org.kawanfw.sql.servlet.util.healthcheck.HealthCheckInfoDto;
 import org.kawanfw.sql.util.IpUtil;
 
 /**
@@ -181,7 +182,15 @@ public class MetadataQueryActionManager {
 	    String jsonString = GsonWsUtil.getJSonString(tableNamesDto);
 	    response.setContentType("text/plain");
 	    ServerSqlManager.writeLine(out, jsonString);
-	} else {
+	} 
+	else if (action.equals(HttpParameter.HEALTH_CHECK_INFO)) {
+	    HealthCheckInfoDto healthCheckInfoDto = new HealthCheckInfoDto();
+	    String jsonString = GsonWsUtil.getJSonString(healthCheckInfoDto);
+	    response.setContentType("text/plain");
+	    ServerSqlManager.writeLine(out, jsonString);
+	}
+	
+	else {
 	    throw new IllegalArgumentException("Unknown metadata_query action: " + action);
 	}
     }

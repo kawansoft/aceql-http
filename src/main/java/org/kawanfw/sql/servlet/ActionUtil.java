@@ -34,5 +34,9 @@ public class ActionUtil {
         return action.equals(HttpParameter.JDBC_DATABASE_META_DATA);
     }
 
+    public static boolean isHealthCheckInfo(String action) {
+        return action.equals(HttpParameter.HEALTH_CHECK_INFO);
+    }
+
 
 }

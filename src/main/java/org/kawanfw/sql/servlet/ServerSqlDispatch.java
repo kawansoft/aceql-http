@@ -414,8 +414,8 @@ public class ServerSqlDispatch {
     private boolean doTreatMetadataQuery(HttpServletRequest request, HttpServletResponse response, OutputStream out,
 	    String action, Connection connection, Set<SqlFirewallManager> sqlFirewallManagers)
 	    throws SQLException, IOException {
-	// Redirect if it's a metadaquery
-	if (ActionUtil.isMetadataQueryAction(action)) {
+	// Redirect if it's a metadaquery or a healthcheck info getter
+	if (ActionUtil.isMetadataQueryAction(action) || ActionUtil.isHealthCheckInfo(action)) {
 	    MetadataQueryActionManager metadataQueryActionManager = new MetadataQueryActionManager(request, response,
 		    out, sqlFirewallManagers, connection);
 	    metadataQueryActionManager.execute();
