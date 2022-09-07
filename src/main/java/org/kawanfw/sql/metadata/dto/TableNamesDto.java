@@ -38,7 +38,7 @@ public class TableNamesDto {
 
     @Override
     public String toString() {
-	return "HealthCheckInfoDto [status=" + status + ", tableNames=" + tableNames + "]";
+	return "TableNamesDto [status=" + status + ", tableNames=" + tableNames + "]";
     }
 
 }

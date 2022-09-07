@@ -38,7 +38,7 @@ public class TableDto {
 
     @Override
     public String toString() {
-	return "DatabaseInfoDto [status=" + status + ", table=" + table + "]";
+	return "TableDto [status=" + status + ", table=" + table + "]";
     }
 
 }

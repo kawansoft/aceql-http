@@ -26,7 +26,7 @@ public class HealthCheckInfoDto {
     private long initMemory;
     private long usedMemory;
     private long maxMemory;
-    private long commitedMemory;
+    private long committedMemory;
     
     /**
      * Constructor
@@ -36,45 +36,51 @@ public class HealthCheckInfoDto {
 	initMemory = memoryMXBean.getHeapMemoryUsage().getInit();
 	usedMemory = memoryMXBean.getHeapMemoryUsage().getUsed();
 	maxMemory = memoryMXBean.getHeapMemoryUsage().getMax();
-	commitedMemory = memoryMXBean.getHeapMemoryUsage().getCommitted();
+	committedMemory = memoryMXBean.getHeapMemoryUsage().getCommitted();
     }
 
-    public String getStatus() {
+    /**
+     * @return the status
+     */
+    String getStatus() {
         return status;
     }
 
     /**
      * @return the initMemory
      */
-    public long getInitMemory() {
+    long getInitMemory() {
         return initMemory;
     }
 
     /**
      * @return the usedMemory
      */
-    public long getUsedMemory() {
+    long getUsedMemory() {
         return usedMemory;
     }
 
     /**
      * @return the maxMemory
      */
-    public long getMaxMemory() {
+    long getMaxMemory() {
         return maxMemory;
     }
 
     /**
-     * @return the commitedMemory
+     * @return the committedMemory
      */
-    public long getCommitedMemory() {
-        return commitedMemory;
+    long getCommittedMemory() {
+        return committedMemory;
     }
 
     @Override
     public String toString() {
 	return "HealthCheckInfoDto [status=" + status + ", initMemory=" + initMemory + ", usedMemory=" + usedMemory
-		+ ", maxMemory=" + maxMemory + ", commitedMemory=" + commitedMemory + "]";
+		+ ", maxMemory=" + maxMemory + ", committedMemory=" + committedMemory + "]";
     }
+    
+   
+
     
 }
