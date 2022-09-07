@@ -7,7 +7,7 @@
 	<packaging>jar</packaging>
 
 	<name>AceQL HTTP</name>
-	<url>http://www.aceql.com</url>
+	<url>https://www.aceql.com</url>
 
     <build>
         <finalName>${project.artifactId}</finalName>
@@ -212,13 +212,13 @@
 
 	<organization>
 		<name>KawanSoft</name>
-		<url>http://www.kawansoft.com</url>
+		<url>https://www.kawansoft.com</url>
 	</organization>
 
 	<licenses>
 		<license>
-			<name>LGPL 2.1</name>
-			<url>http://www.gnu.org/licenses/lgpl-2.1.html</url>
+			<name>Business Source License 1.1</name>
+			<url>https://mariadb.com/bsl11/</url>
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
