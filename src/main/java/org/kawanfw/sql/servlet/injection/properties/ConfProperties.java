@@ -13,6 +13,7 @@ package org.kawanfw.sql.servlet.injection.properties;
 
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -48,7 +49,8 @@ public class ConfProperties {
     private Map<String, Set<String>> sqlFirewallTriggerClassNamesMap = new ConcurrentHashMap<>(); 
     private Map<String, Set<String>> updateListenerClassNamesMap = new ConcurrentHashMap<>();
 
-    
+    private Map<String, OperationalMode> operationalModeMap =  new ConcurrentHashMap<>(); 
+
     private ConfProperties(ConfPropertiesBuilder confPropertiesBuilder) {
 	this.databaseSet = confPropertiesBuilder.databaseSet;
 	this.databaseConfiguratorClassNameMap = confPropertiesBuilder.databaseConfiguratorClassNameMap;
@@ -69,8 +71,9 @@ public class ConfProperties {
 	this.statelessMode = confPropertiesBuilder.statelessMode;
 	
 	this.sqlFirewallTriggerClassNamesMap = confPropertiesBuilder.sqlFirewallTriggerClassNamesMap;
-	
 	this.updateListenerClassNamesMap = confPropertiesBuilder.updateListenerClassNamesMap;
+	
+	this.operationalModeMap = confPropertiesBuilder.operationalModeMap;
     }
 
     /**
@@ -177,6 +180,15 @@ public class ConfProperties {
     public boolean isStatelessMode() {
 	return statelessMode;
     }
+    
+    public Map<String, OperationalMode> getOperationalModeMap() {
+	return operationalModeMap;
+    }
+
+    public OperationalMode getOperationalModeMap(String database) {
+	Objects.requireNonNull(database, "database cannnot be null!");
+	return operationalModeMap.get(database);
+    }
 
  
     /**
@@ -224,6 +236,7 @@ public class ConfProperties {
 	private Map<String, Set<String>> sqlFirewallTriggerClassNamesMap = new ConcurrentHashMap<>(); 
 	private Map<String, Set<String>> updateListenerClassNamesMap = new ConcurrentHashMap<>();
 
+	private Map<String, OperationalMode> operationalModeMap = new ConcurrentHashMap<>();
 
 	public ConfPropertiesBuilder databaseSet(Set<String> databaseSet) {
 	    this.databaseSet = databaseSet;
@@ -297,6 +310,10 @@ public class ConfProperties {
 	    return this;
 	}
 
+	public ConfPropertiesBuilder operationalModeMap(Map<String, OperationalMode> operationalModeMap) {
+	    this.operationalModeMap = operationalModeMap;
+	    return this;
+	}
 	
 	// Return the finally constructed User object
 	public ConfProperties build() {

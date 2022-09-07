@@ -10,18 +10,14 @@
  * of this software will be governed by version 2.0 of the Apache License.
  */
 package org.kawanfw.sql.servlet.injection.properties;
-
-public class ConfPropertiesUtil {
-
-    public static final String OPERATIONAL_MODE = "operationalMode";
-    
-    protected ConfPropertiesUtil() {
-
-    }
-
-    public static boolean isStatelessMode() {
-	return ConfPropertiesStore.get().isStatelessMode();
-    }
-
-  
+/**
+ * Enum of the operationalMode property.
+ * @author Nicolas de Pomereu
+ *
+ */
+public enum OperationalMode {
+    off,
+    learning,
+    detecting,
+    protecting
 }

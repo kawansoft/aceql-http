@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +29,7 @@ import org.kawanfw.sql.servlet.injection.properties.ConfProperties.ConfPropertie
 import org.kawanfw.sql.tomcat.TomcatStarterUtil;
 import org.kawanfw.sql.tomcat.TomcatStarterUtilProperties;
 import org.kawanfw.sql.util.FrameworkDebug;
+import org.kawanfw.sql.util.SqlTag;
 
 /**
  * Create a ConfProperties from the passed properties.
@@ -93,9 +95,10 @@ public class ConfPropertiesManager {
 	Map<String, Set<String>> sqlFirewallClassNamesMap = new ConcurrentHashMap<>();
 	Map<String, Set<String>> sqlFirewallTriggerClassNamesMap = new ConcurrentHashMap<>();
 	Map<String, Set<String>> updateListenerClassNamesMap = new ConcurrentHashMap<>();
-
+	Map<String, OperationalMode> operationalModeMap = new LinkedHashMap<>();
+	
 	buildObjectsPerDatabase(databases, databaseConfiguratorClassNameMap, sqlFirewallClassNamesMap,
-		sqlFirewallTriggerClassNamesMap, updateListenerClassNamesMap);
+		sqlFirewallTriggerClassNamesMap, updateListenerClassNamesMap, operationalModeMap);
 
 	confPropertiesBuilder.databaseConfiguratorClassNameMap(databaseConfiguratorClassNameMap);
 	confPropertiesBuilder.sqlFirewallManagerClassNamesMap(sqlFirewallClassNamesMap);
@@ -139,11 +142,12 @@ public class ConfPropertiesManager {
      * @param sqlFirewallClassNamesMap
      * @param sqlFirewallTriggerClassNamesMap
      * @param updateListenerClassNamesMap
+     * @param operationalModeMap
      */
     public void buildObjectsPerDatabase(Set<String> databases, Map<String, String> databaseConfiguratorClassNameMap,
 	    Map<String, Set<String>> sqlFirewallClassNamesMap,
 	    Map<String, Set<String>> sqlFirewallTriggerClassNamesMap,
-	    Map<String, Set<String>> updateListenerClassNamesMap) {
+	    Map<String, Set<String>> updateListenerClassNamesMap, Map<String, org.kawanfw.sql.servlet.injection.properties.OperationalMode> operationalModeMap) {
 	for (String database : databases) {
 
 	    // Set the configurator to use for this database
@@ -190,6 +194,22 @@ public class ConfPropertiesManager {
 	    } else {
 		updateListenerClassNamesMap.put(database, new LinkedHashSet<String>());
 	    }
+	    
+	    String operationalMode = TomcatStarterUtil.trimSafe(
+		    properties.getProperty(database + "." + ConfPropertiesUtil.OPERATIONAL_MODE));
+	    if (operationalMode == null || operationalMode.isEmpty()) {
+		operationalMode = OperationalMode.protecting.toString();
+	    }
+	    
+	    try {
+		OperationalMode operationalModeEnum
+		  = OperationalMode.valueOf(operationalMode);
+		operationalModeMap.put(database, operationalModeEnum);
+	    } catch (IllegalArgumentException e) {
+		throw new IllegalArgumentException(SqlTag.USER_CONFIGURATION + 
+			" the " + database + ".operationalMode property value is invalid: "+ operationalMode + ".  Please correct. " );
+	    }
+	    
 	}
     }
 

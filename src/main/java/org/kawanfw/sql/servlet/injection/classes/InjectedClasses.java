@@ -303,7 +303,6 @@ public class InjectedClasses {
 	 * @param object
 	 */
 
-	@SuppressWarnings("unused")
 	private void addSetToLoggers(Set<?> set) {
 	    for (Object object : set) {
 		addObjectToLoggers(object);
