@@ -81,22 +81,12 @@ public class ServerSqlManager extends HttpServlet {
     private static boolean INIT_DONE = false;
 
     private String propertiesFileStr;
-    private static String licenseFileStr = null;
-
-    /**
-     * Returns the name of the license file, null if not exists
-     * @return the name of the license file, null if not exists
-     */
-    public static String getLicenseFileStr() {
-        return licenseFileStr;
-    }
 
     @Override
     public void init(ServletConfig config) throws ServletException {
 	super.init(config);
 	INIT_DONE = false;
 	propertiesFileStr = config.getInitParameter("properties");
-	licenseFileStr = config.getInitParameter("licenseFile");
 
 	if (!TomcatSqlModeStore.isTomcatEmbedded()) {
 	    System.out.println(SqlTag.SQL_PRODUCT_INIT + " " + TimestampUtil.getHumanTimestampNoMillisNow()
@@ -110,7 +100,6 @@ public class ServerSqlManager extends HttpServlet {
 	}
 
 	debug("propertiesFileStr: " + propertiesFileStr);
-	debug("licenseFileStr   : " + licenseFileStr);
 
     }
 
@@ -139,7 +128,7 @@ public class ServerSqlManager extends HttpServlet {
     protected void service(HttpServletRequest request, HttpServletResponse response)
 	    throws ServletException, IOException {
 
-	createClassesSynchronized(propertiesFileStr, licenseFileStr);
+	createClassesSynchronized(propertiesFileStr);
 
 	/* Call in async mode */
 	final AsyncContext asyncContext = request.startAsync();
@@ -171,16 +160,15 @@ public class ServerSqlManager extends HttpServlet {
      * Create all classes.
      * 
      * @param propertiesFileStr
-     * @param licenseFileStr
      * @throws ServletException
      * @throws IOException
      */
-    public static synchronized void createClassesSynchronized(String propertiesFileStr, String licenseFileStr)
+    public static synchronized void createClassesSynchronized(String propertiesFileStr)
 	    throws ServletException, IOException {
 	if (!INIT_DONE) {
 	    INIT_DONE = true;
 	    InjectedClassesManagerNew injectedClassesManager = new InjectedClassesManagerNew();
-	    injectedClassesManager.createClasses(propertiesFileStr, licenseFileStr);
+	    injectedClassesManager.createClasses(propertiesFileStr);
 	}
     }
 

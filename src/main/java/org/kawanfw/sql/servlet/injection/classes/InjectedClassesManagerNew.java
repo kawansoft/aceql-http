@@ -66,14 +66,12 @@ public class InjectedClassesManagerNew {
      * Created all injected classes instances.
      * 
      * @param propertiesFileStr
-     * @param licenseFileStr
      * @throws ServletException
      * @throws IOException
      */
-    public void createClasses(String propertiesFileStr, String licenseFileStr) throws ServletException, IOException {
+    public void createClasses(String propertiesFileStr) throws ServletException, IOException {
 	
 	debug("propertiesFileStr: " + propertiesFileStr);
-	debug("licenseFileStr   : " + licenseFileStr);
 	
 	classNameToLoad = null;
 	try {
@@ -85,16 +83,7 @@ public class InjectedClassesManagerNew {
 	    // Test if we are in Native Tomcat and do specific stuff.
 	    if (!TomcatSqlModeStore.isTomcatEmbedded()) {
 
-		Objects.requireNonNull(licenseFileStr, "The init param \\\"properties\\\" has not been defined in web.xml!");
-
-		if (licenseFileStr != null) {
-		    File licenseFile = new File(licenseFileStr);
-		    if (!licenseFile.exists()) {
-			throw new FileNotFoundException(
-				"The file defined by the  web.xml init param \"licenseFile\" does not exist:"
-					+ licenseFile);
-		    }
-		}
+		Objects.requireNonNull(propertiesFileStr, "The init param \\\"properties\\\" has not been defined in web.xml!");
 
 		TomcatStarterMessages.printBeginMessage();
 //		
