@@ -25,7 +25,6 @@ import java.util.Objects;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
-import org.kawanfw.sql.api.server.SqlEvent;
 import org.kawanfw.sql.api.server.StatementNormalizer;
 import org.kawanfw.sql.servlet.util.logging.StringFlattener;
 import org.kawanfw.sql.util.FrameworkDebug;
@@ -46,15 +45,16 @@ public class LearningModeExecutor {
     /**
      * Stores in the learning file in database-whitelist-learning.txt same dir as
      * properties file the sql statements to allows
-     * 
-     * @param sqlEvent
      * @param propertiesFile
+     * @param sqlOrder 
+     * @param database
+     * 
      * @throws SQLException if I/O error occurs, wrapped in SQLException
      */
-    public static synchronized void learn(SqlEvent sqlEvent, File propertiesFile) throws SQLException {
+    public static synchronized void learn(File propertiesFile, String sqlOrder, String database) throws SQLException {
 
 	try {
-	    File learningFile = getLearningFile(sqlEvent.getDatabase(), propertiesFile);
+	    File learningFile = getLearningFile(database, propertiesFile);
 	    File logFile = new File(learningFile.toString() + ".errors.log");
 	    
 	    Set<String> lineSet = new LinkedHashSet<>();
@@ -64,7 +64,7 @@ public class LearningModeExecutor {
 	    }
 	    
 	    // Normalize the statement
-	    StatementNormalizer statementNormalizer = new StatementNormalizer(sqlEvent.getSql());
+	    StatementNormalizer statementNormalizer = new StatementNormalizer(sqlOrder);
 	    String sql = statementNormalizer.getNormalized();
 	    
 	    StringFlattener stringFlattener = new StringFlattener(sql);
@@ -90,7 +90,7 @@ public class LearningModeExecutor {
 	    }
 	} catch (IOException ioe) {
 	    ioe.printStackTrace();
-	    throw new SQLException("Error when accessing learning file for database " + sqlEvent.getDatabase() + ": "
+	    throw new SQLException("Error when accessing learning file for database " + database + ": "
 		    + ioe.getMessage());
 	}
     }

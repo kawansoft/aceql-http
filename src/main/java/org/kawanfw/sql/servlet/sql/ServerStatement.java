@@ -11,6 +11,7 @@
  */
 package org.kawanfw.sql.servlet.sql;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -39,11 +40,15 @@ import org.kawanfw.sql.api.server.SqlEvent;
 import org.kawanfw.sql.api.server.SqlEventWrapper;
 import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
 import org.kawanfw.sql.api.server.listener.UpdateListener;
+import org.kawanfw.sql.api.util.firewall.LearningModeExecutor;
 import org.kawanfw.sql.api.util.firewall.SqlFirewallTriggerWrapper;
 import org.kawanfw.sql.servlet.HttpParameter;
 import org.kawanfw.sql.servlet.ServerSqlManager;
 import org.kawanfw.sql.servlet.connection.RollbackUtil;
 import org.kawanfw.sql.servlet.injection.classes.InjectedClassesStore;
+import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesStore;
+import org.kawanfw.sql.servlet.injection.properties.OperationalMode;
+import org.kawanfw.sql.servlet.injection.properties.PropertiesFileStore;
 import org.kawanfw.sql.servlet.sql.json_return.JsonErrorReturn;
 import org.kawanfw.sql.servlet.sql.json_return.JsonSecurityMessage;
 import org.kawanfw.sql.servlet.sql.json_return.JsonUtil;
@@ -327,8 +332,21 @@ public class ServerStatement {
     private String checkFirewallGeneral(String username, String database, String sqlOrder,
 	    ServerPreparedStatementParameters serverPreparedStatementParameters)
 	    throws IOException, SQLException, SecurityException {
+	
 	String ipAddress = IpUtil.getRemoteAddr(request);
-
+	
+	File propertiesFile = PropertiesFileStore.get();	
+	OperationalMode operationalMode = ConfPropertiesStore.get().getOperationalModeMap(database);
+	
+	if (operationalMode.equals(OperationalMode.off)) {
+	    return ipAddress;
+	}
+	
+	if (operationalMode.equals(OperationalMode.learning)) {
+	    LearningModeExecutor.learn(propertiesFile, sqlOrder, database);
+	    return ipAddress;
+	}
+	
 	boolean isAllowedAfterAnalysis = true;
 	for (SqlFirewallManager sqlFirewallManager : sqlFirewallManagers) {
 	    SqlEvent sqlEvent = SqlEventWrapper.sqlEventBuild(username, database, ipAddress, sqlOrder,
@@ -343,7 +361,7 @@ public class ServerStatement {
 	    }
 	}
 
-	if (!isAllowedAfterAnalysis) {
+	if (!isAllowedAfterAnalysis && !operationalMode.equals(OperationalMode.detecting)) {
 	    String message = JsonSecurityMessage.prepStatementNotAllowedBuild(sqlOrder,
 		    "Prepared Statement not allowed", serverPreparedStatementParameters.getParameterTypes(),
 		    serverPreparedStatementParameters.getParameterValues(), doPrettyPrinting);
@@ -552,6 +570,19 @@ public class ServerStatement {
      */
     private void checkFirewallGeneral(String username, String database, String sqlOrder, String ipAddress)
 	    throws IOException, SQLException, SecurityException {
+	
+	File propertiesFile = PropertiesFileStore.get();	
+	OperationalMode operationalMode = ConfPropertiesStore.get().getOperationalModeMap(database);
+	
+	if (operationalMode.equals(OperationalMode.off)) {
+	    return;
+	}
+	
+	if (operationalMode.equals(OperationalMode.learning)) {
+	    LearningModeExecutor.learn(propertiesFile, sqlOrder, database);
+	    return;
+	}
+	
 	SqlFirewallManager sqlFirewallOnDeny = null;
 	boolean isAllowed = true;
 	for (SqlFirewallManager sqlFirewallManager : sqlFirewallManagers) {
@@ -579,9 +610,12 @@ public class ServerStatement {
 
 	    SqlFirewallTriggerWrapper.runIfStatementRefused(sqlEvent, sqlFirewallOnDeny, connection);
 	    
-	    String message = JsonSecurityMessage.statementNotAllowedBuild(sqlOrder, "Statement not allowed",
-		    doPrettyPrinting);
-	    throw new SecurityException(message);
+	    if (!operationalMode.equals(OperationalMode.detecting)) {
+		String message = JsonSecurityMessage.statementNotAllowedBuild(sqlOrder, "Statement not allowed",
+			doPrettyPrinting);
+		throw new SecurityException(message);
+	    }
+
 	}
     }
 

@@ -11,6 +11,7 @@
  */
 package org.kawanfw.sql.servlet.sql.callable;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -33,10 +34,14 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.kawanfw.sql.api.server.SqlEvent;
 import org.kawanfw.sql.api.server.SqlEventWrapper;
 import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
+import org.kawanfw.sql.api.util.firewall.LearningModeExecutor;
 import org.kawanfw.sql.api.util.firewall.SqlFirewallTriggerWrapper;
 import org.kawanfw.sql.servlet.HttpParameter;
 import org.kawanfw.sql.servlet.ServerSqlManager;
 import org.kawanfw.sql.servlet.connection.RollbackUtil;
+import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesStore;
+import org.kawanfw.sql.servlet.injection.properties.OperationalMode;
+import org.kawanfw.sql.servlet.injection.properties.PropertiesFileStore;
 import org.kawanfw.sql.servlet.sql.AceQLParameter;
 import org.kawanfw.sql.servlet.sql.LoggerUtil;
 import org.kawanfw.sql.servlet.sql.ResultSetWriter;
@@ -346,6 +351,19 @@ public class AdvancedServerCallableStatement {
     private void checkFirewallGeneral(String username, String database, String sqlOrder,
 	    ServerPreparedStatementParameters serverPreparedStatementParameters)
 	    throws IOException, SQLException, SecurityException {
+	
+	File propertiesFile = PropertiesFileStore.get();
+	OperationalMode operationalMode = ConfPropertiesStore.get().getOperationalModeMap(database);
+
+	if (operationalMode.equals(OperationalMode.off)) {
+	    return;
+	}
+
+	if (operationalMode.equals(OperationalMode.learning)) {
+	    LearningModeExecutor.learn(propertiesFile, sqlOrder, database);
+	    return;
+	}
+	
 	boolean isAllowed = true;
 	String ipAddress = IpUtil.getRemoteAddr(request);
 
