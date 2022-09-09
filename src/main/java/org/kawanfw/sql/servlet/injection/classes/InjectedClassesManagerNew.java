@@ -46,6 +46,7 @@ import org.kawanfw.sql.servlet.injection.properties.ConfProperties;
 import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesManager;
 import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesStore;
 import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesUtil;
+import org.kawanfw.sql.servlet.injection.properties.OperationalMode;
 import org.kawanfw.sql.servlet.injection.properties.PropertiesFileStore;
 import org.kawanfw.sql.servlet.injection.properties.PropertiesFileUtil;
 import org.kawanfw.sql.tomcat.TomcatSqlModeStore;
@@ -137,7 +138,8 @@ public class InjectedClassesManagerNew {
 
 	    // Store the InjectedClasses instance statically
 	    InjectedClassesStore.set(injectedClasses);
-	    
+	    	    
+	    //printWarningMessageNotProtecting(databases);
 	    displayLoggerCreators();
 	    
 	    if (!TomcatSqlModeStore.isTomcatEmbedded()) {
@@ -171,10 +173,24 @@ public class InjectedClassesManagerNew {
     }
 
     /**
+     * @param databases
+     */
+    public void printWarningMessageNotProtecting(Set<String> databases) {
+	for (String database : databases) {
+	OperationalMode operationalMode = ConfPropertiesStore.get().getOperationalModeMap(database);
+	if (! operationalMode.equals(OperationalMode.protecting)) {
+	    System.out.println(SqlTag.SQL_PRODUCT_START);
+	    System.out.println(SqlTag.SQL_PRODUCT_START + " WARNING : Operational Mode is set to \"" +  operationalMode.toString()  + "\" for database " + database);
+	    System.out.println(SqlTag.SQL_PRODUCT_START + " WARNING : Firewall is not protecting the database: " + database);
+	}
+	}
+    }
+
+    /**
      * @param injectedClasses
      */
     public void displayLoggerCreators() {
-	System.out.println(Tag.RUNNING_PRODUCT + " Loggers elements: ");
+	//System.out.println(Tag.RUNNING_PRODUCT + " Loggers elements: ");
 	Set<LoggerCreator> loggerCreators = new LinkedHashSet<>();
 
 	for (LoggerCreator loggerCreator : loggerCreators) {
@@ -218,29 +234,6 @@ public class InjectedClassesManagerNew {
 	// Create the default DataSource if necessary
 	TomcatStarterUtil.createAndStoreDataSources(properties);
     }
-
-//    private LoggerCreator loadLoggerCreator() throws ClassNotFoundException, NoSuchMethodException,
-//	    InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-//	
-//	String loggerCreatorClassName = ConfPropertiesStore.get().getLoggerCreatorClassName();
-//
-//	classNameToLoad = loggerCreatorClassName;
-//
-//	debug("==> loggerCreatorClassName: " + loggerCreatorClassName);
-//
-//	System.out.println(SqlTag.SQL_PRODUCT_START + " Loading LoggerCreator class:");
-//
-//	LoggerCreatorBuilder loggerCreatorBuilder = new LoggerCreatorBuilder(loggerCreatorClassName);
-//	LoggerCreator loggerCreator = loggerCreatorBuilder.getLoggerCreator();
-//	loggerCreatorClassName = loggerCreatorBuilder.getLoggerCreatorClassName();
-//
-//	debug("==> loggerCreator: " + loggerCreator);
-//	System.out.println(SqlTag.SQL_PRODUCT_START + "  -> " + loggerCreatorClassName);
-//
-//	classNameToLoad = loggerCreatorClassName;
-//
-//	return loggerCreator;
-//    }
     
     /**
      * Loads elements that depend on databases.
@@ -600,7 +593,11 @@ public class InjectedClassesManagerNew {
 	else
 	    tagSQLFirewallManager = " SQLFirewallManager classes: ";
 
-	System.out.println(SqlTag.SQL_PRODUCT_START + " " + database + " Database - Loading " + tagSQLFirewallManager);
+	
+	if (!sqlFirewallClassNames.isEmpty()) {
+	    System.out.println(
+		    SqlTag.SQL_PRODUCT_START + " " + database + " Database - Loading " + tagSQLFirewallManager);
+	}
 
 	SqlFirewallsCreator sqlFirewallsCreator = new SqlFirewallsCreator(sqlFirewallClassNames);
 	Set<SqlFirewallManager> sqlFirewallManagers = sqlFirewallsCreator.getSqlFirewalls();

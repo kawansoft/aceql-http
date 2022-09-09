@@ -57,7 +57,9 @@ public class AdvancedUpdateListenersLoader implements UpdateListenersLoader {
 	else
 	    tagUpdateListener = " UpdateListener classes: ";
 
-	System.out.println(SqlTag.SQL_PRODUCT_START + " " + database + " Database - Loading" +  tagUpdateListener);
+	if (! updateListenerClassNames.isEmpty()) {
+	    System.out.println(SqlTag.SQL_PRODUCT_START + " " + database + " Database - Loading" +  tagUpdateListener);	    
+	}
 
 	Map<String, DatabaseConfigurator> databaseConfigurators = injectedClassesBuilder.getDatabaseConfigurators();
 

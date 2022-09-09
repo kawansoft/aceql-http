@@ -103,6 +103,7 @@ public class ConfPropertiesManager {
 	confPropertiesBuilder.databaseConfiguratorClassNameMap(databaseConfiguratorClassNameMap);
 	confPropertiesBuilder.sqlFirewallManagerClassNamesMap(sqlFirewallClassNamesMap);
 	confPropertiesBuilder.sqlFirewallTriggerClassNamesMap(sqlFirewallTriggerClassNamesMap);
+	confPropertiesBuilder.operationalModeMap(operationalModeMap);
 
 	if (DEBUG) {
 	    System.out.println("sqlFirewallTriggerClassNamesMap: " + sqlFirewallTriggerClassNamesMap);
@@ -148,6 +149,7 @@ public class ConfPropertiesManager {
 	    Map<String, Set<String>> sqlFirewallClassNamesMap,
 	    Map<String, Set<String>> sqlFirewallTriggerClassNamesMap,
 	    Map<String, Set<String>> updateListenerClassNamesMap, Map<String, org.kawanfw.sql.servlet.injection.properties.OperationalMode> operationalModeMap) {
+	
 	for (String database : databases) {
 
 	    // Set the configurator to use for this database

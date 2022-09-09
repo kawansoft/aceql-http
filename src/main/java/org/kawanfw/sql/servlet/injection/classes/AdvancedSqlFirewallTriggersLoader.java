@@ -25,7 +25,6 @@ import org.kawanfw.sql.util.SqlTag;
 
 public class AdvancedSqlFirewallTriggersLoader implements SqlFirewallTriggersLoader {
 
-   
     private String classNameToLoad;
 
     /**
@@ -46,31 +45,35 @@ public class AdvancedSqlFirewallTriggersLoader implements SqlFirewallTriggersLoa
      * @throws IOException
      */
     @Override
-    public Set<SqlFirewallTrigger> loadSqlFirewallTriggers(String database, InjectedClassesBuilder injectedClassesBuilder,
-	    Set<String> sqlFirewallTriggerClassNames)
+    public Set<SqlFirewallTrigger> loadSqlFirewallTriggers(String database,
+	    InjectedClassesBuilder injectedClassesBuilder, Set<String> sqlFirewallTriggerClassNames)
 	    throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException,
 	    IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException, IOException {
-		
+
 	String tagSqlFirewallTrigger = null;
 	if (sqlFirewallTriggerClassNames.size() < 2)
 	    tagSqlFirewallTrigger = " SqlFirewallTrigger class: ";
 	else
 	    tagSqlFirewallTrigger = " SqlFirewallTrigger classes: ";
 
-	System.out.println(SqlTag.SQL_PRODUCT_START + " " + database + " Database - Loading" + tagSqlFirewallTrigger);
+	if (!sqlFirewallTriggerClassNames.isEmpty()) {
+	    System.out
+		    .println(SqlTag.SQL_PRODUCT_START + " " + database + " Database - Loading" + tagSqlFirewallTrigger);
+	}
 
 	Map<String, DatabaseConfigurator> databaseConfigurators = injectedClassesBuilder.getDatabaseConfigurators();
 
 	DatabaseConfigurator databaseConfigurator = databaseConfigurators.get(database);
-	
-	SqlFirewallTriggersCreator sqlFirewallTriggersCreator = new SqlFirewallTriggersCreator(sqlFirewallTriggerClassNames, database,
-		databaseConfigurator);
+
+	SqlFirewallTriggersCreator sqlFirewallTriggersCreator = new SqlFirewallTriggersCreator(
+		sqlFirewallTriggerClassNames, database, databaseConfigurator);
 	Set<SqlFirewallTrigger> sqlFirewallTriggers = sqlFirewallTriggersCreator.getSqlFirewallTriggers();
 
 	sqlFirewallTriggerClassNames = sqlFirewallTriggersCreator.getSqlFirewallTriggerClassNames();
 	classNameToLoad = sqlFirewallTriggerClassNames.toString();
 
-	return AdvancedSqlFirewallTriggersLoaderWrap.loadSqlFirewallTriggersWrap(database, injectedClassesBuilder, sqlFirewallTriggerClassNames, sqlFirewallTriggers);
+	return AdvancedSqlFirewallTriggersLoaderWrap.loadSqlFirewallTriggersWrap(database, injectedClassesBuilder,
+		sqlFirewallTriggerClassNames, sqlFirewallTriggers);
     }
 
     @Override
