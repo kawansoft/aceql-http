@@ -11,7 +11,6 @@
  */
 package org.kawanfw.sql.servlet.sql;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -48,7 +47,6 @@ import org.kawanfw.sql.servlet.connection.RollbackUtil;
 import org.kawanfw.sql.servlet.injection.classes.InjectedClassesStore;
 import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesStore;
 import org.kawanfw.sql.servlet.injection.properties.OperationalMode;
-import org.kawanfw.sql.servlet.injection.properties.PropertiesFileStore;
 import org.kawanfw.sql.servlet.sql.json_return.JsonErrorReturn;
 import org.kawanfw.sql.servlet.sql.json_return.JsonSecurityMessage;
 import org.kawanfw.sql.servlet.sql.json_return.JsonUtil;
@@ -334,8 +332,7 @@ public class ServerStatement {
 	    throws IOException, SQLException, SecurityException {
 	
 	String ipAddress = IpUtil.getRemoteAddr(request);
-	
-	File propertiesFile = PropertiesFileStore.get();	
+		
 	OperationalMode operationalMode = ConfPropertiesStore.get().getOperationalModeMap(database);
 	
 	if (operationalMode.equals(OperationalMode.off)) {
@@ -343,7 +340,7 @@ public class ServerStatement {
 	}
 	
 	if (operationalMode.equals(OperationalMode.learning)) {
-	    LearningModeExecutor.learn(propertiesFile, sqlOrder, database);
+	    LearningModeExecutor.learn(sqlOrder, database);
 	    return ipAddress;
 	}
 	
@@ -571,7 +568,6 @@ public class ServerStatement {
     private void checkFirewallGeneral(String username, String database, String sqlOrder, String ipAddress)
 	    throws IOException, SQLException, SecurityException {
 	
-	File propertiesFile = PropertiesFileStore.get();	
 	OperationalMode operationalMode = ConfPropertiesStore.get().getOperationalModeMap(database);
 	
 	if (operationalMode.equals(OperationalMode.off)) {
@@ -579,7 +575,7 @@ public class ServerStatement {
 	}
 	
 	if (operationalMode.equals(OperationalMode.learning)) {
-	    LearningModeExecutor.learn(propertiesFile, sqlOrder, database);
+	    LearningModeExecutor.learn(sqlOrder, database);
 	    return;
 	}
 	

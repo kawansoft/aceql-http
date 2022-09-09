@@ -44,7 +44,6 @@ import org.kawanfw.sql.servlet.connection.RollbackUtil;
 import org.kawanfw.sql.servlet.injection.classes.InjectedClassesStore;
 import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesStore;
 import org.kawanfw.sql.servlet.injection.properties.OperationalMode;
-import org.kawanfw.sql.servlet.injection.properties.PropertiesFileStore;
 import org.kawanfw.sql.servlet.sql.AceQLParameter;
 import org.kawanfw.sql.servlet.sql.LoggerUtil;
 import org.kawanfw.sql.servlet.sql.ServerStatementUtil;
@@ -278,7 +277,6 @@ public class ServerPreparedStatementBatch {
 	    throws IOException, SQLException, SecurityException {
 	String ipAddress = IpUtil.getRemoteAddr(request);
 
-	File propertiesFile = PropertiesFileStore.get();
 	OperationalMode operationalMode = ConfPropertiesStore.get().getOperationalModeMap(database);
 
 	if (operationalMode.equals(OperationalMode.off)) {
@@ -286,7 +284,7 @@ public class ServerPreparedStatementBatch {
 	}
 
 	if (operationalMode.equals(OperationalMode.learning)) {
-	    LearningModeExecutor.learn(propertiesFile, sqlOrder, database);
+	    LearningModeExecutor.learn(sqlOrder, database);
 	    return;
 	}
 

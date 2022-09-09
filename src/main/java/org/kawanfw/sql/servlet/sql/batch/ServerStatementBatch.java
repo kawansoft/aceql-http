@@ -44,7 +44,6 @@ import org.kawanfw.sql.servlet.connection.RollbackUtil;
 import org.kawanfw.sql.servlet.injection.classes.InjectedClassesStore;
 import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesStore;
 import org.kawanfw.sql.servlet.injection.properties.OperationalMode;
-import org.kawanfw.sql.servlet.injection.properties.PropertiesFileStore;
 import org.kawanfw.sql.servlet.sql.LoggerUtil;
 import org.kawanfw.sql.servlet.sql.ServerStatementUtil;
 import org.kawanfw.sql.servlet.sql.StatementFailure;
@@ -307,7 +306,6 @@ public class ServerStatementBatch {
     private void checkFirewallGeneral(String username, String database, String sqlOrder, String ipAddress)
 	    throws IOException, SQLException, SecurityException {
 	
-	File propertiesFile = PropertiesFileStore.get();
 	OperationalMode operationalMode = ConfPropertiesStore.get().getOperationalModeMap(database);
 
 	if (operationalMode.equals(OperationalMode.off)) {
@@ -315,7 +313,7 @@ public class ServerStatementBatch {
 	}
 
 	if (operationalMode.equals(OperationalMode.learning)) {
-	    LearningModeExecutor.learn(propertiesFile, sqlOrder, database);
+	    LearningModeExecutor.learn(sqlOrder, database);
 	    return;
 	}
 	

@@ -26,6 +26,7 @@ import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.kawanfw.sql.api.server.StatementNormalizer;
+import org.kawanfw.sql.servlet.injection.properties.PropertiesFileStore;
 import org.kawanfw.sql.servlet.util.logging.StringFlattener;
 import org.kawanfw.sql.util.FrameworkDebug;
 import org.kawanfw.sql.util.TimestampUtil;
@@ -45,15 +46,14 @@ public class LearningModeExecutor {
     /**
      * Stores in the learning file in database-whitelist-learning.txt same dir as
      * properties file the sql statements to allows
-     * @param propertiesFile
      * @param sqlOrder 
      * @param database
-     * 
      * @throws SQLException if I/O error occurs, wrapped in SQLException
      */
-    public static synchronized void learn(File propertiesFile, String sqlOrder, String database) throws SQLException {
+    public static synchronized void learn(String sqlOrder, String database) throws SQLException {
 
 	try {
+	    File propertiesFile = PropertiesFileStore.get();
 	    File learningFile = getLearningFile(database, propertiesFile);
 	    File logFile = new File(learningFile.toString() + ".errors.log");
 	    

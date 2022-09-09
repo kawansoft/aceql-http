@@ -11,7 +11,6 @@
  */
 package org.kawanfw.sql.servlet.sql.callable;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -41,7 +40,6 @@ import org.kawanfw.sql.servlet.ServerSqlManager;
 import org.kawanfw.sql.servlet.connection.RollbackUtil;
 import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesStore;
 import org.kawanfw.sql.servlet.injection.properties.OperationalMode;
-import org.kawanfw.sql.servlet.injection.properties.PropertiesFileStore;
 import org.kawanfw.sql.servlet.sql.AceQLParameter;
 import org.kawanfw.sql.servlet.sql.LoggerUtil;
 import org.kawanfw.sql.servlet.sql.ResultSetWriter;
@@ -352,7 +350,6 @@ public class AdvancedServerCallableStatement {
 	    ServerPreparedStatementParameters serverPreparedStatementParameters)
 	    throws IOException, SQLException, SecurityException {
 	
-	File propertiesFile = PropertiesFileStore.get();
 	OperationalMode operationalMode = ConfPropertiesStore.get().getOperationalModeMap(database);
 
 	if (operationalMode.equals(OperationalMode.off)) {
@@ -360,7 +357,7 @@ public class AdvancedServerCallableStatement {
 	}
 
 	if (operationalMode.equals(OperationalMode.learning)) {
-	    LearningModeExecutor.learn(propertiesFile, sqlOrder, database);
+	    LearningModeExecutor.learn(sqlOrder, database);
 	    return;
 	}
 	
