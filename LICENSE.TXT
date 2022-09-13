@@ -11,8 +11,10 @@ Parameters
 
 Licensor:             KawanSoft S.A.S.
 Licensed Work:        AceQL HTTP v12
-                      The Licensed Work is (c)2022 KawanSoft S.A.S.
-Additional Use Grant: None.
+                      The Licensed Work is (c) 2022 KawanSoft S.A.S.
+Additional Use Grant: You may use the Licensed Work when your organization
+                      uses the Licensed Work with a total of less than three
+                      PostgreSQL, MySQL or MariaDB databases for any purpose.
 
 Change Date:          2026-09-01
 
