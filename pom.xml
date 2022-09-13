@@ -218,7 +218,7 @@
 	<licenses>
 		<license>
 			<name>Business Source License 1.1</name>
-			<url>https://mariadb.com/bsl11/</url>
+			<url>https://github.com/kawansoft/aceql-http/blob/12.0/LICENSE.TXT</url>
 			<distribution>repo</distribution>
 		</license>
 	</licenses>

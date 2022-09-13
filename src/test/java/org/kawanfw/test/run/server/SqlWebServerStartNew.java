@@ -40,7 +40,7 @@ public class SqlWebServerStartNew {
 
 	int port = 9090;
 
-	map.put(port, "I:\\_dev_awake\\aceql-http-main\\aceql-http\\conf_test\\aceql-server-TEST-COMMUNITY.properties");
+	map.put(port, "I:\\_dev_awake\\aceql-http-main\\aceql-http\\conf_test\\aceql-server-TEST.properties");
 	start(port);
 
 	while(true) {
