@@ -1,3 +1,0 @@
-select * from actor
-select * from film_actor
-select * from film
