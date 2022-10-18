@@ -17,10 +17,10 @@ Additional Use Grant: You may use the Licensed Work when your organization
                       MySQL, MariaDB or PostgreSQL database names for any purpose.
                       Database name should be understood as the applicative name                  
                       of the database to which the applications connect.       
-                      Examples of database names: “sales,” “employees,”   
-                      “inventory,” etc. 
+                      Examples of database names: "sales," "employees,"   
+                      "inventory," etc. 
                       (This differs of course from the database product name              
-                      like “MySQL” and “PostgreSQL".)
+                      like "MySQL" and "PostgreSQL".)
 
 Change Date:          2026-10-18
 
