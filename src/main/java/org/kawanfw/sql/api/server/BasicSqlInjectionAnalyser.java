@@ -434,6 +434,11 @@ public class BasicSqlInjectionAnalyser {
 	return tokens;
     }
 
+    /**
+     * Says if the SQL statement contains nested comments
+     * @param sql SQL statement to analyze 
+     * @return true if the SQL statement contains nested comments, else false
+     */
     public static boolean containsNestedComments(String sql) {
 	Objects.requireNonNull(sql, "sql cannot be null!");
 	String[] stringArray = sql.split("/\\*");
