@@ -59,11 +59,10 @@ public class DefaultLoggerCreator implements LoggerCreator {
     /**
      * Constructor
      * 
-     * @throws IOException
-     * @throws FileNotFoundException
-     * @throws IllegalArgumentException
+     * @throws IOException if any I/O error occurs when accessing the {@code DefaultLoggerCreator.properties} file.
+     * @throws FileNotFoundException if the the {@code DefaultLoggerCreator.properties} file does not exist.
      */
-    public DefaultLoggerCreator() throws IllegalArgumentException, FileNotFoundException, IOException {
+    public DefaultLoggerCreator() throws FileNotFoundException, IOException {
 
 	LoggerCreatorProperties loggerCreatorProperties = LoggerCreatorProperties
 		.getFileBasedProperties(DefaultLoggerCreator.class.getSimpleName());

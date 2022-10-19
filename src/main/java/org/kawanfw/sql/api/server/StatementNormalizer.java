@@ -65,19 +65,19 @@ import org.kawanfw.sql.util.parser.SqlStringTokenizer;
  * call.</li>
  * </ul>
  * You may check if the statement is successfully normalized with the
- * {@link #success()} call. <br>
+ * {@link #isSuccess()} call. <br>
  * The caught Exception may be retrieved by a
  * {@link StatementNormalizer#getException()} call. <br>
  * Note that normalization is used in all provided {@link SqlFirewallManager}
  * implementations, this means that the SQL statements are all normalized before
- * the applying the firewall rules & security checks.
+ * the applying the firewall rules and security checks.
  * 
  * @author Nicolas de Pomereu
  * @since 1.0
  */
 public class StatementNormalizer {
 
-    public static boolean DEBUG = FrameworkDebug.isSet(StatementNormalizer.class);
+    private static boolean DEBUG = FrameworkDebug.isSet(StatementNormalizer.class);
 
     private String sql;
 
@@ -282,7 +282,7 @@ public class StatementNormalizer {
 	return normalizedString;
     }
 
-    public static void debug(String s) {
+    private static void debug(String s) {
 	if (DEBUG)
 	    System.out.println(new Date() + " " + s);
     }

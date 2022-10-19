@@ -29,11 +29,11 @@ import org.kawanfw.sql.util.parser.SqlStringTokenizer;
  * Provides misc methods to anlyse basic elements of an SQL statement and to check SQL injection attempts.
  * 
  * @author Nicolas de Pomereu
- *
+ * @since 12.0
  */
 public class BasicSqlInjectionAnalyser {
 
-    public static boolean DEBUG = FrameworkDebug.isSet(BasicSqlInjectionAnalyser.class);
+    private static boolean DEBUG = FrameworkDebug.isSet(BasicSqlInjectionAnalyser.class);
 	
     private String sql;
 
@@ -116,8 +116,8 @@ public class BasicSqlInjectionAnalyser {
     }
     
     /**
-     * Sets if double quotes should be detected.  Defaults to true.
-     * @param detectDoubleQuotes  true if double quotes should be detected, else false
+     * Sets if SQL statement without any space should be detected. Defaults to true.
+     * @param detectNoSpaces  true if queries without any space should be detected, else false
      */
     public void setDetectNoSpaces(boolean detectNoSpaces) {
 	this.detectNoSpaces = detectNoSpaces;
@@ -143,46 +143,50 @@ public class BasicSqlInjectionAnalyser {
     }
 
     /**
-     * 
-     * @return true id the 
+     * Returns if the SQL statement is with nested comments
+     * @return true if the query is with nested comments, else false
      */
     public boolean isWithNestedComments() {
         return withNestedComments;
     }
 
     /**
-     * 
-     * @return true if the SQL statement has line breaks
+     * Returns if the SQL statement has line breaks
+     * @return true if the SQL statement has line breaks, else false
      */
     public boolean isWithLineBreaks() {
         return withLineBreaks;
     }
 
     /**
-     * 
-     * @return true if the SQL statement contains comments
+     * Returns if the SQL statement contains comments
+     * @return true if the SQL statement contains comments, else false
      */
     public boolean isWithComments() {
         return withComments;
     }
 
     /**
-     * 
-     * @return true if the SQL statement contains statement separators
+     * Returns if the SQL statement contains statement separators
+     * @return true if the SQL statement contains statement separators, else false
      */
     public boolean isWithSeparators() {
         return withSeparators;
     }
 
     /**
-     * 
-     * @return true if the SQL statement contains at least one forbidden keyword
+     * Returns if the SQL statement contains at least one forbidden keyword
+     * @return true if the SQL statement contains at least one forbidden keyword, else false
      */
     public boolean isWithForbiddenKeywords() {
         return withForbiddenKeywords;
     }
 
     
+    /**
+     * Returns if there are some 1=1 variations in the query
+     * @return true if there are some 1=1 variations in the query, else false
+     */
     public boolean isWithEqualValuesAroundEqual() {
         return withEqualValuesAroundEqual;
     }
@@ -417,7 +421,7 @@ public class BasicSqlInjectionAnalyser {
 	return injectionDetected;
     }
     
-    public static List<String> getTokensSplitOnEquals(final String sql) {
+    private static List<String> getTokensSplitOnEquals(final String sql) {
 	Objects.requireNonNull(sql, "sql cannot be null!");
 
 	List<String> tokens = new ArrayList<>();
@@ -479,7 +483,7 @@ public class BasicSqlInjectionAnalyser {
         return false;
     }
     
-    public static void debug(String s) {
+    private static void debug(String s) {
 	if (DEBUG)
 	    System.out.println(new Date() + " " + s);
     }

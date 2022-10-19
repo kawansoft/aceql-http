@@ -11,10 +11,6 @@
  */
 package org.kawanfw.sql.util.parser;
 
-import java.util.List;
-
-import org.kawanfw.sql.api.server.StatementNormalizer;
-
 /**
  * @author Nicolas de Pomereu
  *
@@ -47,19 +43,6 @@ public class StatementAnalyzerUtil {
 	}
 	
 	return theSql;
-    }
-
-    /**
-     * @param finalTokens
-     */
-    public static void debugDisplayTokens(List<String> finalTokens) {
-        if (StatementNormalizer.DEBUG) {
-            StatementNormalizer.debug("");
-            StatementNormalizer.debug("display 3:");
-            for (int i = 0; i < finalTokens.size(); i++) {
-        	StatementNormalizer.debug(i + ": " + finalTokens.get(i));
-            }
-        }
     }
 
 }

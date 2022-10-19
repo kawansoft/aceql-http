@@ -49,7 +49,6 @@ public class JsonLoggerUpdateListener implements UpdateListener {
      * Logs using JSON format the {@code SqlEvent} and the
      * {@code SqlFirewallManager} class name into a {@code Logger} with parameters:
      * <ul>
-     * <ul>
      * <li>Name: {@code JsonLoggerUpdateListener}</li>
      * <li>File name pattern: {@code user.home/.kawansoft/log/JsonLoggerUpdateListener_%d.log.%i} (example of file
      * created: {@code JsonLoggerUpdateListener_2022-07-01.log.1}.).</li>
