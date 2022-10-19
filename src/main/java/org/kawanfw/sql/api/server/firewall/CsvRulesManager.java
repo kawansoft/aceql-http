@@ -91,7 +91,7 @@ import org.slf4j.Logger;
  * implementation. <br>
  * <br>
  * See an example of CSV file: <a href=
- * "https://docs.aceql.com/rest/soft/11.1/src/sampledb_rules_manager.csv">sampledb_rules_manager.csv</a>
+ * "https://docs.aceql.com/rest/soft/12.0/src/sampledb_rules_manager.csv">sampledb_rules_manager.csv</a>
  * <br>
  * <br>
  *

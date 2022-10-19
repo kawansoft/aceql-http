@@ -23,6 +23,11 @@ import org.kawanfw.sql.api.util.webserver.WebServerApiWrapper;
 /**
 *
 * APIs to start and stop the embedded Web Server from a Java program. <br>
+* <br>
+* Note that the {@code org.kawanfw.sql.WebServer} class is used to start and
+* stop the embedded Web Server from command line and uses the APIs of this
+* class. Source code is available here:&nbsp; <a href=
+* "https://docs.aceql.com/rest/soft/12.0/src/WebServer.java">WebServer.java</a>.
 *
 * @author Nicolas de Pomereu
 *
