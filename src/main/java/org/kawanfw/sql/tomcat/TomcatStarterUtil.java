@@ -250,7 +250,7 @@ public class TomcatStarterUtil {
 		throw new DatabaseConfigurationException("Server is in Stateless Mode: Connection pool must be in default auto commit. Please fix configuration.");
 	    }
 	    
-	    if (new SqlUtil(connection).isDB2() && EditionUtil.isCommunityEdition()) {
+	    if (new SqlUtil(connection).isDB2() && ! EditionUtil.isEnterpriseEdition()) {
 		throw new UnsupportedOperationException(Tag.PRODUCT + " " + "DB2 is not supported and "
 			+ Tag.REQUIRES_ACEQL_ENTERPRISE_EDITION);
 	    }

@@ -18,7 +18,6 @@ import java.util.Properties;
 import org.kawanfw.sql.servlet.injection.properties.PropertiesFileUtil;
 import org.kawanfw.sql.util.SqlTag;
 import org.kawanfw.sql.util.Tag;
-import org.kawanfw.sql.version.EditionUtil;
 
 /**
  * Valid
@@ -28,7 +27,9 @@ import org.kawanfw.sql.version.EditionUtil;
  */
 public class ThreadPoolCapacityWarner {
 
+    public static String CR_LF = System.getProperty("line.separator");
     private static final int MAX_QUEUE_CAPACITY_RECOMMANDED = 100;
+    private static final String WARNING_SECOND_LINE_SPACES = "         ";
     
     private String propertiesFile;
 
@@ -38,11 +39,6 @@ public class ThreadPoolCapacityWarner {
 
     public void warnOnThreadPoolExecutorParams() throws IOException {
 	
-	// Nothing todo if Community Edition
-	if (EditionUtil.isCommunityEdition()) {
-	    return;
-	}
-
 	File file = new File(propertiesFile);
 	Properties properties = PropertiesFileUtil.getProperties(file);
 
@@ -72,8 +68,8 @@ public class ThreadPoolCapacityWarner {
 	    if (capacity > MAX_QUEUE_CAPACITY_RECOMMANDED) {
 		System.err.println(SqlTag.SQL_PRODUCT_START + " " + Tag.WARNING
 			+ " The ThreadPoolExecutor Queue \"" + "capacity" + "\" property"
-			+ " should not be > " + MAX_QUEUE_CAPACITY_RECOMMANDED + ValidatorUtil.CR_LF
-			+ SqlTag.SQL_PRODUCT_START + ValidatorUtil.WARNING_SECOND_LINE_SPACES + " "
+			+ " should not be > " + MAX_QUEUE_CAPACITY_RECOMMANDED + CR_LF
+			+ SqlTag.SQL_PRODUCT_START + WARNING_SECOND_LINE_SPACES + " "
 			+ " because of a potential SQL run bottleneck. (Set value in .properties file: " + capacity
 			+ ")");
 	    }

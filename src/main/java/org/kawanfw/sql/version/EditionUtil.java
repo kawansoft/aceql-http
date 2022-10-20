@@ -18,12 +18,14 @@ package org.kawanfw.sql.version;
 public class EditionUtil {
 
     /**
-     * Says is edition is Community or Enterprise.
+     * Says is edition is Enterprise.
      */
-    public static boolean isCommunityEdition() {
-	//File licenseFile = AceQLLicenseFileFinder.getLicenseFile();
-	//return licenseFile == null ? true : false;
-	return true;
+    public static boolean isEnterpriseEdition() {
+	 String edition = System.getProperty("ACEQL_EDITION");
+	 if (edition == null) {
+	     return false;
+	 }
+	 return edition.equals("ACEQL_ENTERPRISE");
     }
 
 }
