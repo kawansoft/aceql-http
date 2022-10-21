@@ -378,15 +378,16 @@ public class BasicSqlInjectionAnalyser {
      */
     public static boolean hasEqualValuesAroundEqual(String sqlTokens) {
 	
-	while (sqlTokens.contains("= ")) {
-	    sqlTokens = StringUtils.replace(sqlTokens, "= ", "=");
+	String sqlTokensNew = sqlTokens;
+	while (sqlTokensNew.contains("= ")) {
+	    sqlTokensNew = StringUtils.replace(sqlTokensNew, "= ", "=");
 	}
 	
-	while (sqlTokens.contains(" =")) {
-	    sqlTokens = StringUtils.replace(sqlTokens, " =", "=");
+	while (sqlTokensNew.contains(" =")) {
+	    sqlTokensNew = StringUtils.replace(sqlTokensNew, " =", "=");
 	}
 	
-	List<String> tokens =  getTokensSplitOnEquals(sqlTokens);
+	List<String> tokens =  getTokensSplitOnEquals(sqlTokensNew);
 	
 	boolean injectionDetected = false;
 	for (int i = 0; i < tokens.size(); i++) {
@@ -446,18 +447,19 @@ public class BasicSqlInjectionAnalyser {
 
     private boolean containsForbiddenKeywords(String sqlTokens) {
 	
-	sqlTokens = sqlTokens.trim().toLowerCase();
+	String sqlTokensNew = sqlTokens;
+	sqlTokensNew = sqlTokensNew.trim().toLowerCase();
 		
-	if (StringUtils.lastIndexOf(sqlTokens, "#") > StringUtils.lastIndexOf(sqlTokens, "'")) {
-	    sqlTokens = StringUtils.substringBeforeLast(sqlTokens, "#");
+	if (StringUtils.lastIndexOf(sqlTokensNew, "#") > StringUtils.lastIndexOf(sqlTokensNew, "'")) {
+	    sqlTokensNew = StringUtils.substringBeforeLast(sqlTokensNew, "#");
 	}
 	
-	if (StringUtils.lastIndexOf(sqlTokens, "--") > StringUtils.lastIndexOf(sqlTokens, "'")) {
-	    sqlTokens = StringUtils.substringBeforeLast(sqlTokens, "--");
+	if (StringUtils.lastIndexOf(sqlTokensNew, "--") > StringUtils.lastIndexOf(sqlTokensNew, "'")) {
+	    sqlTokensNew = StringUtils.substringBeforeLast(sqlTokensNew, "--");
 	}
 	
 	for (String keyword : forbiddenKeywordList) {
-	    if (sqlTokens.contains(keyword.toLowerCase())) {
+	    if (sqlTokensNew.contains(keyword.toLowerCase())) {
 		this.keywordDetected = keyword;
 		return true;
 	    }

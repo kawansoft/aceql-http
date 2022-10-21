@@ -39,9 +39,8 @@ import ch.qos.logback.core.util.StatusPrinter;
  */
 public class GenericLoggerCreator implements LoggerCreator {
 
-    private org.slf4j.Logger logger;
-    private LoggerContext context;
-    //private ByteArrayOutputStream byteArrayOutputStream;
+    private Logger logger;
+    //private LoggerContext context;
     
     private Map<String, String> elements;
     
@@ -66,7 +65,7 @@ public class GenericLoggerCreator implements LoggerCreator {
 	
 	int maxHistory = 365;
 
-	context = (LoggerContext) LoggerFactory.getILoggerFactory();
+	LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
 
 	RollingFileAppender<ILoggingEvent> rollingFileAppender = new RollingFileAppender<ILoggingEvent>();
 	rollingFileAppender.setAppend(true);

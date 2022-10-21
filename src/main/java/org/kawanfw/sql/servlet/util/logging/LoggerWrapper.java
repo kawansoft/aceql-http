@@ -41,8 +41,8 @@ public class LoggerWrapper {
      * @param message the message to log with Logger.info()
      */
     public static void log(Logger logger, String message) {
-	message = flattenIfNecessary(message);
-	logger.info(message);
+	String messageNew = flattenIfNecessary(message);
+	logger.info(messageNew);
     }
 
     /**
@@ -52,8 +52,8 @@ public class LoggerWrapper {
      * @param message the message to log with Logger.info()
      */
     public static void logError(Logger logger, String message) {
-	message = flattenIfNecessary(message);
-	logger.error(message);
+	String messageNew = flattenIfNecessary(message);
+	logger.error(messageNew);
     }
 
     /**
@@ -98,17 +98,19 @@ public class LoggerWrapper {
 	    return message;
 	}
 
+	String messageNew = message;
+	
 	try {
-	    StringFlattener stringFlattener = new StringFlattener(message);
-	    message = stringFlattener.flatten();
+	    StringFlattener stringFlattener = new StringFlattener(messageNew);
+	    messageNew = stringFlattener.flatten();
 
 	} catch (Throwable throwable) {
 	    System.out.println("CANNOT FLAT MESSAGE:");
 	    throwable.printStackTrace();
-	    return message;
+	    return messageNew;
 	}
 
-	return message;
+	return messageNew;
     }
 
     /**
