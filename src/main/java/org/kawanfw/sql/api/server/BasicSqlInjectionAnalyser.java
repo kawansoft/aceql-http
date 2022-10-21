@@ -240,11 +240,9 @@ public class BasicSqlInjectionAnalyser {
 	
 	initResults();
 	
-	if (detectNoSpaces) {
-	    if (! sql.trim().contains(" ")) {
-		withNoSpaces = true;
-		anomalyDetected = "SqlWithNoSpaces";
-	    }
+	if (detectNoSpaces && !sql.trim().contains(" ")) {
+	    withNoSpaces = true;
+	    anomalyDetected = "SqlWithNoSpaces";
 	}
 	
 	withNestedComments = containsNestedComments(sql);
@@ -255,12 +253,10 @@ public class BasicSqlInjectionAnalyser {
 	    return;
 	}
 	
-	if (this.detectLineBreaks) {
-	    if (checkIfStringContainsNewLineCharacters(sql)) {
-		anomalyDetected = "SqlWithLineBreaks";
-		withLineBreaks = true;
-		return;
-	    }
+	if (this.detectLineBreaks && checkIfStringContainsNewLineCharacters(sql)) {
+	    anomalyDetected = "SqlWithLineBreaks";
+	    withLineBreaks = true;
+	    return;
 	}
 	
 	// We always remove comments, otw we cannot pare correctly...
@@ -341,36 +337,28 @@ public class BasicSqlInjectionAnalyser {
 	// Do if test for not breaking previous set values to true...
 	
 
-	if (this.detectComments) {
-	    if (sqlTokens.contains("--") || sqlTokens.contains("#")) {
-		withComments = true;
-		anomalyDetected = "SqlWithComments";
-		return true;
-	    }
+	if (this.detectComments && (sqlTokens.contains("--") || sqlTokens.contains("#"))) {
+	    withComments = true;
+	    anomalyDetected = "SqlWithComments";
+	    return true;
+	}
+
+	if (this.detectSeparators && sqlTokens.contains(";")) {
+	    withSeparators = true;
+	    anomalyDetected = "SqlWithSeparators";
+	    return true;
 	}
 	
-	if (this.detectSeparators) {
-	    if (sqlTokens.contains(";")) {
-		withSeparators = true;
-		anomalyDetected = "SqlWithSeparators";
-		return true;
-	    }
+	if (this.detectTabs && sqlTokens.contains("\t")) {
+	    withTabs = true;
+	    anomalyDetected = "SqlWithTabs";
+	    return true;
 	}
 	
-	if (this.detectTabs) {
-	    if (sqlTokens.contains("\t")) {
-		withTabs = true;
-		anomalyDetected = "SqlWithTabs";
-		return true;
-	    }
-	}
-	
-	if (this.detectDoubleQuotes) {
-	    if (sqlTokens.contains("\"")) {
-		withDoubleQuotes = true;
-		anomalyDetected = "SqlWithDoubleQuotes";
-		return true;
-	    }
+	if (this.detectDoubleQuotes && sqlTokens.contains("\"")) {
+	    withDoubleQuotes = true;
+	    anomalyDetected = "SqlWithDoubleQuotes";
+	    return true;
 	}
 	
 	if (containsForbiddenKeywords(sqlTokens)) {

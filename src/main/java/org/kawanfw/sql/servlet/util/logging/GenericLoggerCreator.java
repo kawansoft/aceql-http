@@ -41,7 +41,7 @@ public class GenericLoggerCreator implements LoggerCreator {
 
     private org.slf4j.Logger logger;
     private LoggerContext context;
-    private ByteArrayOutputStream byteArrayOutputStream;
+    //private ByteArrayOutputStream byteArrayOutputStream;
     
     private Map<String, String> elements;
     
@@ -101,7 +101,7 @@ public class GenericLoggerCreator implements LoggerCreator {
 	logConsoleAppender.setEncoder(encoder);
 	logConsoleAppender.start();
 	    
-	byteArrayOutputStream = new ByteArrayOutputStream();
+	ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 	PrintStream ps = new PrintStream(byteArrayOutputStream);
 	StatusPrinter.setPrintStream(ps);
 	StatusPrinter.print(context);

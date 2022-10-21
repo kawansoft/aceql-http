@@ -171,7 +171,8 @@ public class SqlStringTokenizer {
      * @param strNew
      * @return
      */
-    public static String replaceOperatorsAddBlanksApache(String strNew) {
+    public static String replaceOperatorsAddBlanksApache(String str) {
+	String strNew = str;
 	strNew = StringUtils.replace(strNew, "(", " ( ");
 	strNew = StringUtils.replace(strNew, ")", " ) ");
 	strNew = StringUtils.replace(strNew, ",", " , ");

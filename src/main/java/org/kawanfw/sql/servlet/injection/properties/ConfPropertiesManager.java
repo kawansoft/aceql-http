@@ -148,7 +148,7 @@ public class ConfPropertiesManager {
     public void buildObjectsPerDatabase(Set<String> databases, Map<String, String> databaseConfiguratorClassNameMap,
 	    Map<String, Set<String>> sqlFirewallClassNamesMap,
 	    Map<String, Set<String>> sqlFirewallTriggerClassNamesMap,
-	    Map<String, Set<String>> updateListenerClassNamesMap, Map<String, org.kawanfw.sql.servlet.injection.properties.OperationalMode> operationalModeMap) {
+	    Map<String, Set<String>> updateListenerClassNamesMap, Map<String, OperationalMode> operationalModeMap) {
 	
 	for (String database : databases) {
 
