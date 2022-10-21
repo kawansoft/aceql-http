@@ -64,32 +64,35 @@ public class LoggerWrapper {
      * @param throwable the Exception/Throwable to log, that will be flattened
      */
     public static void log(Logger logger, String message, Throwable throwable) {
+
+	String messageNew = message;
+
 	try {
 
-	    if (message == null) {
-		message = "";
+	    if (messageNew == null) {
+		messageNew = "";
 	    }
 
-	    if (!message.endsWith(" ")) {
-		message += " ";
+	    if (!messageNew.endsWith(" ")) {
+		messageNew += " ";
 	    }
-	    
-	    message = flattenIfNecessary(message);
+
+	    messageNew = flattenIfNecessary(messageNew);
 
 	    StringFlattener stringFlattener = new StringFlattener(ExceptionUtils.getStackTrace(throwable));
 	    String flattenException = stringFlattener.flatten();
-	    
+
 	    if (DEBUG) {
 		String thePath = LoggerCreatorBuilderImpl.DEFAULT_LOG_DIRECTORY + File.separator
 			+ "LoggerWrapper_debug.txt";
-		Files.write(Paths.get(thePath), (message + flattenException + CR_LF).getBytes(),
+		Files.write(Paths.get(thePath), (messageNew + flattenException + CR_LF).getBytes(),
 			StandardOpenOption.CREATE, StandardOpenOption.APPEND);
 	    }
 
-	    logger.error(message + flattenException);
+	    logger.error(messageNew + flattenException);
 	} catch (Throwable throwable2) {
 	    logger.error(Tag.RUNNING_PRODUCT + " CAN NOT FLATTEN EXCEPTION IN LOG:");
-	    logger.error(message, throwable2);
+	    logger.error(messageNew, throwable2);
 	}
     }
 
