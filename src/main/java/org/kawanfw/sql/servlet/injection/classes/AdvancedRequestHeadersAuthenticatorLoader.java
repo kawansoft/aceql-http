@@ -47,8 +47,11 @@ public class AdvancedRequestHeadersAuthenticatorLoader implements RequestHeaders
 
 	requestHeadersAuthenticatorClassName = userAuthenticatorCreator.getRequestHeadersAuthenticatorClassName();
 
-	System.out.println(SqlTag.SQL_PRODUCT_START + " Loading RequestHeadersAuthenticator class:");
-	System.out.println(SqlTag.SQL_PRODUCT_START + "  -> " + requestHeadersAuthenticatorClassName);
+	if (requestHeadersAuthenticatorClassName != null) {
+	    System.out.println(SqlTag.SQL_PRODUCT_START + " Loading RequestHeadersAuthenticator class:");
+	    System.out.println(SqlTag.SQL_PRODUCT_START + "  -> " + requestHeadersAuthenticatorClassName);
+	}
+	
     }
 
 

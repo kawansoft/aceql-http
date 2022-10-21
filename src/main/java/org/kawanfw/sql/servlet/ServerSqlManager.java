@@ -319,6 +319,14 @@ public class ServerSqlManager extends HttpServlet {
     private boolean validateHeaders(HttpServletRequest request, HttpServletResponse response, OutputStream out)
 	    throws IOException {
 
+	RequestHeadersAuthenticator requestHeadersAuthenticator = InjectedClassesStore.get()
+		.getRequestHeadersAuthenticator();
+	
+	// If no implementation defined in .properties file: requestHeadersAuthenticator is null, so we grant access
+	if (requestHeadersAuthenticator == null) {
+	    return true;
+	}
+	
 	// Request Headers;
 	Map<String, String> headers = new HashMap<>();
 	Enumeration<?> e = request.getHeaderNames();
@@ -328,8 +336,6 @@ public class ServerSqlManager extends HttpServlet {
 	    headers.put(key, value);
 	}
 
-	RequestHeadersAuthenticator requestHeadersAuthenticator = InjectedClassesStore.get()
-		.getRequestHeadersAuthenticator();
 	boolean checked = requestHeadersAuthenticator.validate(headers);
 
 	if (!checked) {

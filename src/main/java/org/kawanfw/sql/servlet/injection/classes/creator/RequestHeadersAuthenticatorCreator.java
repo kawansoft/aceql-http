@@ -14,7 +14,6 @@ package org.kawanfw.sql.servlet.injection.classes.creator;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
-import org.kawanfw.sql.api.server.auth.headers.DefaultRequestHeadersAuthenticator;
 import org.kawanfw.sql.api.server.auth.headers.RequestHeadersAuthenticator;
 
 /**
@@ -23,8 +22,7 @@ import org.kawanfw.sql.api.server.auth.headers.RequestHeadersAuthenticator;
  */
 public class RequestHeadersAuthenticatorCreator {
 
-    private static String[] PREDEFINED_CLASS_NAMES = {
-	    DefaultRequestHeadersAuthenticator.class.getSimpleName() };
+    private static String[] PREDEFINED_CLASS_NAMES = {};
 
     private RequestHeadersAuthenticator requestHeadersAuthenticator = null;
     private String requestHeadersAuthenticatorClassName = null;
@@ -52,11 +50,8 @@ public class RequestHeadersAuthenticatorCreator {
 	    Constructor<?> constructor = c.getConstructor();
 	    requestHeadersAuthenticator = (RequestHeadersAuthenticator) constructor.newInstance();
 	    requestHeadersAuthenticatorClassName = theRequestHeadersAuthenticatorClassNameNew;
-	} else {
-	    requestHeadersAuthenticator = new DefaultRequestHeadersAuthenticator();
-	    requestHeadersAuthenticatorClassName = requestHeadersAuthenticator.getClass().getName();
-	}
-
+	} 
+	
     }
 
     /**
