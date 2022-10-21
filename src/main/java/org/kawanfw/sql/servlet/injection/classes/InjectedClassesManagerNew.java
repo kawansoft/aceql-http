@@ -449,8 +449,11 @@ public class InjectedClassesManagerNew {
 	injectedClassesBuilder.userAuthenticator(userAuthenticatorCreator.getUserAuthenticator());
 	userAuthenticatorClassName = userAuthenticatorCreator.getUserAuthenticatorClassName();
 
-	System.out.println(SqlTag.SQL_PRODUCT_START + " Loading UserAuthenticator class:");
-	System.out.println(SqlTag.SQL_PRODUCT_START + "  -> " + userAuthenticatorClassName);
+	if (userAuthenticatorClassName != null) {
+	    System.out.println(SqlTag.SQL_PRODUCT_START + " Loading UserAuthenticator class:");
+	    System.out.println(SqlTag.SQL_PRODUCT_START + "  -> " + userAuthenticatorClassName);
+	}
+
     }
 
     /**

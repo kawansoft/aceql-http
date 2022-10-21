@@ -97,7 +97,15 @@ public class ServerLoginActionSql extends HttpServlet {
 	    }
 
 	    String ipAddress = IpUtil.getRemoteAddr(request);
-	    boolean isOk = userAuthenticator.login(username, password.toCharArray(), database, ipAddress);
+	    boolean isOk = false;
+	    
+	    // If userAuthenticator is null, none has been defined in .properties file, so we allow login
+	    if (userAuthenticator != null) {
+		isOk = userAuthenticator.login(username, password.toCharArray(), database, ipAddress);		
+	    }
+	    else {
+		isOk = true;
+	    }
 
 	    debug("login isOk: " + isOk + " (login: " + username + ")");
 
