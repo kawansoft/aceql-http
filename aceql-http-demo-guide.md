@@ -1,4 +1,4 @@
-# AceQL HTTP v11.1 - June 20, 2022
+# AceQL HTTP v12.0 - October 28, 2022
 
 # Demo Guide
 
@@ -39,8 +39,6 @@ $ curl --data-urlencode \
  "sql=select id, title, lname from customer where customer_id = 1" \
  https://www.acme.com:9443/aceql/session/mn7andp2tt049iaeaskr28j9ch/execute_query
 ```
-
-AceQL HTTP is authorized through an Open Source license: [AceQL Open Source License (LGPL v2.1)](https://docs.aceql.com/rest/soft/licensing/AceQLOpenSourceLicense.txt).
 
  The AceQL HTTP framework consists of:
 
@@ -107,13 +105,13 @@ The execution of each AceQL HTTP API statement is conditioned by optional rules,
 
 Download the database `sampledb` schema corresponding to your database engine: 
 
-- [sampledb_mysq.txt](https://docs.aceql.com/rest/soft/11.1/src/sampledb_mysql.txt )
-- [sampledb_postgresql.txt](https://docs.aceql.com/rest/soft/11.1/src/sampledb_postgresql.txt)
-- [sampledb_ms_sql_serverl.txt](https://docs.aceql.com/rest/soft/11.1/src/sampledb_ms_sql_server.txt)
-- [sampledb_oracle_database.txt](https://docs.aceql.com/rest/soft/11.1/src/sampledb_oracle_database.txt)
+- [sampledb_mysq.txt](https://docs.aceql.com/rest/soft/12.0/src/sampledb_mysql.txt )
+- [sampledb_postgresql.txt](https://docs.aceql.com/rest/soft/12.0/src/sampledb_postgresql.txt)
+- [sampledb_ms_sql_serverl.txt](https://docs.aceql.com/rest/soft/12.0/src/sampledb_ms_sql_server.txt)
+- [sampledb_oracle_database.txt](https://docs.aceql.com/rest/soft/12.0/src/sampledb_oracle_database.txt)
 
 
-For other databases engines, just tailor the file as indicated: [sampledb_other_databases.txt](https://docs.aceql.com/rest/soft/11.1/src/sampledb_other_databases.txt)
+For other databases engines, just tailor the file as indicated: [sampledb_other_databases.txt](https://docs.aceql.com/rest/soft/12.0/src/sampledb_other_databases.txt)
 
 Then launch the script that will create the tables in a database
 
@@ -126,7 +124,7 @@ AceQL requires the installation of Java version 8+.
 Open a terminal and download with `Wget` 
 
 ```bash
-$ wget https://download.aceql.com/soft/download/11.1/aceql-http-11.1b.run
+$ wget https://download.aceql.com/soft/download/12.0/aceql-http-12.0.run
 ```
 
 If you get a certificate error message, do one of the following:
@@ -137,17 +135,17 @@ If you get a certificate error message, do one of the following:
 In following lines we will assume that the Open Source edition is chosen. (Operating mode is the same for Pro edition).
 
 ```bash
-chmod +x aceql-http-11.1b.run
-./aceql-http-11.1b.run 
+chmod +x aceql-http-12.0.run
+./aceql-http-12.0.run 
 ```
 
-This will create the `aceql-http-11.1` folder.
+This will create the `aceql-http-12.0` folder.
 
-The full path to the `aceql-http-11.1` installation folder will be surnamed `ACEQL_HOME` in following text.
+The full path to the `aceql-http-12.0` installation folder will be surnamed `ACEQL_HOME` in following text.
 
-Example: if you run `aceql-http-11.1b.run` from `/home/mike`, then software is installed in
+Example: if you run `aceql-http-12.0.run` from `/home/mike`, then software is installed in
 
- `/home/mike/aceql-http-11.1` which is the value of `ACEQL_HOME`.
+ `/home/mike/aceql-http-12.0` which is the value of `ACEQL_HOME`.
 
 ### Update the PATH (Optional)
 
@@ -155,10 +153,10 @@ Open a shell session and make sure java binary is in the PATH by typing  `Java �
 
 Add java to your PATH if the command does not display Java version.
 
-Add to your PATH the path to the bin directory of `aceql-http-11.1` installation:
+Add to your PATH the path to the bin directory of `aceql-http-12.0` installation:
 
 ```bash
-$ PATH=$PATH:/path/to/aceql-http-11.1/bin/;export PATH
+$ PATH=$PATH:/path/to/aceql-http-12.0/bin/;export PATH
 ```
 
 ### Testing AceQL HTTP Web server installation
@@ -172,7 +170,7 @@ $ aceql-server -version
 It will display a line with all version info, like:
 
 ```bash
-AceQL HTTP Community v11.1 - 15-Jun-2022
+AceQL HTTP v12.0 - 28-Oct-2022
 ```
 
 ### Configure JDBC parameters in aceql-server.properties file
@@ -219,16 +217,17 @@ $ aceql-server -start -host localhost –port 9090
 The console will display the properties used, test that the Connection is established on the server side and tell if everything is OK:
 
 ```bash
-[ACEQL HTTP START] Starting AceQL HTTP Web Server...
-[ACEQL HTTP START] AceQL HTTP Community v11.1 - 15-Jun-2022
-[ACEQL HTTP START] Using properties file: 
-[ACEQL HTTP START]  -> /home/mike/aceql-http/conf/aceql-server.properties
+[ACEQL HTTP START] Starting AceQL HTTP Web Server at 2022-10-28 16:06:29...
+[ACEQL HTTP START] AceQL HTTP v12.0 - 28-Oct-2022
+[ACEQL HTTP START] Java Info: 
+[ACEQL HTTP START]  -> Oracle Corporation / Java(TM) SE Runtime Environment / 1.8.0_331
+[ACEQL HTTP START] Using Properties File: 
+[ACEQL HTTP START]  -> I:\_dev_awake\aceql-http-main\aceql-http\conf\aceql-server.properties
+[ACEQL HTTP START] Setting Internal Properties: 
+[ACEQL HTTP START]  -> tomcatLoggingLevel = SEVERE
+[ACEQL HTTP START]  -> flushEachResultSetRow = true
 [ACEQL HTTP START] Setting System Properties:
-[ACEQL HTTP START] Creating ThreadPoolExecutor:
-[ACEQL HTTP START]  -> [corePoolSize: 100, maximumPoolSize: 200, unit: SECONDS, 
-[ACEQL HTTP START]  ->  keepAliveTime: 10, workQueue: ArrayBlockingQueue(50000)]
 [ACEQL HTTP START] Setting Default Connector base attributes:
-[ACEQL HTTP START]  -> maxThreads = 300
 [ACEQL HTTP START] Setting Tomcat JDBC Pool attributes for sampledb database:
 [ACEQL HTTP START]  -> driverClassName = org.postgresql.Driver
 [ACEQL HTTP START]  -> url = jdbc:postgresql://localhost:5432/sampledb
@@ -236,24 +235,25 @@ The console will display the properties used, test that the Connection is establ
 [ACEQL HTTP START]  -> password = ********
 [ACEQL HTTP START]  -> initialSize = 10
 [ACEQL HTTP START]  -> minIdle = 10
-[ACEQL HTTP START]  -> maxIdle = 50
-[ACEQL HTTP START]  -> maxActive = 50
+[ACEQL HTTP START]  -> maxIdle = 125
+[ACEQL HTTP START]  -> maxActive = 125
+[ACEQL HTTP START]  -> defaultAutoCommit = true
 [ACEQL HTTP START]  -> rollbackOnReturn = true
+[ACEQL HTTP START]  -> testOnBorrow = true
+[ACEQL HTTP START]  -> validationQuery = SELECT 1
+[ACEQL HTTP START]  -> removeAbandoned = true
+[ACEQL HTTP START]  -> removeAbandonedTimeout = 120
 [ACEQL HTTP START] Testing DataSource.getConnection() for sampledb database:
 [ACEQL HTTP START]  -> Connection OK!
 [ACEQL HTTP START] Loading servlets:
 [ACEQL HTTP START]  -> Servlet defaultPoolsInfo [url-pattern: /default_pools_info] successfully loaded.
-[ACEQL HTTP START] Loading UserAuthenticator class:
-[ACEQL HTTP START]  -> org.kawanfw.sql.api.server.auth.DefaultUserAuthenticator
-[ACEQL HTTP START] Loading RequestHeadersAuthenticator class:
-[ACEQL HTTP START]  -> org.kawanfw.sql.api.server.auth.headers.DefaultRequestHeadersAuthenticator
-[ACEQL HTTP START] Loading Database sampledb DatabaseConfigurator class:
+[ACEQL HTTP START] Loading ThreadPoolExecutor:
+[ACEQL HTTP START]  -> [corePoolSize: 10, maximumPoolSize: 125, unit: SECONDS, 
+[ACEQL HTTP START]  ->  keepAliveTime: 10, workQueue: ArrayBlockingQueue(100), prestartAllCoreThreads: true]
+[ACEQL HTTP START] sampledb Database - Loading DatabaseConfigurator class:
 [ACEQL HTTP START]  -> org.kawanfw.sql.api.server.DefaultDatabaseConfigurator
-[ACEQL HTTP START] Loading Database sampledb SQLFirewallManager class: 
-[ACEQL HTTP START]   -> org.kawanfw.sql.api.server.firewall.DefaultSqlFirewallManager
-[ACEQL HTTP START] Loaded classes Status: OK.
-[ACEQL HTTP START] URL for client side: http://localhost:9090/aceql
-[ACEQL HTTP START] AceQL HTTP Web Server OK. Running on port 9090
+[ACEQL HTTP START] URL for client side (tested): http://localhost:9090/aceql
+[ACEQL HTTP START] AceQL HTTP Web Server OK. Running on port 9090 
 ```
 
  Don’t take care of INFO warnings displays.
@@ -284,7 +284,7 @@ Run the installer.
 
 It will run AceQL at end of installation and display the Window:
 
-<img src="https://docs.aceql.com/rest/soft/11.1/img/aceql_windows_gui_home_flatlaf.png" alt="AceQ HTTP GUI Main Windows"/>
+<img src="https://docs.aceql.com/rest/soft/12.0/img/aceql_windows_gui_home_flatlaf.png" alt="AceQ HTTP GUI Main Windows"/>
 
 **N.B:** Because of a bug in all Java versions > 8 on Windows, the interface will appear "ugly"  or "blurred" on Java version > 8 if you have increased Windows Screen Resolution Options to 125% or 150%.  See [Java Bug Database](https://bugs.java.com/bugdatabase/view_bug.do?bug_id=JDK-8194165) for more info. Set back Windows Screen Resolution to 100% for clean display.
 
@@ -338,16 +338,17 @@ Click on `Start Server  `. This will open a console.
 The console will display the properties used, test that the `Connection` is established on the server side and tell if everything is OK:
 
 ```bash
-[ACEQL HTTP START] Starting AceQL HTTP Web Server...
-[ACEQL HTTP START] AceQL HTTP Community v11.1 - 15-Jun-2022
-[ACEQL HTTP START] Using properties file: 
-[ACEQL HTTP START]  -> c:\aceql-http\conf\aceql-server.properties
+[ACEQL HTTP START] Starting AceQL HTTP Web Server at 2022-10-28 16:06:29...
+[ACEQL HTTP START] AceQL HTTP v12.0 - 28-Oct-2022
+[ACEQL HTTP START] Java Info: 
+[ACEQL HTTP START]  -> Oracle Corporation / Java(TM) SE Runtime Environment / 1.8.0_331
+[ACEQL HTTP START] Using Properties File: 
+[ACEQL HTTP START]  -> I:\_dev_awake\aceql-http-main\aceql-http\conf\aceql-server.properties
+[ACEQL HTTP START] Setting Internal Properties: 
+[ACEQL HTTP START]  -> tomcatLoggingLevel = SEVERE
+[ACEQL HTTP START]  -> flushEachResultSetRow = true
 [ACEQL HTTP START] Setting System Properties:
-[ACEQL HTTP START] Creating ThreadPoolExecutor:
-[ACEQL HTTP START]  -> [corePoolSize: 100, maximumPoolSize: 200, unit: SECONDS, 
-[ACEQL HTTP START]  ->  keepAliveTime: 10, workQueue: ArrayBlockingQueue(50000)]
 [ACEQL HTTP START] Setting Default Connector base attributes:
-[ACEQL HTTP START]  -> maxThreads = 300
 [ACEQL HTTP START] Setting Tomcat JDBC Pool attributes for sampledb database:
 [ACEQL HTTP START]  -> driverClassName = org.postgresql.Driver
 [ACEQL HTTP START]  -> url = jdbc:postgresql://localhost:5432/sampledb
@@ -355,24 +356,25 @@ The console will display the properties used, test that the `Connection` is esta
 [ACEQL HTTP START]  -> password = ********
 [ACEQL HTTP START]  -> initialSize = 10
 [ACEQL HTTP START]  -> minIdle = 10
-[ACEQL HTTP START]  -> maxIdle = 50
-[ACEQL HTTP START]  -> maxActive = 50
+[ACEQL HTTP START]  -> maxIdle = 125
+[ACEQL HTTP START]  -> maxActive = 125
+[ACEQL HTTP START]  -> defaultAutoCommit = true
 [ACEQL HTTP START]  -> rollbackOnReturn = true
+[ACEQL HTTP START]  -> testOnBorrow = true
+[ACEQL HTTP START]  -> validationQuery = SELECT 1
+[ACEQL HTTP START]  -> removeAbandoned = true
+[ACEQL HTTP START]  -> removeAbandonedTimeout = 120
 [ACEQL HTTP START] Testing DataSource.getConnection() for sampledb database:
 [ACEQL HTTP START]  -> Connection OK!
 [ACEQL HTTP START] Loading servlets:
 [ACEQL HTTP START]  -> Servlet defaultPoolsInfo [url-pattern: /default_pools_info] successfully loaded.
-[ACEQL HTTP START] Loading UserAuthenticator class:
-[ACEQL HTTP START]  -> org.kawanfw.sql.api.server.auth.DefaultUserAuthenticator
-[ACEQL HTTP START] Loading RequestHeadersAuthenticator class:
-[ACEQL HTTP START]  -> org.kawanfw.sql.api.server.auth.headers.DefaultRequestHeadersAuthenticator
-[ACEQL HTTP START] Loading Database sampledb DatabaseConfigurator class:
+[ACEQL HTTP START] Loading ThreadPoolExecutor:
+[ACEQL HTTP START]  -> [corePoolSize: 10, maximumPoolSize: 125, unit: SECONDS, 
+[ACEQL HTTP START]  ->  keepAliveTime: 10, workQueue: ArrayBlockingQueue(100), prestartAllCoreThreads: true]
+[ACEQL HTTP START] sampledb Database - Loading DatabaseConfigurator class:
 [ACEQL HTTP START]  -> org.kawanfw.sql.api.server.DefaultDatabaseConfigurator
-[ACEQL HTTP START] Loading Database sampledb SQLFirewallManager class: 
-[ACEQL HTTP START]   -> org.kawanfw.sql.api.server.firewall.DefaultSqlFirewallManager
-[ACEQL HTTP START] Loaded classes Status: OK.
-[ACEQL HTTP START] URL for client side: http://localhost:9090/aceql
-[ACEQL HTTP START] AceQL HTTP Web Server OK. Running on port 9090
+[ACEQL HTTP START] URL for client side (tested): http://localhost:9090/aceql
+[ACEQL HTTP START] AceQL HTTP Web Server OK. Running on port 9090 
 ```
 
  If everything is OK, last line will display: 
@@ -791,7 +793,7 @@ The aceql module supports Python 3.6–3.10.
 $ pip install aceql
 ```
 
-3.    Download this Python class: [my_remote_connection.py](https://docs.aceql.com/rest/soft/11.1/src/my_remote_connection.py)
+3.    Download this Python class: [my_remote_connection.py](https://docs.aceql.com/rest/soft/12.0/src/my_remote_connection.py)
 
 4.    The  connection to the remote database is  created  using a [DB API 2.0](https://www.python.org/dev/peps/pep-0249/)  `Connection` class and passing the URL of the AceQL Servlet Manager of your configuration:
 
@@ -866,7 +868,7 @@ $ pip install aceql
 
 
 
-The `select_customer_and_orderlog` method of [my_remote_connection.py](https://docs.aceql.com/rest/soft/11.1/src/my_remote_connection.py) displays back the inserted values.
+The `select_customer_and_orderlog` method of [my_remote_connection.py](https://docs.aceql.com/rest/soft/12.0/src/my_remote_connection.py) displays back the inserted values.
 
 From now on, you can read the [Python Client SDK User Guide](https://github.com/kawansoft/aceql-http-client-python/blob/master/README.md).
 
