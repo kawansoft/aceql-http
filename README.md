@@ -138,7 +138,7 @@ AceQL’s BSL is based on Business Source License (BSL) version 1.1 developed by
 
 See the www.aceql.com/pricing page for more information.
 
-**database name: This should be understood as the applicative name of the database to which your applications connect. Examples of database names: “sales,” “inventory” and ”employees” This differs of course from the database product name like “MySQL” and “SQL Server.”*
+**database name: This should be understood as the applicative name of the database to which your applications connect. Examples of database names: “sales,” “inventory” and ”employees”. This differs of course from the database product name like “MySQL” and “SQL Server.”*
 
 # Download and Installation
 
