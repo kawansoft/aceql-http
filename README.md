@@ -11,7 +11,7 @@
 
 <img src="https://docs.aceql.com/favicon.png" alt="AceQL HTTP Icon"/> 
 
-
+[TOC]
 
 # Fundamentals
 
@@ -126,9 +126,19 @@ The following environments are supported by KawanSoft in this version:
 | Microsoft  SQL Server 2008 R2+  |
 | Oracle Database  11g Release 2+ |
 
-# Choosing between the Free, Professional and Enterprise Editions
+# Licensing
 
-## Comparing Editions
+AceQL HTTP’s software is licensed under the [AceQL HTTP BSL](https://github.com/kawansoft/aceql-http/blob/LICENSE.TXT), which allows source code access and free use in non-production environments.
+
+The Free Edition allows running up to 2 Open-Source database names* in production in your organization.
+
+The Professional or Enterprise Edition is required in order to run more than 2 database names* and/or run MS SQL Server or Oracle Database in production.
+
+AceQL’s BSL is based on Business Source License (BSL) version 1.1 developed by MariaDB. This license has been adopted by other commercial open-source projects like CockroachDB.
+
+**database name: This should be understood as the applicative name of the database to which your applications connect. Examples of database names: “sales,” “inventory” and ”employees” This differs of course from the database product name like “MySQL” and “SQL Server.”*
+
+## Choosing between the Free, Professional and Enterprise Editions
 
 See the www.aceql.com/pricing page for a features matrix that will help you choose the right Edition. 
 
@@ -138,7 +148,7 @@ See the www.aceql.com/pricing page for a features matrix that will help you choo
 
 ## Linux / Unix Installation 
 
-The Linux/Unix installer is the same for both Community and Enterprise Editions.
+The Linux/Unix installer is the same for both Free, Professional and Enterprise Editions.
 
 Open a terminal and download with Wget.
 
@@ -196,14 +206,12 @@ Call the `aceql-server` script to display the AceQL version:
 It will display a line with all version info, like:
 
 ```
-AceQL HTTP Community v12.0 - 14-Jun-2022
+AceQL HTTP Community v12.0 - 04-Nov-2022
 ```
-
-
 
 ## Windows Installation
 
-The Windows installer is common for both Community and Enterprise Editions. 
+The Windows installer is common for both Community, Professional and Enterprise Editions. 
 
 Download [AceQL Windows Installer](https://www.aceql.com/aceql-download-page/).
 
@@ -871,12 +879,6 @@ then your `web.xml` should contain the following code:
     <init-param>        
         <param-name>properties</param-name>
         <param-value>c:\Users\Mike\aceql-server.properties</param-value>
-    </init-param> 
-
-    <!-- The License File For Enterprise Edition -->
-    <init-param>        
-        <param-name>licenseFile</param-name>
-        <param-value>c:\Users\Mike\aceql-license-key.txt</param-value>
     </init-param> 
     
     <load-on-startup>1</load-on-startup >
