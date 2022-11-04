@@ -13,6 +13,8 @@
 
 [TOC]
 
+
+
 # Fundamentals
 
 ## Overview
@@ -128,25 +130,19 @@ The following environments are supported by KawanSoft in this version:
 
 AceQL HTTP’s software is licensed under the [AceQL HTTP BSL](https://github.com/kawansoft/aceql-http/blob/LICENSE.TXT), which allows source code access and free use in non-production environments.
 
-The Free Edition allows running up to 2 Open-Source database names* in production in your organization.
+The Free plan allows running up to 2 Open-Source database names* in production in your organization.
 
-The Professional or Enterprise Edition is required in order to run more than 2 database names* and/or run MS SQL Server or Oracle Database in production.
+The Professional or Enterprise plan is required in order to run more than 2 database names* and/or run MS SQL Server or Oracle Database in production.
 
 AceQL’s BSL is based on Business Source License (BSL) version 1.1 developed by MariaDB. This license has been adopted by other commercial open-source projects like CockroachDB.
 
+See the www.aceql.com/pricing page for more information.
+
 **database name: This should be understood as the applicative name of the database to which your applications connect. Examples of database names: “sales,” “inventory” and ”employees” This differs of course from the database product name like “MySQL” and “SQL Server.”*
-
-## Choosing between the Free, Professional and Enterprise Editions
-
-See the www.aceql.com/pricing page for a features matrix that will help you choose the right Edition. 
-
-***Note that the Windows and Linux/Unix installers cover all Editions.***
 
 # Download and Installation
 
 ## Linux / Unix Installation 
-
-The Linux/Unix installer is the same for both Free, Professional and Enterprise Editions.
 
 Open a terminal and download with Wget.
 
@@ -208,8 +204,6 @@ AceQL HTTP Community v12.0 - 04-Nov-2022
 ```
 
 ## Windows Installation
-
-The Windows installer is common for both Community, Professional and Enterprise Editions. 
 
 Download [AceQL Windows Installer](https://www.aceql.com/aceql-download-page/).
 
