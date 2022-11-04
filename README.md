@@ -29,8 +29,6 @@ $ curl --data-urlencode \
  https://www.acme.com:9443/aceql/session/mn7andp2tt049iaeaskr28j9ch/execute_query
 ```
 
-AceQL HTTP is authorized through an Open Source license: [AceQL Open Source License (LGPL v2.1)](https://docs.aceql.com/rest/soft/licensing/AceQLOpenSourceLicense.txt).
-
  The AceQL HTTP framework consists of:
 
 - The AceQL Web Server.
