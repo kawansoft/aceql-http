@@ -6,82 +6,10 @@
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/d14142d5d6f04ba891d505e2e47b417d)](https://www.codacy.com/gh/kawansoft/aceql-http?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=kawansoft/aceql-http&amp;utm_campaign=Badge_Grade)
 ![GitHub contributors](https://img.shields.io/github/contributors/kawansoft/aceql-http)
 
-# AceQL HTTP v12.0   - November 3,  2022
+# AceQL HTTP v12.0   - November 4,  2022
 # Server Installation and Configuration Guide  
 
 <img src="https://docs.aceql.com/favicon.png" alt="AceQL HTTP Icon"/> 
-
-   * [Fundamentals](#fundamentals)
-      * [Overview](#overview)
-      * [Technical operating environment](#technical-operating-environment)
-   * [Choosing between the Community and Enterprise Editions](#choosing-between-the-community-and-enterprise-editions)
-      * [Comparing Editions](#comparing-editions)
-   * [Download and Installation](#download-and-installation)
-      * [Linux / Unix Installation](#linux--unix-installation)
-         * [Update the PATH (Optional)](#update-the-path-optional)
-         * [Testing server installation](#testing-server-installation)
-      * [Windows Installation](#windows-installation)
-   * [Quickstart](#quickstart)
-      * [The AceQL Manager servlet](#the-aceql-manager-servlet)
-      * [The aceql-server.properties file](#the-aceql-serverproperties-file)
-         * [Tomcat JDBC Connection Pool Section](#tomcat-jdbc-connection-pool-section)
-         * [User Authentication Section](#user-authentication-section)
-            * [The WebServiceUserAuthenticator usage](#the-webserviceuserauthenticator-usage)
-         * [SQL Firewall Managers Section](#sql-firewall-managers-section)
-            * [The CsvRulesManager SQL Firewall Manager](#the-csvrulesmanager-sql-firewall-manager)
-         * [SSL Configuration Section](#ssl-configuration-section)
-         * [Sample aceql-server.properties file](#sample-aceql-serverproperties-file)
-      * [Starting/Stopping the AceQL Web Server from Linux/Unix](#startingstopping-the-aceql-web-server-from-linuxunix)
-         * [Add your JDBC driver to the AceQL installation](#add-your-jdbc-driver-to-the-aceql-installation)
-         * [Starting the AceQL Web Server](#starting-the-aceql-web-server)
-         * [Examples](#examples)
-            * [Starting the AceQL Web Server on port 9090](#starting-the-aceql-web-server-on-port-9090)
-            * [Starting the AceQL Web Server on port 9091](#starting-the-aceql-web-server-on-port-9091)
-         * [Using SSL from the client side](#using-ssl-from-the-client-side)
-         * [Stopping the AceQL Web Server](#stopping-the-aceql-web-server)
-         * [Linux: running the AceQL Web server as a service](#linux-running-the-aceql-web-server-as-a-service)
-      * [Starting/Stopping the AceQL WebServer from Windows](#startingstopping-the-aceql-webserver-from-windows)
-   * [Advanced Usage](#advanced-usage)
-      * [Development Environment](#development-environment)
-      * [Advanced Authentication Configuration](#advanced-authentication-configuration)
-      * [Tomcat HTTP Connector Configuration](#tomcat-http-connector-configuration)
-      * [Session Management](#session-management)
-         * [SessionConfigurator interface](#sessionconfigurator-interface)
-         * [Session management default implementation](#session-management-default-implementation)
-         * [Session management using JWT](#session-management-using-jwt)
-            * [Activating JwtSessionConfigurator](#activating-jwtsessionconfigurator)
-         * [Creating your own session management](#creating-your-own-session-management)
-      * [Stateful and Stateless Modes](#stateful-and-stateless-modes)
-         * [Stateful Mode](#stateful-mode)
-         * [Stateless Mode](#stateless-mode)
-      * [Advanced Firewall Configuration](#advanced-firewall-configuration)
-      * [Running the AceQL Web Server without Windows Desktop](#running-the-aceql-web-server-without-windows-desktop)
-   * [AceQL internals](#aceql-internals)
-      * [Data transport](#data-transport)
-         * [Transport format](#transport-format)
-         * [Content streaming and memory management](#content-streaming-and-memory-management)
-      * [Managing temporary files](#managing-temporary-files)
-   * [Enterprise Edition - Licensing](#enterprise-edition---licensing)
-      * [Trying The Enterprise Edition](#trying-the-enterprise-edition)
-      * [Buying The Enterprise Edition](#buying-the-enterprise-edition)
-   * [Enterprise Edition - Features](#enterprise-edition---features)
-      * [AceQL Servlet Name Configuration](#aceql-servlet-name-configuration)
-      * [DatabaseConfigurator - Advanced Connection Pool Management](#databaseconfigurator---advanced-connection-pool-management)
-      * [Headers Authentication Configuration](#headers-authentication-configuration)
-      * [SQL Firewall Triggers Configuration](#sql-firewall-triggers-configuration)
-      * [Update Listeners Configuration](#update-listeners-configuration)
-      * [Calling SQL Stored Procedures from the client side](#calling-sql-stored-procedures-from-the-client-side)
-      * [Calling ServerQueryExecutor classes from the client side](#calling-serverqueryexecutor-classes-from-the-client-side)
-      * [Running the AceQL Web Server - Enterprise Edition Options](#running-the-aceql-web-server---enterprise-edition-options)
-         * [Starting/Stopping the AceQL WebServer from a Java program](#startingstopping-the-aceql-webserver-from-a-java-program)
-         * [Running AceQL HTTP in a Java EE servlet container](#running-aceql-http-in-a-java-ee-servlet-container)
-            * [Installation](#installation)
-            * [AceQL servlet configuration in web.xml](#aceql-servlet-configuration-in-webxml)
-         * [Testing the servlet configuration](#testing-the-servlet-configuration)
-      * [Interacting with the JDBC Pool at runtime](#interacting-with-the-jdbc-pool-at-runtime)
-      * [ThreadPoolExecutor Configuration](#threadpoolexecutor-configuration)
-      * [Encrypting Properties in the aceql-server.properties file](#encrypting-properties-in-the-aceql-serverproperties-file)
-         * [Running the PropertiesEncryptor class](#running-the-propertiesencryptor-class)
 
 
 
@@ -189,33 +117,20 @@ The only required third-party installation is Java 8+.
 
 The following environments are supported by KawanSoft in this version:
 
-| **Databases** - KawanSoft Free Support |
-| -------------------------------------- |
-| MariaDB  10.0+                         |
-| MySQL 5.5+                             |
-| PostgreSQL  9.0+                       |
-| Microsoft  SQL Server 2008 R2+         |
-| Oracle Database  11g Release 2+        |
+| **Databases**                   |
+| ------------------------------- |
+| IBM DB2  9.7+                   |
+| MariaDB  10.0+                  |
+| MySQL 5.5+                      |
+| PostgreSQL  9.0+                |
+| Microsoft  SQL Server 2008 R2+  |
+| Oracle Database  11g Release 2+ |
 
-These databases are supported by KawanSoft only through [commercial support](https://www.aceql.com/jdbc-and-csharp-remote-sql-database-support/):
-
-| **Databases** - KawanSoft Commercial Support |
-| -------------------------------------------- |
-| Actian Ingres 10+                            |
-| IBM DB2  9.7+                                |
-| IBM  Informix 11.70+.                        |
-| MS Access  2010+                             |
-| Sybase  ASE 15.7+                            |
-| Sybase  SQL Anywhere 12+                     |
-| Teradata  Database 13+                       |
-
-# Choosing between the Free, Community and Enterprise Editions
+# Choosing between the Free, Professional and Enterprise Editions
 
 ## Comparing Editions
 
 See the www.aceql.com/pricing page for a features matrix that will help you choose the right Edition. 
-
-For more detailed info, check out the [Javadoc](https://docs.aceql.com/rest/soft/12.0/javadoc/) and the [aceql-server.properties](https://docs.aceql.com/rest/soft/12.0/src/aceql-server.properties) file.
 
 ***Note that the Windows and Linux/Unix installers cover all Editions.***
 
@@ -318,12 +233,14 @@ All HTTP commands sent by the client side are received by the AceQL Manager [ser
 
 Most AceQL configuration is carried out by defining properties in the `aceql-server.propertie` file, except the hostname and port, which are passed as start parameters.
 
-The file is organized into Sections. Only the first Section must be configured to start the AceQL Manager. Sections 2 to 4 allow users to secure AceQL, and are optional. The subsequent Sections are covered under Advanced Usage:
+The file is organized into Sections. Only the first Section must be configured to start the AceQL Manager. Sections 2 to 6 allow users to secure AceQL, and are optional. The subsequent Sections are covered under Advanced Usage:
 
 1. **Tomcat JDBC Connection Pool Section**.
 2. User Authentication Section.
-3. SQL Firewall Managers Section.
-4. SSL Configuration Section.
+3. SSL Configuration Section.
+4. SQL Firewall Managers Section.
+5. SQL Firewall Triggers Configuration.
+6. Update Listeners Configuration.
 
 ### Tomcat JDBC Connection Pool Section
 
@@ -407,6 +324,34 @@ The Web service must implement these features:
     - The JSON string `{"status"="OK"}` if the authentication succeeds.
    - The JSON string `{"status"="FAIL"}` if the authentication fails.
 
+### SSL Configuration Section
+
+This section is optional. It allows you to configure the [Tomcat  HTTP Connector](http://tomcat.apache.org/tomcat-9.0-doc/config/http.html) to use SSL when calling the AceQL Manager Servlet from the client side. 
+
+It also allows you to define the SSL Certificate to be used.
+
+Set the `SSLEnabled` property to `true` to say that the HTTP Connector will accept SSL calls from the client side.
+
+Each property must be prefixed by `sslConnector`.
+
+*Note: If `SSLEnabled` is set to `true`, the AceQL HTTP Web server will accept only SSL connections, i.e. a non SSL call from the client side with `http` scheme will fail.*
+
+To define SSL HTTP Connector attribute values, refer to the Tomcat 9.0 [SSL Support](http://tomcat.apache.org/tomcat-9.0-doc/config/http.html#SSL_Support) documentation. 
+
+The following properties are mandatory and must be defined:
+
+| **Mandatory Property Name** | **Property Role**                            |
+| --------------------------- | -------------------------------------------- |
+| `sslConnector.scheme`       | Scheme to use. Must be set to `"https"`      |
+| `sslConnector.keystoreFile` | The file containing the SSL/TLS certificates |
+| `sslConnector.keystorePass` | The keystore password                        |
+| `sslConnector.keyPass`      | The certificate password                     |
+
+To create an SSL Certificate, refer to:
+
+- Tomcat 9.0 [Prepare the Certificate Keystore.](http://tomcat.apache.org/tomcat-9.0-doc/ssl-howto.html#Prepare_the_Certificate_Keystore)
+- Oracle [JDK Security Tools](http://docs.oracle.com/javase/7/docs/technotes/tools/#security).
+
 ### SQL Firewall Managers Section
 
 The SQL Firewall Managers Section allows users to define SQL firewall rulesets to use for each database.
@@ -428,10 +373,10 @@ AceQL provides several built-in (and ready-to-use without any coding) SQL Firewa
 | ------------------------------ | ------------------------------------------------------------ |
 | `CsvRulesManager`              | Manager that applies rules written in a CSV file. (See below). |
 | `CsvRulesManagerNoReload`      | Manager that extends `CsvRulesManager` - the only change is to prohibit reloading rules when the CSV file is updated. |
+| `DenyDatabaseWriteManager`     | Manager that denies any update of the database. (The database will be accessed in read-only mode). |
 | `DenyDclManager`               | Manager that denies any DCL (Data Control Language) call.    |
 | `DenyDdlManager`               | Manager that denies any DDL (Data Definition Language) call. |
 | `DenyExceptOnWhitelistManager` | Manager that allows only statements that are listed in a whitelist text file. |
-| `DenyExecuteUpdateManager`     | Manager that denies any update of the database. (The database will be accessed in read-only mode). |
 | `DenyMetadataQueryManager`     | Manager that denies the use of the AceQL Metadata Query API. |
 | `DenyOnBlacklistManager`       | Manager that denies statements that are listed in a blacklist text file. |
 | `DenySqlInjectionManager`      | Manager that allows for the detection of SQL injection attacks, using [Cloudmersive](https://cloudmersive.com/) third-party API. |
@@ -493,33 +438,52 @@ The CSV file contains the rules for accessing the tables, with a semicolon for s
 
 Here's an example of a documented CSV File: [sampledb_rules_manager.csv](https://docs.aceql.com/rest/soft/12.0/src/sampledb_rules_manager.csv).
 
-### SSL Configuration Section
+## SQL Firewall Triggers Configuration
 
-This section is optional. It allows you to configure the [Tomcat  HTTP Connector](http://tomcat.apache.org/tomcat-9.0-doc/config/http.html) to use SSL when calling the AceQL Manager Servlet from the client side. 
+The [SqlFirewallTrigger](https://docs.aceql.com/rest/soft/12.0/javadoc/org/kawanfw/sql/api/server/firewall/trigger/SqlFirewallTrigger.html) allows you to define per database a "trigger" in Java if a 
+`SqlFirewallManager.allowSqlRunAfterAnalysis()` call returns false, meaning a possible attack is detected. 
 
-It also allows you to define the SSL Certificate to be used.
+A trigger is thus the Java code executed in the implementation of the unique
+[SqlFirewallTrigger.runIfStatementRefused()](https://docs.aceql.com/rest/soft/12.0/javadoc/org/kawanfw/sql/api/server/firewall/trigger/SqlFirewallTrigger.html#runIfStatementRefused(org.kawanfw.sql.api.server.SqlEvent,org.kawanfw.sql.api.server.firewall.SqlFirewallManager,java.sql.Connection)) method.
 
-Set the `SSLEnabled` property to `true` to say that the HTTP Connector will accept SSL calls from the client side.
+Multiple `SqlFirewallTrigger` instances may be defined and chained. 
 
-Each property must be prefixed by `sslConnector`.
+AceQL provides several built-in (and ready-to-use without any coding) SQL Firewall Triggers:
 
-*Note: If `SSLEnabled` is set to `true`, the AceQL HTTP Web server will accept only SSL connections, i.e. a non SSL call from the client side with `http` scheme will fail.*
+| SQL Firewall Triger Name       | Details                                                      |
+| ------------------------------ | ------------------------------------------------------------ |
+| `BanUserSqlFirewallTrigger`    | Trigger that inserts the username and other info into a SQL table. The SQL table is scanned/controlled at each request, so the banned user can no longer access the AceQL server. See [Javadoc](https://docs.aceql.com/rest/soft/12.0/javadoc/org/kawanfw/sql/api/server/firewall/trigger/BanUserSqlFirewallTrigger.html) for implementation details. |
+| `BeeperSqlFirewallTrigger`     | Trigger that simply beeps on the terminal if an attack is detected by a `SqlFirewallManager`. |
+| `JdbcLoggerSqlFirewallTrigger` | Trigger that logs all info about the denied SQL request into a SQL table. See [Javadoc](https://docs.aceql.com/rest/soft/12.0/javadoc/org/kawanfw/sql/api/server/firewall/trigger/JdbcLoggerSqlFirewallTrigger.html) for implementation details. |
+| `JsonLoggerSqlFirewallTrigger` | Trigger that logs all info about the denied SQL request in JSON format. |
 
-To define SSL HTTP Connector attribute values, refer to the Tomcat 9.0 [SSL Support](http://tomcat.apache.org/tomcat-9.0-doc/config/http.html#SSL_Support) documentation. 
+## Update Listeners Configuration
 
-The following properties are mandatory and must be defined:
+The Update Listeners Section allows you to define Java code to execute after a successful SQL database update is done. 
 
-| **Mandatory Property Name** | **Property Role**                             |
-| --------------------------- | --------------------------------------------- |
-| `sslConnector.scheme`       | Scheme to use. Must be set to `"https"`      |
-| `sslConnector.keystoreFile` | The file containing the SSL/TLS certificates |
-| `sslConnector.keystorePass` | The keystore password                        |
-| `sslConnector.keyPass`      | The certificate password                     |
+Update Listeners can be viewed as a kind of Java "trigger" executed on the completion of SQL updates.
 
-To create an SSL Certificate, refer to:
+The actions to trigger are defined through one or more "Update Listeners ", which are Java classes injected at AceQL Server startup. An Update Listener is a built-in or user-developed Java class that implements the [UpdateListener](https://docs.aceql.com/rest/soft/12.0/javadoc/org/kawanfw/sql/api/server/listener/UpdateListener.html) interface with code to execute defined in the unique `updateActionPerformed` method. Multiple `UpdateListener` may be defined and chained.
 
-- Tomcat 9.0 [Prepare the Certificate Keystore.](http://tomcat.apache.org/tomcat-9.0-doc/ssl-howto.html#Prepare_the_Certificate_Keystore)
-- Oracle [JDK Security Tools](http://docs.oracle.com/javase/7/docs/technotes/tools/#security).
+AceQL provides a built-in (and ready-to-use without any coding) Update Listener:
+
+| Update Listener Name       | Details                                                      |
+| -------------------------- | ------------------------------------------------------------ |
+| `JsonLoggerUpdateListener` | Logs all successful & completed SQL update details in JSON format. |
+
+Only the following property must be defined per database name if you want to add Update Listeners:
+
+`updateListenerClassNames`.
+
+`UpdateListener` may be chained in property value by separating class names with commas.  
+
+The following example defines two Update Listeners to chain for the `sampledb` database:
+
+```properties
+sampledb.updateListenerClassNames=\
+    com.mycompany.listener.MyUpdateListener1,\
+    com.mycompany.listener.MyUpdateListener2
+```
 
 ### Sample aceql-server.properties file
 
@@ -661,33 +625,56 @@ Or for Maven users:
 <artifactId>aceql-http</artifactId>
 <version>12.0</version>
 ```
-## Advanced Authentication Configuration
+## AceQL Servlet Name Configuration
 
-In order to give remote client users access to the AceQL server, you may develop your own authentication mechanism. This is done through your own implementation of the [UserAuthenticator](https://docs.aceql.com/rest/soft/12.0/javadoc/org/kawanfw/sql/api/server/auth/UserAuthenticator.html) interface: overload the login method `UserAuthenticator.login()` in your concrete class implementation.
-
-Your concrete implementation is passed to the AceQL as properties of the **User Authentication Section**  in the `aceql-server.properties` file.
-
-- The  **userAuthenticatorClassName** property lets you define your concrete implementation of `UserAuthentication`.
-- Your `UserAuthentication` classes must be added to the `CLASSPATH` before the start of the AceQL Server.
-
- Instances are loaded using a non-args constructor.
-
-## Tomcat HTTP Connector Configuration 
-
-[Tomcat HTTP Connectors](http://tomcat.apache.org/tomcat-9.0-doc/config/http.html) allow fine tuning of Tomcat 9.0.
-
-It's possible to define properties for a unique HTTP Connector that will either accept HTTP or secured HTTPS calls. The properties must be defined in the **HTTP Connector Attributes Section.**
-
-This section is optional. If no value is defined, default Tomcat values will be used for the default HTTP Connector. 
-
-You may define all [attributes](http://tomcat.apache.org/tomcat-9.0-doc/config/http.html#Attributes) defined in the [Tomcat  HTTP Connector](http://tomcat.apache.org/tomcat-9.0-doc/config/http.html) documentation, except SSL attributes that must be defined in the **SSL Configuration Section**.
-
-Each property must be prefixed by `connector`.
+The **AceQL Manager servlet Section** in the `aceql-server.proprties` file allows you to modify the default name of the AceQL SQL Manager Servlet to call from the client side. The default name is `aceql`. It's the name that will be used in the URL by client calls:
 
 ```properties
-# Example: Change default connectionTimeout from 60000ms to 80000ms
-connector.connectionTimeout=80000 
+aceQLManagerServletCallName=aceql
 ```
+
+## Calling SQL Stored Procedures from the client side
+
+AceQL supports calling SQL stored procedures from C# and Java client side. See the [C# Client SDK](https://github.com/kawansoft/AceQL.Client2/blob/master/README.md) and the [AceQL Client JDBC Driver](https://github.com/kawansoft/aceql-http-client-jdbc-driver#readme) documentation for more information.
+
+## Calling ServerQueryExecutor classes from the client side
+
+AceQL supports calling implementations of the `ServerQueryExecutor` implementation. This is a a kind of server "AceQL stored procedure" written in Java. The `executeQuery` method returns a `ResultSet` to the client side that's appropriately converted by the client side SDK (`DataReader` in C#, `ResultSet` in Java and a `list` in `Python`).
+
+See the [ServerQueryExecutor Javadoc](https://docs.aceql.com/rest/soft/12.0/javadoc/org/kawanfw/sql/api/server/executor/ServerQueryExecutor.html) for server side usage and each [C#, Java or Python documentation](https://www.aceql.com/http-access-remote-sql-database-documentation/) for client side usage.
+
+## Stateful and Stateless Modes
+
+AceQL may be run either in stateful or stateless mode.
+
+See the **AceQL Manager servlet Section** in the `aceql-server.properties` file. Stateful or stateless running mode is configured using the `statelessMode` property. 
+
+### Stateful Mode
+
+AceQL runs by default in stateful mode (`statelessMode=false`): when creating a session on the client side with the `/login` API, the AceQL servlet that is contacted extracts a JDBC `Connection` from the connection pool (with `DatabaseConfigurator.getConnection()`) and stores it in memory in a static Java `Map`. 
+
+The server's JDBC Connection is persistent, attributed to the client user, and will not be used by other users: the same `Connection` will be used for each JDBC call until the end of the session. This allows for the creation of  SQL transactions. 
+
+The `Connection` will be released from the AceQL Manager Servlet memory and released into the connection pool by a client side `/close` or `/logout` API call. 
+
+*Therefore in stateful mode, it's cleaner to avoid phantom JDBC connections persisting for a period of time on the server. There are two options:*
+
+- *Choice 1: make sure that client applications explicitly and systematically call the`/logout` API before the application exits.* 
+- *Choice 2: configure the "Tomcat JDBC Connection Pool" Section in the `aceql-server.proprties` file to remove abandoned connections. See `removeAbandoned` & `removeAbandonedTimeout` property comments in the file.*
+
+Note that in the stateful mode, it's required that the client always accesses the same AceQL server during the entire life of their session.
+
+### Stateless Mode
+
+In stateless mode  (`statelessMode=true`),  the JDBC `Connection` is extracted by the AceQL servlet from the Connection pool at each client SQL request. The `Connection` is also closed and released in the pool at the end of each client SQL request. 
+
+The Java server on which AceQL Server is running doesn't hold any session info or state structure. Different client SQL requests can thus be processed by different physical servers, assuming that the SQL database is on a dedicated and separated location (or that each server has a copy of the SQL database that's consolidated elsewhere at a chosen timeframe.) 
+
+Stateless mode enables resiliency and elasticity, as well as easier deployment: one can typically deploy AceQL instances easily, using known tools like Docker & Kurbenetes. 
+
+Closing a `Connection` from the client side is unnecessary when running in stateless mode (a call to the `/logout` API will do nothing).
+
+Note that in this 12.0 version, SQL transactions are not supported in stateless mode.
 
 ## Session Management 
 
@@ -759,38 +746,43 @@ sessionConfiguratorClassName=com.acme.MySessionConfigurator
 
 Restart the AceQL Web Server for activation. 
 
-## Stateful and Stateless Modes
+## Headers Authentication Configuration
 
-AceQL may be run either in stateful or stateless mode.
+The Headers Authentication Section allows you to authenticate a client user using the request headers set and sent from the client side.
 
-See the **AceQL Manager servlet Section** in the `aceql-server.properties` file. Stateful or stateless running mode is configured using the `statelessMode` property. 
+This enables an alternate or supplementary authentication to UserAuthenticator.
 
-### Stateful Mode
+Typical usage would be to send - using HTTP - an authentication token stored in one of the request headers to a remote cloud provider.
 
-AceQL runs by default in stateful mode (`statelessMode=false`): when creating a session on the client side with the `/login` API, the AceQL servlet that is contacted extracts a JDBC `Connection` from the connection pool (with `DatabaseConfigurator.getConnection()`) and stores it in memory in a static Java `Map`. 
+This is done through your own implementation of the [RequestHeadersAuthenticator](https://docs.aceql.com/rest/soft/11.1/javadoc/org/kawanfw/sql/api/server/auth/headers/RequestHeadersAuthenticator.html) interface: overload the `public boolean validate(Map<String, String> headers)` method in your concrete class implementation. Your method code will be able to check all headers sent by the client side and decide whether or not to grant access to the client user.
 
-The server's JDBC Connection is persistent, attributed to the client user, and will not be used by other users: the same `Connection` will be used for each JDBC call until the end of the session. This allows for the creation of  SQL transactions. 
+## Tomcat HTTP Connector Configuration 
 
-The `Connection` will be released from the AceQL Manager Servlet memory and released into the connection pool by a client side `/close` or `/logout` API call. 
+[Tomcat HTTP Connectors](http://tomcat.apache.org/tomcat-9.0-doc/config/http.html) allow fine tuning of Tomcat 9.0.
 
-*Therefore in stateful mode, it's cleaner to avoid phantom JDBC connections persisting for a period of time on the server. There are two options:*
+It's possible to define properties for a unique HTTP Connector that will either accept HTTP or secured HTTPS calls. The properties must be defined in the **HTTP Connector Attributes Section.**
 
-- *Choice 1: make sure that client applications explicitly and systematically call the`/logout` API before the application exits.* 
-- *Choice 2: configure the "Tomcat JDBC Connection Pool" Section in the `aceql-server.proprties` file to remove abandoned connections. See `removeAbandoned` & `removeAbandonedTimeout` property comments in the file.*
+This section is optional. If no value is defined, default Tomcat values will be used for the default HTTP Connector. 
 
-Note that in the stateful mode, it's required that the client always accesses the same AceQL server during the entire life of their session.
+You may define all [attributes](http://tomcat.apache.org/tomcat-9.0-doc/config/http.html#Attributes) defined in the [Tomcat  HTTP Connector](http://tomcat.apache.org/tomcat-9.0-doc/config/http.html) documentation, except SSL attributes that must be defined in the **SSL Configuration Section**.
 
-### Stateless Mode
+Each property must be prefixed by `connector`.
 
-In stateless mode  (`statelessMode=true`),  the JDBC `Connection` is extracted by the AceQL servlet from the Connection pool at each client SQL request. The `Connection` is also closed and released in the pool at the end of each client SQL request. 
+```properties
+# Example: Change default connectionTimeout from 60000ms to 80000ms
+connector.connectionTimeout=80000 
+```
 
-The Java server on which AceQL Server is running doesn't hold any session info or state structure. Different client SQL requests can thus be processed by different physical servers, assuming that the SQL database is on a dedicated and separated location (or that each server has a copy of the SQL database that's consolidated elsewhere at a chosen timeframe.) 
+## Advanced Authentication Configuration
 
-Stateless mode enables resiliency and elasticity, as well as easier deployment: one can typically deploy AceQL instances easily, using known tools like Docker & Kurbenetes. 
+In order to give remote client users access to the AceQL server, you may develop your own authentication mechanism. This is done through your own implementation of the [UserAuthenticator](https://docs.aceql.com/rest/soft/12.0/javadoc/org/kawanfw/sql/api/server/auth/UserAuthenticator.html) interface: overload the login method `UserAuthenticator.login()` in your concrete class implementation.
 
-Closing a `Connection` from the client side is unnecessary when running in stateless mode (a call to the `/logout` API will do nothing).
+Your concrete implementation is passed to the AceQL as properties of the **User Authentication Section**  in the `aceql-server.properties` file.
 
-Note that in this 12.0 version, SQL transactions are not supported in stateless mode.
+- The  **userAuthenticatorClassName** property lets you define your concrete implementation of `UserAuthentication`.
+- Your `UserAuthentication` classes must be added to the `CLASSPATH` before the start of the AceQL Server.
+
+ Instances are loaded using a non-args constructor.
 
 ## Advanced Firewall Configuration
 
@@ -806,91 +798,6 @@ The following example defines two firewalls to chain for the `sampledb` database
 sampledb.sqlFirewallManagerClassNames=\
     com.mycompany.firewall.MySqlFirewallManager1,\
     com.mycompany.firewall.MySqlFirewallManager2
-```
-
-## Running the AceQL Web Server without Windows Desktop
-
-If you don't have access to the Windows Desktop interface (running in a cloud instance, etc.)  you can still run the AceQL HTTP Web Server from the command line.
-
-- see `<installation-directory>\AceQL\bin\aceql-server.bat` script.
-
-You can also start/stop the AceQL Web Server from your java programs, as explained in the next section.
-
-# AceQL internals
-
-## Data transport  
-
-### Transport format 
-
-AceQL transfers the least possible amount of metadata:
-
-- Request parameters are transported in UTF-8 format
-- JSON format is used for data and class transport
-
-### Content streaming and memory management
-
-All requests are streamed: 
-
-- Output requests (from the client side) are streamed directly from the socket to the server to avoid buffering any content body
-- Input responses (for the client side) are streamed directly from the socket to the server to efficiently read the response body
-
-Large content (`ResultSet`, Blobs/Clobs) is transferred using files and never loaded in memory. Streaming techniques are always used to read and write this content. 
-
-## Managing temporary files 
-
-AceQL uses temporary files which contain: 
-
-- Contents of Result Sets
-- Contents of Blobs and Clobs
-
-Temporary files are created to allow streaming and/or enable the earliest possible release of SQL resources and network resources.
-
-These temporary files are automatically cleaned (deleted) by AceQL on the server side.  
-
-If you want to ensure that temporary files will be cleaned, you can access the temporary directories:
-
-1. `ResultSet` data is dumped in the `user.home/.kawansoft/tmp` directory
-
-1. The uploaded/downloaded Blob or Clob files are located in the directory defined by `DatabaseConfigurator.getBlobsDirectory()`. Default `DefaultDatabaseConfigurator.getBlobsDirectory()` implementation stores the Blob/Clob files in `user.home/.aceql-server-root/username`.
-
-Where:
-
-- `user.home` =  the `user.home` of the user that started the AceQL Web Server.
-- `username` = the username of the client user.
-
-
-# Enterprise Edition - Licensing 
-
-## Trying The Enterprise Edition
-
-Transitioning from the default Community Edition to the Enterprise Edition simply requires a license file *<u>after download and installation</u>* described below: 
-
-1. Get a Trial License File at www.aceql.com/aceql-trial.
-2. You'll receive an email with the license file.
-3. Install the received `aceql-license-key.txt` license file in the:
-   1. Windows: `<Installation Directory>/AceQL/lib-server/` subdirectory.
-   2. Linux/Unix: `<Installation Directory>/lib-server/` subdirectory.
-
-4. Restart the AceQL Server.
-
-## Buying The Enterprise Edition 
-
-When buying a license, the license is valid for one year and applies to up to 5 SQL database names. 
-
-There's no limitation to the number of computers installed. This means you're granted the right to access up to 5 databases from any computer. The `"my_company_sales"` database, for example, may be accessed by AceQL from your test server, your pre-production server and your production server.
-
-Licenses are available for purchase on our [Online Shop](https://download.aceql.com/shop).
-
-If you need more volume, please don't hesitate to contact us at sales@kawansoft.com.
-
-# Enterprise Edition - Features
-
-## AceQL Servlet Name Configuration
-
-The **AceQL Manager servlet Section** in the `aceql-server.proprties` file allows you to modify the default name of the AceQL SQL Manager Servlet to call from the client side. The default name is `aceql`. It's the name that will be used in the URL by client calls:
-
-```properties
-aceQLManagerServletCallName=aceql
 ```
 
 ## DatabaseConfigurator - Advanced Connection Pool Management
@@ -913,86 +820,17 @@ The Development of a `DatabaseConfigurator` implementation also allows you to:
 - Define the maximum number of rows that may be returned to the client.
 - Define the `Logger` to use to trap server Exceptions.
 
-## Headers Authentication Configuration
-
-The Headers Authentication Section allows you to authenticate a client user using the request headers set and sent from the client side. 
-
-This enables an alternate or supplementary authentication to UserAuthenticator. 
-
-Typical usage would be to send - using HTTP - an authentication token stored in one of the request headers to a remote cloud provider.
-
-This is done through your own implementation of the [RequestHeadersAuthenticator](https://docs.aceql.com/rest/soft/12.0/javadoc/org/kawanfw/sql/api/server/auth/headers/RequestHeadersAuthenticator.html) interface: overload the `public boolean validate(Map<String, String> headers)` method in your concrete class implementation. Your method code will be able to check all headers sent by the client side and decide whether or not to grant access to the client user.
-
-## SQL Firewall Triggers Configuration
-
-The [SqlFirewallTrigger](https://docs.aceql.com/rest/soft/12.0/javadoc/org/kawanfw/sql/api/server/firewall/trigger/SqlFirewallTrigger.html) allows you to define per database a "trigger" in Java if a 
-`SqlFirewallManager.allowSqlRunAfterAnalysis()` call returns false, meaning a possible attack is detected. 
-
-A trigger is thus the Java code executed in the implementation of the unique
-[SqlFirewallTrigger.runIfStatementRefused()](https://docs.aceql.com/rest/soft/12.0/javadoc/org/kawanfw/sql/api/server/firewall/trigger/SqlFirewallTrigger.html#runIfStatementRefused(org.kawanfw.sql.api.server.SqlEvent,org.kawanfw.sql.api.server.firewall.SqlFirewallManager,java.sql.Connection)) method.
-
-Multiple `SqlFirewallTrigger` instances may be defined and chained. 
-
-AceQL provides several built-in (and ready-to-use without any coding) SQL Firewall Triggers:
-
-| SQL Firewall Triger Name       | Details                                                      |
-| ------------------------------ | ------------------------------------------------------------ |
-| `BanUserSqlFirewallTrigger`    | Trigger that inserts the username and other info into a SQL table. The SQL table is scanned/controlled at each request, so the banned user can no longer access the AceQL server. See [Javadoc](https://docs.aceql.com/rest/soft/12.0/javadoc/org/kawanfw/sql/api/server/firewall/trigger/BanUserSqlFirewallTrigger.html) for implementation details. |
-| `BeeperSqlFirewallTrigger`     | Trigger that simply beeps on the terminal if an attack is detected by a `SqlFirewallManager`. |
-| `JdbcLoggerSqlFirewallTrigger` | Trigger that logs all info about the denied SQL request into a SQL table. See [Javadoc](https://docs.aceql.com/rest/soft/12.0/javadoc/org/kawanfw/sql/api/server/firewall/trigger/JdbcLoggerSqlFirewallTrigger.html) for implementation details. |
-| `JsonLoggerSqlFirewallTrigger` | Trigger that logs all info about the denied SQL request in JSON format. |
-
-## Update Listeners Configuration
-
-The Update Listeners Section allows you to define Java code to execute after a successful SQL database update is done. 
-
-Update Listeners can be viewed as a kind of Java "trigger" executed on the completion of SQL updates.
-
-The actions to trigger are defined through one or more "Update Listeners ", which are Java classes injected at AceQL Server startup. An Update Listener is a built-in or user-developed Java class that implements the [UpdateListener](https://docs.aceql.com/rest/soft/12.0/javadoc/org/kawanfw/sql/api/server/listener/UpdateListener.html) interface with code to execute defined in the unique `updateActionPerformed` method. Multiple `UpdateListener` may be defined and chained.
-
-The `DefaultUpdateListener` default Update Listener does nothing. AceQL provides a built-in (and ready-to-use without any coding)  Update Listener:
-
-| Update Listener Name       | Details                                                      |
-| -------------------------- | ------------------------------------------------------------ |
-| `JsonLoggerUpdateListener` | Logs all successful & completed SQL update details in JSON format. |
-
-Only the following property must be defined per database name if you want to add Update Listeners:
-
-`updateListenerClassNames`.
-
-`UpdateListener` may be chained in property value by separating class names with commas.  
-
-The following example defines two Update Listeners to chain for the `sampledb` database:
-
-```properties
-sampledb.updateListenerClassNames=\
-    com.mycompany.listener.MyUpdateListener1,\
-    com.mycompany.listener.MyUpdateListener2
-```
-
-## Calling SQL Stored Procedures from the client side
-
-The Enterprise Edition supports calling SQL stored procedures from C# and Java client side. See the [C# Client SDK](https://github.com/kawansoft/AceQL.Client2/blob/master/README.md) and the [AceQL Client JDBC Driver](https://github.com/kawansoft/aceql-http-client-jdbc-driver#readme) documentation for more information.
-
-## Calling ServerQueryExecutor classes from the client side
-
-The Enterprise Edition supports calling implementations of the `ServerQueryExecutor` implementation. This is a a kind of server "AceQL stored procedure" written in Java. The `executeQuery` method returns a `ResultSet` to the client side that's appropriately converted by the client side SDK (`DataReader` in C#, `ResultSet` in Java and a `list` in `Python`).
-
-See the [ServerQueryExecutor Javadoc](https://docs.aceql.com/rest/soft/12.0/javadoc/org/kawanfw/sql/api/server/executor/ServerQueryExecutor.html) for server side usage and each [C#, Java or Python documentation](https://www.aceql.com/http-access-remote-sql-database-documentation/) for client side usage.
-
-## Running the AceQL Web Server - Enterprise Edition Options
-
-### Starting/Stopping the AceQL WebServer from a Java program
+## Starting/Stopping the AceQL WebServer from a Java program
 
 You may start or stop the AceQL Server from a Java program calling the [WebServerApi](https://docs.aceql.com/rest/soft/12.0/javadoc/org/kawanfw/sql/api/server/web/WebServerApi.html) API.
 
-### Running AceQL HTTP in a Java EE servlet container
+## Running AceQL HTTP in a Java EE servlet container
 
 AceQL server side may be run inside a Java EE servlet container such as Tomcat.
 
 This option may be preferred by users who already have a Java EE servlet container configured with all Connectors & SSL options, etc., and want to recode the options in the `aceql-server.properties` file. 
 
-#### Installation
+### Installation
 
 Install the installation directory `webapp/WEB-INF/lib` files in the lib directory of your webapp.
 
@@ -1000,7 +838,7 @@ If your JavaEE servlet container is *not* Tomcat >=7, it may not contain the Tom
 
 If you've coded your own Configurators, deploy the classes in the `/classes` directory of your webapp.
 
-#### AceQL servlet configuration in web.xml
+### AceQL servlet configuration in web.xml
 
 Create and configure the `aceql-server.properties` file like normal, as described in [The aceql-server.properties file](#the-aceql-serverproperties-file). Do not configure the **Tomcat Connector sections** that won't be used.
 
@@ -1070,7 +908,7 @@ It will display a JSON string and should display a status of `"OK"` and the curr
 ```json
 {
     "status": "OK",
-    "version": "AceQL HTTP v12.0 - 15-Jun-2022"
+    "version": "AceQL HTTP v12.0 - 04-Nov-2022"
 }         
 ```
 
@@ -1134,6 +972,56 @@ In order to run the `PropertiesEncryptor` class:
   - run `properties-encryptor` Bash.
 
 - Follow the instructions to create the password and encrypt property values.
+
+## Running the AceQL Web Server without Windows Desktop
+
+If you don't have access to the Windows Desktop interface (running in a cloud instance, etc.)  you can still run the AceQL HTTP Web Server from the command line.
+
+- see `<installation-directory>\AceQL\bin\aceql-server.bat` script.
+
+You can also start/stop the AceQL Web Server from your java programs, as explained in the next section.
+
+# AceQL internals
+
+## Data transport  
+
+### Transport format 
+
+AceQL transfers the least possible amount of metadata:
+
+- Request parameters are transported in UTF-8 format
+- JSON format is used for data and class transport
+
+### Content streaming and memory management
+
+All requests are streamed: 
+
+- Output requests (from the client side) are streamed directly from the socket to the server to avoid buffering any content body
+- Input responses (for the client side) are streamed directly from the socket to the server to efficiently read the response body
+
+Large content (`ResultSet`, Blobs/Clobs) is transferred using files and never loaded in memory. Streaming techniques are always used to read and write this content. 
+
+## Managing temporary files 
+
+AceQL uses temporary files which contain: 
+
+- Contents of Result Sets
+- Contents of Blobs and Clobs
+
+Temporary files are created to allow streaming and/or enable the earliest possible release of SQL resources and network resources.
+
+These temporary files are automatically cleaned (deleted) by AceQL on the server side.  
+
+If you want to ensure that temporary files will be cleaned, you can access the temporary directories:
+
+1. `ResultSet` data is dumped in the `user.home/.kawansoft/tmp` directory
+
+1. The uploaded/downloaded Blob or Clob files are located in the directory defined by `DatabaseConfigurator.getBlobsDirectory()`. Default `DefaultDatabaseConfigurator.getBlobsDirectory()` implementation stores the Blob/Clob files in `user.home/.aceql-server-root/username`.
+
+Where:
+
+- `user.home` =  the `user.home` of the user that started the AceQL Web Server.
+- `username` = the username of the client user.
 
 
 
