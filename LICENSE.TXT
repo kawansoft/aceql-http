@@ -22,7 +22,7 @@ Additional Use Grant: You may use the Licensed Work when your organization
                       (This differs of course from the database product name              
                       like "MySQL" and "PostgreSQL".)
 
-Change Date:          2026-10-18
+Change Date:          2026-11-01
 
 Change License:       Apache License version 2.0 as published by the Apache
                       Software Foundation https://www.apache.org/licenses/
