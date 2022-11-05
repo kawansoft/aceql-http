@@ -38,7 +38,7 @@ import org.slf4j.Logger;
  * <ul>
  * <li>{@link #getConnection(String)} that extracts {@code Connections} from a
  * Tomcat JDBC Connection Pool.</li>
- * <li>{@link #close(Connection)} that closes the {@code Connection} and thus
+ * <li>{@link #close(Connection)} that simplify closes the {@code Connection} and thus
  * releases it into the pool.</li>
  * </ul>
  *
