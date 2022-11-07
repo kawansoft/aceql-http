@@ -26,9 +26,10 @@ import org.kawanfw.sql.util.parser.SqlStringTokenizer;
 
 /**
  * Allows to "normalize" the text of a SQL statement. This will remove all
- * spaces, tabs or line feeds in excess. This allows to make sure that two SQL
- * statements that will give identical results but have a different text
- * representations are in fact equals. <br>
+ * spaces, tabs or line feeds in excess. Also, SQL keyword will be uppercased,
+ * and columns and table names will be lowercased. <br>
+ * This allows to make sure that two SQL statements that will give identical
+ * results but have a different text representations are in fact equals. <br>
  * <br>
  * For example the two following statements:
  * 
@@ -38,7 +39,7 @@ import org.kawanfw.sql.util.parser.SqlStringTokenizer;
  * </pre>
  * 
  * will be normalized to the same String with extra spaces removed: <br>
- * {@code SELECT * from my_table where my_colum = ?} <br>
+ * {@code SELECT * FROM my_table WHERE my_colum = ?} <br>
  * <br>
  * Note that all string and numeric values are replaced by interrogation marks.
  * <br>
@@ -184,8 +185,7 @@ public class StatementNormalizer {
 
 	if (singleQuoteQuantity % 2 != 0) {
 	    withOddQuotesNumber = true;
-	    throw new SQLException(
-		    "Input SQL contains an invalid odd number of single quotes.");
+	    throw new SQLException("Input SQL contains an invalid odd number of single quotes.");
 	}
 
 	List<String> tokens = SqlStringTokenizer.getTokensSplitOnSinglesQuotes(sql);
