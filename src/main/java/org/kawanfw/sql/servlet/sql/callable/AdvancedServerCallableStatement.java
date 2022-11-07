@@ -349,7 +349,7 @@ public class AdvancedServerCallableStatement {
     private void checkFirewallGeneral(String username, String database, String sqlOrder,
 	    ServerPreparedStatementParameters serverPreparedStatementParameters)
 	    throws IOException, SQLException, SecurityException {
-	
+
 	OperationalMode operationalMode = ConfPropertiesStore.get().getOperationalModeMap(database);
 
 	if (operationalMode.equals(OperationalMode.off)) {
@@ -360,7 +360,7 @@ public class AdvancedServerCallableStatement {
 	    LearningModeExecutor.learn(sqlOrder, database);
 	    return;
 	}
-	
+
 	boolean isAllowed = true;
 	String ipAddress = IpUtil.getRemoteAddr(request);
 
@@ -384,11 +384,14 @@ public class AdvancedServerCallableStatement {
 		    ServerStatementUtil.isPreparedStatement(request),
 		    serverPreparedStatementParameters.getParameterValues(), false);
 	    SqlFirewallTriggerWrapper.runIfStatementRefused(sqlEvent, sqlFirewallOnDeny, connection);
-	    
-	    String message = JsonSecurityMessage.prepStatementNotAllowedBuild(sqlOrder,
-		    "Callable Statement not allowed", serverPreparedStatementParameters.getParameterTypes(),
-		    serverPreparedStatementParameters.getParameterValues(), doPrettyPrinting);
-	    throw new SecurityException(message);
+
+	    if (!operationalMode.equals(OperationalMode.detecting)) {
+		String message = JsonSecurityMessage.prepStatementNotAllowedBuild(sqlOrder,
+			"Callable Statement not allowed", serverPreparedStatementParameters.getParameterTypes(),
+			serverPreparedStatementParameters.getParameterValues(), doPrettyPrinting);
+		throw new SecurityException(message);
+	    }
+
 	}
 
     }
