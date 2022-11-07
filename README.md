@@ -6,7 +6,7 @@
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/d14142d5d6f04ba891d505e2e47b417d)](https://www.codacy.com/gh/kawansoft/aceql-http?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=kawansoft/aceql-http&amp;utm_campaign=Badge_Grade)
 ![GitHub contributors](https://img.shields.io/github/contributors/kawansoft/aceql-http)
 
-# AceQL HTTP v12.0   - November 4,  2022
+# AceQL HTTP v12.0   - November 7,  2022
 # Server Installation and Configuration Guide  
 
 <img src="https://docs.aceql.com/favicon.png" alt="AceQL HTTP Icon"/> 
@@ -200,7 +200,7 @@ Call the `aceql-server` script to display the AceQL version:
 It will display a line with all version info, like:
 
 ```
-AceQL HTTP Community v12.0 - 04-Nov-2022
+AceQL HTTP Community v12.0 - 07-Nov-2022
 ```
 
 ## Windows Installation
@@ -904,7 +904,7 @@ It will display a JSON string and should display a status of `"OK"` and the curr
 ```json
 {
     "status": "OK",
-    "version": "AceQL HTTP v12.0 - 04-Nov-2022"
+    "version": "AceQL HTTP v12.0 - 07-Nov-2022"
 }         
 ```
 
