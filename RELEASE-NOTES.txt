@@ -34,7 +34,7 @@ AceQL HTTP Version 12.0 - 08-Nov-2022
   Apache licensing. 
 
 - AceQL HTTP base code is now unique. There is no more code difference
-  between different Editions, but only licensing rights. 
+  between different Editions/Plans, but only licensing rights. 
   This simplifies a lot of code maintenance and allows all users to benefit 
   from all features and updates.
 
