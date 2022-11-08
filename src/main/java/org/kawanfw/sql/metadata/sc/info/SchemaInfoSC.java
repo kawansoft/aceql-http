@@ -179,6 +179,10 @@ public class SchemaInfoSC {
 //	    optionsBuilder.includeSchemas(new RegularExpressionExclusionRule(pattern));
 	}
 
+	if (sqlUtil.isOracle()) {
+	    throw new SQLException("SchemaCrawler schema generation is not supported with Oracle Database in this AceQL version.");
+	}
+
 	if (sqlUtil.isDB2() || sqlUtil.isOracle()) {
 	    DatabaseMetaData databaseMetaData = connection.getMetaData();
 	    String schema = databaseMetaData.getUserName();
