@@ -438,7 +438,109 @@ The CSV file contains the rules for accessing the tables, with a semicolon for s
 
 Here's an example of a documented CSV File: [sampledb_rules_manager.csv](https://docs.aceql.com/rest/soft/12.0/src/sampledb_rules_manager.csv).
 
-## SQL Firewall Triggers Configuration
+#### The DenyExceptOnWhitelistManager SQL Firewall Manager
+
+This SQL Firewall Manager only allows incoming SQL statements that match a list of SQL statements stored in the following text file sequentially, one per line.
+
+The name of the text file used by a database is: `<database>_deny_except_whitelist.txt`, where `<database>` is the name of the database declared in the `aceql-server.properties` files.
+The file must be located in the same directory as the `aceql-server.properties` file used when starting the AceQL server.
+
+Each line of the text file must contain one statement, without surrounding quotes (") or ending semicolons (;). 
+
+The `DenyExceptOnWhitelistManager` naturally takes precedence over all other SQL Firewall Managers, as its default behavior is to forbid all SQL statements that are not explicitly stored in the `<database>_deny_except_whitelist.txt` file.
+
+Note that all statements will be "normalized" (using the  [`StatementNormalizer`](https://docs.aceql.com/rest/soft/12.0/javadoc/org/kawanfw/sql/api/server/StatementNormalizer.html) class execution) before the incoming statement from the client side is compared with the list of permitted statements.
+
+##### How SQL statement are normalized
+
+The normalization will remove all excess spaces, tabs, or line breaks. Also, the SQL keywords will appear in uppercase, and columns and table names in lowercase. This ensures that a SQL statement that should be recognized won't be rejected due to differences in capitalization or spaces between words.
+
+For example the following two statements: 
+
+```sql
+ SELECT *     from     my_table   where my_colum   =   ? 
+ SELECT 	*         from     my_table      where     my_colum   =   ?"
+```
+
+will be normalized to the same string with extra spaces removed: 
+
+```sql
+SELECT * FROM my_table WHERE my_colum = ? 
+```
+
+Note that all string and numerical values are replaced by question marks. 
+
+So, when using normalization, the following different input statements:
+
+```SQl
+SELECT film_title, RENTAL_RATE from FILM where film_title like '%Star%' and rental_rate > 2.20
+select film_title, rental_rate from film where film_title like '%Alien%' and rental_rate > 3.30
+select film_title, rental_rate from film where film_title like '%Odyssey%' and rental_rate > 4.40
+```
+
+They will all be normalized to: 
+
+```sql
+SELECT film_title , rental_rate FROM film WHERE film_title LIKE ? AND rental_rate > ?
+```
+
+If normalization cannot be applied due to unsupported or sloppy formatting, the original SQL statement is returned without any normalization.
+
+The two main causes of normalization failure are: 
+
+1. The input SQL statement contains nested SQL comments, which this version's parser does not support. (Regular non-nested SQL comments are successfully parsed.)
+2. The input SQl statement is somewhat invalid.
+
+#### The DenyOnBlacklistManager SQL Firewall Manager
+
+This SQL Firewall Manager denies incoming SQL statements that match a list of SQL statements stored in the following text file sequentially, one per line.
+
+The name of the text file used by a database is: `<database>_deny_blacklist.txt`, where `<database>` is the name of the database declared in the `aceql-server.properties` files.
+
+The file must be located in the same directory as the `aceql-server.properties` file used when starting the AceQL server.
+
+Each line of the text file must contain one statement, without surrounding quotes (") or ending semicolons (;). 
+
+Note that all statements will be "normalized" following the same principle as with the `DenyExceptOnWhitelistManager ` SQL Firewall Manager.
+
+#### The SQL Firewall Operational Mode per database
+
+A SQL Firewall Operational Mode maybe defined for each database, with the possible values:
+
+- `detecting`: In this mode, intrusions are detected but not not blocked. This allows, for example, you to log all suspicious activity using one or more SQL Firewall Triggers.
+- `learning`: This is the firewall training mode. It is to be used only with the `DenyExceptOnWhitelistManager`  SQL Firewall Manager. When executing SQL calls, Incoming statements received are stored in append mode, one per line,  in the `<database>_deny_except_whitelist.txt` described above in the *The DenyExceptOnWhitelistManager SQL Firewall Manager* section. Note that statements are normalized - as described above - before being appended to the the `<database>_deny_except_whitelist.txt` file.
+- `protecting`: In this mode, the SQL Firewall rules are fully enabled for the database and will block SQL statements that break the rules. `protecting` is the default mode if no `operationalMode` property is defined for a database (see below).
+
+##### Defining the SQL Firewall Operational Mode per database
+
+In the aceql-server.properties file, define each Operational Mode per database by creating a property whose name is the database name followed by a dot and the `operationalMode` keyword. The possible property values are only:  `detecting`, `learning`, and  `protecting`. 
+
+The following example shows how to apply the learning mode to the `sampledb` database:
+
+```properties
+# The Operational Mode for firewalling a database. 
+# The possible values are:
+# - detecting: Intrusions & attacks are detected using the SQL Firewall
+#   Manager's rules, but are not blocked. SQL Firewall Triggers will be 
+#   applied.
+# - learning: Recording mode is on, building a white list whose file  
+#   name is <database>_deny_except_whitelist.txt and located in the same 
+#   directory as the current file. "learning" is meaningful only if a
+#   DenyExceptOnWhitelistManager SQL Firewall Manager is defined for the 
+#   database.
+# - protecting: The SQL Firewall Manager's rules are fully enabled 
+#   for the database.
+# Defaults to protecting.
+sampledb.operationalMode=learning
+```
+
+Reminder: there is no need to  define a property for `protecting` databases.
+
+##### Changing the SQL Firewall Operational Mode per database
+
+AceQL server restart is required in order to take into account Operational Mode value changes.
+
+### SQL Firewall Triggers Configuration
 
 The [SqlFirewallTrigger](https://docs.aceql.com/rest/soft/12.0/javadoc/org/kawanfw/sql/api/server/firewall/trigger/SqlFirewallTrigger.html) allows you to define per database a "trigger" in Java if a 
 `SqlFirewallManager.allowSqlRunAfterAnalysis()` call returns false, meaning a possible attack is detected. 
@@ -457,7 +559,7 @@ AceQL provides several built-in (and ready-to-use without any coding) SQL Firewa
 | `JdbcLoggerSqlFirewallTrigger` | Trigger that logs all info about the denied SQL request into a SQL table. See [Javadoc](https://docs.aceql.com/rest/soft/12.0/javadoc/org/kawanfw/sql/api/server/firewall/trigger/JdbcLoggerSqlFirewallTrigger.html) for implementation details. |
 | `JsonLoggerSqlFirewallTrigger` | Trigger that logs all info about the denied SQL request in JSON format. |
 
-## Update Listeners Configuration
+### Update Listeners Configuration
 
 The Update Listeners Section allows you to define Java code to execute after a successful SQL database update is done. 
 
