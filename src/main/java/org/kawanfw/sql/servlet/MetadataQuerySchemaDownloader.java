@@ -26,6 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
+import org.kawanfw.sql.api.util.SqlUtil;
 import org.kawanfw.sql.metadata.AceQLMetaData;
 import org.kawanfw.sql.metadata.sc.info.AceQLOutputFormat;
 import org.kawanfw.sql.metadata.sc.info.SchemaInfoAccessor;
@@ -54,6 +55,15 @@ public class MetadataQuerySchemaDownloader {
      * @throws FileNotFoundException
      */
     public void schemaDowload() throws IOException, SQLException, FileNotFoundException {
+	
+	SqlUtil sqlUtil = new SqlUtil(connection);
+	if (sqlUtil.isOracle()) {
+	    JsonErrorReturn errorReturn = new JsonErrorReturn(response, HttpServletResponse.SC_BAD_REQUEST,
+		    JsonErrorReturn.ERROR_ACEQL_ERROR, JsonErrorReturn.ORACLE_SCHEMA_NOT_SUPPORTED);
+	    ServerSqlManager.writeLine(out, errorReturn.build());
+	    return;
+	}
+	
 	String format = request.getParameter(HttpParameter.FORMAT);
 	String tableName = request.getParameter(HttpParameter.TABLE_NAME);
 
