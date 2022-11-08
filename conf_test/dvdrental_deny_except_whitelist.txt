@@ -1,3 +1,2 @@
-SELECT * FROM film WHERE film_id > ?
-SELECT * FROM film_actor WHERE actor_id > ?
-SELECT * FROM staff WHERE staff_id >= ?
+SELECT * FROM film
+SELECT * FROM actor
