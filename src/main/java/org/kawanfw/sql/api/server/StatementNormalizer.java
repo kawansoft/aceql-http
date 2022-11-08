@@ -25,11 +25,11 @@ import org.kawanfw.sql.util.parser.SqlCommentsDetector;
 import org.kawanfw.sql.util.parser.SqlStringTokenizer;
 
 /**
- * Allows to "normalize" the text of a SQL statement. This will remove all
- * spaces, tabs or line feeds in excess. Also, SQL keyword will be uppercased,
- * and columns and table names will be lowercased. <br>
- * This allows to make sure that two SQL statements that will give identical
- * results but have a different text representations are in fact equals. <br>
+ * Allows to "normalize" the text of a SQL statement. The normalization will
+ * remove all excess spaces, tabs, or line breaks. Also, the SQL keywords will
+ * appear in uppercase, and columns and table names in lowercase. This ensures
+ * that a SQL statement that should be recognized won't be rejected due to
+ * differences in capitalization or spaces between words. <br>
  * <br>
  * For example the two following statements:
  * 
@@ -49,8 +49,7 @@ import org.kawanfw.sql.util.parser.SqlStringTokenizer;
  * <li>{@code select film_title, rental_rate from film where film_title like '%Alien%' and rental_rate > 3.30}</li>
  * <li>{@code select film_title, rental_rate from film where film_title like '%Odyssey%' and rental_rate > 4.40}</li>
  * </ul>
- * 
- * But all of them have will be normalized to the same form:
+ * They will all be normalized to:
  * <ul>
  * <li>{@code SELECT film_title , rental_rate FROM film WHERE film_title LIKE ? AND rental_rate > ?}</li>
  * </ul>
@@ -60,7 +59,7 @@ import org.kawanfw.sql.util.parser.SqlStringTokenizer;
  * The two main reasons of normalization failure are:
  * <ul>
  * <li>The input SQL statement contains <i>nested</i> SQL comments which this
- * version's parser do not support and this cannot treat. This triggers an
+ * version's parser do not support and thus cannot treat. This triggers an
  * SQLException. (Regular non-nested SQL comments are successfully parsed.)</li>
  * <li>The input SQl statement is somewhat invalid and triggers an Exception.
  * call.</li>

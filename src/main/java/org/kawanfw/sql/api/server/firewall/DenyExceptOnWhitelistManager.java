@@ -38,8 +38,9 @@ import org.kawanfw.sql.util.TimestampUtil;
 import org.slf4j.Logger;
 
 /**
- * Firewall manager that only allows incoming SQL statements which are also
- * sequentially stored in a text file.
+ * This SQL Firewall Manager only allows incoming SQL statements that match a
+ * list of SQL statements stored in the following text file sequentially, one
+ * per line.
  * 
  * The name of the text file that will be used by a database is: &nbsp;
  * <code>&lt;database&gt;_deny_except_whitelist.txt</code>, where
@@ -99,7 +100,7 @@ public class DenyExceptOnWhitelistManager implements SqlFirewallManager {
 	return allowedStatementsForDb.contains(sql);
     }
 
-	/**
+    /**
      * @return <code><b>true</b></code>. (Client programs will be allowed to create
      *         raw <code>Statement</code>, i.e. call statements without parameters.)
      */
@@ -108,7 +109,6 @@ public class DenyExceptOnWhitelistManager implements SqlFirewallManager {
 	    throws IOException, SQLException {
 	return true;
     }
-
 
     /**
      * @return <code><b>true</b></code>. (Client programs will be allowed to call
@@ -119,7 +119,7 @@ public class DenyExceptOnWhitelistManager implements SqlFirewallManager {
 	    throws IOException, SQLException {
 	return true;
     }
-    
+
     /**
      * Load all statements for a database, once per server life. Can be dynamically
      * reloaded if file is modified.
@@ -147,20 +147,20 @@ public class DenyExceptOnWhitelistManager implements SqlFirewallManager {
 
 	    // Reset statements Map
 	    statementMap = new HashMap<>();
-	    
+
 	    String logInfo = TimestampUtil.getHumanTimestampNow() + " " + SqlTag.USER_CONFIGURATION + " Reloading "
 		    + this.getClass().getSimpleName() + " configuration file: " + textFile;
 	    System.err.println(logInfo);
-	    
+
 	    DatabaseConfigurator databaseConfigurator = InjectedClassesStore.get().getDatabaseConfigurators()
 		    .get(database);
 	    Logger logger = databaseConfigurator.getLogger();
-	    
+
 	    LoggerWrapper.log(logger, logInfo);
 	    storedFileTime = currentFileTime;
 	}
 
-	if ( !statementMap.containsKey(database)) {
+	if (!statementMap.containsKey(database)) {
 
 	    if (!textFile.exists()) {
 		throw new FileNotFoundException(

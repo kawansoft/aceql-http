@@ -36,12 +36,13 @@ import org.kawanfw.sql.util.TimestampUtil;
 import org.slf4j.Logger;
 
 /**
- * Firewall manager that denies incoming SQL statements which are also
- * sequentially stored in a text file.
+ * This SQL Firewall Manager denies incoming SQL statements that match a list of
+ * SQL statements stored in the following text file sequentially, one per line.
  * 
  * The name of the text file that will be used by a database is: &nbsp;
  * <code>&lt;database&gt;_deny_blacklist.txt</code>, where {@code database} is
- * the name of the database declared in the {@code aceql-server.properties} files.<br>
+ * the name of the database declared in the {@code aceql-server.properties}
+ * files.<br>
  * The file must be located in the same directory as the
  * {@code aceql-server.properties} file used when starting the AceQL server.<br>
  * <br>
@@ -95,7 +96,6 @@ public class DenyOnBlacklistManager implements SqlFirewallManager {
 	return !deniedStatementsForDb.contains(sql);
     }
 
-	
     /**
      * @return <code><b>true</b></code>. (Client programs will be allowed to create
      *         raw <code>Statement</code>, i.e. call statements without parameters.)
@@ -140,18 +140,18 @@ public class DenyOnBlacklistManager implements SqlFirewallManager {
 	debug("currentFileTime: " + currentFileTime);
 
 	if (storedFileTime != null && !currentFileTime.equals(storedFileTime) && allowReload) {
-	    
+
 	    // Reset statements Map
 	    statementMap = new HashMap<>();
-	    
+
 	    String logInfo = TimestampUtil.getHumanTimestampNow() + " " + SqlTag.USER_CONFIGURATION + " Reloading "
 		    + this.getClass().getSimpleName() + " configuration file: " + textFile;
 	    System.err.println(logInfo);
-	    
+
 	    DatabaseConfigurator databaseConfigurator = InjectedClassesStore.get().getDatabaseConfigurators()
 		    .get(database);
 	    Logger logger = databaseConfigurator.getLogger();
-	    
+
 	    LoggerWrapper.log(logger, logInfo);
 	    storedFileTime = currentFileTime;
 	}
@@ -170,7 +170,6 @@ public class DenyOnBlacklistManager implements SqlFirewallManager {
 	    storedFileTime = currentFileTime;
 	}
     }
-
 
     private void debug(String string) {
 	if (DEBUG) {
