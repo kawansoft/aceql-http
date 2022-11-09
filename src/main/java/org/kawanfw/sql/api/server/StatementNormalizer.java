@@ -53,8 +53,8 @@ import org.kawanfw.sql.util.parser.SqlStringTokenizer;
  * <ul>
  * <li>{@code SELECT film_title , rental_rate FROM film WHERE film_title LIKE ? AND rental_rate > ?}</li>
  * </ul>
- * If normalization cannot be applied because of not supported or bad input
- * format, the original SQl statement is returned and an Exception is set. <br>
+ * If normalization cannot be applied due to unsupported or sloppy formatting,
+ * the original SQl statement is returned and an Exception is set. <br>
  * <br>
  * The two main reasons of normalization failure are:
  * <ul>
