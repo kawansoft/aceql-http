@@ -94,7 +94,10 @@ AceQL HTTP Version 12.0 - 09-Nov-2022
   
 - Tomcat base libraries have been upgraded to 9.0.68.
 
-- PostgreSQL base libraries have been upgraded to 42.3.7 for 
+- Auth0 library has been upgraded to 4.2.1 in order to upgrade automatically
+  Jackson base libraries to 2.13.4 for security reasons.
+
+- PostgreSQL library has been upgraded to 42.3.7 for 
   security reasons.
 
 
