@@ -6,13 +6,82 @@
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/d14142d5d6f04ba891d505e2e47b417d)](https://www.codacy.com/gh/kawansoft/aceql-http?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=kawansoft/aceql-http&amp;utm_campaign=Badge_Grade)
 ![GitHub contributors](https://img.shields.io/github/contributors/kawansoft/aceql-http)
 
-# AceQL HTTP v12.0   - November 9,  2022
+# AceQL HTTP v12.0   - November 18,  2022
 # Server Installation and Configuration Guide  
 
 <img src="https://docs.aceql.com/favicon.png" alt="AceQL HTTP Icon"/> 
 
-[TOC]
-
+* [Fundamentals](#fundamentals)
+   * [Overview](#overview)
+   * [Technical operating environment](#technical-operating-environment)
+* [Licensing](#licensing)
+* [Download and Installation](#download-and-installation)
+   * [Linux / Unix Installation](#linux--unix-installation)
+      * [Update the PATH (Optional)](#update-the-path-optional)
+      * [Testing server installation](#testing-server-installation)
+   * [Windows Installation](#windows-installation)
+* [Quickstart](#quickstart)
+   * [The AceQL Manager servlet](#the-aceql-manager-servlet)
+   * [The aceql-server.properties file](#the-aceql-serverproperties-file)
+      * [Tomcat JDBC Connection Pool Section](#tomcat-jdbc-connection-pool-section)
+      * [User Authentication Section](#user-authentication-section)
+         * [The WebServiceUserAuthenticator usage](#the-webserviceuserauthenticator-usage)
+      * [SSL Configuration Section](#ssl-configuration-section)
+      * [SQL Firewall Managers Section](#sql-firewall-managers-section)
+         * [The CsvRulesManager SQL Firewall Manager](#the-csvrulesmanager-sql-firewall-manager)
+         * [The DenyExceptOnWhitelistManager SQL Firewall Manager](#the-denyexceptonwhitelistmanager-sql-firewall-manager)
+            * [How SQL statement are normalized](#how-sql-statement-are-normalized)
+         * [The DenyOnBlacklistManager SQL Firewall Manager](#the-denyonblacklistmanager-sql-firewall-manager)
+         * [The SQL Firewall Operational Mode per database](#the-sql-firewall-operational-mode-per-database)
+            * [Defining the SQL Firewall Operational Mode per database](#defining-the-sql-firewall-operational-mode-per-database)
+            * [Changing the SQL Firewall Operational Mode per database](#changing-the-sql-firewall-operational-mode-per-database)
+      * [SQL Firewall Triggers Configuration](#sql-firewall-triggers-configuration)
+      * [Update Listeners Configuration](#update-listeners-configuration)
+      * [Sample aceql-server.properties file](#sample-aceql-serverproperties-file)
+   * [Starting/Stopping the AceQL Web Server from Linux/Unix](#startingstopping-the-aceql-web-server-from-linuxunix)
+      * [Add your JDBC driver to the AceQL installation](#add-your-jdbc-driver-to-the-aceql-installation)
+      * [Starting the AceQL Web Server](#starting-the-aceql-web-server)
+      * [Examples](#examples)
+         * [Starting the AceQL Web Server on port 9090](#starting-the-aceql-web-server-on-port-9090)
+         * [Starting the AceQL Web Server on port 9091](#starting-the-aceql-web-server-on-port-9091)
+      * [Using SSL from the client side](#using-ssl-from-the-client-side)
+      * [Stopping the AceQL Web Server](#stopping-the-aceql-web-server)
+      * [Linux: running the AceQL Web server as a service](#linux-running-the-aceql-web-server-as-a-service)
+   * [Starting/Stopping the AceQL WebServer from Windows](#startingstopping-the-aceql-webserver-from-windows)
+* [Advanced Usage](#advanced-usage)
+   * [Development Environment](#development-environment)
+   * [AceQL Servlet Name Configuration](#aceql-servlet-name-configuration)
+   * [Calling SQL Stored Procedures from the client side](#calling-sql-stored-procedures-from-the-client-side)
+   * [Calling ServerQueryExecutor classes from the client side](#calling-serverqueryexecutor-classes-from-the-client-side)
+   * [Stateful and Stateless Modes](#stateful-and-stateless-modes)
+      * [Stateful Mode](#stateful-mode)
+      * [Stateless Mode](#stateless-mode)
+   * [Session Management](#session-management)
+      * [SessionConfigurator interface](#sessionconfigurator-interface)
+      * [Session management default implementation](#session-management-default-implementation)
+      * [Session management using JWT](#session-management-using-jwt)
+         * [Activating JwtSessionConfigurator](#activating-jwtsessionconfigurator)
+      * [Creating your own session management](#creating-your-own-session-management)
+   * [Headers Authentication Configuration](#headers-authentication-configuration)
+   * [Tomcat HTTP Connector Configuration](#tomcat-http-connector-configuration)
+   * [Advanced Authentication Configuration](#advanced-authentication-configuration)
+   * [Advanced Firewall Configuration](#advanced-firewall-configuration)
+   * [DatabaseConfigurator - Advanced Connection Pool Management](#databaseconfigurator---advanced-connection-pool-management)
+   * [Starting/Stopping the AceQL WebServer from a Java program](#startingstopping-the-aceql-webserver-from-a-java-program)
+   * [Running AceQL HTTP in a Java EE servlet container](#running-aceql-http-in-a-java-ee-servlet-container)
+      * [Installation](#installation)
+      * [AceQL servlet configuration in web.xml](#aceql-servlet-configuration-in-webxml)
+      * [Testing the servlet configuration](#testing-the-servlet-configuration)
+   * [Interacting with the JDBC Pool at runtime](#interacting-with-the-jdbc-pool-at-runtime)
+   * [ThreadPoolExecutor Configuration](#threadpoolexecutor-configuration)
+   * [Encrypting Properties in the aceql-server.properties file](#encrypting-properties-in-the-aceql-serverproperties-file)
+      * [Running the PropertiesEncryptor class](#running-the-propertiesencryptor-class)
+   * [Running the AceQL Web Server without Windows Desktop](#running-the-aceql-web-server-without-windows-desktop)
+* [AceQL internals](#aceql-internals)
+   * [Data transport](#data-transport)
+      * [Transport format](#transport-format)
+      * [Content streaming and memory management](#content-streaming-and-memory-management)
+   * [Managing temporary files](#managing-temporary-files)
 
 
 # Fundamentals
@@ -200,7 +269,7 @@ Call the `aceql-server` script to display the AceQL version:
 It will display a line with all version info, like:
 
 ```
-AceQL HTTP Community v12.0 - 09-Nov-2022
+AceQL HTTP Community v12.0 - 18-Nov-2022
 ```
 
 ## Windows Installation
@@ -1001,7 +1070,7 @@ It will display a JSON string and should display a status of `"OK"` and the curr
 ```json
 {
     "status": "OK",
-    "version": "AceQL HTTP v12.0 - 09-Nov-2022"
+    "version": "AceQL HTTP v12.0 - 18-Nov-2022"
 }         
 ```
 

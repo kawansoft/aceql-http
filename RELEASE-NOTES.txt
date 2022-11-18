@@ -25,7 +25,7 @@ AceQL HTTP is licensed through the Business Source License 1.1.
 (https://github.com/kawansoft/aceql-http/blob/12.0/LICENSE.TXT)
 
 
-AceQL HTTP Version 12.0 - 09-Nov-2022
+AceQL HTTP Version 12.0 - 18-Nov-2022
 -------------------------------------
 
 - AceQL HTTP source code license has been changed from  GNU Lesser General 
@@ -92,7 +92,7 @@ AceQL HTTP Version 12.0 - 09-Nov-2022
 - The Maven maven-source-plugin is now used to build the runnable jar and 
   the sources jar.
   
-- Tomcat base libraries have been upgraded to 9.0.68.
+- Tomcat base libraries have been upgraded to 9.0.69.
 
 - Auth0 library has been upgraded to 4.2.1 in order to upgrade automatically
   Jackson base libraries to 2.13.4 for security reasons.
