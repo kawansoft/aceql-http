@@ -35,6 +35,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.Vector;
 
@@ -115,6 +116,12 @@ public class ServerPreparedStatementParameters {
 	this.preparedStatement = preparedStatement;
 	this.inOutStatementParameters = inOutStatementParameters;
 	this.htlmEncoding = htlmEncoding;
+	
+    }
+
+    public int getParametersNumber() {
+	Set<Integer> set = inOutStatementParameters.keySet();
+	return set.size();
     }
 
 
@@ -394,10 +401,17 @@ public class ServerPreparedStatementParameters {
      */
     private void registerSmallIntParameter(int paramIndex, String paramType, String paramValue, String paramDirection)
 	    throws NumberFormatException, SQLException {
+	
+	debug("Parameter is int!");
+	
 	if (isInParameter(paramDirection)) {
 	    // Integer theInteger = new Integer(paramValue);
 	    Integer theInteger = Integer.parseInt(paramValue);
 
+	    debug("");
+	    debug("Parameter paramIndex: " + paramIndex);
+	    debug("Parameter int value : " + theInteger.intValue());
+		
 	    preparedStatement.setInt(paramIndex, theInteger.intValue());
 	    parameterValues.put(paramIndex, Integer.parseInt(paramValue));
 	}

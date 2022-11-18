@@ -33,6 +33,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.kawanfw.sql.api.server.SqlEvent;
 import org.kawanfw.sql.api.server.SqlEventWrapper;
 import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
+import org.kawanfw.sql.api.util.SqlUtil;
 import org.kawanfw.sql.api.util.firewall.LearningModeExecutor;
 import org.kawanfw.sql.api.util.firewall.SqlFirewallTriggerWrapper;
 import org.kawanfw.sql.servlet.HttpParameter;
@@ -52,6 +53,8 @@ import org.kawanfw.sql.servlet.sql.parameters.ServerPreparedStatementParameters;
 import org.kawanfw.sql.servlet.sql.parameters.ServerPreparedStatementParametersUtil;
 import org.kawanfw.sql.util.FrameworkDebug;
 import org.kawanfw.sql.util.IpUtil;
+
+import oracle.jdbc.OracleTypes;
 
 /**
  * @author KawanSoft S.A.S
@@ -266,7 +269,29 @@ public class AdvancedServerCallableStatement {
 
 	try {
 
-	    rs = callableStatement.executeQuery();
+	    // Special treatment for Oracle queries
+	    // Oracle requires to use CallableStatement.registerOutParameter(size + 1,
+	    // OracleTypes.CURSOR) call
+	    // Where size is the number of IN parameters + 1
+	    // And Oracle requires to retrieve the ResultSet with a cast:
+	    // rs= (ResultSet) callableStatement.getObject(size + 1);
+	    SqlUtil sqlUtil = new SqlUtil(connection);
+	    if (sqlUtil.isOracle()) {
+		
+		debug("DB is Oracle!");
+		int size = serverPreparedStatementParameters.getParametersNumber();
+		debug("Oracle Stored Procedure parameters size: " + size);
+		
+		size = 1;
+		
+		callableStatement.registerOutParameter(size + 1, OracleTypes.CURSOR);
+		callableStatement.executeQuery();
+
+		rs = (ResultSet) callableStatement.getObject(size + 1);
+		
+	    } else {
+		rs = callableStatement.executeQuery();
+	    }
 
 	    JsonGeneratorFactory jf = JsonUtil.getJsonGeneratorFactory(doPrettyPrinting);
 
