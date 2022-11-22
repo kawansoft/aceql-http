@@ -1,28 +1,14 @@
 /*
- * This file is part of AceQL HTTP.
- * AceQL HTTP: SQL Over HTTP
- * Copyright (C) 2021,  KawanSoft SAS
- * (http://www.kawansoft.com). All rights reserved.
+ * Copyright (c)2022 KawanSoft S.A.S. All rights reserved.
+ * 
+ * Use of this software is governed by the Business Source License included
+ * in the LICENSE.TXT file in the project's root directory.
  *
- * AceQL HTTP is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
+ * Change Date: 2026-11-01
  *
- * AceQL HTTP is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301  USA
- *
- * Any modifications to this file must keep this entire header
- * intact.
+ * On the date above, in accordance with the Business Source License, use
+ * of this software will be governed by version 2.0 of the Apache License.
  */
-
 package org.kawanfw.sql.api.server.auth;
 
 import java.io.File;
@@ -32,9 +18,8 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.json.Json;
 import javax.json.JsonObject;
@@ -43,11 +28,13 @@ import javax.json.JsonString;
 import javax.json.JsonStructure;
 
 import org.apache.commons.lang3.StringUtils;
-import org.kawanfw.sql.api.server.DefaultDatabaseConfigurator;
+import org.kawanfw.sql.api.server.DatabaseConfigurator;
 import org.kawanfw.sql.api.server.util.SimpleHttpClient;
+import org.kawanfw.sql.servlet.injection.classes.InjectedClassesStore;
 import org.kawanfw.sql.servlet.injection.properties.PropertiesFileStore;
 import org.kawanfw.sql.servlet.injection.properties.PropertiesFileUtil;
 import org.kawanfw.sql.util.Tag;
+import org.slf4j.Logger;
 
 /**
  * A concrete {@code UserAuthenticator} that allows zero-code remote client
@@ -59,14 +46,16 @@ import org.kawanfw.sql.util.Tag;
  * <br>
  * The Web service must just implement these features:
  * <ul>
- * <li>It must accept the 2 POST parameters {@code username} and {@code password}.</li>
+ * <li>It must accept the 2 POST parameters {@code username} and
+ * {@code password}.</li>
  * <li>It must return either:
  * <ul>
  * <li>The JSON string <code>{"status"="OK"}</code> if the authentication
  * succeeds.</li>
  * <li>The JSON string <code>{"status"="FAIL"}</code> if the authentication
  * fails.</li>
- * </ul></li>
+ * </ul>
+ * </li>
  * </ul>
  *
  * @see UserAuthenticator
@@ -77,6 +66,7 @@ import org.kawanfw.sql.util.Tag;
 public class WebServiceUserAuthenticator implements UserAuthenticator {
 
     private Properties properties = null;
+    private String database = null;
     private Logger logger = null;
 
     /*
@@ -99,6 +89,8 @@ public class WebServiceUserAuthenticator implements UserAuthenticator {
 	    File file = PropertiesFileStore.get();
 	    properties = PropertiesFileUtil.getProperties(file);
 	}
+
+	this.database = Objects.requireNonNull(database, "database cannot be null!");
 
 	String url = properties.getProperty("webServiceUserAuthenticator.url");
 	String timeoutSecondsStr = properties.getProperty("webServiceUserAuthenticator.timeoutSeconds");
@@ -127,7 +119,7 @@ public class WebServiceUserAuthenticator implements UserAuthenticator {
 	Map<String, String> parametersMap = buildParametersMap(username, password);
 
 	String jsonResult = buildJsonResult(username, url, connectTimeout, readTimeout, parametersMap);
-	
+
 	if (jsonResult == null) {
 	    return false;
 	}
@@ -165,9 +157,11 @@ public class WebServiceUserAuthenticator implements UserAuthenticator {
 
 	} catch (Exception e) {
 	    if (logger == null) {
-		logger = new DefaultDatabaseConfigurator().getLogger();
+		DatabaseConfigurator databaseConfigurator = InjectedClassesStore.get().getDatabaseConfigurators()
+			.get(database);
+		logger = databaseConfigurator.getLogger();
 	    }
-	    logger.log(Level.SEVERE,
+	    logger.error(
 		    getInitTag() + "Error when parsing jsonResult of Authentication Web Service: " + e.getMessage());
 	    return false;
 	}
@@ -182,7 +176,8 @@ public class WebServiceUserAuthenticator implements UserAuthenticator {
      * @return
      * @throws IOException
      */
-    private String buildJsonResult(String username, String url, int connectTimeout, int readTimeout, Map<String, String> parametersMap) throws IOException {
+    private String buildJsonResult(String username, String url, int connectTimeout, int readTimeout,
+	    Map<String, String> parametersMap) throws IOException {
 	SimpleHttpClient simpleHttpClient = new SimpleHttpClient(connectTimeout, readTimeout);
 
 	String jsonResult = null;
@@ -190,9 +185,11 @@ public class WebServiceUserAuthenticator implements UserAuthenticator {
 	    jsonResult = simpleHttpClient.callWithPost(new URL(url), parametersMap);
 	} catch (Exception e) {
 	    if (logger == null) {
-		logger = new DefaultDatabaseConfigurator().getLogger();
+		DatabaseConfigurator databaseConfigurator = InjectedClassesStore.get().getDatabaseConfigurators()
+			.get(database);
+		logger = databaseConfigurator.getLogger();
 	    }
-	    logger.log(Level.SEVERE, getInitTag() + "Username " + username
+	    logger.error(getInitTag() + "Username " + username
 		    + " can not authenticate. Error when calling SimpleHttpClient: " + e.getMessage());
 	    return null;
 	}

@@ -1,40 +1,22 @@
 /*
- * This file is part of AceQL HTTP.
- * AceQL HTTP: SQL Over HTTP
- * Copyright (C) 2021,  KawanSoft SAS
- * (http://www.kawansoft.com). All rights reserved.
+ * Copyright (c)2022 KawanSoft S.A.S. All rights reserved.
+ * 
+ * Use of this software is governed by the Business Source License included
+ * in the LICENSE.TXT file in the project's root directory.
  *
- * AceQL HTTP is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
+ * Change Date: 2026-11-01
  *
- * AceQL HTTP is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301  USA
- *
- * Any modifications to this file must keep this entire header
- * intact.
+ * On the date above, in accordance with the Business Source License, use
+ * of this software will be governed by version 2.0 of the Apache License.
  */
-
 package org.kawanfw.sql.tomcat;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import org.kawanfw.sql.servlet.AceQLLicenseFileFinder;
 import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesUtil;
-import org.kawanfw.sql.tomcat.license.LicenseExpirationDisplayer;
 import org.kawanfw.sql.util.SqlTag;
 import org.kawanfw.sql.util.TimestampUtil;
-import org.kawanfw.sql.version.EditionUtil;
 import org.kawanfw.sql.version.VersionWrapper;
 
 /**
@@ -54,12 +36,6 @@ public class TomcatStarterMessages {
         	+ TimestampUtil.getHumanTimestampNoMillisNow() + "...");
         System.out.println(SqlTag.SQL_PRODUCT_START + " " + VersionWrapper.getServerVersion());
         
-        if (! EditionUtil.isCommunityEdition()) {
-            File licenseFile = AceQLLicenseFileFinder.getLicenseFile();
-            System.out.println(SqlTag.SQL_PRODUCT_START + " Using License File:");
-            System.out.println(SqlTag.SQL_PRODUCT_START + "  -> " + licenseFile);
-            System.out.println(SqlTag.SQL_PRODUCT_START + "  -> " + new LicenseExpirationDisplayer(licenseFile).getExpirationInfo());
-        }
     }
 
     /**
@@ -80,6 +56,8 @@ public class TomcatStarterMessages {
     
         System.out.println(runningMessage);
         System.out.println();
+        
+        
     }
 
     /**

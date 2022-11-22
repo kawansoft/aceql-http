@@ -1,26 +1,13 @@
 /*
- * This file is part of AceQL HTTP.
- * AceQL HTTP: SQL Over HTTP
- * Copyright (C) 2021,  KawanSoft SAS
- * (http://www.kawansoft.com). All rights reserved.
+ * Copyright (c)2022 KawanSoft S.A.S. All rights reserved.
+ * 
+ * Use of this software is governed by the Business Source License included
+ * in the LICENSE.TXT file in the project's root directory.
  *
- * AceQL HTTP is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
+ * Change Date: 2026-11-01
  *
- * AceQL HTTP is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301  USA
- *
- * Any modifications to this file must keep this entire header
- * intact.
+ * On the date above, in accordance with the Business Source License, use
+ * of this software will be governed by version 2.0 of the Apache License.
  */
 package org.kawanfw.sql.tomcat;
 
@@ -87,7 +74,7 @@ public class TomcatStarterUtil {
 
 	Set<String> databases = getDatabaseNames(properties);
 
-	testDatabasesLimit(databases);
+	//testDatabasesLimit(databases);
 	
 	for (String database : databases) {
 	    createAndStoreDataSource(properties, database.trim());
@@ -95,17 +82,17 @@ public class TomcatStarterUtil {
 	
     }
     
-    /**
-     * Do not accept more than 2 databases in Community editions
-     * @param databases
-     * @throws UnsupportedOperationException
-     */
-    public static void testDatabasesLimit(Set<String> databases) throws UnsupportedOperationException {
-	if (databases.size() > 2 & EditionUtil.isCommunityEdition()) {
-	    throw new UnsupportedOperationException(
-		    Tag.PRODUCT + " " + "Loading more than 2 SQL databases " + Tag.REQUIRES_ACEQL_ENTERPRISE_EDITION);
-	}
-    }
+//    /**
+//     * Do not accept more than 2 databases in Community editions
+//     * @param databases
+//     * @throws UnsupportedOperationException
+//     */
+//    public static void testDatabasesLimit(Set<String> databases) throws UnsupportedOperationException {
+//	if (databases.size() > 2 & EditionUtil.isCommunityEdition()) {
+//	    throw new UnsupportedOperationException(
+//		    Tag.PRODUCT + " " + "Loading more than 2 SQL databases " + Tag.REQUIRES_ACEQL_ENTERPRISE_EDITION);
+//	}
+//    }
 
 
     public static void addServlets(Properties properties, Context rootCtx) throws IOException, SQLException {
@@ -113,12 +100,12 @@ public class TomcatStarterUtil {
 	if (properties == null) {
 	    throw new IllegalArgumentException("properties is null");
 	}
+	
+//	ServletNamesGetter servletNamesGetter = ServletsNamesGetterCreator.createInstance();
+//	Set<String> servlets= servletNamesGetter.getServlets(properties);
+	
+	Set<String> servlets = AdvancedServletNamesGetterWrap.getServletsWrap(properties);
 
-	//Set<String> servlets = getServlets(properties);
-	
-	ServletNamesGetter servletNamesGetter = ServletsNamesGetterCreator.createInstance();
-	Set<String> servlets= servletNamesGetter.getServlets(properties);
-	
 	if (servlets.isEmpty()) {
 	    return;
 	}
@@ -206,7 +193,7 @@ public class TomcatStarterUtil {
 	    databaseSet.add(databaseArray[i].trim());
 	}
 
-	testDatabasesLimit(databaseSet);
+	//testDatabasesLimit(databaseSet);
 	return databaseSet;
     }
 
@@ -263,7 +250,7 @@ public class TomcatStarterUtil {
 		throw new DatabaseConfigurationException("Server is in Stateless Mode: Connection pool must be in default auto commit. Please fix configuration.");
 	    }
 	    
-	    if (new SqlUtil(connection).isDB2() && EditionUtil.isCommunityEdition()) {
+	    if (new SqlUtil(connection).isDB2() && ! EditionUtil.isEnterpriseEdition()) {
 		throw new UnsupportedOperationException(Tag.PRODUCT + " " + "DB2 is not supported and "
 			+ Tag.REQUIRES_ACEQL_ENTERPRISE_EDITION);
 	    }

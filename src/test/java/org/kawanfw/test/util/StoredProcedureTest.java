@@ -1,5 +1,13 @@
-/**
+/*
+ * Copyright (c)2022 KawanSoft S.A.S. All rights reserved.
+ * 
+ * Use of this software is governed by the Business Source License included
+ * in the LICENSE.TXT file in the project's root directory.
  *
+ * Change Date: 2026-11-01
+ *
+ * On the date above, in accordance with the Business Source License, use
+ * of this software will be governed by version 2.0 of the Apache License.
  */
 package org.kawanfw.test.util;
 
@@ -13,7 +21,6 @@ import java.sql.Types;
 
 import javax.json.Json;
 import javax.json.JsonArray;
-import javax.json.JsonObject;
 import javax.json.JsonReader;
 import javax.json.JsonValue;
 
@@ -33,6 +40,8 @@ public class StoredProcedureTest {
      */
     public static void main(String[] args) throws Exception {
 
+	parseJson();
+	
 	// Change it to change test SQL engine
 	ConnectionLoader.sqlEngine = SqlTestParms.SQLSERVER_MS_DRIVER;
 
@@ -152,16 +161,19 @@ public class StoredProcedureTest {
     	],
 	 */
 
-	String jsonContent =
-	"[{\"out_param_two\":\"13\"}, {\"out_param_three\":\"12\"}]";
+	//String jsonContent =
+	//"[{\"out_param_two\":\"13\"}, {\"out_param_three\":\"12\"}]";
 
+	String jsonContent =
+	"[\"3\",\"\"]";
+	
         JsonReader reader = Json.createReader(new StringReader(jsonContent));
         JsonArray jsonArray = reader.readArray();
 
 	for (JsonValue jsonValue : jsonArray) {
 	    System.out.println(jsonValue.toString());
-	    JsonObject jsonObject = (JsonObject)jsonValue;
-	    System.out.println(jsonObject.keySet());
+	    //JsonObject jsonObject = (JsonObject)jsonValue;
+	    //System.out.println(jsonObject.keySet());
 	}
 
     }

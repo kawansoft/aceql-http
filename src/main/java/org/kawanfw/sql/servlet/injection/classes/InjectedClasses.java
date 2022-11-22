@@ -1,31 +1,20 @@
 /*
- * This file is part of AceQL HTTP.
- * AceQL HTTP: SQL Over HTTP
- * Copyright (C) 2021,  KawanSoft SAS
- * (http://www.kawansoft.com). All rights reserved.
+ * Copyright (c)2022 KawanSoft S.A.S. All rights reserved.
+ * 
+ * Use of this software is governed by the Business Source License included
+ * in the LICENSE.TXT file in the project's root directory.
  *
- * AceQL HTTP is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
+ * Change Date: 2026-11-01
  *
- * AceQL HTTP is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301  USA
- *
- * Any modifications to this file must keep this entire header
- * intact.
+ * On the date above, in accordance with the Business Source License, use
+ * of this software will be governed by version 2.0 of the Apache License.
  */
 package org.kawanfw.sql.servlet.injection.classes;
 
-import java.util.List;
+import java.io.IOException;
+import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadPoolExecutor;
 
@@ -37,6 +26,7 @@ import org.kawanfw.sql.api.server.blob.BlobUploadConfigurator;
 import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
 import org.kawanfw.sql.api.server.firewall.trigger.SqlFirewallTrigger;
 import org.kawanfw.sql.api.server.listener.UpdateListener;
+import org.kawanfw.sql.api.server.logging.LoggerCreator;
 import org.kawanfw.sql.api.server.session.SessionConfigurator;
 
 /**
@@ -57,10 +47,10 @@ public class InjectedClasses {
     private Map<String, DatabaseConfigurator> databaseConfigurators = new ConcurrentHashMap<>();
 
     /** The map of (database, List<SqlFirewallTrigger>) */
-    private Map<String, List<SqlFirewallTrigger>> sqlFirewallTriggerMap = new ConcurrentHashMap<>();
-	
+    private Map<String, Set<SqlFirewallTrigger>> sqlFirewallTriggerMap = new ConcurrentHashMap<>();
+
     /** The map of (database, List<SqlFirewallManager>) */
-    private Map<String, List<SqlFirewallManager>> sqlFirewallManagerMap = new ConcurrentHashMap<>();
+    private Map<String, Set<SqlFirewallManager>> sqlFirewallManagerMap = new ConcurrentHashMap<>();
 
     /** The BlobUploadConfigurator instance */
     private BlobUploadConfigurator blobUploadConfigurator = null;
@@ -75,23 +65,34 @@ public class InjectedClasses {
     private ThreadPoolExecutor threadPoolExecutor = null;
 
     /** The map of (database, List<UpdateListener>) */
-    private Map<String, List<UpdateListener>> updateListenerMap = new ConcurrentHashMap<>();
-    
+    private Map<String, Set<UpdateListener>> updateListenerMap = new ConcurrentHashMap<>();
+
+    private Set<LoggerCreator> loggerCreatorSet = new LinkedHashSet<>();
+
     private InjectedClasses(InjectedClassesBuilder injectedClassesBuilder) {
+
 	this.userAuthenticator = injectedClassesBuilder.userAuthenticator;
 	this.requestHeadersAuthenticator = injectedClassesBuilder.requestHeadersAuthenticator;
 	this.databaseConfigurators = injectedClassesBuilder.databaseConfigurators;
 	this.sqlFirewallTriggerMap = injectedClassesBuilder.sqlFirewallTriggerMap;
-	
+
 	this.sqlFirewallManagerMap = injectedClassesBuilder.sqlFirewallManagerMap;
 
 	this.blobUploadConfigurator = injectedClassesBuilder.blobUploadConfigurator;
 	this.blobDownloadConfigurator = injectedClassesBuilder.blobDownloadConfigurator;
 	this.sessionConfigurator = injectedClassesBuilder.sessionConfigurator;
 	this.threadPoolExecutor = injectedClassesBuilder.threadPoolExecutor;
-	
-	this.updateListenerMap = injectedClassesBuilder.updateListenerMap;
 
+	this.updateListenerMap = injectedClassesBuilder.updateListenerMap;
+	this.loggerCreatorSet = injectedClassesBuilder.loggerCreatorSet;
+
+    }
+
+    /**
+     * @return the loggerCreatorSet
+     */
+    public Set<LoggerCreator> getLoggerCreatorSet() {
+	return loggerCreatorSet;
     }
 
     /**
@@ -115,22 +116,20 @@ public class InjectedClasses {
 	return databaseConfigurators;
     }
 
-   
     /**
      * @return the sqlFirewallTriggers
      */
-    public Map<String, List<SqlFirewallTrigger>> getSqlFirewallTriggerMap() {
-        return sqlFirewallTriggerMap;
+    public Map<String, Set<SqlFirewallTrigger>> getSqlFirewallTriggerMap() {
+	return sqlFirewallTriggerMap;
     }
 
     /**
      * @return the sqlFirewallManagerMap
      */
-    public Map<String, List<SqlFirewallManager>> getSqlFirewallManagerMap() {
+    public Map<String, Set<SqlFirewallManager>> getSqlFirewallManagerMap() {
 	return sqlFirewallManagerMap;
     }
 
-    
     /**
      * @return the blobUploadConfigurator
      */
@@ -159,15 +158,12 @@ public class InjectedClasses {
 	return threadPoolExecutor;
     }
 
- 
     /**
      * @return the updateListenerMap
      */
-    public Map<String, List<UpdateListener>> getUpdateListenerMap() {
-        return updateListenerMap;
+    public Map<String, Set<UpdateListener>> getUpdateListenerMap() {
+	return updateListenerMap;
     }
-
-
 
     public static class InjectedClassesBuilder {
 	/** The UserAuthenticator instance */
@@ -180,10 +176,10 @@ public class InjectedClasses {
 	private Map<String, DatabaseConfigurator> databaseConfigurators = new ConcurrentHashMap<>();
 
 	/** The map of (database, list<SqlFirewallTrigger>) */
-	private Map<String, List<SqlFirewallTrigger>> sqlFirewallTriggerMap = new ConcurrentHashMap<>();
-	
+	private Map<String, Set<SqlFirewallTrigger>> sqlFirewallTriggerMap = new ConcurrentHashMap<>();
+
 	/** The map of (database, List<SqlFirewallManager>) */
-	private Map<String, List<SqlFirewallManager>> sqlFirewallManagerMap = new ConcurrentHashMap<>();
+	private Map<String, Set<SqlFirewallManager>> sqlFirewallManagerMap = new ConcurrentHashMap<>();
 
 	/** The BlobUploadConfigurator instance */
 	private BlobUploadConfigurator blobUploadConfigurator = null;
@@ -198,8 +194,12 @@ public class InjectedClasses {
 	private ThreadPoolExecutor threadPoolExecutor = null;
 
 	/** The map of (database, List<UpdateListener>) */
-	private Map<String, List<UpdateListener>> updateListenerMap = new ConcurrentHashMap<>();
+	private Map<String, Set<UpdateListener>> updateListenerMap = new ConcurrentHashMap<>();
 
+	/** Use to publish a end of startup all info about Loggers used */
+	private Set<LoggerCreator> loggerCreatorSet = new LinkedHashSet<>();
+
+	private Set<String> loggerCreatorNameSet = new LinkedHashSet<>();
 
 	public InjectedClassesBuilder userAuthenticator(UserAuthenticator userAuthenticator) {
 	    this.userAuthenticator = userAuthenticator;
@@ -214,16 +214,24 @@ public class InjectedClasses {
 
 	public InjectedClassesBuilder databaseConfigurators(Map<String, DatabaseConfigurator> databaseConfigurators) {
 	    this.databaseConfigurators = databaseConfigurators;
+	    for (Map.Entry<String, DatabaseConfigurator> entry : databaseConfigurators.entrySet()) {
+		addObjectToLoggers(entry.getValue());
+	    }
 	    return this;
 	}
 
-	public InjectedClassesBuilder sqlFirewallTriggerMap(Map<String, List<SqlFirewallTrigger>> sqlFirewallTriggerMap) {
-	    this.sqlFirewallTriggerMap = sqlFirewallTriggerMap;
-	    return this;
-	}
-
-	public InjectedClassesBuilder sqlFirewallManagerMap(Map<String, List<SqlFirewallManager>> sqlFirewallManagerMap) {
+	public InjectedClassesBuilder sqlFirewallManagerMap(
+		Map<String, Set<SqlFirewallManager>> sqlFirewallManagerMap) {
 	    this.sqlFirewallManagerMap = sqlFirewallManagerMap;
+	    return this;
+	}
+
+	public InjectedClassesBuilder sqlFirewallTriggerMap(
+		Map<String, Set<SqlFirewallTrigger>> sqlFirewallTriggerMap) {
+	    this.sqlFirewallTriggerMap = sqlFirewallTriggerMap;
+	    for (Map.Entry<String, Set<SqlFirewallTrigger>> entry : sqlFirewallTriggerMap.entrySet()) {
+		addSetToLoggers(entry.getValue());
+	    }
 	    return this;
 	}
 
@@ -243,19 +251,21 @@ public class InjectedClasses {
 	}
 
 	/**
-	 * Necessary, because Database Configurators are needed when building firewall...
+	 * Necessary, because Database Configurators are needed when building
+	 * firewall...
+	 * 
 	 * @return
 	 */
 	public Map<String, DatabaseConfigurator> getDatabaseConfigurators() {
 	    return databaseConfigurators;
 	}
-	
+
 	public InjectedClassesBuilder threadPoolExecutor(ThreadPoolExecutor threadPoolExecutor) {
 	    this.threadPoolExecutor = threadPoolExecutor;
 	    return this;
 	}
-	
-	public InjectedClassesBuilder updateListenerMap(Map<String, List<UpdateListener>> updateListenerMap) {
+
+	public InjectedClassesBuilder updateListenerMap(Map<String, Set<UpdateListener>> updateListenerMap) {
 	    this.updateListenerMap = updateListenerMap;
 	    return this;
 	}
@@ -263,20 +273,48 @@ public class InjectedClasses {
 	// Return the finally constructed User object
 	public InjectedClasses build() {
 	    InjectedClasses injectedClasses = new InjectedClasses(this);
-	    //validateUserObject(injectedClasses);
+	    // validateUserObject(injectedClasses);
 	    return injectedClasses;
+	}
+
+	/**
+	 * Add to Loggers if object is a Logger
+	 * 
+	 * @param object
+	 */
+	private void addObjectToLoggers(Object object) {
+	    try {
+		if (object instanceof LoggerCreator) {
+		    LoggerCreator loggerCreator = (LoggerCreator) object;
+		    if (!loggerCreatorNameSet.contains(loggerCreator.getLogger().getName())) {
+			loggerCreatorSet.add(loggerCreator);
+			loggerCreatorNameSet.add(loggerCreator.getLogger().getName());
+		    }
+		}
+	    } catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	    }
+	}
+
+	/**
+	 * Add to Loggers if object of Set is a Logger
+	 * 
+	 * @param object
+	 */
+
+	private void addSetToLoggers(Set<?> set) {
+	    for (Object object : set) {
+		addObjectToLoggers(object);
+	    }
 	}
 
 	@SuppressWarnings("unused")
 	private void validateUserObject(InjectedClasses injectedClasses) {
-	    // HACK NDP
-	    // TODO LATER
+	    // FUTURE USAGE
 	    // Do some basic validations to check
 	    // if user object does not break any assumption of system
 	}
-
-
-
 
     }
 

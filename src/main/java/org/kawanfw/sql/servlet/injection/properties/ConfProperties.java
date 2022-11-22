@@ -1,33 +1,19 @@
 /*
- * This file is part of AceQL HTTP.
- * AceQL HTTP: SQL Over HTTP
- * Copyright (C) 2021,  KawanSoft SAS
- * (http://www.kawansoft.com). All rights reserved.
+ * Copyright (c)2022 KawanSoft S.A.S. All rights reserved.
+ * 
+ * Use of this software is governed by the Business Source License included
+ * in the LICENSE.TXT file in the project's root directory.
  *
- * AceQL HTTP is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
+ * Change Date: 2026-11-01
  *
- * AceQL HTTP is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301  USA
- *
- * Any modifications to this file must keep this entire header
- * intact.
+ * On the date above, in accordance with the Business Source License, use
+ * of this software will be governed by version 2.0 of the Apache License.
  */
-
 package org.kawanfw.sql.servlet.injection.properties;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -57,19 +43,20 @@ public class ConfProperties {
     private String jwtSessionConfiguratorSecretValue = null;
     private Set<String> userServlets = new HashSet<>();
 
-    private Map<String, List<String>> sqlFirewallManagerClassNamesMap = new ConcurrentHashMap<>();
+    private Map<String, Set<String>> sqlFirewallManagerClassNamesMap = new ConcurrentHashMap<>();
     private boolean statelessMode;
     
-    private Map<String, List<String>> sqlFirewallTriggerClassNamesMap = new ConcurrentHashMap<>(); 
-    private Map<String, List<String>> updateListenerClassNamesMap = new ConcurrentHashMap<>();
+    private Map<String, Set<String>> sqlFirewallTriggerClassNamesMap = new ConcurrentHashMap<>(); 
+    private Map<String, Set<String>> updateListenerClassNamesMap = new ConcurrentHashMap<>();
 
-    
+    private Map<String, OperationalMode> operationalModeMap =  new ConcurrentHashMap<>(); 
+
     private ConfProperties(ConfPropertiesBuilder confPropertiesBuilder) {
 	this.databaseSet = confPropertiesBuilder.databaseSet;
 	this.databaseConfiguratorClassNameMap = confPropertiesBuilder.databaseConfiguratorClassNameMap;
 
 	this.servletCallName = confPropertiesBuilder.servletCallName;
-
+	
 	this.blobDownloadConfiguratorClassName = confPropertiesBuilder.blobDownloadConfiguratorClassName;
 	this.blobUploadConfiguratorClassName = confPropertiesBuilder.blobUploadConfiguratorClassName;
 
@@ -84,8 +71,9 @@ public class ConfProperties {
 	this.statelessMode = confPropertiesBuilder.statelessMode;
 	
 	this.sqlFirewallTriggerClassNamesMap = confPropertiesBuilder.sqlFirewallTriggerClassNamesMap;
-	
 	this.updateListenerClassNamesMap = confPropertiesBuilder.updateListenerClassNamesMap;
+	
+	this.operationalModeMap = confPropertiesBuilder.operationalModeMap;
     }
 
     /**
@@ -119,7 +107,6 @@ public class ConfProperties {
     public String getServletCallName() {
 	return servletCallName;
     }
-
 
     /**
      * @return the blobDownloadConfiguratorClassName
@@ -174,16 +161,16 @@ public class ConfProperties {
      * @return the sqlFirewallManagerClassNamesMap
      */
     @SuppressWarnings("unused")
-    private Map<String, List<String>> getSqlFirewallManagerClassNamesMap() {
+    private Map<String, Set<String>> getSqlFirewallManagerClassNamesMap() {
 	return sqlFirewallManagerClassNamesMap;
     }
 
-    public List<String> getSqlFirewallManagerClassNames(String database) {
+    public Set<String> getSqlFirewallManagerClassNames(String database) {
 	return sqlFirewallManagerClassNamesMap.get(database);
     }
     
     
-    public List<String> getSqlFirewallTriggerClassNames(String database) {
+    public Set<String> getSqlFirewallTriggerClassNames(String database) {
 	return sqlFirewallTriggerClassNamesMap.get(database);
     }
     
@@ -193,13 +180,22 @@ public class ConfProperties {
     public boolean isStatelessMode() {
 	return statelessMode;
     }
+    
+    public Map<String, OperationalMode> getOperationalModeMap() {
+	return operationalModeMap;
+    }
+
+    public OperationalMode getOperationalModeMap(String database) {
+	Objects.requireNonNull(database, "database cannnot be null!");
+	return operationalModeMap.get(database);
+    }
 
  
     /**
      * @return the sqlFirewallTriggerClassNamesMap
      */
     @SuppressWarnings("unused")
-    private Map<String, List<String>> getSqlFirewallTriggerClassNamesMap() {
+    private Map<String, Set<String>> getSqlFirewallTriggerClassNamesMap() {
         return sqlFirewallTriggerClassNamesMap;
     }
 
@@ -207,11 +203,11 @@ public class ConfProperties {
      * @return the updateListenerClassNamesMap
      */
     @SuppressWarnings("unused")
-    private Map<String, List<String>> getUpdateListenerClassNamesMap() {
+    private Map<String, Set<String>> getUpdateListenerClassNamesMap() {
         return updateListenerClassNamesMap;
     }
 
-    public List<String> getUpdateListenerClassNames(String database) {
+    public Set<String> getUpdateListenerClassNames(String database) {
 	return updateListenerClassNamesMap.get(database);
     }
 
@@ -223,7 +219,7 @@ public class ConfProperties {
 	private Map<String, String> databaseConfiguratorClassNameMap = new ConcurrentHashMap<>();
 
 	private String servletCallName = null;
-
+	
 	private String blobDownloadConfiguratorClassName = null;
 	private String blobUploadConfiguratorClassName = null;
 
@@ -234,12 +230,14 @@ public class ConfProperties {
 	private String jwtSessionConfiguratorSecretValue = null;
 	private Set<String> userServlets = new HashSet<>();
 
-	private Map<String, List<String>> sqlFirewallManagerClassNamesMap = new ConcurrentHashMap<>();
+	private Map<String, Set<String>> sqlFirewallManagerClassNamesMap = new ConcurrentHashMap<>();
 	private boolean statelessMode;
 	
-	private Map<String, List<String>> sqlFirewallTriggerClassNamesMap = new ConcurrentHashMap<>(); 
-	private Map<String, List<String>> updateListenerClassNamesMap = new ConcurrentHashMap<>();
-	    
+	private Map<String, Set<String>> sqlFirewallTriggerClassNamesMap = new ConcurrentHashMap<>(); 
+	private Map<String, Set<String>> updateListenerClassNamesMap = new ConcurrentHashMap<>();
+
+	private Map<String, OperationalMode> operationalModeMap = new ConcurrentHashMap<>();
+
 	public ConfPropertiesBuilder databaseSet(Set<String> databaseSet) {
 	    this.databaseSet = databaseSet;
 	    return this;
@@ -291,18 +289,18 @@ public class ConfProperties {
 	    return this;
 	}
 
-	public ConfPropertiesBuilder sqlFirewallManagerClassNamesMap(Map<String, List<String>> sqlFirewallManagerClassNamesMap) {
+	public ConfPropertiesBuilder sqlFirewallManagerClassNamesMap(Map<String, Set<String>> sqlFirewallManagerClassNamesMap) {
 	    this.sqlFirewallManagerClassNamesMap = sqlFirewallManagerClassNamesMap;
 	    return this;
 	}
 	
 
-	public ConfPropertiesBuilder sqlFirewallTriggerClassNamesMap(Map<String, List<String>> sqlFirewallTriggerClassNamesMap) {
+	public ConfPropertiesBuilder sqlFirewallTriggerClassNamesMap(Map<String, Set<String>> sqlFirewallTriggerClassNamesMap) {
 	    this.sqlFirewallTriggerClassNamesMap = sqlFirewallTriggerClassNamesMap;
 	    return this;
 	}
 
-	public ConfPropertiesBuilder updateListenerClassNamesMap(Map<String, List<String>> updateListenerClassNamesMap) {
+	public ConfPropertiesBuilder updateListenerClassNamesMap(Map<String, Set<String>> updateListenerClassNamesMap) {
 	    this.updateListenerClassNamesMap = updateListenerClassNamesMap;
 	    return this;
 	}
@@ -312,6 +310,10 @@ public class ConfProperties {
 	    return this;
 	}
 
+	public ConfPropertiesBuilder operationalModeMap(Map<String, OperationalMode> operationalModeMap) {
+	    this.operationalModeMap = operationalModeMap;
+	    return this;
+	}
 	
 	// Return the finally constructed User object
 	public ConfProperties build() {
@@ -322,8 +324,7 @@ public class ConfProperties {
 
 	@SuppressWarnings("unused")
 	private void validateUserObject(ConfProperties confProperties) {
-	    // HACK NDP 
-	    // TODO LATER
+	    // FUTURE USAGE
 	    // Do some basic validations to check
 	    // if user object does not break any assumption of system
 	}

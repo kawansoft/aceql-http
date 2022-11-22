@@ -1,26 +1,13 @@
 /*
- * This file is part of AceQL HTTP.
- * AceQL HTTP: SQL Over HTTP
- * Copyright (C) 2021,  KawanSoft SAS
- * (http://www.kawansoft.com). All rights reserved.
+ * Copyright (c)2022 KawanSoft S.A.S. All rights reserved.
+ * 
+ * Use of this software is governed by the Business Source License included
+ * in the LICENSE.TXT file in the project's root directory.
  *
- * AceQL HTTP is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
+ * Change Date: 2026-11-01
  *
- * AceQL HTTP is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301  USA
- *
- * Any modifications to this file must keep this entire header
- * intact.
+ * On the date above, in accordance with the Business Source License, use
+ * of this software will be governed by version 2.0 of the Apache License.
  */
 package org.kawanfw.sql.api.server.firewall;
 
@@ -36,26 +23,28 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-import org.kawanfw.sql.api.server.DefaultDatabaseConfigurator;
+import org.kawanfw.sql.api.server.DatabaseConfigurator;
 import org.kawanfw.sql.api.server.SqlEvent;
 import org.kawanfw.sql.api.server.StatementNormalizer;
 import org.kawanfw.sql.api.util.firewall.TextStatementsListLoader;
+import org.kawanfw.sql.servlet.injection.classes.InjectedClassesStore;
+import org.kawanfw.sql.servlet.util.logging.LoggerWrapper;
 import org.kawanfw.sql.util.FrameworkDebug;
 import org.kawanfw.sql.util.SqlTag;
 import org.kawanfw.sql.util.TimestampUtil;
+import org.slf4j.Logger;
 
 /**
- * Firewall manager that denies incoming SQL statements which are also
- * sequentially stored in a text file.
+ * This SQL Firewall Manager denies incoming SQL statements that match a list of
+ * SQL statements stored in the following text file sequentially, one per line.
  * 
  * The name of the text file that will be used by a database is: &nbsp;
  * <code>&lt;database&gt;_deny_blacklist.txt</code>, where {@code database} is
- * the name of the database declared in the {@code aceql.properties} files.<br>
+ * the name of the database declared in the {@code aceql-server.properties}
+ * files.<br>
  * The file must be located in the same directory as the
- * {@code aceql.properties} file used when starting the AceQL server.<br>
+ * {@code aceql-server.properties} file used when starting the AceQL server.<br>
  * <br>
  * Each line of the text file must contain one statement, without quotes (") or
  * ending semicolon (;). <br>
@@ -67,7 +56,7 @@ import org.kawanfw.sql.util.TimestampUtil;
  * @author Nicolas de Pomereu
  * @since 11.0
  */
-public class DenyOnBlacklistManager extends DefaultSqlFirewallManager implements SqlFirewallManager {
+public class DenyOnBlacklistManager implements SqlFirewallManager {
 
     private static boolean DEBUG = FrameworkDebug.isSet(DenyOnBlacklistManager.class);
 
@@ -94,7 +83,8 @@ public class DenyOnBlacklistManager extends DefaultSqlFirewallManager implements
 	String sql = sqlEvent.getSql();
 
 	// Normalize the statement
-	sql = StatementNormalizer.getNormalized(sql);
+	StatementNormalizer statementNormalizer = new StatementNormalizer(sql);
+	sql = statementNormalizer.getNormalized();
 
 	// Load all statements for database, if not already done:
 	loadStatements(database, "_deny_blacklist.txt");
@@ -104,6 +94,26 @@ public class DenyOnBlacklistManager extends DefaultSqlFirewallManager implements
 	    return true;
 	}
 	return !deniedStatementsForDb.contains(sql);
+    }
+
+    /**
+     * @return <code><b>true</b></code>. (Client programs will be allowed to create
+     *         raw <code>Statement</code>, i.e. call statements without parameters.)
+     */
+    @Override
+    public boolean allowStatementClass(String username, String database, Connection connection)
+	    throws IOException, SQLException {
+	return true;
+    }
+
+    /**
+     * @return <code><b>true</b></code>. (Client programs will be allowed to call
+     *         the Metadata Query API).
+     */
+    @Override
+    public boolean allowMetadataQuery(String username, String database, Connection connection)
+	    throws IOException, SQLException {
+	return true;
     }
 
     /**
@@ -130,16 +140,19 @@ public class DenyOnBlacklistManager extends DefaultSqlFirewallManager implements
 	debug("currentFileTime: " + currentFileTime);
 
 	if (storedFileTime != null && !currentFileTime.equals(storedFileTime) && allowReload) {
-	    
+
 	    // Reset statements Map
 	    statementMap = new HashMap<>();
-	    
+
 	    String logInfo = TimestampUtil.getHumanTimestampNow() + " " + SqlTag.USER_CONFIGURATION + " Reloading "
 		    + this.getClass().getSimpleName() + " configuration file: " + textFile;
 	    System.err.println(logInfo);
-	    DefaultDatabaseConfigurator defaultDatabaseConfigurator = new DefaultDatabaseConfigurator();
-	    Logger logger = defaultDatabaseConfigurator.getLogger();
-	    logger.log(Level.WARNING, logInfo);
+
+	    DatabaseConfigurator databaseConfigurator = InjectedClassesStore.get().getDatabaseConfigurators()
+		    .get(database);
+	    Logger logger = databaseConfigurator.getLogger();
+
+	    LoggerWrapper.log(logger, logInfo);
 	    storedFileTime = currentFileTime;
 	}
 
@@ -157,7 +170,6 @@ public class DenyOnBlacklistManager extends DefaultSqlFirewallManager implements
 	    storedFileTime = currentFileTime;
 	}
     }
-
 
     private void debug(String string) {
 	if (DEBUG) {

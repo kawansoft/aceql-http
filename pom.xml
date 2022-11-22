@@ -3,25 +3,16 @@
 
 	<groupId>com.aceql</groupId>
 	<artifactId>aceql-http</artifactId>
-	<version>11.1</version>
+	<version>12.0</version>
 	<packaging>jar</packaging>
 
 	<name>AceQL HTTP</name>
-	<url>http://www.aceql.com</url>
+	<url>https://www.aceql.com</url>
 
     <build>
         <finalName>${project.artifactId}</finalName>
         <sourceDirectory>src/main/java</sourceDirectory>
         <plugins>
-            <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <!-- <version>3.9.0</version> --> 
-                <version>3.9.0</version>
-                <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                </configuration>
-            </plugin>
 
         <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -39,6 +30,7 @@
 
         </plugins>
     </build>
+
 
    <!-- For cloudmersive APIs --> 
 
@@ -72,11 +64,7 @@
       <scope>test</scope>
     </dependency>
 
-		<dependency>
-			<groupId>org.postgresql</groupId>
-			<artifactId>postgresql</artifactId>
-			<version>42.3.3</version>
-		</dependency>
+
 		<dependency>
 			<groupId>commons-cli</groupId>
 			<artifactId>commons-cli</artifactId>
@@ -104,11 +92,13 @@
 			<artifactId>commons-lang3</artifactId>
 			<version>3.11</version>
 		</dependency>
+
 		<dependency>
 			<groupId>com.auth0</groupId>
 			<artifactId>java-jwt</artifactId>
-			<version>3.11.0</version>
+            <version>4.2.1</version>
 		</dependency>
+
 		<dependency>
 			<groupId>commons-codec</groupId>
 			<artifactId>commons-codec</artifactId>
@@ -124,7 +114,7 @@
 		<dependency>
 			<groupId>us.fatehi</groupId>
 			<artifactId>schemacrawler</artifactId>
-			<version>16.3.0</version>
+            <version>16.3.0</version>
 		</dependency>
 
 		<dependency>
@@ -133,18 +123,41 @@
 			<version>4.2</version>
 		</dependency>
 
+    <!-- https://mvnrepository.com/artifact/com.github.waffle/waffle-jna -->
         <dependency>
             <groupId>com.github.waffle</groupId>
             <artifactId>waffle-jna</artifactId>
-            <version>3.1.1</version>
+            <version>3.2.0</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.3.7</version>
+        </dependency>
 
-		<dependency>
-			<groupId>com.oracle.database.jdbc</groupId>
-			<artifactId>ojdbc6</artifactId>
-			<version>11.2.0.4</version>
-		</dependency>
+        <!-- Oracle dependecy is necessary to compile -->
+        <!-- https://mvnrepository.com/artifact/com.oracle.database.jdbc/ojdbc6 -->
+        <dependency>
+            <groupId>com.oracle.database.jdbc</groupId>
+            <artifactId>ojdbc6</artifactId>
+            <version>11.2.0.4</version>
+        </dependency>
+
+<!--
+        Uncomment for SQL Server & MySQL Tests 
+        <dependency>
+            <groupId>com.microsoft.sqlserver</groupId>
+            <artifactId>mssql-jdbc</artifactId>
+            <version>9.2.1.jre8</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
+            <version>8.0.31</version>
+        </dependency>
+-->
 
 		<dependency>
 			<groupId>org.jasypt</groupId>
@@ -152,11 +165,6 @@
 			<version>1.9.3</version>
 		</dependency>
 
-        <dependency>
-          <groupId>com.github.rkpunjal.sqlsafe</groupId>
-          <artifactId>sql-injection-safe</artifactId>
-          <version>1.0.2</version>
-        </dependency>
 
 		<!-- Servlets & Tomcat -->
 
@@ -169,13 +177,13 @@
 		<dependency>
 			<groupId>org.apache.tomcat.embed</groupId>
 			<artifactId>tomcat-embed-core</artifactId>
-			<version>9.0.64</version>
+			<version>9.0.69</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.apache.tomcat</groupId>
 			<artifactId>tomcat-jdbc</artifactId>
-			<version>9.0.64</version>
+			<version>9.0.69</version>
 		</dependency>
 
 
@@ -193,16 +201,36 @@
 		    <version>2.3.2</version>
 		</dependency>
 
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.3.0</version>
+        </dependency>
+
 	</dependencies>
+
+    <dependencyManagement>
+      <dependencies>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>2.0.0</version>
+        </dependency>
+
+      </dependencies>
+    </dependencyManagement>
+
+
 	<organization>
 		<name>KawanSoft</name>
-		<url>http://www.kawansoft.com</url>
+		<url>https://www.kawansoft.com</url>
 	</organization>
 
 	<licenses>
 		<license>
-			<name>LGPL 2.1</name>
-			<url>http://www.gnu.org/licenses/lgpl-2.1.html</url>
+			<name>Business Source License 1.1</name>
+			<url>https://github.com/kawansoft/aceql-http/blob/12.0/LICENSE.TXT</url>
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
@@ -238,4 +266,9 @@ AceQL HTTP is provided with three client SDK:
 - The AceQL C# Client SDK allows to wrap the HTTP APIs using Microsoft SQL Server like calls in their code, just like they would for a local database.
 - The AceQL Java Client JDBC Driver allows to wrap the HTTP APIs using JDBC calls in their code, just like they would for a local database.
 - The AceQL Python Client SDK allows SQL calls to be encoded with standard unmodified DB-API 2.0 syntax</description>
+
+    <properties>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+    </properties>
 </project>

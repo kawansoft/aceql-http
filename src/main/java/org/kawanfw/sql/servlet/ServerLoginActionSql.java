@@ -1,26 +1,13 @@
 /*
- * This file is part of AceQL HTTP.
- * AceQL HTTP: SQL Over HTTP
- * Copyright (C) 2021,  KawanSoft SAS
- * (http://www.kawansoft.com). All rights reserved.
+ * Copyright (c)2022 KawanSoft S.A.S. All rights reserved.
+ * 
+ * Use of this software is governed by the Business Source License included
+ * in the LICENSE.TXT file in the project's root directory.
  *
- * AceQL HTTP is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
+ * Change Date: 2026-11-01
  *
- * AceQL HTTP is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301  USA
- *
- * Any modifications to this file must keep this entire header
- * intact.
+ * On the date above, in accordance with the Business Source License, use
+ * of this software will be governed by version 2.0 of the Apache License.
  */
 package org.kawanfw.sql.servlet;
 
@@ -46,6 +33,7 @@ import org.kawanfw.sql.servlet.sql.json_return.ExceptionReturner;
 import org.kawanfw.sql.servlet.sql.json_return.JsonErrorReturn;
 import org.kawanfw.sql.servlet.sql.json_return.JsonOkReturn;
 import org.kawanfw.sql.util.FrameworkDebug;
+import org.kawanfw.sql.util.IpUtil;
 
 /**
  * Login.
@@ -108,8 +96,16 @@ public class ServerLoginActionSql extends HttpServlet {
 		return;
 	    }
 
-	    String ipAddress = request.getRemoteAddr();
-	    boolean isOk = userAuthenticator.login(username, password.toCharArray(), database, ipAddress);
+	    String ipAddress = IpUtil.getRemoteAddr(request);
+	    boolean isOk = false;
+	    
+	    // If userAuthenticator is null, none has been defined in .properties file, so we allow login
+	    if (userAuthenticator != null) {
+		isOk = userAuthenticator.login(username, password.toCharArray(), database, ipAddress);		
+	    }
+	    else {
+		isOk = true;
+	    }
 
 	    debug("login isOk: " + isOk + " (login: " + username + ")");
 

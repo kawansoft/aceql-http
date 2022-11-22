@@ -1,26 +1,13 @@
 /*
- * This file is part of AceQL HTTP.
- * AceQL HTTP: SQL Over HTTP
- * Copyright (C) 2021,  KawanSoft SAS
- * (http://www.kawansoft.com). All rights reserved.
+ * Copyright (c)2022 KawanSoft S.A.S. All rights reserved.
+ * 
+ * Use of this software is governed by the Business Source License included
+ * in the LICENSE.TXT file in the project's root directory.
  *
- * AceQL HTTP is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
+ * Change Date: 2026-11-01
  *
- * AceQL HTTP is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301  USA
- *
- * Any modifications to this file must keep this entire header
- * intact.
+ * On the date above, in accordance with the Business Source License, use
+ * of this software will be governed by version 2.0 of the Apache License.
  */
 package org.kawanfw.sql.servlet;
 
@@ -56,6 +43,7 @@ import org.kawanfw.sql.servlet.sql.json_return.JsonErrorReturn;
 import org.kawanfw.sql.servlet.sql.json_return.JsonOkReturn;
 import org.kawanfw.sql.tomcat.TomcatSqlModeStore;
 import org.kawanfw.sql.util.FrameworkDebug;
+import org.kawanfw.sql.util.IpUtil;
 import org.kawanfw.sql.util.SqlTag;
 import org.kawanfw.sql.util.TimestampUtil;
 import org.kawanfw.sql.version.VersionWrapper;
@@ -93,22 +81,12 @@ public class ServerSqlManager extends HttpServlet {
     private static boolean INIT_DONE = false;
 
     private String propertiesFileStr;
-    private static String licenseFileStr = null;
-
-    /**
-     * Returns the name of the license file, null if not exists
-     * @return the name of the license file, null if not exists
-     */
-    public static String getLicenseFileStr() {
-        return licenseFileStr;
-    }
 
     @Override
     public void init(ServletConfig config) throws ServletException {
 	super.init(config);
 	INIT_DONE = false;
 	propertiesFileStr = config.getInitParameter("properties");
-	licenseFileStr = config.getInitParameter("licenseFile");
 
 	if (!TomcatSqlModeStore.isTomcatEmbedded()) {
 	    System.out.println(SqlTag.SQL_PRODUCT_INIT + " " + TimestampUtil.getHumanTimestampNoMillisNow()
@@ -122,7 +100,6 @@ public class ServerSqlManager extends HttpServlet {
 	}
 
 	debug("propertiesFileStr: " + propertiesFileStr);
-	debug("licenseFileStr   : " + licenseFileStr);
 
     }
 
@@ -151,7 +128,7 @@ public class ServerSqlManager extends HttpServlet {
     protected void service(HttpServletRequest request, HttpServletResponse response)
 	    throws ServletException, IOException {
 
-	createClassesSynchronized(propertiesFileStr, licenseFileStr);
+	createClassesSynchronized(propertiesFileStr);
 
 	/* Call in async mode */
 	final AsyncContext asyncContext = request.startAsync();
@@ -183,16 +160,15 @@ public class ServerSqlManager extends HttpServlet {
      * Create all classes.
      * 
      * @param propertiesFileStr
-     * @param licenseFileStr
      * @throws ServletException
      * @throws IOException
      */
-    public static synchronized void createClassesSynchronized(String propertiesFileStr, String licenseFileStr)
+    public static synchronized void createClassesSynchronized(String propertiesFileStr)
 	    throws ServletException, IOException {
 	if (!INIT_DONE) {
 	    INIT_DONE = true;
 	    InjectedClassesManagerNew injectedClassesManager = new InjectedClassesManagerNew();
-	    injectedClassesManager.createClasses(propertiesFileStr, licenseFileStr);
+	    injectedClassesManager.createClasses(propertiesFileStr);
 	}
     }
 
@@ -241,7 +217,7 @@ public class ServerSqlManager extends HttpServlet {
 	request.setCharacterEncoding("UTF-8");
 
 	debug("after RequestInfoStore.init(request);");
-	debug(request.getRemoteAddr());
+	debug(IpUtil.getRemoteAddr(request));
 
 	// Wrap the HttpServletRequest in roder to allow to set new parameters
 	HttpServletRequestHolder requestHolder = new HttpServletRequestHolder(request);
@@ -343,6 +319,14 @@ public class ServerSqlManager extends HttpServlet {
     private boolean validateHeaders(HttpServletRequest request, HttpServletResponse response, OutputStream out)
 	    throws IOException {
 
+	RequestHeadersAuthenticator requestHeadersAuthenticator = InjectedClassesStore.get()
+		.getRequestHeadersAuthenticator();
+	
+	// If no implementation defined in .properties file: requestHeadersAuthenticator is null, so we grant access
+	if (requestHeadersAuthenticator == null) {
+	    return true;
+	}
+	
 	// Request Headers;
 	Map<String, String> headers = new HashMap<>();
 	Enumeration<?> e = request.getHeaderNames();
@@ -352,8 +336,6 @@ public class ServerSqlManager extends HttpServlet {
 	    headers.put(key, value);
 	}
 
-	RequestHeadersAuthenticator requestHeadersAuthenticator = InjectedClassesStore.get()
-		.getRequestHeadersAuthenticator();
 	boolean checked = requestHeadersAuthenticator.validate(headers);
 
 	if (!checked) {

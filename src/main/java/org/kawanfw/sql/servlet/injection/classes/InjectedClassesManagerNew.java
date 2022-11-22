@@ -1,28 +1,14 @@
 /*
- * This file is part of AceQL HTTP.
- * AceQL HTTP: SQL Over HTTP
- * Copyright (C) 2021,  KawanSoft SAS
- * (http://www.kawansoft.com). All rights reserved.
+ * Copyright (c)2022 KawanSoft S.A.S. All rights reserved.
+ * 
+ * Use of this software is governed by the Business Source License included
+ * in the LICENSE.TXT file in the project's root directory.
  *
- * AceQL HTTP is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
+ * Change Date: 2026-11-01
  *
- * AceQL HTTP is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301  USA
- *
- * Any modifications to this file must keep this entire header
- * intact.
+ * On the date above, in accordance with the Business Source License, use
+ * of this software will be governed by version 2.0 of the Apache License.
  */
-
 package org.kawanfw.sql.servlet.injection.classes;
 
 import java.io.File;
@@ -32,9 +18,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.ThreadPoolExecutor;
 
@@ -45,27 +32,26 @@ import org.kawanfw.sql.api.server.DatabaseConfigurator;
 import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
 import org.kawanfw.sql.api.server.firewall.trigger.SqlFirewallTrigger;
 import org.kawanfw.sql.api.server.listener.UpdateListener;
+import org.kawanfw.sql.api.server.logging.LoggerCreator;
 import org.kawanfw.sql.api.server.session.JwtSessionConfigurator;
 import org.kawanfw.sql.servlet.injection.classes.InjectedClasses.InjectedClassesBuilder;
-import org.kawanfw.sql.servlet.injection.classes.blob.BlobDownloadConfiguratorClassNameBuilder;
-import org.kawanfw.sql.servlet.injection.classes.blob.BlobDownloadConfiguratorClassNameBuilderCreator;
-import org.kawanfw.sql.servlet.injection.classes.blob.BlobUploadConfiguratorClassNameBuilder;
-import org.kawanfw.sql.servlet.injection.classes.blob.BlobUploadConfiguratorClassNameBuilderCreator;
 import org.kawanfw.sql.servlet.injection.classes.creator.BlobDownloadConfiguratorCreator;
 import org.kawanfw.sql.servlet.injection.classes.creator.BlobUploadConfiguratorCreator;
 import org.kawanfw.sql.servlet.injection.classes.creator.DatabaseConfiguratorCreator;
 import org.kawanfw.sql.servlet.injection.classes.creator.SessionConfiguratorCreator;
 import org.kawanfw.sql.servlet.injection.classes.creator.SqlFirewallsCreator;
 import org.kawanfw.sql.servlet.injection.classes.creator.UserAuthenticatorCreator;
-import org.kawanfw.sql.servlet.injection.classes.validator.CommunityValidator;
-import org.kawanfw.sql.servlet.injection.classes.validator.EnterpriseWarner;
+import org.kawanfw.sql.servlet.injection.classes.validator.ThreadPoolCapacityWarner;
+import org.kawanfw.sql.servlet.injection.properties.ConfProperties;
+import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesManager;
 import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesStore;
 import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesUtil;
+import org.kawanfw.sql.servlet.injection.properties.OperationalMode;
+import org.kawanfw.sql.servlet.injection.properties.PropertiesFileStore;
+import org.kawanfw.sql.servlet.injection.properties.PropertiesFileUtil;
 import org.kawanfw.sql.tomcat.TomcatSqlModeStore;
 import org.kawanfw.sql.tomcat.TomcatStarterMessages;
 import org.kawanfw.sql.tomcat.TomcatStarterUtil;
-import org.kawanfw.sql.tomcat.properties.threadpool.ThreadPoolExecutorBuilder;
-import org.kawanfw.sql.tomcat.properties.threadpool.ThreadPoolExecutorBuilderCreator;
 import org.kawanfw.sql.util.FrameworkDebug;
 import org.kawanfw.sql.util.SqlTag;
 import org.kawanfw.sql.util.Tag;
@@ -81,14 +67,12 @@ public class InjectedClassesManagerNew {
      * Created all injected classes instances.
      * 
      * @param propertiesFileStr
-     * @param licenseFileStr
      * @throws ServletException
      * @throws IOException
      */
-    public void createClasses(String propertiesFileStr, String licenseFileStr) throws ServletException, IOException {
+    public void createClasses(String propertiesFileStr) throws ServletException, IOException {
 	
 	debug("propertiesFileStr: " + propertiesFileStr);
-	debug("licenseFileStr   : " + licenseFileStr);
 	
 	classNameToLoad = null;
 	try {
@@ -100,45 +84,47 @@ public class InjectedClassesManagerNew {
 	    // Test if we are in Native Tomcat and do specific stuff.
 	    if (!TomcatSqlModeStore.isTomcatEmbedded()) {
 
-		Objects.requireNonNull(licenseFileStr, "The init param \\\"properties\\\" has not been defined in web.xml!");
-
-		if (licenseFileStr != null) {
-		    File licenseFile = new File(licenseFileStr);
-		    if (!licenseFile.exists()) {
-			throw new FileNotFoundException(
-				"The file defined by the  web.xml init param \"licenseFile\" does not exist:"
-					+ licenseFile);
-		    }
-		}
+		Objects.requireNonNull(propertiesFileStr, "The init param \\\"properties\\\" has not been defined in web.xml!");
 
 		TomcatStarterMessages.printBeginMessage();
-		NativeTomcatElementsBuilder nativeTomcatElementsBuilder = NativeTomcatElementsBuilderCreator
-			.createInstance();
-		nativeTomcatElementsBuilder.create(propertiesFileStr);
+//		
+//		NativeTomcatElementsBuilder nativeTomcatElementsBuilder = NativeTomcatElementsBuilderCreator
+//			.createInstance();
+//		nativeTomcatElementsBuilder.create(propertiesFileStr);
+		
+	        createNativeTomcat(propertiesFileStr);
+		
 	    }
 		
-	    CommunityValidator communityValidator = new CommunityValidator(propertiesFileStr);
-	    communityValidator.validate();
+	    //CommunityValidator communityValidator = new CommunityValidator(propertiesFileStr);
+	    //communityValidator.validate();
 	    
 	    Set<String> databases = ConfPropertiesStore.get().getDatabaseNames();
 
-	    TomcatStarterUtil.testDatabasesLimit(databases);
+	    //TomcatStarterUtil.testDatabasesLimit(databases);
 
 	    // Create out InjectedClasses builder
 	    InjectedClassesBuilder injectedClassesBuilder = new InjectedClassesBuilder();
 
-	    // Ouf first loader is for authentication
+//	    LoggerCreator loggerCreator = loadLoggerCreator();
+//	    injectedClassesBuilder.loggerCreator(loggerCreator);
+	    
+	    // Ouf second loader is for authentication
 	    loadUserAuthenticator(injectedClassesBuilder);
 
 	    loadRequestHeadersAuthenticator(injectedClassesBuilder);
 
-	    ThreadPoolExecutorBuilder threadPoolExecutorBuilder = ThreadPoolExecutorBuilderCreator.createInstance();
+	    //ThreadPoolExecutorBuilder threadPoolExecutorBuilder = ThreadPoolExecutorBuilderCreator.createInstance();
+	    //ThreadPoolExecutor threadPoolExecutor = threadPoolExecutorBuilder.build();
+	    //injectedClassesBuilder.threadPoolExecutor(threadPoolExecutor);
+	    
+	    AdvancedThreadPoolExecutorBuilder threadPoolExecutorBuilder = new AdvancedThreadPoolExecutorBuilder();
 	    ThreadPoolExecutor threadPoolExecutor = threadPoolExecutorBuilder.build();
 	    injectedClassesBuilder.threadPoolExecutor(threadPoolExecutor);
 	    
 	    // Check ThreadPoolExecutor parameters
-	    EnterpriseWarner enterpriseWarner = new EnterpriseWarner(propertiesFileStr);
-	    enterpriseWarner.warnOnThreadPoolExecutorParams();
+	    ThreadPoolCapacityWarner threadPoolCapacityWarner = new ThreadPoolCapacityWarner(propertiesFileStr);
+	    threadPoolCapacityWarner.warnOnThreadPoolExecutorParams();
 	    
 	    // All elements that depend on database
 	    loadPerDatabase(databases, injectedClassesBuilder);
@@ -152,6 +138,9 @@ public class InjectedClassesManagerNew {
 
 	    // Store the InjectedClasses instance statically
 	    InjectedClassesStore.set(injectedClasses);
+	    	    
+	    //printWarningMessageNotProtecting(databases);
+	    displayLoggerCreators();
 	    
 	    if (!TomcatSqlModeStore.isTomcatEmbedded()) {
 		TomcatStarterMessages.printFinalOkMessage();
@@ -184,6 +173,69 @@ public class InjectedClassesManagerNew {
     }
 
     /**
+     * @param databases
+     */
+    public void printWarningMessageNotProtecting(Set<String> databases) {
+	for (String database : databases) {
+	OperationalMode operationalMode = ConfPropertiesStore.get().getOperationalModeMap(database);
+	if (! operationalMode.equals(OperationalMode.protecting)) {
+	    System.out.println(SqlTag.SQL_PRODUCT_START);
+	    System.out.println(SqlTag.SQL_PRODUCT_START + " WARNING : Operational Mode is set to \"" +  operationalMode.toString()  + "\" for database " + database);
+	    System.out.println(SqlTag.SQL_PRODUCT_START + " WARNING : Firewall is not protecting the database: " + database);
+	}
+	}
+    }
+
+    /**
+     * @param injectedClasses
+     */
+    public void displayLoggerCreators() {
+	//System.out.println(Tag.RUNNING_PRODUCT + " Loggers elements: ");
+	Set<LoggerCreator> loggerCreators = new LinkedHashSet<>();
+
+	for (LoggerCreator loggerCreator : loggerCreators) {
+	    System.out.println(Tag.RUNNING_PRODUCT + "  -> " + loggerCreator.getElements());
+	}
+    }
+    
+    /**
+     * Create elements for Native Tomcat
+     * @param propertiesFileStr
+     * @throws DatabaseConfigurationException
+     * @throws FileNotFoundException
+     * @throws IOException
+     * @throws SQLException
+     */
+    public void createNativeTomcat(String propertiesFileStr)
+	    throws DatabaseConfigurationException, FileNotFoundException, IOException, SQLException {
+	if (propertiesFileStr == null || propertiesFileStr.isEmpty()) {
+	    throw new DatabaseConfigurationException(Tag.PRODUCT_USER_CONFIG_FAIL
+		    + " AceQL servlet param-name \"properties\" not set. Impossible to load the AceQL Server properties file.");
+	}
+	File file = new File(propertiesFileStr);
+  
+	if (!file.exists()) {
+	    throw new DatabaseConfigurationException(
+		    Tag.PRODUCT_USER_CONFIG_FAIL + " properties file not found: " + propertiesFileStr);
+	}
+	
+	PropertiesFileStore.set(file);
+	Properties properties = PropertiesFileUtil.getProperties(file);
+	
+	System.out.println(TomcatStarterUtil.getJavaInfo());
+	System.out.println(SqlTag.SQL_PRODUCT_START + " " + "Using properties file: ");
+	System.out.println(SqlTag.SQL_PRODUCT_START + "  -> " + PropertiesFileStore.get());
+  
+	// Create all configuration properties from the Properties and store
+	ConfPropertiesManager confPropertiesManager = new ConfPropertiesManager(properties);
+	ConfProperties confProperties = confPropertiesManager.createConfProperties();
+	ConfPropertiesStore.set(confProperties);
+  
+	// Create the default DataSource if necessary
+	TomcatStarterUtil.createAndStoreDataSources(properties);
+    }
+    
+    /**
      * Loads elements that depend on databases.
      * 
      * @param databases
@@ -202,22 +254,22 @@ public class InjectedClassesManagerNew {
 	    throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException,
 	    IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException, IOException {
 	// Load all the classes and set our InjectedClassesBuilder instance
-	Map<String, List<SqlFirewallManager>> sqlFirewallManagerMap = new HashMap<>();
+	Map<String, Set<SqlFirewallManager>> sqlFirewallManagerMap = new HashMap<>();
 	Map<String, DatabaseConfigurator> databaseConfigurators = new HashMap<>();
-	Map<String, List<SqlFirewallTrigger>> sqlFirewallTriggerMap = new HashMap<>();
-	Map<String, List<UpdateListener>> updateListenerMap = new HashMap<>();
+	Map<String, Set<SqlFirewallTrigger>> sqlFirewallTriggerMap = new HashMap<>();
+	Map<String, Set<UpdateListener>> updateListenerMap = new HashMap<>();
 
 	for (String database : databases) {
-	    List<SqlFirewallManager> sqlFirewalManagers = loadSqlFirewallManagers(database);
+	    Set<SqlFirewallManager> sqlFirewalManagers = loadSqlFirewallManagers(database);
 	    sqlFirewallManagerMap.put(database, sqlFirewalManagers);
 
 	    DatabaseConfigurator databaseConfigurator = loadDatabaseConfigurator(database);
 	    databaseConfigurators.put(database, databaseConfigurator);
 
-	    List<SqlFirewallTrigger> sqlFirewallTriggers = loadSqlFirewallTriggers(database, injectedClassesBuilder);
+	    Set<SqlFirewallTrigger> sqlFirewallTriggers = loadSqlFirewallTriggers(database, injectedClassesBuilder);
 	    sqlFirewallTriggerMap.put(database, sqlFirewallTriggers);
 
-	    List<UpdateListener> updateListeners = loadUpdateListeners(database, injectedClassesBuilder);
+	    Set<UpdateListener> updateListeners = loadUpdateListeners(database, injectedClassesBuilder);
 	    updateListenerMap.put(database, updateListeners);
 	}
 
@@ -272,12 +324,12 @@ public class InjectedClassesManagerNew {
 	    throws ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException,
 	    InvocationTargetException, NoSuchMethodException, SecurityException, SQLException {
 	// Load Configurators for SessionManager
-	// String sessionManagerConfiguratorClassName =
-	// ConfPropertiesStore.get().getSessionConfiguratorClassName();
 
-	SessionConfiguratorClassNameBuilder sessionConfiguratorClassNameBuilder = SessionConfiguratorClassNameBuilderCreator
-		.createInstance();
-	String sessionConfiguratorClassName = sessionConfiguratorClassNameBuilder.getClassName();
+//	SessionConfiguratorClassNameBuilder sessionConfiguratorClassNameBuilder = SessionConfiguratorClassNameBuilderCreator
+//		.createInstance();
+//	String sessionConfiguratorClassName = sessionConfiguratorClassNameBuilder.getClassName();
+	
+        String sessionConfiguratorClassName = ConfPropertiesStore.get().getSessionConfiguratorClassName();
 
 	if (ConfPropertiesUtil.isStatelessMode()
 		&& !sessionConfiguratorClassName.endsWith(JwtSessionConfigurator.class.getSimpleName())) {
@@ -317,10 +369,12 @@ public class InjectedClassesManagerNew {
 	    throws ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException,
 	    InvocationTargetException, NoSuchMethodException, SecurityException, SQLException {
 
-	BlobUploadConfiguratorClassNameBuilder blobUploadConfiguratorClassNameBuilder = BlobUploadConfiguratorClassNameBuilderCreator
-		.createInstance();
-	String blobUploadConfiguratorClassName = blobUploadConfiguratorClassNameBuilder.getClassName();
+//	BlobUploadConfiguratorClassNameBuilder blobUploadConfiguratorClassNameBuilder = BlobUploadConfiguratorClassNameBuilderCreator
+//		.createInstance();
+//	String blobUploadConfiguratorClassName = blobUploadConfiguratorClassNameBuilder.getClassName();
 
+        String blobUploadConfiguratorClassName = ConfPropertiesStore.get().getBlobUploadConfiguratorClassName();
+	
 	classNameToLoad = blobUploadConfiguratorClassName;
 	BlobUploadConfiguratorCreator blobUploadConfiguratorCreator = new BlobUploadConfiguratorCreator(
 		blobUploadConfiguratorClassName);
@@ -353,9 +407,11 @@ public class InjectedClassesManagerNew {
 	    InvocationTargetException, NoSuchMethodException, SecurityException, SQLException {
 	// Load Configurators for Blobs/Clobs
 
-	BlobDownloadConfiguratorClassNameBuilder blobDownloadConfiguratorClassNameBuilder = BlobDownloadConfiguratorClassNameBuilderCreator
-		.createInstance();
-	String blobDownloadConfiguratorClassName = blobDownloadConfiguratorClassNameBuilder.getClassName();
+	//BlobDownloadConfiguratorClassNameBuilder blobDownloadConfiguratorClassNameBuilder = BlobDownloadConfiguratorClassNameBuilderCreator
+	//	.createInstance();
+	//String blobDownloadConfiguratorClassName = blobDownloadConfiguratorClassNameBuilder.getClassName();
+	
+        String blobDownloadConfiguratorClassName = ConfPropertiesStore.get().getBlobDownloadConfiguratorClassName();
 
 	classNameToLoad = blobDownloadConfiguratorClassName;
 	BlobDownloadConfiguratorCreator blobDownloadConfiguratorCreator = new BlobDownloadConfiguratorCreator(
@@ -393,8 +449,11 @@ public class InjectedClassesManagerNew {
 	injectedClassesBuilder.userAuthenticator(userAuthenticatorCreator.getUserAuthenticator());
 	userAuthenticatorClassName = userAuthenticatorCreator.getUserAuthenticatorClassName();
 
-	System.out.println(SqlTag.SQL_PRODUCT_START + " Loading UserAuthenticator class:");
-	System.out.println(SqlTag.SQL_PRODUCT_START + "  -> " + userAuthenticatorClassName);
+	if (userAuthenticatorClassName != null) {
+	    System.out.println(SqlTag.SQL_PRODUCT_START + " Loading UserAuthenticator class:");
+	    System.out.println(SqlTag.SQL_PRODUCT_START + "  -> " + userAuthenticatorClassName);
+	}
+
     }
 
     /**
@@ -420,11 +479,14 @@ public class InjectedClassesManagerNew {
 
 	classNameToLoad = requestHeadersAuthenticatorClassName;
 
-	RequestHeadersAuthenticatorLoader requestHeadersAuthenticatorLoader = RequestHeadersAuthenticatorLoaderCreator
-		.createInstance();
-	requestHeadersAuthenticatorLoader.loadRequestHeadersAuthenticator(injectedClassesBuilder,
-		requestHeadersAuthenticatorClassName);
-
+//	RequestHeadersAuthenticatorLoader requestHeadersAuthenticatorLoader = RequestHeadersAuthenticatorLoaderCreator
+//		.createInstance();
+//	requestHeadersAuthenticatorLoader.loadRequestHeadersAuthenticator(injectedClassesBuilder,
+//		requestHeadersAuthenticatorClassName);
+	
+	AdvancedRequestHeadersAuthenticatorLoader advancedRequestHeadersAuthenticatorLoader 
+		=new AdvancedRequestHeadersAuthenticatorLoader();
+	advancedRequestHeadersAuthenticatorLoader.loadRequestHeadersAuthenticator(injectedClassesBuilder, requestHeadersAuthenticatorClassName);
     }
 
     /**
@@ -443,17 +505,22 @@ public class InjectedClassesManagerNew {
      * @throws SQLException
      * @throws IOException
      */
-    private List<UpdateListener> loadUpdateListeners(String database, InjectedClassesBuilder injectedClassesBuilder)
+    private Set<UpdateListener> loadUpdateListeners(String database, InjectedClassesBuilder injectedClassesBuilder)
 	    throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException,
 	    IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException, IOException {
 
-	List<String> updateListenerClassNames = ConfPropertiesStore.get().getUpdateListenerClassNames(database);
+	Set<String> updateListenerClassNames = ConfPropertiesStore.get().getUpdateListenerClassNames(database);
 	classNameToLoad = updateListenerClassNames.toString();
 
-	UpdateListenersLoader updateListenersLoader = UpdateListenersLoaderCreator.createInstance();
-	List<UpdateListener> updateListeners = updateListenersLoader.loadUpdateListeners(database,
+	
+//	UpdateListenersLoader updateListenersLoader = UpdateListenersLoaderCreator.createInstance();
+//	List<UpdateListener> updateListeners = updateListenersLoader.loadUpdateListeners(database,
+//		injectedClassesBuilder, updateListenerClassNames);
+		
+	AdvancedUpdateListenersLoader updateListenersLoader = new AdvancedUpdateListenersLoader();
+	Set<UpdateListener> updateListeners = updateListenersLoader.loadUpdateListeners(database,
 		injectedClassesBuilder, updateListenerClassNames);
-
+	
 	// Update class name(s) to load
 	classNameToLoad = updateListenersLoader.getClassNameToLoad();
 
@@ -476,18 +543,23 @@ public class InjectedClassesManagerNew {
      * @throws SQLException
      * @throws IOException
      */
-    private List<SqlFirewallTrigger> loadSqlFirewallTriggers(String database,
+    private Set<SqlFirewallTrigger> loadSqlFirewallTriggers(String database,
 	    InjectedClassesBuilder injectedClassesBuilder)
 	    throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException,
 	    IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException, IOException {
 
-	List<String> sqlFirewallTriggerClassNames = ConfPropertiesStore.get().getSqlFirewallTriggerClassNames(database);
+	Set<String> sqlFirewallTriggerClassNames = ConfPropertiesStore.get().getSqlFirewallTriggerClassNames(database);
 	classNameToLoad = sqlFirewallTriggerClassNames.toString();
 
-	SqlFirewallTriggersLoader sqlFirewallTriggersLoader = SqlFirewallTriggersLoaderCreator.createInstance();
-	List<SqlFirewallTrigger> sqlFirewallTriggers = sqlFirewallTriggersLoader.loadSqlFirewallTriggers(database,
-		injectedClassesBuilder, sqlFirewallTriggerClassNames);
 
+//	SqlFirewallTriggersLoader sqlFirewallTriggersLoader = SqlFirewallTriggersLoaderCreator.createInstance();
+//	List<SqlFirewallTrigger> sqlFirewallTriggers = sqlFirewallTriggersLoader.loadSqlFirewallTriggers(database,
+//		injectedClassesBuilder, sqlFirewallTriggerClassNames);
+
+	AdvancedSqlFirewallTriggersLoader sqlFirewallTriggersLoader = new AdvancedSqlFirewallTriggersLoader();
+	Set<SqlFirewallTrigger> sqlFirewallTriggers 
+	= sqlFirewallTriggersLoader.loadSqlFirewallTriggers(database, injectedClassesBuilder, sqlFirewallTriggerClassNames);
+	
 	// Update class name(s) to load
 	classNameToLoad = sqlFirewallTriggersLoader.getClassNameToLoad();
 
@@ -509,11 +581,11 @@ public class InjectedClassesManagerNew {
      * @throws SQLException
      * @throws IOException
      */
-    private List<SqlFirewallManager> loadSqlFirewallManagers(String database)
+    private Set<SqlFirewallManager> loadSqlFirewallManagers(String database)
 	    throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException,
 	    IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException, IOException {
 
-	List<String> sqlFirewallClassNames = ConfPropertiesStore.get().getSqlFirewallManagerClassNames(database);
+	Set<String> sqlFirewallClassNames = ConfPropertiesStore.get().getSqlFirewallManagerClassNames(database);
 	classNameToLoad = sqlFirewallClassNames.toString();
 
 	debug("==> sqlFirewallClassNames: " + sqlFirewallClassNames);
@@ -524,10 +596,14 @@ public class InjectedClassesManagerNew {
 	else
 	    tagSQLFirewallManager = " SQLFirewallManager classes: ";
 
-	System.out.println(SqlTag.SQL_PRODUCT_START + " " + database + " Database - Loading " + tagSQLFirewallManager);
+	
+	if (!sqlFirewallClassNames.isEmpty()) {
+	    System.out.println(
+		    SqlTag.SQL_PRODUCT_START + " " + database + " Database - Loading " + tagSQLFirewallManager);
+	}
 
 	SqlFirewallsCreator sqlFirewallsCreator = new SqlFirewallsCreator(sqlFirewallClassNames);
-	List<SqlFirewallManager> sqlFirewallManagers = sqlFirewallsCreator.getSqlFirewalls();
+	Set<SqlFirewallManager> sqlFirewallManagers = sqlFirewallsCreator.getSqlFirewalls();
 
 	for (SqlFirewallManager sqlFirewallManager : sqlFirewallManagers) {
 	    debug("==> sqlFirewallManager: " + sqlFirewallManager);
@@ -568,15 +644,14 @@ public class InjectedClassesManagerNew {
 	// databaseConfiguratorClassName =
 	// ConfPropertiesStore.get().getDatabaseConfiguratorClassName(database);
 
-	DatabaseConfiguratorClassNameBuilder databaseConfiguratorClassNameBuilder = DatabaseConfiguratorClassNameBuilderCreator
-		.createInstance();
-	String databaseConfiguratorClassName = databaseConfiguratorClassNameBuilder.getClassName(database);
-
+	//DatabaseConfiguratorClassNameBuilder databaseConfiguratorClassNameBuilder = DatabaseConfiguratorClassNameBuilderCreator
+	//	.createInstance();
+	//String databaseConfiguratorClassName = databaseConfiguratorClassNameBuilder.getClassName(database);
+	String databaseConfiguratorClassName = ConfPropertiesStore.get().getDatabaseConfiguratorClassName(database);
+	
 	debug("databaseConfiguratorClassName    : " + databaseConfiguratorClassName);
 
 	// Check spelling with first letter capitalized
-	// HACK NDP
-	// TODO LATER
 	// if (databaseConfiguratorClassName == null ||
 	// databaseConfiguratorClassName.isEmpty()) {
 	// String capitalized =

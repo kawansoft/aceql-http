@@ -1,41 +1,28 @@
 /*
- * This file is part of AceQL HTTP.
- * AceQL HTTP: SQL Over HTTP
- * Copyright (C) 2021,  KawanSoft SAS
- * (http://www.kawansoft.com). All rights reserved.
+ * Copyright (c)2022 KawanSoft S.A.S. All rights reserved.
+ * 
+ * Use of this software is governed by the Business Source License included
+ * in the LICENSE.TXT file in the project's root directory.
  *
- * AceQL HTTP is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
+ * Change Date: 2026-11-01
  *
- * AceQL HTTP is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301  USA
- *
- * Any modifications to this file must keep this entire header
- * intact.
+ * On the date above, in accordance with the Business Source License, use
+ * of this software will be governed by version 2.0 of the Apache License.
  */
-
 package org.kawanfw.sql.api.server.auth;
 
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-import org.kawanfw.sql.api.server.DefaultDatabaseConfigurator;
+import org.kawanfw.sql.api.server.DatabaseConfigurator;
+import org.kawanfw.sql.servlet.injection.classes.InjectedClassesStore;
 import org.kawanfw.sql.servlet.injection.properties.PropertiesFileStore;
 import org.kawanfw.sql.servlet.injection.properties.PropertiesFileUtil;
+import org.kawanfw.sql.servlet.util.logging.LoggerWrapper;
 import org.kawanfw.sql.util.Tag;
+import org.slf4j.Logger;
 
 import waffle.windows.auth.impl.WindowsAuthProviderImpl;
 
@@ -80,21 +67,25 @@ public class WindowsUserAuthenticator implements UserAuthenticator {
 	    return true;
 	} catch (com.sun.jna.platform.win32.Win32Exception Wwn32Exception) {
 	    if (logger == null) {
-		logger = new DefaultDatabaseConfigurator().getLogger();
+		DatabaseConfigurator databaseConfigurator = InjectedClassesStore.get().getDatabaseConfigurators()
+			.get(database);
+		logger = databaseConfigurator.getLogger();
 	    }
-	    logger.log(Level.WARNING, getInitTag() + "WindowsLogin.login refused for " + username);
+	    LoggerWrapper.logError(logger, getInitTag() + "WindowsLogin.login refused for " + username);
 
 	    return false;
 
 	} catch (Exception exception) {
 
 	    if (logger == null) {
-		logger = new DefaultDatabaseConfigurator().getLogger();
+		DatabaseConfigurator databaseConfigurator = InjectedClassesStore.get().getDatabaseConfigurators()
+			.get(database);
+		logger = databaseConfigurator.getLogger();
 	    }
 
 	    // Better to trace stack trace in case of Waffle problem...
-	    logger.log(Level.WARNING,
-		    getInitTag() + "AceQL WindowsLogin.login call failure (Waffle Library): " + exception.toString());
+	    LoggerWrapper.log(logger, 
+		    getInitTag() + "AceQL WindowsLogin.login call failure (Waffle Library): ", exception);
 
 	    return false;
 	}

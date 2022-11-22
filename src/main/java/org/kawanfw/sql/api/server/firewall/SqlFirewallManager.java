@@ -1,26 +1,13 @@
 /*
- * This file is part of AceQL HTTP.
- * AceQL HTTP: SQL Over HTTP
- * Copyright (C) 2021,  KawanSoft SAS
- * (http://www.kawansoft.com). All rights reserved.
+ * Copyright (c)2022 KawanSoft S.A.S. All rights reserved.
+ * 
+ * Use of this software is governed by the Business Source License included
+ * in the LICENSE.TXT file in the project's root directory.
  *
- * AceQL HTTP is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
+ * Change Date: 2026-11-01
  *
- * AceQL HTTP is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301  USA
- *
- * Any modifications to this file must keep this entire header
- * intact.
+ * On the date above, in accordance with the Business Source License, use
+ * of this software will be governed by version 2.0 of the Apache License.
  */
 package org.kawanfw.sql.api.server.firewall;
 
@@ -57,10 +44,6 @@ import org.kawanfw.sql.api.server.StatementAnalyzer;
  * For example, the {@code allowExecuteUpdate()} of each chained
  * {@code SqlFirewallManager} instance must return true in order to allow
  * updates of the database.
- * <p>
- * Note that the framework comes with a default <code>SqlFirewallManager</code>
- * implementation that is *not* secured and should be extended:
- * {@link DefaultSqlFirewallManager}.
  * <p>
  * Built in and ready to use classes that don't require any coding are included.
  * The classes may be chained. See each Javadoc for more details:
@@ -137,22 +120,6 @@ public interface SqlFirewallManager {
      */
     public boolean allowStatementClass(String username, String database, Connection connection)
 	    throws IOException, SQLException;
-
-    /**
-     * Allows to define if the passed username is allowed to call a raw JDBC
-     * {@code Statement.execute}.
-     *
-     * @param username   the client username to check the rule for
-     * @param database   the database name as defined in the JDBC URL field
-     * @param connection The current SQL/JDBC <code>Connection</code>
-     * @return <code>true</code> if the user has the right call a database update
-     *         statement
-     *
-     * @throws IOException  if an IOException occurs
-     * @throws SQLException if a SQLException occurs
-     *
-     */
-    boolean allowExecute(String username, String database, Connection connection) throws IOException, SQLException;
 
     /**
      * Says if the username is allowed call the Metadata Query API for the passed

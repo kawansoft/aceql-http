@@ -1,26 +1,13 @@
 /*
- * This file is part of AceQL HTTP.
- * AceQL HTTP: SQL Over HTTP
- * Copyright (C) 2021,  KawanSoft SAS
- * (http://www.kawansoft.com). All rights reserved.
+ * Copyright (c)2022 KawanSoft S.A.S. All rights reserved.
+ * 
+ * Use of this software is governed by the Business Source License included
+ * in the LICENSE.TXT file in the project's root directory.
  *
- * AceQL HTTP is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
+ * Change Date: 2026-11-01
  *
- * AceQL HTTP is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301  USA
- *
- * Any modifications to this file must keep this entire header
- * intact.
+ * On the date above, in accordance with the Business Source License, use
+ * of this software will be governed by version 2.0 of the Apache License.
  */
 package org.kawanfw.sql.servlet.sql;
 
@@ -37,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
 
 import javax.json.stream.JsonGenerator;
@@ -51,17 +39,21 @@ import org.kawanfw.sql.api.server.SqlEventWrapper;
 import org.kawanfw.sql.api.server.StatementAnalyzer;
 import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
 import org.kawanfw.sql.api.server.listener.UpdateListener;
+import org.kawanfw.sql.api.util.firewall.LearningModeExecutor;
 import org.kawanfw.sql.api.util.firewall.SqlFirewallTriggerWrapper;
 import org.kawanfw.sql.servlet.HttpParameter;
 import org.kawanfw.sql.servlet.ServerSqlManager;
 import org.kawanfw.sql.servlet.connection.RollbackUtil;
 import org.kawanfw.sql.servlet.injection.classes.InjectedClassesStore;
+import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesStore;
+import org.kawanfw.sql.servlet.injection.properties.OperationalMode;
 import org.kawanfw.sql.servlet.sql.json_return.JsonErrorReturn;
 import org.kawanfw.sql.servlet.sql.json_return.JsonSecurityMessage;
 import org.kawanfw.sql.servlet.sql.json_return.JsonUtil;
 import org.kawanfw.sql.servlet.sql.parameters.ServerPreparedStatementParameters;
 import org.kawanfw.sql.servlet.sql.parameters.ServerPreparedStatementParametersUtil;
 import org.kawanfw.sql.util.FrameworkDebug;
+import org.kawanfw.sql.util.IpUtil;
 
 /**
  * @author KawanSoft S.A.S
@@ -85,8 +77,8 @@ public class ServerStatementRawExecute {
 
     private Boolean doPrettyPrinting;
 
-    private List<SqlFirewallManager> sqlFirewallManagers;
-    private List<UpdateListener> updateListeners;
+    private Set<SqlFirewallManager> sqlFirewallManagers;
+    private Set<UpdateListener> updateListeners;
 
     /**
      * Default Constructor
@@ -99,7 +91,7 @@ public class ServerStatementRawExecute {
      */
 
     public ServerStatementRawExecute(HttpServletRequest request, HttpServletResponse response,
-	    List<SqlFirewallManager> sqlFirewallManagers, Connection connection) throws SQLException {
+	    Set<SqlFirewallManager> sqlFirewallManagers, Connection connection) throws SQLException {
 	this.request = request;
 	this.response = response;
 	this.sqlFirewallManagers = sqlFirewallManagers;
@@ -193,7 +185,7 @@ public class ServerStatementRawExecute {
 	    // Throws a SQL exception if the order is not authorized:
 	    debug("before new SqlSecurityChecker()");
 
-	    String ipAddress = request.getRemoteAddr();
+	    String ipAddress = IpUtil.getRemoteAddr(request);
 
 	    checkFirewallGeneral(username, database, sqlOrder, ipAddress);
 	    statement = connection.createStatement();
@@ -315,7 +307,7 @@ public class ServerStatementRawExecute {
 	    String database, String sqlOrder, Statement statement, String ipAddress)
 	    throws IOException, SQLException, SecurityException {
 
-	checkFirewallForAllowExecute(username, database, sqlOrder, ipAddress);
+	// checkFirewallForAllowExecute(username, database, sqlOrder, ipAddress);
 	ServerSqlUtil.setMaxRowsToReturn(request, username, database, statement, databaseConfigurator);
 
 	boolean executeResult = statement.execute(sqlOrder);
@@ -352,7 +344,7 @@ public class ServerStatementRawExecute {
      * Calls the PreparedStatement.execute() method.
      *
      * @param out
-     * @param databaseConfigurator              TODO
+     * @param databaseConfigurator
      * @param username
      * @param database
      * @param sqlOrder
@@ -368,7 +360,8 @@ public class ServerStatementRawExecute {
 	    ServerPreparedStatementParameters serverPreparedStatementParameters, String ipAddress)
 	    throws IOException, SQLException, SecurityException {
 
-	checkFirewallForAllowExecute(username, database, sqlOrder, serverPreparedStatementParameters, ipAddress);
+	// checkFirewallForAllowExecute(username, database, sqlOrder,
+	// serverPreparedStatementParameters, ipAddress);
 	ServerSqlUtil.setMaxRowsToReturn(request, username, database, preparedStatement, databaseConfigurator);
 
 	@SuppressWarnings("unused")
@@ -398,42 +391,6 @@ public class ServerStatementRawExecute {
 
     }
 
-
-    /**
-     * @param username
-     * @param database
-     * @param sqlOrder
-     * @param serverPreparedStatementParameters
-     * @param ipAddress
-     * @throws IOException
-     * @throws SQLException
-     * @throws SecurityException
-     */
-    private void checkFirewallForAllowExecute(String username, String database, String sqlOrder,
-	    ServerPreparedStatementParameters serverPreparedStatementParameters, String ipAddress)
-	    throws IOException, SQLException, SecurityException {
-	boolean isAllowedAfterAnalysis;
-	for (SqlFirewallManager sqlFirewallManager : sqlFirewallManagers) {
-	    isAllowedAfterAnalysis = sqlFirewallManager.allowExecute(username, database, connection);
-
-	    if (!isAllowedAfterAnalysis) {
-
-		SqlEvent sqlEvent = SqlEventWrapper.sqlEventBuild(username, database, ipAddress, sqlOrder,
-			ServerStatementUtil.isPreparedStatement(request),
-			serverPreparedStatementParameters.getParameterValues(), false);
-
-		SqlFirewallTriggerWrapper.runIfStatementRefused(sqlEvent, sqlFirewallManager, connection);
-
-		String message = JsonSecurityMessage.prepStatementNotAllowedBuild(sqlOrder,
-			"Statement not allowed for raw execute call ",
-			serverPreparedStatementParameters.getParameterTypes(),
-			serverPreparedStatementParameters.getParameterValues(), doPrettyPrinting);
-
-		throw new SecurityException(message);
-	    }
-	}
-    }
-
     /**
      * @param username
      * @param database
@@ -447,9 +404,20 @@ public class ServerStatementRawExecute {
     private String checkFirewallGeneral(String username, String database, String sqlOrder,
 	    ServerPreparedStatementParameters serverPreparedStatementParameters)
 	    throws IOException, SQLException, SecurityException {
-	String ipAddress = request.getRemoteAddr();
-
-	boolean isAllowedAfterAnalysis = false;
+	String ipAddress = IpUtil.getRemoteAddr(request);
+	
+	OperationalMode operationalMode = ConfPropertiesStore.get().getOperationalModeMap(database);
+	
+	if (operationalMode.equals(OperationalMode.off)) {
+	    return ipAddress;
+	}
+	
+	if (operationalMode.equals(OperationalMode.learning)) {
+	    LearningModeExecutor.learn(sqlOrder, database);
+	    return ipAddress;
+	}
+	
+	boolean isAllowedAfterAnalysis = true;
 	for (SqlFirewallManager sqlFirewallManager : sqlFirewallManagers) {
 
 	    SqlEvent sqlEvent = SqlEventWrapper.sqlEventBuild(username, database, ipAddress, sqlOrder,
@@ -465,7 +433,7 @@ public class ServerStatementRawExecute {
 	    }
 	}
 
-	if (!isAllowedAfterAnalysis) {
+	if (!isAllowedAfterAnalysis && !operationalMode.equals(OperationalMode.detecting)) {
 	    String message = JsonSecurityMessage.prepStatementNotAllowedBuild(sqlOrder,
 		    "Prepared Statement not allowed", serverPreparedStatementParameters.getParameterTypes(),
 		    serverPreparedStatementParameters.getParameterValues(), doPrettyPrinting);
@@ -513,35 +481,36 @@ public class ServerStatementRawExecute {
 	}
     }
 
-    /**
-     * @param username
-     * @param database
-     * @param sqlOrder
-     * @param ipAddress
-     * @throws IOException
-     * @throws SQLException
-     * @throws SecurityException
-     */
-    private void checkFirewallForAllowExecute(String username, String database, String sqlOrder, String ipAddress)
-	    throws IOException, SQLException, SecurityException {
-	boolean isAllowedExecute;
-	for (SqlFirewallManager sqlFirewallManager : sqlFirewallManagers) {
-	    isAllowedExecute = sqlFirewallManager.allowExecute(username, database, connection);
-
-	    if (!isAllowedExecute) {
-		List<Object> parameterValues = new ArrayList<>();
-		SqlEvent sqlEvent = SqlEventWrapper.sqlEventBuild(username, database, ipAddress, sqlOrder,
-			ServerStatementUtil.isPreparedStatement(request), parameterValues, false);
-
-		SqlFirewallTriggerWrapper.runIfStatementRefused(sqlEvent, sqlFirewallManager, connection);
-
-		String message = JsonSecurityMessage.statementNotAllowedBuild(sqlOrder,
-			"Statement not allowed for for execute or executeUpdate", doPrettyPrinting);
-		throw new SecurityException(message);
-
-	    }
-	}
-    }
+//    /**
+//     * @param username
+//     * @param database
+//     * @param sqlOrder
+//     * @param ipAddress
+//     * @throws IOException
+//     * @throws SQLException
+//     * @throws SecurityException
+//     */
+//    private void checkFirewallForAllowExecute(String username, String database, String sqlOrder, String ipAddress)
+//	    throws IOException, SQLException, SecurityException {
+//	boolean isAllowedExecute;
+//	for (SqlFirewallManager sqlFirewallManager : sqlFirewallManagers) {
+//	    
+//	    isAllowedExecute = sqlFirewallManager.allowExecute(username, database, connection);
+//
+//	    if (!isAllowedExecute) {
+//		List<Object> parameterValues = new ArrayList<>();
+//		SqlEvent sqlEvent = SqlEventWrapper.sqlEventBuild(username, database, ipAddress, sqlOrder,
+//			ServerStatementUtil.isPreparedStatement(request), parameterValues, false);
+//
+//		SqlFirewallTriggerWrapper.runIfStatementRefused(sqlEvent, sqlFirewallManager, connection);
+//
+//		String message = JsonSecurityMessage.statementNotAllowedBuild(sqlOrder,
+//			"Statement not allowed for for execute or executeUpdate", doPrettyPrinting);
+//		throw new SecurityException(message);
+//
+//	    }
+//	}
+//    }
 
     /**
      * @param username
@@ -554,6 +523,18 @@ public class ServerStatementRawExecute {
      */
     private void checkFirewallGeneral(String username, String database, String sqlOrder, String ipAddress)
 	    throws IOException, SQLException, SecurityException {
+		
+	OperationalMode operationalMode = ConfPropertiesStore.get().getOperationalModeMap(database);
+	
+	if (operationalMode.equals(OperationalMode.off)) {
+	    return;
+	}
+
+	if (operationalMode.equals(OperationalMode.learning)) {
+	    LearningModeExecutor.learn(sqlOrder, database);
+	    return;
+	}
+
 	SqlFirewallManager sqlFirewallOnDeny = null;
 	boolean isAllowed = true;
 	for (SqlFirewallManager sqlFirewallManager : sqlFirewallManagers) {
@@ -572,7 +553,7 @@ public class ServerStatementRawExecute {
 	    }
 	}
 
-	if (!isAllowed) {
+	if (!isAllowed)  {
 	    List<Object> parameterValues = new ArrayList<>();
 
 	    SqlEvent sqlEvent = SqlEventWrapper.sqlEventBuild(username, database, ipAddress, sqlOrder,
@@ -581,9 +562,12 @@ public class ServerStatementRawExecute {
 	    // sqlFirewallOnDeny.runIfStatementRefused(sqlEvent, connection);
 	    SqlFirewallTriggerWrapper.runIfStatementRefused(sqlEvent, sqlFirewallOnDeny, connection);
 
-	    String message = JsonSecurityMessage.statementNotAllowedBuild(sqlOrder, "Statement not allowed",
-		    doPrettyPrinting);
-	    throw new SecurityException(message);
+	    if (!operationalMode.equals(OperationalMode.detecting)) {
+		String message = JsonSecurityMessage.statementNotAllowedBuild(sqlOrder, "Statement not allowed",
+			doPrettyPrinting);
+		throw new SecurityException(message);
+	    }
+
 	}
     }
 

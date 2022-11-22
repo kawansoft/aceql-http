@@ -1,26 +1,13 @@
 /*
- * This file is part of AceQL HTTP.
- * AceQL HTTP: SQL Over HTTP
- * Copyright (C) 2021,  KawanSoft SAS
- * (http://www.kawansoft.com). All rights reserved.
+ * Copyright (c)2022 KawanSoft S.A.S. All rights reserved.
+ * 
+ * Use of this software is governed by the Business Source License included
+ * in the LICENSE.TXT file in the project's root directory.
  *
- * AceQL HTTP is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
+ * Change Date: 2026-11-01
  *
- * AceQL HTTP is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301  USA
- *
- * Any modifications to this file must keep this entire header
- * intact.
+ * On the date above, in accordance with the Business Source License, use
+ * of this software will be governed by version 2.0 of the Apache License.
  */
 package org.kawanfw.sql.servlet.sql.json_return;
 
@@ -56,13 +43,16 @@ public class JsonErrorReturn {
     + Version.getVersion() + ") is not compatible with Client SDK. Please upgrade Client SDK.";
     public static final String INVALID_OUTPUT_FORMAT = "The output format is invalid. Should be \"html\" or \"text\".";
     public static final String INVALID_TABLE_NAME = "SQL table not found in database.";
-
+    public static final String ORACLE_SCHEMA_NOT_SUPPORTED = "SchemaCrawler schema generation is not supported with Oracle Database in this AceQL version.";
+    
     public static final String ACCESS_FORBIDDEN_FOR_USERNAME = "Access Forbidden for Username";
 
     public static final int ERROR_JDBC_ERROR = 1;
     public static final int ERROR_ACEQL_ERROR = 2;
     public static final int ERROR_ACEQL_UNAUTHORIZED = 3;
     public static final int ERROR_ACEQL_FAILURE = 4;
+
+  
 
 
 

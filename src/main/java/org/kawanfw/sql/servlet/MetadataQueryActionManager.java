@@ -1,26 +1,13 @@
 /*
- * This file is part of AceQL HTTP.
- * AceQL HTTP: SQL Over HTTP
- * Copyright (C) 2021,  KawanSoft SAS
- * (http://www.kawansoft.com). All rights reserved.
+ * Copyright (c)2022 KawanSoft S.A.S. All rights reserved.
+ * 
+ * Use of this software is governed by the Business Source License included
+ * in the LICENSE.TXT file in the project's root directory.
  *
- * AceQL HTTP is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
+ * Change Date: 2026-11-01
  *
- * AceQL HTTP is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301  USA
- *
- * Any modifications to this file must keep this entire header
- * intact.
+ * On the date above, in accordance with the Business Source License, use
+ * of this software will be governed by version 2.0 of the Apache License.
  */
 package org.kawanfw.sql.servlet;
 
@@ -32,6 +19,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -55,6 +43,8 @@ import org.kawanfw.sql.servlet.connection.RollbackUtil;
 import org.kawanfw.sql.servlet.sql.ServerStatementUtil;
 import org.kawanfw.sql.servlet.sql.json_return.JsonErrorReturn;
 import org.kawanfw.sql.servlet.sql.json_return.JsonSecurityMessage;
+import org.kawanfw.sql.servlet.util.healthcheck.HealthCheckInfoDto;
+import org.kawanfw.sql.util.IpUtil;
 
 /**
  * Execute the metadata query asked by user.
@@ -66,12 +56,12 @@ public class MetadataQueryActionManager {
     private HttpServletRequest request = null;
     private HttpServletResponse response = null;
     private Connection connection = null;
-    List<SqlFirewallManager> sqlFirewallManagers = new ArrayList<>();
+    Set<SqlFirewallManager> sqlFirewallManagers = new LinkedHashSet<>();
 
     private OutputStream out = null;
 
     public MetadataQueryActionManager(HttpServletRequest request, HttpServletResponse response, OutputStream out,
-	    List<SqlFirewallManager> sqlFirewallManagers, Connection connection) {
+	    Set<SqlFirewallManager> sqlFirewallManagers, Connection connection) {
 	super();
 	this.request = request;
 	this.response = response;
@@ -122,12 +112,12 @@ public class MetadataQueryActionManager {
 	String username = request.getParameter(HttpParameter.USERNAME);
 	String database = request.getParameter(HttpParameter.DATABASE);
 
-	boolean allow = false;
+	boolean allow = true;
 	String sql = "<void>";
 	for (SqlFirewallManager sqlFirewallManager : sqlFirewallManagers) {
 	    allow = sqlFirewallManager.allowMetadataQuery(username, database, connection);
 	    if (!allow) {
-		String ipAddress = request.getRemoteAddr();
+		String ipAddress = IpUtil.getRemoteAddr(request);
 		List<Object> parameterValues = new ArrayList<>();
 
 		SqlEvent sqlEvent = SqlEventWrapper.sqlEventBuild(username, database, ipAddress, sql,
@@ -192,7 +182,15 @@ public class MetadataQueryActionManager {
 	    String jsonString = GsonWsUtil.getJSonString(tableNamesDto);
 	    response.setContentType("text/plain");
 	    ServerSqlManager.writeLine(out, jsonString);
-	} else {
+	} 
+	else if (action.equals(HttpParameter.HEALTH_CHECK_INFO)) {
+	    HealthCheckInfoDto healthCheckInfoDto = new HealthCheckInfoDto();
+	    String jsonString = GsonWsUtil.getJSonString(healthCheckInfoDto);
+	    response.setContentType("text/plain");
+	    ServerSqlManager.writeLine(out, jsonString);
+	}
+	
+	else {
 	    throw new IllegalArgumentException("Unknown metadata_query action: " + action);
 	}
     }

@@ -21,9 +21,84 @@ AceQL HTTP is provided with three client SDKs:
 Security has been taken into account from the design: it is allowed to specify 
 and code strong security rules in order to protect the databases. 
 
-The Community Edition is licensed through the GNU Lesser General Public License 
-(LGPL v2.1).
-The Enterprise Edition is licensed through a commercial license.
+AceQL HTTP is licensed through the Business Source License 1.1.
+(https://github.com/kawansoft/aceql-http/blob/12.0/LICENSE.TXT)
+
+
+AceQL HTTP Version 12.0 - 21-Nov-2022
+-------------------------------------
+
+- AceQL HTTP source code license has been changed from  GNU Lesser General 
+  Public License version 2.1 to the Business Source License version 1.1 
+  (BSL 1.1). The client SDKs (C#, Java and Python) will remain using 
+  Apache licensing. 
+
+- AceQL HTTP base code is now unique. There is no more code difference
+  between different Editions/Plans, but only licensing rights. 
+  This simplifies a lot of code maintenance and allows all users to benefit 
+  from all features and updates.
+
+- Firewall management includes a new operational mode. This allows automatic
+  recording of white list. See user documentation.
+  
+- The StatementNormalizer class has been rewritten with all string and numeric
+  values replaced by question marks. This allows both powerful white list 
+  checks and easy recording of white lists. See user documentation and 
+  StatementNormalizer Javadoc at: https://tinyurl.com/statementNormalizer.
+
+- All logging is now done using SLF4J in order to allow
+  one to choose it's preferred logging implementation. See
+  org.kawanfw.sql.api.server.logging package content.
+  Default implementation uses Logback (https://logback.qos.ch).
+  
+- Default logging may be fully configured using only properties files. 
+  This is much easier and does not require any Java code writing & deployment. 
+  Of course, it's still possible for advanced users to write and deploy
+  their own SLF4J Java implementation. 
+  
+- Client IP detection has been enhanced by also testing X-FORWARDED-FOR header
+  value.
+  
+- The new HealtCheck API allows future version of client SDKs to retrieve 
+  server memory info. How-to usage will be updated in user documentation
+  of C# SDK, JDBC Driver and Python SDK.
+
+- SqlFirewallManager interface: the method allowExecute has been removed,
+  because it was confusing in it's naming and the real need for use was 
+  not strong enough.
+  
+- DefaultSqlFirewallManager, the default SqlFirewallManager interface 
+  implementation, has been removed. The need for use was not strong enough 
+  and would complicate SqlFirewallManager implementations with cumbersome & 
+  not real necessary inheritance architecture. 
+  (All SqlFirewallManager implementations have been thus retrofitted and 
+  do not refer any more DefaultSqlFirewallManager.)
+  
+- DefaultUpdateListener, the default UpdateListener interface 
+  implementation, has been removed. The need for use was not strong enough 
+  and would complicate UpdateListener implementations with cumbersome & 
+  not real necessary inheritance architecture. 
+  
+- DefaultSqlFirewallTrigger, a default SqlFirewallTrigger implementation 
+  that did nothing and would slow down the software, has been removed.
+  
+- DefaultUserAuthenticator, a default UserAuthenticator implementation 
+  that did nothing and would slow down the software, has been removed.
+
+- DefaultRequestHeadersAuthenticator, a default RequestHeadersAuthenticator 
+  implementation that did nothing and would slow down the software, has been 
+  removed.
+  
+- The Maven maven-source-plugin is now used to build the runnable jar and 
+  the sources jar.
+  
+- Tomcat base libraries have been upgraded to 9.0.69.
+
+- Auth0 library has been upgraded to 4.2.1 in order to upgrade automatically
+  Jackson base libraries to 2.13.4 for security reasons.
+
+- PostgreSQL library has been upgraded to 42.3.7 for 
+  security reasons.
 
 
 AceQL HTTP Version 11.1b - 22-Jun-2022 (Linux/Unix only)

@@ -1,28 +1,14 @@
 /*
- * This file is part of AceQL HTTP.
- * AceQL HTTP: SQL Over HTTP                                     
- * Copyright (C) 2021,  KawanSoft SAS
- * (http://www.kawansoft.com). All rights reserved.                                
- *                                                                               
- * AceQL HTTP is free software; you can redistribute it and/or                 
- * modify it under the terms of the GNU Lesser General Public                    
- * License as published by the Free Software Foundation; either                  
- * version 2.1 of the License, or (at your option) any later version.            
- *                                                                               
- * AceQL HTTP is distributed in the hope that it will be useful,               
- * but WITHOUT ANY WARRANTY; without even the implied warranty of                
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU             
- * Lesser General Public License for more details.                               
- *                                                                               
- * You should have received a copy of the GNU Lesser General Public              
- * License along with this library; if not, write to the Free Software           
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  
- * 02110-1301  USA
+ * Copyright (c)2022 KawanSoft S.A.S. All rights reserved.
  * 
- * Any modifications to this file must keep this entire header
- * intact.
+ * Use of this software is governed by the Business Source License included
+ * in the LICENSE.TXT file in the project's root directory.
+ *
+ * Change Date: 2026-11-01
+ *
+ * On the date above, in accordance with the Business Source License, use
+ * of this software will be governed by version 2.0 of the Apache License.
  */
-
 package org.kawanfw.sql.servlet;
 
 import java.io.IOException;
@@ -33,8 +19,7 @@ import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.kawanfw.sql.servlet.sql.callable.aceqlproc.ServerQueryExecutorWrapper;
-import org.kawanfw.sql.servlet.sql.callable.aceqlproc.ServerQueryExecutorWrapperCreator;
+import org.kawanfw.sql.servlet.sql.callable.aceqlproc.DefaultServerQueryExecutorWrapper;
 import org.kawanfw.sql.util.FrameworkDebug;
 
 /**
@@ -57,15 +42,22 @@ public class ServerQueryExecutorUtil {
 
 	if (action.equals(HttpParameter.EXECUTE_SERVER_QUERY)) {
 	    
+//	    try {
+//		ServerQueryExecutorWrapper serverQueryExecutorWrapper = ServerQueryExecutorWrapperCreator
+//			.createInstance();
+//		serverQueryExecutorWrapper.executeQuery(request, out, action, connection);
+//	    } catch (SQLException exception) {
+//		throw exception;
+//	    }
+//	    catch (Exception exception) {
+//		throw new SQLException(exception);
+//	    }
+	    
+	    DefaultServerQueryExecutorWrapper defaultServerQueryExecutorWrapper = new DefaultServerQueryExecutorWrapper();
 	    try {
-		ServerQueryExecutorWrapper serverQueryExecutorWrapper = ServerQueryExecutorWrapperCreator
-			.createInstance();
-		serverQueryExecutorWrapper.executeQuery(request, out, action, connection);
-	    } catch (SQLException exception) {
-		throw exception;
-	    }
-	    catch (Exception exception) {
-		throw new SQLException(exception);
+		defaultServerQueryExecutorWrapper.executeQuery(request, out, action, connection);
+	    } catch (ClassNotFoundException e) {
+		throw new SQLException(e);
 	    }
 
 	    return true;

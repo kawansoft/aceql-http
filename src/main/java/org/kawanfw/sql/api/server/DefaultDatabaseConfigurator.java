@@ -1,26 +1,13 @@
 /*
- * This file is part of AceQL HTTP.
- * AceQL HTTP: SQL Over HTTP
- * Copyright (C) 2021,  KawanSoft SAS
- * (http://www.kawansoft.com). All rights reserved.
+ * Copyright (c)2022 KawanSoft S.A.S. All rights reserved.
+ * 
+ * Use of this software is governed by the Business Source License included
+ * in the LICENSE.TXT file in the project's root directory.
  *
- * AceQL HTTP is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
+ * Change Date: 2026-11-01
  *
- * AceQL HTTP is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301  USA
- *
- * Any modifications to this file must keep this entire header
- * intact.
+ * On the date above, in accordance with the Business Source License, use
+ * of this software will be governed by version 2.0 of the Apache License.
  */
 package org.kawanfw.sql.api.server;
 
@@ -31,22 +18,18 @@ import java.sql.SQLException;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.FileHandler;
-import java.util.logging.Handler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.sql.DataSource;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.SystemUtils;
+import org.kawanfw.sql.api.server.logging.DefaultLoggerCreator;
 import org.kawanfw.sql.api.server.util.UsernameConverter;
-import org.kawanfw.sql.api.server.util.VerySimpleFormatter;
 import org.kawanfw.sql.servlet.injection.properties.PropertiesFileStore;
 import org.kawanfw.sql.servlet.injection.properties.PropertiesFileUtil;
+import org.kawanfw.sql.servlet.util.logging.LoggerWrapper;
 import org.kawanfw.sql.tomcat.TomcatSqlModeStore;
 import org.kawanfw.sql.util.Tag;
-import org.kawanfw.sql.util.log.FlattenLogger;
+import org.slf4j.Logger;
 
 /**
  * Default implementation of server side configuration for AceQL.
@@ -55,7 +38,7 @@ import org.kawanfw.sql.util.log.FlattenLogger;
  * <ul>
  * <li>{@link #getConnection(String)} that extracts {@code Connections} from a
  * Tomcat JDBC Connection Pool.</li>
- * <li>{@link #close(Connection)} that closes the {@code Connection} and thus
+ * <li>{@link #close(Connection)} that simplify closes the {@code Connection} and thus
  * releases it into the pool.</li>
  * </ul>
  *
@@ -64,17 +47,20 @@ import org.kawanfw.sql.util.log.FlattenLogger;
 public class DefaultDatabaseConfigurator implements DatabaseConfigurator {
 
     /**
-     * If {@code true}, allows to "flatten" the log messages to make sure each log entry/message has only 
-     * one line (CR/LF of the message will be suppressed). See {@link #getLogger()} code.
+     * If {@code true}, allows to "flatten" the log messages to make sure each log
+     * entry/message has only one line (CR/LF of the message will be suppressed).
+     * See {@link #getLogger()} code.
      */
     protected boolean flattenLogMessages = true;
-    
+
     /** The map of (database, data sources) to use for connection pooling */
     private Map<String, DataSource> dataSourceSet = new ConcurrentHashMap<>();
 
     private Properties properties = null;
 
     private static Logger ACEQL_LOGGER = null;
+
+    private static Map<String, String> LOGGER_ELEMENTS = new ConcurrentHashMap<>();
 
     /**
      * Returns a {@code Connection} from
@@ -141,7 +127,8 @@ public class DefaultDatabaseConfigurator implements DatabaseConfigurator {
 	    }
 	} catch (Exception e) {
 	    try {
-		getLogger().log(Level.WARNING, e.toString());
+		Logger logger = getLogger();
+		LoggerWrapper.log(logger, "Error on close(): ", e);
 	    } catch (Exception io) {
 		// Should never happen
 		io.printStackTrace();
@@ -151,9 +138,9 @@ public class DefaultDatabaseConfigurator implements DatabaseConfigurator {
     }
 
     /**
-     * @return the value of the property {@code defaultDatabaseConfigurator.maxRows} defined in the
-     *         {@code aceql-server.properties} file at server startup. If property
-     *         does not exist, returns 0.
+     * @return the value of the property {@code defaultDatabaseConfigurator.maxRows}
+     *         defined in the {@code aceql-server.properties} file at server
+     *         startup. If property does not exist, returns 0.
      */
     @Override
     public int getMaxRows(String username, String database) throws IOException, SQLException {
@@ -199,42 +186,51 @@ public class DefaultDatabaseConfigurator implements DatabaseConfigurator {
     }
 
     /**
-     * Creates a static {@code Logger} instance.
-     *
-     * @return a static {@code Logger} with properties:
-     *         <ul>
-     *         <li>Name: {@code "DefaultDatabaseConfigurator"}.</li>
-     *         <li>Output file pattern:
-     *         {@code user.home/.kawansoft/log/AceQL.log}.</li>
-     *         <li>Formatter: {@code SimpleFormatter}.</li>
-     *         <li>Limit: 200Mb.</li>
-     *         <li>Count (number of files to use): 2.</li>
-     *         </ul>
+     * Creates a static default Logback/sl4fj Logger for main AceQL activity.
+     * 
+     * Logger has default characteristics:
+     * <ul>
+     * <li>Name: {@code DefaultLoggerCreator}</li>
+     * <li>Log directory: {@code user.home/.kawansoft/log}</li>
+     * <li>File name pattern: {@code "aceql_%d.log.%i"} (example of file created:
+     * {@code aceql_2022-07-01.log.1}.)</li>
+     * <li>Pattern of each line of log: <code> "%d{HH:mm:ss.SSS} [%thread] %-5level
+     * %logger{36} - %msg%n"}</code></li>
+     * <li>Maximum File Size: 300Mb</li>
+     * <li>Total Size Cap: 30Gb</li>
+     * </ul>
+     * These default values may be superseded by creating a
+     * {@code DefaultLoggerCreator.properties} file in
+     * {@code user.home/.kawansoft/conf}. <br>
+     * <br>
+     * 
+     * See the <a href=
+     * file:../../../../../../resources/DefaultLoggerCreator.properties>DefaultLoggerCreator.properties</a>
+     * format.<br>
+     * <br>
+     * <br>
      */
     @Override
     public Logger getLogger() throws IOException {
+
 	if (ACEQL_LOGGER != null) {
 	    return ACEQL_LOGGER;
 	}
 
-	File logDir = new File(SystemUtils.USER_HOME + File.separator + ".kawansoft" + File.separator + "log");
-	logDir.mkdirs();
-
-	String pattern = logDir.toString() + File.separator + "AceQL.log";
-
-	Logger logger = Logger.getLogger(DefaultDatabaseConfigurator.class.getName());
-
-	if (flattenLogMessages) {
-	    ACEQL_LOGGER = new FlattenLogger(logger.getName(), logger.getResourceBundleName());
-	} else {
-	    ACEQL_LOGGER = logger;
-	}
-
-	Handler fh = new FileHandler(pattern, 200 * 1024 * 1024, 2, true);
-	fh.setFormatter(new VerySimpleFormatter());
-	ACEQL_LOGGER.addHandler(fh);
+	DefaultLoggerCreator defaultLoggerCreator = new DefaultLoggerCreator();
+	ACEQL_LOGGER = defaultLoggerCreator.getLogger();
+	LOGGER_ELEMENTS = defaultLoggerCreator.getElements();
 	return ACEQL_LOGGER;
 
+    }
+
+    /**
+     * Returns the Logger elements (for debug purpose)
+     * 
+     * @return the lOGGER_ELEMENTS
+     */
+    public static Map<String, String> getLoggerElements() {
+	return LOGGER_ELEMENTS;
     }
 
     /**

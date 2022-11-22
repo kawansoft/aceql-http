@@ -1,26 +1,13 @@
 /*
- * This file is part of AceQL HTTP.
- * AceQL HTTP: SQL Over HTTP
- * Copyright (C) 2021,  KawanSoft SAS
- * (http://www.kawansoft.com). All rights reserved.
+ * Copyright (c)2022 KawanSoft S.A.S. All rights reserved.
+ * 
+ * Use of this software is governed by the Business Source License included
+ * in the LICENSE.TXT file in the project's root directory.
  *
- * AceQL HTTP is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
+ * Change Date: 2026-11-01
  *
- * AceQL HTTP is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301  USA
- *
- * Any modifications to this file must keep this entire header
- * intact.
+ * On the date above, in accordance with the Business Source License, use
+ * of this software will be governed by version 2.0 of the Apache License.
  */
 package org.kawanfw.sql.servlet;
 
@@ -32,7 +19,7 @@ import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.Enumeration;
-import java.util.List;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -52,20 +39,15 @@ import org.kawanfw.sql.servlet.connection.SavepointUtil;
 import org.kawanfw.sql.servlet.connection.TransactionUtil;
 import org.kawanfw.sql.servlet.injection.classes.InjectedClassesStore;
 import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesUtil;
-import org.kawanfw.sql.servlet.jdbc.metadata.JdbcDatabaseMetadataActionManager;
-import org.kawanfw.sql.servlet.jdbc.metadata.JdbcDatabaseMetadataActionManagerCreator;
+import org.kawanfw.sql.servlet.jdbc.metadata.DefaultJdbcDatabaseMetadataActionManagerWrap;
 import org.kawanfw.sql.servlet.sql.ServerStatement;
 import org.kawanfw.sql.servlet.sql.ServerStatementRawExecute;
 import org.kawanfw.sql.servlet.sql.batch.ServerPreparedStatementBatch;
 import org.kawanfw.sql.servlet.sql.batch.ServerStatementBatch;
-import org.kawanfw.sql.servlet.sql.callable.ServerCallableStatementWrapper;
-import org.kawanfw.sql.servlet.sql.callable.ServerCallableStatementWrapperCreator;
+import org.kawanfw.sql.servlet.sql.callable.AdvancedServerCallableStatement;
 import org.kawanfw.sql.servlet.sql.json_return.JsonErrorReturn;
 import org.kawanfw.sql.servlet.sql.json_return.JsonOkReturn;
-import org.kawanfw.sql.servlet.util.operation_type.OperationType;
-import org.kawanfw.sql.servlet.util.operation_type.OperationTypeCreator;
 import org.kawanfw.sql.util.FrameworkDebug;
-import org.kawanfw.sql.util.Tag;
 import org.kawanfw.sql.version.VersionWrapper;
 
 /**
@@ -156,7 +138,7 @@ public class ServerSqlDispatch {
 		return;
 	    }
 
-	    List<SqlFirewallManager> sqlFirewallManagers = InjectedClassesStore.get().getSqlFirewallManagerMap()
+	    Set<SqlFirewallManager> sqlFirewallManagers = InjectedClassesStore.get().getSqlFirewallManagerMap()
 		    .get(database);
 
 	    // get_database_info
@@ -211,7 +193,7 @@ public class ServerSqlDispatch {
      * @throws SQLException
      */
     private boolean isGetDatabaseInfo(HttpServletRequest request, OutputStream out, String action,
-	    Connection connection, List<SqlFirewallManager> sqlFirewallManagers) throws IOException, SQLException {
+	    Connection connection, Set<SqlFirewallManager> sqlFirewallManagers) throws IOException, SQLException {
 	if (action.equals(HttpParameter.GET_DATABASE_INFO)) {
 
 	    // Throws SecurityException if not authorized
@@ -321,15 +303,16 @@ public class ServerSqlDispatch {
      */
     private void dispatch(HttpServletRequest request, HttpServletResponse response, OutputStream out, String action,
 	    Connection connection, DatabaseConfigurator databaseConfigurator,
-	    List<SqlFirewallManager> sqlFirewallManagers)
+	    Set<SqlFirewallManager> sqlFirewallManagers)
 	    throws SQLException, FileNotFoundException, IOException, IllegalArgumentException {
 
-	OperationType operationType = OperationTypeCreator.createInstance();
-	String sql = request.getParameter(HttpParameter.SQL);
-	if (!operationType.isOperationAuthorized(sql)) {
-	    throw new UnsupportedOperationException(
-		    Tag.PRODUCT + " " + "DCL or DLL Operation " + Tag.REQUIRES_ACEQL_ENTERPRISE_EDITION);
-	}
+//	OperationType operationType = OperationTypeCreator.createInstance();
+//	String sql = request.getParameter(HttpParameter.SQL);
+//	if (!operationType.isOperationAuthorized(sql)) {
+//	    throw new UnsupportedOperationException(
+//		    Tag.PRODUCT + " " + "DCL or DLL Operation " + Tag.REQUIRES_ACEQL_ENTERPRISE_EDITION);
+//	}
+	
 	if (ServerSqlDispatchUtil.isExecute(action) && !ServerSqlDispatchUtil.isStoredProcedure(request)) {
 	    ServerStatementRawExecute serverStatement = new ServerStatementRawExecute(request, response,
 		    sqlFirewallManagers, connection);
@@ -348,19 +331,25 @@ public class ServerSqlDispatch {
 	    serverPreparedStatementBatch.executeBatch(out);
 	} else if (ServerSqlDispatchUtil.isStoredProcedure(request)) {
 
-	    try {
-		ServerCallableStatementWrapper serverCallableStatementWrapper = ServerCallableStatementWrapperCreator
-			.createInstance();
-		serverCallableStatementWrapper.executeOrExecuteQuery(request, response, sqlFirewallManagers, connection,
-			out);
-	    } catch (ClassNotFoundException exception) {
-		throw new UnsupportedOperationException(
-			Tag.PRODUCT + " " + "Stored procedure call " + Tag.REQUIRES_ACEQL_ENTERPRISE_EDITION);
-	    } catch (SQLException exception) {
-		throw exception;
-	    } catch (Exception exception) {
-		throw new SQLException(exception);
-	    }
+	    
+//	    try {
+//		
+//		ServerCallableStatementWrapper serverCallableStatementWrapper = ServerCallableStatementWrapperCreator
+//			.createInstance();
+//		serverCallableStatementWrapper.executeOrExecuteQuery(request, response, sqlFirewallManagers, connection,
+//			out);
+//		
+//		
+//	    } catch (SQLException exception) {
+//		throw exception;
+//	    } catch (Exception exception) {
+//		throw new SQLException(exception);
+//	    }
+	    
+	    
+	    AdvancedServerCallableStatement advancedServerCallableStatement = new AdvancedServerCallableStatement(
+		    request, response, sqlFirewallManagers, connection);
+	    advancedServerCallableStatement.executeOrExecuteQuery(out);
 
 	} else if (ServerSqlDispatchUtil.isConnectionModifier(action)) {
 	    TransactionUtil.setConnectionModifierAction(request, response, out, action, connection);
@@ -385,23 +374,25 @@ public class ServerSqlDispatch {
      * @return
      */
     private boolean doTreatJdbcDatabaseMetaData(HttpServletRequest request, HttpServletResponse response,
-	    OutputStream out, String action, Connection connection, List<SqlFirewallManager> sqlFirewallManagers)
+	    OutputStream out, String action, Connection connection, Set<SqlFirewallManager> sqlFirewallManagers)
 	    throws SQLException, IOException {
 	// Redirect if it's a JDBC DatabaseMetaData call
 	if (ActionUtil.isJdbcDatabaseMetaDataQuery(action)) {
 
-	    try {
-		JdbcDatabaseMetadataActionManager jdbcDatabaseMetadataActionManager = JdbcDatabaseMetadataActionManagerCreator
-			.createInstance();
-		jdbcDatabaseMetadataActionManager.execute(request, response, out, sqlFirewallManagers, connection);
-	    } catch (ClassNotFoundException exception) {
-		throw new UnsupportedOperationException(
-			Tag.PRODUCT + " " + "MetaData call " + Tag.REQUIRES_ACEQL_ENTERPRISE_EDITION);
-
-	    } catch (Exception exception) {
-		throw new SQLException(exception);
-	    }
-
+//	    try {
+//		JdbcDatabaseMetadataActionManager jdbcDatabaseMetadataActionManager = JdbcDatabaseMetadataActionManagerCreator
+//			.createInstance();
+//		jdbcDatabaseMetadataActionManager.execute(request, response, out, sqlFirewallManagers, connection);
+//	    } catch (ClassNotFoundException exception) {
+//		throw new UnsupportedOperationException(
+//			Tag.PRODUCT + " " + "MetaData call " + Tag.REQUIRES_ACEQL_ENTERPRISE_EDITION);
+//
+//	    } catch (Exception exception) {
+//		throw new SQLException(exception);
+//	    }
+	    
+	    DefaultJdbcDatabaseMetadataActionManagerWrap.executeWrap(request, response, out, sqlFirewallManagers, connection);
+	    
 	    return true;
 	} else {
 	    return false;
@@ -421,10 +412,10 @@ public class ServerSqlDispatch {
      * @throws IOException
      */
     private boolean doTreatMetadataQuery(HttpServletRequest request, HttpServletResponse response, OutputStream out,
-	    String action, Connection connection, List<SqlFirewallManager> sqlFirewallManagers)
+	    String action, Connection connection, Set<SqlFirewallManager> sqlFirewallManagers)
 	    throws SQLException, IOException {
-	// Redirect if it's a metadaquery
-	if (ActionUtil.isMetadataQueryAction(action)) {
+	// Redirect if it's a metadaquery or a healthcheck info getter
+	if (ActionUtil.isMetadataQueryAction(action) || ActionUtil.isHealthCheckInfo(action)) {
 	    MetadataQueryActionManager metadataQueryActionManager = new MetadataQueryActionManager(request, response,
 		    out, sqlFirewallManagers, connection);
 	    metadataQueryActionManager.execute();
@@ -483,7 +474,7 @@ public class ServerSqlDispatch {
     /**
      * @param request
      * @param response
-     * @param out      TODO
+     * @param out    
      * @throws IOException
      * @throws FileUploadException
      * @throws SQLException

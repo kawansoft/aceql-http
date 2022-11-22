@@ -1,26 +1,13 @@
 /*
- * This file is part of AceQL HTTP.
- * AceQL HTTP: SQL Over HTTP
- * Copyright (C) 2021,  KawanSoft SAS
- * (http://www.kawansoft.com). All rights reserved.
+ * Copyright (c)2022 KawanSoft S.A.S. All rights reserved.
+ * 
+ * Use of this software is governed by the Business Source License included
+ * in the LICENSE.TXT file in the project's root directory.
  *
- * AceQL HTTP is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
+ * Change Date: 2026-11-01
  *
- * AceQL HTTP is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301  USA
- *
- * Any modifications to this file must keep this entire header
- * intact.
+ * On the date above, in accordance with the Business Source License, use
+ * of this software will be governed by version 2.0 of the Apache License.
  */
 package org.kawanfw.sql.api.server;
 
@@ -28,7 +15,8 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
 
 /**
  *
@@ -48,10 +36,6 @@ import java.util.logging.Logger;
  * client.</li>
  * <li>Define the {@code Logger} to use to trap server Exceptions.</li>
  * </ul>
- * <p>
- * Note that the framework comes with a default
- * <code>DatabaseConfigurator</code> implementation that is *not* secured and
- * should be extended: {@link DefaultDatabaseConfigurator}.
  * <p>
  *
  * @author Nicolas de Pomereu
@@ -118,10 +102,10 @@ public interface DatabaseConfigurator {
     public File getBlobsDirectory(String username) throws IOException, SQLException;
 
     /**
-     * Returns the {@link Logger} that will be used by AceQL for logging:
+     * Returns the SLF4J {@link Logger} that will be used by AceQL for logging:
      * <ul>
      * <li>All Exceptions thrown by server side will be logged.</li>
-     * <li>Exceptions thrown are logged with <code>Level.WARNING</code>.</li>
+     * <li>Exceptions thrown are flattened when logged for compatible usage with tools like Logstash.</li>
      * </ul>
      * It is not necessary nor recommended to implement this method; do it only if
      * you want take control of the logging to modify the default characteristics of

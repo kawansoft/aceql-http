@@ -1,28 +1,14 @@
 /*
- * This file is part of AceQL HTTP.
- * AceQL HTTP: SQL Over HTTP
- * Copyright (C) 2021,  KawanSoft SAS
- * (http://www.kawansoft.com). All rights reserved.
+ * Copyright (c)2022 KawanSoft S.A.S. All rights reserved.
+ * 
+ * Use of this software is governed by the Business Source License included
+ * in the LICENSE.TXT file in the project's root directory.
  *
- * AceQL HTTP is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
+ * Change Date: 2026-11-01
  *
- * AceQL HTTP is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301  USA
- *
- * Any modifications to this file must keep this entire header
- * intact.
+ * On the date above, in accordance with the Business Source License, use
+ * of this software will be governed by version 2.0 of the Apache License.
  */
-
 package org.kawanfw.sql.servlet.injection.classes.creator;
 
 import java.io.IOException;
@@ -31,15 +17,16 @@ import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.kawanfw.sql.api.server.DatabaseConfigurator;
 import org.kawanfw.sql.api.server.SqlEvent;
 import org.kawanfw.sql.api.server.SqlEventWrapper;
-import org.kawanfw.sql.api.server.firewall.DefaultSqlFirewallManager;
+import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
 import org.kawanfw.sql.api.server.firewall.trigger.BanUserSqlFirewallTrigger;
 import org.kawanfw.sql.api.server.firewall.trigger.BeeperSqlFirewallTrigger;
-import org.kawanfw.sql.api.server.firewall.trigger.DefaultSqlFirewallTrigger;
 import org.kawanfw.sql.api.server.firewall.trigger.JdbcLoggerSqlFirewallTrigger;
 import org.kawanfw.sql.api.server.firewall.trigger.JsonLoggerSqlFirewallTrigger;
 import org.kawanfw.sql.api.server.firewall.trigger.SqlFirewallTrigger;
@@ -49,13 +36,13 @@ public class SqlFirewallTriggersCreator {
     private static final boolean TRACE_ON_START = false;
 
     private static String[] PREDEFINED_CLASS_NAMES = { BanUserSqlFirewallTrigger.class.getSimpleName(),
-	    DefaultSqlFirewallTrigger.class.getSimpleName(), BeeperSqlFirewallTrigger.class.getSimpleName(),
+	   BeeperSqlFirewallTrigger.class.getSimpleName(),
 	    JdbcLoggerSqlFirewallTrigger.class.getSimpleName(), JsonLoggerSqlFirewallTrigger.class.getSimpleName() };
 
-    private List<String> sqlFirewallTriggerClassNames = new ArrayList<>();
-    private List<SqlFirewallTrigger> sqlFirewallTriggerManagers = new ArrayList<>();
+    private Set<String> sqlFirewallTriggerClassNames = new LinkedHashSet<>();
+    private Set<SqlFirewallTrigger> sqlFirewallTriggerManagers = new LinkedHashSet<>();
 
-    public SqlFirewallTriggersCreator(List<String> sqlFirewallTriggerClassNames, String database,
+    public SqlFirewallTriggersCreator(Set<String> sqlFirewallTriggerClassNames, String database,
 	    DatabaseConfigurator databaseConfigurator)
 	    throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException,
 	    IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException, IOException {
@@ -80,8 +67,8 @@ public class SqlFirewallTriggersCreator {
 			// We call code just to verify it's OK:
 			SqlEvent sqlEvent = SqlEventWrapper.sqlEventBuild("username", database, "127.0.0.1",
 				"select * from table", false, parameterValues, false);
-			DefaultSqlFirewallManager defaultSqlFirewallManager = new DefaultSqlFirewallManager();
-			sqlFirewallTriggerManager.runIfStatementRefused(sqlEvent, defaultSqlFirewallManager,
+			SqlFirewallManager sqlFirewallManager = null;
+			sqlFirewallTriggerManager.runIfStatementRefused(sqlEvent, sqlFirewallManager,
 				connection);
 		    }
 		}
@@ -92,13 +79,7 @@ public class SqlFirewallTriggersCreator {
 		this.sqlFirewallTriggerClassNames.add(sqlFirewallTriggerClassName);
 	    }
 
-	} else {
-	    SqlFirewallTrigger sqlFirewallTriggerManager = new DefaultSqlFirewallTrigger();
-	    String sqlFirewallTriggerClassName = sqlFirewallTriggerManager.getClass().getName();
-
-	    this.sqlFirewallTriggerManagers.add(sqlFirewallTriggerManager);
-	    this.sqlFirewallTriggerClassNames.add(sqlFirewallTriggerClassName);
-	}
+	} 
     }
 
     /**
@@ -120,11 +101,11 @@ public class SqlFirewallTriggersCreator {
 	return theClassName;
     }
 
-    public List<SqlFirewallTrigger> getSqlFirewallTriggers() {
+    public Set<SqlFirewallTrigger> getSqlFirewallTriggers() {
 	return sqlFirewallTriggerManagers;
     }
 
-    public List<String> getSqlFirewallTriggerClassNames() {
+    public Set<String> getSqlFirewallTriggerClassNames() {
 	return sqlFirewallTriggerClassNames;
     }
 

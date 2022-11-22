@@ -1,48 +1,35 @@
 /*
- * This file is part of AceQL HTTP.
- * AceQL HTTP: SQL Over HTTP
- * Copyright (C) 2021,  KawanSoft SAS
- * (http://www.kawansoft.com). All rights reserved.
+ * Copyright (c)2022 KawanSoft S.A.S. All rights reserved.
+ * 
+ * Use of this software is governed by the Business Source License included
+ * in the LICENSE.TXT file in the project's root directory.
  *
- * AceQL HTTP is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
+ * Change Date: 2026-11-01
  *
- * AceQL HTTP is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301  USA
- *
- * Any modifications to this file must keep this entire header
- * intact.
+ * On the date above, in accordance with the Business Source License, use
+ * of this software will be governed by version 2.0 of the Apache License.
  */
-
 package org.kawanfw.sql.servlet.injection.properties;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.kawanfw.sql.servlet.ServerSqlManager;
 import org.kawanfw.sql.servlet.injection.properties.ConfProperties.ConfPropertiesBuilder;
-import org.kawanfw.sql.tomcat.ServletAceQLCallNameGetter;
-import org.kawanfw.sql.tomcat.AceQLServletCallNameGetterCreator;
 import org.kawanfw.sql.tomcat.TomcatStarterUtil;
 import org.kawanfw.sql.tomcat.TomcatStarterUtilProperties;
 import org.kawanfw.sql.util.FrameworkDebug;
+import org.kawanfw.sql.util.SqlTag;
 
 /**
  * Create a ConfProperties from the passed properties.
@@ -76,13 +63,16 @@ public class ConfPropertiesManager {
 
 	ConfPropertiesBuilder confPropertiesBuilder = new ConfPropertiesBuilder();
 
-	ServletAceQLCallNameGetter servletAceQLCallNameGetter = AceQLServletCallNameGetterCreator.createInstance();
-	String aceQLManagerServletCallName = servletAceQLCallNameGetter.getName();
+	//ServletAceQLCallNameGetter servletAceQLCallNameGetter = AceQLServletCallNameGetterCreator.createInstance();
+	//String aceQLManagerServletCallName = servletAceQLCallNameGetter.getName();
 
+	AdvancedServletAceQLCallNameGetter advancedServletAceQLCallNameGetter = new AdvancedServletAceQLCallNameGetter();
+	String aceQLManagerServletCallName = advancedServletAceQLCallNameGetter.getName();
+	
 	debug("aceQLManagerServletCallName: " + aceQLManagerServletCallName);
 
 	confPropertiesBuilder.servletCallName(aceQLManagerServletCallName);
-
+	
 	boolean statelessMode = Boolean.parseBoolean(properties.getProperty(ServerSqlManager.STATELESS_MODE, "false"));
 	confPropertiesBuilder.statelessMode(statelessMode);
 
@@ -102,16 +92,18 @@ public class ConfPropertiesManager {
 	}
 
 	Map<String, String> databaseConfiguratorClassNameMap = new HashMap<>();
-	Map<String, List<String>> sqlFirewallClassNamesMap = new HashMap<>();
-	Map<String, List<String>> sqlFirewallTriggerClassNamesMap = new HashMap<>();
-	Map<String, List<String>> updateListenerClassNamesMap = new HashMap<>();
-
+	Map<String, Set<String>> sqlFirewallClassNamesMap = new ConcurrentHashMap<>();
+	Map<String, Set<String>> sqlFirewallTriggerClassNamesMap = new ConcurrentHashMap<>();
+	Map<String, Set<String>> updateListenerClassNamesMap = new ConcurrentHashMap<>();
+	Map<String, OperationalMode> operationalModeMap = new LinkedHashMap<>();
+	
 	buildObjectsPerDatabase(databases, databaseConfiguratorClassNameMap, sqlFirewallClassNamesMap,
-		sqlFirewallTriggerClassNamesMap, updateListenerClassNamesMap);
+		sqlFirewallTriggerClassNamesMap, updateListenerClassNamesMap, operationalModeMap);
 
 	confPropertiesBuilder.databaseConfiguratorClassNameMap(databaseConfiguratorClassNameMap);
 	confPropertiesBuilder.sqlFirewallManagerClassNamesMap(sqlFirewallClassNamesMap);
 	confPropertiesBuilder.sqlFirewallTriggerClassNamesMap(sqlFirewallTriggerClassNamesMap);
+	confPropertiesBuilder.operationalModeMap(operationalModeMap);
 
 	if (DEBUG) {
 	    System.out.println("sqlFirewallTriggerClassNamesMap: " + sqlFirewallTriggerClassNamesMap);
@@ -151,11 +143,13 @@ public class ConfPropertiesManager {
      * @param sqlFirewallClassNamesMap
      * @param sqlFirewallTriggerClassNamesMap
      * @param updateListenerClassNamesMap
+     * @param operationalModeMap
      */
     public void buildObjectsPerDatabase(Set<String> databases, Map<String, String> databaseConfiguratorClassNameMap,
-	    Map<String, List<String>> sqlFirewallClassNamesMap,
-	    Map<String, List<String>> sqlFirewallTriggerClassNamesMap,
-	    Map<String, List<String>> updateListenerClassNamesMap) {
+	    Map<String, Set<String>> sqlFirewallClassNamesMap,
+	    Map<String, Set<String>> sqlFirewallTriggerClassNamesMap,
+	    Map<String, Set<String>> updateListenerClassNamesMap, Map<String, OperationalMode> operationalModeMap) {
+	
 	for (String database : databases) {
 
 	    // Set the configurator to use for this database
@@ -171,33 +165,53 @@ public class ConfPropertiesManager {
 		    properties.getProperty(database + "." + ServerSqlManager.SQL_FIREWALL_MANAGER_CLASS_NAMES));
 
 	    if (sqlFirewallClassNameArray != null && !sqlFirewallClassNameArray.isEmpty()) {
-		List<String> sqlFirewallClassNames = TomcatStarterUtilProperties.getList(sqlFirewallClassNameArray);
+		List<String> sqlFirewallClassNamesList = TomcatStarterUtilProperties.getList(sqlFirewallClassNameArray);
+		Set<String> sqlFirewallClassNames = new LinkedHashSet<>(sqlFirewallClassNamesList);
 		sqlFirewallClassNamesMap.put(database, sqlFirewallClassNames);
 	    } else {
-		sqlFirewallClassNamesMap.put(database, new ArrayList<String>());
+		sqlFirewallClassNamesMap.put(database, new LinkedHashSet<String>());
 	    }
 	    
 	    String sqlFirewallTriggerClassNameArray = TomcatStarterUtil.trimSafe(
 		    properties.getProperty(database + "." + ServerSqlManager.SQL_FIREWALL_TRIGGER_CLASS_NAMES));
 
 	    if (sqlFirewallTriggerClassNameArray != null && !sqlFirewallTriggerClassNameArray.isEmpty()) {
-		List<String> sqlFirewallTriggerClassNames = TomcatStarterUtilProperties
+		List<String> sqlFirewallTriggerClassNamesList = TomcatStarterUtilProperties
 			.getList(sqlFirewallTriggerClassNameArray);
+		Set<String> sqlFirewallTriggerClassNames = new LinkedHashSet<>(sqlFirewallTriggerClassNamesList);
 		sqlFirewallTriggerClassNamesMap.put(database, sqlFirewallTriggerClassNames);
 	    } else {
-		sqlFirewallTriggerClassNamesMap.put(database, new ArrayList<String>());
+		sqlFirewallTriggerClassNamesMap.put(database, new LinkedHashSet<String>());
 	    }
 	    
 	    String updateListenerClassNameArray = TomcatStarterUtil.trimSafe(
 		    properties.getProperty(database + "." + ServerSqlManager.UPDATE_LISTENER_MANAGER_CLASS_NAMES));
 
 	    if (updateListenerClassNameArray != null && !updateListenerClassNameArray.isEmpty()) {
-		List<String> updateListenerClassNames = TomcatStarterUtilProperties
+		List<String> updateListenerClassNamesList = TomcatStarterUtilProperties
 			.getList(updateListenerClassNameArray);
+		
+		Set<String> updateListenerClassNames = new LinkedHashSet<>(updateListenerClassNamesList);
 		updateListenerClassNamesMap.put(database, updateListenerClassNames);
 	    } else {
-		updateListenerClassNamesMap.put(database, new ArrayList<String>());
+		updateListenerClassNamesMap.put(database, new LinkedHashSet<String>());
 	    }
+	    
+	    String operationalMode = TomcatStarterUtil.trimSafe(
+		    properties.getProperty(database + "." + ConfPropertiesUtil.OPERATIONAL_MODE));
+	    if (operationalMode == null || operationalMode.isEmpty()) {
+		operationalMode = OperationalMode.protecting.toString();
+	    }
+	    
+	    try {
+		OperationalMode operationalModeEnum
+		  = OperationalMode.valueOf(operationalMode);
+		operationalModeMap.put(database, operationalModeEnum);
+	    } catch (IllegalArgumentException e) {
+		throw new IllegalArgumentException(SqlTag.USER_CONFIGURATION + 
+			" the " + database + ".operationalMode property value is invalid: "+ operationalMode + ".  Please correct. " );
+	    }
+	    
 	}
     }
 

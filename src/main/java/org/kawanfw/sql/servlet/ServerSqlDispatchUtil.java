@@ -1,3 +1,14 @@
+/*
+ * Copyright (c)2022 KawanSoft S.A.S. All rights reserved.
+ * 
+ * Use of this software is governed by the Business Source License included
+ * in the LICENSE.TXT file in the project's root directory.
+ *
+ * Change Date: 2026-11-01
+ *
+ * On the date above, in accordance with the Business Source License, use
+ * of this software will be governed by version 2.0 of the Apache License.
+ */
 package org.kawanfw.sql.servlet;
 
 import java.io.IOException;
@@ -9,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -18,6 +30,7 @@ import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
 import org.kawanfw.sql.api.util.firewall.SqlFirewallTriggerWrapper;
 import org.kawanfw.sql.servlet.sql.ServerStatementUtil;
 import org.kawanfw.sql.servlet.sql.json_return.JsonSecurityMessage;
+import org.kawanfw.sql.util.IpUtil;
 
 public class ServerSqlDispatchUtil {
 
@@ -97,13 +110,13 @@ public class ServerSqlDispatchUtil {
     }
 
     public static void checkMetadataAuthorized(HttpServletRequest request, Connection connection,
-	    List<SqlFirewallManager> sqlFirewallManagers) throws IOException, SQLException {
+	    Set<SqlFirewallManager> sqlFirewallManagers) throws IOException, SQLException {
 
 	String username = request.getParameter(HttpParameter.USERNAME);
 	String database = request.getParameter(HttpParameter.DATABASE);
-	String ipAddress = request.getRemoteAddr();
+	String ipAddress = IpUtil.getRemoteAddr(request);
 
-	boolean allow = false;
+	boolean allow = true;
 	String sql = "<void>";
 	for (SqlFirewallManager sqlFirewallManager : sqlFirewallManagers) {
 	    allow = sqlFirewallManager.allowMetadataQuery(username, database, connection);

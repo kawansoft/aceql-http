@@ -1,26 +1,13 @@
 /*
- * This file is part of AceQL HTTP.
- * AceQL HTTP: SQL Over HTTP
- * Copyright (C) 2021,  KawanSoft SAS
- * (http://www.kawansoft.com). All rights reserved.
+ * Copyright (c)2022 KawanSoft S.A.S. All rights reserved.
+ * 
+ * Use of this software is governed by the Business Source License included
+ * in the LICENSE.TXT file in the project's root directory.
  *
- * AceQL HTTP is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
+ * Change Date: 2026-11-01
  *
- * AceQL HTTP is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301  USA
- *
- * Any modifications to this file must keep this entire header
- * intact.
+ * On the date above, in accordance with the Business Source License, use
+ * of this software will be governed by version 2.0 of the Apache License.
  */
 package org.kawanfw.sql.servlet.sql.batch;
 
@@ -37,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -47,12 +35,15 @@ import org.kawanfw.sql.api.server.SqlEvent;
 import org.kawanfw.sql.api.server.SqlEventWrapper;
 import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
 import org.kawanfw.sql.api.server.listener.UpdateListener;
+import org.kawanfw.sql.api.util.firewall.LearningModeExecutor;
 import org.kawanfw.sql.api.util.firewall.SqlFirewallTriggerWrapper;
 import org.kawanfw.sql.metadata.util.GsonWsUtil;
 import org.kawanfw.sql.servlet.HttpParameter;
 import org.kawanfw.sql.servlet.ServerSqlManager;
 import org.kawanfw.sql.servlet.connection.RollbackUtil;
 import org.kawanfw.sql.servlet.injection.classes.InjectedClassesStore;
+import org.kawanfw.sql.servlet.injection.properties.ConfPropertiesStore;
+import org.kawanfw.sql.servlet.injection.properties.OperationalMode;
 import org.kawanfw.sql.servlet.sql.AceQLParameter;
 import org.kawanfw.sql.servlet.sql.LoggerUtil;
 import org.kawanfw.sql.servlet.sql.ServerStatementUtil;
@@ -65,6 +56,7 @@ import org.kawanfw.sql.servlet.sql.json_return.JsonSecurityMessage;
 import org.kawanfw.sql.servlet.sql.parameters.ServerPreparedStatementParameters;
 import org.kawanfw.sql.servlet.sql.parameters.ServerPreparedStatementParametersUtil;
 import org.kawanfw.sql.util.FrameworkDebug;
+import org.kawanfw.sql.util.IpUtil;
 
 /**
  * @author KawanSoft S.A.S
@@ -87,11 +79,11 @@ public class ServerPreparedStatementBatch {
 
     private Boolean doPrettyPrinting;
 
-    private List<SqlFirewallManager> sqlFirewallManagers;
+    private Set<SqlFirewallManager> sqlFirewallManagers;
 
     private DatabaseConfigurator databaseConfigurator;
 
-    private List<UpdateListener> updateListeners;
+    private Set<UpdateListener> updateListeners;
 
     /**
      * Default Constructor
@@ -105,7 +97,7 @@ public class ServerPreparedStatementBatch {
      */
 
     public ServerPreparedStatementBatch(HttpServletRequest request, HttpServletResponse response,
-	    List<SqlFirewallManager> sqlFirewallManagers, Connection connection,
+	    Set<SqlFirewallManager> sqlFirewallManagers, Connection connection,
 	    DatabaseConfigurator databaseConfigurator) throws SQLException {
 	this.request = request;
 	this.response = response;
@@ -246,7 +238,7 @@ public class ServerPreparedStatementBatch {
 
 	    int[] rc = preparedStatement.executeBatch();
 
-	    String ipAddress = request.getRemoteAddr();
+	    String ipAddress = IpUtil.getRemoteAddr(request);
 	    callUpdateListenersInThread(sqlOrder, parametersList, username, database, ipAddress);
 
 	    UpdateCountsArrayDto updateCountsArrayDto = new UpdateCountsArrayDto(rc);
@@ -283,9 +275,20 @@ public class ServerPreparedStatementBatch {
     private void checkFirewallGeneral(String username, String database, String sqlOrder,
 	    ServerPreparedStatementParameters serverPreparedStatementParameters)
 	    throws IOException, SQLException, SecurityException {
-	String ipAddress = request.getRemoteAddr();
+	String ipAddress = IpUtil.getRemoteAddr(request);
 
-	boolean isAllowedAfterAnalysis = false;
+	OperationalMode operationalMode = ConfPropertiesStore.get().getOperationalModeMap(database);
+
+	if (operationalMode.equals(OperationalMode.off)) {
+	    return;
+	}
+
+	if (operationalMode.equals(OperationalMode.learning)) {
+	    LearningModeExecutor.learn(sqlOrder, database);
+	    return;
+	}
+
+	boolean isAllowedAfterAnalysis = true;
 	for (SqlFirewallManager sqlFirewallManager : sqlFirewallManagers) {
 
 	    SqlEvent sqlEvent = SqlEventWrapper.sqlEventBuild(username, database, ipAddress, sqlOrder,
@@ -299,7 +302,7 @@ public class ServerPreparedStatementBatch {
 	    }
 	}
 
-	if (!isAllowedAfterAnalysis) {
+	if (!isAllowedAfterAnalysis && !operationalMode.equals(OperationalMode.detecting)) {
 	    String message = JsonSecurityMessage.prepStatementNotAllowedBuild(sqlOrder,
 		    "Prepared Statement not allowed", serverPreparedStatementParameters.getParameterTypes(),
 		    serverPreparedStatementParameters.getParameterValues(), doPrettyPrinting);
