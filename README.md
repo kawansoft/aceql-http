@@ -808,8 +808,6 @@ aceQLManagerServletCallName=aceql
 
 AceQL supports calling SQL stored procedures from C# and Java client side. See the [C# Client SDK](https://github.com/kawansoft/AceQL.Client2/blob/master/README.md) and the [AceQL Client JDBC Driver](https://github.com/kawansoft/aceql-http-client-jdbc-driver#readme) documentation for more information.
 
-*Note that  in this version  SELECT calls are not supported for Oracle Database stored procedures. They will be supported in a fourth-quarter 2022 subsequent version.*
-
 ## Calling ServerQueryExecutor classes from the client side
 
 AceQL supports calling implementations of the `ServerQueryExecutor` implementation. This is a a kind of server "AceQL stored procedure" written in Java. The `executeQuery` method returns a `ResultSet` to the client side that's appropriately converted by the client side SDK (`DataReader` in C#, `ResultSet` in Java and a `list` in `Python`).
