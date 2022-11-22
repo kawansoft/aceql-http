@@ -1,7 +1,7 @@
 
 
 ![GitHub top language](https://img.shields.io/github/languages/top/kawansoft/aceql-http)![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/kawansoft/aceql-http) ![GitHub issues](https://img.shields.io/github/issues/kawansoft/aceql-http)
-![GitHub](https://img.shields.io/github/license/kawansoft/aceql-http) ![Maven Central](https://img.shields.io/maven-central/v/com.aceql/aceql-http) 
+![Maven Central](https://img.shields.io/maven-central/v/com.aceql/aceql-http) 
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/y/kawansoft/aceql-http) ![GitHub last commit (branch)](https://img.shields.io/github/last-commit/kawansoft/aceql-http/master)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/d14142d5d6f04ba891d505e2e47b417d)](https://www.codacy.com/gh/kawansoft/aceql-http?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=kawansoft/aceql-http&amp;utm_campaign=Badge_Grade)
 ![GitHub contributors](https://img.shields.io/github/contributors/kawansoft/aceql-http)
