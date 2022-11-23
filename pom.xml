@@ -133,7 +133,7 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>42.3.7</version>
+            <version>42.3.8</version>
         </dependency>
 
         <!-- Oracle dependecy is necessary to compile -->
