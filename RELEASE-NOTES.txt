@@ -30,7 +30,7 @@ AceQL HTTP Version 12.0 - 21-Nov-2022
 
 - AceQL HTTP source code license has been changed from  GNU Lesser General 
   Public License version 2.1 to the Business Source License version 1.1 
-  (BSL 1.1). The client SDKs (C#, Java and Python) will remain using 
+  (BSL 1.1). The client SDKs (C#, Java, and Python) will remain using 
   Apache licensing. 
 
 - AceQL HTTP base code is now unique. There is no more code difference
@@ -39,7 +39,7 @@ AceQL HTTP Version 12.0 - 21-Nov-2022
   from all features and updates.
 
 - Firewall management includes a new operational mode. This allows automatic
-  recording of white list. See user documentation.
+  recording of white lists. See the user documentation.
   
 - The StatementNormalizer class has been rewritten with all string and numeric
   values replaced by question marks. This allows both powerful white list 
@@ -47,7 +47,7 @@ AceQL HTTP Version 12.0 - 21-Nov-2022
   StatementNormalizer Javadoc at: https://tinyurl.com/statementNormalizer.
 
 - All logging is now done using SLF4J in order to allow
-  one to choose it's preferred logging implementation. See
+  one to choose its preferred logging implementation. See
   org.kawanfw.sql.api.server.logging package content.
   Default implementation uses Logback (https://logback.qos.ch).
   
@@ -59,12 +59,12 @@ AceQL HTTP Version 12.0 - 21-Nov-2022
 - Client IP detection has been enhanced by also testing X-FORWARDED-FOR header
   value.
   
-- The new HealtCheck API allows future version of client SDKs to retrieve 
+- The new HealthCheck API allows the future versions of client SDKs to retrieve 
   server memory info. How-to usage will be updated in user documentation
   of C# SDK, JDBC Driver and Python SDK.
 
 - SqlFirewallManager interface: the method allowExecute has been removed,
-  because it was confusing in it's naming and the real need for use was 
+  because it was confusing in its naming and the real need for use was 
   not strong enough.
   
 - DefaultSqlFirewallManager, the default SqlFirewallManager interface 
