@@ -144,8 +144,7 @@
             <version>11.2.0.4</version>
         </dependency>
 
-<!--
-        Uncomment for SQL Server & MySQL Tests 
+       <!-- Uncomment for SQL Server & MySQL Tests -->
         <dependency>
             <groupId>com.microsoft.sqlserver</groupId>
             <artifactId>mssql-jdbc</artifactId>
@@ -157,7 +156,6 @@
             <artifactId>mysql-connector-j</artifactId>
             <version>8.0.31</version>
         </dependency>
--->
 
 		<dependency>
 			<groupId>org.jasypt</groupId>
