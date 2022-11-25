@@ -105,8 +105,11 @@ public class TestOracleConnection {
     }
     
     public static void testStoredProcedure2(Connection connection) throws SQLException {
-	CallableStatement callableStatement = connection.prepareCall("{ call PROCEDURE2(?, ?) }");
-	callableStatement.setInt(1, 3);
+	
+	// Native Oracle JDBC syntax : call of a stored procedure
+	// that returns a SELECT result
+	CallableStatement callableStatement = connection.prepareCall("{ call ORACLE_PROCEDURE(?, ?) }");
+	callableStatement.setInt(1, 2);
 	callableStatement.registerOutParameter(2, OracleTypes.CURSOR);
 	callableStatement.executeQuery();
 	
