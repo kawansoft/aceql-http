@@ -28,7 +28,7 @@ AceQL HTTP is licensed through the Business Source License 1.1.
 AceQL HTTP Version 12.0 - 21-Nov-2022
 -------------------------------------
 
-- AceQL HTTP source code license has been changed from  GNU Lesser General 
+- AceQL HTTP license has been changed from  GNU Lesser General 
   Public License version 2.1 to the Business Source License version 1.1 
   (BSL 1.1). The client SDKs (C#, Java, and Python) will remain using 
   Apache licensing. 
