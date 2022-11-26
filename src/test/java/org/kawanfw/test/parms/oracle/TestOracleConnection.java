@@ -106,7 +106,7 @@ public class TestOracleConnection {
     
     public static void testStoredProcedure2(Connection connection) throws SQLException {
 	
-	// Calling the ORACLE_SELECT_CUSTOMER store procedure
+	// Calling the ORACLE_SELECT_CUSTOMER stored procedure.
 	// Native Oracle JDBC syntax using an Oracle JDBC Driver:
 	CallableStatement callableStatement 
 		= connection.prepareCall("{ call ORACLE_SELECT_CUSTOMER(?, ?) }");
