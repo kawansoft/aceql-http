@@ -130,11 +130,11 @@
             <version>3.2.0</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <version>42.3.7</version>
-        </dependency>
+    <dependency>
+        <groupId>org.postgresql</groupId>
+        <artifactId>postgresql</artifactId>
+        <version>42.5.1</version>
+    </dependency>
 
         <!-- Oracle dependecy is necessary to compile -->
         <!-- https://mvnrepository.com/artifact/com.oracle.database.jdbc/ojdbc6 -->
