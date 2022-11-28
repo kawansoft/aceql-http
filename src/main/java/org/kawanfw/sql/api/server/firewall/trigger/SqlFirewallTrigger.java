@@ -31,9 +31,6 @@ import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
  * When {@code SqlFirewallTrigger} classes are chained, all of them are
  * successively executed in the declared order. 
  * <p>
- * Note that the framework comes with a default <code>SqlFirewallTrigger</code>
- * implementation that does nothing.
- * <p>
  * Built in and ready to use classes that don't require any coding are included.
  * The classes may be chained. See each Javadoc for more details:
  * <ul>
