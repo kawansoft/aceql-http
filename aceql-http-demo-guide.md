@@ -110,9 +110,6 @@ Download the database `sampledb` schema corresponding to your database engine:
 - [sampledb_ms_sql_serverl.txt](https://docs.aceql.com/rest/soft/12.0/src/sampledb_ms_sql_server.txt)
 - [sampledb_oracle_database.txt](https://docs.aceql.com/rest/soft/12.0/src/sampledb_oracle_database.txt)
 
-
-For other databases engines, just tailor the file as indicated: [sampledb_other_databases.txt](https://docs.aceql.com/rest/soft/12.0/src/sampledb_other_databases.txt)
-
 Then launch the script that will create the tables in a database
 
 ## Linux/Unix Installation & Server Startup 
@@ -131,8 +128,6 @@ If you get a certificate error message, do one of the following:
 
 1. If the problem is that a known root CA is missing and when you are using Ubuntu or Debian,  then you can solve the problem with this one line: `sudo apt-getinstall ca-certificates`. Then retry the `Wget` call.
 2. Retry the `Wget` call with `--no-check-certificate` at end of command line. Then check the PGP signature of the downloaded file using the corresponding `.asc` signature file available on [download](https://www.aceql.com/aceql-download-page/) page using the PGP hyperlink.
-
-In following lines we will assume that the Open Source edition is chosen. (Operating mode is the same for Pro edition).
 
 ```bash
 chmod +x aceql-http-12.0.run
