@@ -43,7 +43,7 @@ under an Open Source License, as stated in this License.
 
 For more information on the use of the Business Source License for AceQL
 products, please visit our pricing page which contains license details:
-https://www.aceql.com/bsl-pricing
+https://www.aceql.com/pricing
 
 For more information on the use of the Business Source License generally,
 please visit the Adopting and Developing Business Source License FAQ at
