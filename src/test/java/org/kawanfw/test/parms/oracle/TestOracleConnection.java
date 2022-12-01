@@ -60,8 +60,8 @@ public class TestOracleConnection {
 	}
 	
 	selectCustomerExecute(connection);
-	testStoredProcedure1(connection);
-	testStoredProcedure2(connection);
+	testStoredProcedureSelectOracleCustomer(connection);
+	testStoredProcedureOracleInOut(connection);
     }
     
     public static void selectCustomerExecute(Connection connection) throws SQLException {
@@ -83,28 +83,8 @@ public class TestOracleConnection {
 	rs.close();
     }
     
-    public static void testStoredProcedure1(Connection connection) throws SQLException {
-	CallableStatement callableStatement = connection.prepareCall("{ call PROCEDURE1(?) }");
-	callableStatement.registerOutParameter(1, OracleTypes.CURSOR);
-	callableStatement.executeQuery();
-	
-	ResultSet rs= (ResultSet) callableStatement.getObject(1);
-	
-	while (rs.next()) {
-	    System.out.println(rs.getInt(1));
-	}
-
-	//int out2 = callableStatement.getInt(2);
-	//int out3 = callableStatement.getInt(3);
-
-	callableStatement.close();
-
-	System.out.println();
-	//System.out.println("out2: " + out2);
-	//System.out.println("out3: " + out3);
-    }
     
-    public static void testStoredProcedure2(Connection connection) throws SQLException {
+    public static void testStoredProcedureSelectOracleCustomer(Connection connection) throws SQLException {
 	
 	// Calling the ORACLE_SELECT_CUSTOMER stored procedure.
 	// Native Oracle JDBC syntax using an Oracle JDBC Driver:
@@ -120,15 +100,32 @@ public class TestOracleConnection {
 	    System.out.println(rs.getInt(1));
 	}
 
-	//int out2 = callableStatement.getInt(2);
-	//int out3 = callableStatement.getInt(3);
-
 	callableStatement.close();
 
+	System.out.println("Done ORACLE_SELECT_CUSTOMER!");
 	System.out.println();
-	//System.out.println("out2: " + out2);
-	//System.out.println("out3: " + out3);
-    }
 
+    }
+    
+    public static void testStoredProcedureOracleInOut(Connection connection) throws SQLException {
+	
+	// Calling the ORACLE_IN_OUT stored procedure.
+	// Native Oracle JDBC syntax using an Oracle JDBC Driver:
+	CallableStatement callableStatement 
+		= connection.prepareCall("{ call ORACLE_IN_OUT(?, ?) }");
+	callableStatement.setInt(1, 1);
+	callableStatement.setInt(2, 2);
+	callableStatement.registerOutParameter(2, java.sql.Types.INTEGER);
+	@SuppressWarnings("unused")
+	int n = callableStatement.executeUpdate();
+	
+	int out2 = callableStatement.getInt(2);
+	System.out.println("out2: " + out2);
+	
+	callableStatement.close();
+	
+	System.out.println("Done ORACLE_IN_OUT!");
+	System.out.println();
+    }
 
 }
