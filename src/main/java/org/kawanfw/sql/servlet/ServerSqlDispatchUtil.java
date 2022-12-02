@@ -150,7 +150,7 @@ public class ServerSqlDispatchUtil {
      * @param username   the client username
      * @param database   the database name
      * @param connection the JDBC Connection
-     * @return trur if the user is banned.
+     * @return true if the user is banned.
      * @throws SQLException
      */
     public static boolean isUsernameBanned(String username, String database, Connection connection) throws SQLException {
