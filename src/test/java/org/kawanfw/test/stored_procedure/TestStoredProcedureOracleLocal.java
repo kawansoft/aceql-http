@@ -93,6 +93,16 @@ public class TestStoredProcedureOracleLocal {
     
     public static void testStoredProcedureSelectCustomer_2(Connection connection) throws SQLException {
 	
+	/** <code>
+	create or replace PROCEDURE ORACLE_SELECT_CUSTOMER_2 
+	    (p_customer_id NUMBER, p_customer_name VARCHAR, p_rc OUT sys_refcursor) AS 
+	BEGIN
+	    OPEN p_rc
+	    For select customer_id, lname from customer where customer_id > p_customer_id
+	    and lname <> p_customer_name;
+	END ORACLE_SELECT_CUSTOMER_2;
+	</code> */
+	
 	// Calling the ORACLE_SELECT_CUSTOMER stored procedure.
 	// Native Oracle JDBC syntax using an Oracle JDBC Driver:
 	CallableStatement callableStatement 
@@ -116,6 +126,19 @@ public class TestStoredProcedureOracleLocal {
     }
     
     public static void testStoredProcedureInOut_2(Connection connection) throws SQLException {
+	
+	/** <code>
+        create or replace PROCEDURE ORACLE_IN_OUT_2
+        (
+          PARAM1 IN NUMBER 
+        , PARAM2 IN OUT NUMBER
+        , PARAM3 IN OUT VARCHAR 
+        ) AS 
+        BEGIN
+          param2 := param1 + param2;
+          param3 := param3 || ' 42! ';
+        END ORACLE_IN_OUT_2;
+	</code> */
 	
 	// Calling the ORACLE_IN_OUT stored procedure.
 	// Native Oracle JDBC syntax using an Oracle JDBC Driver:

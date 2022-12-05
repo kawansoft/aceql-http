@@ -67,6 +67,30 @@ public class TestStoredProcedureSqlServer {
 
     public static void testStoredProcedureSelectCustomer(Connection connection) throws SQLException {
 	
+	/**
+	 <code>
+            USE [sampledb]
+            GO
+            SET ANSI_NULLS ON
+            GO
+            SET QUOTED_IDENTIFIER ON
+            GO
+            ALTER PROCEDURE [dbo].[spSelectCustomer] 
+            	(@p_customer_id AS INTEGER, 
+            	 @p_customer_name AS VARCHAR(max))
+            AS
+            BEGIN
+            	-- SET NOCOUNT ON added to prevent extra result sets from
+            	-- interfering with SELECT statements.
+            	SET NOCOUNT ON;
+            
+                -- Insert statements for procedure here
+            	select customer_id, lname from customer where customer_id > @p_customer_id 
+            	and  lname <> @p_customer_name;
+            END
+	 </code>
+	 */
+    	
 	// Calling the dbo.spSelectCustomer stored procedure.
 	// Native JDBC syntax using a SQL Server JDBC Driver:
 	CallableStatement callableStatement 
@@ -88,6 +112,31 @@ public class TestStoredProcedureSqlServer {
     }
     
     public static void testStoredProcedureInOut(Connection connection) throws SQLException {
+	
+	/**
+	 <code>
+            USE [sampledb]
+            GO
+            SET ANSI_NULLS ON
+            GO
+            SET QUOTED_IDENTIFIER ON
+            GO
+            
+            ALTER PROCEDURE [dbo].[spInOut] 
+            	(@param1 AS INTEGER, 
+                 @param2 AS INTEGER OUTPUT, 
+            	 @param3 AS VARCHAR(max) OUTPUT)
+            AS
+            BEGIN
+            	-- SET NOCOUNT ON added to prevent extra result sets from
+            	-- interfering with SELECT statements.
+            	SET NOCOUNT ON;
+            
+              SELECT @param2 = @param1 + @param2;
+              SELECT @param3 = @param3 + ' 42! ';
+            END
+            	 </code>
+	 */
 	
 	System.out.println();
 		
