@@ -1,15 +1,23 @@
-/**
+/*
+ * Copyright (c)2022 KawanSoft S.A.S. All rights reserved.
  * 
+ * Use of this software is governed by the Business Source License included
+ * in the LICENSE.TXT file in the project's root directory.
+ *
+ * Change Date: 2026-11-01
+ *
+ * On the date above, in accordance with the Business Source License, use
+ * of this software will be governed by version 2.0 of the Apache License.
  */
-package org.kawanfw.test.parms.oracle;
+package org.kawanfw.test.stored_procedure;
 
 import java.lang.reflect.Constructor;
 import java.sql.CallableStatement;
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.Driver;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.Properties;
 
 import org.kawanfw.test.parms.ConnectionLoaderJdbcInfo;
@@ -20,7 +28,7 @@ import oracle.jdbc.OracleTypes;
  * @author Nicolas de Pomereu
  *
  */
-public class TestStoredProcecdureOracleLocal {
+public class TestStoredProcedureOracleLocal {
     
     /**
      * @param args
@@ -52,31 +60,14 @@ public class TestStoredProcecdureOracleLocal {
 		    "Connection is null after driver.connect(url, properties)!");
 	}
 	
-	selectCustomerExecute(connection);
+	DatabaseMetaData data = connection.getMetaData();
+	System.out.println("Db Engine: " + data.getDatabaseProductName());
+	    
+	TestStoredProcedureCommons.selectCustomerExecute(connection);
 	testStoredProcedureSelectCustomer_2(connection);
 	testStoredProcedureInOut_2(connection);
     }
-    
-    public static void selectCustomerExecute(Connection connection) throws SQLException {
-	String sql = "select * from customer where customer_id >= 1 order by customer_id";
-	Statement statement = connection.createStatement();
-	statement.execute(sql);
-
-	ResultSet rs = statement.getResultSet();
-
-	while (rs.next()) {
-	    System.out.println();
-	    System.out.println("customer_id   : " + rs.getInt("customer_id"));
-	    System.out.println("customer_title: " + rs.getString("customer_title"));
-	    System.out.println("fname         : " + rs.getString("fname"));
-	    System.out.println("lname         : " + rs.getString("lname"));
-	}
-
-	statement.close();
-	rs.close();
-    }
-    
-    
+        
     public static void testStoredProcedureSelectCustomer(Connection connection) throws SQLException {
 	
 	// Calling the ORACLE_SELECT_CUSTOMER stored procedure.
