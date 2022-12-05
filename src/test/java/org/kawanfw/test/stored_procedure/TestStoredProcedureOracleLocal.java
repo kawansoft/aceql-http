@@ -64,49 +64,27 @@ public class TestStoredProcedureOracleLocal {
 	System.out.println("Db Engine: " + data.getDatabaseProductName());
 	    
 	TestStoredProcedureCommons.selectCustomerExecute(connection);
-	testStoredProcedureSelectCustomer_2(connection);
-	testStoredProcedureInOut_2(connection);
+	testStoredProcedureSelectCustomer(connection);
+	testStoredProcedureInOut(connection);
     }
         
+    
     public static void testStoredProcedureSelectCustomer(Connection connection) throws SQLException {
 	
-	// Calling the ORACLE_SELECT_CUSTOMER stored procedure.
-	// Native Oracle JDBC syntax using an Oracle JDBC Driver:
-	CallableStatement callableStatement 
-		= connection.prepareCall("{ call ORACLE_SELECT_CUSTOMER(?, ?) }");
-	callableStatement.setInt(1, 2);
-	callableStatement.registerOutParameter(2, OracleTypes.CURSOR);
-	callableStatement.executeQuery();
-	
-	ResultSet rs= (ResultSet) callableStatement.getObject(2);
-	
-	while (rs.next()) {
-	    System.out.println(rs.getInt(1));
-	}
-
-	callableStatement.close();
-
-	System.out.println("Done ORACLE_SELECT_CUSTOMER!");
-	System.out.println();
-
-    }
-    
-    public static void testStoredProcedureSelectCustomer_2(Connection connection) throws SQLException {
-	
 	/** <code>
-        create or replace PROCEDURE ORACLE_SELECT_CUSTOMER_2 
+        create or replace PROCEDURE ORACLE_SELECT_CUSTOMER 
             (p_customer_id IN OUT NUMBER, p_customer_name VARCHAR, p_rc OUT sys_refcursor) AS 
         BEGIN
             OPEN p_rc
             For select customer_id, lname from customer where customer_id > p_customer_id
             and lname <> p_customer_name;
-        END ORACLE_SELECT_CUSTOMER_2;
+        END ORACLE_SELECT_CUSTOMER;
 	</code> */
 	
 	// Calling the ORACLE_SELECT_CUSTOMER stored procedure.
 	// Native Oracle JDBC syntax using an Oracle JDBC Driver:
 	CallableStatement callableStatement 
-		= connection.prepareCall("{ call ORACLE_SELECT_CUSTOMER_2(?, ?, ?) }");
+		= connection.prepareCall("{ call ORACLE_SELECT_CUSTOMER(?, ?, ?) }");
 	callableStatement.setInt(1, 2);
 	callableStatement.setString(2, "Doe3");
 	callableStatement.registerOutParameter(1, java.sql.Types.INTEGER);
@@ -124,15 +102,15 @@ public class TestStoredProcedureOracleLocal {
 	
 	callableStatement.close();
 
-	System.out.println("Done ORACLE_SELECT_CUSTOMER_2!");
+	System.out.println("Done ORACLE_SELECT_CUSTOMER!");
 	System.out.println();
 
     }
     
-    public static void testStoredProcedureInOut_2(Connection connection) throws SQLException {
+    public static void testStoredProcedureInOut(Connection connection) throws SQLException {
 	
 	/** <code>
-        create or replace PROCEDURE ORACLE_IN_OUT_2
+        create or replace PROCEDURE ORACLE_IN_OUT
         (
           PARAM1 IN NUMBER 
         , PARAM2 IN OUT NUMBER
@@ -141,13 +119,13 @@ public class TestStoredProcedureOracleLocal {
         BEGIN
           param2 := param1 + param2;
           param3 := param3 || ' 42! ';
-        END ORACLE_IN_OUT_2;
+        END ORACLE_IN_OUT;
 	</code> */
 	
 	// Calling the ORACLE_IN_OUT stored procedure.
 	// Native Oracle JDBC syntax using an Oracle JDBC Driver:
 	CallableStatement callableStatement 
-		= connection.prepareCall("{ call ORACLE_IN_OUT_2(?, ?, ?) }");
+		= connection.prepareCall("{ call ORACLE_IN_OUT(?, ?, ?) }");
 	callableStatement.setInt(1, 3);
 	callableStatement.setInt(2, 4);
 	callableStatement.registerOutParameter(2, java.sql.Types.INTEGER);
@@ -163,29 +141,9 @@ public class TestStoredProcedureOracleLocal {
 	
 	callableStatement.close();
 	
-	System.out.println("Done ORACLE_IN_OUT_2!");
-	System.out.println();
-    }
-    
-    public static void testStoredProcedureInOut(Connection connection) throws SQLException {
-	
-	// Calling the ORACLE_IN_OUT stored procedure.
-	// Native Oracle JDBC syntax using an Oracle JDBC Driver:
-	CallableStatement callableStatement 
-		= connection.prepareCall("{ call ORACLE_IN_OUT(?, ?) }");
-	callableStatement.setInt(1, 1);
-	callableStatement.setInt(2, 2);
-	callableStatement.registerOutParameter(2, java.sql.Types.INTEGER);
-	@SuppressWarnings("unused")
-	int n = callableStatement.executeUpdate();
-	
-	int out2 = callableStatement.getInt(2);
-	System.out.println("out2: " + out2);
-	
-	callableStatement.close();
-	
 	System.out.println("Done ORACLE_IN_OUT!");
 	System.out.println();
     }
+    
 
 }
