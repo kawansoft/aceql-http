@@ -23,8 +23,9 @@ public class JdbcDriverParms {
     public static String POSTGRES_DRIVER_CLASS_NAME = "org.postgresql.Driver";
     public static String POSTGRES_URL = "jdbc:postgresql://localhost:5432/sampledb";
 
-    public static String MYSQL_DRIVER_CLASS_NAME = "org.gjt.mm.mysql.Driver";
-    public static String MYSQL_URL = "jdbc:mysql://localhost:3306/sampledb";
+    public static String MYSQL_DRIVER_CLASS_NAME = "com.mysql.cj.jdbc.Driver";
+    public static String MYSQL_URL = "jdbc:mysql://localhost:3306/sampledb?characterEncoding=latin1" +
+	    		"&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
 
     public static String MARIADB_DRIVER_CLASS_NAME = "org.mariadb.jdbc.Driver";
     public static String MARIADB_URL = "jdbc:mysql://localhost:3307/sampledb";
