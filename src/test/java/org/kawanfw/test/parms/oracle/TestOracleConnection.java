@@ -60,7 +60,7 @@ public class TestOracleConnection {
 	}
 	
 	selectCustomerExecute(connection);
-	testStoredProcedureSelectOracleCustomer(connection);
+	testStoredProcedureSelectOracleCustomer_2(connection);
 	testStoredProcedureOracleInOut(connection);
     }
     
@@ -103,6 +103,30 @@ public class TestOracleConnection {
 	callableStatement.close();
 
 	System.out.println("Done ORACLE_SELECT_CUSTOMER!");
+	System.out.println();
+
+    }
+    
+    public static void testStoredProcedureSelectOracleCustomer_2(Connection connection) throws SQLException {
+	
+	// Calling the ORACLE_SELECT_CUSTOMER stored procedure.
+	// Native Oracle JDBC syntax using an Oracle JDBC Driver:
+	CallableStatement callableStatement 
+		= connection.prepareCall("{ call ORACLE_SELECT_CUSTOMER_2(?, ?, ?) }");
+	callableStatement.setInt(1, 2);
+	callableStatement.setString(2, "Doe3");
+	callableStatement.registerOutParameter(3, OracleTypes.CURSOR);
+	callableStatement.executeQuery();
+	
+	ResultSet rs= (ResultSet) callableStatement.getObject(3);
+	
+	while (rs.next()) {
+	    System.out.println(rs.getInt(1) + " "+ rs.getString(2));
+	}
+
+	callableStatement.close();
+
+	System.out.println("Done ORACLE_SELECT_CUSTOMER_2!");
 	System.out.println();
 
     }
