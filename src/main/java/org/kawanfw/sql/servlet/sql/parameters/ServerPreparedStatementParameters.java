@@ -464,6 +464,11 @@ public class ServerPreparedStatementParameters {
     private void registerCharParameter(int paramIndex, String paramType, String paramValue, String paramDirection)
 	    throws SQLException {
 	if (isInParameter(paramDirection)) {
+	    
+	    debug("");
+	    debug("Parameter paramIndex   : " + paramIndex);
+	    debug("Parameter string value : " + paramValue);
+	    
 	    preparedStatement.setString(paramIndex, paramValue);
 	    parameterValues.put(paramIndex, paramValue);
 	}

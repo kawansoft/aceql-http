@@ -20,12 +20,12 @@ import oracle.jdbc.OracleTypes;
  * @author Nicolas de Pomereu
  *
  */
-public class TestOracleConnection {
+public class TestOracleLocalConnection {
 
     /**
      * 
      */
-    public TestOracleConnection() {
+    public TestOracleLocalConnection() {
 	// TODO Auto-generated constructor stub
     }
 
@@ -61,7 +61,7 @@ public class TestOracleConnection {
 	
 	selectCustomerExecute(connection);
 	testStoredProcedureSelectOracleCustomer_2(connection);
-	testStoredProcedureOracleInOut(connection);
+	testStoredProcedureOracleInOut_2(connection);
     }
     
     public static void selectCustomerExecute(Connection connection) throws SQLException {
@@ -129,6 +129,31 @@ public class TestOracleConnection {
 	System.out.println("Done ORACLE_SELECT_CUSTOMER_2!");
 	System.out.println();
 
+    }
+    
+    public static void testStoredProcedureOracleInOut_2(Connection connection) throws SQLException {
+	
+	// Calling the ORACLE_IN_OUT stored procedure.
+	// Native Oracle JDBC syntax using an Oracle JDBC Driver:
+	CallableStatement callableStatement 
+		= connection.prepareCall("{ call ORACLE_IN_OUT_2(?, ?, ?) }");
+	callableStatement.setInt(1, 1);
+	callableStatement.setInt(2, 2);
+	callableStatement.registerOutParameter(2, java.sql.Types.INTEGER);
+	callableStatement.setString(3, "Meaning of life is:");
+	callableStatement.registerOutParameter(3, java.sql.Types.VARCHAR);
+	@SuppressWarnings("unused")
+	int n = callableStatement.executeUpdate();
+	
+	int out2 = callableStatement.getInt(2);
+	System.out.println("out2: " + out2);
+	String out3 = callableStatement.getString(3);
+	System.out.println("out3: " + out3);
+	
+	callableStatement.close();
+	
+	System.out.println("Done ORACLE_IN_OUT_2!");
+	System.out.println();
     }
     
     public static void testStoredProcedureOracleInOut(Connection connection) throws SQLException {

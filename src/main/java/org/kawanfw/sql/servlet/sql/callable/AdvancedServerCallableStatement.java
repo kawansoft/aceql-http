@@ -281,9 +281,7 @@ public class AdvancedServerCallableStatement {
 		debug("DB is Oracle!");
 		int size = serverPreparedStatementParameters.getParametersNumber();
 		debug("Oracle Stored Procedure parameters size: " + size);
-		
-		size = 1;
-		
+				
 		callableStatement.registerOutParameter(size + 1, OracleTypes.CURSOR);
 		callableStatement.executeQuery();
 
