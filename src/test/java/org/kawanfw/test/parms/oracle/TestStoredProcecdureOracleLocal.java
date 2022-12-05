@@ -20,15 +20,8 @@ import oracle.jdbc.OracleTypes;
  * @author Nicolas de Pomereu
  *
  */
-public class TestOracleLocalConnection {
-
-    /**
-     * 
-     */
-    public TestOracleLocalConnection() {
-	// TODO Auto-generated constructor stub
-    }
-
+public class TestStoredProcecdureOracleLocal {
+    
     /**
      * @param args
      */
@@ -60,8 +53,8 @@ public class TestOracleLocalConnection {
 	}
 	
 	selectCustomerExecute(connection);
-	testStoredProcedureSelectOracleCustomer_2(connection);
-	testStoredProcedureOracleInOut_2(connection);
+	testStoredProcedureSelectCustomer_2(connection);
+	testStoredProcedureInOut_2(connection);
     }
     
     public static void selectCustomerExecute(Connection connection) throws SQLException {
@@ -84,7 +77,7 @@ public class TestOracleLocalConnection {
     }
     
     
-    public static void testStoredProcedureSelectOracleCustomer(Connection connection) throws SQLException {
+    public static void testStoredProcedureSelectCustomer(Connection connection) throws SQLException {
 	
 	// Calling the ORACLE_SELECT_CUSTOMER stored procedure.
 	// Native Oracle JDBC syntax using an Oracle JDBC Driver:
@@ -107,7 +100,7 @@ public class TestOracleLocalConnection {
 
     }
     
-    public static void testStoredProcedureSelectOracleCustomer_2(Connection connection) throws SQLException {
+    public static void testStoredProcedureSelectCustomer_2(Connection connection) throws SQLException {
 	
 	// Calling the ORACLE_SELECT_CUSTOMER stored procedure.
 	// Native Oracle JDBC syntax using an Oracle JDBC Driver:
@@ -131,7 +124,7 @@ public class TestOracleLocalConnection {
 
     }
     
-    public static void testStoredProcedureOracleInOut_2(Connection connection) throws SQLException {
+    public static void testStoredProcedureInOut_2(Connection connection) throws SQLException {
 	
 	// Calling the ORACLE_IN_OUT stored procedure.
 	// Native Oracle JDBC syntax using an Oracle JDBC Driver:
@@ -156,7 +149,7 @@ public class TestOracleLocalConnection {
 	System.out.println();
     }
     
-    public static void testStoredProcedureOracleInOut(Connection connection) throws SQLException {
+    public static void testStoredProcedureInOut(Connection connection) throws SQLException {
 	
 	// Calling the ORACLE_IN_OUT stored procedure.
 	// Native Oracle JDBC syntax using an Oracle JDBC Driver:
