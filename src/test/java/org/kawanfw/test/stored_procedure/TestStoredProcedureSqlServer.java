@@ -76,7 +76,7 @@ public class TestStoredProcedureSqlServer {
             SET QUOTED_IDENTIFIER ON
             GO
             ALTER PROCEDURE [dbo].[spSelectCustomer] 
-            	(@p_customer_id AS INTEGER, 
+            	(@p_customer_id AS INTEGER OUTPUT, 
             	 @p_customer_name AS VARCHAR(max))
             AS
             BEGIN
@@ -95,15 +95,20 @@ public class TestStoredProcedureSqlServer {
 	// Native JDBC syntax using a SQL Server JDBC Driver:
 	CallableStatement callableStatement 
 		= connection.prepareCall("{ call dbo.spSelectCustomer(?, ?) }");
-	callableStatement.setInt(1, 2);
+	callableStatement.setInt(1, 3);
 	callableStatement.setString(2, "Doe3");
+	
+	callableStatement.registerOutParameter(1, java.sql.Types.INTEGER);
+	
 	ResultSet rs = callableStatement.executeQuery();
 	
-	System.out.println();
 	while (rs.next()) {
 	    System.out.println(rs.getInt(1) + " "+ rs.getString(2));
 	}
 
+	int out = callableStatement.getInt(1);
+	System.out.println("out: " + out);
+	
 	callableStatement.close();
 
 	System.out.println("Done dbo.spSelectCustomer!");
@@ -138,14 +143,13 @@ public class TestStoredProcedureSqlServer {
             	 </code>
 	 */
 	
-	System.out.println();
 		
 	// Calling the dbo.spInOut stored procedure.
 	// Native JDBC syntax using a SQL Server  Driver:
 	CallableStatement callableStatement 
 		= connection.prepareCall("{ call dbo.spInOut(?, ?, ?)  }");
-	callableStatement.setInt(1, 4);
-	callableStatement.setInt(2, 3);
+	callableStatement.setInt(1, 3);
+	callableStatement.setInt(2, 4);
 	callableStatement.registerOutParameter(2, java.sql.Types.INTEGER);
 	callableStatement.setString(3, "Meaning of life is:");
 	callableStatement.registerOutParameter(3, java.sql.Types.VARCHAR);

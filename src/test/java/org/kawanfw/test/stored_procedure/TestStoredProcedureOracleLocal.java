@@ -94,13 +94,13 @@ public class TestStoredProcedureOracleLocal {
     public static void testStoredProcedureSelectCustomer_2(Connection connection) throws SQLException {
 	
 	/** <code>
-	create or replace PROCEDURE ORACLE_SELECT_CUSTOMER_2 
-	    (p_customer_id NUMBER, p_customer_name VARCHAR, p_rc OUT sys_refcursor) AS 
-	BEGIN
-	    OPEN p_rc
-	    For select customer_id, lname from customer where customer_id > p_customer_id
-	    and lname <> p_customer_name;
-	END ORACLE_SELECT_CUSTOMER_2;
+        create or replace PROCEDURE ORACLE_SELECT_CUSTOMER_2 
+            (p_customer_id IN OUT NUMBER, p_customer_name VARCHAR, p_rc OUT sys_refcursor) AS 
+        BEGIN
+            OPEN p_rc
+            For select customer_id, lname from customer where customer_id > p_customer_id
+            and lname <> p_customer_name;
+        END ORACLE_SELECT_CUSTOMER_2;
 	</code> */
 	
 	// Calling the ORACLE_SELECT_CUSTOMER stored procedure.
@@ -109,6 +109,7 @@ public class TestStoredProcedureOracleLocal {
 		= connection.prepareCall("{ call ORACLE_SELECT_CUSTOMER_2(?, ?, ?) }");
 	callableStatement.setInt(1, 2);
 	callableStatement.setString(2, "Doe3");
+	callableStatement.registerOutParameter(1, java.sql.Types.INTEGER);
 	callableStatement.registerOutParameter(3, OracleTypes.CURSOR);
 	callableStatement.executeQuery();
 	
@@ -118,6 +119,9 @@ public class TestStoredProcedureOracleLocal {
 	    System.out.println(rs.getInt(1) + " "+ rs.getString(2));
 	}
 
+	int out = callableStatement.getInt(1);
+	System.out.println("out: " + out);
+	
 	callableStatement.close();
 
 	System.out.println("Done ORACLE_SELECT_CUSTOMER_2!");
@@ -144,8 +148,8 @@ public class TestStoredProcedureOracleLocal {
 	// Native Oracle JDBC syntax using an Oracle JDBC Driver:
 	CallableStatement callableStatement 
 		= connection.prepareCall("{ call ORACLE_IN_OUT_2(?, ?, ?) }");
-	callableStatement.setInt(1, 1);
-	callableStatement.setInt(2, 2);
+	callableStatement.setInt(1, 3);
+	callableStatement.setInt(2, 4);
 	callableStatement.registerOutParameter(2, java.sql.Types.INTEGER);
 	callableStatement.setString(3, "Meaning of life is:");
 	callableStatement.registerOutParameter(3, java.sql.Types.VARCHAR);

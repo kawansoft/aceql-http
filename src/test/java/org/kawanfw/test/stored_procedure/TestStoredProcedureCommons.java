@@ -36,7 +36,8 @@ public class TestStoredProcedureCommons {
 	    System.out.println("fname         : " + rs.getString("fname"));
 	    System.out.println("lname         : " + rs.getString("lname"));
 	}
-
+	System.out.println();
+	
 	statement.close();
 	rs.close();
     }
