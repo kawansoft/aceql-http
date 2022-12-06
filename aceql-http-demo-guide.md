@@ -537,7 +537,7 @@ From now, you can read the [API User Guide](https://github.com/kawansoft/aceql-h
 
 2. Install the [AceQL.Client](https://www.nuget.org/packages/AceQL.Client) package with NuGet.
 
-3. Download this C# source file: [MyRemoteConnection.cs](https://docs.aceql.com/rest/soft_csharp/7.5.1/src/MyRemoteConnection.cs). Then insert it in your project. 
+3. Download this C# source file: [MyRemoteConnection.cs](https://docs.aceql.com/rest/soft_csharp/7.6/src/MyRemoteConnection.cs). Then insert it in your project. 
 
 4. The  connection to the remote database is created  using `AceQLConnection` class and passing the URL of the AceQL Servlet Manager of your configuration: 
 
@@ -640,7 +640,7 @@ From now, you can read the [API User Guide](https://github.com/kawansoft/aceql-h
 
 
 
-The `SelectCustomerAndOrderLogAsync()` method of [MyRemoteConnection.cs](https://docs.aceql.com/rest/soft_csharp/7.5.1/src/MyRemoteConnection.cs) displays back the inserted values.
+The `SelectCustomerAndOrderLogAsync()` method of [MyRemoteConnection.cs](https://docs.aceql.com/rest/soft_csharp/7.6/src/MyRemoteConnection.cs) displays back the inserted values.
 
 From now on, you can read the [C# Client SDK User Guide](https://github.com/kawansoft/AceQL.Client2/blob/master/README.md).
 
@@ -654,10 +654,10 @@ From now on, you can read the [C# Client SDK User Guide](https://github.com/kawa
    <version>9.2</version>
    ```
 
-2. If you don’t use Maven: the [aceql-http-client-jdbc-driver-all-9.0.jar](https://docs.aceql.com/rest/soft_java_client/9.0/download/aceql-http-client-jdbc-driver-all-9.0.jar) file contains the SDK with all dependencies.
+2. If you don’t use Maven: the [aceql-http-client-jdbc-driver-all-9.02jar](https://docs.aceql.com/rest/soft_java_client/9.2/download/aceql-http-client-jdbc-driver-all-9.2.jar) file contains the SDK with all dependencies.
 3. Create an `com.aceql.jdbc.commons.examples` package in your IDE.
 
-4. Download this Java source file: [MyRemoteConnection.java](https://docs.aceql.com/rest/soft_java_client/9.0/src/MyRemoteConnection.java). Then insert it in the package. 
+4. Download this Java source file: [MyRemoteConnection.java](https://docs.aceql.com/rest/soft_java_client/9.2/src/MyRemoteConnection.java). Then insert it in the package. 
 
 5. The  connection to the remote database is  created  using loading the `AceQLDriver` class  and passing the URL of the AceQL Servlet Manager of your configuration:
 
@@ -773,9 +773,9 @@ From now on, you can read the [C# Client SDK User Guide](https://github.com/kawa
    }
    ```
 
-The `selectCustomerAndOrderLog` method of [MyRemoteConnection.java](https://docs.aceql.com/rest/soft_java_client/9.0/src/MyRemoteConnection.java) displays back the inserted values.
+The `selectCustomerAndOrderLog` method of [MyRemoteConnection.java](https://docs.aceql.com/rest/soft_java_client/9.2/src/MyRemoteConnection.java) displays back the inserted values.
 
-From now on, you can read the AceQL Client JDBC Driver [User Guide](https://github.com/kawansoft/aceql-http-client-sdk/blob/master/README.md) or run through the [Javadoc](https://docs.aceql.com/rest/soft_java_client/9.0/javadoc).
+From now on, you can read the AceQL Client JDBC Driver [User Guide](https://github.com/kawansoft/aceql-http-client-sdk/blob/master/README.md) or run through the [Javadoc](https://docs.aceql.com/rest/soft_java_client/9.2/javadoc).
 
 ## Python Client SDK
 
