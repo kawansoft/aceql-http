@@ -85,6 +85,9 @@ public class DefaultBlobUploadConfigurator implements BlobUploadConfigurator {
 	// Create a new file upload handler using the factory
 	// that define the secure temp dir
 	ServletFileUpload upload = new ServletFileUpload(factory);
+	
+	//Future Usage
+	//upload.setFileSizeMax(MAX_FILE_SIZE);
 
 	// Parse the request
 	FileItemIterator iter = upload.getItemIterator(request);
