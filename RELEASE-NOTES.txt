@@ -25,6 +25,25 @@ AceQL HTTP is licensed through the Business Source License 1.1.
 (https://github.com/kawansoft/aceql-http/blob/12.0/LICENSE.TXT)
 
 
+AceQL HTTP Version 12.1 - 06-Dec-2022
+-------------------------------------
+
+What's New: 
+
+- Tomcat base libraries have been upgraded to 9.0.70 for
+  reliability and performance reasons.
+
+- PostgreSQL base libraries have been upgraded to 42.5.13 for 
+  security reasons.
+
+Bugs fixed:
+
+- An Oracle database stored procedure that returns a SELECT would
+  support only one parameter. This has been fixed.
+
+- Minor Javadoc errors have been fixed.
+  
+  
 AceQL HTTP Version 12.0 - 21-Nov-2022
 -------------------------------------
 

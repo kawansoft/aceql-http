@@ -32,7 +32,7 @@ import org.kawanfw.sql.util.SqlTag;
  * Note that the {@code org.kawanfw.sql.WebServer} class is used to start and
  * stop the embedded Web Server from command line and uses the APIs of this
  * class. Source code is available here:&nbsp; <a href=
- * "https://docs.aceql.com/rest/soft/12.0/src/WebServer.java">WebServer.java</a>.
+ * "https://docs.aceql.com/rest/soft/12.1/src/WebServer.java">WebServer.java</a>.
  *
  * @author Nicolas de Pomereu
  *
