@@ -39,7 +39,8 @@ What's New:
 Bugs fixed:
 
 - An Oracle database stored procedure that returns a SELECT would
-  support only one parameter. This has been fixed.
+  in some special cases support only one IN or IN / OUT parameter. 
+  This has been fixed.
 
 - Minor Javadoc errors have been fixed.
   
