@@ -30,6 +30,16 @@ AceQL HTTP Version 12.1 - 06-Dec-2022
 
 What's New: 
 
+- BlobUploadConfigurator contains now the getMaxBlobLength() 
+  method. This allows fixing a Blob upload size limit in order
+  to avoid a DOS attack aimed to saturate the AceQL server.
+
+
+AceQL HTTP Version 12.1 - 06-Dec-2022
+-------------------------------------
+
+What's New: 
+
 - Tomcat base libraries have been upgraded to 9.0.70 for
   reliability and performance reasons.
 
