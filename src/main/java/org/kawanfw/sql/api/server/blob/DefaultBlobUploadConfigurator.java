@@ -163,7 +163,7 @@ public class DefaultBlobUploadConfigurator implements BlobUploadConfigurator {
 	    maxBlobLength = Long.parseLong(maxBlobLengthStr);
 	} catch (NumberFormatException e) {
 	    throw new IllegalArgumentException(
-		    "The defaultBlobUploadConfigurator.maxBlobLength property is not numeric: " + maxBlobLengthStr);
+		    "The defaultBlobUploadConfigurator.maxBlobLength property is not a long value: " + maxBlobLengthStr);
 	}
 
 	return maxBlobLength;
