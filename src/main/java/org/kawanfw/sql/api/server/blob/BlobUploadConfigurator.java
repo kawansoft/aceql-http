@@ -55,7 +55,7 @@ public interface BlobUploadConfigurator {
      * This allows to prevent from DOS attacks that would saturate the AceQL server.
      * 0 means there is no limit.
      * 
-     * @return the maximum Blob length for upload, zero means there is no limit
+     * @return the maximum Blob length for upload, 0 means there is no limit
      * @throws IOException  if an IOException occurs
      * @throws SQLException if a SQLException occurs
      */
