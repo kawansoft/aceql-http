@@ -140,7 +140,7 @@ public class DefaultDatabaseConfigurator implements DatabaseConfigurator {
     /**
      * @return the value of the property {@code defaultDatabaseConfigurator.maxRows}
      *         defined in the {@code aceql-server.properties} file at server
-     *         startup. If property does not exist, returns 0.
+     *         startup. If the property does not exist, returns 0.
      */
     @Override
     public int getMaxRows(String username, String database) throws IOException, SQLException {

@@ -18,7 +18,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.sql.SQLException;
 import java.util.Date;
+import java.util.Properties;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -30,6 +32,9 @@ import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.apache.tomcat.util.http.fileupload.disk.DiskFileItemFactory;
 import org.apache.tomcat.util.http.fileupload.servlet.ServletFileUpload;
 import org.apache.tomcat.util.http.fileupload.util.Streams;
+import org.kawanfw.sql.api.server.DatabaseConfigurationException;
+import org.kawanfw.sql.servlet.injection.properties.PropertiesFileStore;
+import org.kawanfw.sql.servlet.injection.properties.PropertiesFileUtil;
 import org.kawanfw.sql.util.FrameworkDebug;
 
 /**
@@ -49,6 +54,8 @@ import org.kawanfw.sql.util.FrameworkDebug;
 public class DefaultBlobUploadConfigurator implements BlobUploadConfigurator {
     private static boolean DEBUG = FrameworkDebug.isSet(DefaultBlobUploadConfigurator.class);
 
+    private Properties properties = null;
+    
     // Max file size
     @SuppressWarnings("unused")
     private static final int MAX_FILE_SIZE = 1024 * 1024 * 20;
@@ -86,8 +93,15 @@ public class DefaultBlobUploadConfigurator implements BlobUploadConfigurator {
 	// that define the secure temp dir
 	ServletFileUpload upload = new ServletFileUpload(factory);
 	
-	//Future Usage
-	//upload.setFileSizeMax(MAX_FILE_SIZE);
+	// Set an upload limit, if any
+	try {
+	    long maxBlobLength = getMaxBlobLength();
+	    if (getMaxBlobLength() > 0) {
+	    	upload.setFileSizeMax(maxBlobLength);
+	    }
+	} catch (SQLException e) {
+	    throw new IOException(e);
+	}
 
 	// Parse the request
 	FileItemIterator iter = upload.getItemIterator(request);
@@ -127,6 +141,48 @@ public class DefaultBlobUploadConfigurator implements BlobUploadConfigurator {
 	}
 
     }
+    
+    /**
+     * @return the value of the property {@code defaultBlobUploadConfigurator.maxBlobLength}
+     *         defined in the {@code aceql-server.properties} file at server
+     *         startup. If the property does not exist, returns 0 (i.e. no Blob upload limit).
+     */
+    @Override
+    public long getMaxBlobLength() throws IOException, SQLException {
+	long maxBlobLength = 0;
+	setProperties();
+
+	String maxBlobLengthStr = properties.getProperty("defaultBlobUploadConfigurator.maxBlobLength");
+
+	// No limit if not set
+	if (maxBlobLengthStr == null) {
+	    return 0;
+	}
+	
+	try {
+	    maxBlobLength = Long.parseLong(maxBlobLengthStr);
+	} catch (NumberFormatException e) {
+	    throw new IllegalArgumentException(
+		    "The defaultBlobUploadConfigurator.maxBlobLength property is not numeric: " + maxBlobLengthStr);
+	}
+
+	return maxBlobLength;
+    }
+    
+    /**
+     * Sets in memory the Properties of the used {@code aceql-server.properties}
+     * file.
+     * 
+     * @throws IOException
+     * @throws DatabaseConfigurationException
+     */
+    private void setProperties() throws IOException, DatabaseConfigurationException {
+	if (properties == null) {
+	    File file = PropertiesFileStore.get();
+	    properties = PropertiesFileUtil.getProperties(file);
+	}
+    }
+    
 
     private void debug(String s) {
 	if (DEBUG)
