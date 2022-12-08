@@ -22,10 +22,11 @@ public class LimitsInfoDto {
     private String status = "OK";
     private long maxRows = 0;
     private long maxBlobLength = 0;
-    
+
     /**
      * Constructor.
-     * @param maxRows	value of {@code DatabaseConfigurator.getMaxRows}
+     * 
+     * @param maxRows       value of {@code DatabaseConfigurator.getMaxRows}
      * @param maxBlobLength value of {@code DatabaseConfigurator.getMaxBlobLength}
      */
     public LimitsInfoDto(long maxRows, long maxBlobLength) {
@@ -37,5 +38,5 @@ public class LimitsInfoDto {
     public String toString() {
 	return "LimitsInfoDto [status=" + status + ", maxRows=" + maxRows + ", maxBlobLength=" + maxBlobLength + "]";
     }
-     
+
 }
