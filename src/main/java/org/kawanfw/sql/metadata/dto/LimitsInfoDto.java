@@ -33,6 +33,27 @@ public class LimitsInfoDto {
 	this.maxRows = maxRows;
 	this.maxBlobLength = maxBlobLength;
     }
+    
+    /**
+     * @return the status
+     */
+    public String getStatus() {
+        return status;
+    }
+
+    /**
+     * @return the maxRows
+     */
+    public long getMaxRows() {
+        return maxRows;
+    }
+
+    /**
+     * @return the maxBlobLength
+     */
+    public long getMaxBlobLength() {
+        return maxBlobLength;
+    }
 
     @Override
     public String toString() {
