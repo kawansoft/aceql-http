@@ -33,7 +33,8 @@ import org.slf4j.Logger;
  * <li>Define some Java code to execute before/after a
  * <code>Connection.close()</code>.
  * <li>Define the maximum number of rows that may be returned to the
- * client.</li>
+ * client.</li> *
+ * <li>Define the maximum length allowed for a Blob upload.</li>
  * <li>Define the {@code Logger} to use to trap server Exceptions.</li>
  * </ul>
  * <p>
@@ -89,6 +90,19 @@ public interface DatabaseConfigurator {
     public int getMaxRows(String username, String database) throws IOException, SQLException;
 
     /**
+     * Allows to define the maximum length authorized for of a Blob to be uploaded.
+     * This allows to prevent from DOS attacks that would saturate the AceQL server.
+     * 0 means there is no limit.
+     * 
+     * @param username the client username
+     * 
+     * @return the maximum Blob length for upload, 0 means there is no limit
+     * @throws IOException  if an IOException occurs
+     * @throws SQLException if a SQLException occurs
+     */
+    long getMaxBlobLength(String username) throws IOException, SQLException;
+
+    /**
      * Allows to define the directory into which Blobs/Clobs are uploaded by client
      * side, and from which Blobs/Clobs are downloaded by client side. <br>
      * See default implementation in:
@@ -105,7 +119,8 @@ public interface DatabaseConfigurator {
      * Returns the SLF4J {@link Logger} that will be used by AceQL for logging:
      * <ul>
      * <li>All Exceptions thrown by server side will be logged.</li>
-     * <li>Exceptions thrown are flattened when logged for compatible usage with tools like Logstash.</li>
+     * <li>Exceptions thrown are flattened when logged for compatible usage with
+     * tools like Logstash.</li>
      * </ul>
      * It is not necessary nor recommended to implement this method; do it only if
      * you want take control of the logging to modify the default characteristics of

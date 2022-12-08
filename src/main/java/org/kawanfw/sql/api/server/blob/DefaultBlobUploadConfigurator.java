@@ -14,17 +14,17 @@ package org.kawanfw.sql.api.server.blob;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.sql.SQLException;
 import java.util.Date;
-import java.util.Properties;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.tomcat.util.http.fileupload.FileItemIterator;
 import org.apache.tomcat.util.http.fileupload.FileItemStream;
@@ -32,10 +32,8 @@ import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.apache.tomcat.util.http.fileupload.disk.DiskFileItemFactory;
 import org.apache.tomcat.util.http.fileupload.servlet.ServletFileUpload;
 import org.apache.tomcat.util.http.fileupload.util.Streams;
-import org.kawanfw.sql.api.server.DatabaseConfigurationException;
-import org.kawanfw.sql.servlet.injection.properties.PropertiesFileStore;
-import org.kawanfw.sql.servlet.injection.properties.PropertiesFileUtil;
 import org.kawanfw.sql.util.FrameworkDebug;
+import org.kawanfw.sql.util.FrameworkFileUtil;
 
 /**
  *
@@ -43,7 +41,7 @@ import org.kawanfw.sql.util.FrameworkDebug;
  * It is not required nor recommended to extend this class or to develop another
  * {@code BlobUploadConfigurator} implementation. <br>
  * Extend this class and override
- * {@link #upload(HttpServletRequest, HttpServletResponse, File)} only if you
+ * {@link #upload(HttpServletRequest, HttpServletResponse, File, long)} only if you
  * want to implement your own advanced upload mechanism with special features:
  * file chunking, recovery mechanisms, etc.
  *
@@ -53,18 +51,12 @@ import org.kawanfw.sql.util.FrameworkDebug;
 
 public class DefaultBlobUploadConfigurator implements BlobUploadConfigurator {
     private static boolean DEBUG = FrameworkDebug.isSet(DefaultBlobUploadConfigurator.class);
-
-    private Properties properties = null;
     
-    // Max file size
-    @SuppressWarnings("unused")
-    private static final int MAX_FILE_SIZE = 1024 * 1024 * 20;
-
     /**
      * Simple upload of file into user directory.
      */
     @Override
-    public void upload(HttpServletRequest request, HttpServletResponse response, File blobDirectory)
+    public void upload(HttpServletRequest request, HttpServletResponse response, File blobDirectory, long maxBlobLength)
 	    throws IOException, FileUploadException {
 
 	debug("in upload()");
@@ -93,14 +85,14 @@ public class DefaultBlobUploadConfigurator implements BlobUploadConfigurator {
 	// that define the secure temp dir
 	ServletFileUpload upload = new ServletFileUpload(factory);
 	
+	debug("maxBlobLength: " + maxBlobLength);
+	if (DEBUG) {
+	    String tempDir = FrameworkFileUtil.getUserHomeDotKawansoftDir();
+	    FileUtils.write(new File(tempDir + File.separator + "maxBlobLength.txt"), maxBlobLength + "", StandardCharsets.UTF_8);
+	}
 	// Set an upload limit, if any
-	try {
-	    long maxBlobLength = getMaxBlobLength();
-	    if (getMaxBlobLength() > 0) {
-	    	upload.setFileSizeMax(maxBlobLength);
-	    }
-	} catch (SQLException e) {
-	    throw new IOException(e);
+	if (maxBlobLength > 0) {
+	    upload.setFileSizeMax(maxBlobLength);
 	}
 
 	// Parse the request
@@ -142,47 +134,7 @@ public class DefaultBlobUploadConfigurator implements BlobUploadConfigurator {
 
     }
     
-    /**
-     * @return the value of the property {@code defaultBlobUploadConfigurator.maxBlobLength}
-     *         defined in the {@code aceql-server.properties} file at server
-     *         startup. If the property does not exist, returns 0 (i.e. no Blob upload limit).
-     */
-    @Override
-    public long getMaxBlobLength() throws IOException, SQLException {
-	long maxBlobLength = 0;
-	setProperties();
-
-	String maxBlobLengthStr = properties.getProperty("defaultBlobUploadConfigurator.maxBlobLength");
-
-	// No limit if not set
-	if (maxBlobLengthStr == null) {
-	    return 0;
-	}
-	
-	try {
-	    maxBlobLength = Long.parseLong(maxBlobLengthStr);
-	} catch (NumberFormatException e) {
-	    throw new IllegalArgumentException(
-		    "The defaultBlobUploadConfigurator.maxBlobLength property is not a long value: " + maxBlobLengthStr);
-	}
-
-	return maxBlobLength;
-    }
-    
-    /**
-     * Sets in memory the Properties of the used {@code aceql-server.properties}
-     * file.
-     * 
-     * @throws IOException
-     * @throws DatabaseConfigurationException
-     */
-    private void setProperties() throws IOException, DatabaseConfigurationException {
-	if (properties == null) {
-	    File file = PropertiesFileStore.get();
-	    properties = PropertiesFileUtil.getProperties(file);
-	}
-    }
-    
+ 
 
     private void debug(String s) {
 	if (DEBUG)

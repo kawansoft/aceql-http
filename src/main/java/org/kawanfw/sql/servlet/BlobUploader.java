@@ -27,6 +27,7 @@ import org.kawanfw.sql.servlet.injection.classes.InjectedClassesStore;
 import org.kawanfw.sql.servlet.sql.LoggerUtil;
 import org.kawanfw.sql.servlet.sql.json_return.JsonErrorReturn;
 import org.kawanfw.sql.servlet.sql.json_return.JsonOkReturn;
+import org.kawanfw.sql.util.Tag;
 
 /**
  * @author Nicolas de Pomereu
@@ -72,8 +73,14 @@ public class BlobUploader {
 	}
 
 	try {
+	    long maxBlobLength = databaseConfigurator.getMaxBlobLength(username);
 	    BlobUploadConfigurator blobUploadConfigurator = InjectedClassesStore.get().getBlobUploadConfigurator();
-	    blobUploadConfigurator.upload(request, response, blobDirectory);
+	    try {
+		blobUploadConfigurator.upload(request, response, blobDirectory, maxBlobLength);
+	    } catch (org.apache.tomcat.util.http.fileupload.impl.FileUploadIOException e) {
+		// Clean Exception with new throw 
+		throw new IOException(Tag.PRODUCT_SECURITY +  " Blob length exceeds maximum permitted size of " + maxBlobLength + " bytes.");
+	    }
 
 	    // Say it's OK to the client
 	    ServerSqlManager.writeLine(out, JsonOkReturn.build());

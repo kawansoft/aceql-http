@@ -165,6 +165,34 @@ public class DefaultDatabaseConfigurator implements DatabaseConfigurator {
 	return maxRows;
     }
 
+   
+    /**
+     * @return the value of the property {@code defaultDatabaseConfigurator.maxBlobLength}
+     *         defined in the {@code aceql-server.properties} file at server
+     *         startup. If the property does not exist, returns 0 (i.e. no Blob upload limit).
+     */
+    @Override
+    public long getMaxBlobLength(String username) throws IOException, SQLException {
+	long maxBlobLength = 0;
+	setProperties();
+
+	String maxBlobLengthStr = properties.getProperty("defaultDatabaseConfigurator.maxBlobLength");
+
+	// No limit if not set
+	if (maxBlobLengthStr == null) {
+	    return 0;
+	}
+	
+	try {
+	    maxBlobLength = Long.parseLong(maxBlobLengthStr);
+	} catch (NumberFormatException e) {
+	    throw new IllegalArgumentException(
+		    "The defaultDatabaseConfigurator.maxBlobLength property is not a long value: " + maxBlobLengthStr);
+	}
+
+	return maxBlobLength;
+    }
+    
     /**
      * @return <code>user.home/.aceql-server-root/username</code>. (
      *         {@code user.home} is the one of the servlet container).

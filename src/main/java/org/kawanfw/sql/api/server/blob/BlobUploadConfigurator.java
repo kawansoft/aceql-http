@@ -13,7 +13,6 @@ package org.kawanfw.sql.api.server.blob;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.SQLException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -43,22 +42,13 @@ public interface BlobUploadConfigurator {
      *                      end of download, because it can be reused to send error
      *                      message to client side after this method execution.
      * @param blobDirectory the directory into which the blob must be uploaded
-     * 
+     * @param maxBlobLength the maximum length authorized for of a Blob to be
+     *                      uploaded. 0 means there is no limit.
      * @throws IOException         if any I/O exception occurs during the upload
      * @throws FileUploadException if any exception during upload
      */
-    void upload(HttpServletRequest request, HttpServletResponse response, File blobDirectory)
+    void upload(HttpServletRequest request, HttpServletResponse response, File blobDirectory, long maxBlobLength)
 	    throws IOException, FileUploadException;
 
-    /**
-     * Allows to define the maximum length authorized for of a Blob to be uploaded.
-     * This allows to prevent from DOS attacks that would saturate the AceQL server.
-     * 0 means there is no limit.
-     * 
-     * @return the maximum Blob length for upload, 0 means there is no limit
-     * @throws IOException  if an IOException occurs
-     * @throws SQLException if a SQLException occurs
-     */
-    long getMaxBlobLength() throws IOException, SQLException;
 
 }
