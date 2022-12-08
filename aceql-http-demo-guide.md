@@ -86,7 +86,7 @@ $ curl --data-urlencode \
   - ```python
     # Python AceQL Client Calls Sample 
     with closing(connection.cursor()) as cursor:
-        sql = "select id, title, lname from customer where customer_id = 1";
+        sql = "select customer_id, title, lname from customer where customer_id = 1"
         cursor.execute(sql)
         rows = cursor.fetchall()
     
