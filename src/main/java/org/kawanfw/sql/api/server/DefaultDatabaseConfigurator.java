@@ -172,7 +172,7 @@ public class DefaultDatabaseConfigurator implements DatabaseConfigurator {
      *         startup. If the property does not exist, returns 0 (i.e. no Blob upload limit).
      */
     @Override
-    public long getMaxBlobLength(String username) throws IOException, SQLException {
+    public long getMaxBlobLength(String username, String database) throws IOException, SQLException {
 	long maxBlobLength = 0;
 	setProperties();
 

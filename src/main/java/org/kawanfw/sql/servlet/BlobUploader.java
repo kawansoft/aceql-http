@@ -73,7 +73,7 @@ public class BlobUploader {
 	}
 
 	try {
-	    long maxBlobLength = databaseConfigurator.getMaxBlobLength(username);
+	    long maxBlobLength = databaseConfigurator.getMaxBlobLength(username, database);
 	    BlobUploadConfigurator blobUploadConfigurator = InjectedClassesStore.get().getBlobUploadConfigurator();
 	    try {
 		blobUploadConfigurator.upload(request, response, blobDirectory, maxBlobLength);

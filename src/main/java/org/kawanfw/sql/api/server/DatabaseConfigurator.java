@@ -91,16 +91,18 @@ public interface DatabaseConfigurator {
 
     /**
      * Allows to define the maximum length authorized for of a Blob to be uploaded.
+     * If this limit is exceeded, an {@code IOException} is thrown
      * This allows to prevent from DOS attacks that would saturate the AceQL server.
      * 0 means there is no limit.
      * 
      * @param username the client username
+     * @param database the database name as defined in the JDBC URL field
      * 
      * @return the maximum Blob length for upload, 0 means there is no limit
      * @throws IOException  if an IOException occurs
      * @throws SQLException if a SQLException occurs
      */
-    long getMaxBlobLength(String username) throws IOException, SQLException;
+    long getMaxBlobLength(String username, String database) throws IOException, SQLException;
 
     /**
      * Allows to define the directory into which Blobs/Clobs are uploaded by client

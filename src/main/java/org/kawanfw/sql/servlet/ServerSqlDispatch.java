@@ -30,6 +30,7 @@ import org.apache.tomcat.util.http.fileupload.servlet.ServletFileUpload;
 import org.kawanfw.sql.api.server.DatabaseConfigurator;
 import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
 import org.kawanfw.sql.metadata.dto.DatabaseInfoDto;
+import org.kawanfw.sql.metadata.dto.LimitsInfoDto;
 import org.kawanfw.sql.metadata.util.GsonWsUtil;
 import org.kawanfw.sql.servlet.connection.ConnectionIdUtil;
 import org.kawanfw.sql.servlet.connection.ConnectionStore;
@@ -145,7 +146,11 @@ public class ServerSqlDispatch {
 	    if (isGetDatabaseInfo(request, out, action, connection, sqlFirewallManagers)) {
 		return;
 	    }
-
+	    
+	    if (isGetLimitsInfo(request, out, action, connection, sqlFirewallManagers, databaseConfigurator)) {
+		return;
+	    }
+	    
 	    // Do not treat if not in auto-commit mode if Server is Stateless
 	    if (!checkStatelessInAutoCommit(request, response, out, connection)) {
 		return;
@@ -212,6 +217,42 @@ public class ServerSqlDispatch {
 	}
     }
 
+    /**
+     * Returns on out servlet stream all limits info.
+     * 
+     * @param request
+     * @param out
+     * @param action
+     * @param connection
+     * @param sqlFirewallManagers
+     * @param databaseConfigurator TODO
+     * @return
+     * @throws IOException
+     * @throws SQLException
+     */
+    private boolean isGetLimitsInfo(HttpServletRequest request, OutputStream out, String action,
+	    Connection connection, Set<SqlFirewallManager> sqlFirewallManagers, DatabaseConfigurator databaseConfigurator) throws IOException, SQLException {
+	if (action.equals(HttpParameter.GET_LIMITS_INFO)) {
+
+	    String username = request.getParameter(HttpParameter.USERNAME);
+	    String database = request.getParameter(HttpParameter.DATABASE);
+	    
+	    // Throws SecurityException if not authorized
+	    ServerSqlDispatchUtil.checkMetadataAuthorized(request, connection, sqlFirewallManagers);
+
+	    long maxRows = databaseConfigurator.getMaxRows(username, database);
+	    long maxBlobLength = databaseConfigurator.getMaxBlobLength(username, database);
+
+	    LimitsInfoDto limitsInfoDto = new LimitsInfoDto(maxRows, maxBlobLength);
+	    String jsonString = GsonWsUtil.getJSonString(limitsInfoDto);
+	    ServerSqlManager.writeLine(out, jsonString);
+
+	    return true;
+	} else {
+	    return false;
+	}
+    }
+    
     /**
      * Checks that a stateless session is in auto commit, otherwise reply with error
      * message.

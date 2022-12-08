@@ -146,6 +146,8 @@ public class HttpParameter {
     public static final String SERVER_QUERY_EXECUTOR_DTO = "server_query_executor_dto";
     public static final String HEALTH_CHECK_INFO = "health_check_info";
     
+    public static final Object GET_LIMITS_INFO = "get_limits_info";
+    
     /**
      * Protected
      */
