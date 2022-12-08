@@ -12,7 +12,7 @@
 package org.kawanfw.sql.metadata.dto;
 
 /**
- * Container to transport DatabaseInfo instance.
+ * Container to transport limits info defined in DatabaseConfigurator.
  * 
  * @author Nicolas de Pomereu
  *
@@ -23,6 +23,11 @@ public class LimitsInfoDto {
     private long maxRows = 0;
     private long maxBlobLength = 0;
     
+    /**
+     * Constructor.
+     * @param maxRows	value of {@code DatabaseConfigurator.getMaxRows}
+     * @param maxBlobLength value of {@code DatabaseConfigurator.getMaxBlobLength}
+     */
     public LimitsInfoDto(long maxRows, long maxBlobLength) {
 	this.maxRows = maxRows;
 	this.maxBlobLength = maxBlobLength;
