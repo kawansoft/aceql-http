@@ -38,13 +38,17 @@ import org.slf4j.Logger;
  * <ul>
  * <li>{@link #getConnection(String)} that extracts {@code Connections} from a
  * Tomcat JDBC Connection Pool.</li>
- * <li>{@link #close(Connection)} that simplify closes the {@code Connection} and thus
- * releases it into the pool.</li>
+ * <li>{@link #close(Connection)} that simplify closes the {@code Connection}
+ * and thus releases it into the pool.</li>
  * </ul>
  *
  * @author Nicolas de Pomereu
  */
 public class DefaultDatabaseConfigurator implements DatabaseConfigurator {
+
+    static final long KB = 1024;
+    static final long MB = 1024 * KB;
+    static final long GB = 1024 * MB;
 
     /**
      * If {@code true}, allows to "flatten" the log messages to make sure each log
@@ -165,11 +169,12 @@ public class DefaultDatabaseConfigurator implements DatabaseConfigurator {
 	return maxRows;
     }
 
-   
     /**
-     * @return the value of the property {@code defaultDatabaseConfigurator.maxBlobLength}
-     *         defined in the {@code aceql-server.properties} file at server
-     *         startup. If the property does not exist, returns 0 (i.e. no Blob upload limit).
+     * @return the value of the property
+     *         {@code defaultDatabaseConfigurator.maxBlobLength} defined in the
+     *         {@code aceql-server.properties} file at server startup. If the
+     *         property does not exist, it defaults to 2GB in order to avoid DOS
+     *         attacks aimed to saturate the server's disk space
      */
     @Override
     public long getMaxBlobLength(String username, String database) throws IOException, SQLException {
@@ -180,9 +185,9 @@ public class DefaultDatabaseConfigurator implements DatabaseConfigurator {
 
 	// No limit if not set
 	if (maxBlobLengthStr == null) {
-	    return 0;
+	    return 2 * GB;
 	}
-	
+
 	try {
 	    maxBlobLength = Long.parseLong(maxBlobLengthStr);
 	} catch (NumberFormatException e) {
@@ -192,7 +197,7 @@ public class DefaultDatabaseConfigurator implements DatabaseConfigurator {
 
 	return maxBlobLength;
     }
-    
+
     /**
      * @return <code>user.home/.aceql-server-root/username</code>. (
      *         {@code user.home} is the one of the servlet container).

@@ -94,6 +94,9 @@ public class DefaultBlobUploadConfigurator implements BlobUploadConfigurator {
 	if (maxBlobLength > 0) {
 	    upload.setFileSizeMax(maxBlobLength);
 	}
+	else {
+	    upload.setFileSizeMax(Long.MAX_VALUE);   
+	}
 
 	// Parse the request
 	FileItemIterator iter = upload.getItemIterator(request);
