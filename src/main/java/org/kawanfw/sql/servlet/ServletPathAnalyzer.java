@@ -82,6 +82,10 @@ public class ServletPathAnalyzer {
 	    action = HttpParameter.HEALTH_CHECK_INFO;
 	    buildElements(servletCallName, requestUri);
 	}
+	else if (isLimitsInfo(requestUri)) {
+	    action = HttpParameter.GET_LIMITS_INFO;
+	    buildElements(servletCallName, requestUri);
+	}
 	else {
 	    throw new IllegalArgumentException("Unknown action: " + StringUtils.substringAfterLast(requestUri, "/"));
 	}
@@ -91,6 +95,12 @@ public class ServletPathAnalyzer {
 	Objects.requireNonNull(urlContent, "urlContent cannot be null!");
 	return urlContent.endsWith("/health_check_info");
     }
+    
+    private boolean isLimitsInfo(String urlContent) {
+	Objects.requireNonNull(urlContent, "urlContent cannot be null!");
+	return urlContent.endsWith("/get_limits_info");
+    }
+
 
     private boolean isExecuteServerQuery(String urlContent) {
 	Objects.requireNonNull(urlContent, "urlContent cannot be null!");
