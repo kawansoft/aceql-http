@@ -33,7 +33,7 @@ import org.slf4j.Logger;
  * <li>Define some Java code to execute before/after a
  * <code>Connection.close()</code>.
  * <li>Define the maximum number of rows that may be returned to the
- * client.</li> *
+ * client.</li> 
  * <li>Define the maximum length allowed for a Blob upload.</li>
  * <li>Define the {@code Logger} to use to trap server Exceptions.</li>
  * </ul>
