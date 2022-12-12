@@ -52,6 +52,7 @@ import org.kawanfw.sql.servlet.sql.dto.UpdateCountsArrayDto;
 import org.kawanfw.sql.servlet.sql.json_return.JsonErrorReturn;
 import org.kawanfw.sql.servlet.sql.json_return.JsonSecurityMessage;
 import org.kawanfw.sql.util.FrameworkDebug;
+import org.kawanfw.sql.util.HtmlConverter;
 import org.kawanfw.sql.util.IpUtil;
 
 /**
@@ -194,6 +195,9 @@ public class ServerStatementBatch {
 		String line = null;
 		while ((line = bufferedReader.readLine()) != null) {
 		    String sql = line.trim();
+		    
+		    sql = HtmlConverter.fromHtml(sql);
+		    
 		    debug("before new SqlSecurityChecker()");
 		    checkFirewallGeneral(username, database, sql, ipAddress);
 		    //checkFirewallForAllowExecute(username, database, sql, ipAddress);
