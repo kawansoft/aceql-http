@@ -32,6 +32,7 @@ import org.kawanfw.sql.servlet.sql.AceQLParameter;
 import org.kawanfw.sql.servlet.sql.ParameterDirection;
 import org.kawanfw.sql.servlet.sql.dto.PrepStatementParamsHolder;
 import org.kawanfw.sql.util.FrameworkDebug;
+import org.kawanfw.sql.util.HtmlConverter;
 
 public class ServerPreparedStatementParametersUtil {
 
@@ -126,6 +127,8 @@ public class ServerPreparedStatementParametersUtil {
 	    if (parameterType != null) {
 		String parameterValue = holderStatementParameters.get(HttpParameter.PARAM_VALUE_ + i);
 
+		parameterValue = HtmlConverter.fromHtml(parameterValue);
+		
 		String parameterDirection = ParameterDirection.IN;
 		AceQLParameter aceQLParameter = new AceQLParameter(i, parameterType, parameterValue, parameterDirection,
 			null);
