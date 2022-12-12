@@ -1,4 +1,4 @@
-# AceQL HTTP v12.1 - December 6, 2022
+# AceQL HTTP v12.2 - December 12, 2022
 
 # Demo Guide
 
@@ -105,10 +105,10 @@ The execution of each AceQL HTTP API statement is conditioned by optional rules,
 
 Download the database `sampledb` schema corresponding to your database engine: 
 
-- [sampledb_mysq.txt](https://docs.aceql.com/rest/soft/12.1/src/sampledb_mysql.txt )
-- [sampledb_postgresql.txt](https://docs.aceql.com/rest/soft/12.1/src/sampledb_postgresql.txt)
-- [sampledb_ms_sql_serverl.txt](https://docs.aceql.com/rest/soft/12.1/src/sampledb_ms_sql_server.txt)
-- [sampledb_oracle_database.txt](https://docs.aceql.com/rest/soft/12.1/src/sampledb_oracle_database.txt)
+- [sampledb_mysq.txt](https://docs.aceql.com/rest/soft/12.2/src/sampledb_mysql.txt )
+- [sampledb_postgresql.txt](https://docs.aceql.com/rest/soft/12.2/src/sampledb_postgresql.txt)
+- [sampledb_ms_sql_serverl.txt](https://docs.aceql.com/rest/soft/12.2/src/sampledb_ms_sql_server.txt)
+- [sampledb_oracle_database.txt](https://docs.aceql.com/rest/soft/12.2/src/sampledb_oracle_database.txt)
 
 Then launch the script that will create the tables in a database
 
@@ -121,7 +121,7 @@ AceQL requires the installation of Java version 8+.
 Open a terminal and download with `Wget` 
 
 ```bash
-$ wget https://download.aceql.com/soft/download/12.1/aceql-http-12.1.run
+$ wget https://download.aceql.com/soft/download/12.2/aceql-http-12.2.run
 ```
 
 If you get a certificate error message, do one of the following:
@@ -130,17 +130,17 @@ If you get a certificate error message, do one of the following:
 2. Retry the `Wget` call with `--no-check-certificate` at end of command line. Then check the PGP signature of the downloaded file using the corresponding `.asc` signature file available on [download](https://www.aceql.com/aceql-download-page/) page using the PGP hyperlink.
 
 ```bash
-chmod +x aceql-http-12.1.run
-./aceql-http-12.1.run 
+chmod +x aceql-http-12.2.run
+./aceql-http-12.2.run 
 ```
 
-This will create the `aceql-http-12.1` folder.
+This will create the `aceql-http-12.2` folder.
 
-The full path to the `aceql-http-12.1` installation folder will be surnamed `ACEQL_HOME` in following text.
+The full path to the `aceql-http-12.2` installation folder will be surnamed `ACEQL_HOME` in following text.
 
-Example: if you run `aceql-http-12.1.run` from `/home/mike`, then software is installed in
+Example: if you run `aceql-http-12.2.run` from `/home/mike`, then software is installed in
 
- `/home/mike/aceql-http-12.1` which is the value of `ACEQL_HOME`.
+ `/home/mike/aceql-http-12.2` which is the value of `ACEQL_HOME`.
 
 ### Update the PATH (Optional)
 
@@ -148,10 +148,10 @@ Open a shell session and make sure java binary is in the PATH by typing  `Java â
 
 Add java to your PATH if the command does not display Java version.
 
-Add to your PATH the path to the bin directory of `aceql-http-12.1` installation:
+Add to your PATH the path to the bin directory of `aceql-http-12.2` installation:
 
 ```bash
-$ PATH=$PATH:/path/to/aceql-http-12.1/bin/;export PATH
+$ PATH=$PATH:/path/to/aceql-http-12.2/bin/;export PATH
 ```
 
 ### Testing AceQL HTTP Web server installation
@@ -165,7 +165,7 @@ $ aceql-server -version
 It will display a line with all version info, like:
 
 ```bash
-AceQL HTTP v12.1 - 06-Dec-2022
+AceQL HTTP v12.2 - 06-Dec-2022
 ```
 
 ### Configure JDBC parameters in aceql-server.properties file
@@ -213,7 +213,7 @@ The console will display the properties used, test that the Connection is establ
 
 ```bash
 [ACEQL HTTP START] Starting AceQL HTTP Web Server at 2022-12-06 09:32:33...
-[ACEQL HTTP START] AceQL HTTP v12.1 - 06-Dec-2022
+[ACEQL HTTP START] AceQL HTTP v12.2 - 06-Dec-2022
 [ACEQL HTTP START] Java Info: 
 [ACEQL HTTP START]  -> Oracle Corporation / Java(TM) SE Runtime Environment / 1.8.0_331
 [ACEQL HTTP START] Using Properties File: 
@@ -279,7 +279,7 @@ Run the installer.
 
 It will run AceQL at end of installation and display the Window:
 
-<img src="https://docs.aceql.com/rest/soft/12.1/img/aceql_windows_gui_home_flatlaf.png" alt="AceQ HTTP GUI Main Windows"/>
+<img src="https://docs.aceql.com/rest/soft/12.2/img/aceql_windows_gui_home_flatlaf.png" alt="AceQ HTTP GUI Main Windows"/>
 
 **N.B:** Because of a bug in all Java versions > 8 on Windows, the interface will appear "ugly"  or "blurred" on Java version > 8 if you have increased Windows Screen Resolution Options to 125% or 150%.  See [Java Bug Database](https://bugs.java.com/bugdatabase/view_bug.do?bug_id=JDK-8194165) for more info. Set back Windows Screen Resolution to 100% for clean display.
 
@@ -334,7 +334,7 @@ The console will display the properties used, test that the `Connection` is esta
 
 ```bash
 [ACEQL HTTP START] Starting AceQL HTTP Web Server at 2022-12-06 09:32:33...
-[ACEQL HTTP START] AceQL HTTP v12.1 - 06-Dec-2022
+[ACEQL HTTP START] AceQL HTTP v12.2 - 06-Dec-2022
 [ACEQL HTTP START] Java Info: 
 [ACEQL HTTP START]  -> Oracle Corporation / Java(TM) SE Runtime Environment / 1.8.0_331
 [ACEQL HTTP START] Using Properties File: 
@@ -788,7 +788,7 @@ The aceql module supports Python 3.7â€“3.10.
 $ pip install aceql
 ```
 
-3.    Download this Python class: [my_remote_connection.py](https://docs.aceql.com/rest/soft/12.1/src/my_remote_connection.py)
+3.    Download this Python class: [my_remote_connection.py](https://docs.aceql.com/rest/soft/12.2/src/my_remote_connection.py)
 
 4.    The  connection to the remote database is  created  using a [DB API 2.0](https://www.python.org/dev/peps/pep-0249/)  `Connection` class and passing the URL of the AceQL Servlet Manager of your configuration:
 
@@ -863,7 +863,7 @@ $ pip install aceql
 
 
 
-The `select_customer_and_orderlog` method of [my_remote_connection.py](https://docs.aceql.com/rest/soft/12.1/src/my_remote_connection.py) displays back the inserted values.
+The `select_customer_and_orderlog` method of [my_remote_connection.py](https://docs.aceql.com/rest/soft/12.2/src/my_remote_connection.py) displays back the inserted values.
 
 From now on, you can read the [Python Client SDK User Guide](https://github.com/kawansoft/aceql-http-client-python/blob/master/README.md).
 

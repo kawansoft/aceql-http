@@ -25,7 +25,7 @@ AceQL HTTP is licensed through the Business Source License 1.1.
 (https://github.com/kawansoft/aceql-http/blob/12.0/LICENSE.TXT)
 
 
-AceQL HTTP Version 12.1 - 07-Dec-2022
+AceQL HTTP Version 12.2 - 12-Dec-2022
 -------------------------------------
 
 What's New: 
@@ -33,6 +33,10 @@ What's New:
 - BlobUploadConfigurator contains now the getMaxBlobLength() 
   method. This allows fixing a Blob upload size limit in order
   to avoid a DOS attack aimed to saturate the AceQL server.
+  
+- The new LimitsOnfo API allows the future versions of client SDKs to retrieve 
+  limits info defined on the server side. How-to usage will be updated in 
+  user documentation of C# SDK, JDBC Driver and Python SDK.
 
 
 AceQL HTTP Version 12.1 - 06-Dec-2022
