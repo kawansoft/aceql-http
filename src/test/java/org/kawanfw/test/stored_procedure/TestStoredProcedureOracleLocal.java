@@ -18,6 +18,7 @@ import java.sql.DatabaseMetaData;
 import java.sql.Driver;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.Properties;
 
 import org.kawanfw.test.parms.ConnectionLoaderJdbcInfo;
@@ -64,10 +65,35 @@ public class TestStoredProcedureOracleLocal {
 	System.out.println("Db Engine: " + data.getDatabaseProductName());
 	    
 	TestStoredProcedureCommons.selectCustomerExecute(connection);
-	testStoredProcedureSelectCustomer(connection);
+	
+	testFunctionInOut(connection);
+	testStoredProcedureInOut(connection);
 	testStoredProcedureInOut(connection);
     }
         
+    
+    public static void testFunctionInOut(Connection connection) throws SQLException {
+	/**<code>
+    	CREATE OR REPLACE FUNCTION FUNCTION1 (PARAM1 number, PARAM2 VARCHAR)
+    	RETURN VARCHAR2 AS 
+    	BEGIN
+    	  RETURN PARAM2 || ' ' || TO_CHAR(PARAM1) || ' 42' ;
+    	END FUNCTION1;
+	</code>
+	*/
+	
+	CallableStatement cs = connection.prepareCall ("begin ? := FUNCTION1(?, ?); end;");
+	cs.registerOutParameter(1,Types.VARCHAR);
+	cs.setInt(2, 12);
+	cs.setString(3, "Meaning of life is:");
+	cs.execute();
+	String result = cs.getString(1);
+	
+	System.out.println();
+	System.out.println("testFunctionInOut:" );
+	System.out.println("result: " + result );
+	System.out.println();
+    }
     
     public static void testStoredProcedureSelectCustomer(Connection connection) throws SQLException {
 	
@@ -144,6 +170,9 @@ public class TestStoredProcedureOracleLocal {
 	System.out.println("Done ORACLE_IN_OUT!");
 	System.out.println();
     }
+    
+
+	
     
 
 }
