@@ -74,11 +74,11 @@ public class TestStoredProcedureOracleLocal {
     
     public static void testFunctionInOut(Connection connection) throws SQLException {
 	/**<code>
-    	CREATE OR REPLACE FUNCTION FUNCTION1 (PARAM1 number, PARAM2 VARCHAR)
-    	RETURN VARCHAR2 AS 
-    	BEGIN
-    	  RETURN PARAM2 || ' ' || TO_CHAR(PARAM1) || ' 42' ;
-    	END FUNCTION1;
+        CREATE OR REPLACE FUNCTION FUNCTION1 (PARAM1 number, PARAM2 VARCHAR)
+        RETURN VARCHAR2 AS 
+        BEGIN
+          RETURN TO_CHAR(PARAM1 * 2) || ' ' || PARAM2 || ' 42!' ;
+        END FUNCTION1;
 	</code>
 	*/
 	
