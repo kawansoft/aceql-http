@@ -143,25 +143,27 @@ public class TestStoredProcedureOracleLocal {
     
     public static void testStoredProcedureInOut(Connection connection) throws SQLException {
 	
-	/** <code>
-        create or replace PROCEDURE ORACLE_IN_OUT
-        (
-          PARAM1 IN NUMBER 
-        , PARAM2 IN OUT NUMBER
-        , PARAM3 IN OUT VARCHAR 
-        ) AS 
-        BEGIN
-          param2 := param1 + param2;
-          param3 := param3 || ' 42! ';
-        END ORACLE_IN_OUT;
-	</code> */
+	/**
+	 <code>
+           create or replace PROCEDURE ORACLE_IN_OUT
+           (
+             PARAM1 IN NUMBER 
+           , PARAM2 IN OUT NUMBER
+           , PARAM3 IN OUT VARCHAR 
+           ) AS 
+           BEGIN
+             param2 := param1 * param2;
+             param3 := param3 || ' ' || TO_CHAR(param2);
+           END ORACLE_IN_OUT;
+	 </code>
+	 */
 	
 	// Calling the ORACLE_IN_OUT stored procedure.
 	// Native Oracle JDBC syntax using an Oracle JDBC Driver:
 	CallableStatement callableStatement 
 		= connection.prepareCall("{ call ORACLE_IN_OUT(?, ?, ?) }");
-	callableStatement.setInt(1, 3);
-	callableStatement.setInt(2, 4);
+	callableStatement.setInt(1, 6);
+	callableStatement.setInt(2, 7);
 	callableStatement.registerOutParameter(2, java.sql.Types.INTEGER);
 	callableStatement.setString(3, "Meaning of life is:");
 	callableStatement.registerOutParameter(3, java.sql.Types.VARCHAR);
