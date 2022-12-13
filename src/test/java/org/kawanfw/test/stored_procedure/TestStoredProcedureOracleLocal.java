@@ -23,6 +23,7 @@ import java.util.Properties;
 
 import org.kawanfw.test.parms.ConnectionLoaderJdbcInfo;
 
+import oracle.jdbc.OracleResultSet;
 import oracle.jdbc.OracleTypes;
 
 /**
@@ -70,7 +71,14 @@ public class TestStoredProcedureOracleLocal {
 	testStoredProcedureInOut(connection);
 	testStoredProcedureInOut(connection);
     }
-        
+
+    @SuppressWarnings("unused")
+    public static void testStruct(Connection connection) throws SQLException {
+
+	oracle.sql.STRUCT struct= null;
+	OracleResultSet oracleResultSet = null;
+    }
+
     
     public static void testFunctionInOut(Connection connection) throws SQLException {
 	/**<code>
