@@ -1,6 +1,6 @@
 # AceQL HTTP v12.1 - December 14, 2022
 
-# API User Guide - Stored Procedure Addendum
+# API User Guide - Stored Procedures Addendum
 
 <img src="https://docs.aceql.com/favicon.png" alt="AceQL HTTP Icon"/> 
 
@@ -75,7 +75,7 @@ If everything is OK:
 
 In case of error: 
 
-```json
+```
 {  
    "status":"FAIL",
    "error_type":{error type numeric value},
@@ -147,4 +147,5 @@ The call will return:
 } 
 ```
 
-## 
+________________
+
