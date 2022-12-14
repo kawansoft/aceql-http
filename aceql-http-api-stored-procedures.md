@@ -49,7 +49,7 @@ Allows to call a stored procedures that returns only `IN OUT` or `OUT` parameter
 
 | Prepared  Statement - Parameter type values                  |
 | ------------------------------------------------------------ |
-| BIGINT, BINARY, BIT, BLOB, CHAR, CHARACTER, CLOB, DATE, DECIMAL, DOUBLE_PRECISION, FLOAT, INTEGER, LONGVARBINARY, LONGVARCHAR, NUMERIC, REAL, SMALLINT, TIME, TIMESTAMP, TINYINT, URL, VARBINARY, VARCHAR. |
+| BIGINT, BINARY, BIT, CHAR, CHARACTER, DATE, DECIMAL, DOUBLE_PRECISION, FLOAT, INTEGER, LONGVARBINARY, LONGVARCHAR, NUMERIC, REAL, SMALLINT, TIME, TIMESTAMP, TINYINT, URL, VARBINARY, VARCHAR. |
 
 |                                                              |
 | ------------------------------------------------------------ |
