@@ -12,6 +12,7 @@
 package org.kawanfw.test.stored_procedure;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -32,6 +33,31 @@ public class TestStoredProcedureMySql {
      * @param args
      */
     public static void main(String[] args) throws Exception {
+	Connection connection = getMySqlConnection();
+	
+	DatabaseMetaData data = connection.getMetaData();
+	System.out.println("Db Engine: " + data.getDatabaseProductName());
+	System.out.println();
+	
+	TestStoredProcedureCommons.selectCustomerExecute(connection);
+	testStoredProcedureSelectCustomer(connection);
+    }
+
+
+    /**
+     * @return
+     * @throws ClassNotFoundException
+     * @throws NoSuchMethodException
+     * @throws SecurityException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     * @throws IllegalArgumentException
+     * @throws InvocationTargetException
+     * @throws SQLException
+     */
+    public static Connection getMySqlConnection()
+	    throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException,
+	    IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException {
 	ConnectionLoaderJdbcInfo connectionLoaderJdbcInfo = new ConnectionLoaderJdbcInfo("MySQL");
 	String driverClassName = connectionLoaderJdbcInfo.getDriverClassName();
 	String url = connectionLoaderJdbcInfo.getUrl();
@@ -54,13 +80,7 @@ public class TestStoredProcedureMySql {
 	    throw new IllegalArgumentException(
 		    "Connection is null after driver.connect(url, properties)!");
 	}
-	
-	DatabaseMetaData data = connection.getMetaData();
-	System.out.println("Db Engine: " + data.getDatabaseProductName());
-	System.out.println();
-	
-	TestStoredProcedureCommons.selectCustomerExecute(connection);
-	testStoredProcedureSelectCustomer(connection);
+	return connection;
     }
     
 
