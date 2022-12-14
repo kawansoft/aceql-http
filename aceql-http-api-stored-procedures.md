@@ -65,7 +65,6 @@ If everything is OK:
     "parameters_out_per_index": {
         "param rank 1": "param value 1",
         "param rank 2": "param value 2",
-        ...
         "param rank n": "param value n",
     },
     "parameters_out_per_name": {
