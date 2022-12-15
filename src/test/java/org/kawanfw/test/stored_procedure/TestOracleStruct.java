@@ -40,7 +40,16 @@ public class TestOracleStruct {
 	testStruct(connection);
     }
     
-    
+    public static void testStructNested
+    (Connection connection)
+	    throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+	System.out.println();
+	
+	Statement stmt = connection.createStatement();
+	@SuppressWarnings("unused")
+	ResultSet rs = stmt.executeQuery("SELECT * FROM struct_table");
+	
+    }
     public static void testStruct(Connection connection)
 	    throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException {
 	System.out.println();
