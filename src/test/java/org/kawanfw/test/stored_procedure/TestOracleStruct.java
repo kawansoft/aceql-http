@@ -22,6 +22,8 @@ import java.sql.Statement;
 
 import org.kawanfw.sql.metadata.util.GsonWsUtil;
 
+import oracle.jdbc.OracleStruct;
+
 /**
  * @author Nicolas de Pomereu
  *
@@ -32,6 +34,7 @@ public class TestOracleStruct {
     /**
      * @param args
      */
+    @SuppressWarnings("unused")
     public static void main(String[] args) throws Exception {
 	Connection connection = TestStoredProcedureOracleLocal.getOracleDatabaseConnection();
 
@@ -39,6 +42,7 @@ public class TestOracleStruct {
 	System.out.println("Db Engine: " + data.getDatabaseProductName());
 	
 	testStruct(connection);
+
     }
     
     @SuppressWarnings("unused")
@@ -52,6 +56,7 @@ public class TestOracleStruct {
 	ResultSet rs = stmt.executeQuery("SELECT * FROM struct_table");
 	
 	SQLData sqlData = null;
+	OracleStruct oracleStruct;
 	
     }
     public static void testStruct(Connection connection)
