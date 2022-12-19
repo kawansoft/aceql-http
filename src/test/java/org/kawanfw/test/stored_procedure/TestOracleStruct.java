@@ -16,6 +16,7 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
+import java.sql.SQLData;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -40,6 +41,7 @@ public class TestOracleStruct {
 	testStruct(connection);
     }
     
+    @SuppressWarnings("unused")
     public static void testStructNested
     (Connection connection)
 	    throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException {
@@ -48,6 +50,8 @@ public class TestOracleStruct {
 	Statement stmt = connection.createStatement();
 	@SuppressWarnings("unused")
 	ResultSet rs = stmt.executeQuery("SELECT * FROM struct_table");
+	
+	SQLData sqlData = null;
 	
     }
     public static void testStruct(Connection connection)
