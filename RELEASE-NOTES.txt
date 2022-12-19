@@ -34,7 +34,7 @@ What's New:
   method. This allows fixing a Blob upload size limit in order
   to avoid a DOS attack aimed to saturate the AceQL server.
   
-- The new LimitsOnfo API allows the future versions of client SDKs to retrieve 
+- The new Limitsinfo API allows the future versions of client SDKs to retrieve 
   limits info defined on the server side. How-to usage will be updated in 
   user documentation of C# SDK, JDBC Driver and Python SDK.
 
