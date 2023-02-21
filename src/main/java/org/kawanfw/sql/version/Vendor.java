@@ -13,7 +13,7 @@ package org.kawanfw.sql.version;
 class Vendor {
     public static final String NAME = "KawanSoft SAS";
     public static final String WEB = "http://www.kawansoft.com";
-    public static final String COPYRIGHT = "Copyright &copy; 2022";
+    public static final String COPYRIGHT = "Copyright &copy; 2023";
     public static final String EMAIL = "contact@kawansoft.com";
     @Override
     public String toString() {
