@@ -265,11 +265,9 @@ AceQL HTTP is provided with three client SDK:
 - The AceQL Java Client JDBC Driver allows to wrap the HTTP APIs using JDBC calls in their code, just like they would for a local database.
 - The AceQL Python Client SDK allows SQL calls to be encoded with standard unmodified DB-API 2.0 syntax</description>
 
-<!--
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
--->
 
 </project>

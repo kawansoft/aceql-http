@@ -1,10 +1,10 @@
 /*
- * Copyright (c)2022 KawanSoft S.A.S. All rights reserved.
+ * Copyright (c)2023 KawanSoft S.A.S. All rights reserved.
  * 
  * Use of this software is governed by the Business Source License included
  * in the LICENSE.TXT file in the project's root directory.
  *
- * Change Date: 2026-11-01
+ * Change Date: 2026-02-21
  *
  * On the date above, in accordance with the Business Source License, use
  * of this software will be governed by version 2.0 of the Apache License.
@@ -39,7 +39,7 @@ public class SqlServerUtf8TestSqlServer {
 	
 	
 	System.out.println(new Date() + " Stored Procedure Begin...");
-	String parm1 = "टेस�?ट";
+	String parm1 = "टेस�?ट";
 	
 	CallableStatement callableStatement = connection.prepareCall("{call spAddNvarchar(?) }");
 	callableStatement.setNString(1, parm1);
@@ -58,7 +58,7 @@ public class SqlServerUtf8TestSqlServer {
 	String sql = "insert into test1 values (?)";
 	PreparedStatement preparedStatement = connection.prepareStatement(sql);
 
-	String parm1 = "टेस�?ट";
+	String parm1 = "टेस�?ट";
 	int j = 1;
 	preparedStatement.setString(j, parm1);
 	preparedStatement.executeUpdate();
