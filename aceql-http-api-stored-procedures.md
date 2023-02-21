@@ -1,4 +1,4 @@
-# AceQL HTTP v12.1 - December 14, 2022
+# AceQL HTTP v12.2 - February 21, 2023
 
 # API User Guide - Stored Procedures Addendum
 

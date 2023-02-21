@@ -11,18 +11,9 @@ Parameters
 
 Licensor:             KawanSoft S.A.S.
 Licensed Work:        AceQL HTTP v12
-                      The Licensed Work is (c) 2022 KawanSoft S.A.S.
-Additional Use Grant: You may use the Licensed Work when your organization
-                      uses the Licensed Work with a total of less than three
-                      MySQL, MariaDB or PostgreSQL database names for any purpose.
-                      Database name should be understood as the applicative name                  
-                      of the database to which the applications connect.       
-                      Examples of database names: "sales," "employees,"   
-                      "inventory," etc. 
-                      (This differs of course from the database product name              
-                      like "MySQL" and "PostgreSQL".)
+                      The Licensed Work is (c) 2023 KawanSoft S.A.S.
 
-Change Date:          2026-11-01
+Change Date:          2027-02-21
 
 Change License:       Apache License version 2.0 as published by the Apache
                       Software Foundation https://www.apache.org/licenses/

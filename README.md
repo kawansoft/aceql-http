@@ -6,7 +6,7 @@
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/d14142d5d6f04ba891d505e2e47b417d)](https://www.codacy.com/gh/kawansoft/aceql-http?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=kawansoft/aceql-http&amp;utm_campaign=Badge_Grade)
 ![GitHub contributors](https://img.shields.io/github/contributors/kawansoft/aceql-http)
 
-# AceQL HTTP v12.2   - December 12,  2022
+# AceQL HTTP v12.2   - February 21,  2023
 # Server Installation and Configuration Guide  
 
 <img src="https://docs.aceql.com/favicon.png" alt="AceQL HTTP Icon"/> 
@@ -197,9 +197,9 @@ The following environments are supported by KawanSoft in this version:
 
 # Licensing
 
-AceQL HTTP’s software is licensed under the [AceQL HTTP BSL](https://github.com/kawansoft/aceql-http/blob/LICENSE.TXT), which allows source code access and free use in non-production environments.
+AceQL HTTP’s software is licensed under the [AceQL HTTP BSL](https://github.com/kawansoft/aceql-http/blob/LICENSE.TXT), which allows source code access and free use in non-production environments. Note that usage is  production is not free. A [subscription]( www.aceql.com/pricing) is required in order to run AceQL in production.
 
-The Free plan allows running up to 2 Open-Source database names* in production in your organization.
+The Basic plan allows running up to 2 Open-Source database names* in production in your organization.
 
 The Professional or Enterprise plan is required in order to run more than 2 database names* and/or run MS SQL Server or Oracle Database in production.
 
@@ -269,7 +269,7 @@ Call the `aceql-server` script to display the AceQL version:
 It will display a line with all version info, like:
 
 ```
-AceQL HTTP v12.2 - 06-Dec-2022
+AceQL HTTP v12.2 - 21-Feb-2023
 ```
 
 ## Windows Installation

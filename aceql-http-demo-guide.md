@@ -1,4 +1,4 @@
-# AceQL HTTP v12.2 - December 12, 2022
+# AceQL HTTP v12.2 - February 21, 2023
 
 # Demo Guide
 
@@ -165,7 +165,7 @@ $ aceql-server -version
 It will display a line with all version info, like:
 
 ```bash
-AceQL HTTP v12.2 - 06-Dec-2022
+AceQL HTTP v12.2 - 21-Feb-2023
 ```
 
 ### Configure JDBC parameters in aceql-server.properties file
@@ -212,8 +212,8 @@ $ aceql-server -start -host localhost –port 9090
 The console will display the properties used, test that the Connection is established on the server side and tell if everything is OK:
 
 ```bash
-[ACEQL HTTP START] Starting AceQL HTTP Web Server at 2022-12-06 09:32:33...
-[ACEQL HTTP START] AceQL HTTP v12.2 - 06-Dec-2022
+[ACEQL HTTP START] Starting AceQL HTTP Web Server at 2023-02-21 15:48:58...
+[ACEQL HTTP START] AceQL HTTP v12.2 - 21-Feb-2023
 [ACEQL HTTP START] Java Info: 
 [ACEQL HTTP START]  -> Oracle Corporation / Java(TM) SE Runtime Environment / 1.8.0_331
 [ACEQL HTTP START] Using Properties File: 
@@ -333,8 +333,8 @@ Click on `Start Server  `. This will open a console.
 The console will display the properties used, test that the `Connection` is established on the server side and tell if everything is OK:
 
 ```bash
-[ACEQL HTTP START] Starting AceQL HTTP Web Server at 2022-12-06 09:32:33...
-[ACEQL HTTP START] AceQL HTTP v12.2 - 06-Dec-2022
+[ACEQL HTTP START] Starting AceQL HTTP Web Server at 2023-02-21 15:48:58...
+[ACEQL HTTP START] AceQL HTTP v12.2 - 21-Feb-2023
 [ACEQL HTTP START] Java Info: 
 [ACEQL HTTP START]  -> Oracle Corporation / Java(TM) SE Runtime Environment / 1.8.0_331
 [ACEQL HTTP START] Using Properties File: 
