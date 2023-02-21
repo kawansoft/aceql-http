@@ -22,7 +22,7 @@ Security has been taken into account from the design: it is allowed to specify
 and code strong security rules in order to protect the databases. 
 
 AceQL HTTP is licensed through the Business Source License 1.1.
-(https://github.com/kawansoft/aceql-http/blob/12.0/LICENSE.TXT)
+(https://github.com/kawansoft/aceql-http/blob/12.2/LICENSE.TXT)
 
 
 AceQL HTTP Version 12.2 - 21-Feb-2022
@@ -41,7 +41,7 @@ What's New:
 - Tomcat base libraries have been upgraded to 9.0.71 for
   reliability and performance reasons.
   
-  
+ 
 AceQL HTTP Version 12.1 - 06-Dec-2022
 -------------------------------------
 
