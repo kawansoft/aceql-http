@@ -199,7 +199,7 @@ The following environments are supported by KawanSoft in this version:
 
 AceQL HTTP’s software is licensed under the [AceQL HTTP BSL](https://github.com/kawansoft/aceql-http/blob/12.2/LICENSE.TXT), which allows source code access and free use in non-production environments. 
 
-***Note that usage is  production is not free***.  A [**subscription**](https://www.aceql.com/pricing/) is required in order to run AceQL in production:
+***Note that usage in  production is not free*.  A [subscription](https://www.aceql.com/pricing/) is required in order to run AceQL in production:**
 
 - The Basic plan allows running up to 2 Open-Source database names* in production in your organization.
 
