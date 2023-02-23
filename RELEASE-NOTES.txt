@@ -25,7 +25,7 @@ AceQL HTTP is licensed through the Business Source License 1.1.
 (https://github.com/kawansoft/aceql-http/blob/12.2/LICENSE.TXT)
 
 
-AceQL HTTP Version 12.2 - 21-Feb-2022
+AceQL HTTP Version 12.2 - 21-Feb-2023
 -------------------------------------
 
 What's New: 
