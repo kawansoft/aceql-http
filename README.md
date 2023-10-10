@@ -289,6 +289,29 @@ It will run AceQL at end of installation and display the Window:
 
 **N.B:** Because of a bug in all Java versions > 8 on Windows, the interface will appear "ugly"  or "blurred" on Java version > 8 if you have Windows Screen Resolution Options increased to 125% or 150%.  See [Java Bug Database](https://bugs.java.com/bugdatabase/view_bug.do?bug_id=JDK-8194165) for more info. Set Windows Screen Resolution back to 100% for a clean display.
 
+
+
+---
+
+## *[Advertisement] 📢* 
+
+## *Explore Sqlephant for Streamlined SQL Development! 🐘*
+
+Sqlephant brings a heap of benefits to your SQL workflow:
+
+- 🚄 **Swift Schema Generation**: Auto-infer types and generate schemas.
+- 🛠 **SQL Fixers**: Easily manage SQL requests and injection issues.
+- 📦 **SQL Wrapper Generation**: Full support for C#, Java, PHP, and Python.
+- 🔄 **SQL CRUD Generation**: Automate CRUD operations seamlessly.
+
+**✨ Optimize Your Development: Save Time, Reduce Bugs, Eliminate Tedious Work!**
+
+👉 Explore [**Sqlephant**](https://www.sqlephant.com) and elevate your SQL development experience!
+
+---
+
+
+
 # Quickstart
 
 ## The AceQL Manager servlet
