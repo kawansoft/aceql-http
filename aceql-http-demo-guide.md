@@ -99,6 +99,23 @@ $ curl --data-urlencode \
 
 The execution of each AceQL HTTP API statement is conditioned by optional rules, defined in configuration classes called "Configurators."
 
+## *[Advertisement] 📢* 
+
+## *Explore Sqlephant for Streamlined SQL Development! 🐘*
+
+Sqlephant brings a heap of benefits to your SQL workflow:
+
+- 🚄 **Swift Schema Generation**: Auto-infer types and generate schemas.
+- 🛠 **SQL Fixers**: Easily manage SQL requests and injection issues.
+- 📦 **SQL Wrapper Generation**: Full support for C#, Java, PHP, and Python.
+- 🔄 **SQL CRUD Generation**: Automate CRUD operations seamlessly.
+
+**✨ Optimize Your Development: Save Time, Reduce Bugs, Eliminate Tedious Work!**
+
+👉 Explore [**Sqlephant**](https://www.sqlephant.com) and elevate your SQL development experience!
+
+
+
 # Server Side Settings
 
 ## Create the sampledb database
