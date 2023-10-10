@@ -179,6 +179,25 @@ When an error occurs:
 | 404 (NOT_FOUND)             | BLOB directory does not exist on server.<br />BLOB file not found on server. |
 | 500 (INTERNAL_SERVER_ERROR) | The AceQL Server is on failure and raised an unexpected Java Exception. |
 
+
+
+## *[Advertisement] 📢* 
+
+## *Explore Sqlephant for Streamlined SQL Development! 🐘*
+
+Sqlephant brings a heap of benefits to your SQL workflow:
+
+- 🚄 **Swift Schema Generation**: Auto-infer types and generate schemas.
+- 🛠 **SQL Fixers**: Easily manage SQL requests and injection issues.
+- 📦 **SQL Wrapper Generation**: Full support for C#, Java, PHP, and Python.
+- 🔄 **SQL CRUD Generation**: Automate CRUD operations seamlessly.
+
+**✨ Optimize Your Development: Save Time, Reduce Bugs, Eliminate Tedious Work!**
+
+👉 Explore [**Sqlephant**](https://www.sqlephant.com) and elevate your SQL development experience!
+
+
+
 # API reference guide
 
 ## login
