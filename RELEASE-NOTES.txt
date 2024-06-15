@@ -25,6 +25,14 @@ AceQL HTTP is licensed through the Business Source License 1.1.
 (https://github.com/kawansoft/aceql-http/blob/12.2/LICENSE.TXT)
 
 
+AceQL HTTP Version 12.3 - 15-Jun-2024
+-------------------------------------
+
+What's New: 
+- Table names are now case-sensitive when using Metadata calls.
+- This allows AceQL to work correctly with SQL Server case-sensitive databases.
+  
+
 AceQL HTTP Version 12.2 - 21-Feb-2023
 -------------------------------------
 

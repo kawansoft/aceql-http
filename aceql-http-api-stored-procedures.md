@@ -1,4 +1,4 @@
-# AceQL HTTP v12.2 - February 21, 2023
+# AceQL HTTP v12.3 - June 15, 2024
 
 # API User Guide - Stored Procedures Addendum
 
@@ -14,7 +14,7 @@
 
 # About this User Guide
 
-This User Guide is an addendum to the[AceQL HTTP v12.1 - December 6, 2022
+This User Guide is an addendum to the[AceQL HTTP v12.3 - June 15, 2023
 API User Guide](https://github.com/kawansoft/aceql-http/blob/master/aceql-http-user-guide-api.md). It explains how to call stored procedures using the API.
 
 # General Principles

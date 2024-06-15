@@ -6,7 +6,7 @@
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/d14142d5d6f04ba891d505e2e47b417d)](https://www.codacy.com/gh/kawansoft/aceql-http?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=kawansoft/aceql-http&amp;utm_campaign=Badge_Grade)
 ![GitHub contributors](https://img.shields.io/github/contributors/kawansoft/aceql-http)
 
-# AceQL HTTP v12.2   - February 21,  2023
+# AceQL HTTP v12.3   - June 15,  2024
 # Server Installation and Configuration Guide  
 
 <img src="https://docs.aceql.com/favicon.png" alt="AceQL HTTP Icon"/> 
@@ -197,7 +197,7 @@ The following environments are supported by KawanSoft in this version:
 
 # Licensing
 
-AceQL HTTP’s software is licensed under the [AceQL HTTP BSL](https://github.com/kawansoft/aceql-http/blob/12.2/LICENSE.TXT), which allows source code access and free use in non-production environments. 
+AceQL HTTP’s software is licensed under the [AceQL HTTP BSL](https://github.com/kawansoft/aceql-http/blob/12.3/LICENSE.TXT), which allows source code access and free use in non-production environments. 
 
 ***Note that usage in  production is not free*.  A [subscription](https://www.aceql.com/pricing/) is required in order to run AceQL in production:**
 
@@ -219,7 +219,7 @@ See the www.aceql.com/pricing page for more information.
 Open a terminal and download with Wget.
 
 ```bash
-$ wget https://download.aceql.com/soft/download/12.2/aceql-http-12.2.run
+$ wget https://download.aceql.com/soft/download/12.3/aceql-http-12.3.run
 ```
 
 If you get a certificate error message, do one of the following:
@@ -230,15 +230,15 @@ If you get a certificate error message, do one of the following:
 Make the file executable and then run:
 
 ```bash
-chmod +x aceql-http-12.2.run                                       
-./aceql-http-12.2.run
+chmod +x aceql-http-12.3.run                                       
+./aceql-http-12.3.run
 ```
 
-This will create the `aceql-http-12.2` folder, which you can move wherever you want.
+This will create the `aceql-http-12.3` folder, which you can move wherever you want.
 
-The full path to the final `aceql-http-12.2` installation folder will be called **ACEQL_HOME** in following text.
+The full path to the final `aceql-http-12.3` installation folder will be called **ACEQL_HOME** in following text.
 
-Example: If you run `aceql-http-12.2.run` from `/home/mike`, then software is installed in `/home/mike/aceql-http-12.2` which is the value of **ACEQL_HOME.**
+Example: If you run `aceql-http-12.3.run` from `/home/mike`, then software is installed in `/home/mike/aceql-http-12.3` which is the value of **ACEQL_HOME.**
 
 ### Update the PATH (Optional) 
 
@@ -248,10 +248,10 @@ Open a shell session and make sure `java` binary is in the PATH by typing
 
 Add `java` to your PATH if the command does not display Java version. 
 
-Add the path to the bin directory of aceql-http-12.2 installation to your PATH:
+Add the path to the bin directory of aceql-http-12.3 installation to your PATH:
 
 ```bash
-$ PATH=$PATH:/path/to/aceql-http-12.2/bin/
+$ PATH=$PATH:/path/to/aceql-http-12.3/bin/
 export PATH
 ```
 
@@ -272,7 +272,7 @@ Call the `aceql-server` script to display the AceQL version:
 It will display a line with all version info, like:
 
 ```
-AceQL HTTP v12.2 - 21-Feb-2023
+AceQL HTTP v12.3 - 21-Feb-2023
 ```
 
 ## Windows Installation
@@ -285,7 +285,7 @@ Run the installer.
 
 It will run AceQL at end of installation and display the Window:
 
-<img src="https://docs.aceql.com/rest/soft/12.2/img/aceql_windows_gui_home_flatlaf.png" alt="AceQ HTTP GUI Main Windows"/> 
+<img src="https://docs.aceql.com/rest/soft/12.3/img/aceql_windows_gui_home_flatlaf.png" alt="AceQ HTTP GUI Main Windows"/> 
 
 **N.B:** Because of a bug in all Java versions > 8 on Windows, the interface will appear "ugly"  or "blurred" on Java version > 8 if you have Windows Screen Resolution Options increased to 125% or 150%.  See [Java Bug Database](https://bugs.java.com/bugdatabase/view_bug.do?bug_id=JDK-8194165) for more info. Set Windows Screen Resolution back to 100% for a clean display.
 
@@ -451,7 +451,7 @@ To create an SSL Certificate, refer to:
 
 The SQL Firewall Managers Section allows users to define SQL firewall rulesets to use for each database.
 
-The rulesets are defined through one or more "SQL Firewall Managers", which are Java classes that are injected at AceQL Server startup. A SQL Firewall Manager is a built-in or user-developed Java class that implements the [SqlFirewallManager](https://docs.aceql.com/rest/soft/12.2/javadoc/org/kawanfw/sql/api/server/firewall/SqlFirewallManager.html) interface.
+The rulesets are defined through one or more "SQL Firewall Managers", which are Java classes that are injected at AceQL Server startup. A SQL Firewall Manager is a built-in or user-developed Java class that implements the [SqlFirewallManager](https://docs.aceql.com/rest/soft/12.3/javadoc/org/kawanfw/sql/api/server/firewall/SqlFirewallManager.html) interface.
 
 A `SqlFirewallManager` concrete implementation allows users to: 
 
@@ -502,7 +502,7 @@ After an AceQL server restart, remote clients won't be allowed to execute DDL st
 
 #### The CsvRulesManager SQL Firewall Manager
 
-The [CsvRulesManager](https://docs.aceql.com/rest/soft/12.2/javadoc/org/kawanfw/sql/api/server/firewall/CsvRulesManager.html) manager allows users to define detailed rules using only a CSV file.
+The [CsvRulesManager](https://docs.aceql.com/rest/soft/12.3/javadoc/org/kawanfw/sql/api/server/firewall/CsvRulesManager.html) manager allows users to define detailed rules using only a CSV file.
 
 It checks each SQL request against the contents of a CSV file. The CSV file is loaded in memory at the AceQL server startup. 
 
@@ -531,7 +531,7 @@ The CSV file contains the rules for accessing the tables, with a semicolon for s
 - the `all` value is allowed for `table` column and means any table. At execution time: if a rule with `all` returns `true` for a CSV column, the rule supersedes other specific rules declared for specific tables for the same CSV column. 
 
 
-Here's an example of a documented CSV File: [sampledb_rules_manager.csv](https://docs.aceql.com/rest/soft/12.2/src/sampledb_rules_manager.csv).
+Here's an example of a documented CSV File: [sampledb_rules_manager.csv](https://docs.aceql.com/rest/soft/12.3/src/sampledb_rules_manager.csv).
 
 #### The DenyExceptOnWhitelistManager SQL Firewall Manager
 
@@ -544,7 +544,7 @@ Each line of the text file must contain one statement, without surrounding quote
 
 The `DenyExceptOnWhitelistManager` naturally takes precedence over all other SQL Firewall Managers, as its default behavior is to forbid all SQL statements that are not explicitly stored in the `<database>_deny_except_whitelist.txt` file.
 
-Note that all statements will be "normalized" (using the  [`StatementNormalizer`](https://docs.aceql.com/rest/soft/12.2/javadoc/org/kawanfw/sql/api/server/StatementNormalizer.html) class execution) before the incoming statement from the client side is compared with the list of permitted statements.
+Note that all statements will be "normalized" (using the  [`StatementNormalizer`](https://docs.aceql.com/rest/soft/12.3/javadoc/org/kawanfw/sql/api/server/StatementNormalizer.html) class execution) before the incoming statement from the client side is compared with the list of permitted statements.
 
 ##### How SQL statement are normalized
 
@@ -637,11 +637,11 @@ AceQL server restart is required in order to take into account Operational Mode 
 
 ### SQL Firewall Triggers Configuration
 
-The [SqlFirewallTrigger](https://docs.aceql.com/rest/soft/12.2/javadoc/org/kawanfw/sql/api/server/firewall/trigger/SqlFirewallTrigger.html) allows you to define per database a "trigger" in Java if a 
+The [SqlFirewallTrigger](https://docs.aceql.com/rest/soft/12.3/javadoc/org/kawanfw/sql/api/server/firewall/trigger/SqlFirewallTrigger.html) allows you to define per database a "trigger" in Java if a 
 `SqlFirewallManager.allowSqlRunAfterAnalysis()` call returns false, meaning a possible attack is detected. 
 
 A trigger is thus the Java code executed in the implementation of the unique
-[SqlFirewallTrigger.runIfStatementRefused()](https://docs.aceql.com/rest/soft/12.2/javadoc/org/kawanfw/sql/api/server/firewall/trigger/SqlFirewallTrigger.html#runIfStatementRefused(org.kawanfw.sql.api.server.SqlEvent,org.kawanfw.sql.api.server.firewall.SqlFirewallManager,java.sql.Connection)) method.
+[SqlFirewallTrigger.runIfStatementRefused()](https://docs.aceql.com/rest/soft/12.3/javadoc/org/kawanfw/sql/api/server/firewall/trigger/SqlFirewallTrigger.html#runIfStatementRefused(org.kawanfw.sql.api.server.SqlEvent,org.kawanfw.sql.api.server.firewall.SqlFirewallManager,java.sql.Connection)) method.
 
 Multiple `SqlFirewallTrigger` instances may be defined and chained. 
 
@@ -649,9 +649,9 @@ AceQL provides several built-in (and ready-to-use without any coding) SQL Firewa
 
 | SQL Firewall Triger Name       | Details                                                      |
 | ------------------------------ | ------------------------------------------------------------ |
-| `BanUserSqlFirewallTrigger`    | Trigger that inserts the username and other info into a SQL table. The SQL table is scanned/controlled at each request, so the banned user can no longer access the AceQL server. See [Javadoc](https://docs.aceql.com/rest/soft/12.2/javadoc/org/kawanfw/sql/api/server/firewall/trigger/BanUserSqlFirewallTrigger.html) for implementation details. |
+| `BanUserSqlFirewallTrigger`    | Trigger that inserts the username and other info into a SQL table. The SQL table is scanned/controlled at each request, so the banned user can no longer access the AceQL server. See [Javadoc](https://docs.aceql.com/rest/soft/12.3/javadoc/org/kawanfw/sql/api/server/firewall/trigger/BanUserSqlFirewallTrigger.html) for implementation details. |
 | `BeeperSqlFirewallTrigger`     | Trigger that simply beeps on the terminal if an attack is detected by a `SqlFirewallManager`. |
-| `JdbcLoggerSqlFirewallTrigger` | Trigger that logs all info about the denied SQL request into a SQL table. See [Javadoc](https://docs.aceql.com/rest/soft/12.2/javadoc/org/kawanfw/sql/api/server/firewall/trigger/JdbcLoggerSqlFirewallTrigger.html) for implementation details. |
+| `JdbcLoggerSqlFirewallTrigger` | Trigger that logs all info about the denied SQL request into a SQL table. See [Javadoc](https://docs.aceql.com/rest/soft/12.3/javadoc/org/kawanfw/sql/api/server/firewall/trigger/JdbcLoggerSqlFirewallTrigger.html) for implementation details. |
 | `JsonLoggerSqlFirewallTrigger` | Trigger that logs all info about the denied SQL request in JSON format. |
 
 ### Update Listeners Configuration
@@ -660,7 +660,7 @@ The Update Listeners Section allows you to define Java code to execute after a s
 
 Update Listeners can be viewed as a kind of Java "trigger" executed on the completion of SQL updates.
 
-The actions to trigger are defined through one or more "Update Listeners ", which are Java classes injected at AceQL Server startup. An Update Listener is a built-in or user-developed Java class that implements the [UpdateListener](https://docs.aceql.com/rest/soft/12.2/javadoc/org/kawanfw/sql/api/server/listener/UpdateListener.html) interface with code to execute defined in the unique `updateActionPerformed` method. Multiple `UpdateListener` may be defined and chained.
+The actions to trigger are defined through one or more "Update Listeners ", which are Java classes injected at AceQL Server startup. An Update Listener is a built-in or user-developed Java class that implements the [UpdateListener](https://docs.aceql.com/rest/soft/12.3/javadoc/org/kawanfw/sql/api/server/listener/UpdateListener.html) interface with code to execute defined in the unique `updateActionPerformed` method. Multiple `UpdateListener` may be defined and chained.
 
 AceQL provides a built-in (and ready-to-use without any coding) Update Listener:
 
@@ -686,7 +686,7 @@ sampledb.updateListenerClassNames=\
 
 Here is a documented example of an aceql-server.properties file:
 
-[aceql-server.properties](https://docs.aceql.com/rest/soft/12.2/src/aceql-server.properties). 
+[aceql-server.properties](https://docs.aceql.com/rest/soft/12.3/src/aceql-server.properties). 
 
 ## Starting/Stopping the AceQL Web Server from Linux/Unix
 
@@ -779,7 +779,7 @@ where:
 
 The `aceqlhttp` wrapper allows you to run the AceQL program as a Linux service.
 
-- Click [here](https://docs.aceql.com/rest/soft/12.2/src/aceqlhttp.sh) to download `aceqlhttp.sh`
+- Click [here](https://docs.aceql.com/rest/soft/12.3/src/aceqlhttp.sh) to download `aceqlhttp.sh`
 - Copy aceqlhttp.sh to `/etc/init.d/aceqlhttp` (requires root privilege). 
 - `sudo chmod +x /etc/init.d/aceqlhttp`
 - Then edit `/etc/init.d/aceqlhttp` and:
@@ -820,7 +820,7 @@ Or for Maven users:
 ```xml
 <groupId>com.aceql</groupId>
 <artifactId>aceql-http</artifactId>
-<version>12.2</version>
+<version>12.3</version>
 ```
 ## AceQL Servlet Name Configuration
 
@@ -838,7 +838,7 @@ AceQL supports calling SQL stored procedures from C# and Java client side. See t
 
 AceQL supports calling implementations of the `ServerQueryExecutor` implementation. This is a a kind of server "AceQL stored procedure" written in Java. The `executeQuery` method returns a `ResultSet` to the client side that's appropriately converted by the client side SDK (`DataReader` in C#, `ResultSet` in Java and a `list` in `Python`).
 
-See the [ServerQueryExecutor Javadoc](https://docs.aceql.com/rest/soft/12.2/javadoc/org/kawanfw/sql/api/server/executor/ServerQueryExecutor.html) for server side usage and each [C#, Java or Python documentation](https://www.aceql.com/http-access-remote-sql-database-documentation/) for client side usage.
+See the [ServerQueryExecutor Javadoc](https://docs.aceql.com/rest/soft/12.3/javadoc/org/kawanfw/sql/api/server/executor/ServerQueryExecutor.html) for server side usage and each [C#, Java or Python documentation](https://www.aceql.com/http-access-remote-sql-database-documentation/) for client side usage.
 
 ## Stateful and Stateless Modes
 
@@ -871,15 +871,15 @@ Stateless mode enables resiliency and elasticity, as well as easier deployment: 
 
 Closing a `Connection` from the client side is unnecessary when running in stateless mode (a call to the `/logout` API will do nothing).
 
-Note that in this 12.2 version, SQL transactions are not supported in stateless mode.
+Note that in this 12.3 version, SQL transactions are not supported in stateless mode.
 
 ## Session Management 
 
 ### SessionConfigurator interface
 
-After server authentication succeeds (through the [UserAuthenticator.login()](https://docs.aceql.com/rest/soft/12.2/javadoc/org/kawanfw/sql/api/server/auth/UserAuthenticator.html#login-java.lang.String-char:A-java.lang.String-java.lang.String-) method), the AceQL Manager builds an authentication session id that is sent back to the client and will be used by each succeeding client call to authenticate them. 
+After server authentication succeeds (through the [UserAuthenticator.login()](https://docs.aceql.com/rest/soft/12.3/javadoc/org/kawanfw/sql/api/server/auth/UserAuthenticator.html#login-java.lang.String-char:A-java.lang.String-java.lang.String-) method), the AceQL Manager builds an authentication session id that is sent back to the client and will be used by each succeeding client call to authenticate them. 
 
-Session security is managed by implementing the [SessionConfigurator](https://docs.aceql.com/rest/soft/12.2/javadoc/org/kawanfw/sql/api/server/session/SessionConfigurator.html) interface that defines how to generate and verify the session id for (username, database) sessions. 
+Session security is managed by implementing the [SessionConfigurator](https://docs.aceql.com/rest/soft/12.3/javadoc/org/kawanfw/sql/api/server/session/SessionConfigurator.html) interface that defines how to generate and verify the session id for (username, database) sessions. 
 
 Interface implementation allows you to:  
 
@@ -891,9 +891,9 @@ Interface implementation allows you to:
 
 The default mechanism that builds an authentication session id is coded in the class 
 
-[DefaultSessionConfigurator](https://docs.aceql.com/rest/soft/12.2/javadoc/org/kawanfw/sql/api/server/session/DefaultSessionConfigurator.html): 
+[DefaultSessionConfigurator](https://docs.aceql.com/rest/soft/12.3/javadoc/org/kawanfw/sql/api/server/session/DefaultSessionConfigurator.html): 
 
-- Session ids are generated using a `SecureRandom` with the [SessionIdentifierGenerator](https://docs.aceql.com/rest/soft/12.2/javadoc/org/kawanfw/sql/api/server/session/SessionIdentifierGenerator.html) class.
+- Session ids are generated using a `SecureRandom` with the [SessionIdentifierGenerator](https://docs.aceql.com/rest/soft/12.3/javadoc/org/kawanfw/sql/api/server/session/SessionIdentifierGenerator.html) class.
 - Session info (username, database) and session date/time creation are stored in a `HashMap`, whose key is the session id.
 - Session id is sent by the client side at each API call. AceQL verifies that the `HashMap` contains the username and that the session is not expired to grant access to the API execution.
 
@@ -906,7 +906,7 @@ The disadvantage is that session information is stored on the server side.
 
 ### Session management using JWT
 
-Session management using JWT is coded in [JwtSessionConfigurator](https://docs.aceql.com/rest/soft/12.2/javadoc/org/kawanfw/sql/api/server/session/JwtSessionConfigurator.html).
+Session management using JWT is coded in [JwtSessionConfigurator](https://docs.aceql.com/rest/soft/12.3/javadoc/org/kawanfw/sql/api/server/session/JwtSessionConfigurator.html).
 
 Session management is done using self-contained JWT (JSON Web Token). 
 
@@ -931,7 +931,7 @@ Restart the AceQL Web Server for activation.
 
 ### Creating your own session management 
 
-If you want to create your session management using your own session id generation and security rules, you can implement the [SessionConfigurator](https://docs.aceql.com/rest/soft/12.2/javadoc/org/kawanfw/sql/api/server/session/SessionConfigurator.html) in your own class, and then: 
+If you want to create your session management using your own session id generation and security rules, you can implement the [SessionConfigurator](https://docs.aceql.com/rest/soft/12.3/javadoc/org/kawanfw/sql/api/server/session/SessionConfigurator.html) in your own class, and then: 
 
 Add your class in the CLASSPATH.
 
@@ -972,7 +972,7 @@ connector.connectionTimeout=80000
 
 ## Advanced Authentication Configuration
 
-In order to give remote client users access to the AceQL server, you may develop your own authentication mechanism. This is done through your own implementation of the [UserAuthenticator](https://docs.aceql.com/rest/soft/12.2/javadoc/org/kawanfw/sql/api/server/auth/UserAuthenticator.html) interface: overload the login method `UserAuthenticator.login()` in your concrete class implementation.
+In order to give remote client users access to the AceQL server, you may develop your own authentication mechanism. This is done through your own implementation of the [UserAuthenticator](https://docs.aceql.com/rest/soft/12.3/javadoc/org/kawanfw/sql/api/server/auth/UserAuthenticator.html) interface: overload the login method `UserAuthenticator.login()` in your concrete class implementation.
 
 Your concrete implementation is passed to the AceQL as properties of the **User Authentication Section**  in the `aceql-server.properties` file.
 
@@ -985,7 +985,7 @@ Your concrete implementation is passed to the AceQL as properties of the **User 
 
 AceQL provides several built-in and ready-to-use SQL Firewall Managers, as described earlier in the  [SQL Firewall Managers Section](#sql-firewall-managers-section). You also may plug-in your own implementation or third-party SQL firewalling tools. 
 
-The [SqlFirewallManager](https://docs.aceql.com/rest/soft/12.2/javadoc/org/kawanfw/sql/api/server/firewall/SqlFirewallManager.html) interface allows you to code your own firewall rulesets or plug a third-party software in.
+The [SqlFirewallManager](https://docs.aceql.com/rest/soft/12.3/javadoc/org/kawanfw/sql/api/server/firewall/SqlFirewallManager.html) interface allows you to code your own firewall rulesets or plug a third-party software in.
 
 After coding you own `SqlFirewallManager` implementation, just declare the full class name in the `sqlFirewallManagerClassNames` property. Remember that SQL Firewall Managers may be chained and you may declare several classes.
 
@@ -1001,7 +1001,7 @@ sampledb.sqlFirewallManagerClassNames=\
 
 You may define your own preferred connection pool implementation, instead of using the default Tomcat JDBC Connection Pool.
 
-This is done through your own implementation of the [DatabaseConfigurator](https://docs.aceql.com/rest/soft/12.2/javadoc/org/kawanfw/sql/api/server/DatabaseConfigurator.html) interface: overload the `DatabaseConfigurator.getConnection()` method in your concrete class implementation.
+This is done through your own implementation of the [DatabaseConfigurator](https://docs.aceql.com/rest/soft/12.3/javadoc/org/kawanfw/sql/api/server/DatabaseConfigurator.html) interface: overload the `DatabaseConfigurator.getConnection()` method in your concrete class implementation.
 
 Your concrete implementations is passed to the AceQL as properties of the **Database Configurators Section** in the `aceql-server.properties` file, as described:
 
@@ -1019,7 +1019,7 @@ The Development of a `DatabaseConfigurator` implementation also allows you to:
 
 ## Starting/Stopping the AceQL WebServer from a Java program
 
-You may start or stop the AceQL Server from a Java program calling the [WebServerApi](https://docs.aceql.com/rest/soft/12.2/javadoc/org/kawanfw/sql/api/server/web/WebServerApi.html) API.
+You may start or stop the AceQL Server from a Java program calling the [WebServerApi](https://docs.aceql.com/rest/soft/12.3/javadoc/org/kawanfw/sql/api/server/web/WebServerApi.html) API.
 
 ## Running AceQL HTTP in a Java EE servlet container
 
@@ -1094,7 +1094,7 @@ It will display a JSON string and should display a status of `"OK"` and the curr
 ```json
 {
     "status": "OK",
-    "version": "AceQL HTTP v12.2 - 06-Dec-2022"
+    "version": "AceQL HTTP v12.3 - 06-Dec-2022"
 }         
 ```
 
@@ -1104,13 +1104,13 @@ If not, the configuration errors are detailed in your Java EE servlet container 
 
 The Servlets Section in `aceql-server.properties` allow you to define your own servlets to interact with the AceQL Web Server.
 
-The  provided [DefaultPoolsInfo](https://docs.aceql.com/rest/soft/12.2/javadoc/org/kawanfw/sql/api/server/DefaultPoolsInfo.html) servlet allows you to:
+The  provided [DefaultPoolsInfo](https://docs.aceql.com/rest/soft/12.3/javadoc/org/kawanfw/sql/api/server/DefaultPoolsInfo.html) servlet allows you to:
 
 - query info about JDBC pools in use,
 - modify a pool size,
 - etc.
 
-The API [DataSourceStore](https://docs.aceql.com/rest/soft/12.2/javadoc/org/kawanfw/sql/api/server/DataSourceStore.html) class allows you to retrieve the Tomcat [org.apache.tomcat.jdbc.pool.DataSource](https://tomcat.apache.org/tomcat-9.0-doc/api/org/apache/tomcat/jdbc/pool/DataSource.html) for each database corresponding to the Tomcat JDBC Pool created at AceQL Web server startup. 
+The API [DataSourceStore](https://docs.aceql.com/rest/soft/12.3/javadoc/org/kawanfw/sql/api/server/DataSourceStore.html) class allows you to retrieve the Tomcat [org.apache.tomcat.jdbc.pool.DataSource](https://tomcat.apache.org/tomcat-9.0-doc/api/org/apache/tomcat/jdbc/pool/DataSource.html) for each database corresponding to the Tomcat JDBC Pool created at AceQL Web server startup. 
 
 ## ThreadPoolExecutor Configuration
 
@@ -1135,12 +1135,12 @@ The properties are passed to the first  `ThreadPoolExecutor` [constructor](https
 
 In order to protect configuration passwords and other confidential values from eavesdropping, each property value may be replaced by an encrypted value in the `aceql-server.properties` file.
 
-The encrypted values are generated using the [PropertiesEncryptor](https://docs.aceql.com/rest/soft/12.2/javadoc/org/kawanfw/sql/api/server/auth/crypto/PropertiesEncryptor.html) class which allows you:
+The encrypted values are generated using the [PropertiesEncryptor](https://docs.aceql.com/rest/soft/12.3/javadoc/org/kawanfw/sql/api/server/auth/crypto/PropertiesEncryptor.html) class which allows you:
 
 1. To choose a secret password that will be used for encrypting each selected property value.
 2. To encrypt each selected value.  
 
-In order for the AceQL Server to decrypt the properties at runtime, the secret password must be returned by the `getPassword()` of a concrete implementation of the [PropertiesPasswordManager](https://docs.aceql.com/rest/soft/12.2/javadoc/org/kawanfw/sql/api/server/auth/crypto/PropertiesPasswordManager.html) interface. A default implementation is provided: [DefaultPropertiesPasswordManager](https://docs.aceql.com/rest/soft/12.2/javadoc/org/kawanfw/sql/api/server/auth/crypto/DefaultPropertiesPasswordManager.html). 
+In order for the AceQL Server to decrypt the properties at runtime, the secret password must be returned by the `getPassword()` of a concrete implementation of the [PropertiesPasswordManager](https://docs.aceql.com/rest/soft/12.3/javadoc/org/kawanfw/sql/api/server/auth/crypto/PropertiesPasswordManager.html) interface. A default implementation is provided: [DefaultPropertiesPasswordManager](https://docs.aceql.com/rest/soft/12.3/javadoc/org/kawanfw/sql/api/server/auth/crypto/DefaultPropertiesPasswordManager.html). 
 
 The `PropertiesPasswordManager` concrete class name must then be defined with the `propertiesPasswordManagerClassName` property.  See the `Properties Password Manager Section` of the `aceql-server.properties` file.
 
