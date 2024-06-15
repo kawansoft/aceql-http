@@ -51,7 +51,7 @@ public class AceQLMetaData {
 
 	List<String> tableNames = getTableNames();
 	for (String tableName : tableNames) {
-	    tableNamesSet.add(tableName);
+	    tableNamesSet.add(tableName.toLowerCase()); // Yes: lowerCase is just for key access
 	}
     }
 
@@ -201,7 +201,7 @@ public class AceQLMetaData {
 	    debug("catalog : " + rs.getString(1) + " schema : " + rs.getString(2) + " tableName: " + tableName
 		    + " TABLE_TYPE: " + rs.getString(4));
 
-	    tableName = tableName.toLowerCase();
+	    // NO! tableName = tableName.toLowerCase();
 	    tableNames.add(tableName);
 	}
 	return tableNames;
@@ -423,6 +423,7 @@ public class AceQLMetaData {
      */
     public List<Index> getIndexes(String tableName) throws SQLException {
 	Objects.requireNonNull(tableName, "tableName cannot be null!");
+	
 	if (!tableNamesSet.contains(tableName.toLowerCase())) {
 	    throw new IllegalArgumentException("table does not exists: " + tableName);
 	}
@@ -504,6 +505,7 @@ public class AceQLMetaData {
 	if (!tableNamesSet.contains(tableName.toLowerCase())) {
 	    throw new IllegalArgumentException("table does not exists: " + tableName);
 	}
+	
 	/**
 	 * <pre>
 	 * <code>

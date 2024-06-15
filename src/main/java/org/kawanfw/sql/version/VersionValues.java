@@ -14,6 +14,6 @@ package org.kawanfw.sql.version;
  * Contains the package DefaultVersion info
  */
 class VersionValues {
-    public static final String VERSION = "v12.2";
-    public static final String DATE = "21-Feb-2023";
+    public static final String VERSION = "v12.3";
+    public static final String DATE = "15-Jun-2023";
 }
