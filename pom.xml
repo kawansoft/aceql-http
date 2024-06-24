@@ -270,4 +270,13 @@ AceQL HTTP is provided with three client SDK:
         <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
 
+<!--
+<settings>
+<server>
+    <id>${server}</id>
+    <username>vVhNP5LC</username>
+    <password>GnZo1opfokUWyTkwnk0EWk7P3nvATVbVY5R+1Inid3vI</password>
+</server>
+-->
+
 </project>
