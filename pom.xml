@@ -60,11 +60,17 @@
           <additionalparam>-Xdoclint:none</additionalparam>
 
         <sourcepath>${project.basedir}/src/main/java</sourcepath>
+
+        <excludes>
+            <exclude>org/kawanfw/sql/**</exclude> 
+        </excludes>
+
         <includes>
-            <include>org/kawanfw/sql/api/server**</include>
-            <include>org/kawanfw/sql/*.java</include>
-            <include>org/kawanfw/sql/*.html</include>
+            <include>org/kawanfw/sql/api/server/**</include> <!-- Includes this package and all subpackages -->
+            <include>org/kawanfw/sql/*.java</include>        <!-- Includes only Java files directly in this package -->
+            <include>org/kawanfw/sql/*.html</include>  
         </includes>
+
         </configuration>
 
           <version>2.9.1</version>
