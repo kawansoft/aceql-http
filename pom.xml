@@ -62,7 +62,8 @@
         <sourcepath>${project.basedir}/src/main/java</sourcepath>
         <includes>
             <include>org/kawanfw/sql/api/server**</include>
-            <include>org/kawanfw/sql/*</include>
+            <include>org/kawanfw/sql/*.java</include>
+            <include>org/kawanfw/sql/*.html</include>
         </includes>
         </configuration>
 
