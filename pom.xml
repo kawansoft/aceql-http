@@ -3,7 +3,7 @@
 
 	<groupId>com.aceql</groupId>
 	<artifactId>aceql-http</artifactId>
-	<version>12.4</version>
+	<version>12.5</version>
 	<packaging>jar</packaging>
 
 	<name>AceQL HTTP</name>
