@@ -303,7 +303,7 @@ It will run AceQL at end of installation and display the Window:
 - 📄 **Excel Handling**: Allow your end user to easily process and manipulate large Excel files using simple prompts. Much easier for them than endless VBA or painful Python coding.
 - 📝 **Unlimited Input Sizes**: Seamlessly handle prompts that exceed 4096 tokens with automatic sequencing and parallel task threading for speed, allowing you to treat large inputs without dwelling on the details.
 - 🎙️ **Hassle-Free Transcriptions**: Simply provide the audio files for transcription, regardless of format and size. ChatMotor handles everything, including gigantic files, and delivers a clean, formatted text file.
-- 🌐 **Advanced Summarization & Translation**: Handle documents of any size with ease. Just pass them to the API, and it will manage everything, delivering accurate and fast results.
+- 🌐 **Advanced Translation**: Handle documents of any size with ease. Just pass them to the API, and it will manage everything, delivering accurate and fast results.
 
 **✨ Faster and Easier Delivery for Your End User: Save Time, Reduce Complexity, and Focus on What Matters!**
 
