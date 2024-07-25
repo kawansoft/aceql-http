@@ -293,17 +293,11 @@ It will run AceQL at end of installation and display the Window:
 
 ---
 
-👉 Explore [**Sqlephant**](https://www.sqlephant.com) and elevate your SQL development experience!
-
-
-
-![GPT](https://files.oaiusercontent.com/file-Nb5gZ75tDwzz1r8WPStgaGBA?se=2124-06-10T14%3A00%3A10Z&sp=r&sv=2023-11-03&sr=b&rscc=max-age%3D3153599999%2C%20immutable%2C%20private&rscd=attachment%3B%20filename%3Dchatmotor-small-logo.png&sig=h7GMdDiUPXoB1/9e3k79b9JPhPyboZ87jvsnCjx81oc%3D)
-
-## *[Advertisement] 📢*
+## *[Advertisement] 📢* 
 
 ## *Transform Your Development with ChatMotor API! 🚀*
 
-ChatMotor API is designed to make your development life easier by handling the complexities of OpenAI and ChatGPT:
+[ChatMotor](https://www.chatmotor.ai/) API is designed to make your development life easier by handling the complexities of OpenAI and ChatGPT:
 
 - 🌟 **Seamless Integration**: No need to learn the intricacies of OpenAI APIs and their limitations. ChatMotor handles chunking, HTTP errors, and retry management.
 - 📄 **Excel Handling**: Allow your end user to easily process and manipulate large Excel files using simple prompts. Much easier for them than endless VBA or painful Python coding.
