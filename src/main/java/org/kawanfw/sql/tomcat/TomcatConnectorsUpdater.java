@@ -132,7 +132,7 @@ public class TomcatConnectorsUpdater {
 			    + SqlTag.PLEASE_CORRECT);
 	}
 
-	checkMandatoryValues();
+	//checkMandatoryValues();
 
 	Connector defaultConnector = tomcat.getConnector();
 	defaultConnector.setScheme(scheme);
@@ -150,6 +150,7 @@ public class TomcatConnectorsUpdater {
      * Checks that mandatory values are in properties file
      * @throws DatabaseConfigurationException
      */
+    @SuppressWarnings("unused")
     private void checkMandatoryValues() throws DatabaseConfigurationException {
 	// Testing the keystore file
 	String keyStoreFileStr = getMandatoryPropertyValue(
