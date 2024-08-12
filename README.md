@@ -448,6 +448,10 @@ To create an SSL Certificate, refer to:
 - Tomcat 9.0 [Prepare the Certificate Keystore.](http://tomcat.apache.org/tomcat-9.0-doc/ssl-howto.html#Prepare_the_Certificate_Keystore)
 - Oracle [JDK Security Tools](http://docs.oracle.com/javase/7/docs/technotes/tools/#security).
 
+**IMPORTANT NOTE:**
+If you need to use `sslConnector.SSLCertificateFile` instead of `sslConnector.keystoreFile` to enable SSL/TLS, please refer to this issue, which provides a solution:
+https://github.com/kawansoft/aceql-http/issues/31.
+
 ### SQL Firewall Managers Section
 
 The SQL Firewall Managers Section allows users to define SQL firewall rulesets to use for each database.
