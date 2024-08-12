@@ -32,6 +32,17 @@ What's New:
 - Table names are now case-sensitive when using Metadata calls.
 - This allows AceQL to work correctly with SQL Server case-sensitive databases.
   
+IMPORTANT NOTE:
+If you need to use sslConnector.SSLCertificateFile instead of sslConnector.keystoreFile to 
+enable SSL/TLS, please replace the aceql-http-12.3.jar file in your installation with 
+the aceql-http-12.5.jar file from the upcoming version.
+
+Download Link:
+https://download.aceql.com/rest/soft/12.5/download/aceql-http-12.5.jar
+
+Signature:
+https://download.aceql.com/rest/soft/12.5/download/aceql-http-12.5.jar.asc
+  
 
 AceQL HTTP Version 12.2 - 21-Feb-2023
 -------------------------------------
