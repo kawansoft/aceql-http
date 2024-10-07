@@ -11,22 +11,9 @@
  */
 package org.kawanfw.sql.servlet;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.SQLException;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.Set;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+//see https://commons.apache.org/proper/commons-fileupload/migration.html and https://stackoverflow.com/a/79047694
+import org.apache.commons.fileupload2.javax.JavaxServletFileUpload;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.apache.tomcat.util.http.fileupload.FileUploadException;
-import org.apache.tomcat.util.http.fileupload.servlet.ServletFileUpload;
 import org.kawanfw.sql.api.server.DatabaseConfigurator;
 import org.kawanfw.sql.api.server.firewall.SqlFirewallManager;
 import org.kawanfw.sql.metadata.dto.DatabaseInfoDto;
@@ -51,6 +38,18 @@ import org.kawanfw.sql.servlet.sql.json_return.JsonOkReturn;
 import org.kawanfw.sql.util.FrameworkDebug;
 import org.kawanfw.sql.version.VersionWrapper;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.SQLException;
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.Set;
+
 /**
  * @author Nicolas de Pomereu
  *
@@ -74,10 +73,9 @@ public class ServerSqlDispatch {
      * @param out
      * @throws IOException         if any IOException occurs
      * @throws SQLException
-     * @throws FileUploadException
      */
     public void executeRequestInTryCatch(HttpServletRequest request, HttpServletResponse response, OutputStream out)
-	    throws IOException, SQLException, FileUploadException {
+	    throws IOException, SQLException {
 
 	if (doBlobUpload(request, response, out)) {
 	    return;
@@ -517,15 +515,14 @@ public class ServerSqlDispatch {
      * @param response
      * @param out    
      * @throws IOException
-     * @throws FileUploadException
      * @throws SQLException
      */
     private boolean doBlobUpload(HttpServletRequest request, HttpServletResponse response, OutputStream out)
-	    throws IOException, FileUploadException, SQLException {
+	    throws IOException, SQLException {
 	// Immediate catch if we are asking a file upload, because
 	// parameters are in unknown sequence.
 	// We know it's a upload action if it's mime Multipart
-	if (ServletFileUpload.isMultipartContent(request)) {
+	if (JavaxServletFileUpload.isMultipartContent(request)) {
 	    BlobUploader blobUploader = new BlobUploader(request, response, out);
 	    blobUploader.blobUpload();
 	    return true;
