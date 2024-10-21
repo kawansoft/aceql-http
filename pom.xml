@@ -151,7 +151,7 @@
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
-			<version>2.14.0</version>
+			<version>2.17.0</version>
 		</dependency>
 		<dependency>
 			<groupId>com.jcraft</groupId>
@@ -167,7 +167,7 @@
 		<dependency>
 			<groupId>com.auth0</groupId>
 			<artifactId>java-jwt</artifactId>
-            <version>4.2.1</version>
+            <version>4.4.0</version>
 		</dependency>
 
 		<dependency>
@@ -246,17 +246,25 @@
 		<dependency>
 			<groupId>org.apache.tomcat.embed</groupId>
 			<artifactId>tomcat-embed-core</artifactId>
-			<version>9.0.90</version>
+			<version>9.0.95</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.apache.tomcat</groupId>
 			<artifactId>tomcat-jdbc</artifactId>
-			<version>9.0.71</version>
+			<version>9.0.95</version>
 		</dependency>
 
 
-		<!-- API, java.xml.bind module. Required for modern versions of MS SQL Server Drivers -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-fileupload2-javax</artifactId>
+            <version>2.0.0-M2</version>
+        </dependency>
+
+
+
+        <!-- API, java.xml.bind module. Required for modern versions of MS SQL Server Drivers -->
 		<dependency>
 		    <groupId>jakarta.xml.bind</groupId>
 		    <artifactId>jakarta.xml.bind-api</artifactId>

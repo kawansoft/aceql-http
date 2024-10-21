@@ -11,6 +11,19 @@
  */
 package org.kawanfw.sql.api.server.blob;
 
+//see https://commons.apache.org/proper/commons-fileupload/migration.html and https://stackoverflow.com/a/79047694
+import org.apache.commons.fileupload2.core.DiskFileItemFactory;
+import org.apache.commons.fileupload2.core.FileItemInput;
+import org.apache.commons.fileupload2.core.FileItemInputIterator;
+import org.apache.commons.fileupload2.javax.JavaxServletFileUpload;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.SystemUtils;
+import org.kawanfw.sql.util.FrameworkDebug;
+import org.kawanfw.sql.util.FrameworkFileUtil;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,20 +33,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Date;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.SystemUtils;
-import org.apache.tomcat.util.http.fileupload.FileItemIterator;
-import org.apache.tomcat.util.http.fileupload.FileItemStream;
-import org.apache.tomcat.util.http.fileupload.FileUploadException;
-import org.apache.tomcat.util.http.fileupload.disk.DiskFileItemFactory;
-import org.apache.tomcat.util.http.fileupload.servlet.ServletFileUpload;
-import org.apache.tomcat.util.http.fileupload.util.Streams;
-import org.kawanfw.sql.util.FrameworkDebug;
-import org.kawanfw.sql.util.FrameworkFileUtil;
 
 /**
  *
@@ -57,7 +56,7 @@ public class DefaultBlobUploadConfigurator implements BlobUploadConfigurator {
      */
     @Override
     public void upload(HttpServletRequest request, HttpServletResponse response, File blobDirectory, long maxBlobLength)
-	    throws IOException, FileUploadException {
+	    throws IOException {
 
 	debug("in upload()");
 
@@ -65,7 +64,7 @@ public class DefaultBlobUploadConfigurator implements BlobUploadConfigurator {
 	// Prepare the response
 
 	// Check that we have a file upload request
-	boolean isMultipart = ServletFileUpload.isMultipartContent(request);
+	boolean isMultipart = JavaxServletFileUpload.isMultipartContent(request);
 	debug("isMultipart: " + isMultipart);
 
 	if (!isMultipart) {
@@ -78,12 +77,14 @@ public class DefaultBlobUploadConfigurator implements BlobUploadConfigurator {
 	debug("tempRepository: " + tempRepository);
 
 	// Create a factory for disk-based file items
-	DiskFileItemFactory factory = new DiskFileItemFactory();
-	factory.setRepository(tempRepository);
+	//DiskFileItemFactory factory = new DiskFileItemFactory();
+	//factory.setRepository(tempRepository);
+	DiskFileItemFactory factory =
+			new DiskFileItemFactory.Builder().setPath(tempRepository.getPath()).get();
 
 	// Create a new file upload handler using the factory
 	// that define the secure temp dir
-	ServletFileUpload upload = new ServletFileUpload(factory);
+	JavaxServletFileUpload upload = new JavaxServletFileUpload(factory);
 	
 	debug("maxBlobLength: " + maxBlobLength);
 	if (DEBUG) {
@@ -99,22 +100,22 @@ public class DefaultBlobUploadConfigurator implements BlobUploadConfigurator {
 	}
 
 	// Parse the request
-	FileItemIterator iter = upload.getItemIterator(request);
+	FileItemInputIterator iter = upload.getItemIterator(request);
 
 	String blobId = null;
 	// Parse the request
 	while (iter.hasNext()) {
-	    FileItemStream item = iter.next();
+	    FileItemInput item = iter.next();
 	    String name = item.getFieldName();
 	    debug("name: " + name);
 
 	    // The input Stream for the File
 
-	    try (InputStream inputstream = item.openStream()) {
+	    try (InputStream inputstream = item.getInputStream()) {
 
 		if (item.isFormField()) {
 		    if (name.equals("blob_id")) {
-			blobId = Streams.asString(inputstream);
+			blobId = IOUtils.toString(inputstream, StandardCharsets.UTF_8);
 			debug("blob_id: " + blobId);
 		    }
 		} else {
