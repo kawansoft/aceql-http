@@ -161,7 +161,7 @@
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
-			<version>3.11</version>
+			<version>3.17.0</version>
 		</dependency>
 
 		<dependency>
@@ -204,7 +204,7 @@
     <dependency>
         <groupId>org.postgresql</groupId>
         <artifactId>postgresql</artifactId>
-        <version>42.5.5</version>
+        <version>42.7.4</version>
     </dependency>
 
         <!-- Oracle dependecy is necessary to compile -->
@@ -246,13 +246,13 @@
 		<dependency>
 			<groupId>org.apache.tomcat.embed</groupId>
 			<artifactId>tomcat-embed-core</artifactId>
-			<version>9.0.95</version>
+			<version>9.0.98</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.apache.tomcat</groupId>
 			<artifactId>tomcat-jdbc</artifactId>
-			<version>9.0.95</version>
+			<version>9.0.98</version>
 		</dependency>
 
 
